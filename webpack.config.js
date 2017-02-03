@@ -13,8 +13,8 @@ function getEntrySources(sources) {
 
 module.exports = {
   entry: {
-    helloWorld: getEntrySources([
-        './src/js/helloWorld.js'
+    devices: getEntrySources([
+        './src/js/index.js'
     ])
   },
   output: {
@@ -29,15 +29,13 @@ module.exports = {
   },
   module: {
     loaders: [
-        {
-            test: /\.js$/,
-            loaders: ['react-hot', 'jsx', 'babel'],
-            exclude: /node_modules/
-        },
-        {
-            test: /\.scss$/,
-            loader: ExtractTextPlugin.extract('css!sass')
-        }
+        { test: /\.js$/, loaders: ['react-hot', 'jsx', 'babel'], exclude: /(node_modules|src\/components)/ },
+        { test: /\.scss$/, loader: ExtractTextPlugin.extract('css!sass') },
+        { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'file-loader?mimetype=image/svg+xml'},
+        { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader?mimetype=application/font-woff"},
+        { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader?mimetype=application/font-woff"},
+        { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader?mimetype=application/octet-stream"},
+        { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader"}
     ]
   },
   plugins: [

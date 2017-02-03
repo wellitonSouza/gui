@@ -5,24 +5,22 @@ var path = require('path');
 
 module.exports = {
   entry: {
-    helloWorld: './src/js/helloWorld.js'
+    devices: './src/js/index.js'
   },
   output: {
-    publicPath: 'http://localhost:8888/',
+    publicPath: '/',
     filename: 'js/[name].js',
     path: path.resolve(__dirname, 'dist')
   },
   module: {
     loaders: [
-        {
-            test: /\.js$/,
-            loaders: ['jsx', 'babel'],
-            exclude: /node_modules/
-        },
-        {
-            test: /\.scss$/,
-            loader: ExtractTextPlugin.extract('css!sass')
-        }
+        { test: /\.js$/, loaders: ['react-hot', 'jsx', 'babel'], exclude: /(node_modules|src\/components)/ },
+        { test: /\.scss$/, loader: ExtractTextPlugin.extract('css!sass') },
+        { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'file-loader?mimetype=image/svg+xml'},
+        { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader?mimetype=application/font-woff"},
+        { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader?mimetype=application/font-woff"},
+        { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader?mimetype=application/octet-stream"},
+        { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader"}
     ]
   },
   plugins: [
@@ -40,6 +38,7 @@ module.exports = {
         NODE_ENV: JSON.stringify('production')
       }
     }),
+
     new webpack.optimize.UglifyJsPlugin()
   ]
 };

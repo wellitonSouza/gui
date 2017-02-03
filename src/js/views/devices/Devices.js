@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import deviceManager from '../../comms/devices/DeviceManager';
 
 function TagList (props) {
   const tags = props.tags;
@@ -28,7 +29,7 @@ function ListItem(props) {
 
       {/* <!-- icon status area --> */}
       <div className="lst-line col s2" >
-        <div className="lst-line col m6 s12 lst-icon pull-right">
+        <div className="lst-line lst-icon pull-right">
           { props.device.status ? (
             <span className="fa fa-wifi fa-2x"></span>
           ) : (
@@ -66,18 +67,7 @@ class DeviceList extends Component {
     super(props);
 
     this.state = {
-      display: "list",
-      devices: [
-        { id: '8bc74868-cc15-11e6-a2be-d3f64ba4e9f4', label: 'monitor-000', type: 'MQTT', tags:['AC control'], status: 0 },
-        { id: '8bc775a4-cc15-11e6-924e-3bfc19f5a11c', label: 'monitor-001', type: 'CoAP', tags:['flood'], status: 0 },
-        { id: '8bc7a736-cc15-11e6-ac37-8be4a5e2628a', label: 'monitor-002', type: 'HTTP', tags:['AC control'], status: 0 },
-        { id: '8bc7e7dc-cc15-11e6-b313-0bcbaa788acd', label: 'monitor-003', type: 'MQTT', tags:['freezer'], status: 1 },
-        { id: '8bc827d8-cc15-11e6-84e6-b7ab355895e2', label: 'monitor-004', type: 'MQTT', tags:['flood'], status: 0 },
-        { id: '8bc8691e-cc15-11e6-b7c2-e34fd524df93', label: 'monitor-005', type: 'MQTT', tags:['flow count'], status: 1 },
-        { id: '8bc8a884-cc15-11e6-bdac-8794903d72ea', label: 'monitor-006', type: 'HTTP', tags:['AC control'], status: 0 },
-        { id: '8bc8ea42-cc15-11e6-87af-7764fa0701a8', label: 'monitor-007', type: 'MQTT', tags:['flow count'], status: 0 },
-        { id: '8bc92930-cc15-11e6-bb29-8b44be05fada', label: 'monitor-008', type: 'HTTP', tags:['AC control'], status: 1 }
-      ]
+      display: "list"
     };
   }
 
@@ -112,21 +102,128 @@ class DeviceList extends Component {
           </div>
         </div>
 
-        { this.state.display === 'map' && <MapRender devices={this.state.devices}/>  }
-        { this.state.display === 'list' && <ListRender devices={this.state.devices}/> }
-
-        {/* contents: device list */}
-        {/* { this.state.devices.map((device) => <ListItem device={device} key={device.id} />) } */}
+        { this.state.display === 'map' && <MapRender devices={this.props.devices}/>  }
+        { this.state.display === 'list' && <ListRender devices={this.props.devices}/> }
 
         {/* <!-- footer --> */}
         <div className="col s12"></div>
         <div className="col s12">&nbsp;</div>
+      </div>
+    )
+  }
+}
 
-        {/* <!-- todo: move this to its own component (new device) --> */}
+class NewDevice extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      newDevice: {
+        id: "",
+        label: "",
+        type: "",
+        tags: []
+      },
+      options: [ "MQTT", "CoAP", "Virtual" ]
+    }
+
+    this.addTag = this.addTag.bind(this);
+    this.createDevice = this.createDevice.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  addTag(t) {
+    state = this.state.newDevice;
+    state.tags.push(t);
+    this.setState({newDevice: state});
+
+    console.log("new state is: ", this.state.newDevice);
+  }
+
+  createDevice() {
+    this.props.createDevice(this.state.newDevice);
+  }
+
+  handleChange(event) {
+    const target = event.target;
+    let state = this.state.newDevice;
+    state[target.name] = target.value;
+    this.setState({
+      newDevice: state
+    });
+
+    console.log("new state is: ", this.state.newDevice);
+  }
+
+  render() {
+    return (
+      <div>
         <div id="newDeviceBtn" className="" >
-          <a className="btn waves-effect waves-light btn-default" href="#newDeviceForm">
+          <button data-target="newDeviceForm" className="btn waves-effect waves-light btn-default" >
             <i className="fa fa-plus fa-2x"></i>
-          </a>
+          </button>
+        </div>
+
+        <div className="modal" id="newDeviceForm">
+          <div className="modal-content">
+            <div className="row">
+              <form role="form">
+                {/* <!-- name --> */}
+                <div className="row">
+                  <div className="input-field col s12">
+                    <label htmlFor="fld_name">Name</label>
+                    <input id="fld_name" type="text"
+                           name="label"
+                           onChange={this.handleChange}
+                           value={this.state.newDevice.label} />
+                  </div>
+                </div>
+                {/* <!-- device type --> */}
+                <div className="row">
+                  <div className="col s12">
+                    <label htmlFor="fld_deviceTypes" >Type</label>
+                    <select id="fld_deviceTypes" className="browser-default"
+                            name="type"
+                            value={this.state.newDevice.type}
+                            onChange={this.handleChange}>
+                      <option value="" disabled>Select type</option>
+                      {this.state.options.map((type) => <option value={type} key={type}>{type}</option>)}
+                    </select>
+                  </div>
+                </div>
+                {/* <!-- tags --> */}
+                <div className="row">
+                  <div className="col s10">
+                    <div className="input-field">
+                      <label htmlFor="fld_newTag" >Tag</label>
+                      <input id="fld_newTag" type="text"></input>
+                    </div>
+                  </div>
+                  <div className="col s2" >
+                    <div title="Add tag" className="btn btn-item btn-floating waves-effect waves-light cyan darken-2" >
+                      <i className="fa fa-plus"></i>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  {this.state.newDevice.tags.map((tag) =>(
+                    <div>
+                      {tag} &nbsp;
+                      <a title="Remove tag" className="btn-item">
+                        <i className="fa fa-times" aria-hidden="true"></i>
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              </form>
+              <div className="pull-right">
+                <a href="#"
+                   onClick={this.createDevice}
+                   className=" modal-action modal-close waves-effect waves-green btn-flat">Create</a>
+                <a href="#" className=" modal-action modal-close waves-effect waves-red btn-flat">Cancel</a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -134,9 +231,30 @@ class DeviceList extends Component {
 }
 
 class Devices extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      devices: deviceManager.getDevices()
+    };
+
+    this.createDevice = this.createDevice.bind(this);
+  }
+
+  createDevice(device) {
+    console.log("about to create device");
+    const devList = deviceManager.addDevice(device);
+    this.setState({devices: devList});
+  }
+
   render() {
+    console.log("device list on master object", this.state.devices);
     return (
-      <DeviceList />
+      <page>
+        <DeviceList devices={this.state.devices}/>
+        <NewDevice createDevice={this.createDevice}/>
+      </page>
     );
   }
 }

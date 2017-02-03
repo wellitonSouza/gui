@@ -24,12 +24,14 @@
   </div>
 
   <!--  Scripts-->
-  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-  <script src="components/materialize/dist/js/materialize.min.js"></script>
+  <script src="components/jquery/dist/jquery.min.js"></script>
+  <script src="components/materialize/dist/js/materialize.js"></script>
   <script type="text/javascript">
     (function($){
       $(function(){
         $('.button-collapse').sideNav();
+        $('.modal').modal();
+        $('select').material_select();
       }); // end of document ready
     })(jQuery); // end of jQuery name space
   </script>

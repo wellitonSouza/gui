@@ -1,0 +1,6 @@
+{
+  "name": "TemplateManager",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./TemplateManager.js"
+}

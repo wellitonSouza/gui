@@ -1,0 +1,46 @@
+.first-enter {
+  opacity: 0.01;
+}
+
+.first-enter.first-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.first-leave {
+  opacity: 1;
+}
+
+.first-leave.first-leave-active {
+  opacity: 0.001;
+  transition: opacity 500ms ease-in;
+}
+
+
+.first-appear {
+  opacity: 0.01 !important;
+}
+
+.first-appear.first-appear-active {
+  opacity: 1 !important;
+  transition: opacity 0.5s ease-in;
+}
+
+.spanBox {
+  width: 100px;
+  height: 100px;
+  display:block;
+  background-color: $watermelon;
+  border: 2px solid $matte;
+  margin: 10px;
+  float: left;
+}
+
+#boxWrapper {
+  // display: inline-block;
+}
+
+.csstrans-button {
+  width: 100px;
+  height: 1.3em;
+}

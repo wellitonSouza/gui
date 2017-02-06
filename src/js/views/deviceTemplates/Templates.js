@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import deviceManager from '../../comms/devices/DeviceManager';
+import templateManager from '../../comms/templates/TemplateManager';
 
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
@@ -22,24 +22,7 @@ function ListItem(props) {
           <span>{props.device.label}</span>
         </div>
         <div className="col m12 hide-on-small-only">
-          <div className="col m4 data no-padding-left">{props.device.id}</div>
-          <div className="col m2 data">{props.device.type}</div>
-          {/* this is col m6 */}
-          <TagList tags={props.device.tags}/>
-        </div>
-      </div>
-
-      {/* <!-- icon status area --> */}
-      <div className="lst-line col s2" >
-        <div className="lst-line lst-icon pull-right">
-          { props.device.status ? (
-            <span className="fa fa-wifi fa-2x"></span>
-          ) : (
-            <span className="fa-stack">
-              <i className="fa fa-wifi fa-stack-2x"></i>
-              <i className="fa fa-times fa-stack-1x no-conn"></i>
-            </span>
-          )}
+          <div className="data no-padding-left">{props.device.id}</div>
         </div>
       </div>
     </div>
@@ -51,15 +34,6 @@ function ListRender(props) {
   return (
     <div>
       { deviceList.map((device) => <ListItem device={device} key={device.id} /> ) }
-    </div>
-  )
-}
-
-function MapRender(props) {
-  const deviceList = props.devices;
-  return (
-    <div>
-      <p>map goes here!</p>
     </div>
   )
 }
@@ -146,10 +120,8 @@ class NewDevice extends Component {
       newDevice: {
         id: "",
         label: "",
-        type: "",
-        tags: []
-      },
-      options: [ "MQTT", "CoAP", "Virtual" ]
+        attrs: []
+      }
     }
 
     this.addTag = this.addTag.bind(this);
@@ -175,7 +147,7 @@ class NewDevice extends Component {
 
   addTag(t) {
     state = this.state.newDevice;
-    state.tags.push(t);
+    state.attrs.push(t);
     this.setState({newDevice: state});
   }
 
@@ -215,21 +187,8 @@ class NewDevice extends Component {
                            value={this.state.newDevice.label} />
                   </div>
                 </div>
-                {/* <!-- device type --> */}
-                <div className="row">
-                  <div className="col s12">
-                    <label htmlFor="fld_deviceTypes" >Type</label>
-                    <select id="fld_deviceTypes"
-                            name="type"
-                            ref="dropdown"
-                            value={this.state.newDevice.type}
-                            onChange={this.handleChange}>
-                      <option value="" disabled>Select type</option>
-                      {this.state.options.map((type) => <option value={type} key={type}>{type}</option>)}
-                    </select>
-                  </div>
-                </div>
-                {/* <!-- tags --> */}
+
+                {/* <!-- attrs --> */}
                 <div className="row">
                   <div className="col s10">
                     <div className="input-field">
@@ -244,7 +203,7 @@ class NewDevice extends Component {
                   </div>
                 </div>
                 <div className="row">
-                  {this.state.newDevice.tags.map((tag) =>(
+                  {this.state.newDevice.attrs.map((tag) =>(
                     <div>
                       {tag} &nbsp;
                       <a title="Remove tag" className="btn-item">
@@ -267,30 +226,21 @@ class NewDevice extends Component {
   }
 }
 
-class Devices extends Component {
+class Templates extends Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      devices: deviceManager.getDevices(),
-      boxes: ['a', 'b', 'c']
+      devices: templateManager.getDevices(),
     };
 
     this.createDevice = this.createDevice.bind(this);
-    this.addBox = this.addBox.bind(this);
   }
 
   createDevice(device) {
     const devList = deviceManager.addDevice(device);
     this.setState({devices: devList});
-  }
-
-  addBox() {
-    console.log('about to add box');
-    let state = this.state;
-    state.boxes.unshift('t');
-    this.setState(state);
   }
 
   render() {
@@ -301,12 +251,6 @@ class Devices extends Component {
           transitionAppearTimeout={500}
           transitionEnterTimeout={500}
           transitionLeaveTimeout={500} >
-        {/* <div>
-          <div><button onClick={this.addBox} className="csstrans-button"></button></div>
-          <div id="boxWrapper">
-              {this.state.boxes.map((box) => <span className="spanBox">{box}</span>)}
-          </div>
-        </div> */}
         <DeviceList devices={this.state.devices}/>
         <NewDevice createDevice={this.createDevice}/>
       </ReactCSSTransitionGroup>
@@ -314,4 +258,4 @@ class Devices extends Component {
   }
 }
 
-export default Devices;
+export default Templates;

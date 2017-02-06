@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 function Item(props) {
   const main = props.href.includes(props.path) && props.path != '/';
@@ -21,7 +22,7 @@ function Navbar(props) {
           <Item path={props.path} href="#/templates" label="Device Types" />
           <Item path={props.path} href="#/devices" label="Devices" />
           <Item path={props.path} href="#/flows" label="Flows" />
-          <Item path={props.path} href="#/config" label="Config" />
+          <Item path={props.path} href="#/config" label="Settings" />
         </ul>
 
         {/* we should probably have some kind of user id here */}
@@ -35,17 +36,14 @@ class Full extends Component {
     return (
       <div className="app">
         {/* <Header /> */}
-        <Navbar path={this.props.route.path}/>
+        <Navbar path={this.props.location.pathname}/>
         <div className="app-body">
-          {/* <Sidebar {...this.props}/> */}
           <main className="main">
             <div className="container">
               {this.props.children}
             </div>
           </main>
-          {/* <Aside /> */}
         </div>
-        {/* <Footer /> */}
       </div>
     );
   }

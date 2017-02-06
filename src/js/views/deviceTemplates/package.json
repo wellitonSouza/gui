@@ -1,6 +1,6 @@
 {
-  "name": "Devices",
+  "name": "Templates",
   "version": "0.0.0",
   "private": true,
-  "main": "./Devices.js"
+  "main": "./Templates.js"
 }

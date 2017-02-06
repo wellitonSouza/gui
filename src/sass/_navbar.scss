@@ -1,0 +1,18 @@
+nav {
+  height: 64px !important;
+  background-color: $navbar-background-color !important;
+}
+
+nav a {
+  padding-left: 40px;
+  font-size: 35px;
+  margin-left: 0px;
+}
+
+nav ul {
+  float: right;
+}
+
+nav .brand-logo {
+  margin-left: 30px;
+}

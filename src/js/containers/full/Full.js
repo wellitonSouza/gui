@@ -11,17 +11,17 @@ class Full extends Component {
     return (
       <div className="app">
         {/* <Header /> */}
+        <nav>
+            <div className="nav-wrapper">
+              <a href="#" className="brand-logo">Logo</a>
+              <ul id="nav-mobile" className="right hide-on-small-only">
+                <li><a href="#">Devices</a></li>
+              </ul>
+            </div>
+        </nav>
         <div className="app-body">
           {/* <Sidebar {...this.props}/> */}
           <main className="main">
-            <Breadcrumbs
-              wrapperElement="ol"
-              wrapperClass="breadcrumb"
-              itemClass="breadcrumb-item"
-              separator=""
-              routes={this.props.routes}
-              params={this.props.params}
-            />
             <div className="">
               {this.props.children}
             </div>

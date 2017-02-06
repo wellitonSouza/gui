@@ -68,12 +68,15 @@ class DeviceList extends Component {
     super(props);
 
     this.state = {
-      display: "list"
+      isDisplayList: true
     };
+
+    this.handleViewChange = this.handleViewChange.bind(this);
   }
 
   handleViewChange(event) {
-    console.log("got event", event, event.target.value);
+    console.log("got event", event, event.target.checked);
+    this.setState({isDisplayList: ! this.state.isDisplayList})
   }
 
   render() {
@@ -85,7 +88,7 @@ class DeviceList extends Component {
             <div className="switch top-header right-align">
               <label>
                 <span className="fa fa-map"></span>
-                <input type="checkbox" onChange={this.handleViewChange}/>
+                <input type="checkbox" onChange={this.handleViewChange} checked={this.state.isDisplayList}/>
                 <span className="lever"></span>
                 <span className="fa fa-list"></span>
               </label>
@@ -103,8 +106,8 @@ class DeviceList extends Component {
           </div>
         </div>
 
-        { this.state.display === 'map' && <MapRender devices={this.props.devices}/>  }
-        { this.state.display === 'list' && <ListRender devices={this.props.devices}/> }
+        { this.state.isDisplayList === false && <MapRender devices={this.props.devices}/>  }
+        { this.state.isDisplayList && <ListRender devices={this.props.devices}/> }
 
         {/* <!-- footer --> */}
         <div className="col s12"></div>
@@ -239,10 +242,9 @@ class NewDevice extends Component {
                 </div>
               </form>
               <div className="pull-right">
-                <a href="#"
-                   onClick={this.createDevice}
+                <a onClick={this.createDevice}
                    className=" modal-action modal-close waves-effect waves-green btn-flat">Create</a>
-                <a href="#" className=" modal-action modal-close waves-effect waves-red btn-flat">Cancel</a>
+                <a className=" modal-action modal-close waves-effect waves-red btn-flat">Cancel</a>
               </div>
             </div>
           </div>

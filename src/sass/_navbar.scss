@@ -13,22 +13,36 @@ nav ul {
   float: right;
 }
 
-nav .brand-logo {
-  // margin-left: 30px;
-}
-
 nav ul a {
   color: $teal;
+  position: relative;
 }
 
-@media only screen and (min-width: 992px) {
-  nav .brand-logo {
-    margin-left: 30px;
-  }
-}
+// nav .brand-logo {
+//   // margin-left: 30px;
+// }
+
+// @media only screen and (min-width: 992px) {
+//   nav .brand-logo {
+//     margin-left: 30px;
+//   }
+// }
 
 .nav-wrapper .active-element {
   // border-bottom: 2px;
   // border-color: $watermelon;
   color: $watermelon;
+}
+
+.nav-wrapper a.active-element:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  border-bottom: 3px solid $watermelon;
+}
+
+.app-links {
+  display: inline-block;
 }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import deviceManager from '../../comms/devices/DeviceManager';
 
 function TagList (props) {
@@ -132,6 +133,26 @@ class NewDevice extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  // this allows us to remove the global script required by materialize as in docs
+  componentDidMount() {
+    let callback = this.handleChange.bind(this);
+
+    let sElement = ReactDOM.findDOMNode(this.refs.dropdown);
+    $(sElement).ready(function() {
+      $('select').material_select();
+      $('#fld_deviceTypes').on('change', callback);
+    });
+
+    $('.select-dropdown').on('change', function(e) {
+      console.log("activated!", e);
+    });
+
+    let mElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(mElement).ready(function() {
+      $('.modal').modal();
+    })
+  }
+
   addTag(t) {
     state = this.state.newDevice;
     state.tags.push(t);
@@ -164,7 +185,7 @@ class NewDevice extends Component {
           </button>
         </div>
 
-        <div className="modal" id="newDeviceForm">
+        <div className="modal" id="newDeviceForm" ref="modal">
           <div className="modal-content">
             <div className="row">
               <form role="form">
@@ -182,8 +203,9 @@ class NewDevice extends Component {
                 <div className="row">
                   <div className="col s12">
                     <label htmlFor="fld_deviceTypes" >Type</label>
-                    <select id="fld_deviceTypes" className="browser-default"
+                    <select id="fld_deviceTypes"
                             name="type"
+                            ref="dropdown"
                             value={this.state.newDevice.type}
                             onChange={this.handleChange}>
                       <option value="" disabled>Select type</option>

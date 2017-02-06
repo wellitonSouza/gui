@@ -14,5 +14,21 @@ nav ul {
 }
 
 nav .brand-logo {
-  margin-left: 30px;
+  // margin-left: 30px;
+}
+
+nav ul a {
+  color: $teal;
+}
+
+@media only screen and (min-width: 992px) {
+  nav .brand-logo {
+    margin-left: 30px;
+  }
+}
+
+.nav-wrapper .active-element {
+  // border-bottom: 2px;
+  // border-color: $watermelon;
+  color: $watermelon;
 }

@@ -1,10 +1,4 @@
 import React, { Component } from 'react';
-// import Header from '../../components/Header/';
-// import Sidebar from '../../components/Sidebar/';
-// import Aside from '../../components/Aside/';
-// import Footer from '../../components/Footer/';
-
-import Breadcrumbs from 'react-breadcrumbs';
 
 class Full extends Component {
   render() {
@@ -15,14 +9,15 @@ class Full extends Component {
             <div className="nav-wrapper">
               <a href="#" className="brand-logo">Logo</a>
               <ul id="nav-mobile" className="right hide-on-small-only">
-                <li><a href="#">Devices</a></li>
+                <li><a href="#">Device Types</a></li>
+                <li><a href="#" className="active-element">Devices</a></li>
               </ul>
             </div>
         </nav>
         <div className="app-body">
           {/* <Sidebar {...this.props}/> */}
           <main className="main">
-            <div className="">
+            <div className="container">
               {this.props.children}
             </div>
           </main>

@@ -10,10 +10,19 @@
     font-style: normal;
 }
 
-$app-background-color: #f3f3f3;
+$matte: #414141;
+$fresh: #CCDFCB;
+$teal: #056571;
+$watermelon: #FF6a5c;
+$subtle: #9e9e9e;
+
+// $app-background-color: #f3f3f3;
+$app-background-color: $fresh;
 $element-background-color: #fff;
+
 $main-font-family: Montserrat;
-$navbar-background-color: #26a69a;
+// $navbar-background-color: #26a69a;
+$navbar-background-color: $matte;
 
 body {
   background-color: $app-background-color;

@@ -12,7 +12,6 @@ function TagList (props) {
 }
 
 function ListItem(props) {
-  console.log("about to render device", props.device);
   return (
     <div className="lst-entry row" id={props.device.id}>
       {/* <!-- text status area --> */}
@@ -68,15 +67,35 @@ class DeviceList extends Component {
     super(props);
 
     this.state = {
-      isDisplayList: true
+      isDisplayList: true,
+      filter: '',
+      filteredList: props.devices,
     };
 
     this.handleViewChange = this.handleViewChange.bind(this);
+    this.applyFiltering = this.applyFiltering.bind(this);
   }
 
   handleViewChange(event) {
-    console.log("got event", event, event.target.checked);
     this.setState({isDisplayList: ! this.state.isDisplayList})
+  }
+
+  applyFiltering(event) {
+    const filter = event.target.value;
+    const idFilter = filter.match(/id:\W*([-a-fA-F0-9]+)\W?/);
+
+    let state = this.state;
+    state.filter = filter;
+    state.filteredList = this.props.devices.filter(function(e) {
+      let result = false;
+      if (idFilter && idFilter[1]) {
+        result = result || e.id.toUpperCase().includes(idFilter[1].toUpperCase());
+      }
+
+      return result || e.label.toUpperCase().includes(filter.toUpperCase());
+    });
+
+    this.setState(state);
   }
 
   render() {
@@ -100,14 +119,14 @@ class DeviceList extends Component {
               <div className="input-field">
                 <i className="search-icon prefix fa fa-filter"></i>
                 <label htmlFor="deviceFiltering">Filter</label>
-                <input id="deviceFiltering" type="text"></input>
+                <input id="deviceFiltering" type="text" onChange={this.applyFiltering}></input>
               </div>
             </form>
           </div>
         </div>
 
-        { this.state.isDisplayList === false && <MapRender devices={this.props.devices}/>  }
-        { this.state.isDisplayList && <ListRender devices={this.props.devices}/> }
+        { this.state.isDisplayList === false && <MapRender devices={this.state.filteredList}/>  }
+        { this.state.isDisplayList && <ListRender devices={this.state.filteredList}/> }
 
         {/* <!-- footer --> */}
         <div className="col s12"></div>
@@ -146,10 +165,6 @@ class NewDevice extends Component {
       $('#fld_deviceTypes').on('change', callback);
     });
 
-    $('.select-dropdown').on('change', function(e) {
-      console.log("activated!", e);
-    });
-
     let mElement = ReactDOM.findDOMNode(this.refs.modal);
     $(mElement).ready(function() {
       $('.modal').modal();
@@ -160,8 +175,6 @@ class NewDevice extends Component {
     state = this.state.newDevice;
     state.tags.push(t);
     this.setState({newDevice: state});
-
-    console.log("new state is: ", this.state.newDevice);
   }
 
   createDevice() {
@@ -175,8 +188,6 @@ class NewDevice extends Component {
     this.setState({
       newDevice: state
     });
-
-    console.log("new state is: ", this.state.newDevice);
   }
 
   render() {
@@ -267,13 +278,11 @@ class Devices extends Component {
   }
 
   createDevice(device) {
-    console.log("about to create device");
     const devList = deviceManager.addDevice(device);
     this.setState({devices: devList});
   }
 
   render() {
-    console.log("device list on master object", this.state.devices);
     return (
       <page>
         <DeviceList devices={this.state.devices}/>

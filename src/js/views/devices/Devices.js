@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import deviceManager from '../../comms/devices/DeviceManager';
 
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { Link } from 'react-router'
 
 function TagList (props) {
   const tags = props.tags;
@@ -16,32 +17,34 @@ function TagList (props) {
 function ListItem(props) {
   return (
     <div className="lst-entry row" id={props.device.id}>
-      {/* <!-- text status area --> */}
-      <div className="lst-line col s10">
-        <div className="lst-title col s12">
-          <span>{props.device.label}</span>
+      <Link to={"ViewDevice/" + props.device.id} >
+        {/* <!-- text status area --> */}
+        <div className="lst-line col s10">
+          <div className="lst-title col s12">
+            <span>{props.device.label}</span>
+          </div>
+          <div className="col m12 hide-on-small-only">
+            <div className="col m4 data no-padding-left">{props.device.id}</div>
+            <div className="col m2 data">{props.device.type}</div>
+            {/* this is col m6 */}
+            <TagList tags={props.device.tags}/>
+          </div>
         </div>
-        <div className="col m12 hide-on-small-only">
-          <div className="col m4 data no-padding-left">{props.device.id}</div>
-          <div className="col m2 data">{props.device.type}</div>
-          {/* this is col m6 */}
-          <TagList tags={props.device.tags}/>
-        </div>
-      </div>
 
-      {/* <!-- icon status area --> */}
-      <div className="lst-line col s2" >
-        <div className="lst-line lst-icon pull-right">
-          { props.device.status ? (
-            <span className="fa fa-wifi fa-2x"></span>
-          ) : (
-            <span className="fa-stack">
-              <i className="fa fa-wifi fa-stack-2x"></i>
-              <i className="fa fa-times fa-stack-1x no-conn"></i>
-            </span>
-          )}
+        {/* <!-- icon status area --> */}
+        <div className="lst-line col s2" >
+          <div className="lst-line lst-icon pull-right">
+            { props.device.status ? (
+              <span className="fa fa-wifi fa-2x"></span>
+            ) : (
+              <span className="fa-stack">
+                <i className="fa fa-wifi fa-stack-2x"></i>
+                <i className="fa fa-times fa-stack-1x no-conn"></i>
+              </span>
+            )}
+          </div>
         </div>
-      </div>
+      </Link>
     </div>
   )
 }
@@ -267,7 +270,7 @@ class NewDevice extends Component {
   }
 }
 
-class Devices extends Component {
+export class Devices extends Component {
 
   constructor(props) {
     super(props);
@@ -314,4 +317,75 @@ class Devices extends Component {
   }
 }
 
-export default Devices;
+export class ViewDevice extends Component {
+  constructor(props) {
+    super(props);
+
+    this.selectedDevice = deviceManager.getDeviceById(this.props.params.deviceId);
+
+    this.state = {
+      device: {
+        id: this.selectedDevice.id,
+        label: this.selectedDevice.label,
+        type: this.selectedDevice.type,
+        tags: this.selectedDevice.tags
+      },
+      options: [ "MQTT", "CoAP", "Virtual" ]
+    }
+  }
+
+  handleChange(event) {
+    console.log("handleChange");
+  }
+
+  render() {
+    console.log("view device details ");
+    return (
+      <page>
+          <div className="view paddingElements">
+          {/* <!-- name --> */}
+            <div className="row">
+              <h4> View Device:  {this.state.device.label} </h4>
+            </div>
+              {/* <!-- device type --> */}
+              <div className="row">
+                <div className="col s12">
+                  <label htmlFor="fld_deviceTypes" >Type</label>
+                  <select id="fld_deviceTypes" className="browser-default" disabled
+                          name="type"
+                          value={this.state.device.type}
+                          onChange={this.handleChange}>
+                    <option value="" disabled>Select type</option>
+                    {this.state.options.map((type) => <option value={type} key={type}>{type}</option>)}
+                  </select>
+                </div>
+              </div>
+              {/* <!-- tags --> */}
+              <div className="row">
+                <div className="col s12">
+                  <div className="input-field">
+                    <label htmlFor="fld_newTag" >Tag</label>
+                    <input id="fld_newTag" type="text" disabled></input>
+                  </div>
+                </div>
+              </div>
+              <div className="row">
+                {this.state.device.tags.map((tag) =>(
+                  <div className="paddingLeft10px" key={tag}>
+                    {tag} &nbsp;
+                    <a title="Remove tag" className="btn-item">
+                      <i className="fa fa-times" aria-hidden="true"></i>
+                    </a>
+                  </div>
+                ))}
+              </div>
+              <div className="row">
+                <div className="pull-right">
+                  <a href="#/dashboard" className=" modal-action modal-close waves-effect waves-red btn-flat">back</a>
+                </div>
+              </div>
+          </div>
+      </page>
+    );
+  }
+}

@@ -57,6 +57,10 @@
   display: block;
 }
 
+.lst-line {
+  color: #333;
+}
+
 .lst-entry .timestamp {
   color: #666;
   font-size: 85%;
@@ -126,4 +130,17 @@
 
 .inline-actions a {
   margin: 0 1em;
+}
+
+.view {
+  margin-top: 50px;
+  background-color: $element-background-color;
+}
+
+.paddingElements {
+  padding: 20px;
+}
+
+.paddingLeft10px {
+  padding-left: 20px;
 }

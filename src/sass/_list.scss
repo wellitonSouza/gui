@@ -163,3 +163,16 @@
 .pull-right {
   margin-right: 25px;
 }
+
+.wrapping-list {
+  display: inline;
+}
+
+.wrapping-list div {
+  float: left;
+  margin-left: 2em;
+}
+
+#newDeviceForm .row {
+  margin-bottom: 1.2em;
+}

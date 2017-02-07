@@ -11,11 +11,29 @@ class TemplateManager {
       { id: '8c8e6d74-eca6-11e6-b625-9f771175799d', label: 'totem'       , icon: ''},
       { id: '9ff74c1e-eca6-11e6-a3b3-bfb1b0ff2c3c', label: 'HTTP sample' , icon: ''}
     ];
+
+    this.details = {};
   }
 
   getDevices() {
     // @TODO call webservice
     return this.devices;
+  }
+
+  getDevice(id) {
+    if (id in this.details) {
+      return this.details[id];
+    } else {
+      let data = this.devices.filter(function(d) {
+        return d.id == id;
+      });
+      if (data && data[0]) { return data[0]; }
+    }
+    return undefined;
+  }
+
+  setDevice(detail) {
+    this.details[detail.id] = detail;
   }
 
   addDevice(d) {

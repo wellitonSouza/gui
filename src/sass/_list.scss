@@ -113,3 +113,17 @@
 #newDeviceBtn .btn {
   background-color: $teal;
 }
+
+.detailArea {
+  height: 80px;
+  display: block;
+}
+
+.inline-actions {
+  position: relative;
+  top: 1%;
+}
+
+.inline-actions a {
+  margin: 0 1em;
+}

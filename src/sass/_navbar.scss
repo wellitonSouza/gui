@@ -1,6 +1,7 @@
 nav {
   height: 64px !important;
   background-color: $navbar-background-color !important;
+  font-family: 'Asap', sans-serif;
 }
 
 nav a {
@@ -18,19 +19,7 @@ nav ul a {
   position: relative;
 }
 
-// nav .brand-logo {
-//   // margin-left: 30px;
-// }
-
-// @media only screen and (min-width: 992px) {
-//   nav .brand-logo {
-//     margin-left: 30px;
-//   }
-// }
-
 .nav-wrapper .active-element {
-  // border-bottom: 2px;
-  // border-color: $watermelon;
   color: $watermelon;
 }
 

@@ -1,14 +1,16 @@
 
-@font-face {
-    font-family: "Montserrat";
-    src: url(../fonts/montserrat-regular-webfont.eot);
-    src: url(../fonts/montserrat-regular-webfont.eot?#iefix) format("embedded-opentype"),
-         url(../fonts/montserrat-regular-webfont.woff) format("woff"),
-         url(../fonts/montserrat-regular-webfont.ttf) format("truetype"),
-         url(../fonts/montserrat-regular-webfont.svg#montserratregular) format("svg");
-    font-weight: 400;
-    font-style: normal;
-}
+// @font-face {
+//     font-family: "Montserrat";
+//     src: url(../fonts/montserrat-regular-webfont.eot);
+//     src: url(../fonts/montserrat-regular-webfont.eot?#iefix) format("embedded-opentype"),
+//          url(../fonts/montserrat-regular-webfont.woff) format("woff"),
+//          url(../fonts/montserrat-regular-webfont.ttf) format("truetype"),
+//          url(../fonts/montserrat-regular-webfont.svg#montserratregular) format("svg");
+//     font-weight: 400;
+//     font-style: normal;
+// }
+
+@import url('https://fonts.googleapis.com/css?family=Asap|Roboto');
 
 $matte: #414141;
 $fresh: #CCDFCB;
@@ -17,10 +19,11 @@ $watermelon: #FF6a5c;
 $subtle: #9e9e9e;
 
 // $app-background-color: #f3f3f3;
-$app-background-color: $fresh;
+$app-background-color: #eaeaea;
 $element-background-color: #fff;
 
-$main-font-family: Montserrat;
+// $main-font-family: Montserrat, sans-serif;
+$main-font-family: Roboto, sans-serif;
 // $navbar-background-color: #26a69a;
 $navbar-background-color: $matte;
 

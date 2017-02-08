@@ -14,27 +14,58 @@ function TagList (props) {
   )
 }
 
-function ListItem(props) {
-  return (
-    <div className="lst-entry row" id={props.device.id}>
-      <Link to={"ViewDevice/" + props.device.id} >
+class ListItem extends Component {
+  constructor(props) {
+    super(props);
+
+    this.handleEdit = this.handleEdit.bind(this);
+    this.handleDetail = this.handleDetail.bind(this);
+    this.handleDismiss = this.handleDismiss.bind(this);
+  }
+
+  handleDetail(e) {
+    e.preventDefault();
+    this.props.detailedTemplate(this.props.device.id);
+  }
+
+  handleEdit(e) {
+    e.preventDefault();
+    this.props.editTemplate(this.props.device.id);
+  }
+
+  handleDismiss(e) {
+    e.preventDefault();
+    this.props.detailedTemplate(undefined);
+  }
+
+  render() {
+    let detail = this.props.detail === this.props.device.id;
+    let edit = (this.props.edit === this.props.device.id) && detail;
+
+    console.log("About to render: " + detail + " " + edit);
+
+    const classPrefix = "lst-entry row ";
+    const sizeClass = classPrefix + (detail ? "lst-detail" : "");
+
+    return (
+      <div className={sizeClass} id={this.props.device.id} onClick={detail ? null : this.handleDetail}>
         {/* <!-- text status area --> */}
         <div className="lst-line col s10">
           <div className="lst-title col s12">
-            <span>{props.device.label}</span>
+            <span>{this.props.device.label}</span>
           </div>
           <div className="col m12 hide-on-small-only">
-            <div className="col m4 data no-padding-left">{props.device.id}</div>
-            <div className="col m2 data">{props.device.type}</div>
+            <div className="col m4 data no-padding-left">{this.props.device.id}</div>
+            <div className="col m2 data">{this.props.device.type}</div>
             {/* this is col m6 */}
-            <TagList tags={props.device.tags}/>
+            <TagList tags={this.props.device.tags}/>
           </div>
         </div>
 
         {/* <!-- icon status area --> */}
         <div className="lst-line col s2" >
           <div className="lst-line lst-icon pull-right">
-            { props.device.status ? (
+            { this.props.device.status ? (
               <span className="fa fa-wifi fa-2x"></span>
             ) : (
               <span className="fa-stack">
@@ -44,16 +75,45 @@ function ListItem(props) {
             )}
           </div>
         </div>
-      </Link>
-    </div>
-  )
+
+        { detail && (
+          <span>
+          <div className="edit right inline-actions">
+            <a className="btn-floating waves-green right" onClick={this.handleDismiss}>
+              <i className="fa fa-times"></i>
+            </a>
+            <a className="btn-floating waves-green right" onClick={this.handleEdit}>
+              <i className="material-icons">mode_edit</i>
+            </a>
+          </div>
+          </span>
+        )}
+
+        { detail && (
+          <div className="detailArea col s12">
+            { edit ? (
+              <p>Form goes here</p>
+            ) : (
+              <p>Details will be displayed here</p>
+            )}
+          </div>
+        )}
+      </div>
+    )
+  }
 }
 
 function ListRender(props) {
   const deviceList = props.devices;
   return (
     <div>
-      { deviceList.map((device) => <ListItem device={device} key={device.id} /> ) }
+      { deviceList.map((device) =>
+          <ListItem device={device} key={device.id}
+                    detail={props.detail}
+                    detailedTemplate={props.detailedTemplate}
+                    edit={props.edit}
+                    editTemplate={props.editTemplate} />
+      )}
     </div>
   )
 }
@@ -79,10 +139,36 @@ class DeviceList extends Component {
 
     this.handleViewChange = this.handleViewChange.bind(this);
     this.applyFiltering = this.applyFiltering.bind(this);
+    this.detailedTemplate = this.detailedTemplate.bind(this);
+    this.editTemplate = this.editTemplate.bind(this);
   }
 
   handleViewChange(event) {
     this.setState({isDisplayList: ! this.state.isDisplayList})
+  }
+
+  detailedTemplate(id) {
+    console.log("about to set detail: " + id);
+    if (this.state.detail && this.state.edit) {
+      console.log("are you sure???");
+    }
+
+    let temp = this.state;
+    temp.detail = id;
+    this.setState(temp);
+    return true;
+  }
+
+  editTemplate(id) {
+    console.log("about to set edit: " + id);
+    if (this.state.detail === id) {
+      let temp = this.state;
+      temp.edit = id;
+      this.setState(temp);
+      return true;
+    }
+
+    return false;
   }
 
   applyFiltering(event) {
@@ -131,7 +217,11 @@ class DeviceList extends Component {
         </div>
 
         { this.state.isDisplayList === false && <MapRender devices={this.state.filteredList}/>  }
-        { this.state.isDisplayList && <ListRender devices={this.state.filteredList}/> }
+        { this.state.isDisplayList && <ListRender devices={this.state.filteredList}
+                                                  detail={this.state.detail}
+                                                  detailedTemplate={this.detailedTemplate}
+                                                  edit={this.state.edit}
+                                                  editTemplate={this.editTemplate}/> }
 
         {/* <!-- footer --> */}
         <div className="col s12"></div>
@@ -171,7 +261,7 @@ class NewDevice extends Component {
     this.state = {
       newDevice: {
         id: "",
-        label: "",
+        label: "asdf - teste",
         type: "",
         tags: ['1', '2', '3']
       },

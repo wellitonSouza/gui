@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import templateManager from '../../comms/templates/TemplateManager';
+// import templateManager from '../../comms/templates/TemplateManager';
+
+var TemplateStore = require('../../stores/TemplateStore');
+var TemplateActions = require('../../actions/TemplateActions');
 
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
@@ -26,7 +29,7 @@ class DeviceAttributes extends Component {
 
   render () {
     return (
-      <div key={this.props.attribute.name}>
+      <div>
         {this.props.attribute.name} [{this.props.attribute.type}] &nbsp;
         <a title="Remove Attribute" className="btn-item" onClick={this.handleRemove}>
           <i className="fa fa-times" aria-hidden="true"></i>
@@ -292,11 +295,11 @@ class DeviceList extends Component {
 
     this.state = {
       isDisplayList: true,
-      filter: '',
-      filteredList: props.devices,
+      filter: ''
     };
 
     this.handleViewChange = this.handleViewChange.bind(this);
+    this.handleSearchChange = this.handleSearchChange.bind(this);
     this.applyFiltering = this.applyFiltering.bind(this);
     this.detailedTemplate = this.detailedTemplate.bind(this);
     this.editTemplate = this.editTemplate.bind(this);
@@ -317,7 +320,6 @@ class DeviceList extends Component {
   }
 
   editTemplate(id) {
-    console.log("about to set edit: " + id);
     if (this.state.detail === id) {
       let temp = this.state;
       temp.edit = id;
@@ -332,14 +334,18 @@ class DeviceList extends Component {
     this.setState({isDisplayList: ! this.state.isDisplayList})
   }
 
-  applyFiltering(event) {
+  handleSearchChange(event) {
     const filter = event.target.value;
-    const idFilter = filter.match(/id:\W*([-a-fA-F0-9]+)\W?/);
-
     let state = this.state;
     state.filter = filter;
     state.detail = undefined;
-    state.filteredList = this.props.devices.filter(function(e) {
+    this.setState(state);
+  }
+
+  applyFiltering(list) {
+    const filter = this.state.filter;
+    const idFilter = filter.match(/id:\W*([-a-fA-F0-9]+)\W?/);
+    return this.props.devices.filter(function(e) {
       let result = false;
       if (idFilter && idFilter[1]) {
         result = result || e.id.toUpperCase().includes(idFilter[1].toUpperCase());
@@ -347,8 +353,6 @@ class DeviceList extends Component {
 
       return result || e.label.toUpperCase().includes(filter.toUpperCase());
     });
-
-    this.setState(state);
   }
 
   updateDevice(device) {
@@ -368,6 +372,8 @@ class DeviceList extends Component {
   }
 
   render() {
+
+    const filteredList = this.applyFiltering(this.props.devices);
     return (
       <div className="col m10 s12 offset-m1 " >
         {/* header */}
@@ -378,13 +384,13 @@ class DeviceList extends Component {
               <div className="input-field">
                 <i className="search-icon prefix fa fa-filter"></i>
                 <label htmlFor="deviceFiltering">Filter</label>
-                <input id="deviceFiltering" type="text" onChange={this.applyFiltering}></input>
+                <input id="deviceFiltering" type="text" onChange={this.handleSearchChange}></input>
               </div>
             </form>
           </div>
         </div>
 
-        { this.state.filteredList.map((device) =>
+        { filteredList.map((device) =>
             <ListItem device={device}
                       key={device.id}
                       detail={this.state.detail}
@@ -535,28 +541,22 @@ class Templates extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      devices: templateManager.getDevices(),
-    };
+    this.state = TemplateStore.getState();
 
-    this.createDevice = this.createDevice.bind(this);
-    this.updateDevice = this.updateDevice.bind(this);
-    this.deleteDevice = this.deleteDevice.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
-  createDevice(device) {
-    const devList = deviceManager.addDevice(device);
-    this.setState({devices: devList});
+  componentDidMount() {
+    TemplateStore.listen(this.onChange);
+    TemplateActions.fetchTemplates();
   }
 
-  updateDevice(device) {
-    const devList = templateManager.setDevice(device.id, device);
-    this.setState({devices: devList});
+  componentWillUnmount() {
+    TemplateStore.unlisten(this.onChange);
   }
 
-  deleteDevice(id) {
-    const devList = templateManager.deleteDevice(id);
-    this.setState({devices: devList});
+  onChange(newState) {
+    this.setState(TemplateStore.getState());
   }
 
   render() {
@@ -567,7 +567,7 @@ class Templates extends Component {
           transitionAppearTimeout={500}
           transitionEnterTimeout={500}
           transitionLeaveTimeout={500} >
-        <DeviceList devices={this.state.devices} updateDevice={this.updateDevice} deleteDevice={this.deleteDevice}/>
+        <DeviceList devices={this.state.templates} />
         <NewDevice createDevice={this.createDevice}/>
       </ReactCSSTransitionGroup>
     );

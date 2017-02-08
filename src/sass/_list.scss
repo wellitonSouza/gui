@@ -76,9 +76,9 @@
 }
 
 .no-conn {
-  color: crimson;
+  color: $watermelon;
   margin-top: 0.3em;
-  margin-left: 0.3em;
+  margin-left: 0.5em;
   font-size: 1.3em;
 }
 
@@ -131,7 +131,7 @@
 }
 
 .inline-actions a {
-  margin: 0 1em;
+  margin: 0 0.5em;
 }
 
 .view {
@@ -175,4 +175,8 @@
 
 #newDeviceForm .row {
   margin-bottom: 1.2em;
+}
+
+.lst-detail {
+  height: 200px;
 }

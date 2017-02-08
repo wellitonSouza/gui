@@ -13,13 +13,51 @@ function TagList (props) {
   )
 }
 
+class DeviceAttributes extends Component {
+  constructor(props) {
+    super(props);
+
+    this.handleRemove = this.handleRemove.bind(this);
+  }
+
+  handleRemove(e) {
+    this.props.removeAttribute(this.props.attribute);
+  }
+
+  render () {
+    return (
+      <div key={this.props.attribute.name}>
+        {this.props.attribute.name} [{this.props.attribute.type}] &nbsp;
+        <a title="Remove Attribute" className="btn-item" onClick={this.handleRemove}>
+          <i className="fa fa-times" aria-hidden="true"></i>
+        </a>
+      </div>
+    )
+  }
+}
+
 class ListItem extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      device: {
+        id: this.props.device.id,
+        label: this.props.device.label,
+        attributes: []
+      },
+      attribute: "",
+      typeAttribute: ""
+    }
+
     this.handleEdit = this.handleEdit.bind(this);
     this.handleDetail = this.handleDetail.bind(this);
     this.handleDismiss = this.handleDismiss.bind(this);
+    this.addAttribute = this.addAttribute.bind(this);
+    this.removeAttribute = this.removeAttribute.bind(this);
+    this.handleAttribute = this.handleAttribute.bind(this);
+    this.updateDevice = this.updateDevice.bind(this);
+    this.deleteDevice = this.deleteDevice.bind(this);
   }
 
   handleDetail(e) {
@@ -37,6 +75,51 @@ class ListItem extends Component {
     this.props.detailedTemplate(undefined);
   }
 
+  updateDevice(e) {
+      e.preventDefault();
+      this.props.updateDevice(this.state.device);
+  }
+
+  deleteDevice(e) {
+      e.preventDefault();
+      this.props.deleteDevice(this.state.device.id);
+  }
+
+  addAttribute(t) {
+    let state = this.state.device;
+    state.attributes.push({name: this.state.attribute, type: this.state.typeAttribute});
+    this.setState({ device : state});
+  }
+
+  removeAttribute(attribute) {
+    let state = this.state.device;
+
+    for(var i = 0; i < state.attributes.length; i++) {
+        if(state.attributes[i].name === attribute.name) {
+           state.attributes.splice(i, 1);
+        }
+    }
+
+    this.setState({device: state});
+  }
+
+  handleAttribute(event) {
+    const target = event.target;
+    let state = this.state;
+    state[target.name] = target.value;
+    this.setState(state);
+  }
+
+
+  handleChange(event) {
+    const target = event.target;
+    let state = this.state.device;
+    state[target.name] = target.value;
+    this.setState({
+      device: state
+    });
+  }
+
   render() {
     let detail = this.props.detail === this.props.device.id;
     let edit = (this.props.edit === this.props.device.id) && detail;
@@ -48,66 +131,156 @@ class ListItem extends Component {
     return (
       <div className="lst-entry row"
            onClick={detail ? null : this.handleDetail }
-           id={this.props.device.id} >
-        {/* <!-- text status area --> */}
-        <div className="lst-line col s10">
-          <div className="lst-title col s12">
-            <span>{this.props.device.label}</span>
-          </div>
-          <div className="col m12 hide-on-small-only">
-            <div className="data no-padding-left">{this.props.device.id}</div>
-          </div>
-        </div>
-        {detail && (
-          <span>
-          {/* <div className="fixed-action-btn horizontal click-to-toggle" id="contextActions">
-            <a className="btn-floating btn-large red">
-              <i className="material-icons">menu</i>
-            </a>
-            <ul>
-              <li>
-                <a className="btn-floating red">
-                  <i className="material-icons">insert_chart</i>
-                </a>
-              </li>
-              <li>
-                <a className="btn-floating yellow darken-1">
-                  <i className="material-icons">format_quote</i>
-                </a>
-              </li>
-              <li>
-                <a className="btn-floating green">
-                  <i className="material-icons">publish</i>
-                </a>
-              </li>
-              <li>
-                <a className="btn-floating blue">
-                  <i className="material-icons">attach_file</i>
-                </a>
-              </li>
-            </ul>
-          </div> */}
+           id={this.props.device.id}>
+        <form role="form">
+          {/* <!-- text status area --> */}
+          {!detail && (
+            <div className="lst-line col s12">
+              <div className="lst-title col s12">
+                <span>{this.props.device.label}</span>
+              </div>
+              <div className="col m12 hide-on-small-only">
+                <div className="data no-padding-left">{this.props.device.id}</div>
+              </div>
+            </div>
+          )}
+          {detail && (
+            <div className="lst-line col s12">
+              { edit ? (
+                <div className="col s12">
+                  <div className="input-field col s10">
+                    <label htmlFor="fld_name">Name</label>
+                    <input id="fld_name" type="text"
+                           name="label"
+                           autoFocus
+                           onChange={this.handleChange.bind(this)}
+                           value={this.state.device.label} />
+                  </div>
+                  <div className="col s2">
+                    <div className="edit right inline-actions">
+                      <a className="btn-floating waves-green right" onClick={this.handleDismiss}>
+                        <i className="fa fa-times"></i>
+                      </a>
+                      <a className="btn-floating waves-green right red" onClick={this.deleteDevice}>
+                        <i className="fa fa-trash-o"></i>
+                      </a>
+                    </div>
+                  </div>
+                  <div className="col m12 hide-on-small-only">
+                    <div className="data no-padding-left">{this.props.device.id}</div>
+                  </div>
+                </div>
+              ) : (
+                <div className="lst-line col s12">
+                  <div className="lst-title col s10">
+                    <span>{this.props.device.label}</span>
+                  </div>
+                  <div className="col s2">
+                    <div className="edit right inline-actions">
+                      <a className="btn-floating waves-green right" onClick={this.handleDismiss}>
+                        <i className="fa fa-times"></i>
+                      </a>
+                      <a className="btn-floating waves-green right" onClick={this.handleEdit}>
+                        <i className="material-icons">mode_edit</i>
+                      </a>
+                    </div>
+                  </div>
+                  <div className="col m12 hide-on-small-only">
+                    <div className="data no-padding-left">{this.props.device.id}</div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
-          <div className="edit right inline-actions">
-            <a className="btn-floating waves-green right" onClick={this.handleDismiss}>
-              <i className="fa fa-times"></i>
-            </a>
-            <a className="btn-floating waves-green right" onClick={this.handleEdit}>
-              <i className="material-icons">mode_edit</i>
-            </a>
-          </div>
-          </span>
-        )}
-
-        {detail && (
-          <div className="detailArea col s12">
-            { edit ? (
-              <p>Form goes here</p>
-            ) : (
-              <p>Details will be displayed here</p>
-            )}
-          </div>
-        )}
+          {detail && (
+            <div className="detailArea col m12">
+              { edit ? (
+                <div className="row">
+                  {/* <!-- attributes --> */}
+                  <div className="row">
+                    <div className="col s6">
+                      <div className="input-field">
+                        <label htmlFor="fld_Attributes" >Attributes</label>
+                        <input id="fld_Attributes"
+                               type="text"
+                               name="attribute"
+                               value={this.state.attribute}
+                               key="attributeName"
+                               onChange={this.handleAttribute}></input>
+                      </div>
+                    </div>
+                    <div className="col s4">
+                      <div className="input-field">
+                        <label htmlFor="fld_Type_Attributes" >Type</label>
+                        <input id="fld_Type_Attributes"
+                               type="text"
+                               name="typeAttribute"
+                               value={this.state.typeAttribute}
+                               key="attributeName"
+                               onChange={this.handleAttribute}></input>
+                      </div>
+                    </div>
+                    <div className="col s2" >
+                      <div title="Add Attribute"
+                           className="btn btn-item btn-floating waves-effect waves-light cyan darken-2"
+                           onClick={this.addAttribute}>
+                        <i className="fa fa-plus"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col s12" >
+                      <div className="align-list">
+                        {this.state.device.attributes.map((attribute) =>(
+                          <DeviceAttributes attribute={attribute} removeAttribute={this.removeAttribute} key={attribute.name} />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col s12">
+                    <div className="pull-right">
+                      <a onClick={this.updateDevice}
+                         className=" modal-action modal-close waves-effect waves-green btn-flat">Send
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="row">
+                  <div className="lst-title col s12">
+                    <span>Attributes</span>
+                  </div>
+                  <div className="col s12">
+                    <div className="col s2">
+                      <span>Name</span>
+                    </div>
+                    <div className="col s2">
+                      <span>Type</span>
+                    </div>
+                    <div className="col s8">
+                    </div>
+                  </div>
+                  <div className="col s12">
+                    {this.state.device.attributes.map((attribute) =>(
+                      <div key={attribute.name}>
+                          <div className="col s2">
+                            <i className="fa fa-caret-right" aria-hidden="true"></i> {attribute.name} &nbsp;
+                          </div>
+                          <div className="col s2">
+                            <i className="fa fa-caret-right" aria-hidden="true"></i> {attribute.type} &nbsp;
+                          </div>
+                          <div className="col s8">
+                            &nbsp;
+                          </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </form>
       </div>
     )
   }
@@ -127,6 +300,8 @@ class DeviceList extends Component {
     this.applyFiltering = this.applyFiltering.bind(this);
     this.detailedTemplate = this.detailedTemplate.bind(this);
     this.editTemplate = this.editTemplate.bind(this);
+    this.updateDevice = this.updateDevice.bind(this);
+    this.deleteDevice = this.deleteDevice.bind(this);
   }
 
   detailedTemplate(id) {
@@ -176,6 +351,22 @@ class DeviceList extends Component {
     this.setState(state);
   }
 
+  updateDevice(device) {
+      this.props.updateDevice(device);
+
+      let state = this.state;
+      state.edit = undefined;
+      this.setState(state);
+  }
+
+  deleteDevice(id) {
+      this.props.deleteDevice(id);
+
+      let state = this.state;
+      state.edit = undefined;
+      this.setState(state);
+  }
+
   render() {
     return (
       <div className="col m10 s12 offset-m1 " >
@@ -199,7 +390,9 @@ class DeviceList extends Component {
                       detail={this.state.detail}
                       detailedTemplate={this.detailedTemplate}
                       edit={this.state.edit}
-                      editTemplate={this.editTemplate}/>
+                      editTemplate={this.editTemplate}
+                      updateDevice={this.updateDevice}
+                      deleteDevice={this.deleteDevice}/>
         )}
 
         {/* <!-- footer --> */}
@@ -347,10 +540,22 @@ class Templates extends Component {
     };
 
     this.createDevice = this.createDevice.bind(this);
+    this.updateDevice = this.updateDevice.bind(this);
+    this.deleteDevice = this.deleteDevice.bind(this);
   }
 
   createDevice(device) {
     const devList = deviceManager.addDevice(device);
+    this.setState({devices: devList});
+  }
+
+  updateDevice(device) {
+    const devList = templateManager.setDevice(device.id, device);
+    this.setState({devices: devList});
+  }
+
+  deleteDevice(id) {
+    const devList = templateManager.deleteDevice(id);
     this.setState({devices: devList});
   }
 
@@ -362,7 +567,7 @@ class Templates extends Component {
           transitionAppearTimeout={500}
           transitionEnterTimeout={500}
           transitionLeaveTimeout={500} >
-        <DeviceList devices={this.state.devices} />
+        <DeviceList devices={this.state.devices} updateDevice={this.updateDevice} deleteDevice={this.deleteDevice}/>
         <NewDevice createDevice={this.createDevice}/>
       </ReactCSSTransitionGroup>
     );

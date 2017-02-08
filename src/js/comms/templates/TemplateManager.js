@@ -55,13 +55,22 @@ class TemplateManager {
     return this.devices;
   }
 
-  removeDevice(id) {
-    // @TODO call webservice
+  deleteDevice(id) {
+    for (var i = 0; i < this.devices.length; i++) {
+        if (this.devices[i].id == id) {
+          this.devices.splice(i, 1);
+        }
+    }
     return this.devices;
   }
 
+
   setDevice(id, device) {
-    // @TODO call webservice
+    for (var i = 0; i < this.devices.length; i++) {
+        if (this.devices[i].id == id) {
+          this.devices[i] = device;
+        }
+    }
     return this.devices;
   }
 }

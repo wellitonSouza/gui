@@ -119,8 +119,10 @@
 }
 
 .detailArea {
-  height: 80px;
+  height: auto;
   display: block;
+  margin-left: 30px !important;
+  margin-top: 20px !important;
 }
 
 .inline-actions {
@@ -143,4 +145,21 @@
 
 .paddingLeft10px {
   padding-left: 20px;
+}
+
+.align-list {
+  display: inline;
+}
+
+.align-list div{
+  margin-left: 15px;
+  float:left;
+}
+
+.btn-floating {
+  margin: 5px !important;
+}
+
+.pull-right {
+  margin-right: 25px;
 }

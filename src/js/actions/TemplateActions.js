@@ -5,19 +5,33 @@ var alt = require('../alt');
 class TemplateActions {
 
   updateTemplates(list) {
-    console.log("action - update", list);
     return list;
+  }
+
+  insertTemplate(template) {
+    return template;
+  }
+
+  addTemplate(template) {
+    const newTemplate = template;
+    return (dispatch) => {
+      templateManager.addDevice(newTemplate)
+        .then((response) => {
+          this.insertTemplate(newTemplate);
+        })
+        .catch((error) => {
+          this.templatesFailed("Failed to add template to list");
+        })
+    }
   }
 
   fetchTemplates() {
     return (dispatch) => {
       dispatch();
       templateManager.getDevices().then((templateList) => {
-        console.log("action - promise finished", templateList, this);
         this.updateTemplates(templateList.devices);
       })
       .catch((error) => {
-        console.log("action - promise error", error);
         this.templatesFailed(error);
       });
     }

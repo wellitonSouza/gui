@@ -294,11 +294,9 @@ class DeviceList extends Component {
     super(props);
 
     this.state = {
-      isDisplayList: true,
       filter: ''
     };
 
-    this.handleViewChange = this.handleViewChange.bind(this);
     this.handleSearchChange = this.handleSearchChange.bind(this);
     this.applyFiltering = this.applyFiltering.bind(this);
     this.detailedTemplate = this.detailedTemplate.bind(this);
@@ -328,10 +326,6 @@ class DeviceList extends Component {
     }
 
     return false;
-  }
-
-  handleViewChange(event) {
-    this.setState({isDisplayList: ! this.state.isDisplayList})
   }
 
   handleSearchChange(event) {
@@ -462,7 +456,7 @@ class NewDevice extends Component {
   }
 
   createDevice() {
-    this.props.createDevice(this.state.newDevice);
+    TemplateActions.addTemplate(JSON.parse(JSON.stringify(this.state.newDevice)));
   }
 
   handleChange(event) {
@@ -542,7 +536,6 @@ class Templates extends Component {
     super(props);
 
     this.state = TemplateStore.getState();
-
     this.onChange = this.onChange.bind(this);
   }
 

@@ -8,24 +8,33 @@ class TemplateStore {
 
     this.bindListeners({
       handleUpdateTemplateList: TemplateActions.UPDATE_TEMPLATES,
+      handleAddTemplate: TemplateActions.ADD_TEMPLATE,
+      handleInsertTemplate: TemplateActions.INSERT_TEMPLATE,
       handleFetchTemplateList: TemplateActions.FETCH_TEMPLATES,
       handleFailure: TemplateActions.TEMPLATES_FAILED
     });
   }
 
   handleUpdateTemplateList(templates) {
-    console.log("store - update tmpl list", this.templates, templates);
     this.templates = templates;
     this.error = null;
   }
 
+  handleInsertTemplate(template) {
+    this.templates.push(template);
+    this.error = null;
+  }
+
+  handleAddTemplate(newTemplate) {
+    // this is actually just a intermediary while addition happens asynchonously
+    this.error = null;
+  }
+
   handleFetchTemplateList() {
-    console.log('store - fetch tmpl list')
     this.templates = [];
   }
 
   handleFailure(error) {
-    console.log('store - tmpl store failure');
     this.error = error;
   }
 }

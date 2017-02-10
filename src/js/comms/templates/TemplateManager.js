@@ -2,7 +2,7 @@
 
 class TemplateManager {
   constructor() {
-    this.baseUrl = "http://172.17.0.3:5000"
+    this.baseUrl = "http://localhost:5000"
   }
 
   GET(url) {
@@ -36,11 +36,10 @@ class TemplateManager {
         .then(local._status)
         .then(local._json)
         .then(function(data) {
-          console.log("about to resolve", data);
           resolve(data);
         })
         .catch(function(error) {
-          console.log("");
+          console.log("fetch has failed", error);
         })
     })
   }

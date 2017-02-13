@@ -83,12 +83,11 @@ class ListItem extends Component {
       e.preventDefault();
       TemplateActions.triggerUpdate(this.state.device);
       console.log("will update - " + this.state.device.id);
-      // this.props.updateDevice(this.state.device);
   }
 
   deleteDevice(e) {
       e.preventDefault();
-      this.props.deleteDevice(this.state.device.id);
+      TemplateActions.triggerRemoval(this.state.device);
   }
 
   addAttribute(t) {

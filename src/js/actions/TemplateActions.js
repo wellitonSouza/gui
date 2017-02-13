@@ -50,7 +50,24 @@ class TemplateActions {
     }
   }
 
+  triggerRemoval(template) {
+    return (dispatch) => {
+      templateManager.deleteDevice(template.id)
+        .then((response) => {
+          this.removeSingle(template.id);
+        })
+        .catch((error) => {
+          console.log("Error!", error);
+          this.templatesFailed("Failed to remove given template");
+        })
+    }
+  }
+
   updateSingle(template) {
+    return template;
+  }
+
+  removeSingle(template) {
     return template;
   }
 

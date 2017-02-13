@@ -12,8 +12,12 @@ class TemplateStore {
       handleInsertTemplate: TemplateActions.INSERT_TEMPLATE,
       handleFetchTemplateList: TemplateActions.FETCH_TEMPLATES,
       handleFailure: TemplateActions.TEMPLATES_FAILED,
+
       handleTriggerUpdate: TemplateActions.TRIGGER_UPDATE,
-      handleUpdateSingle: TemplateActions.UPDATE_SINGLE
+      handleUpdateSingle: TemplateActions.UPDATE_SINGLE,
+
+      handleTriggerRemoval: TemplateActions.TRIGGER_REMOVAL,
+      handleRemoveSingle: TemplateActions.REMOVE_SINGLE
     });
   }
 
@@ -34,6 +38,17 @@ class TemplateStore {
   handleTriggerUpdate(template) {
     // trigger handler for updateSingle
     this.error = null;
+  }
+
+  handleTriggerRemoval(template) {
+    // trigger handler for updateSingle
+    this.error = null;
+  }
+
+  handleRemoveSingle(id) {
+    this.templates = this.templates.filter(function(e) {
+      return e.id != id;
+    })
   }
 
   handleInsertTemplate(template) {

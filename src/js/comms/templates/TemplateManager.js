@@ -26,7 +26,7 @@ class TemplateManager {
   }
 
   DELETE(url, payload) {
-    this._runFetch(url, { method: 'delete' });
+    return this._runFetch(url, { method: 'delete' });
   }
 
   _runFetch(url, config) {

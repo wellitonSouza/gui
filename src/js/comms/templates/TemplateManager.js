@@ -87,6 +87,13 @@ class TemplateManager {
   deleteDevice(id) {
     return this.DELETE(this.baseUrl + "/devices/" + id);
   }
+
+  setIcon(id, icon) {
+    let data = new FormData();
+    data.append('icon', icon);
+    let config = {method: 'put', body: data};
+    return this._runFetch(this.baseUrl + "/devices/" + id + "/icon", config);
+  }
 }
 
 var templateManager = new TemplateManager();

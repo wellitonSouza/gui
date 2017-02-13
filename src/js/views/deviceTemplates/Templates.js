@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-// import templateManager from '../../comms/templates/TemplateManager';
+import Dropzone from 'react-dropzone'
+import templateManager from '../../comms/templates/TemplateManager';
 
 var TemplateStore = require('../../stores/TemplateStore');
 var TemplateActions = require('../../actions/TemplateActions');
@@ -34,6 +35,72 @@ class DeviceAttributes extends Component {
         <a title="Remove Attribute" className="btn-item" onClick={this.handleRemove}>
           <i className="fa fa-times" aria-hidden="true"></i>
         </a>
+      </div>
+    )
+  }
+}
+
+class DeviceImageUpload extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      selection: ""
+    }
+
+    this.onDrop = this.onDrop.bind(this);
+    this.upload = this.upload.bind(this);
+  }
+
+  // this allows us to remove the global script required by materialize as in docs
+  componentDidMount() {
+    let mElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(mElement).ready(function() {
+      $('.modal').modal();
+    })
+  }
+
+  onDrop(acceptedFiles) {
+    console.log("got files", acceptedFiles);
+    this.setState({selection: acceptedFiles[0]});
+  }
+
+  upload(e) {
+    console.log("about to upload", this.state.selection.name);
+    templateManager.setIcon(this.props.targetDevice, this.state.selection)
+      .then(function(data) {
+        console.log("done");
+      })
+      .catch(function(error) {
+        console.log("Failed to update icon");
+      })
+  }
+
+  render() {
+    return (
+      <div className="modal" id="imageUpload" ref="modal">
+        <div className="modal-content">
+          <div className="row">
+            <Dropzone onDrop={this.onDrop} className="dropbox">
+              <div className="dropbox-help">Try dropping some files here, or click to select files to upload.</div>
+            </Dropzone>
+          </div>
+          { this.state.selection ? (
+            <div className="row fileSelection">
+              <span className="label">Selected file</span>
+              <span className="data">{this.state.selection.name}</span>
+            </div>
+          ) : (
+            <div className="row fileSelection">
+              <span className="data">No file selected</span>
+            </div>
+          )}
+          <div className="pull-right padding-bottom">
+            <a onClick={this.upload}
+               className=" modal-action modal-close waves-effect waves-green btn-flat">Create</a>
+            <a className=" modal-action modal-close waves-effect waves-red btn-flat">Cancel</a>
+          </div>
+        </div>
       </div>
     )
   }
@@ -131,6 +198,10 @@ class ListItem extends Component {
     let detail = this.props.detail === this.props.device.id;
     let edit = (this.props.edit === this.props.device.id) && detail;
 
+    console.log("about to check for icon: " + this.props.device.id + " " + this.props.device.has_icon);
+    let labelSize = this.props.device.has_icon ? "lst-title col s10" : "lst-title col s12";
+    let iconUrl = "http://localhost:5000/devices/" + this.props.device.id + "/icon";
+
     return (
       <div className="lst-entry row"
            onClick={detail ? null : this.handleDetail }
@@ -139,9 +210,14 @@ class ListItem extends Component {
           {/* <!-- text status area --> */}
           {!detail && (
             <div className="lst-line col s12">
-              <div className="lst-title col s12">
+              <div className={labelSize}>
                 <span>{this.props.device.label}</span>
               </div>
+              {/* { this.props.device.has_icon && (
+                <div className="col s2">
+                  <img src={iconUrl} alt="this should be an icon" />
+                </div>
+              )} */}
               <div className="col m12 hide-on-small-only">
                 <div className="data no-padding-left">{this.props.device.id}</div>
               </div>
@@ -151,7 +227,7 @@ class ListItem extends Component {
             <div className="lst-line col s12">
               { edit ? (
                 <div className="col s12">
-                  <div className="input-field col s10">
+                  <div className="input-field col s8">
                     <label htmlFor="fld_name">Name</label>
                     <input id="fld_name" type="text"
                            name="label"
@@ -159,7 +235,7 @@ class ListItem extends Component {
                            onChange={this.handleChange.bind(this)}
                            value={this.state.device.label} />
                   </div>
-                  <div className="col s2">
+                  <div className="col s4">
                     <div className="edit right inline-actions">
                       <a className="btn-floating waves-green right" onClick={this.handleDismiss}>
                         <i className="fa fa-times"></i>
@@ -167,11 +243,18 @@ class ListItem extends Component {
                       <a className="btn-floating waves-green right red" onClick={this.deleteDevice}>
                         <i className="fa fa-trash-o"></i>
                       </a>
+                      <button data-target="imageUpload" className="btn-floating waves-effect waves-light right" >
+                        <i className="fa fa-file-image-o"></i>
+                      </button>
+                      {/* <a className="btn-floating waves-green right" onClick={this.deleteDevice}>
+                      </a> */}
                     </div>
                   </div>
                   <div className="col m12 hide-on-small-only">
                     <div className="data no-padding-left">{this.props.device.id}</div>
                   </div>
+
+                  <DeviceImageUpload targetDevice={this.props.device.id}/>
                 </div>
               ) : (
                 <div className="lst-line col s12">

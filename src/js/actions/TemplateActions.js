@@ -29,7 +29,7 @@ class TemplateActions {
     return (dispatch) => {
       dispatch();
       templateManager.getDevices().then((templateList) => {
-        this.updateTemplates(templateList.devices);
+        this.updateTemplates(templateList.templates);
       })
       .catch((error) => {
         this.templatesFailed(error);

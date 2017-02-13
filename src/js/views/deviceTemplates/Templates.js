@@ -467,16 +467,26 @@ class DeviceList extends Component {
           </div>
         </div>
 
-        { filteredList.map((device) =>
-            <ListItem device={device}
-                      key={device.id}
-                      detail={this.state.detail}
-                      detailedTemplate={this.detailedTemplate}
-                      edit={this.state.edit}
-                      editTemplate={this.editTemplate}
-                      updateDevice={this.updateDevice}
-                      deleteDevice={this.deleteDevice}/>
+        { filteredList.length > 0 ? (
+          <span>
+            { filteredList.map((device) =>
+                <ListItem device={device}
+                          key={device.id}
+                          detail={this.state.detail}
+                          detailedTemplate={this.detailedTemplate}
+                          edit={this.state.edit}
+                          editTemplate={this.editTemplate}
+                          updateDevice={this.updateDevice}
+                          deleteDevice={this.deleteDevice}/>
+            )}
+          </span>
+        ) : (
+          <div className="col s12">
+            <span className="background-info">No templates</span>
+          </div>
         )}
+
+
 
         {/* <!-- footer --> */}
         <div className="col s12"></div>

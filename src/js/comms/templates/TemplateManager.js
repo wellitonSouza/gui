@@ -57,15 +57,15 @@ class TemplateManager {
   }
 
   getDevices() {
-    return this.GET(this.baseUrl + '/devices');
+    return this.GET(this.baseUrl + '/template');
   }
 
   getDevice(id) {
-    return this.GET(this.baseUrl + "/devices/" + id);
+    return this.GET(this.baseUrl + "/template/" + id);
   }
 
   setDevice(detail) {
-    return this.PUT(this.baseUrl + "/devices/" + detail.id, detail);
+    return this.PUT(this.baseUrl + "/template/" + detail.id, detail);
   }
 
   addDevice(d) {
@@ -81,18 +81,18 @@ class TemplateManager {
 
     d.id = guid();
 
-    return this.POST(this.baseUrl + "/devices", d);
+    return this.POST(this.baseUrl + "/template", d);
   }
 
   deleteDevice(id) {
-    return this.DELETE(this.baseUrl + "/devices/" + id);
+    return this.DELETE(this.baseUrl + "/template/" + id);
   }
 
   setIcon(id, icon) {
     let data = new FormData();
     data.append('icon', icon);
     let config = {method: 'put', body: data};
-    return this._runFetch(this.baseUrl + "/devices/" + id + "/icon", config);
+    return this._runFetch(this.baseUrl + "/template/" + id + "/icon", config);
   }
 }
 

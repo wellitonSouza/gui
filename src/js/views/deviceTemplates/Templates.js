@@ -643,7 +643,7 @@ class Templates extends Component {
 
   onChange(newState) {
     this.setState(TemplateStore.getState());
-    console.log("container component - onChange", this.state);
+    console.log("template container component - onChange", this.state);
   }
 
   render() {

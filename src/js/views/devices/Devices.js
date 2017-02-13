@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import deviceManager from '../../comms/devices/DeviceManager';
+var DeviceStore = require('../../stores/DeviceStore');
+var DeviceActions = require('../../actions/DeviceActions');
 
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Link } from 'react-router'
@@ -105,17 +107,26 @@ class ListItem extends Component {
 
 function ListRender(props) {
   const deviceList = props.devices;
-  return (
-    <div>
-      { deviceList.map((device) =>
+
+  if (deviceList.length > 0) {
+    return (
+      <div>
+        { deviceList.map((device) =>
           <ListItem device={device} key={device.id}
-                    detail={props.detail}
-                    detailedTemplate={props.detailedTemplate}
-                    edit={props.edit}
-                    editTemplate={props.editTemplate} />
-      )}
-    </div>
-  )
+            detail={props.detail}
+            detailedTemplate={props.detailedTemplate}
+            edit={props.edit}
+            editTemplate={props.editTemplate} />
+        )}
+      </div>
+    )
+  } else {
+    return  (
+      <div className="col s12">
+        <span className="background-info">No templates</span>
+      </div>
+    )
+  }
 }
 
 function MapRender(props) {
@@ -134,7 +145,6 @@ class DeviceList extends Component {
     this.state = {
       isDisplayList: true,
       filter: '',
-      filteredList: props.devices,
     };
 
     this.handleViewChange = this.handleViewChange.bind(this);
@@ -171,13 +181,19 @@ class DeviceList extends Component {
     return false;
   }
 
-  applyFiltering(event) {
+  handleSearchChange(event) {
     const filter = event.target.value;
-    const idFilter = filter.match(/id:\W*([-a-fA-F0-9]+)\W?/);
-
     let state = this.state;
     state.filter = filter;
-    state.filteredList = this.props.devices.filter(function(e) {
+    state.detail = undefined;
+    this.setState(state);
+  }
+
+  applyFiltering(deviceList) {
+    const filter = this.state.filter;
+    const idFilter = filter.match(/id:\W*([-a-fA-F0-9]+)\W?/);
+
+    return deviceList.filter(function(e) {
       let result = false;
       if (idFilter && idFilter[1]) {
         result = result || e.id.toUpperCase().includes(idFilter[1].toUpperCase());
@@ -185,11 +201,12 @@ class DeviceList extends Component {
 
       return result || e.label.toUpperCase().includes(filter.toUpperCase());
     });
-
-    this.setState(state);
   }
 
   render() {
+    console.log("about to render", this.props.devices);
+    const filteredList = this.applyFiltering(this.props.devices);
+
     return (
       <div className="col m10 s12 offset-m1 " >
         {/* header */}
@@ -216,8 +233,8 @@ class DeviceList extends Component {
           </div>
         </div>
 
-        { this.state.isDisplayList === false && <MapRender devices={this.state.filteredList}/>  }
-        { this.state.isDisplayList && <ListRender devices={this.state.filteredList}
+        { this.state.isDisplayList === false && <MapRender devices={filteredList}/>  }
+        { this.state.isDisplayList && <ListRender devices={filteredList}
                                                   detail={this.state.detail}
                                                   detailedTemplate={this.detailedTemplate}
                                                   edit={this.state.edit}
@@ -261,11 +278,11 @@ class NewDevice extends Component {
     this.state = {
       newDevice: {
         id: "",
-        label: "asdf - teste",
+        label: "",
         type: "",
-        tags: ['1', '2', '3']
+        tags: []
       },
-      tag: "",
+      newTag: "",
       options: [ "MQTT", "CoAP", "Virtual" ]
     }
 
@@ -317,7 +334,7 @@ class NewDevice extends Component {
   }
 
   createDevice() {
-    this.props.createDevice(this.state.newDevice);
+    DeviceActions.addDevice(JSON.parse(JSON.stringify(this.state.newDevice)));
   }
 
   handleChange(event) {
@@ -414,28 +431,26 @@ class Devices extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      devices: deviceManager.getDevices(),
-      boxes: ['a', 'b', 'c']
-    };
-
-    this.createDevice = this.createDevice.bind(this);
-    this.addBox = this.addBox.bind(this);
+    this.state = DeviceStore.getState();
+    this.onChange = this.onChange.bind(this);
   }
 
-  createDevice(device) {
-    const devList = deviceManager.addDevice(device);
-    this.setState({devices: devList});
+  componentDidMount() {
+    DeviceStore.listen(this.onChange);
+    DeviceActions.fetchDevices();
   }
 
-  addBox() {
-    console.log('about to add box');
-    let state = this.state;
-    state.boxes.unshift('t');
-    this.setState(state);
+  componentWillUnmount() {
+    DeviceStore.unlisten(this.onChange);
+  }
+
+  onChange(newState) {
+    this.setState(DeviceStore.getState());
+    console.log("container component - onChange", this.state);
   }
 
   render() {
+    console.log('about to render', this.state);
     return (
       <ReactCSSTransitionGroup
           transitionName="first"
@@ -444,7 +459,7 @@ class Devices extends Component {
           transitionEnterTimeout={500}
           transitionLeaveTimeout={500} >
         <DeviceList devices={this.state.devices}/>
-        <NewDevice createDevice={this.createDevice}/>
+        <NewDevice />
       </ReactCSSTransitionGroup>
     );
   }

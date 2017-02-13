@@ -37,6 +37,23 @@ class TemplateActions {
     }
   }
 
+  triggerUpdate(template) {
+    return (dispatch) => {
+      templateManager.setDevice(template)
+        .then((response) => {
+          this.updateSingle(template);
+        })
+        .catch((error) => {
+          console.log("Error!", error);
+          this.templatesFailed("Failed to update given template");
+        })
+    }
+  }
+
+  updateSingle(template) {
+    return template;
+  }
+
   templatesFailed(error) {
     return error;
   }

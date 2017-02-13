@@ -11,12 +11,28 @@ class TemplateStore {
       handleAddTemplate: TemplateActions.ADD_TEMPLATE,
       handleInsertTemplate: TemplateActions.INSERT_TEMPLATE,
       handleFetchTemplateList: TemplateActions.FETCH_TEMPLATES,
-      handleFailure: TemplateActions.TEMPLATES_FAILED
+      handleFailure: TemplateActions.TEMPLATES_FAILED,
+      handleTriggerUpdate: TemplateActions.TRIGGER_UPDATE,
+      handleUpdateSingle: TemplateActions.UPDATE_SINGLE
     });
   }
 
   handleUpdateTemplateList(templates) {
     this.templates = templates;
+    this.error = null;
+  }
+
+  handleUpdateSingle(template) {
+    for (let i = 0; i < this.templates.length; i++) {
+      if (this.templates[i].id == template.id) {
+        let newTemplate = JSON.parse(JSON.stringify(template))
+        this.templates[i] = newTemplate;
+      }
+    }
+  }
+
+  handleTriggerUpdate(template) {
+    // trigger handler for updateSingle
     this.error = null;
   }
 

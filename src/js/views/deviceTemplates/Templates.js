@@ -76,11 +76,14 @@ class ListItem extends Component {
   handleDismiss(e) {
     e.preventDefault();
     this.props.detailedTemplate(undefined);
+    console.log("will dismiss - " + this.state.device.id);
   }
 
   updateDevice(e) {
       e.preventDefault();
-      this.props.updateDevice(this.state.device);
+      TemplateActions.triggerUpdate(this.state.device);
+      console.log("will update - " + this.state.device.id);
+      // this.props.updateDevice(this.state.device);
   }
 
   deleteDevice(e) {
@@ -91,6 +94,8 @@ class ListItem extends Component {
   addAttribute(t) {
     let state = this.state.device;
     state.attributes.push({name: this.state.attribute, type: this.state.typeAttribute});
+    this.state.attribute = '';
+    this.state.typeAttribute = '';
     this.setState({ device : state});
   }
 
@@ -113,7 +118,6 @@ class ListItem extends Component {
     this.setState(state);
   }
 
-
   handleChange(event) {
     const target = event.target;
     let state = this.state.device;
@@ -124,12 +128,9 @@ class ListItem extends Component {
   }
 
   render() {
+    console.log("will render - " + this.state.device.id);
     let detail = this.props.detail === this.props.device.id;
     let edit = (this.props.edit === this.props.device.id) && detail;
-
-    if (detail) {
-      console.log("about to fetch data");
-    }
 
     return (
       <div className="lst-entry row"
@@ -550,6 +551,7 @@ class Templates extends Component {
 
   onChange(newState) {
     this.setState(TemplateStore.getState());
+    console.log("container component - onChange", this.state);
   }
 
   render() {

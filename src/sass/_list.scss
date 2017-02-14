@@ -187,6 +187,10 @@
   border-color: $subtle;
 }
 
+.dropbox:hover {
+  border-color: $teal;
+}
+
 .dropbox-help {
   margin-top: 13%;
   text-align: center;
@@ -217,4 +221,15 @@
 
 .lst-entry.row {
   transition: all .5s linear;
+}
+
+.lst-entry .icon {
+  font-size: 3em;
+  text-align: center;
+  height: 1em;
+}
+
+.lst-entry .icon img {
+  height: auto;
+  width: 100%;
 }

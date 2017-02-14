@@ -51,6 +51,23 @@ class TemplateActions {
     }
   }
 
+  triggerIconUpdate(id, icon) {
+    return (dispatch) => {
+      templateManager.setIcon(id, icon)
+        .then((response) => {
+          console.log("done");
+          this.setIcon(id);
+        })
+        .catch(function(error) {
+          console.log("Failed to update icon", error);
+        })
+    }
+  }
+
+  setIcon(id) {
+    return id;
+  }
+
   triggerRemoval(template) {
     return (dispatch) => {
       templateManager.deleteDevice(template.id)

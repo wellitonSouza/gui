@@ -1,6 +1,8 @@
 var alt = require('../alt');
 var TemplateActions = require('../actions/TemplateActions');
 
+import util from '../comms/util';
+
 class TemplateStore {
   constructor() {
     this.templates = [];
@@ -17,8 +19,30 @@ class TemplateStore {
       handleUpdateSingle: TemplateActions.UPDATE_SINGLE,
 
       handleTriggerRemoval: TemplateActions.TRIGGER_REMOVAL,
-      handleRemoveSingle: TemplateActions.REMOVE_SINGLE
+      handleRemoveSingle: TemplateActions.REMOVE_SINGLE,
+
+      handleTriggerIcon: TemplateActions.TRIGGER_ICON_UPDATE,
+      handleUpdateIcon: TemplateActions.SET_ICON
     });
+  }
+
+  handleTriggerIcon(id, icon) {
+    this.error = null;
+  }
+
+  handleUpdateIcon(id) {
+    console.log('update icon');
+    this.error = null;
+    for (let i = 0; i < this.templates.length; i++) {
+      if (this.templates[i].id == id) {
+        let newTemplate = JSON.parse(JSON.stringify(this.templates[i]));
+        // newTemplate.has_icon = true;
+        newTemplate.has_icon = util.guid();
+        newTemplate.toggle = !newTemplate.toggle;
+        console.log("new template", newTemplate);
+        this.templates[i] = newTemplate;
+      }
+    }
   }
 
   handleUpdateTemplateList(templates) {

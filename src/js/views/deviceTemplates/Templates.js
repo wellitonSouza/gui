@@ -67,13 +67,7 @@ class DeviceImageUpload extends Component {
 
   upload(e) {
     console.log("about to upload", this.state.selection.name);
-    templateManager.setIcon(this.props.targetDevice, this.state.selection)
-      .then(function(data) {
-        console.log("done");
-      })
-      .catch(function(error) {
-        console.log("Failed to update icon");
-      })
+    TemplateActions.triggerIconUpdate(this.props.targetDevice, this.state.selection);
   }
 
   render() {
@@ -97,7 +91,7 @@ class DeviceImageUpload extends Component {
           )}
           <div className="pull-right padding-bottom">
             <a onClick={this.upload}
-               className=" modal-action modal-close waves-effect waves-green btn-flat">Create</a>
+               className=" modal-action modal-close waves-effect waves-green btn-flat">Update</a>
             <a className=" modal-action modal-close waves-effect waves-red btn-flat">Cancel</a>
           </div>
         </div>
@@ -148,6 +142,8 @@ class ListItem extends Component {
 
   updateDevice(e) {
       e.preventDefault();
+      let device = this.state.device;
+      device.has_icon = this.props.device.has_icon;
       TemplateActions.triggerUpdate(this.state.device);
       console.log("will update - " + this.state.device.id);
   }
@@ -200,31 +196,34 @@ class ListItem extends Component {
 
     console.log("about to check for icon: " + this.props.device.id + " " + this.props.device.has_icon);
     let labelSize = this.props.device.has_icon ? "lst-title col s10" : "lst-title col s12";
-    let iconUrl = "http://localhost:5000/devices/" + this.props.device.id + "/icon";
+    let iconUrl = "http://localhost:5000/template/" + this.props.device.id + "/icon";
 
     return (
       <div className="lst-entry row"
            onClick={detail ? null : this.handleDetail }
            id={this.props.device.id}>
+        <div className="col s1 icon">
+          { this.props.device.has_icon ? (
+            <img src={'http://localhost:5000/template/' + this.props.device.id + '/icon?extra=' + this.props.device.toggle }
+                 alt="this should be an icon" />
+          ) : (
+            <i className="fa fa-microchip" />
+          )}
+        </div>
         <form role="form">
           {/* <!-- text status area --> */}
           {!detail && (
-            <div className="lst-line col s12">
+            <div className="lst-line col s11">
               <div className={labelSize}>
                 <span>{this.props.device.label}</span>
               </div>
-              {/* { this.props.device.has_icon && (
-                <div className="col s2">
-                  <img src={iconUrl} alt="this should be an icon" />
-                </div>
-              )} */}
               <div className="col m12 hide-on-small-only">
                 <div className="data no-padding-left">{this.props.device.id}</div>
               </div>
             </div>
           )}
           {detail && (
-            <div className="lst-line col s12">
+            <div className="lst-line col s11">
               { edit ? (
                 <div className="col s12">
                   <div className="input-field col s8">

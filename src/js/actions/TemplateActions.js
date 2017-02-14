@@ -29,6 +29,7 @@ class TemplateActions {
     return (dispatch) => {
       dispatch();
       templateManager.getDevices().then((templateList) => {
+        console.log("templates webservice done");
         this.updateTemplates(templateList.templates);
       })
       .catch((error) => {

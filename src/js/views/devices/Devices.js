@@ -10,10 +10,155 @@ import { Link } from 'react-router'
 function TagList (props) {
   const tags = props.tags;
   return (
-    <div className="col m6 data">
+    <span>
       { tags.map((tag) => <span key={tag}>{tag}</span>) }
-    </div>
+    </span>
   )
+}
+
+function SummaryItem(props) {
+  return (
+    <span>
+      <div className="lst-line col s10">
+        <div className="lst-title col s12">
+          <span>{props.device.label}</span>
+        </div>
+        <div className="col m12 hide-on-small-only">
+          <div className="col m4 data no-padding-left">{props.device.id}</div>
+          <div className="col m2 data">{props.device.type}</div>
+          <div className="col m6 data">
+            <TagList tags={props.device.tags}/>
+          </div>
+        </div>
+      </div>
+      <div className="lst-line col s2" >
+        <div className="lst-line lst-icon pull-right">
+          { props.device.status ? (
+            <span className="fa fa-wifi fa-2x"></span>
+          ) : (
+            <span className="fa-stack">
+              <i className="fa fa-wifi fa-stack-2x"></i>
+              <i className="fa fa-times fa-stack-1x no-conn"></i>
+            </span>
+          )}
+        </div>
+      </div>
+    </span>
+  )
+}
+
+function DetailItem(props) {
+  const status = props.device.status ? 'online' : 'offline';
+  return (
+    <span>
+      <div className="lst-detail" >
+        <div className="lst-line col s10">
+          <div className="lst-title col s12">
+            <span>{props.device.label}</span>
+          </div>
+          <div className="col s12">
+            <div className="col s12 data">{props.device.id}</div>
+            <div className="col s12 data">{status}</div>
+            <div className="col s12 data">{props.device.type}</div>
+            <div className="col s12 data"><TagList tags={props.device.tags}/></div>
+          </div>
+        </div>
+
+        <div className="col s2">
+          <div className="edit right inline-actions">
+            <a className="btn-floating waves-green right" onClick={props.handleDismiss}>
+              <i className="fa fa-times"></i>
+            </a>
+            <a className="btn-floating waves-green right" onClick={props.handleEdit}>
+              <i className="material-icons">mode_edit</i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div className="row" >
+        {/* device extended detail area */}
+      </div>
+    </span>
+  )
+}
+
+class EditItem extends Component {
+  constructor (props) {
+    super(props);
+
+    this.state = props.device;
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleFieldChange = this.handleFieldChange.bind(this);
+  }
+
+  componentDidMount() {
+    Materialize.updateTextFields();
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    DeviceActions.triggerUpdate(this.state);
+  }
+
+  handleFieldChange(e) {
+    let state = this.state;
+    state[e.target.name] = e.target.value;
+    this.setState(state);
+  }
+
+  render() {
+    const status = this.props.device.status ? 'online' : 'offline'
+    return (
+      <form>
+        <div className="lst-edit" >
+          <div className="lst-line col s10">
+            <div className="lst-title col s12 input-field">
+              <label htmlFor="fld_label">Label</label>
+              <input id="fld_label" type="text"
+                     name="label" value={this.state.label}
+                     key="label" onChange={this.handleFieldChange} />
+            </div>
+            <div className="col s12">
+              <div className="row">
+                <div className="col s12 m6">{this.props.device.id}</div>
+                <div className="col s12 m6">{status}</div>
+              </div>
+              <div className="row">
+                <div className="col s12 input-field">
+                  <label htmlFor="fld_label">Protocol</label>
+                  <input id="fld_type" type="text"
+                    name="type" value={this.state.type}
+                    key="type" onChange={this.handleFieldChange} />
+                </div>
+              </div>
+              {/* @TODO add missing tags field */}
+              {/* @TODO add missing custom attrs field */}
+            </div>
+          </div>
+
+          <div className="col s2">
+            <div className="edit right inline-actions">
+              <a className="btn-floating waves-green right" onClick={this.props.handleDismiss}>
+                <i className="fa fa-times"></i>
+              </a>
+              <a className="btn-floating waves-light red right" onClick={this.props.handleRemove}>
+                <i className="fa fa-trash-o" />
+              </a>
+            </div>
+          </div>
+        </div>
+        <div className="col s12">
+          {/* this should actually be on the top menu, shouldn't it? */}
+          <div className="pull-right">
+            <a onClick={this.handleSubmit}
+               className=" modal-action modal-close waves-effect waves-green btn-flat">Send
+            </a>
+          </div>
+        </div>
+      </form>
+    )
+  }
 }
 
 class ListItem extends Component {
@@ -23,6 +168,7 @@ class ListItem extends Component {
     this.handleEdit = this.handleEdit.bind(this);
     this.handleDetail = this.handleDetail.bind(this);
     this.handleDismiss = this.handleDismiss.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
   }
 
   handleDetail(e) {
@@ -40,65 +186,31 @@ class ListItem extends Component {
     this.props.detailedTemplate(undefined);
   }
 
+  handleRemove(e) {
+    e.preventDefault();
+    console.log("will remove device: " + this.props.device.label + " " + this.props.device.id);
+  }
+
   render() {
-    let detail = this.props.detail === this.props.device.id;
-    let edit = (this.props.edit === this.props.device.id) && detail;
+    const detail = this.props.detail === this.props.device.id;
+    const edit = (this.props.edit === this.props.device.id) && detail;
 
     console.log("About to render: " + detail + " " + edit);
 
-    const classPrefix = "lst-entry row ";
-    const sizeClass = classPrefix + (detail ? "lst-detail" : "");
+    let outerClass = "lst-entry row ";
+    if (detail) { outerClass = outerClass + "detail"}
+    if (detail) { outerClass = outerClass + "edit"}
 
     return (
-      <div className={sizeClass} id={this.props.device.id} onClick={detail ? null : this.handleDetail}>
-        {/* <!-- text status area --> */}
-        <div className="lst-line col s10">
-          <div className="lst-title col s12">
-            <span>{this.props.device.label}</span>
-          </div>
-          <div className="col m12 hide-on-small-only">
-            <div className="col m4 data no-padding-left">{this.props.device.id}</div>
-            <div className="col m2 data">{this.props.device.type}</div>
-            {/* this is col m6 */}
-            <TagList tags={this.props.device.tags}/>
-          </div>
-        </div>
-
-        {/* <!-- icon status area --> */}
-        <div className="lst-line col s2" >
-          <div className="lst-line lst-icon pull-right">
-            { this.props.device.status ? (
-              <span className="fa fa-wifi fa-2x"></span>
-            ) : (
-              <span className="fa-stack">
-                <i className="fa fa-wifi fa-stack-2x"></i>
-                <i className="fa fa-times fa-stack-1x no-conn"></i>
-              </span>
-            )}
-          </div>
-        </div>
-
-        { detail && (
-          <span>
-          <div className="edit right inline-actions">
-            <a className="btn-floating waves-green right" onClick={this.handleDismiss}>
-              <i className="fa fa-times"></i>
-            </a>
-            <a className="btn-floating waves-green right" onClick={this.handleEdit}>
-              <i className="material-icons">mode_edit</i>
-            </a>
-          </div>
-          </span>
+      <div className="lst-entry row " id={this.props.device.id} onClick={detail ? null : this.handleDetail}>
+        { detail && edit && (
+          <EditItem device={this.props.device} handleRemove={this.handleRemove} handleDismiss={this.handleDismiss}/>
         )}
-
-        { detail && (
-          <div className="detailArea col s12">
-            { edit ? (
-              <p>Form goes here</p>
-            ) : (
-              <p>Details will be displayed here</p>
-            )}
-          </div>
+        { detail && !edit && (
+          <DetailItem device={this.props.device} handleEdit={this.handleEdit} handleDismiss={this.handleDismiss}/>
+        )}
+        { !detail && (
+          <SummaryItem device={this.props.device} />
         )}
       </div>
     )
@@ -123,7 +235,7 @@ function ListRender(props) {
   } else {
     return  (
       <div className="col s12">
-        <span className="background-info">No templates</span>
+        <span className="background-info">No configured devices</span>
       </div>
     )
   }
@@ -159,18 +271,21 @@ class DeviceList extends Component {
 
   detailedTemplate(id) {
     console.log("about to set detail: " + id);
+    let temp = this.state;
+
     if (this.state.detail && this.state.edit) {
       console.log("are you sure???");
+      if (id === undefined) {
+        temp.edit = undefined;
+      }
     }
 
-    let temp = this.state;
     temp.detail = id;
     this.setState(temp);
     return true;
   }
 
   editTemplate(id) {
-    console.log("about to set edit: " + id);
     if (this.state.detail === id) {
       let temp = this.state;
       temp.edit = id;
@@ -446,7 +561,7 @@ class Devices extends Component {
 
   onChange(newState) {
     this.setState(DeviceStore.getState());
-    console.log("container component - onChange", this.state);
+    console.log("devices container component - onChange", this.state);
   }
 
   render() {

@@ -482,7 +482,7 @@ class DeviceList extends Component {
           </span>
         ) : (
           <div className="col s12">
-            <span className="background-info">No templates</span>
+            <span className="background-info">No configured templates</span>
           </div>
         )}
 
@@ -643,7 +643,7 @@ class Templates extends Component {
 
   onChange(newState) {
     this.setState(TemplateStore.getState());
-    console.log("template container component - onChange", this.state);
+    console.log("templates container component - onChange", this.state);
   }
 
   render() {

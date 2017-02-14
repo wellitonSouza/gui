@@ -26,21 +26,11 @@
   transition: opacity 0.5s ease-in;
 }
 
-.spanBox {
-  width: 100px;
-  height: 100px;
-  display:block;
-  background-color: $watermelon;
-  border: 2px solid $matte;
-  margin: 10px;
-  float: left;
+.resize-enter {
+  height: 10%;
 }
 
-#boxWrapper {
-  // display: inline-block;
-}
-
-.csstrans-button {
-  width: 100px;
-  height: 1.3em;
+.resize-enter.resize-enter-active {
+  height: 100%;
+  transition: height 500ms ease-in;
 }

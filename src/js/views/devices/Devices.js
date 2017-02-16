@@ -6,6 +6,8 @@ import DeviceStore from '../../stores/DeviceStore';
 import DeviceActions from '../../actions/DeviceActions';
 import TemplateStore from '../../stores/TemplateStore';
 import TemplateActions from '../../actions/TemplateActions';
+import MeasureStore from '../../stores/MeasureStore';
+import MeasureActions from '../../actions/MeasureActions';
 
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Link } from 'react-router'
@@ -50,39 +52,88 @@ function SummaryItem(props) {
   )
 }
 
-function DetailItem(props) {
-  const status = props.device.status ? 'online' : 'offline';
-  return (
-    <span>
-      <div className="lst-detail" >
-        <div className="lst-line col s10">
-          <div className="lst-title col s12">
-            <span>{props.device.label}</span>
-          </div>
-          <div className="col s12">
-            <div className="col s12 data">{props.device.id}</div>
-            <div className="col s12 data">{status}</div>
-            <div className="col s12 data">{props.device.type}</div>
-            <div className="col s12 data"><TagList tags={props.device.tags}/></div>
-          </div>
-        </div>
+class DetailItem extends Component {
+  constructor(props) {
+    super(props);
 
-        <div className="col s2">
-          <div className="edit right inline-actions">
-            <a className="btn-floating waves-green right" onClick={props.handleDismiss}>
-              <i className="fa fa-times"></i>
-            </a>
-            <a className="btn-floating waves-green right" onClick={props.handleEdit}>
-              <i className="material-icons">mode_edit</i>
-            </a>
+    const status = props.device.status ? 'online' : 'offline';
+
+    this.state =  {
+      measures: MeasureStore.getState().measures
+    }
+
+    this.onChange = this.onChange.bind(this);
+  }
+
+  onChange(state) {
+    this.setState(state);
+  }
+
+  componentDidMount() {
+    MeasureStore.listen(this.onChange);
+    MeasureActions.fetchMeasures("temperature");
+  }
+
+  componentWillUnmount() {
+    MeasureStore.unlisten(this.onChange);
+  }
+
+  getFormattedDate(timestamp) {
+    let date = new Date(timestamp);
+    let formattedDate = date.getUTCDate() + "/" + (date.getUTCMonth() + 1) + "/" + date.getUTCFullYear()
+                        + " " + date.getUTCHours() + ":" + date.getUTCMinutes() + ":" + date.getUTCSeconds();
+    return formattedDate;
+  }
+
+  render() {
+    return (
+      <span>
+        <div className="lst-detail" >
+          <div className="lst-line col s10">
+            <div className="lst-title col s12">
+              <span>{this.props.device.label}</span>
+            </div>
+            <div className="col s12">
+              <div className="col s12 data">{this.props.device.id}</div>
+              <div className="col s12 data">{status}</div>
+              <div className="col s12 data">{this.props.device.type}</div>
+              <div className="col s12 data"><TagList tags={this.props.device.tags}/></div>
+            </div>
+            <div className="lst-title col s12">
+              <span>Measures</span>
+            </div>
+            <div className="col s12">
+              <div className="col s6">Timestamp</div>
+              <div className="col s6">Values</div>
+              { this.state.measures.map((measure) =>(
+                <div className="col s12" key={measure}>
+                  <div className="col s6 data">
+                    {measure[0]}
+                  </div>
+                  <div className="col s6 data">
+                    {measure[2]}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="col s2">
+            <div className="edit right inline-actions">
+              <a className="btn-floating waves-green right" onClick={this.props.handleDismiss}>
+                <i className="fa fa-times"></i>
+              </a>
+              <a className="btn-floating waves-green right" onClick={this.props.handleEdit}>
+                <i className="material-icons">mode_edit</i>
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="row" >
-        {/* device extended detail area */}
-      </div>
-    </span>
-  )
+        <div className="row" >
+          {/* device extended detail area */}
+        </div>
+      </span>
+    )
+  }
 }
 
 // @TODO actually this could make use of alt's container boilerplate
@@ -140,7 +191,6 @@ class EditWrapper extends Component {
                 handleDismiss={this.props.handleDismiss} />
     )
   }
-
 }
 
 class EditItem extends Component {

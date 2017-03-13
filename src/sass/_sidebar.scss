@@ -1,0 +1,103 @@
+.sidebar {
+  position: absolute;
+  left: 0;
+  top: $header-height;
+  width: $sidebar-width;
+  height: 100%;
+
+  background-color: $bluewood;
+  color: #fff;
+
+  .mi-memory:before {
+    content: "memory";
+  }
+
+  nav.sidebar-nav {
+    background: none;
+    background-color: $bluewood !important;
+    box-shadow: none;
+
+    .caps {
+      text-transform: uppercase;
+    }
+
+    .nav-item {
+      width: 100%;
+      margin: 0.75em 0;
+
+      ul {
+        margin-top: 1em;
+      }
+    }
+
+    .nav li {
+      width: 100%;
+    }
+
+    .nav li div {
+      line-height: normal;
+      display: block;
+    }
+
+    .nav li a {
+      position: relative;
+      padding: 0 10px;
+    }
+
+    ul.nav * div {
+      font-family: ubuntu;
+    }
+
+    .nav-icon {
+      position: absolute;
+      top: 0;
+      right: 0.5em;
+      width: 1.5em;
+      text-align: center;
+      display: block;
+      font-size: 1.6em;
+    }
+
+    .nav-title {
+      font-size: 9pt;
+      font-weight: bold;
+      margin: 0 0;
+      padding: 0 0;
+    }
+
+    .nav-desc {
+      font-size:  7pt;
+      margin: 0 0;
+      padding: 0.2em 0;
+      color: $cornflower;
+    }
+
+    // .nav-2nd {
+    //   margin: 0.1em;
+    // }
+
+    .nav-2nd {
+      margin-left: 20px;
+      margin-top: 0.6em;
+    }
+
+    .nav-2nd, .nav-2nd * {
+      line-height: normal;
+      height: auto;
+      font-size: 8pt;
+      font-weight: bold;
+    }
+
+    .nav-2nd a {
+      display: inline-block;
+      padding-left: 12px;
+    }
+
+    .nav-2nd:before {
+      font-family: 'FontAwesome';
+      content: '\f0da';
+      margin:0;
+      color: #ccc;
+    }
+  }
+}

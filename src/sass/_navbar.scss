@@ -1,84 +1,35 @@
-nav {
+nav.outer-header {
   height: $header-height !important;
-  // background-color: $navbar-background-color !important;
   background: linear-gradient(to right, #588de7, #65ce8f);
   font-family: 'Asap', sans-serif;
+
+  a {
+    padding-left: 40px;
+    font-size: 35px;
+    margin-left: 0px;
+  }
+
+  .nav-status {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: $header-height;
+    display: inline;
+    line-height: $header-height;
+  }
+
+  .nav-status .status-icon {
+    font-size: 18pt;
+    line-height: $header-height;
+  }
+
+  .status-item {
+    margin: 0 0.2em;
+    float: left;
+  }
 }
 
-nav .nav-wrapper {
-  line-height: normal !important;
-  height: auto !important;
-}
-
-nav a {
-  padding-left: 40px;
-  font-size: 35px;
-  margin-left: 0px;
-}
-
-nav ul {
-  float: right;
-}
-
-.nav-logo {
-  display: block;
-  width: $sidebar-width;
-  height: $header-height;
-  background-color: $kashmir !important;
-  position: relative;
-}
-
-.nav-logo:after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  border-bottom: 3px solid $kashmir-border;
-}
-
-.nav-logo i {
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: auto !important;
-  line-height: normal !important;
-  font-size: 18pt;
-  color: #434343; // TODO: add this to color scheme
-  padding: 0.5em;
-}
-
-.nav-logo .brand-logo {
-  padding-left: 30%;
-  font-size: 1.6em;
-  line-height: $header-height;
-}
-
-.line-normal {
-  line-height: normal !important;
-  height: auto !important;
-}
-
-.nav-status {
-  position: absolute;
-  right: 0;
-  top: 0;
-  height: $header-height;
-  display: inline;
-
-  // font-size: 21pt;
-  line-height: $header-height;
-}
-
-.nav-status .status-icon {
-  font-size: 18pt;
-  line-height: 45px;
-}
-
-.status-item {
-  margin: 0 0.2em;
-  float: left;
-}
-
+// TODO: this could (should) be on its own file (when user area gets refactored)
 $pic-border: #2969be;
 .user-pic {
   border-radius: $header-height;
@@ -112,26 +63,4 @@ $pic-border: #2969be;
 
 .center-caret {
   padding-top: 1em;
-}
-
-// nav ul a {
-//   color: $teal;
-//   position: relative;
-// }
-
-// .nav-wrapper .active-element {
-//   color: $watermelon;
-// }
-
-// .nav-wrapper a.active-element:after {
-//   content: "";
-//   position: absolute;
-//   left: 0;
-//   bottom: 0;
-//   right: 0;
-//   border-bottom: 3px solid $watermelon;
-// }
-
-.app-links {
-  display: inline-block;
 }

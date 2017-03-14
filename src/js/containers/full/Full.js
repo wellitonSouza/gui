@@ -2,16 +2,16 @@ import React, { Component } from 'react';
 import { Link } from 'react-router'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
+import AltContainer from 'alt-container';
+
+import MenuActions from '../../actions/MenuActions';
+import MenuStore from '../../stores/MenuStore';
 
 function Navbar(props) {
   // TODO: header widgets should be received as children to this (Navbar) node
   return (
-    <nav>
+    <nav className="nav outer-header line-normal">
       <div className="nav-wrapper">
-        <div className="nav-logo">
-          <a href="#" className="brand-logo">logo</a>
-          <i className="fa fa-bars" />
-        </div>
         <div className="nav-status row">
           {/* TODO: add props for badge indicator */}
           <div className="status-item status-icon fa fa-bell-o"></div>
@@ -30,15 +30,55 @@ function Navbar(props) {
   )
 }
 
+function SidebarItem(props) {
+  if (props.open) {
+    return (
+      <li className="">
+        <div className="nav-item">
+          <Link to={props.item.target} className="nav-link" activeClassName="active">
+            <div className="nav-title caps">{props.item.label}</div>
+            <div className="nav-desc">{props.item.desc}</div>
+            <div className="nav-icon">
+              <i className={props.item.iconClass} />
+            </div>
+          </Link>
+          { 'children' in props.item && (
+            <ul className="nav-2nd"> { props.item.children.map((child) =>
+              <li className="nav-2nd-item" key={child.label}>
+                <Link to={child.target} className="">
+                  <div className="caps">{child.label}</div>
+                </Link>
+              </li>
+            )}</ul>
+          )}
+        </div>
+      </li>
+    )
+  } else {
+    return (
+      <li className="">
+        <div className="nav-item">
+          <Link to={props.item.target} className="nav-link" activeClassName="active">
+            <div className="nav-icon">
+              <i className={props.item.iconClass} />
+            </div>
+          </Link>
+        </div>
+      </li>
+    )
+  }
+}
+
 class Sidebar extends Component {
+
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
 
   handleClick(e) {
     e.preventDefault();
-    e.target.parentElement.classList.toggle('open');
-  }
-
-  activeRoute(routeName) {
-    return this.props.location.pathname.indexOf(routeName) > -1 ? 'nav-item nav-dropdown open' : 'nav-item nav-dropdown';
+    MenuActions.toggleLeft();
   }
 
   render() {
@@ -67,29 +107,15 @@ class Sidebar extends Component {
     ];
 
     return (
-      <div className="sidebar">
-        <nav className="sidebar-nav">
+      <div className="sidebar expand">
+        <div className="logo">
+          { this.props.open && ( <a href="#" className="brand-logo">logo</a> )}
+          <i className="fa fa-bars" onClick={this.handleClick}/>
+        </div>
+
+        <nav className="sidebar-nav line-normal">
           <ul className="nav">
-            { entries.map((item) =>
-              <li className="nav-item">
-                <Link to={item.target} className="nav-link" activeClassName="active">
-                  <div className="nav-title caps">{item.label}</div>
-                  <div className="nav-desc">{item.desc}</div>
-                  <div className="nav-icon">
-                    <i className={item.iconClass} />
-                  </div>
-                </Link>
-                { 'children' in item && (
-                  <ul> { item.children.map((child) =>
-                    <li className="nav-2nd">
-                      <Link to={child.target} className="">
-                        <div className="caps">{child.label}</div>
-                      </Link>
-                    </li>
-                  )}</ul>
-                )}
-              </li>
-            )}
+            { entries.map((item) => <SidebarItem item={item} key={item.label} open={this.props.open}/> )}
           </ul>
         </nav>
       </div>
@@ -97,21 +123,25 @@ class Sidebar extends Component {
   }
 }
 
+function Content(props) {
+  return (
+    <div className={"app-body " + (props.leftSideBar.open ? " open" : "") }>
+      <Sidebar open={props.leftSideBar.open}/>
+      <div className="content expand">
+        {props.children}
+      </div>
+    </div>
+  )
+}
+
 class Full extends Component {
   render() {
     return (
-      <div className="app">
+      <AltContainer store={MenuStore}>
         {/* <Header /> */}
         <Navbar path={this.props.location.pathname} userName="new user"/>
-        <div className="app-body">
-          <main className="main">
-            <Sidebar />
-            <div className="container">
-              {this.props.children}
-            </div>
-          </main>
-        </div>
-      </div>
+        <Content>{this.props.children}</Content>
+      </AltContainer>
     );
   }
 }

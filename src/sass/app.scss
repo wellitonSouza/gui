@@ -18,7 +18,8 @@ $kashmir-border: #436788;
 $cornflower: #a4c2f4;
 
 // control variables
-$sidebar-width: 217px;
+$sidebar-width: 220px;
+$sidebar-width-closed: 50px;
 $header-height: 45px;
 
 // $app-background-color: #f3f3f3;
@@ -39,6 +40,15 @@ body {
 
 .no-padding-left {
   padding-left: 0 !important;
+}
+
+.open .content {
+  padding-left: $sidebar-width;
+}
+
+.line-normal {
+  line-height: normal !important;
+  height: auto !important;
 }
 
 @import 'list';

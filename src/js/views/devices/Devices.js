@@ -177,12 +177,10 @@ class EditWrapper extends Component {
   }
 
   onChange(templates) {
-    console.log("onchange", templates, this.state.templates);
     this.setState({device: this.state.device, templates: templates.templates});
   }
 
   render() {
-    console.log("container render ", this.state);
     return (
       <EditItem device={this.state.device} templates={this.state.templates}
                 handleSubmit={this.handleSubmit}
@@ -295,14 +293,11 @@ class ListItem extends Component {
 
   handleRemove(e) {
     e.preventDefault();
-    console.log("will remove device: " + this.props.device.label + " " + this.props.device.id);
   }
 
   render() {
     const detail = this.props.detail === this.props.device.id;
     const edit = (this.props.edit === this.props.device.id) && detail;
-
-    console.log("About to render: " + detail + " " + edit);
 
     let outerClass = "lst-entry row ";
     if (detail) { outerClass = outerClass + "detail"}
@@ -377,7 +372,6 @@ class DeviceList extends Component {
   }
 
   detailedTemplate(id) {
-    console.log("about to set detail: " + id);
     let temp = this.state;
 
     if (this.state.detail && this.state.edit) {
@@ -426,7 +420,6 @@ class DeviceList extends Component {
   }
 
   render() {
-    console.log("about to render", this.props.devices);
     const filteredList = this.applyFiltering(this.props.devices);
 
     return (
@@ -551,7 +544,6 @@ class NewDevice extends Component {
       }
     }
 
-    console.log("about to remove elem " + tag, temp, this.state.newDevice);
     this.setState({newDevice: temp});
   }
 
@@ -668,11 +660,9 @@ class Devices extends Component {
 
   onChange(newState) {
     this.setState(DeviceStore.getState());
-    console.log("devices container component - onChange", this.state);
   }
 
   render() {
-    console.log('about to render', this.state);
     return (
       <ReactCSSTransitionGroup
           transitionName="first"

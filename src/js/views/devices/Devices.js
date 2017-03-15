@@ -25,33 +25,38 @@ function TagList (props) {
 }
 
 function SummaryItem(props) {
+  let status = "disabled";
+  if (props.device.status) {
+    status = "online";
+  } else {
+    if (('enabled' in props.device) && props.device.enabled) {
+      status = "offline";
+    }
+  }
+
   return (
-    <span>
-      <div className="lst-line col s10">
-        <div className="lst-title col s12">
-          <span>{props.device.label}</span>
+    <div className="lst-entry-wrapper z-depth-2 col s12">
+      <div className="lst-entry-title col s12">
+        <span>{props.device.label}</span>
+        <span className={"badge " + status}>{status}</span>
+      </div>
+
+      <div className="lst-entry-body col s12">
+        {/* TODO fill those with actual metrics */}
+        <div className="col s4 metric">
+          <div className="metric-label">Attributes</div>
+          <div className="metric-value">value</div>
         </div>
-        <div className="col m12 hide-on-small-only">
-          <div className="col m4 data no-padding-left">{props.device.id}</div>
-          <div className="col m2 data">{props.device.type}</div>
-          <div className="col m6 data">
-            <TagList tags={props.device.tags}/>
-          </div>
+        <div className="col s4 metric">
+          <div className="metric-label">Last update</div>
+          <div className="metric-value">VALUE</div>
+        </div>
+        <div className="col s4 metric">
+          <div className="metric-label">Uptime</div>
+          <div className="metric-value">12345</div>
         </div>
       </div>
-      <div className="lst-line col s2" >
-        <div className="lst-line lst-icon pull-right">
-          { props.device.status ? (
-            <span className="fa fa-wifi fa-2x"></span>
-          ) : (
-            <span className="fa-stack">
-              <i className="fa fa-wifi fa-stack-2x"></i>
-              <i className="fa fa-times fa-stack-1x no-conn"></i>
-            </span>
-          )}
-        </div>
-      </div>
-    </span>
+    </div>
   )
 }
 
@@ -302,12 +307,12 @@ class ListItem extends Component {
     const detail = this.props.detail === this.props.device.id;
     const edit = (this.props.edit === this.props.device.id) && detail;
 
-    let outerClass = "lst-entry row ";
-    if (detail) { outerClass = outerClass + "detail"}
-    if (detail) { outerClass = outerClass + "edit"}
+    // let outerClass = "lst-entry row ";
+    // if (detail) { outerClass = outerClass + "detail"}
+    // if (detail) { outerClass = outerClass + "edit"}
 
     return (
-      <div className="lst-entry row " id={this.props.device.id} onClick={detail ? null : this.handleDetail}>
+      <div className="lst-entry col s12 m6" id={this.props.device.id} onClick={detail ? null : this.handleDetail}>
         { detail && edit && (
           <EditWrapper device={this.props.device} handleRemove={this.handleRemove} handleDismiss={this.handleDismiss}/>
         )}
@@ -327,14 +332,16 @@ function ListRender(props) {
 
   if (deviceList.length > 0) {
     return (
-      <div>
-        { deviceList.map((device) =>
-          <ListItem device={device} key={device.id}
-            detail={props.detail}
-            detailedTemplate={props.detailedTemplate}
-            edit={props.edit}
-            editTemplate={props.editTemplate} />
-        )}
+      <div className="row">
+        <div className="col s12 m10 offset-m1 lst-wrapper">
+          { deviceList.map((device) =>
+            <ListItem device={device} key={device.id}
+              detail={props.detail}
+              detailedTemplate={props.detailedTemplate}
+              edit={props.edit}
+              editTemplate={props.editTemplate} />
+          )}
+        </div>
       </div>
     )
   } else {

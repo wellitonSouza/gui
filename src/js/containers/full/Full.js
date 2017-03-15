@@ -110,7 +110,7 @@ class Sidebar extends Component {
       <div className="sidebar expand">
         <div className="logo">
           { this.props.open && ( <a href="#" className="brand-logo">logo</a> )}
-          <i className="fa fa-bars" onClick={this.handleClick}/>
+          <i className="fa fa-bars waves-effect waves-light" onClick={this.handleClick}/>
         </div>
 
         <nav className="sidebar-nav line-normal">

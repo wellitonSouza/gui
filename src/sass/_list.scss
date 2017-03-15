@@ -32,9 +32,60 @@
 .lst-entry {
   border-color: black;
   padding: 10px 5px;
-  margin-bottom: 0.5em !important;
   transition: 0.3s;
   background-color: $element-background-color;
+  padding: 0.7em !important;
+
+  .lst-entry-body {
+    height: 4em;
+
+    .metric {
+      padding-top: 0.3em !important;
+      padding-bottom: 0.3em;
+
+      .metric-label {
+        font-size: 65%;
+        color: $silver;
+        margin-top: 0.4em;
+        position: relative;
+        top: 0.4em;
+      }
+    }
+  }
+}
+
+.lst-entry-wrapper {
+  padding: 0 !important;
+  width: 100%;
+  height: 100%;
+  font-family: 'Open Sans', sans-serif;
+
+  .lst-entry-title {
+    line-height: 4em;
+    background-color: $porcelain;
+    font-weight: bold;
+
+    > .badge {
+      margin-top: 1.25rem;
+      color: #fff;
+      font-size: 80%;
+      font-weight: normal;
+      width: 80px;   // TODO this will not response
+      height: 22px;  // TODO this will not response
+    }
+  }
+}
+
+.badge.disabled {
+  background-color: $silver;
+}
+
+.badge.online {
+  background-color: $online;
+}
+
+.badge.offline {
+  background-color: $offline;
 }
 
 .lst-entry .label {

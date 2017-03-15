@@ -31,5 +31,15 @@
 
   .page-actions {
     // positioning only! (contents are defined by the component's children)
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 66%;
+    padding: 0 2em;
+    display: inline;
+
+    > * {
+      float:right;
+    }
   }
 }

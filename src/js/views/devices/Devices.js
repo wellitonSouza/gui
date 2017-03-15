@@ -10,6 +10,7 @@ import MeasureStore from '../../stores/MeasureStore';
 import MeasureActions from '../../actions/MeasureActions';
 
 import PageHeader from "../../containers/full/PageHeader";
+import Filter from "../utils/Filter";
 
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Link } from 'react-router'
@@ -399,13 +400,13 @@ class DeviceList extends Component {
     return false;
   }
 
-  handleSearchChange(event) {
-    const filter = event.target.value;
-    let state = this.state;
-    state.filter = filter;
-    state.detail = undefined;
-    this.setState(state);
-  }
+  // handleSearchChange(event) {
+  //   const filter = event.target.value;
+  //   let state = this.state;
+  //   state.filter = filter;
+  //   state.detail = undefined;
+  //   this.setState(state);
+  // }
 
   applyFiltering(deviceList) {
     const filter = this.state.filter;
@@ -426,29 +427,6 @@ class DeviceList extends Component {
 
     return (
       <div className="col m10 s12 offset-m1 " >
-        {/* header */}
-        <div className="row">
-          <div className="col s12 m4">
-            <div className="switch top-header right-align">
-              <label>
-                <span className="fa fa-map"></span>
-                <input type="checkbox" onChange={this.handleViewChange} checked={this.state.isDisplayList}/>
-                <span className="lever"></span>
-                <span className="fa fa-list"></span>
-              </label>
-            </div>
-          </div>
-          <div className="col s12 col m8">
-            <form role="form">
-              {/* filter selection  */}
-              <div className="input-field">
-                <i className="search-icon prefix fa fa-filter"></i>
-                <label htmlFor="deviceFiltering">Filter</label>
-                <input id="deviceFiltering" type="text" onChange={this.applyFiltering}></input>
-              </div>
-            </form>
-          </div>
-        </div>
 
         { this.state.isDisplayList === false && <MapRender devices={filteredList}/>  }
         { this.state.isDisplayList && <ListRender devices={filteredList}
@@ -649,6 +627,7 @@ class Devices extends Component {
 
     this.state = DeviceStore.getState();
     this.onChange = this.onChange.bind(this);
+    this.filterChange = this.filterChange.bind(this);
   }
 
   componentDidMount() {
@@ -664,6 +643,10 @@ class Devices extends Component {
     this.setState(DeviceStore.getState());
   }
 
+  filterChange(newFilter) {
+    console.log("about to change filter: " + newFilter);
+  }
+
   render() {
     return (
       <ReactCSSTransitionGroup
@@ -672,7 +655,9 @@ class Devices extends Component {
           transitionAppearTimeout={500}
           transitionEnterTimeout={500}
           transitionLeaveTimeout={500} >
-        <PageHeader title="device manager" subtitle="Devices" />
+        <PageHeader title="device manager" subtitle="Devices">
+          <Filter onChange={this.filterChange} />
+        </PageHeader>
         <DeviceList devices={this.state.devices}/>
         <NewDevice />
       </ReactCSSTransitionGroup>

@@ -41,10 +41,12 @@
     position: absolute;
     top: 0;
     right: 0;
+    width: $sidebar-width-closed;
     height: auto !important;
     line-height: normal !important;
     font-size: 18pt;
     padding: 0.5em;
+    text-align: center;
   }
 
   .logo .brand-logo {

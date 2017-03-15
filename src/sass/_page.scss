@@ -1,0 +1,35 @@
+
+// TODO: selecct fonts to be used (perhaps stick to 2 or 3 of them, and have all imported at app?)
+@import url('https://fonts.googleapis.com/css?family=Droid+Sans|Open+Sans');
+
+.page-header {
+  height: $page-header-size;
+  background-color: $porcelain;
+  position: relative;
+  padding-left: 4em;
+
+  .title-area {
+    position: absolute;
+    top: 20%;
+
+    font-weight: bold;
+    letter-spacing: 0.8px;
+  }
+
+  .page-title {
+    // should be droid-sans
+    font-size: 105%;
+    font-family: 'Droid Sans', sans-serif;
+  }
+
+  .page-subtitle {
+    // should be open-sans
+    color: $silver;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 100%;
+  }
+
+  .page-actions {
+    // positioning only! (contents are defined by the component's children)
+  }
+}

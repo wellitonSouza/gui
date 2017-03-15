@@ -9,6 +9,8 @@ import TemplateActions from '../../actions/TemplateActions';
 import MeasureStore from '../../stores/MeasureStore';
 import MeasureActions from '../../actions/MeasureActions';
 
+import PageHeader from "../../containers/full/PageHeader";
+
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Link } from 'react-router'
 
@@ -670,6 +672,7 @@ class Devices extends Component {
           transitionAppearTimeout={500}
           transitionEnterTimeout={500}
           transitionLeaveTimeout={500} >
+        <PageHeader title="device manager" subtitle="Devices" />
         <DeviceList devices={this.state.devices}/>
         <NewDevice />
       </ReactCSSTransitionGroup>

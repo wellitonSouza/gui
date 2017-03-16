@@ -11,7 +11,7 @@ export default function (props) {
         transitionLeaveTimeout={500} >
 
       <div>
-        <h1>This is a dashboard!</h1>
+        <h1>This is a dashboard! -&-</h1>
       </div>
 
     </ReactCSSTransitionGroup>

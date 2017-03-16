@@ -31,39 +31,48 @@ function Navbar(props) {
 }
 
 function SidebarItem(props) {
+  let isActive = props.router.location.pathname === props.item.target;
+  if (!isActive && ('children' in props.item)) {
+    props.item.children.map((child) => isActive = isActive || (props.router.location.pathname == child.target));
+  }
+
+  // isActive  = true;
+  const entryClass = "nav-link" + (isActive ? " active" : "");
+
+  // console.log(props.item.label + " " + isActive + " " + props.router.location.pathname);
+
   if (props.open) {
     return (
-      <li className="">
-        <div className="nav-item">
-          <Link to={props.item.target} className="nav-link" activeClassName="active">
-            <div className="nav-title caps">{props.item.label}</div>
-            <div className="nav-desc">{props.item.desc}</div>
-            <div className="nav-icon">
-              <i className={props.item.iconClass} />
-            </div>
-          </Link>
-          { 'children' in props.item && (
-            <ul className="nav-2nd"> { props.item.children.map((child) =>
-              <li className="nav-2nd-item" key={child.label}>
-                <Link to={child.target} className="">
-                  <div className="caps">{child.label}</div>
+      <li className="nav-item">
+        <Link to={props.item.target} className={entryClass} activeClassName="active">
+          <div className="nav-title caps">{props.item.label}</div>
+          <div className="nav-desc">{props.item.desc}</div>
+          <div className="nav-icon">
+            <i className={props.item.iconClass} />
+          </div>
+        </Link>
+        {('children' in props.item) && isActive && (
+          <ul className="nav-2nd">
+            { props.item.children.map((child) =>
+              <li className="" key={child.label} >
+                <Link to={child.target} className="nav-2nd-item" activeClassName="active" >
+                      <span className="caps">{child.label}</span>
                 </Link>
               </li>
-            )}</ul>
-          )}
-        </div>
+            )}
+          </ul>
+        )}
       </li>
     )
   } else {
     return (
-      <li className="">
-        <div className="nav-item">
-          <Link to={props.item.target} className="nav-link" activeClassName="active">
-            <div className="nav-icon">
-              <i className={props.item.iconClass} />
-            </div>
-          </Link>
-        </div>
+      <li className="nav-item">
+        <Link to={props.item.target} className={entryClass} activeClassName="active">
+          <div className="nav-icon">
+            <i className={props.item.iconClass} />
+          </div>
+          <div className="nav-title caps hide-on-small-only">{props.item.label}</div>
+        </Link>
       </li>
     )
   }
@@ -85,21 +94,20 @@ class Sidebar extends Component {
     // TODO: active entry styling, set target, add responsiveness
     let entries = [
       // TODO change this icon
-      { target: "", iconClass: "fa fa-microchip", label: "Device manager", desc: "Known devices and configuration", children: [
-        { target: "", iconClass: "", label: "device"},
-        { target: "", iconClass: "", label: "template"},
+      { target: "/deviceManager", iconClass: "fa fa-microchip", label: "Devices", desc: "Known devices and configuration", children: [
+        { target: "/device/list", iconClass: "", label: "device"},
+        { target: "/template/list", iconClass: "", label: "template"},
         { target: "", iconClass: "", label: "alarm"}
       ]},
       // TODO change this icon
-      { target: "", iconClass: "fa fa-code-fork", label: "data flows", desc: "Processing flows to be executed" },
-      { target: "", iconClass: "fa fa-bell-o", label: "alarms", desc: "System events and alarms"},
-      { target: "", iconClass: "fa fa-unlock-alt", label: "authentication", desc: "User and permissions management", children: [
+      { target: "/flows", iconClass: "fa fa-code-fork", label: "data flows", desc: "Processing flows to be executed" },
+      { target: "/alarm", iconClass: "fa fa-bell-o", label: "alarms", desc: "System events and alarms"},
+      { target: "/auth", iconClass: "fa fa-unlock-alt", label: "auth", desc: "User and permissions management", children: [
         { target: "", iconClass: "", label: "users"},
-        { target: "", iconClass: "", label: "permissions"},
-        { target: "", iconClass: "", label: "alarm"}
+        { target: "", iconClass: "", label: "permissions"}
       ]},
       // TODO change this icon
-      { target: "", iconClass: "fa fa-cogs", label: "deployment", desc: "Application and plugin management", children: [
+      { target: "/deploy", iconClass: "fa fa-cogs", label: "deploy", desc: "Application and plugin management", children: [
         { target: "", iconClass: "", label: "plugins"},
         { target: "", iconClass: "", label: "applications"},
         { target: "", iconClass: "", label: "alarm"}
@@ -108,14 +116,16 @@ class Sidebar extends Component {
 
     return (
       <div className="sidebar expand">
-        <div className="logo">
-          { this.props.open && ( <a href="#" className="brand-logo">logo</a> )}
-          <i className="fa fa-bars waves-effect waves-light" onClick={this.handleClick}/>
+        <div className="header">
+          {this.props.open && (<span>MENU</span>) }
+          <div className="action waves-effect waves-light" onClick={this.handleClick} >
+            <i className="fa fa-bars" />
+          </div>
         </div>
 
         <nav className="sidebar-nav line-normal">
           <ul className="nav">
-            { entries.map((item) => <SidebarItem item={item} key={item.label} open={this.props.open}/> )}
+            { entries.map((item) => <SidebarItem item={item} key={item.label} open={this.props.open} router={this.props.router}/> )}
           </ul>
         </nav>
       </div>
@@ -125,8 +135,8 @@ class Sidebar extends Component {
 
 function Content(props) {
   return (
-    <div className={"app-body " + (props.leftSideBar.open ? " open" : "") }>
-      <Sidebar open={props.leftSideBar.open}/>
+    <div className={"app-body " + (props.leftSideBar.open ? " open" : " closed") }>
+      <Sidebar open={props.leftSideBar.open} router={props.router}/>
       <div className="content expand">
         {props.children}
       </div>
@@ -140,7 +150,7 @@ class Full extends Component {
       <AltContainer store={MenuStore}>
         {/* <Header /> */}
         <Navbar path={this.props.location.pathname} userName="new user"/>
-        <Content>{this.props.children}</Content>
+        <Content router={this.props.router}>{this.props.children}</Content>
       </AltContainer>
     );
   }

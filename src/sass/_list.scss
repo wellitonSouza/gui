@@ -1,3 +1,8 @@
+$online: #4dbd74;
+$offline: #f85252;
+$disabled: $silver;
+
+
 .lst-icon {
   width:  2.1em;
   height: 2.1em;
@@ -77,7 +82,7 @@
 }
 
 .badge.disabled {
-  background-color: $silver;
+  background-color: $disabled;
 }
 
 .badge.online {

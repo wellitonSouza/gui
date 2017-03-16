@@ -21,28 +21,27 @@ $cornflower: #a4c2f4;
 $porcelain: #ecf0f1;
 $silver: #b8b8b8;
 
-// green
-$online: #4dbd74;
-$offline: #f85252;
-$disabled: $silver;
-
-
-// control variables
+// sidebar control variables
 $sidebar-width: 220px;
 $sidebar-width-closed: 50px;
+$sidebar-width-closed-large: 80px;
+$sidebar-bg: #283339;
+// $sidebar-bg: #828485;
+$sidebar-bg-active: #03c9a9;
+$sidebar-fg-active: #a5fffa;
+$sidebar-main-ff: 'Open Sans', sans-serif;
+$sidebar-desc-ff: 'Roboto', sans-serif;
+$sidebar-desc: #bfbfbf;
 
+// header control variables
 $header-height: 45px;
 $page-header-size: 75px;
 
 // $app-background-color: #f3f3f3;
 $element-background-color: #fff;
-
 $details-background-color: #f3f3f3;
-
 // $main-font-family: Montserrat, sans-serif;
 $main-font-family: Roboto, sans-serif;
-// $navbar-background-color: #26a69a;
-// $navbar-background-color: $matte;
 
 body {
   background-color: #fff;
@@ -53,17 +52,13 @@ body {
   padding-left: 0 !important;
 }
 
-.content {
-  padding-left: $sidebar-width-closed;
-}
-
-.open .content {
-  padding-left: $sidebar-width;
-}
-
 .line-normal {
   line-height: normal !important;
   height: auto !important;
+}
+
+.caps {
+  text-transform: uppercase;
 }
 
 @import 'list';

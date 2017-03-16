@@ -229,8 +229,8 @@ class EditItem extends Component {
             </div>
             <div className="col s12">
               <div className="row">
-                <div className="col s12 m6">{this.props.device.id}</div>
-                <div className="col s12 m6">{status}</div>
+                <div className="col s12 m4">{this.props.device.id}</div>
+                <div className="col s12 m4">{status}</div>
               </div>
               <div className="row">
                 <div className="col s12">
@@ -312,7 +312,7 @@ class ListItem extends Component {
     // if (detail) { outerClass = outerClass + "edit"}
 
     return (
-      <div className="lst-entry col s12 m6" id={this.props.device.id} onClick={detail ? null : this.handleDetail}>
+      <div className="lst-entry col s12 m4" id={this.props.device.id} onClick={detail ? null : this.handleDetail}>
         { detail && edit && (
           <EditWrapper device={this.props.device} handleRemove={this.handleRemove} handleDismiss={this.handleDismiss}/>
         )}

@@ -6,6 +6,9 @@ import templateManager from '../../comms/templates/TemplateManager';
 var TemplateStore = require('../../stores/TemplateStore');
 var TemplateActions = require('../../actions/TemplateActions');
 
+import PageHeader from "../../containers/full/PageHeader";
+import Filter from "../utils/Filter";
+
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 function TagList (props) {
@@ -100,6 +103,33 @@ class DeviceImageUpload extends Component {
   }
 }
 
+function SummaryItem(props) {
+  return (
+    <div className="lst-entry-wrapper z-depth-2 col s12">
+      <div className="lst-entry-title col s12">
+        <span>{props.template.label}</span>
+        {/* <span className={"badge " + status}>{status}</span> */}
+      </div>
+
+      <div className="lst-entry-body col s12">
+        {/* TODO fill those with actual metrics */}
+        <div className="col s4 metric">
+          <div className="metric-label">Attributes</div>
+          <div className="metric-value">value</div>
+        </div>
+        <div className="col s4 metric">
+          <div className="metric-label"># Devices</div>
+          <div className="metric-value">VALUE</div>
+        </div>
+        <div className="col s4 metric">
+          <div className="metric-label">Last update</div>
+          <div className="metric-value">12345</div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 class ListItem extends Component {
   constructor(props) {
     super(props);
@@ -190,13 +220,27 @@ class ListItem extends Component {
   }
 
   render() {
-    console.log("will render - " + this.state.device.id);
     let detail = this.props.detail === this.props.device.id;
     let edit = (this.props.edit === this.props.device.id) && detail;
 
-    console.log("about to check for icon: " + this.props.device.id + " " + this.props.device.has_icon);
-    let labelSize = this.props.device.has_icon ? "lst-title col s10" : "lst-title col s12";
-    let iconUrl = "http://localhost:5000/template/" + this.props.device.id + "/icon";
+    // console.log("about to check for icon: " + this.props.device.id + " " + this.props.device.has_icon);
+    // let labelSize = this.props.device.has_icon ? "lst-title col s10" : "lst-title col s12";
+    // let iconUrl = "http://localhost:5000/template/" + this.props.device.id + "/icon";
+
+    return (
+      <div className="lst-entry col s12 m4" id={this.props.device.id} onClick={detail ? null : this.handleDetail}>
+        {/* { detail && edit && (
+          <EditWrapper device={this.props.device} handleRemove={this.handleRemove} handleDismiss={this.handleDismiss}/>
+        )}
+        { detail && !edit && (
+          <DetailItem device={this.props.device} handleEdit={this.handleEdit} handleDismiss={this.handleDismiss}/>
+        )} */}
+        { !detail && (
+          <SummaryItem template={this.props.device} />
+        )}
+      </div>
+    )
+
 
     return (
       <div className="lst-entry row"
@@ -451,23 +495,9 @@ class DeviceList extends Component {
 
     const filteredList = this.applyFiltering(this.props.devices);
     return (
-      <div className="col m10 s12 offset-m1 " >
-        {/* header */}
-        <div className="row">
-          <div className="col s12 col m8 right">
-            <form role="form">
-              {/* filter selection  */}
-              <div className="input-field">
-                <i className="search-icon prefix fa fa-filter"></i>
-                <label htmlFor="deviceFiltering">Filter</label>
-                <input id="deviceFiltering" type="text" onChange={this.handleSearchChange}></input>
-              </div>
-            </form>
-          </div>
-        </div>
-
+      <div className="row">
         { filteredList.length > 0 ? (
-          <span>
+          <div className="col s12 m10 offset-m1 lst-wrapper">
             { filteredList.map((device) =>
                 <ListItem device={device}
                           key={device.id}
@@ -478,7 +508,7 @@ class DeviceList extends Component {
                           updateDevice={this.updateDevice}
                           deleteDevice={this.deleteDevice}/>
             )}
-          </span>
+          </div>
         ) : (
           <div className="col s12">
             <span className="background-info">No configured templates</span>
@@ -490,7 +520,6 @@ class DeviceList extends Component {
         {/* <!-- footer --> */}
         <div className="col s12"></div>
         <div className="col s12">&nbsp;</div>
-
         <div className="modal" id="infoLostModal" ref="modal">
           <div className="modal-content">
             <p>Are you sure you want to close template?</p>
@@ -645,6 +674,10 @@ class Templates extends Component {
     console.log("templates container component - onChange", this.state);
   }
 
+  filterChange(newFilter) {
+    console.log("about to change filter: " + newFilter);
+  }
+
   render() {
     return (
       <ReactCSSTransitionGroup
@@ -653,6 +686,9 @@ class Templates extends Component {
           transitionAppearTimeout={500}
           transitionEnterTimeout={500}
           transitionLeaveTimeout={500} >
+        <PageHeader title="device manager" subtitle="Templates">
+          <Filter onChange={this.filterChange} />
+        </PageHeader>
         <DeviceList devices={this.state.templates} />
         <NewDevice createDevice={this.createDevice}/>
       </ReactCSSTransitionGroup>

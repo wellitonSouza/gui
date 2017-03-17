@@ -1,7 +1,4 @@
 
-// TODO: selecct fonts to be used (perhaps stick to 2 or 3 of them, and have all imported at app?)
-@import url('https://fonts.googleapis.com/css?family=Droid+Sans|Open+Sans');
-
 .page-header {
   height: $page-header-size;
   background-color: $porcelain;
@@ -13,13 +10,13 @@
     top: 20%;
 
     font-weight: bold;
-    letter-spacing: 0.8px;
   }
 
   .page-title {
     // should be droid-sans
     font-size: 105%;
-    font-family: 'Droid Sans', sans-serif;
+    font-family: "Roboto", sans-serif;
+    padding-top: 6px;
   }
 
   .page-subtitle {
@@ -27,6 +24,8 @@
     color: $silver;
     font-family: 'Open Sans', sans-serif;
     font-size: 100%;
+    position: relative;
+    top: -6px;
   }
 
   .page-actions {

@@ -312,7 +312,7 @@ class ListItem extends Component {
     // if (detail) { outerClass = outerClass + "edit"}
 
     return (
-      <div className="lst-entry col s12 m4" id={this.props.device.id} onClick={detail ? null : this.handleDetail}>
+      <div className="lst-entry col s12 m6 l4" id={this.props.device.id} onClick={detail ? null : this.handleDetail}>
         { detail && edit && (
           <EditWrapper device={this.props.device} handleRemove={this.handleRemove} handleDismiss={this.handleDismiss}/>
         )}
@@ -333,7 +333,7 @@ function ListRender(props) {
   if (deviceList.length > 0) {
     return (
       <div className="row">
-        <div className="col s12 m10 offset-m1 lst-wrapper">
+        <div className="col s12  lst-wrapper">
           { deviceList.map((device) =>
             <ListItem device={device} key={device.id}
               detail={props.detail}

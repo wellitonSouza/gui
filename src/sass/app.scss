@@ -1,5 +1,5 @@
 
-@import url('https://fonts.googleapis.com/css?family=Asap|Roboto');
+
 @import '_overrides.scss';
 
 // this has actually been deprecated in favor of green/blue
@@ -67,3 +67,5 @@ body {
 @import 'sidebar';
 @import 'page';
 @import 'filter';
+@import 'fonts';
+@import 'materialIcons'

@@ -1,7 +1,10 @@
 nav.outer-header {
+  position: fixed;
+  top: 0;
+  z-index: 9999;
   height: $header-height !important;
   background: linear-gradient(to right, #588de7, #65ce8f);
-  font-family: 'Asap', sans-serif;
+  font-family: Roboto, sans-serif;
 
   a {
     padding-left: 40px;
@@ -63,4 +66,8 @@ $pic-border: #2969be;
 
 .center-caret {
   padding-top: 1em;
+}
+
+.content {
+  margin-top: $header-height;
 }

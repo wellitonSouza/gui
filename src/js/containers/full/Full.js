@@ -94,13 +94,13 @@ class Sidebar extends Component {
     // TODO: active entry styling, set target, add responsiveness
     let entries = [
       // TODO change this icon
-      { target: "/deviceManager", iconClass: "fa fa-microchip", label: "Devices", desc: "Known devices and configuration", children: [
+      { target: "/deviceManager", iconClass: "material-icons mi-ic-memory", label: "Devices", desc: "Known devices and configuration", children: [
         { target: "/device/list", iconClass: "", label: "device"},
         { target: "/template/list", iconClass: "", label: "template"},
         { target: "", iconClass: "", label: "alarm"}
       ]},
       // TODO change this icon
-      { target: "/flows", iconClass: "fa fa-code-fork", label: "data flows", desc: "Processing flows to be executed" },
+      { target: "/flows", iconClass: "material-icons mi-device-hub", label: "data flows", desc: "Processing flows to be executed" },
       { target: "/alarm", iconClass: "fa fa-bell-o", label: "alarms", desc: "System events and alarms"},
       { target: "/auth", iconClass: "fa fa-unlock-alt", label: "auth", desc: "User and permissions management", children: [
         { target: "", iconClass: "", label: "users"},
@@ -115,7 +115,7 @@ class Sidebar extends Component {
     ];
 
     return (
-      <div className="sidebar expand">
+      <div className="sidebar expand z-depth-5">
         <div className="header">
           {this.props.open && (<span>MENU</span>) }
           <div className="action waves-effect waves-light" onClick={this.handleClick} >

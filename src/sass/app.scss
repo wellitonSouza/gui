@@ -53,6 +53,15 @@ html {
   height: 100%;
 }
 
+.full-width {
+  position: relative;
+  width: 100%;
+}
+
+.half-height {
+  height: 50%;
+}
+
 body {
   background-color: #fff;
   font-family: $main-font-family;
@@ -71,7 +80,6 @@ body {
   padding-top:10px !important;
 }
 
-
 .line-normal {
   line-height: normal !important;
   height: auto !important;
@@ -89,6 +97,26 @@ body {
 .text-right
 {
   text-align: right;
+}
+
+.full {
+  position: relative;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.relative {
+  position: relative;
+}
+
+.hidden {
+  display: none;
+}
+
+.background-color-override {
+  background-color: none !important;
 }
 
 @import 'shadow';

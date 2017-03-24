@@ -4,17 +4,27 @@ var alt = require('../alt');
 
 class DeviceActions {
 
-  updateDevices(list) {
-    return list;
+  fetchDevices() {
+    return (dispatch) => {
+      dispatch();
+
+      deviceManager.getDevices().then((devicesList) => {
+        this.updateDevices(devicesList.devices);
+      })
+      .catch((error) => {
+        this.devicesFailed(error);
+      });
+    }
   }
 
-  insertDevice(devices) {
-    return devices;
+  updateDevices(list) {
+    return list;
   }
 
   addDevice(device) {
     const newDevice = device;
     return (dispatch) => {
+      dispatch();
       deviceManager.addDevice(newDevice)
         .then((response) => {
           this.insertDevice(newDevice);
@@ -25,19 +35,14 @@ class DeviceActions {
     }
   }
 
-  fetchDevices() {
-    return (dispatch) => {
-      deviceManager.getDevices().then((devicesList) => {
-        this.updateDevices(devicesList.devices);
-      })
-      .catch((error) => {
-        this.devicesFailed(error);
-      });
-    }
+  insertDevice(devices) {
+    return devices;
   }
 
   triggerUpdate(device) {
     return (dispatch) => {
+      dispatch();
+
       deviceManager.setDevice(device)
         .then((response) => {
           this.updateSingle(device);
@@ -54,6 +59,7 @@ class DeviceActions {
 
   triggerRemoval(device) {
     return (dispatch) => {
+      dispatch();
       deviceManager.deleteDevice(device.id)
         .then((response) => {
           this.removeSingle(device.id);

@@ -46,7 +46,7 @@ function SidebarItem(props) {
   if (props.open) {
     return (
       <li className="nav-item">
-        <Link to={props.item.target} className={entryClass} activeClassName="active">
+        <Link to={props.item.target} className={entryClass} activeClassName="active" tabIndex="-1">
           <div className="nav-title caps">{props.item.label}</div>
           <div className="nav-desc">{props.item.desc}</div>
           <div className="nav-icon">
@@ -57,7 +57,7 @@ function SidebarItem(props) {
           <ul className="nav-2nd">
             { props.item.children.map((child) =>
               <li className="" key={child.label} >
-                <Link to={child.target} className="nav-2nd-item" activeClassName="active" >
+                <Link to={child.target} className="nav-2nd-item" activeClassName="active" tabIndex="-1">
                       <span className="caps">{child.label}</span>
                 </Link>
               </li>
@@ -69,7 +69,7 @@ function SidebarItem(props) {
   } else {
     return (
       <li className="nav-item">
-        <Link to={props.item.target} className={entryClass} activeClassName="active">
+        <Link to={props.item.target} className={entryClass} activeClassName="active" tabIndex="-1">
           <div className="nav-icon">
             <i className={props.item.iconClass} />
           </div>
@@ -96,7 +96,7 @@ class Sidebar extends Component {
     // TODO: active entry styling, set target, add responsiveness
     let entries = [
       // TODO change this icon
-      { target: "/deviceManager", iconClass: "material-icons mi-ic-memory", label: "Devices", desc: "Known devices and configuration", children: [
+      { target: "/device/list", iconClass: "material-icons mi-ic-memory", label: "Devices", desc: "Known devices and configuration", children: [
         { target: "/device/list", iconClass: "", label: "device"},
         { target: "/template/list", iconClass: "", label: "template"},
         { target: "", iconClass: "", label: "alarm"}
@@ -117,7 +117,7 @@ class Sidebar extends Component {
     ];
 
     return (
-      <div className="sidebar expand z-depth-5">
+      <div className="sidebar expand z-depth-5" tabIndex="-1">
         <div className="header">
           {this.props.open && (<span>MENU</span>) }
           <div className="action waves-effect waves-light" onClick={this.handleClick} >

@@ -7,7 +7,7 @@ import Gatekeeper from './containers/login/Gatekeeper.js';
 
 
 require ('../sass/app.scss');
-require ('../components/font-awesome/scss/font-awesome.scss')
+require ('../components/font-awesome/scss/font-awesome.scss');
 
 function Main(props) {
   return (

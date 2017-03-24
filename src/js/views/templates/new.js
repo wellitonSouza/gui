@@ -1,6 +1,70 @@
 import React, { Component } from 'react';
 
-class old_NewTemplate extends Component {
+import {PageHeader, ActionHeader} from "../../containers/full/PageHeader";
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { Link } from 'react-router'
+
+import alt from '../../alt';
+import AltContainer from 'alt-container';
+import TemplateActions from '../../actions/TemplateActions';
+
+// props = {
+//   label: "",
+//   info: {
+//     label: "value",
+//     label: "value"
+//   }
+// }
+
+class AttributeForm extends Component {
+
+}
+
+class Card extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  cardActions(e) {
+    e.preventDefault();
+  }
+
+  render() {
+    return (
+      <div className={"card " + spacing}>
+        <div className="title">
+          {e.label}
+          <div className="actions" onClick={this.actions}><i className="fa fa-ellipsis-v" /></div>
+        </div>
+        <div className="info">
+          { e.info.map((i, k) =>
+            <span className={(k === (e.info.length - 1)) ? "last" : "" }>
+              <div className="value">{i.value}</div>
+              <div className="label">{i.label}</div>
+            </span>
+          )}
+        </div>
+      </div>
+    )
+  }
+}
+
+function CardsWrapper(props) {
+  let spacing = "col s6";
+  if (props.sizing) {
+    spacing = props.sizing;
+  }
+
+  return (
+    <div className="card-list-wrapper">
+      { props.entries.map((e) =>
+        <Card entry={e} key={e.label}/>
+      )}
+    </div>
+  )
+}
+
+class NewTemplate extends Component {
   constructor(props) {
     super(props);
 
@@ -53,6 +117,24 @@ class old_NewTemplate extends Component {
   }
 
   render() {
+    return (
+      <div className="full-width">
+        <ReactCSSTransitionGroup
+          transitionName="first"
+          transitionAppear={true} transitionAppearTimeout={500}
+          transitionEnterTimeout={500} transitionLeaveTimeout={500} >
+          <PageHeader title="device manager" subtitle="Templates" />
+          <ActionHeader title="New template">
+            <i className="fa fa-floppy" />
+            <i className="fa fa-times" />
+          </ActionHeader>
+          {/* <AltContainer store={} > */}
+            <div>this is an updated template form</div>
+          {/* </AltContainer> */}
+        </ReactCSSTransitionGroup>
+      </div>
+    )
+
     return (
       <div>
         <div id="newDeviceBtn" className="" >
@@ -112,13 +194,6 @@ class old_NewTemplate extends Component {
       </div>
     )
   }
-}
-
-function NewTemplate(props) {
-  console.log("about to render");
-  return (
-    <div>This is a template form</div>
-  )
 }
 
 export { NewTemplate };

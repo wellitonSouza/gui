@@ -22,18 +22,23 @@ class TemplateActions {
         .catch((error) => {
           this.templatesFailed("Failed to add template to list");
         })
+
+      dispatch();
     }
   }
 
   fetchTemplates() {
     return (dispatch) => {
-      templateManager.getDevices().then((templateList) => {
-        console.log("templates webservice done");
-        this.updateTemplates(templateList.templates);
-      })
-      .catch((error) => {
-        this.templatesFailed(error);
-      });
+      templateManager.getDevices()
+        .then((templateList) => {
+          console.log("templates webservice done");
+          this.updateTemplates(templateList.templates);
+        })
+        .catch((error) => {
+          this.templatesFailed(error);
+        });
+
+      dispatch();
     }
   }
 
@@ -47,6 +52,8 @@ class TemplateActions {
           console.log("Error!", error);
           this.templatesFailed("Failed to update given template");
         })
+
+      dispatch();
     }
   }
 
@@ -60,6 +67,8 @@ class TemplateActions {
         .catch(function(error) {
           console.log("Failed to update icon", error);
         })
+
+      dispatch();
     }
   }
 
@@ -77,6 +86,8 @@ class TemplateActions {
           console.log("Error!", error);
           this.templatesFailed("Failed to remove given template");
         })
+
+      dispatch();
     }
   }
 

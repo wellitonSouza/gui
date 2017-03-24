@@ -7,6 +7,7 @@ class TemplateStore {
   constructor() {
     this.templates = [];
     this.error = null;
+    this.loading = false;
 
     this.bindListeners({
       handleUpdateTemplateList: TemplateActions.UPDATE_TEMPLATES,
@@ -28,11 +29,13 @@ class TemplateStore {
 
   handleTriggerIcon(id, icon) {
     this.error = null;
+    this.loading = true;
   }
 
   handleUpdateIcon(id) {
     console.log('update icon');
     this.error = null;
+    this.loading = false;
     for (let i = 0; i < this.templates.length; i++) {
       if (this.templates[i].id == id) {
         let newTemplate = JSON.parse(JSON.stringify(this.templates[i]));
@@ -48,6 +51,7 @@ class TemplateStore {
   handleUpdateTemplateList(templates) {
     this.templates = templates;
     this.error = null;
+    this.loading = false;
   }
 
   handleUpdateSingle(template) {
@@ -57,40 +61,48 @@ class TemplateStore {
         this.templates[i] = newTemplate;
       }
     }
+    this.loading = false;
   }
 
   handleTriggerUpdate(template) {
     // trigger handler for updateSingle
     this.error = null;
+    this.loading = true;
   }
 
   handleTriggerRemoval(template) {
     // trigger handler for updateSingle
     this.error = null;
+    this.loading = true;
   }
 
   handleRemoveSingle(id) {
     this.templates = this.templates.filter(function(e) {
       return e.id != id;
     })
+    this.loading = false;
   }
 
   handleInsertTemplate(template) {
     this.templates.push(template);
     this.error = null;
+    this.loading = false;
   }
 
   handleAddTemplate(newTemplate) {
     // this is actually just a intermediary while addition happens asynchonously
     this.error = null;
+    this.loading = true;
   }
 
   handleFetchTemplateList() {
     this.templates = [];
+    this.loading = true;
   }
 
   handleFailure(error) {
     this.error = error;
+    this.loading = false;
   }
 }
 

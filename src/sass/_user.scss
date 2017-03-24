@@ -34,6 +34,17 @@
   position: relative;
   transition: 0.3s;
 
+  .badge{
+      font-size: 0.7rem;
+      color: $white;
+      font-weight: 900;
+      border-radius: 20px;
+      overflow: hidden;
+      display: inline-block;
+      padding: 5px 11px;
+      background-color: $shark;
+  }
+
   .div-img{
     width: 80px;
 
@@ -292,17 +303,6 @@
     padding: 5px 0px;
     background-color: $offline;
   }
-}
-
-.badge{
-    font-size: 0.7rem;
-    color: $white;
-    font-weight: 900;
-    border-radius: 20px;
-    overflow: hidden;
-    display: inline-block;
-    padding: 5px 11px;
-    background-color: $shark;
 }
 
 .marginBottom0px {

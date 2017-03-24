@@ -23,12 +23,6 @@ class DeviceStore {
     });
   }
 
-  handleUpdateDeviceList(devices) {
-    this.devices = devices;
-    this.error = null;
-    this.loading = false;
-  }
-
   handleUpdateSingle(device) {
     for (let i = 0; i < this.devices.length; i++) {
       if (this.devices[i].id == device.id) {
@@ -68,6 +62,12 @@ class DeviceStore {
     // this is actually just a intermediary while addition happens asynchonously
     this.error = null;
     this.loading = true;
+  }
+
+  handleUpdateDeviceList(devices) {
+    this.devices = devices;
+    this.error = null;
+    this.loading = false;
   }
 
   handleFetchDeviceList() {

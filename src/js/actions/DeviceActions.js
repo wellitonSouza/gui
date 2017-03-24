@@ -27,7 +27,6 @@ class DeviceActions {
 
   fetchDevices() {
     return (dispatch) => {
-      dispatch();
       deviceManager.getDevices().then((devicesList) => {
         console.log("devices webservice done");
         this.updateDevices(devicesList.devices);

@@ -1,0 +1,96 @@
+
+.login-area-left-side {
+  background-color: #fff;
+  height: 100%;
+  position: absolute;
+  overflow: auto;
+  top: 0;
+  left:0 !important;
+}
+
+.login-area-left-side p {
+  text-align: center;
+  padding-left: 50px;
+  padding-right: 50px;
+  color: #454545;
+}
+
+/* Right side */
+.login-area-right-side {
+  background: linear-gradient(to right, #3d66bf, #41819c);
+  color: #fff;
+  height: 100%;
+  overflow: auto;
+  position: absolute;
+  top: 0;
+  right:0 !important;
+}
+
+.login-area-right-side .margin-top {
+  padding-top: 25%;
+}
+
+.login-area-left-side .margin-top {
+  padding-top:60%;
+}
+
+/* label underline focus color */
+.login-area-right-side input:not([type]), input[type=text], input[type=password], input[type=email], input[type=url], input[type=time], input[type=date], input[type=datetime], input[type=datetime-local], input[type=tel], input[type=number], input[type=search], textarea.materialize-textarea {
+  border-bottom: 1px solid #fff;
+  box-shadow: 0 1px 0 0 #fff;
+}
+
+/* label color */
+.login-area-right-side .input-field label {
+  color: #fff;
+}
+
+/* label underline focus color */
+.login-area-right-side .input-field input[type=text]:focus, .input-field input[type=password]:focus {
+  border-bottom: 1px solid #fff;
+  box-shadow: 0 1px 0 0 #fff;
+}
+
+.login-area-right-side i.material-icons {
+  color: #fff;
+  padding-top: 20px ;
+}
+
+.login-area-right-side .input-field .prefix {
+  color: #fff;
+  padding-top: 20px ;
+}
+
+.login-area-right-side .login-page-title {
+  font-size: 175%;
+  font-family: "Roboto", sans-serif;
+  font-weight: bold;
+  color: #fff;
+}
+
+.login-area-right-side .login-page-subtitle {
+  font-size: 105%;
+  font-family: "Roboto", sans-serif;
+  font-weight: bold;
+  color: #fff;
+}
+
+.login-area-right-side .btn-flat {
+  background-color: #fff;
+  color: #3d66bf;
+}
+
+.login-area-right-side .btn-flat:hover {
+  background-color: #cecece;
+}
+
+@media only screen and (max-width: 600px) {
+  .login-area-left-side{
+    display: none;
+  }
+
+  .login-area-right-side {
+    padding-left: 10% !important;
+    padding-right: 10% !important;
+  }
+}

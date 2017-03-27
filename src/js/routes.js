@@ -31,7 +31,7 @@ export default (
         </Route>
       </Route>
       <Route path="config" name="Settings" component={Dashboard} />
-      <Route path="flows" name="Information Flows" component={Flows} />
+      <Route path="flows" name="Information Flows" component={Dashboard} />
       <Route path="alarm" name="Alarm" component={Dashboard} />
       <Route path="auth" name="Authentication" component={Dashboard}>
         <Route path="user" name="Template detail" component={Dashboard} />

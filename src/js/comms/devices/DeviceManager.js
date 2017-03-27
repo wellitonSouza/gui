@@ -2,7 +2,7 @@ import util from '../util';
 
 class DeviceManager {
   constructor() {
-    this.baseUrl = "http://localhost:5000"
+    this.baseUrl = ""
   }
 
   getDevices() {

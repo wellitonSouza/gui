@@ -2,7 +2,7 @@ import util from '../util';
 
 class TemplateManager {
   constructor() {
-    this.baseUrl = "http://localhost:5000"
+    this.baseUrl = ""
   }
 
   getDevices() {

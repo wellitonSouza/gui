@@ -2,7 +2,7 @@ import util from '../util';
 
 class LoginManager {
   constructor() {
-    this.baseUrl = "http://172.19.0.10:8000"
+    this.baseUrl = ""
   }
 
   authenticate(login) {

@@ -28,7 +28,6 @@ class DeviceActions {
   fetchDevices() {
     return (dispatch) => {
       deviceManager.getDevices().then((devicesList) => {
-        console.log("devices webservice done");
         this.updateDevices(devicesList.devices);
       })
       .catch((error) => {
@@ -44,7 +43,6 @@ class DeviceActions {
           this.updateSingle(device);
         })
         .catch((error) => {
-          console.log("Error!", error);
           this.devicesFailed("Failed to update given device");
         })
     }
@@ -61,7 +59,6 @@ class DeviceActions {
           this.removeSingle(device.id);
         })
         .catch((error) => {
-          console.log("Error!", error);
           this.devicesFailed("Failed to remove given device");
         })
     }

@@ -5,6 +5,7 @@ class DeviceStore {
   constructor() {
     this.devices = [];
     this.error = null;
+    this.loading = false;
 
     this.bindListeners({
       handleUpdateDeviceList: DeviceActions.UPDATE_DEVICES,
@@ -25,6 +26,7 @@ class DeviceStore {
   handleUpdateDeviceList(devices) {
     this.devices = devices;
     this.error = null;
+    this.loading = false;
   }
 
   handleUpdateSingle(device) {
@@ -34,40 +36,48 @@ class DeviceStore {
         this.devices[i] = newDevice;
       }
     }
+    this.loading = false;
   }
 
   handleTriggerUpdate(device) {
     // trigger handler for updateSingle
     this.error = null;
+    this.loading = true;
   }
 
   handleTriggerRemoval(device) {
-    // trigger handler for updateSingle
+    // trigger handler for removeSingle
     this.error = null;
+    this.loading = true;
   }
 
   handleRemoveSingle(id) {
     this.devices = this.devices.filter(function(e) {
       return e.id != id;
     })
+    this.loading = false;
   }
 
   handleInsertDevice(device) {
     this.devices.push(device);
     this.error = null;
+    this.laoding = false;
   }
 
   handleAddDevice(newDevice) {
     // this is actually just a intermediary while addition happens asynchonously
     this.error = null;
+    this.loading = true;
   }
 
   handleFetchDeviceList() {
     this.devices = [];
+    this.loading = true;
   }
 
   handleFailure(error) {
     this.error = error;
+    this.loading = false;
   }
 }
 

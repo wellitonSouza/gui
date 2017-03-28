@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 import AltContainer from 'alt-container';
 
 import LoginActions from '../../actions/LoginActions';
+import LoginStore from '../../stores/LoginStore';
 
 class Content extends Component {
   constructor(props) {
@@ -45,11 +46,17 @@ class Content extends Component {
       <div className="login">
         <div className="row">
           <div className="col s12 m4 login-area-left-side">
-            <div className="row margin-top">
+            <div className="row icon">
               <p><img src="images/logo.png"/></p>
             </div>
             <div className="row">
-              <p>Some description about the project, like lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.</p>
+              {/* TODO This really should be in an i18n file somewhere */}
+              <div className="info">
+                <i>-- Heleus (TODO: change this to the chosen name) --</i> IoT platform
+                provides an open and solid foundation for a series of applications that depend
+                on data being collected from a myriad of devices, allowing developers to focus on
+                the real value of their innovative applications.
+              </div>
             </div>
           </div>
           <div className="col s12 m8 login-area-right-side">
@@ -61,6 +68,9 @@ class Content extends Component {
             <div className="row">
               <div className="col s12 m4 offset-m4">
                 <div className="login-page-subtitle">Sign in to start your session</div>
+                { this.props.error && (
+                  <div className="login-page-error">Authentication failed</div>
+                )}
               </div>
             </div>
             <form onSubmit={this.login}>
@@ -89,7 +99,13 @@ class Content extends Component {
               </div>
               <div className="row">
                 <div className="col s12 m1 offset-m7">
-                    <button type="submit" className=" waves-effect waves-green btn-flat">Login</button>
+                    { this.props.loading ? (
+                      <button type="" className=" waves-effect waves-green btn-flat">
+                        <i className="fa fa-circle-o-notch fa-spin fa-fw"/>
+                      </button>
+                    ) : (
+                      <button type="submit" className=" waves-effect waves-green btn-flat">Login</button>
+                    )}
                 </div>
               </div>
             </form>
@@ -113,7 +129,9 @@ class Login extends Component {
           transitionAppearTimeout={500}
           transitionEnterTimeout={500}
           transitionLeaveTimeout={500} >
-        <Content />
+        <AltContainer store={LoginStore}>
+          <Content />
+        </AltContainer>
       </ReactCSSTransitionGroup>
     );
   }

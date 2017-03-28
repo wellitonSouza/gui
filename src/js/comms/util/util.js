@@ -63,7 +63,7 @@ class Util {
           resolve(data);
         })
         .catch(function(error) {
-          console.log("fetch has failed", error);
+          reject(error);
         })
     })
   }

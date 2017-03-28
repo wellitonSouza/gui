@@ -11,8 +11,10 @@ class LoginActions {
           this.loginSuccess(response);
         })
         .catch((error) => {
-          this.loginFailed("Login failed.");
+          this.loginFailed("Login failed");
         })
+
+      dispatch();
     }
   }
 

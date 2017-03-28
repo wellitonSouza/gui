@@ -12,6 +12,8 @@ import MeasureActions from '../../actions/MeasureActions';
 import PageHeader from "../../containers/full/PageHeader";
 import Filter from "../utils/Filter";
 
+import AltContainer from 'alt-container';
+
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Link } from 'react-router'
 
@@ -330,6 +332,13 @@ class ListItem extends Component {
 function ListRender(props) {
   const deviceList = props.devices;
 
+  if (props.loading) {
+    return (
+      <div className="background-info">
+        <i className="fa fa-circle-o-notch fa-spin fa-fw"/>
+      </div>
+    )
+  }
   if (deviceList.length > 0) {
     return (
       <div className="row">
@@ -435,12 +444,13 @@ class DeviceList extends Component {
     return (
       <div className="col m10 s12 offset-m1 " >
 
-        { this.state.isDisplayList === false && <MapRender devices={filteredList}/>  }
+        { this.state.isDisplayList === false && <MapRender devices={filteredList} loading={this.props.loading}/>  }
         { this.state.isDisplayList && <ListRender devices={filteredList}
                                                   detail={this.state.detail}
                                                   detailedTemplate={this.detailedTemplate}
                                                   edit={this.state.edit}
-                                                  editTemplate={this.editTemplate}/> }
+                                                  editTemplate={this.editTemplate}
+                                                  loading={this.props.loading} /> }
 
         {/* <!-- footer --> */}
         <div className="col s12"></div>
@@ -632,22 +642,11 @@ class Devices extends Component {
   constructor(props) {
     super(props);
 
-    this.state = DeviceStore.getState();
-    this.onChange = this.onChange.bind(this);
     this.filterChange = this.filterChange.bind(this);
   }
 
   componentDidMount() {
-    DeviceStore.listen(this.onChange);
-    DeviceActions.fetchDevices();
-  }
-
-  componentWillUnmount() {
-    DeviceStore.unlisten(this.onChange);
-  }
-
-  onChange(newState) {
-    this.setState(DeviceStore.getState());
+    DeviceActions.fetchDevices.defer();
   }
 
   filterChange(newFilter) {
@@ -665,7 +664,9 @@ class Devices extends Component {
         <PageHeader title="device manager" subtitle="Devices">
           <Filter onChange={this.filterChange} />
         </PageHeader>
-        <DeviceList devices={this.state.devices}/>
+        <AltContainer store={DeviceStore}>
+          <DeviceList />
+        </AltContainer>
         <NewDevice />
       </ReactCSSTransitionGroup>
     );

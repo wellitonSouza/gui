@@ -6,9 +6,11 @@ import AltContainer from 'alt-container';
 
 import MenuActions from '../../actions/MenuActions';
 import MenuStore from '../../stores/MenuStore';
+import LoginStore from '../../stores/LoginStore';
 
 function Navbar(props) {
   // TODO: header widgets should be received as children to this (Navbar) node
+
   return (
     <nav className="nav outer-header line-normal">
       <div className="nav-wrapper">
@@ -19,7 +21,7 @@ function Navbar(props) {
               <div className="user-pic">
                 <img src="https://www.gravatar.com/avatar/ea4531646bf8ece65e914901535397f3?d=identicon" />
               </div>
-              <div className="user-name">{props.userName}</div>
+              <div className="user-name">{(props.user.name ? props.user.name : props.user.username)}</div>
               <div className="">
                 <i className="fa fa-caret-down line-normal center-caret" />
               </div>
@@ -164,7 +166,9 @@ class Full extends Component {
   render() {
     return (
       <span>
-        <Navbar path={this.props.location.pathname} userName="new user"/>
+        <AltContainer store={LoginStore}>
+          <Navbar path={this.props.location.pathname} userName="new user"/>
+        </AltContainer>
         <AltContainer store={MenuStore}>
           <Content router={this.props.router}>{this.props.children}</Content>
         </AltContainer>

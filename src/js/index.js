@@ -11,9 +11,9 @@ require ('../components/font-awesome/scss/font-awesome.scss')
 
 function Main(props) {
   return (
-    // <Gatekeeper> TODO add this back!
+    <Gatekeeper>
       <Router routes={routes} history={hashHistory} />
-    // </Gatekeeper> TODO add this back!
+    </Gatekeeper>
   )
 }
 

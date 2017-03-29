@@ -103,7 +103,7 @@ class Sidebar extends Component {
       { target: "/flows", iconClass: "material-icons mi-device-hub", label: "data flows", desc: "Processing flows to be executed" },
       { target: "/alarm", iconClass: "fa fa-bell-o", label: "alarms", desc: "System events and alarms"},
       { target: "/auth", iconClass: "fa fa-unlock-alt", label: "auth", desc: "User and permissions management", children: [
-        { target: "", iconClass: "", label: "users"},
+        { target: "/auth/user", iconClass: "", label: "users"},
         { target: "", iconClass: "", label: "permissions"}
       ]},
       // TODO change this icon
@@ -135,7 +135,7 @@ class Sidebar extends Component {
 
 function Content(props) {
   return (
-    <div className={"app-body " + (props.leftSideBar.open ? " open" : " closed") }>
+    <div className={"app-body full-height " + (props.leftSideBar.open ? " open" : " closed") }>
       <Sidebar open={props.leftSideBar.open} router={props.router}/>
       <div className="content expand">
         {props.children}
@@ -144,14 +144,31 @@ function Content(props) {
   )
 }
 
+
+function SpanWrapper(props) {
+
+  function renderChildren() {
+    return React.Children.map(props.children, child => {
+      return React.cloneElement(child, props);
+    })
+  }
+
+  return (
+    <span>
+      { renderChildren() }
+    </span>
+  )
+}
+
 class Full extends Component {
   render() {
     return (
-      <AltContainer store={MenuStore}>
-        {/* <Header /> */}
+      <span>
         <Navbar path={this.props.location.pathname} userName="new user"/>
-        <Content router={this.props.router}>{this.props.children}</Content>
-      </AltContainer>
+        <AltContainer store={MenuStore}>
+          <Content router={this.props.router}>{this.props.children}</Content>
+        </AltContainer>
+      </span>
     );
   }
 }

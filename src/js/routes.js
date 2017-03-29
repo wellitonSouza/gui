@@ -7,6 +7,7 @@ import Templates from './views/deviceTemplates/'
 import Dashboard from './views/dashboard/'
 import {Devices,ViewDevice}  from './views/devices/'
 import LoginActions from './actions/LoginActions'
+import Users from './views/users/'
 
 export default (
   <Router history={hashHistory}>
@@ -33,9 +34,10 @@ export default (
       <Route path="config" name="Settings" component={Dashboard} />
       <Route path="flows" name="Information Flows" component={Dashboard} />
       <Route path="alarm" name="Alarm" component={Dashboard} />
-      <Route path="auth" name="Authentication" component={Dashboard}>
-        <Route path="user" name="Template detail" component={Dashboard} />
-        <Route path="permissions" name="Template detail" component={Dashboard} />
+      <Route path="auth" name="Authentication">
+        <IndexRoute component={Users} />
+        <Route path="user" name="User detail" component={Users} />
+        <Route path="permissions" name="Permissioning detail" component={Users} />
       </Route>
 
       <Route path="deploy" name="Deployment" component={Dashboard} >

@@ -31,7 +31,8 @@ module.exports = {
   module: {
     loaders: [
         { test: /\.js$/, loaders: ['react-hot', 'jsx', 'babel'], exclude: /(node_modules|src\/components)/ },
-        { test: /\.scss$/, loader: ExtractTextPlugin.extract('css!sass') },
+        { test: /\.scss$/, loaders: ['style', 'css?sourceMap', 'sass?sourceMap'] },
+        // { test: /\.scss$/, loader: ExtractTextPlugin.extract('css!sass') },
         { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'file-loader?mimetype=image/svg+xml'},
         { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader?mimetype=application/font-woff"},
         { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader?mimetype=application/font-woff"},
@@ -40,13 +41,13 @@ module.exports = {
     ]
   },
   plugins: [
-    new ExtractTextPlugin('style.css', {
-      allChunks: true
-    }),
+    // new ExtractTextPlugin('style.css', {
+    //   allChunks: true
+    // }),
 
     new CopyWebpackPlugin([
       { from: 'src/html/index.html', to: 'index.html' },
-      { from: 'src/images', to: 'images' },
+      { from: 'src/img', to: 'images' },
       { from: 'src/components', to: 'components' }
     ])
   ]

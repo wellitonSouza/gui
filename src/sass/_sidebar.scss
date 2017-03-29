@@ -167,6 +167,9 @@
 
 .content {
   padding-left: $sidebar-width-closed;
+  box-sizing: border-box;
+  height: 100%;
+  padding-top: $header-height;
 }
 
 .open .content {

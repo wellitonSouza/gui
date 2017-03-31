@@ -13,14 +13,14 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 function SummaryItem(props) {
   const selectedClass = "lst-entry-users " + (props.isActive ? " active" : "");
-  const name = ((props.user.name && (props.user.name.length > 0)) ? props.user.name : props.user.username);
+  const name = ((props.user.name && (props.user.name.length > 0)) ? props.user.name+' '+props.user.lastName : props.user.username);
   return (
     <div className={selectedClass}>
-      <div className="col s3">
+      <div className="col div-img">
         {/* TODO set a custom image */}
         <img src="images/user.png"/>
       </div>
-      <div className="lst-entry-users-title col s9">
+      <div className="lst-entry-users-title col div-with-img">
         <div className="title">{name}</div>
         <div className="subtitle">{props.user.email}</div>
       </div>
@@ -40,10 +40,12 @@ class ListItem extends Component {
   }
 
   render() {
-    const active = (this.props.username == this.props.detail);
+    // TODO isn't working
+    // const active = (this.props.username == this.props.detail);
+    const active = false;
 
     return (
-      <div className="col s12 no-padding" id={this.props.user.id} onClick={this.handleDetail}>
+      <div className="col s12 no-padding clickable" id={this.props.user.id} onClick={this.handleDetail}>
           <SummaryItem user={this.props.user} isActive={active}/>
       </div>
     )
@@ -88,11 +90,11 @@ class DetailItem extends Component {
         <div className="lst-user-detail" >
           <div className="lst-line col s12">
             <div className="col s2">
-              <p><img src="images/user.png"/></p>
+              <p><img className="photo_big" src="images/user.png"/></p>
             </div>
             <div className="lst-user-title col s7">
-              <span>{this.props.user.name}</span>
-              <p className="subTitle"><b>Id:</b> {this.props.user.id}</p>
+              <span>{this.props.user.name} {this.props.user.lastName}</span>
+              <p className="subTitle">ID:<b>{this.props.user.id}</b></p>
             </div>
             <div className="lst-title col s3">
               <div className="edit right inline-actions">
@@ -108,29 +110,39 @@ class DetailItem extends Component {
               </div>
             </div>
           </div>
+
           <div className="lst-user-line col s12">
-            <p className="subTitle">Last Name</p>
+            <span className="field">Name</span>
           </div>
           <div className="lst-user-line col s12">
-            {this.props.user.lastName}
+            <span className='value'> {this.props.user.name} </span>
+          </div>
+
+
+          <div className="lst-user-line col s12">
+            <span className="field">Last Name </span>
           </div>
           <div className="lst-user-line col s12">
-            <p className="subTitle">Email</p>
+            <span className='value'> {this.props.user.lastName} </span>
+          </div>
+
+          <div className="lst-user-line col s12">
+            <span className="field">Email</span>
           </div>
           <div className="lst-user-line col s12 data">
-            {this.props.user.email}
+            <span className='value'> {this.props.user.email} </span>
           </div>
           <div className="lst-user-line col s12">
-            <p className="subTitle">Login</p>
+            <span className="field">Login</span>
           </div>
           <div className="lst-user-line col s12 data">
-            {this.props.user.login}
+            <span className='value'> {this.props.user.login} </span>
           </div>
           <div className="lst-user-line col s12">
-            <p className="subTitle">Service</p>
+            <span className="field">Service</span>
           </div>
           <div className="lst-user-line col s12 data">
-            {this.props.user.service}
+            <span className='value'> {this.props.user.service} </span>
           </div>
         </div>
       </span>
@@ -198,7 +210,7 @@ class EditItem extends Component {
           <div className="lst-user-line col s12 input-field">
             <label htmlFor="fld_login">Login</label>
             <input id="fld_login" type="text"
-                   name="login" value={this.props.user.login}
+                   name="lcurrentogin" value={this.props.user.login}
                    key="login" onChange={this.props.user.login} />
           </div>
           <div className="lst-user-line col s12 input-field">
@@ -368,6 +380,8 @@ class UserList extends Component {
     this.applyPagination = this.applyPagination.bind(this);
     this.nextPage = this.nextPage.bind(this);
     this.prevPage = this.prevPage.bind(this);
+    this.isFirstPage = this.isFirstPage.bind(this);
+    this.isLastPage = this.isLastPage.bind(this);
   }
 
   handleFieldChange(e) {
@@ -460,9 +474,20 @@ class UserList extends Component {
     this.state.listOfUserByPage = listPaginate;
   }
 
+  isFirstPage()
+  {
+    return this.state.current == 1;
+  }
+
+  isLastPage()
+  {
+    return this.state.listOfUser.length <= ((this.state.current) * this.state.usersByPage);
+  }
+
+
   prevPage(list) {
     let state = this.state;
-    if (state.current > 1) {
+    if (!this.isFirstPage()) {
       state.current--;
       this.applyPagination();
     }
@@ -471,11 +496,11 @@ class UserList extends Component {
 
   nextPage() {
     let state = this.state;
-            if ( (this.state.listOfUser.length > ((state.current) * this.state.usersByPage)) ) {
-      state.current++;
-      this.applyPagination();
-      this.setState(state);
-    }
+      if (!this.isLastPage()) {
+        state.current++;
+        this.applyPagination();
+        this.setState(state);
+      }
   }
 
   componentDidMount() {
@@ -487,22 +512,38 @@ class UserList extends Component {
   render() {
 
     this.state.listOfUser = this.applyFiltering(this.props.users);
-
     this.applyPagination();
     let displayed = this.state.usersByPage;
     if (this.state.listOfUser.length < displayed)
-      displayed = this.state.listOfUser.length
+      displayed = this.state.listOfUser.length;
 
     let detailAreaStatus = "";
     if (this.state.create || this.state.edit) detailAreaStatus = " create";
     if (this.state.detail) detailAreaStatus = " selected";
+    const prevPageClass = (this.isFirstPage() ? " inactive" : "");
+    const nextPageClass = (this.isLastPage() ? " inactive" : "");
+
+
     return (
       <span>
 
         {/* TODO promote this */}
         <div className="row z-depth-2 userSubHeader" id="inner-header">
           {/* <div className="col s12 z-depth-2 userSubHeader"> */}
-              <div className="col s6 m10">List of Users</div>
+              <div className="col s4 m4">List of Users</div>
+
+              <div className="col s3 m3 header-card-info">
+                <div className="title"># Users</div>
+                <div className="subtitle">{this.state.listOfUser.length}</div>
+              </div>
+
+              <div className="col s3 m3 header-card-info">
+                <div className="title">Last user created</div>
+                <div className="subtitle">TODO: How to get the last user?</div>
+              </div>
+
+
+
               <div className="col s6 m2 button">
                 <a className="waves-effect waves-light btn right" onClick={this.handleCreate}>New User</a>
               </div>
@@ -518,13 +559,13 @@ class UserList extends Component {
                               detail={this.state.detail}
                               detailedUser={this.detailedUser}/>
                 )}
-                <div className="col s4 userCanvasfooter">
+                <div className="col s4 userCanvasFooter">
                   <div className="col s12 m6">Showing {displayed} of {this.state.listOfUser.length}</div>
-                  <div className="col s6 m3">
-                    <a onClick={this.prevPage}><i className="fa fa-chevron-left paddingRight10"></i>Prev</a>
+                  <div className="col s6 m3 clickable">
+                    <a className={prevPageClass} onClick={this.prevPage}><i className="fa fa-chevron-left paddingRight10"></i>PREV</a>
                   </div>
-                  <div className="col s6 m3 ">
-                    <a onClick={this.nextPage}>Next<i className="fa fa-chevron-right paddingLeft10"></i></a>
+                  <div className="col s6 m3 clickable">
+                    <a className={nextPageClass} onClick={this.nextPage}>NEXT<i className="fa fa-chevron-right paddingLeft10"></i></a>
                   </div>
                 </div>
               </div>

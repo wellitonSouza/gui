@@ -11,7 +11,7 @@
   width: $sidebar-width-closed;
   height: calc(100% - #{$header-height});
   margin-top: $header-height;
-
+  border-right: 1px solid #c1c1c1 !important;
   color: #fff;
   background-color: $sidebar-bg;
 

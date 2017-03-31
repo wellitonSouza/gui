@@ -20,7 +20,8 @@ $cornflower: #a4c2f4;
 // gray
 $porcelain: #ecf0f1;
 $silver: #b8b8b8;
-
+$dark-silver: #848484;
+$black: #000000; //TODO get a better 'black'
 // sidebar control variables
 $sidebar-width: 220px;
 $sidebar-width-closed: 50px;
@@ -71,6 +72,11 @@ body {
 
 .caps {
   text-transform: uppercase;
+}
+
+.clickable{
+  cursor: pointer;
+  user-select: none;
 }
 
 @import 'list';

@@ -14,6 +14,7 @@ $subtle: #9e9e9e;
 $bluewood: #2c3e50;
 $spruce: #3d505b;
 $shark: #1c2733;
+$white: #fff;
 $kashmir: #51779f;
 $kashmir-border: #436788;
 $cornflower: #a4c2f4;
@@ -21,7 +22,7 @@ $cornflower: #a4c2f4;
 $porcelain: #ecf0f1;
 $silver: #b8b8b8;
 $dark-silver: #848484;
-$black: #000000; //TODO get a better 'black'
+$black: #2c3e50;
 // sidebar control variables
 $sidebar-width: 220px;
 $sidebar-width-closed: 50px;
@@ -36,7 +37,7 @@ $sidebar-desc: #bfbfbf;
 
 // header control variables
 $header-height: 45px;
-$page-header-size: 75px;
+$page-header-size: 65px;
 
 // $app-background-color: #f3f3f3;
 $element-background-color: #fff;
@@ -65,6 +66,12 @@ body {
   padding-left: 0 !important;
 }
 
+.paddingTop10{
+
+  padding-top:10px !important;
+}
+
+
 .line-normal {
   line-height: normal !important;
   height: auto !important;
@@ -77,6 +84,11 @@ body {
 .clickable{
   cursor: pointer;
   user-select: none;
+}
+
+.text-right
+{
+  text-align: right;
 }
 
 @import 'list';

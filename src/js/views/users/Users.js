@@ -16,6 +16,16 @@ function SummaryItem(props) {
   const name = ((props.user.name && (props.user.name.length > 0)) ? props.user.name+' '+props.user.lastName : props.user.username);
   return (
     <div className={selectedClass}>
+     <div className="col hovered">
+       <div className="col s12">
+          <div className="col s9 title2">{name}</div>
+          <div className="col s3 text-right subtitle">ID: {props.user.id}</div>
+       </div>
+       <div className="col s12 paddingTop10">
+          <div className="col s3 openSans8">Roles:</div>
+          <div className="col s9 text-right subtitle"><label className='badge'>ADMIN</label></div>
+       </div>
+     </div>
       <div className="col div-img">
         {/* TODO set a custom image */}
         <img src="images/user.png"/>
@@ -40,10 +50,7 @@ class ListItem extends Component {
   }
 
   render() {
-    // TODO isn't working
-    // const active = (this.props.username == this.props.detail);
-    const active = false;
-
+    const active = (this.props.user.id == this.props.detail);
     return (
       <div className="col s12 no-padding clickable" id={this.props.user.id} onClick={this.handleDetail}>
           <SummaryItem user={this.props.user} isActive={active}/>
@@ -84,29 +91,34 @@ class DetailItem extends Component {
     this.props.deleteUser(this.props.user);
   }
 
+  // I think is better use those buttons on the edit page;
+  // <a className="btn-floating waves-green right" onClick={this.handleDismiss}>
+  //   <i className="fa fa-times"></i>
+  // </a>
+  // <a className="btn-floating waves-light red" onClick={this.handleRemove}>
+  //   <i className="material-icons">delete</i>
+  // </a>
+  //
+
   render() {
     return (
       <span>
         <div className="lst-user-detail" >
           <div className="lst-line col s12">
-            <div className="col s2">
+            <div className="col s3">
               <p><img className="photo_big" src="images/user.png"/></p>
             </div>
-            <div className="lst-user-title col s7">
+            <div className="lst-user-title col s6">
               <span>{this.props.user.name} {this.props.user.lastName}</span>
               <p className="subTitle">ID:<b>{this.props.user.id}</b></p>
             </div>
             <div className="lst-title col s3">
               <div className="edit right inline-actions">
-                <a className="btn-floating waves-green right" onClick={this.handleDismiss}>
-                  <i className="fa fa-times"></i>
-                </a>
-                <a className="btn-floating waves-red right" onClick={this.handleEdit}>
-                  <i className="material-icons">mode_edit</i>
-                </a>
-                <a className="btn-floating waves-light red" onClick={this.handleRemove}>
-                  <i className="material-icons">delete</i>
-                </a>
+
+              <a className="btn-floating waves-red right" onClick={this.handleEdit}>
+                <i className="material-icons">mode_edit</i>
+              </a>
+
               </div>
             </div>
           </div>
@@ -210,7 +222,7 @@ class EditItem extends Component {
           <div className="lst-user-line col s12 input-field">
             <label htmlFor="fld_login">Login</label>
             <input id="fld_login" type="text"
-                   name="lcurrentogin" value={this.props.user.login}
+                   name="login" value={this.props.user.login}
                    key="login" onChange={this.props.user.login} />
           </div>
           <div className="lst-user-line col s12 input-field">
@@ -401,7 +413,7 @@ class UserList extends Component {
 
   detailedUser(user) {
     let temp = this.state;
-    temp.detail = user.username;
+    temp.detail = user.id;
     temp.user = user;
     temp.create = undefined;
     temp.edit = undefined;
@@ -532,12 +544,12 @@ class UserList extends Component {
           {/* <div className="col s12 z-depth-2 userSubHeader"> */}
               <div className="col s4 m4">List of Users</div>
 
-              <div className="col s3 m3 header-card-info">
+              <div className="col s2 m2 header-card-info">
                 <div className="title"># Users</div>
                 <div className="subtitle">{this.state.listOfUser.length}</div>
               </div>
 
-              <div className="col s3 m3 header-card-info">
+              <div className="col s4 m4 header-card-info">
                 <div className="title">Last user created</div>
                 <div className="subtitle">TODO: How to get the last user?</div>
               </div>

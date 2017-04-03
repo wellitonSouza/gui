@@ -184,7 +184,9 @@
   }
 
   .open .sidebar {
-    box-shadow: none;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    // Just to check if would be better use shadow; 
+    // box-shadow: none;
   }
 
   .content {

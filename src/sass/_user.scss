@@ -1,3 +1,8 @@
+.openSans8{
+  font-family: 'Open Sans', sans-serif;
+  font-size: 9pt;
+}
+
 .header-card-info
 {
 
@@ -11,7 +16,7 @@
   .subtitle
   {
     font-family: 'Droid Sans', sans-serif;
-    font-size: 15pt;
+    font-size: 14pt;
     color: $dark-silver;
   }
 
@@ -26,7 +31,7 @@
   color: $dark-silver;
   border-bottom: 1px solid #f1f1f1; // TODO move this to color scheme
   // background-color: $element-background-color;
-
+  position: relative;
   transition: 0.3s;
 
   .div-img{
@@ -39,8 +44,37 @@
     width: calc(100% - (80px));
   }
 
+  .hovered {
+    position: absolute;
+    width: 0%;
+    opacity: 0;
+    transition: width 1s ease;
+    overflow: hidden;
+
+    & div{
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+
+
+  &:hover .hovered {
+    position: absolute;
+    left: 0px;
+    padding: 10px;
+    top: 0px;
+    height: 100%;
+    opacity: 1;
+    background-color: $black;
+    width: 95%;
+    color:#FFF;
+  }
+
   &.active {
     background-color: #fff;
+    width: 101%;
+    z-index: 5;
+    border-left: 3px solid darkcyan;
 
     .title {
       color: #0b5394; // TODO move this to color scheme
@@ -51,7 +85,7 @@
     margin-top: 0.5em;
   }
 
-  .title {
+  .title, .title2 {
     font-family: 'Droid Sans', sans-serif;
     font-weight: bold;
   }
@@ -107,7 +141,7 @@
 }
 
 .lst-user-line {
-  font-size: 130%;
+  font-size: 110%;
   // padding-left: 50px !important;
 
   .field
@@ -191,7 +225,7 @@
   border-left: 1px solid #d4d4d4;
 
   &.selected {
-    background-color: #f8f8f8;
+    background-color: $white;
   }
 
   &.create {
@@ -229,7 +263,7 @@
 
 .userSubHeader {
   background-color: #fff;;
-  padding: 15px 30px !important;
+  padding: 5px 30px !important;
   font-size: 16pt;
   font-family: 'Droid Sans', sans-serif;
   color: #666;
@@ -244,13 +278,28 @@
     font-size: 0.7rem;
     margin-top: 10px !important;
     color: inherit;
-    height: 2em;
+    height: 29px;
+    font-weight: 900;
     line-height: 2em;
     width: 9em;
+    text-align: center;
     color: #fff;
-    padding: 0 1em;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 5px 0px;
     background-color: $offline;
   }
+}
+
+.badge{
+    font-size: 0.7rem;
+    color: $white;
+    font-weight: 900;
+    border-radius: 20px;
+    overflow: hidden;
+    display: inline-block;
+    padding: 5px 11px;
+    background-color: $shark;
 }
 
 .marginBottom0px {

@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import Dropzone from 'react-dropzone'
 import userManager from '../../comms/users/UserManager';
 
+import alt from '../../alt';
+import AltContainer from 'alt-container';
 var UserStore = require('../../stores/UserStore');
 var UserActions = require('../../actions/UserActions');
 
@@ -22,8 +24,8 @@ function SummaryItem(props) {
           <div className="col s3 text-right subtitle">ID: {props.user.id}</div>
        </div>
        <div className="col s12 paddingTop10">
-          <div className="col s3 openSans8">Roles:</div>
-          <div className="col s9 text-right subtitle"><label className='badge'>ADMIN</label></div>
+          <div className="col s3 openSans8">Service:</div>
+          <div className="col s9 text-right subtitle"><label className='badge'>{props.user.service}</label></div>
        </div>
      </div>
       <div className="col div-img">
@@ -90,8 +92,7 @@ class DetailItem extends Component {
     e.preventDefault();
     this.props.deleteUser(this.props.user);
   }
-
-  // I think is better use those buttons on the edit page;
+  // I think is better use
   // <a className="btn-floating waves-green right" onClick={this.handleDismiss}>
   //   <i className="fa fa-times"></i>
   // </a>
@@ -162,178 +163,123 @@ class DetailItem extends Component {
   }
 }
 
-class EditItem extends Component {
-  constructor (props) {
-    super(props);
-
-    this.handleDismiss = this.handleDismiss.bind(this);
-    this.handleEdit = this.handleEdit.bind(this);
+const FormActions = alt.generateActions('set', 'update', 'reset');
+class FStore {
+  constructor() {
+    this.user = {};
+    this.bindListeners({
+      set: FormActions.SET,
+      update: FormActions.UPDATE
+    });
+    this.set(null);
   }
 
-  componentDidMount() {
-    let callback = this.props.handleFieldChange.bind(this);
-    Materialize.updateTextFields();
+  set(user) {
+    if (user === null || user === undefined) {
+      this.user = {
+        name: "",
+        lastName: "",
+        email: "",
+        username: "",
+        passwd: "",
+        service: ""
+      };
+    } else {
+      this.user = user;
+    }
   }
 
-  handleDismiss(e) {
-    e.preventDefault();
-    this.props.clearSelection();
-  }
-
-  handleEdit(e) {
-    e.preventDefault();
-    this.props.updateUser(this.props.user);
-  }
-
-  render() {
-    return (
-      <form>
-        <div className="lst-user-detail" >
-          <div className="lst-line col s12">
-            <div className="col s2">
-              <p><img src="images/user.png"/></p>
-            </div>
-            <div className="lst-user-title col s10">
-              <span>{this.props.user.name}</span>
-              <p className="subTitle"><b>Id:</b> {this.props.user.id}</p>
-            </div>
-          </div>
-          <div className="lst-line col s12">
-            &nbsp;
-          </div>
-          <div className="lst-user-line col s12 input-field">
-            <label htmlFor="fld_lastName">Name</label>
-            <input id="fld_Name" type="text"
-                   name="Name" value={this.props.user.name}
-                   key="Name" onChange={this.props.user.name} />
-          </div>
-          <div className="lst-user-line col s12 input-field">
-            <label htmlFor="fld_lastName">Last Name</label>
-            <input id="fld_lastName" type="text"
-                   name="lastName" value={this.props.user.lastName}
-                   key="lastName" onChange={this.props.user.lastName} />
-          </div>
-          <div className="lst-user-line col s12 input-field">
-            <label htmlFor="fld_lastName">Email</label>
-            <input id="fld_Email" type="text"
-                   name="email" value={this.props.user.email}
-                   key="email" onChange={this.props.user.email} />
-          </div>
-          <div className="lst-user-line col s12 input-field">
-            <label htmlFor="fld_login">Login</label>
-            <input id="fld_login" type="text"
-                   name="login" value={this.props.user.login}
-                   key="login" onChange={this.props.user.login} />
-          </div>
-          <div className="lst-user-line col s12 input-field">
-            <label htmlFor="fld_password">Password</label>
-            <input id="fld_password" type="password"
-                   name="password" value={this.props.user.password}
-                   key="password" onChange={this.props.user.password} />
-          </div>
-          <div className="lst-user-line col s12 input-field">
-            <label htmlFor="fld_service">Service</label>
-            <input id="fld_service" type="text"
-                   name="service" value={this.props.user.service}
-                   key="service" onChange={this.props.user.service} />
-          </div>
-          <div className="col s6 buttons">
-            <div className="pull-left">
-              <a onClick={this.handleDismiss}
-                 className="waves-light btn red">Cancel</a>
-            </div>
-          </div>
-          <div className="col s6">
-            <div className="pull-right">
-              <a onClick={this.handleEdit}
-                 className="waves-light btn teal darken-4">Save</a>
-            </div>
-          </div>
-        </div>
-      </form>
-    )
+  update(diff) {
+    this.user[diff.f] = diff.v;
   }
 }
+var FormStore = alt.createStore(FStore, 'FormStore');
 
 class UserForm extends Component {
   constructor(props) {
     super(props);
+  }
 
-    this.state = {
-      name: "",
-      email: "",
-      username: "",
-      passwd: "",
-      service: ""
-    }
+  render() {
+    return (
+      <AltContainer store={FormStore}>
+        <UserFormImpl {...this.props} />
+      </AltContainer>
+    )
+  }
+}
 
-    // this.handleDismiss = this.handleDismiss.bind(this);
+class UserFormImpl extends Component {
+  constructor(props) {
+    super(props);
     this.saveUser = this.saveUser.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
+  componentDidMount() {
+    Materialize.updateTextFields();
+  }
 
-  // handleDismiss(e) {
-  //   e.preventDefault();
-  //   this.props.clearSelection();
-  // }
+  componentDidUpdate() {
+    Materialize.updateTextFields();
+  }
 
   saveUser(e) {
-    console.log("About to save user");
     e.preventDefault();
     this.props.save(this.state);
     // TODO dismiss/select created user
   }
 
   handleChange(e) {
-    const target = e.target;
-    let updated = this.state;
-    updated[target.name] = target.value;
-    this.setState(updated);
+    e.preventDefault();
+    const f = e.target.name;
+    const v = e.target.value;
+    FormActions.update({f: f, v: v});
   }
 
   render() {
     return (
       <span>
         <div className="lst-line col s12">
-          <div className="col s2">
-            <p><img src="images/user.png"/></p>
-          </div>
-          <div className="lst-user-title col s10">
-            <span>{this.props.title}</span>
-          </div>
+            <div className="col s2">
+              <p><img src="images/user.png"/></p>
+            </div>
+            <div className="lst-user-title col s10">
+              <span>{this.props.title}</span>
+              <p className="subTitle"><b>Id:</b>{this.props.user.id}</p>
+            </div>
         </div>
 
         <form onSubmit={this.saveUser}>
           <div className="lst-user-detail" >
             <div className="lst-user-line col s12 input-field">
-              <label htmlFor="fld_lastName">Name</label>
+              <label htmlFor="fld_Name">Name</label>
               <input id="fld_Name" type="text"
-                     name="name" value={this.state.name}
+                     name="name" value={this.props.user.name}
                      key="name" onChange={this.handleChange} />
             </div>
             <div className="lst-user-line col s12 input-field">
-              <label htmlFor="fld_lastName">Email</label>
+              <label htmlFor="fld_Email">Email</label>
               <input id="fld_Email" type="text"
-                     name="email" value={this.state.email}
+                     name="email" value={this.props.user.email}
                      key="email" onChange={this.handleChange} />
             </div>
             <div className="lst-user-line col s12 input-field">
               <label htmlFor="fld_login">Login</label>
               <input id="fld_login" type="text"
-                     name="username" value={this.state.username}
+                     name="username" value={this.props.user.username}
                      key="username" onChange={this.handleChange} />
             </div>
             <div className="lst-user-line col s12 input-field">
               <label htmlFor="fld_password">Password</label>
               <input id="fld_password" type="password"
-                     name="passwd" value={this.state.passwd}
+                     name="passwd" value={this.props.user.passwd}
                      key="passwd" onChange={this.handleChange} />
             </div>
             <div className="lst-user-line col s12 input-field">
               <label htmlFor="fld_service">Managed service</label>
               <input id="fld_service" type="text"
-                     name="service" value={this.state.service}
+                     name="service" value={this.props.user.service}
                      key="service" onChange={this.handleChange} />
             </div>
           </div>
@@ -360,15 +306,15 @@ class UserList extends Component {
 
     this.state = {
       filter: '',
-      user: {
-        id: "",
-        name: "",
-        lastName: "",
-        email: "",
-        login: "",
-        password: "",
-        roles: []
-      },
+      // user: {
+      //   id: "",
+      //   name: "",
+      //   lastName: "",
+      //   email: "",
+      //   login: "",
+      //   password: "",
+      //   roles: []
+      // },
       detail: undefined,
       edit: undefined,
       create: undefined,
@@ -414,6 +360,7 @@ class UserList extends Component {
   detailedUser(user) {
     let temp = this.state;
     temp.detail = user.id;
+    FormActions.set(user);
     temp.user = user;
     temp.create = undefined;
     temp.edit = undefined;
@@ -441,6 +388,7 @@ class UserList extends Component {
   }
 
   handleCreate() {
+    FormActions.set(null);
     this.clearSelection();
     let temp = this.state;
     temp.create = true;
@@ -486,13 +434,11 @@ class UserList extends Component {
     this.state.listOfUserByPage = listPaginate;
   }
 
-  isFirstPage()
-  {
+  isFirstPage() {
     return this.state.current == 1;
   }
 
-  isLastPage()
-  {
+  isLastPage() {
     return this.state.listOfUser.length <= ((this.state.current) * this.state.usersByPage);
   }
 
@@ -592,13 +538,11 @@ class UserList extends Component {
             {this.state.create != undefined ? (
                 <UserForm dismiss={this.clearSelection}
                           save={UserActions.addUser}
-                          title="New User"/>
+                          title="New User" />
             ) : this.state.edit != undefined ? (
-                <EditItem user={this.state.user}
-                          handleFieldChange={this.handleFieldChange}
-                          clearSelection={this.clearSelection}
-                          editUser={this.editUser}
-                          updateUser={this.updateUser}/>
+                <UserForm dismiss={this.clearSelection}
+                          save={UserActions.triggerUpdate}
+                          title={this.state.user.name} />
                 ) : (
                 this.state.detail != undefined ? (
                   <DetailItem user={this.state.user}

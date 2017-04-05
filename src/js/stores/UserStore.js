@@ -37,19 +37,23 @@ class UserStore {
         this.users[i] = newUser;
       }
     }
+    this.loading = false;
   }
 
   handleTriggerUpdate(user) {
     // trigger handler for updateSingle
     this.error = null;
+    this.loading = true;
   }
 
   handleTriggerRemoval(user) {
     // trigger handler for updateSingle
     this.error = null;
+    this.loading = true;
   }
 
   handleRemoveSingle(id) {
+    this.loading = false;
     this.users = this.users.filter(function(e) {
       return e.id != id;
     })
@@ -58,19 +62,22 @@ class UserStore {
   handleInsertUser(user) {
     this.users.push(user);
     this.error = null;
+    this.loading = false;
   }
 
   handleAddUser(newUser) {
-    // this is actually just a intermediary while addition happens asynchonously
     this.error = null;
+    this.loading = true;
   }
 
   handleFetchUserList() {
     this.users = [];
+    this.loading = true;
   }
 
   handleFailure(error) {
     this.error = error;
+    this.loading = false;
   }
 }
 

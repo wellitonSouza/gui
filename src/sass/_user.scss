@@ -195,6 +195,7 @@
 
   // 82 px is the height of the inner header TODO set a fixed height for the inner header
   min-height: calc(100% - (#{$page-header-size} + 82px + 1em));
+  // min-height: 685px;
 
   margin: 5px $margin 10px $margin !important;
   padding-bottom: 5em !important;

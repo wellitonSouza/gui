@@ -15,7 +15,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 function SummaryItem(props) {
   const selectedClass = "lst-entry-users " + (props.isActive ? " active" : "");
-  const name = ((props.user.name && (props.user.name.length > 0)) ? props.user.name+' '+props.user.lastName : props.user.username);
+  const name = ((props.user.name && (props.user.name.length > 0)) ? props.user.name : props.user.username);
   return (
     <div className={selectedClass}>
      <div className="col hovered">
@@ -70,13 +70,9 @@ class DetailItem extends Component {
     this.handleRemove = this.handleRemove.bind(this);
   }
 
-  componentDidMount() {
+  componentDidMount() {}
 
-  }
-
-  componentWillUnmount() {
-
-  }
+  componentWillUnmount() {}
 
   handleDismiss(e) {
     e.preventDefault();
@@ -92,14 +88,6 @@ class DetailItem extends Component {
     e.preventDefault();
     this.props.deleteUser(this.props.user);
   }
-  // I think is better use
-  // <a className="btn-floating waves-green right" onClick={this.handleDismiss}>
-  //   <i className="fa fa-times"></i>
-  // </a>
-  // <a className="btn-floating waves-light red" onClick={this.handleRemove}>
-  //   <i className="material-icons">delete</i>
-  // </a>
-  //
 
   render() {
     return (
@@ -110,16 +98,14 @@ class DetailItem extends Component {
               <p><img className="photo_big" src="images/user.png"/></p>
             </div>
             <div className="lst-user-title col s6">
-              <span>{this.props.user.name} {this.props.user.lastName}</span>
+              <span>{this.props.user.name}</span>
               <p className="subTitle">ID:<b>{this.props.user.id}</b></p>
             </div>
             <div className="lst-title col s3">
               <div className="edit right inline-actions">
-
-              <a className="btn-floating waves-red right" onClick={this.handleEdit}>
-                <i className="material-icons">mode_edit</i>
-              </a>
-
+                <a className="btn-floating waves-red right" onClick={this.handleEdit}>
+                  <i className="material-icons">mode_edit</i>
+                </a>
               </div>
             </div>
           </div>
@@ -130,15 +116,6 @@ class DetailItem extends Component {
           <div className="lst-user-line col s12">
             <span className='value'> {this.props.user.name} </span>
           </div>
-
-
-          <div className="lst-user-line col s12">
-            <span className="field">Last Name </span>
-          </div>
-          <div className="lst-user-line col s12">
-            <span className='value'> {this.props.user.lastName} </span>
-          </div>
-
           <div className="lst-user-line col s12">
             <span className="field">Email</span>
           </div>
@@ -149,7 +126,7 @@ class DetailItem extends Component {
             <span className="field">Login</span>
           </div>
           <div className="lst-user-line col s12 data">
-            <span className='value'> {this.props.user.login} </span>
+            <span className='value'> {this.props.user.username} </span>
           </div>
           <div className="lst-user-line col s12">
             <span className="field">Service</span>
@@ -178,7 +155,6 @@ class FStore {
     if (user === null || user === undefined) {
       this.user = {
         name: "",
-        lastName: "",
         email: "",
         username: "",
         passwd: "",
@@ -226,7 +202,7 @@ class UserFormImpl extends Component {
 
   saveUser(e) {
     e.preventDefault();
-    this.props.save(this.state);
+    this.props.save(this.props.user);
     // TODO dismiss/select created user
   }
 
@@ -306,15 +282,6 @@ class UserList extends Component {
 
     this.state = {
       filter: '',
-      // user: {
-      //   id: "",
-      //   name: "",
-      //   lastName: "",
-      //   email: "",
-      //   login: "",
-      //   password: "",
-      //   roles: []
-      // },
       detail: undefined,
       edit: undefined,
       create: undefined,
@@ -340,6 +307,8 @@ class UserList extends Component {
     this.prevPage = this.prevPage.bind(this);
     this.isFirstPage = this.isFirstPage.bind(this);
     this.isLastPage = this.isLastPage.bind(this);
+
+    this.newUser = this.newUser.bind(this);
   }
 
   handleFieldChange(e) {
@@ -467,6 +436,12 @@ class UserList extends Component {
     // console.log("got height: " + height);
   }
 
+  newUser(user) {
+    UserActions.addUser(user);
+    const state = {detail: undefined, create: undefined};
+    this.setState(state);
+  }
+
   render() {
 
     this.state.listOfUser = this.applyFiltering(this.props.users);
@@ -487,25 +462,18 @@ class UserList extends Component {
 
         {/* TODO promote this */}
         <div className="row z-depth-2 userSubHeader" id="inner-header">
-          {/* <div className="col s12 z-depth-2 userSubHeader"> */}
-              <div className="col s4 m4">List of Users</div>
+          <div className="col s4 m4">List of Users</div>
 
-              <div className="col s2 m2 header-card-info">
-                <div className="title"># Users</div>
-                <div className="subtitle">{this.state.listOfUser.length}</div>
-              </div>
+          <div className="col s2 m2 header-card-info">
+            <div className="title"># Users</div>
+            <div className="subtitle">{this.state.listOfUser.length}</div>
+          </div>
 
-              <div className="col s4 m4 header-card-info">
-                <div className="title">Last user created</div>
-                <div className="subtitle">TODO: How to get the last user?</div>
-              </div>
+          <div className="col s4 header-card-info"></div>
 
-
-
-              <div className="col s6 m2 button">
-                <a className="waves-effect waves-light btn right" onClick={this.handleCreate}>New User</a>
-              </div>
-          {/* </div> */}
+          <div className="col s6 m2 button">
+            <a className="waves-effect waves-light btn right" onClick={this.handleCreate}>New User</a>
+          </div>
         </div>
 
         <div className={"row userCanvas z-depth-2" + detailAreaStatus}>
@@ -537,7 +505,7 @@ class UserList extends Component {
           <div className={"col s8" + detailAreaStatus} id="detail-area">
             {this.state.create != undefined ? (
                 <UserForm dismiss={this.clearSelection}
-                          save={UserActions.addUser}
+                          save={this.newUser}
                           title="New User" />
             ) : this.state.edit != undefined ? (
                 <UserForm dismiss={this.clearSelection}

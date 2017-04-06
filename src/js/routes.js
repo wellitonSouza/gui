@@ -3,10 +3,11 @@ import { Router, Route, IndexRoute, Redirect, hashHistory } from 'react-router';
 
 import Login from './containers/login/'
 import Full from './containers/full/'
-import Templates from './views/deviceTemplates/'
 import Dashboard from './views/dashboard/'
-import {Devices,ViewDevice}  from './views/devices/'
-import LoginActions from './actions/LoginActions'
+
+import { Devices, ViewDevice }  from './views/devices/'
+import { TemplateList, NewTemplate } from './views/templates';
+
 import Users from './views/users/'
 
 export default (
@@ -24,10 +25,11 @@ export default (
           <Route path="id/:deviceId/edit" name="Device detail" component={Dashboard} />
         </Route>
         <Route path="template" name="Templates">
-          <IndexRoute component={Templates} />
-          <Route path="list" name="Template list" component={Templates} />
+          <IndexRoute component={TemplateList} />
+          <Route path="list" name="Template list" component={TemplateList} />
           <Route path="stats" name="Template Dashboard" component={Dashboard} />
-          <Route path="id/:templateId" name="Template detail" component={Templates} />
+          <Route path="new" name="" component={NewTemplate} />
+          <Route path="id/:templateId" name="Template detail" component={TemplateList} />
           <Route path="id/:templateId/edit" name="Template detail" component={Dashboard} />
         </Route>
       </Route>

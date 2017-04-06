@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import Dropzone from 'react-dropzone'
-import templateManager from '../../comms/templates/TemplateManager';
 
-var TemplateStore = require('../../stores/TemplateStore');
-var TemplateActions = require('../../actions/TemplateActions');
+import templateManager from '../../comms/templates/TemplateManager';
+import TemplateStore from '../../stores/TemplateStore';
+import TemplateActions from '../../actions/TemplateActions';
+
+import AltContainer from 'alt-container';
 
 import PageHeader from "../../containers/full/PageHeader";
 import Filter from "../utils/Filter";
+import Dropzone from 'react-dropzone'
 
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
@@ -463,6 +464,8 @@ class DeviceList extends Component {
   }
 
   applyFiltering(list) {
+    return list;
+
     const filter = this.state.filter;
     const idFilter = filter.match(/id:\W*([-a-fA-F0-9]+)\W?/);
     return this.props.devices.filter(function(e) {
@@ -654,31 +657,21 @@ class NewDevice extends Component {
 class Templates extends Component {
 
   constructor(props) {
+    console.log('templates init');
     super(props);
-
-    this.state = TemplateStore.getState();
-    this.onChange = this.onChange.bind(this);
   }
 
   componentDidMount() {
-    TemplateStore.listen(this.onChange);
-    TemplateActions.fetchTemplates();
-  }
-
-  componentWillUnmount() {
-    TemplateStore.unlisten(this.onChange);
-  }
-
-  onChange(newState) {
-    this.setState(TemplateStore.getState());
-    console.log("templates container component - onChange", this.state);
+    TemplateActions.fetchTemplates.defer();
   }
 
   filterChange(newFilter) {
+    // TODO make this work properly
     console.log("about to change filter: " + newFilter);
   }
 
   render() {
+    console.log('templates render');
     return (
       <ReactCSSTransitionGroup
           transitionName="first"
@@ -688,12 +681,14 @@ class Templates extends Component {
           transitionLeaveTimeout={500} >
         <PageHeader title="device manager" subtitle="Templates">
           <Filter onChange={this.filterChange} />
+          {/* TODO new template should be here */}
         </PageHeader>
-        <DeviceList devices={this.state.templates} />
-        <NewDevice createDevice={this.createDevice}/>
+        <AltContainer store={TemplateStore}>
+          <TemplateList />
+        </AltContainer>
       </ReactCSSTransitionGroup>
     );
   }
 }
 
-export default Templates;
+export { Templates as TemplateList };

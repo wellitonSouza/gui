@@ -1,13 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
-// import deviceManager from '../../comms/devices/DeviceManager';
-// import DeviceStore from '../../stores/DeviceStore';
-// import DeviceActions from '../../actions/DeviceActions';
-// import TemplateStore from '../../stores/TemplateStore';
-// import TemplateActions from '../../actions/TemplateActions';
-
-import PageHeader from "../../containers/full/PageHeader";
+import { PageHeader, ActionHeader } from "../../containers/full/PageHeader";
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Link } from 'react-router'
 
@@ -72,15 +66,6 @@ class CreateDeviceActions extends Component {
       </div>
     )
   }
-}
-
-function ActionHeader(props) {
-  return (
-    <div className="inner-header">
-      <div className="title">{props.title}</div>
-      <div className="actions">{props.children}</div>
-    </div>
-  )
 }
 
 class DeviceTag extends Component {
@@ -398,7 +383,7 @@ function NewDevice(props) {
           <CreateDeviceActions />
         </ActionHeader>
         <AltContainer store={FormStore} >
-          <DeviceForm className="inner-content"/>
+          <DeviceForm />
         </AltContainer>
       </ReactCSSTransitionGroup>
     </div>

@@ -16,4 +16,18 @@ function PageHeader(props) {
   )
 }
 
-export default PageHeader;
+function ActionHeader(props) {
+  return (
+    <span>
+      <div className="inner-header">
+        <div className="title">{props.title}</div>
+        <div className="actions">{props.children}</div>
+      </div>
+      <div className="inner-header-placeholder">
+        {/* Helps the positioning of content *below* the header */}
+      </div>
+    </span>
+  )
+}
+
+export { PageHeader, ActionHeader };

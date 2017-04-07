@@ -6,7 +6,7 @@ import TemplateActions from '../../actions/TemplateActions';
 
 import AltContainer from 'alt-container';
 
-import PageHeader from "../../containers/full/PageHeader";
+import { PageHeader } from "../../containers/full/PageHeader";
 import Filter from "../utils/Filter";
 import Dropzone from 'react-dropzone'
 

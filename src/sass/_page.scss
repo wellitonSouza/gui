@@ -91,6 +91,11 @@
   }
 }
 
+.inner-header-placeholder {
+  position: relative;
+  height: $page-header-size;
+}
+
 .inner-content {
   position: relative;
   // offsets the positioning of the inner header (has to be absolute for the shadow effect)

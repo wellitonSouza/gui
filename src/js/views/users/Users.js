@@ -8,7 +8,7 @@ import AltContainer from 'alt-container';
 var UserStore = require('../../stores/UserStore');
 var UserActions = require('../../actions/UserActions');
 
-import PageHeader from "../../containers/full/PageHeader";
+import { PageHeader } from "../../containers/full/PageHeader";
 import Filter from "../utils/Filter";
 
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';

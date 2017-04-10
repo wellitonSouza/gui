@@ -2,8 +2,13 @@
 .page-header {
   height: $page-header-size;
   background-color: $porcelain;
-  position: relative;
+  // position: relative;
   padding-left: 4em;
+
+  .data {
+    height: 100%;
+    position: relative;
+  }
 
   .title-area {
     position: absolute;

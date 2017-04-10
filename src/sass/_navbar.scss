@@ -40,15 +40,16 @@ $pic-border: #2969be;
   margin-top: 5px !important;
   height: $header-height - 10px;
   width: $header-height - 10px;
+  position: relative;
 }
 
 .user-pic img {
   height: $header-height - 10 - 6;
-  margin-top: 5px;
+  margin: 0px;
 
   position: absolute;
-  top: 3px;
-  left: 40px; // TODO: why is it 40px??
+  top: 0px;
+  left: 0px; // TODO: why is it 40px??
 
   border-radius: $header-height;
   border: 2px solid #fff;

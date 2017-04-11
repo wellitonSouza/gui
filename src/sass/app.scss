@@ -11,6 +11,13 @@ $subtle: #9e9e9e;
 
 // this the new color scheme
 // blue
+$almost-black: #666666;
+$gray:#f3f3f3;
+$red :#f85252;
+$green: #16a085;
+$pink-like: #e02966;
+$ciano-like: #03c9a9;
+$ciano: #3da9bf;
 $bluewood: #2c3e50;
 $spruce: #3d505b;
 $shark: #1c2733;
@@ -91,6 +98,16 @@ body {
   text-align: right;
 }
 
+.w100p
+{
+  width: 100%;
+}
+
+.h100p
+{
+  height: 100%;
+}
+
 @import 'list';
 @import 'navbar';
 @import 'animations';
@@ -101,3 +118,4 @@ body {
 @import 'materialIcons';
 @import 'login';
 @import 'user';
+@import 'ddashboard';

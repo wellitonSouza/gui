@@ -11,24 +11,24 @@ class TemplateManager {
   }
 
   // @TO_CHECK are these names below correct?
-  getDevices() {
+  getTemplates() {
     return util.GET(this.baseUrl + '/template');
   }
 
-  getDevice(id) {
+  getTemplate(id) {
     return util.GET(this.baseUrl + "/template/" + id);
   }
 
-  setDevice(detail) {
+  setTemplate(detail) {
     return util.PUT(this.baseUrl + "/template/" + detail.id, detail);
   }
 
-  addDevice(d) {
+  addTemplate(d) {
     d.id = util.guid();
     return util.POST(this.baseUrl + "/template", d);
   }
 
-  deleteDevice(id) {
+  deleteTemplate(id) {
     return util.DELETE(this.baseUrl + "/template/" + id);
   }
 

@@ -35,7 +35,7 @@ export default (
           <Route path="stats" name="Template Dashboard" component={Todo} />
           <Route path="new" name="" component={NewTemplate} />
           <Route path="id/:templateId" name="Template detail" component={TemplateList} />
-          <Route path="id/:templateId/edit" name="Template detail" component={Todo} />
+          <Route path="id/:template/edit" name="Template detail" component={NewTemplate} />
         </Route>
       </Route>
 

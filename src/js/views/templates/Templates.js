@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router'
 
 import templateManager from '../../comms/templates/TemplateManager';
 import TemplateStore from '../../stores/TemplateStore';
@@ -8,32 +9,13 @@ import AltContainer from 'alt-container';
 
 import { PageHeader } from "../../containers/full/PageHeader";
 import Filter from "../utils/Filter";
-import Dropzone from 'react-dropzone'
+
+import Dropzone from 'react-dropzone';
+
+import util from "../../comms/util/util";
 
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-class DeviceAttributes extends Component {
-  constructor(props) {
-    super(props);
-
-    this.handleRemove = this.handleRemove.bind(this);
-  }
-
-  handleRemove(e) {
-    this.props.removeAttribute(this.props.attribute);
-  }
-
-  render () {
-    return (
-      <div>
-        {this.props.attribute.name} [{this.props.attribute.type}] &nbsp;
-        <a title="Remove Attribute" className="btn-item" onClick={this.handleRemove}>
-          <i className="fa fa-times" aria-hidden="true"></i>
-        </a>
-      </div>
-    )
-  }
-}
 
 class DeviceImageUpload extends Component {
   constructor(props) {
@@ -96,6 +78,8 @@ class DeviceImageUpload extends Component {
 }
 
 function SummaryItem(props) {
+  let ts = (props.template.updated ? util.printTime(props.template.updated) : "N/A");
+  let attrs = (props.template.attrs ? props.template.attrs.length : '0');
   return (
     <div className="lst-entry-wrapper z-depth-2 col s12">
       <div className="lst-entry-title col s12">
@@ -105,16 +89,12 @@ function SummaryItem(props) {
 
       <div className="lst-entry-body col s12">
         {/* TODO fill those with actual metrics */}
-        <div className="col s4 metric">
-          <div className="metric-value">value</div>
+        <div className="col s3 metric">
+          <div className="metric-value">{attrs}</div>
           <div className="metric-label">Attributes</div>
         </div>
-        <div className="col s4 metric">
-          <div className="metric-value">VALUE</div>
-          <div className="metric-label"># Devices</div>
-        </div>
-        <div className="col s4 metric last">
-          <div className="metric-value">12345</div>
+        <div className="col s9 metric last">
+          <div className="metric-value">{ts}</div>
           <div className="metric-label">Last update</div>
         </div>
       </div>
@@ -220,17 +200,19 @@ class ListItem extends Component {
     // let iconUrl = "http://localhost:5000/template/" + this.props.device.id + "/icon";
 
     return (
-      <div className="lst-entry col s12 m4" id={this.props.device.id} onClick={detail ? null : this.handleDetail}>
-        {/* { detail && edit && (
-          <EditWrapper device={this.props.device} handleRemove={this.handleRemove} handleDismiss={this.handleDismiss}/>
-        )}
-        { detail && !edit && (
-          <DetailItem device={this.props.device} handleEdit={this.handleEdit} handleDismiss={this.handleDismiss}/>
-        )} */}
-        { !detail && (
-          <SummaryItem template={this.props.device} />
-        )}
-      </div>
+      <Link to={"/template/id/" + this.props.device.id + "/edit"} >
+        <div className="lst-entry col s12 m4" id={this.props.device.id}>
+          {/* { detail && edit && (
+            <EditWrapper device={this.props.device} handleRemove={this.handleRemove} handleDismiss={this.handleDismiss}/>
+          )}
+          { detail && !edit && (
+            <DetailItem device={this.props.device} handleEdit={this.handleEdit} handleDismiss={this.handleDismiss}/>
+          )} */}
+          { !detail && (
+            <SummaryItem template={this.props.device} />
+          )}
+        </div>
+      </Link>
     )
 
 
@@ -501,7 +483,7 @@ class TemplateList extends Component {
     return (
       <div className="row full-height relative bg-gray">
         { filteredList.length > 0 ? (
-          <div className="col s12 m10 offset-m1 lst-wrapper">
+          <div className="col s12 lst-wrapper">
             { filteredList.map((device) =>
                 <ListItem device={device}
                           key={device.id}
@@ -553,8 +535,10 @@ class Templates extends Component {
           transitionEnterTimeout={500}
           transitionLeaveTimeout={500} >
         <PageHeader title="device manager" subtitle="Templates" shadow='true'>
-          <Filter onChange={this.filterChange} />
-          {/* TODO new template should be here */}
+          {/* <Filter onChange={this.filterChange} /> */}
+          <Link to="/template/new" className="btn-item btn-floating waves-effect waves-light cyan darken-2">
+            <i className="fa fa-plus"/>
+          </Link>
         </PageHeader>
         <AltContainer store={TemplateStore}>
           <TemplateList />

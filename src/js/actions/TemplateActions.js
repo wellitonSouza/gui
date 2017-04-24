@@ -15,7 +15,7 @@ class TemplateActions {
   addTemplate(template) {
     const newTemplate = template;
     return (dispatch) => {
-      templateManager.addDevice(newTemplate)
+      templateManager.addTemplate(newTemplate)
         .then((response) => {
           this.insertTemplate(newTemplate);
         })
@@ -29,7 +29,7 @@ class TemplateActions {
 
   fetchTemplates() {
     return (dispatch) => {
-      templateManager.getDevices()
+      templateManager.getTemplates()
         .then((templateList) => {
           console.log("templates webservice done");
           this.updateTemplates(templateList.templates);
@@ -44,7 +44,7 @@ class TemplateActions {
 
   triggerUpdate(template) {
     return (dispatch) => {
-      templateManager.setDevice(template)
+      templateManager.setTemplate(template)
         .then((response) => {
           this.updateSingle(template);
         })
@@ -78,7 +78,7 @@ class TemplateActions {
 
   triggerRemoval(template) {
     return (dispatch) => {
-      templateManager.deleteDevice(template.id)
+      templateManager.deleteTemplate(template.id)
         .then((response) => {
           this.removeSingle(template.id);
         })

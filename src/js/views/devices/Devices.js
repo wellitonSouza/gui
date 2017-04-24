@@ -200,7 +200,9 @@ class DetailItem extends Component {
           <div className="actions">
             <div><i className="clickable fa fa-code" /></div>
             <div><i className="clickable fa fa-expand" /></div>
-            <div><i className="clickable fa fa-pencil" /></div>
+            <Link to={"/device/id/" + this.props.device.id + "/edit"} >
+              <div><i className="clickable fa fa-pencil" /></div>
+            </Link>
             <div><i className="clickable fa fa-trash" onClick={this.remove}/></div>
             <div><i className="clickable fa fa-times" onClick={this.props.handleDismiss}/></div>
           </div>
@@ -524,165 +526,6 @@ class DeviceTag extends Component {
   }
 }
 
-class NewDevice extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      newDevice: {
-        id: "",
-        label: "",
-        protocol: "",
-        tags: [],
-        attrs: []
-      },
-      newTag: "",
-      options: [ "MQTT", "CoAP", "Virtual" ]
-    }
-
-    this.addTag = this.addTag.bind(this);
-    this.updateTag = this.updateTag.bind(this);
-    this.removeTag = this.removeTag.bind(this);
-    this.createDevice = this.createDevice.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  // this allows us to remove the global script required by materialize as in docs
-  componentDidMount() {
-    let callback = this.handleChange.bind(this);
-
-    let sElement = ReactDOM.findDOMNode(this.refs.dropdown);
-    $(sElement).ready(function() {
-      $('select').material_select();
-      $('#fld_deviceTypes').on('change', callback);
-    });
-
-    let mElement = ReactDOM.findDOMNode(this.refs.modal);
-    $(mElement).ready(function() {
-      $('.modal').modal();
-    })
-  }
-
-  updateTag(e) {
-    let state = this.state;
-    state.tag = e.target.value;
-    this.setState(state);
-  }
-
-  addTag(e) {
-    let temp = this.state.newDevice;
-    temp.tags.push(this.state.tag);
-    this.setState({ newDevice: temp});
-  }
-
-  removeTag(tag) {
-    let temp = this.state.newDevice;
-    for (let i = 0; i < temp.tags.length; i++) {
-      if (temp.tags[i] === tag) {
-        temp.tags.splice(i, 1);
-      }
-    }
-
-    this.setState({newDevice: temp});
-  }
-
-  createDevice(e) {
-    console.log("about to create device");
-    e.preventDefault();
-    DeviceActions.addDevice(JSON.parse(JSON.stringify(this.state.newDevice)));
-    $('.modal').modal('close');
-  }
-
-  handleChange(event) {
-    const target = event.target;
-    let state = this.state.newDevice;
-    state[target.name] = target.value;
-    this.setState({
-      newDevice: state
-    });
-  }
-
-  render() {
-    return (
-      <div>
-        <div id="newDeviceBtn" className="" >
-          <Link to="/device/new" className="waves-effect waves-light btn">
-            <i className="fa fa-plus fa-2x"></i>
-          </Link>
-        </div>
-
-
-        <div className="modal" id="newDeviceForm" ref="modal">
-            <div className="lst-entry-wrapper full">
-              <div className="row lst-entry-title">
-                <div className="user-label">New device</div>
-              </div>
-              <div className="row detail-body">
-                <form onSubmit={this.createDevice}>
-                  <div className="row">
-                    <div className="input-field col s12">
-                      <label htmlFor="fld_name">Name</label>
-                      <input id="fld_name" type="text"
-                             name="label"
-                             onChange={this.handleChange}
-                             value={this.state.newDevice.label} />
-                    </div>
-                  </div>
-                  {/* <!-- device type --> */}
-                  <div className="row">
-                    <div className="col s12">
-                      <label htmlFor="fld_deviceTypes" >Type</label>
-                      <select id="fld_deviceTypes"
-                              name="type"
-                              ref="dropdown"
-                              value={this.state.newDevice.type}
-                              onChange={this.handleChange}>
-                        <option value="" disabled>Select type</option>
-                        {this.state.options.map((type) => <option value={type} key={type}>{type}</option>)}
-                      </select>
-                    </div>
-                  </div>
-                  {/* <!-- tags --> */}
-                  <div className="row">
-                    <div className="col s11">
-                      <div className="input-field">
-                        <label htmlFor="fld_newTag" >Tag</label>
-                        <input id="fld_newTag" type="text"
-                                               value={this.state.tag}
-                                               onChange={this.updateTag} />
-                      </div>
-                    </div>
-                    <div className="col s1" >
-                      <div title="Add tag"
-                           className="btn btn-item btn-floating waves-effect waves-light cyan darken-2"
-                           onClick={this.addTag}>
-                        <i className="fa fa-plus"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="wrapping-list">
-                      { this.state.newDevice.tags.map((tag) =>(
-                          <DeviceTag key={tag} tag={tag} removeTag={this.removeTag} />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="pull-right">
-                    <a onClick={this.createDevice}
-                       className=" modal-action modal-close waves-effect waves-green btn-flat">Create</a>
-                    <a className=" modal-action modal-close waves-effect waves-red btn-flat">Cancel</a>
-                    <button type="submit" className="hidden"/>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-      </div>
-    )
-  }
-}
-
 class Devices extends Component {
 
   constructor(props) {
@@ -708,12 +551,15 @@ class Devices extends Component {
         transitionEnterTimeout={500}
         transitionLeaveTimeout={500} >
         <PageHeader title="device manager" subtitle="Devices">
-          <Filter onChange={this.filterChange} />
+          {/* <Filter onChange={this.filterChange} /> */}
+          <Link to="/device/new" className="waves-effect waves-light btn">
+            New Device
+          </Link>
         </PageHeader>
         <AltContainer store={DeviceStore}>
           <DeviceList />
         </AltContainer>
-        <NewDevice />
+        {/* <NewDevice /> */}
       </ReactCSSTransitionGroup>
     );
   }

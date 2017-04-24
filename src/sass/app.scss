@@ -68,6 +68,15 @@ body {
   font-family: $main-font-family;
 }
 
+.fill {
+  // This has to be placed within a relative container
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
 .no-padding {
   padding: 0;
 }
@@ -76,9 +85,12 @@ body {
   padding-left: 0 !important;
 }
 
-.paddingTop10{
-
+.paddingTop10 {
   padding-top:10px !important;
+}
+
+.horizontal-spacer {
+  padding: 0 1.5em !important;
 }
 
 .line-normal {

@@ -86,6 +86,10 @@ class Util {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
       s4() + '-' + s4() + s4() + s4();
   }
+
+  sid() {
+    return (1 + Math.random()*4294967295).toString(16);
+  }
 }
 
 var util = new Util();

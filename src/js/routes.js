@@ -24,7 +24,7 @@ export default (
           <Route path="stats" name="Device Dashboard" component={Todo} />
           <Route path="new" name="" component={NewDevice} />
           <Route path="id/:deviceId" name="Device detail" component={ViewDevice} />
-          <Route path="id/:deviceId/edit" name="Device detail" component={Todo} />
+          <Route path="id/:device/edit" name="Device detail" component={NewDevice} />
         </Route>
         <Route path="template" name="Templates">
           <IndexRoute component={TemplateList} />

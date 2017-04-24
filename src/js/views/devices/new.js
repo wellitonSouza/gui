@@ -8,18 +8,52 @@ import { Link } from 'react-router'
 import alt from '../../alt';
 import AltContainer from 'alt-container';
 import DeviceActions from '../../actions/DeviceActions';
+import deviceManager from '../../comms/devices/DeviceManager';
+import DeviceStore from '../../stores/DeviceStore';
+import util from "../../comms/util/util";
 
+class FActions {
+  set(args) { return args; }
+  update(args) { return args; }
 
-const FormActions = alt.generateActions('set', 'update');
+  fetch(id) {
+    return (dispatch) => {
+      dispatch();
+      deviceManager.getDevice(id)
+      .then((d) => { this.set(d); })
+      .catch((error) => { console.error('Failed to get device', error); })
+    }
+  }
+
+  addTag(args) { return args; }
+  removeTag(args) { return args; }
+  setTag(args) { return args; }
+}
+
+const FormActions = alt.createActions(FActions);
+const AttrActions = alt.generateActions('set', 'update', 'add');
 class FStore {
   constructor() {
-    this.device = {};
+    this.device = {}; this.set();
+    this.newTag = "";
+    this.newAttr = {}; this.setAttr();
     this.bindListeners({
       set: FormActions.SET,
-      update: FormActions.UPDATE
+      updateDevice: FormActions.UPDATE,
+      fetch: FormActions.FETCH,
+
+      addTag: FormActions.ADD_TAG,
+      removeTag: FormActions.REMOVE_TAG,
+      setTag: FormActions.SET_TAG,
+
+      setAttr: AttrActions.SET,
+      updAttr: AttrActions.UPDATE,
+      addAttr: AttrActions.ADD,
     });
     this.set(null);
   }
+
+  fetch(id) {}
 
   set(device) {
     if (device === null || device === undefined) {
@@ -29,19 +63,69 @@ class FStore {
         protocol: "",
         templates: [],
         tags: [],
-        attrs: []
+        attrs: [],
+        static_attrs: []
       };
     } else {
+      if (device.attrs == null || device.attrs == undefined) {
+        device.attrs = []
+      }
+
+      if (device.static_attrs == null || device.static_attrs == undefined) {
+        device.static_attrs = []
+      }
+
       this.device = device;
     }
   }
 
-  update(diff) {
+  updateDevice(diff) {
     this.device[diff.f] = diff.v;
   }
-}
-var FormStore = alt.createStore(FStore, 'FormStore');
 
+  setTag(tagName) {
+    this.newTag = tagName;
+  }
+
+  addTag() {
+    this.device.tags.push(this.newTag);
+    this.newTag = "";
+  }
+
+  removeTag(tag) {
+    this.device.tags = this.device.tags.filter((i) => {return i !== tag});
+  }
+
+  setAttr(attr) {
+    if (attr) {
+      this.newAttr = attr;
+    } else {
+      this.newAttr = {
+        object_id: '',
+        name: '',
+        type: '',
+        value: ''
+      };
+    }
+  }
+
+  updAttr(diff) {
+    this.newAttr[diff.f] = diff.v;
+  }
+
+  addAttr() {
+    this.newAttr.object_id = util.sid();
+    if (this.newAttr.type === "") { this.newAttr.type = 'string'; }
+    if (this.newAttr.value.length > 0) {
+      this.device.static_attrs.push(JSON.parse(JSON.stringify(this.newAttr)));
+    } else {
+      delete this.newAttr.value;
+      this.device.attrs.push(JSON.parse(JSON.stringify(this.newAttr)));
+    }
+    this.setAttr();
+  }
+}
+var DeviceFormStore = alt.createStore(FStore, 'DeviceFormStore');
 
 class CreateDeviceActions extends Component {
   constructor(props) {
@@ -51,9 +135,8 @@ class CreateDeviceActions extends Component {
   }
 
   save(e) {
-    console.log('about to save', FormStore.getState().device);
     e.preventDefault();
-    DeviceActions.addDevice(JSON.parse(JSON.stringify(FormStore.getState().device)));
+    this.props.operator(JSON.parse(JSON.stringify(DeviceFormStore.getState().device)));
   }
 
   render() {
@@ -61,8 +144,6 @@ class CreateDeviceActions extends Component {
       <div>
         <a className="waves-effect waves-light btn" onClick={this.save} tabIndex="-1">save</a>
         <Link to="/device/list" className="waves-effect waves-light btn" tabIndex="-1">dismiss</Link>
-        {/* <i className="fa fa-save"></i>
-        <i className="fa fa-times"></i> */}
       </div>
     )
   }
@@ -83,7 +164,7 @@ class DeviceTag extends Component {
     return (
       <div key={this.props.tag}>
         {this.props.tag} &nbsp;
-        <a title="Remove tag" className="btn-item" onClick={this.handleRemove}>
+        <a title="Remove tag" className="btn-item clickable" onClick={this.handleRemove}>
           <i className="fa fa-times" aria-hidden="true"></i>
         </a>
       </div>
@@ -91,58 +172,107 @@ class DeviceTag extends Component {
   }
 }
 
-class TemplateForm extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {}
-    this.handleChange = this.handleChange.bind(this);
-    this.submit = this.submit.bind(this);
-  }
-
-  handleChange(event) {
-    let upd = this.state;
-    upd[target.name] = event.target.value;
-    this.setState(upd);
-  }
-
-  submit(event) {
-    event.preventDefault();
-    this.props.submit(this.state);
-  }
-
+class AttrCard extends Component {
   render() {
     return (
-      <span></span>
+      <div className="col s4">
+        <div className="card z-depth-2">
+          <div className="card-content row">
+            <div className="col s12">
+              <div>Label</div>
+              <div>{this.props.name}</div>
+            </div>
+            <div className="col s6">
+              <div>Value</div>
+              <div>{this.props.value}</div>
+            </div>
+            <div className="col s6">
+              <div>Type</div>
+              <div>{this.props.type}</div>
+            </div>
+          </div>
+        </div>
+      </div>
     )
   }
 }
 
-class AttrForm extends Component {
+class NewAttr extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {}
     this.handleChange = this.handleChange.bind(this);
+    this.dismiss = this.dismiss.bind(this);
     this.submit = this.submit.bind(this);
   }
 
+  componentDidMount() {
+    // materialize jquery makes me sad
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(modalElement).ready(function() {
+      $('.modal').modal();
+    })
+  }
+
   handleChange(event) {
-    let upd = this.state;
-    upd[target.name] = event.target.value;
-    this.setState(upd);
+    event.preventDefault();
+    AttrActions.update({f: event.target.name, v: event.target.value});
+  }
+
+  dismiss(event) {
+    event.preventDefault();
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(modalElement).modal('close');
   }
 
   submit(event) {
     event.preventDefault();
-    this.props.submit(this.state);
+    AttrActions.add();
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(modalElement).modal('close');
   }
 
   render() {
     return (
-      <form>
+      <span>
+        <button data-target="newAttrsForm" className="btn waves waves-light">new</button>
+        <div className="modal" id="newAttrsForm" ref="modal">
+          <div className="modal-content full">
+            <div className="title row">New Attribute</div>
+            <form className="row" onSubmit={this.submit}>
+              <div className="row">
+                <div className="input-field col s12" >
+                  <label htmlFor="fld_name">Name</label>
+                  <input id="fld_name" type="text"
+                          name="name" value={this.props.newAttr.name}
+                          key="protocol" onChange={this.handleChange} />
+                </div>
+                <div className="input-field col s4" >
+                  <label htmlFor="fld_type">Type</label>
+                  <input id="fld_type" type="text"
+                        name="type" value={this.props.newAttr.type}
+                        key="protocol" onChange={this.handleChange} />
+                </div>
+                <div className="input-field col s8" >
+                  <label htmlFor="fld_value">Default value</label>
+                  <input id="fld_value" type="text"
+                        name="value" value={this.props.newAttr.value}
+                        key="protocol" onChange={this.handleChange} />
+                </div>
+              </div>
 
-      </form>
+              <div className="row">
+                <div className="horizontal-spacer col s2 right">
+                  <button type="submit" className="btn waves waves-light">save</button>
+                </div>
+                <div className="horizontal-spacer col s2 right">
+                  <button type="button" className="btn waves waves-light" onClick={this.dismiss}>dismiss</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </span>
     )
   }
 }
@@ -151,26 +281,16 @@ class DeviceForm extends Component {
   constructor(props) {
     super(props);
 
-    // TODO this will actually be empty
     this.state = {
-      newTag: "",
       options: [ "MQTT", "CoAP", "Virtual" ]
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.addTag = this.addTag.bind(this);
-    this.updateTag = this.updateTag.bind(this);
-    this.removeTag = this.removeTag.bind(this);
-    this.t_import = this.t_import.bind(this);
-    this.t_detail = this.t_detail.bind(this);
-    this.t_remove = this.t_remove.bind(this);
-    this.a_edit = this.a_edit.bind(this);
-    this.a_remove = this.a_remove.bind(this);
-    this.a_highlight = this.a_highlight.bind(this);
+    this.handleTagChange = this.handleTagChange.bind(this);
   }
 
   componentWillUnmount() {
-    FormActions.set(null);
+    FormActions.set();
   }
 
   componentDidMount() {
@@ -182,212 +302,144 @@ class DeviceForm extends Component {
   }
 
   handleChange(event) {
-    // let state = this.state.device;
-    // state[target.name] = event.target.value;
-    // this.setState({ device: state });
     event.preventDefault();
     const f = event.target.name;
     const v = event.target.value;
     FormActions.update({f: f, v: v});
   }
 
-  updateTag(e) {
-    this.setState({ newTag: e.target.value });
+  handleTagChange(event) {
+    event.preventDefault();
+    FormActions.setTag(event.target.value);
   }
-
-  addTag(e) {
-    let temp = this.state.device;
-    temp.tags.push(this.state.newTag);
-    this.setState({ device: temp });
-  }
-
-  removeTag(tag) {
-    let temp = this.state.device;
-    for (let i = 0; i < temp.tags.length; i++) {
-      if (temp.tags[i] === tag) {
-        temp.tags.splice(i, 1);
-      }
-    }
-    this.setState({ device: temp });
-  }
-
-  create(e) {
-    e.preventDefault();
-    DeviceActions.addDevice(JSON.parse(JSON.stringify(this.state.newDevice)));
-  }
-
-  dismiss() {
-    // TODO send user back to device list (with filters? - filter store)
-  }
-
-  t_import(template) {
-    // TODO implement
-    console.log("about to import", template);
-  }
-
-  t_detail(template) {
-    // TODO implement
-    console.log('about to detail', template);
-  }
-
-  t_remove(template) {
-    // TODO implement
-    console.log('about to remove', template);
-  }
-
-  a_edit(a){}
-  a_remove(a){}
-  a_highlight(t, a){}
 
   render() {
     return (
-      <div className={"row device" + " " + this.props.className}>
-            <div className="row detail-header">
-              <div className="col s12 m10 offset-m1">
-                <div className="col s3">
-                  {/* TODO clickable, file upload */}
-                  <div className="img">
-                    <img src="images/ciShadow.svg" />
-                  </div>
+      <div className={"row device" + " " + (this.props.className ? this.props.className : "")}>
+        <div className="row detail-header">
+          <div className="col s12 m10 offset-m1 valign-wrapper">
+            <div className="col s3">
+              {/* TODO clickable, file upload */}
+              <div className="img">
+                <img src="images/ciShadow.svg" />
+              </div>
+            </div>
+            <div className="col s9">
+              <div>
+                <div className="input-field large col s12">
+                  <label htmlFor="fld_name">Name</label>
+                  <input id="fld_name" type="text"
+                         name="label" value={this.props.device.label}
+                         key="label" onChange={this.handleChange} />
                 </div>
-                <div className="col s9">
-                  <div className="input-field large col s12">
-                    <label htmlFor="fld_name">Name</label>
-                    <input id="fld_name" type="text"
-                           name="label" value={this.props.device.label}
-                           key="label" onChange={this.handleChange} />
+
+                <div className="col s12">
+                  <div className="input-field col s4" >
+                      <label htmlFor="fld_prot">Protocol</label>
+                      <input id="fld_prot" type="text"
+                             name="protocol" value={this.props.device.protocol}
+                             key="protocol" onChange={this.handleChange} />
                   </div>
 
-                  <div className="col s12">
-                    <div className="input-field col s4" >
-                        <label htmlFor="fld_prot">Protocol</label>
-                        <input id="fld_prot" type="text"
-                               name="protocol" value={this.props.device.protocol}
-                               key="protocol" onChange={this.handleChange} />
-                    </div>
-
-                    <div className="col s8" >
-                      <div className="row">
-                        <div className="col s11">
-                          <div className="input-field">
-                            <label htmlFor="fld_newTag" >Tag</label>
-                            <input id="fld_newTag" type="text"
-                                   value={this.props.newTag} onChange={this.updateTag} />
-                          </div>
-                        </div>
-                        <div className="col s1" >
-                          <div title="Add tag"
-                               className="btn btn-item btn-floating waves-effect waves-light cyan darken-2"
-                               onClick={this.addTag}>
-                            <i className="fa fa-plus"></i>
-                          </div>
+                  <div className="col s8" >
+                    <div className="row">
+                      <div className="col s11">
+                        <div className="input-field">
+                          <label htmlFor="fld_newTag" >Tag</label>
+                          <input id="fld_newTag" type="text"
+                                 value={this.props.newTag} onChange={this.handleTagChange} />
                         </div>
                       </div>
-                      <div className="row">
-                        <div className="wrapping-list">
-                          { this.props.device.tags.map((tag) =>(
-                              <DeviceTag key={tag} tag={tag} removeTag={this.removeTag} />
-                          ))}
+                      <div className="col s1" >
+                        <div title="Add tag"
+                             className="btn btn-item btn-floating waves-effect waves-light cyan darken-2"
+                             onClick={FormActions.addTag}>
+                          <i className="fa fa-plus"></i>
                         </div>
                       </div>
                     </div>
+                    <div className="row">
+                      <div className="wrapping-list">
+                        { this.props.device.tags.map((tag) =>(
+                            <DeviceTag key={tag} tag={tag} removeTag={FormActions.removeTag} />
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
 
-            {/* TODO form for attribute and parent selection */}
-            <div className="row">
-              <div className="row col s12 m10 offset-m1 title-row valign-wrapper">
-                <div className="title col s11">Templates used</div>
-                <a className="col s1 clickable btn waves-light waves-effect">add</a>
-              </div>
-
-              <div className="row col s12 m10 offset-m1 table">
-                <div className="col s12 header">
-                  <div className="col s4">Name</div>
-                  <div className="col s4 center-align"># Attributes</div>
-                  <div className="col s2 right center-align">Actions</div>
-                </div>
-                <div className="col s12 body">
-                  {this.props.device.templates.map((t) =>
-                    <span key={t.id} className="row">
-                      <div className="col s4">{t.name}</div>
-                      <div className="col s4 center-align">{t.attrs.length}</div>
-                      <div className="col s2 right action-container center-align">
-                        <i className="clickable action fa fa-clone"  onClick={() => this.t_import(t)}/>
-                        <i className="clickable action fa fa-search" onClick={() => this.t_detail(t)}/>
-                        <i className="clickable action fa fa-times"  onClick={() => this.t_remove(t)}/>
-                      </div>
-                    </span>
-                  )}
-                </div>
-              </div>
+        <div className="row">
+          <div className="col s10 offset-s1">
+            <div className="title col s11">Attributes</div>
+            <div className="col s1">
+              <NewAttr {...this.props}/>
             </div>
-
-            <div className="row">
-              <div className="row col s12 m10 offset-m1 title-row">
-                <div className="title col s11">Known attributes</div>
-                <a className="col s1 clickable btn waves-light waves-effect">add</a>
+          </div>
+        </div>
+        <div className="list row">
+          <div className="col s10 offset-s1">
+            { ((this.props.device.attrs.length > 0) || (this.props.device.static_attrs.length > 0) ) ? (
+              <span>
+                {this.props.device.attrs.map((attr) =>
+                  <AttrCard key={attr.object_id} {...attr}/>
+                )}
+                {this.props.device.static_attrs.map((attr) =>
+                  <AttrCard key={attr.object_id} {...attr}/>
+                )}
+              </span>
+            ) : (
+              <div className="padding10 background-info">
+                No attributes set
               </div>
-              <div className="row table col s12 m10 offset-m1">
-                <div className="col s12 header">
-                  <div className="col s3">Name</div>
-                  <div className="col s3">Type</div>
-                  <div className="col s3">Value</div>
-                  <div className="col s2 center-align right">Actions</div>
-                </div>
-
-                <div className="col s12 body">
-                  { this.props.device.attrs.map((a) =>
-                    <span key={a.id} className="row">
-                      <div className="col s3">{a.label}</div>
-                      <div className="col s3">{a.type}</div>
-                      <div className="col s3">{a.value ? a.value : ""}</div>
-                      <div className="col s2 right center-align action-container">
-                        <i className="clickable action fa fa-pencil"  onClick={() => this.a_edit(a)}/>
-                        <i className="clickable action fa fa-trash"  onClick={() => this.a_remove(a)}/>
-                      </div>
-                    </span>
-                  )}
-
-                  { this.props.device.templates.map((t) =>
-                    t.attrs.map((a) =>
-                      <span key={a.id} className="row">
-                        <div className="col s3">{a.label}</div>
-                        <div className="col s3">{a.type}</div>
-                        <div className="col s3">{a.value ? a.value : ""}</div>
-                        <div className="col s2 right center-align action-container">
-                          <i className="clickable action fa fa-search"  onClick={() => this.a_highlight(t, a)}/>
-                        </div>
-                      </span>
-                    )
-                  )}
-                </div>
-              </div>
-            </div>
+            )}
+          </div>
+        </div>
       </div>
     )
   }
 }
 
-function NewDevice(props) {
-  return (
-    <div className="full-width">
-      <ReactCSSTransitionGroup
-        transitionName="first"
-        transitionAppear={true} transitionAppearTimeout={500}
-        transitionEnterTimeout={500} transitionLeaveTimeout={500} >
-        <PageHeader title="device manager" subtitle="Devices" />
-        <ActionHeader title="New device">
-          <CreateDeviceActions />
-        </ActionHeader>
-        <AltContainer store={FormStore} >
-          <DeviceForm />
-        </AltContainer>
-      </ReactCSSTransitionGroup>
-    </div>
-  )
+class NewDevice extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    const edit = this.props.params.device;
+    if (edit) {
+      FormActions.fetch(edit);
+    }
+  }
+
+  render() {
+    let title = "New device";
+    let ops = DeviceActions.addDevice;
+    if (this.props.params.device) {
+      title = "Edit device";
+      ops = DeviceActions.triggerUpdate;
+    }
+
+    return (
+      <div className="full-width full-height">
+        <ReactCSSTransitionGroup
+          transitionName="first"
+          transitionAppear={true} transitionAppearTimeout={500}
+          transitionEnterTimeout={500} transitionLeaveTimeout={500} >
+          <PageHeader title="device manager" subtitle="Devices" />
+          <ActionHeader title={title}>
+            <CreateDeviceActions operator={ops}/>
+          </ActionHeader>
+          <AltContainer store={DeviceFormStore} >
+            <DeviceForm />
+          </AltContainer>
+        </ReactCSSTransitionGroup>
+      </div>
+    )
+  }
 }
 
 export { NewDevice };

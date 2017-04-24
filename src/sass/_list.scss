@@ -129,6 +129,14 @@ $status: #0c343d;
     font-size: 1.6em;
     font-family: 'Droid-sans', sans-serif;
   }
+
+  .inner.shadow {
+    height: 100%;
+    background-color: #f3f3f3;
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.14) inset;
+    border-radius: 8px;
+    padding: 1em;
+  }
 }
 
 .lst-entry-wrapper {
@@ -257,6 +265,10 @@ $status: #0c343d;
       div {
         float: left;
         margin: 0 0.25em;
+      }
+
+      i {
+        color: #fff;
       }
     }
 
@@ -578,6 +590,10 @@ $status: #0c343d;
 
   i.material-icons {
     font-size: 5em;
+  }
+
+  &.padding10 {
+    padding-top: 10rem;
   }
 }
 

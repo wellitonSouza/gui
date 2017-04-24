@@ -10,17 +10,12 @@ import FlowActions from '../../actions/FlowActions';
 
 import {PageHeader} from "../../containers/full/PageHeader";
 import Filter from "../utils/Filter";
+import util from "../../comms/util/util";
 
 function SummaryItem(props) {
   let status = "disabled";
   if (props.flow.status) {
     status = props.flow.status;
-  }
-
-  function printTime(ts) {
-    let date = new Date(null);
-    date.setSeconds(Math.floor(ts));
-    return date.toLocaleString();
   }
 
   return (
@@ -42,7 +37,7 @@ function SummaryItem(props) {
           <div className="metric-label">Nodes</div>
         </div>
         <div className="col s9 metric last">
-          <div className="metric-value">{printTime(props.flow.lastUpdate)}</div>
+          <div className="metric-value">{util.printTime(props.flow.lastUpdate)}</div>
           <div className="metric-label">Last update</div>
         </div>
       </div>

@@ -13,6 +13,7 @@ class Util {
   POST(url, payload) {
     return this._runFetch(url, {
       method: 'post',
+      headers: new Headers({"content-type": "application/json"}),
       body: new Blob([JSON.stringify(payload)], {type : 'application/json'})
     });
   }
@@ -20,12 +21,19 @@ class Util {
   PUT(url, payload) {
     return this._runFetch(url, {
       method: 'put',
+      headers: new Headers({"content-type": "application/json"}),
       body: new Blob([JSON.stringify(payload)], {type : 'application/json'})
     });
   }
 
   DELETE(url, payload) {
     return this._runFetch(url, { method: 'delete' });
+  }
+
+  printTime(ts) {
+    let date = new Date(null);
+    date.setSeconds(Math.floor(ts));
+    return date.toLocaleString();
   }
 
   _runFetch(url, config) {
@@ -42,17 +50,10 @@ class Util {
           authConfig.headers.append('Authorization', 'Bearer ' + this.token);
         }
       } else {
-        headers = new Headers();
+        let headers = new Headers();
         headers.append('Authorization', 'Bearer ' + this.token);
         authConfig = { headers: headers };
       }
-    }
-
-    if (authConfig.headers) {
-      if (authConfig.headers.has('content-type') == false)
-        authConfig.headers.append('content-type', 'application/json');
-    } else {
-      authConfig.headers = new Headers({'content-type': 'application/json'});
     }
 
     return new Promise(function(resolve, reject) {

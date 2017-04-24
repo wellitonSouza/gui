@@ -30,7 +30,6 @@ class LoginStore {
     Util.token = login.jwt;
     this.loading = false;
     this.user = JSON.parse(atob(login.jwt.split('.')[1]));
-    console.log(this.user);
   }
 
   handleFailure(error) {

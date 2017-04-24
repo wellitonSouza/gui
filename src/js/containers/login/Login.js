@@ -27,7 +27,6 @@ class Content extends Component {
   }
 
   login(e) {
-    console.log("will login");
     e.preventDefault();
     LoginActions.authenticate(JSON.parse(JSON.stringify(this.state.login)));
   }

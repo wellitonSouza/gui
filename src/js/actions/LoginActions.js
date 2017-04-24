@@ -6,6 +6,7 @@ class LoginActions {
 
   authenticate(login) {
     return (dispatch) => {
+      dispatch();
       loginManager.authenticate(login)
         .then((response) => {
           this.loginSuccess(response);
@@ -13,8 +14,6 @@ class LoginActions {
         .catch((error) => {
           this.loginFailed("Login failed");
         })
-
-      dispatch();
     }
   }
 

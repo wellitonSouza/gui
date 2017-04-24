@@ -14,9 +14,8 @@ class DeviceManager {
     return util.GET(this.baseUrl + '/device/stats');
   }
 
-  // @TODO get endpoint to do this request
-  getLastDevices() {
-    return util.GET(this.baseUrl + "/last/device/");
+  getLastDevices(field) {
+    return util.GET(this.baseUrl + "/device?limit=10&sortDsc="+field);
   }
 
   getDevice(id) {

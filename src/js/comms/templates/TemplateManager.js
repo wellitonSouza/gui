@@ -5,6 +5,12 @@ class TemplateManager {
     this.baseUrl = ""
   }
 
+  getLastTemplates(field)
+  {
+    return util.GET(this.baseUrl + "/template?limit=10&sortDsc="+field);
+  }
+
+  // @TO_CHECK are these names below correct?
   getDevices() {
     return util.GET(this.baseUrl + '/template');
   }

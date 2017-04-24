@@ -3,6 +3,8 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import alt from '../../alt';
 import AltContainer from 'alt-container';
+import util from '../../comms/util/util';
+
 
 var DeviceDashboardStore = require('../../stores/DeviceDashboardStore');
 var DeviceDashboardActions = require('../../actions/DeviceDashboardActions');
@@ -13,27 +15,34 @@ class DeviceItem extends Component {
   }
 
   render() {
-    let status = this.props.data.status;
+    let status = this.props.data.attrs.status;
+    if (status == undefined)
+      status = 'disabled';
+
+    let uptime = this.props.data.attrs.uptime;
+    if (uptime == undefined)
+      uptime = '-';
+
     return (
       <div className='main-div'>
         <div className="item">
           <div className="col s6 name-info">
-                {this.props.data.name}
+                {this.props.data.label}
           </div>
           <div className="col s6 time-info">
-                <title>{this.props.data.uptime}</title>
+                <title>{uptime}</title>
                 <span>UPTIME</span>
           </div>
           <div className={'item-hovered no-padding color-'+status}>
           <div className="col s4 name-info">
-                {this.props.data.name}
+                {this.props.data.label}
           </div>
           <div className="col s4 time-info">
-                <title>{this.props.data.last_update}</title>
+                <title>{util.timestamp_to_date(this.props.data.updated)}</title>
                 <span>LAST UPDATE</span>
           </div>
           <div className="col s4 time-info upper">
-                <title>{this.props.data.status}</title>
+                <title>{status}</title>
                 <span>STATUS</span>
           </div>
           </div>
@@ -50,22 +59,26 @@ class TemplateItem extends Component {
   }
 
   render() {
+    let used_by = this.props.data.attrs.used_by;
+    if (used_by == undefined)
+      used_by = '0';
+
     return (
       <div className='main-div'>
         <div className="item">
           <div className="col s6 name-info">
-                {this.props.data.name}
+                {this.props.data.label}
           </div>
           <div className="col s6 time-info">
-                <title>{this.props.data.last_update}</title>
-                <span>LAST UPDATE</span>
+                <title>{util.timestamp_to_date(this.props.data.created)}</title>
+                <span>CREATED AT</span>
           </div>
           <div className={'item-hovered no-padding bg-black'}>
           <div className="col s6 name-info">
-                {this.props.data.name}
+                {this.props.data.label}
           </div>
           <div className="col s6 time-info upper">
-                <title>{this.props.data.used_by} devices</title>
+                <title>{used_by} device(s)</title>
                 <span>Used by</span>
           </div>
           </div>
@@ -127,7 +140,7 @@ class ElementList extends Component {
     }
     else {
       return (
-          <div className="col s12">
+          <div className="col s12 no-items-box">
             <span className="background-info">No items.</span>
           </div>
       )
@@ -205,13 +218,13 @@ class LeftPainel extends Component {
             <p className='main-title'><label>{this.props.stats.title}</label></p>
             <div className='stats'>
             { main_stats.map((stat) =>
-              <div className="lst-item col s12">
+              <div key={stat.key} className="lst-item col s12">
               <p className="key"> {stat.key}</p>
               <p className="value"> {stat.value}</p>
               </div>
             )}
             { side_stats.map((stat) =>
-              <div className="lst-item sub col s6">
+              <div key={stat.key} className="lst-item sub col s6">
               <p className="key"> {stat.key}</p>
               <p className="value"> {stat.value}</p>
               </div>

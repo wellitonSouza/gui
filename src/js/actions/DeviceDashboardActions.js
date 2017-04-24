@@ -15,6 +15,7 @@ function fakeFetch() {
 
 class DeviceDashboardActions {
 
+  // @TODO generic data used to valid interfaces, we should remove it
   updateStats(data) {
     return {
           'title': 'Communication Stats',
@@ -28,21 +29,10 @@ class DeviceDashboardActions {
   }
 
   updateTemplates(list) {
-    return [
-      {id: "0",  name: "EEG templates", last_update:"27/04/2017", used_by: '3'},
-      {id: "1",  name: "Wearable style", last_update:"27/04/2017", used_by: '2'},
-      {id: "2",  name: "Smartphone configs", last_update:"27/04/2017", used_by: '4'}
-    ]
     return list;
   }
 
   updateDevices(list) {
-    return [
-      {id: "0",  name: "EEG", uptime: "1:23:56", last_update:"27/04/2017", status:"online"},
-      {id: "1",  name: "Foc.us", uptime: "1:52:56", last_update:"22/04/2017", status:"offline"},
-      {id: "2",  name: "TDCs", uptime: "0:40:56", last_update:"21/04/2017", status:"disabled"},
-      {id: "3", name: "Biofeedback", uptime: "3:23:56", last_update:"19/04/2017", status:"online"}
-    ]
     return list;
   }
 
@@ -57,12 +47,10 @@ class DeviceDashboardActions {
   fetchTemplates() {
     return (dispatch) => {
       // TODO add this back!
-      // userManager.getUsers()
-      fakeFetch()
-      // templateManager.getLastTemplates()
-        .then((templateList) => {
+      templateManager.getLastTemplates("created")
+        .then((data) => {
           console.log("templates webservice done");
-          this.updateTemplates(templateList);
+          this.updateTemplates(data.templates);
         })
         .catch((error) => {
           this.unknownFailed(error);
@@ -73,7 +61,6 @@ class DeviceDashboardActions {
   fetchStats() {
     return (dispatch) => {
       // TODO add this back!
-      // userManager.getUsers()
       fakeFetch()
       // deviceManager.getStats()
         .then((stats) => {
@@ -89,12 +76,10 @@ class DeviceDashboardActions {
   fetchDevices() {
     return (dispatch) => {
       // TODO add this back!
-      // userManager.getUsers()
-      fakeFetch()
-      // deviceManager.getLastDevices()
-        .then((deviceList) => {
+      deviceManager.getLastDevices("updated")
+        .then((data) => {
           console.log("devices webservice done");
-          this.updateDevices(deviceList);
+          this.updateDevices(data.devices);
         })
         .catch((error) => {
           this.unknownFailed(error);

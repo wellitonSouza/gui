@@ -120,6 +120,10 @@
   }
 }
 
+.no-items-box
+{
+  padding: 100px 0px !important;
+}
 .main-painel
 {
   background: $porcelain;
@@ -143,7 +147,7 @@
         width:46%;
         margin-left:4%;
         padding: 0px;
-        height: 500px;
+        height: 770px;
         display: inline-block;
 
         .box-title
@@ -308,7 +312,7 @@
         margin: auto;
 
         img {
-          // border: 2px solid $silver;
+          border: 2px solid $silver;
           border-radius: 81%;
         }
     }

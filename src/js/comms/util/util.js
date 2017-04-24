@@ -89,6 +89,14 @@ class Util {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
       s4() + '-' + s4() + s4() + s4();
   }
+
+  // to get formatted date
+  timestamp_to_date(timestamp)
+  {
+      let date = new Date(null);
+      date.setSeconds(Math.floor(timestamp));
+      return date.toLocaleString();
+  }
 }
 
 var util = new Util();

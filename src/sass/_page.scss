@@ -39,11 +39,19 @@
     right: 0;
     bottom: 0;
     width: 66%;
-    padding: 0 2em;
+    padding: 0.5em 2em;
     display: inline;
 
     > * {
       float:right;
+    }
+
+    .btn {
+      font-size: 1rem;
+      padding: 0 0.5rem;
+      margin-left: 1rem;
+      line-height: 1.8rem;
+      height: 1.8rem;
     }
   }
 }
@@ -58,8 +66,29 @@
   z-index: 1000;
   box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
 
-  .title {}
-  .actions {}
+  .title {
+    font-size: 1.5em;
+    font-family: 'Droid-sans', sans-serif;
+  }
+  .actions {
+    position: absolute;;
+    right: 20px;
+    bottom: 10px;
+    font-size: 1.5em;
+
+    .btn {
+      font-size: 1rem;
+      padding: 0 0.5rem;
+      margin-left: 1rem;
+      line-height: 1.8rem;
+      height: 1.7rem;
+    }
+
+    i {
+      color: $dark-silver;
+      margin: 0 0.3em;
+    }
+  }
 }
 
 .inner-content {

@@ -59,12 +59,8 @@ class Util {
       fetch(url, authConfig)
         .then(local._status)
         .then(local._json)
-        .then(function(data) {
-          resolve(data);
-        })
-        .catch(function(error) {
-          reject(error);
-        })
+        .then(function(data) { resolve(data); })
+        .catch(function(error) { reject(error); })
     })
   }
 

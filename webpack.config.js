@@ -43,6 +43,8 @@ module.exports = {
     new CopyWebpackPlugin([
       { from: 'src/html/index.html', to: 'index.html' },
       { from: 'src/components', to: 'components' },
+      // { from: 'src/js/mashup', to: 'mashup' },
+      { from: 'src/js/views/flows/vendor.js', to: 'js/vendor.js' },
       { from: 'node_modules/leaflet/dist/leaflet.css', to: 'leaflet.css' },
       { from: 'node_modules/leaflet/dist/images', to: 'images' },
       { from: 'src/img', to: 'images' }

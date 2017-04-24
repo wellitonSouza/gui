@@ -1,0 +1,28 @@
+.flows-wrapper {
+  position: relative;
+  width: 100%;
+  height: calc(100% - #{$page-header-size});
+
+  @import 'red/style';
+
+  #main-container {
+    top: 0 !important;
+  }
+
+  #workspace {
+    right: 0;
+  }
+
+  #editor-stack {
+    right: 0;
+  }
+
+  #chart {
+    top: 0;
+    bottom: 0;
+  }
+
+  .palette-scroll {
+    top: 0;
+  }
+}

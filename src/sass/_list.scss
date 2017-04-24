@@ -89,14 +89,45 @@ $status: #0c343d;
   }
 
   .table {
+    .row {
+      margin: 0;
+    }
+
+    color: $black;
+
     .header {
-      color: $black;
       border-bottom: solid 2px $black;
+      font-weight: bold;
     }
 
     .body {
 
     }
+  }
+
+  .action-container {
+    text-align: center;
+  }
+  .action {
+    margin-left: 0.3em;
+  }
+
+  .title-row {
+    margin-bottom: 0.2em;
+
+    .btn {
+      font-size: 0.8rem;
+      line-height: 1.5rem;
+      height: auto;
+
+    }
+  }
+
+
+  .title {
+    color: $dark-silver;
+    font-size: 1.6em;
+    font-family: 'Droid-sans', sans-serif;
   }
 }
 
@@ -108,6 +139,7 @@ $status: #0c343d;
   background-color: $entry-default;
 
   &.online   { background-color: $online; }
+  &.enabled  { background-color: $online; }
   &.offline  { background-color: $offline; }
   &.disabled { background-color: $disabled; }
 
@@ -122,8 +154,26 @@ $status: #0c343d;
     > div.img {
       float: left;
       margin-right: 3%;
+      height: 50px;
+      width: 50px;
+
       > img {
         height: 50px;
+      }
+    }
+
+    .app-icon {
+      background-color: rgba(#fff, 0.85);
+      color: #393536;
+      overflow: hidden;
+      border-radius: 5px;
+
+      .shadow {
+        font-size: 35px;
+        padding-top: calc((100% - 35px)/2);
+        padding-left: calc((100% - 35px)/2);
+        text-align: center;
+        @include long-shadow(text, rgba(#b5bdb8, 0.94), 55, true, false)
       }
     }
 
@@ -166,6 +216,7 @@ $status: #0c343d;
 
       .metric-value {
         font-size: 110%;
+        color: $default;
       }
 
       .metric-label {

@@ -23,6 +23,7 @@ $porcelain: #ecf0f1;
 $silver: #b8b8b8;
 $dark-silver: #848484;
 $black: #2c3e50;
+$default: rgba(0, 0, 0, 0.87);
 // sidebar control variables
 $sidebar-width: 220px;
 $sidebar-width-closed: 50px;
@@ -89,13 +90,12 @@ body {
   text-transform: uppercase;
 }
 
-.clickable{
+.clickable {
   cursor: pointer;
   user-select: none;
 }
 
-.text-right
-{
+.text-right {
   text-align: right;
 }
 
@@ -130,3 +130,4 @@ body {
 @import 'materialIcons';
 @import 'login';
 @import 'user';
+@import 'flows';

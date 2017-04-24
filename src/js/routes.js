@@ -6,7 +6,8 @@ import Dashboard from './views/dashboard/';
 import Full from './containers/full/';
 import { Devices, ViewDevice, NewDevice }  from './views/devices';
 import { TemplateList, NewTemplate } from './views/templates';
-import Users from './views/users/'
+import Users from './views/users/';
+import { Flows, EditFlow } from './views/flows';
 
 export default (
   <Router history={hashHistory}>
@@ -33,7 +34,12 @@ export default (
         </Route>
       </Route>
       <Route path="config" name="Settings" component={Dashboard} />
-      <Route path="flows" name="Information Flows" component={Dashboard} />
+
+      <Route path="flows" name="Information Flows">
+        <IndexRoute component={Flows} />
+        <Route path="id/:flowid" name="Flow detail" component={EditFlow} />
+      </Route>
+
       <Route path="alarm" name="Alarm" component={Dashboard} />
       <Route path="auth" name="Authentication">
         <IndexRoute component={Users} />

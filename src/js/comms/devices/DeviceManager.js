@@ -11,7 +11,7 @@ class DeviceManager {
 
   // @TODO probably here isn't a good place to handle stats
   getStats() {
-    return util.GET(this.baseUrl + '/device/stats');
+    return util.GET(this.baseUrl + '/metric/admin/metrics/');
   }
 
   getLastDevices(field) {

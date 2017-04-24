@@ -3,6 +3,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import alt from '../../alt';
 import AltContainer from 'alt-container';
+import LoginStore from '../../stores/LoginStore';
 import util from '../../comms/util/util';
 
 
@@ -240,6 +241,21 @@ class LeftPainel extends Component {
 class DeviceDashboard extends Component {
   constructor(props) {
     super(props);
+  }
+
+  render() {
+    return (
+      <AltContainer store={LoginStore}>
+        <DeviceDashboardImpl {...this.props} />
+      </AltContainer>
+    )
+  }
+}
+
+
+class DeviceDashboardImpl extends Component {
+  constructor(props) {
+    super(props);
 
     this.state = {
       stats : {},
@@ -253,8 +269,7 @@ class DeviceDashboard extends Component {
 
   componentDidMount() {
     DeviceDashboardStore.listen(this.onChange);
-    // I have no idea that i'm doing
-    DeviceDashboardActions.fetchAll();
+    DeviceDashboardActions.fetchAll(this.props.user.service);
   }
 
   componentWillUnmount() {
@@ -275,7 +290,7 @@ class DeviceDashboard extends Component {
       transitionEnterTimeout={500}
       transitionLeaveTimeout={500} >
       <div className="row col s12 main-painel">
-        <LeftPainel id='div_devices' mainTitle="Devices" subtitle="Dashboard" stats={this.state.stats} />
+       <LeftPainel id='div_devices' mainTitle="Devices" subtitle="Dashboard" stats={this.state.stats} />
         <MainPainel devices={this.state.last_devices} templates={this.state.last_templates} />
       </div>
       </ReactCSSTransitionGroup>

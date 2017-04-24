@@ -48,12 +48,12 @@ class Util {
       }
     }
 
-    if (authConfig.headers) {
-      if (authConfig.headers.has('content-type') == false)
-        authConfig.headers.append('content-type', 'application/json');
-    } else {
-      authConfig.headers = new Headers({'content-type': 'application/json'});
-    }
+    // if (authConfig.headers) {
+    //   if (authConfig.headers.has('content-type') == false)
+    //     authConfig.headers.append('content-type', 'application/json');
+    // } else {
+    //   authConfig.headers = new Headers({'content-type': 'application/json'});
+    // }
 
     return new Promise(function(resolve, reject) {
       fetch(url, authConfig)

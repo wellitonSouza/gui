@@ -15,17 +15,29 @@ function fakeFetch() {
 
 class DeviceDashboardActions {
 
-  // @TODO generic data used to valid interfaces, we should remove it
-  updateStats(data) {
-    return {
-          'title': 'Communication Stats',
-          'mainStats':[{'key':'# RECEIVED MESSAGES','value':'12'},{'key':'# SENT MESSAGES','value':'32'}],
-          'sideStats':[
-            {'key':'AVG TIME FOR MESSAGE','value':'2 ms'},
-            {'key':'AVG UPSTREAM FOR MESSAGE','value':'32 ms'},
-            {'key':'AVG DOWNSTREAM FOR MESSAGE','value':'12 ms'}
-          ]};
-    return data;
+  updateStats(data, user) {
+
+    console.log("DeviceDashboardActions", data, user);
+    let aux = {'incomingTransactions':'-',
+      'outgoingTransactions':'-',
+      'serviceTime':'-'};
+    // step 0. checks if exists metrics for the user
+    if (data.services[user] != undefined)
+      aux = data.services[user].sum;
+
+    // step 1. Create json with attributes to be filled
+    var temp = {'title': 'Communication Stats','mainStats':[],'sideStats':[]};
+    // step 2. At first, adds stats related with main indicators.
+    // "# RECEIVED MESSAGES"  = incomingTransactions
+    // "# SENT MESSAGES"  = outgoingTransactions
+    temp.mainStats.push({'key':'# RECEIVED MESSAGES','value':aux.incomingTransactions});
+    temp.mainStats.push({'key':'# SENT MESSAGES','value':aux.outgoingTransactions});
+    // step 3. After, adds auxiliar stats, i.e., others useful information.
+    // "AVG TIME FOR MESSAGE"  = serviceTime
+    temp.sideStats.push({'key':'AVG TIME PER MESSAGE','value':aux.serviceTime});
+    temp.sideStats.push({'key':'AVG UPSTREAM PER MESSAGE','value':'-'});
+    temp.sideStats.push({'key':'AVG DOWNSTREAM PER MESSAGE','value':'-'});
+    return temp;
   }
 
   updateTemplates(list) {
@@ -37,16 +49,15 @@ class DeviceDashboardActions {
   }
 
 
-  fetchAll() {
+  fetchAll(user) {
     console.log("fetchAll")
     this.fetchDevices();
     this.fetchTemplates();
-    this.fetchStats();
+    this.fetchStats(user);
   }
 
   fetchTemplates() {
     return (dispatch) => {
-      // TODO add this back!
       templateManager.getLastTemplates("created")
         .then((data) => {
           console.log("templates webservice done");
@@ -58,14 +69,13 @@ class DeviceDashboardActions {
     }
   }
 
-  fetchStats() {
+  fetchStats(user) {
     return (dispatch) => {
-      // TODO add this back!
-      fakeFetch()
-      // deviceManager.getStats()
+      // fakeFetch()
+      deviceManager.getStats()
         .then((stats) => {
           console.log("stats webservice done");
-          this.updateStats(stats);
+          this.updateStats(stats,user);
         })
         .catch((error) => {
           this.unknownFailed(error);
@@ -75,7 +85,6 @@ class DeviceDashboardActions {
 
   fetchDevices() {
     return (dispatch) => {
-      // TODO add this back!
       deviceManager.getLastDevices("updated")
         .then((data) => {
           console.log("devices webservice done");

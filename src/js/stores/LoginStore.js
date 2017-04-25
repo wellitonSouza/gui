@@ -4,11 +4,20 @@ import Util from '../comms/util/util';
 
 class LoginStore {
   constructor() {
+
+    if (sessionStorage.jwt) {
+      this.token = sessionStorage.jwt;
+      Util.token = this.token;
+      this.authenticated = true;
+      this.user = JSON.parse(atob(this.token.split('.')[1]));
+    } else {
+      this.authenticated = false;
+      this.user = null;
+      this.token = undefined;
+    }
+
     this.error = null;
-    this.authenticated = false;
-    this.token = undefined;
     this.loading = false;
-    this.user = null;
 
     this.bindListeners({
       handleAuthenticate: LoginActions.AUTHENTICATE,
@@ -29,12 +38,16 @@ class LoginStore {
     this.token = login.jwt;
     Util.token = login.jwt;
     this.loading = false;
-    this.user = JSON.parse(atob(login.jwt.split('.')[1]));
+    this.user = JSON.parse(atob(this.token.split('.')[1]));
+    sessionStorage.jwt = login.jwt;
   }
 
   handleFailure(error) {
     this.error = error;
     this.loading = false;
+    this.authenticated = false;
+    this.token = null;
+    sessionStorage.jwt = null;
   }
 }
 

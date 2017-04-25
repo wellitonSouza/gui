@@ -168,6 +168,7 @@ class DetailItem extends Component {
   remove(e) {
     e.preventDefault();
     DeviceActions.triggerRemoval(this.props.device);
+    this.props.handleDismiss();
   }
 
   edit(e) {
@@ -309,7 +310,9 @@ class ListItem extends Component {
   }
 
   handleDismiss(e) {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
     this.props.detailedTemplate(undefined);
   }
 
@@ -353,9 +356,15 @@ function ListRender(props) {
   if (deviceList.length > 0) {
 
     function setPos(a, pos) {
+      if (a === undefined || a === null) { return; }
       if (!a.hasOwnProperty('orgPos')) {
         a.orgPos = pos;
       }
+    }
+
+    function getPos(device, idx) {
+      if (device.hasOwnProperty('orgPos')) { return device.orgPos; }
+      return idx;
     }
 
     // swap positions to push assimetry to the end of the list
@@ -370,11 +379,6 @@ function ListRender(props) {
         deviceList[i-1] = t;
       }
       swapped = true;
-    }
-
-    function getPos(device, idx) {
-      if (device.hasOwnProperty('orgPos')) { return device.orgPos; }
-      return idx;
     }
 
     return (

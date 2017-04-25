@@ -17,4 +17,15 @@ function Main(props) {
   )
 }
 
-ReactDOM.render(<Main/>, document.getElementById('app'));
+/*
+ * TODO This is not nice, and makes me really sad
+ * Currently there are two alternatives to this - the first is to properly
+ * implement the input fields from materialize on react, thus removing the need
+ * to Materialize.updateTextFields() on componentDidMount() on a number of forms.
+ * The second is to include materialize's javascript as a js dependency, thus
+ * guaranteeing that it is loaded before this runs. This has the side effect of
+ * making the already huge devices.js assembled file even larger.
+ */
+$(document).ready(() => {
+  ReactDOM.render(<Main/>, document.getElementById('app'));
+})

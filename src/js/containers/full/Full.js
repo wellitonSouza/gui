@@ -95,24 +95,21 @@ class Sidebar extends Component {
   render() {
     // TODO: active entry styling, set target, add responsiveness
     let entries = [
-      // TODO change this icon
       { target: "/device/list", iconClass: "material-icons mi-ic-memory", label: "Devices", desc: "Known devices and configuration", children: [
         { target: "/device/list", iconClass: "", label: "device"},
         { target: "/template/list", iconClass: "", label: "template"},
-        { target: "", iconClass: "", label: "alarm"}
+        { target: "/alarm?q=device", iconClass: "", label: "alarm"}
       ]},
-      // TODO change this icon
       { target: "/flows", iconClass: "material-icons mi-device-hub", label: "data flows", desc: "Processing flows to be executed" },
       { target: "/alarm", iconClass: "fa fa-bell-o", label: "alarms", desc: "System events and alarms"},
       { target: "/auth", iconClass: "fa fa-unlock-alt", label: "auth", desc: "User and permissions management", children: [
         { target: "/auth/user", iconClass: "", label: "users"},
-        { target: "", iconClass: "", label: "permissions"}
+        { target: "/auth/permissions", iconClass: "", label: "permissions"}
       ]},
-      // TODO change this icon
       { target: "/deploy", iconClass: "fa fa-cogs", label: "deploy", desc: "Application and plugin management", children: [
-        { target: "", iconClass: "", label: "plugins"},
-        { target: "", iconClass: "", label: "applications"},
-        { target: "", iconClass: "", label: "alarm"}
+        { target: "/deploy/plugins", iconClass: "", label: "plugins"},
+        { target: "/deploy/applications", iconClass: "", label: "applications"},
+        { target: "/alarm?q=deploy", iconClass: "", label: "alarm"},
       ]}
     ];
 

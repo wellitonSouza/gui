@@ -119,6 +119,13 @@ body {
   right: 0;
 }
 
+.horizontal-center {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
 .relative {
   position: relative;
 }

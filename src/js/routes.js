@@ -14,7 +14,7 @@ import Todo from './views/utils/todo';
 export default (
   <Router history={hashHistory}>
     <Route path="/" component={Full}>
-      <IndexRoute component={Dashboard} />
+      <IndexRoute component={Devices} />
       <Route path="dashboard" name="Home" component={Todo} />
       <Route name="Device manager" >
         <Route path="deviceManager" name="Device manager" component={Todo} />

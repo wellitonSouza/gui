@@ -174,22 +174,27 @@ class DeviceTag extends Component {
 
 class AttrCard extends Component {
   render() {
+    const hasValue = (this.props.value && this.props.value.length > 0);
+    const splitSize = "col " + (hasValue ? " s6" : " s12");
+
     return (
-      <div className="col s4">
+      <div className="col s12 m6 l4">
         <div className="card z-depth-2">
           <div className="card-content row">
-            <div className="col s12">
-              <div>Label</div>
-              <div>{this.props.name}</div>
+            <div className="col s12 main">
+              <div className="value title">{this.props.name}</div>
+              <div className="label">Name</div>
             </div>
-            <div className="col s6">
-              <div>Value</div>
-              <div>{this.props.value}</div>
+            <div className={splitSize}>
+              <div className="value">{this.props.type}</div>
+              <div className="label">Type</div>
             </div>
-            <div className="col s6">
-              <div>Type</div>
-              <div>{this.props.type}</div>
-            </div>
+            {(hasValue > 0) && (
+              <div className={splitSize}>
+                <div className="value">{this.props.value}</div>
+                <div className="label">Value</div>
+              </div>
+            )}
           </div>
         </div>
       </div>

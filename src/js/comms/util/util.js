@@ -33,7 +33,9 @@ class Util {
   printTime(ts) {
     let date = new Date(null);
     date.setSeconds(Math.floor(ts));
-    return date.toLocaleString();
+
+    const options = { hour12: false };
+    return date.toLocaleString(undefined, options);
   }
 
   _runFetch(url, config) {
@@ -78,17 +80,18 @@ class Util {
   }
 
   guid() {
-    function s4() {
-      return Math.floor((1 + Math.random()) * 0x10000)
-        .toString(16)
-        .substring(1);
-    }
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
       s4() + '-' + s4() + s4() + s4();
   }
 
   sid() {
     return (1 + Math.random()*4294967295).toString(16);
+  }
+
+  s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
   }
 }
 

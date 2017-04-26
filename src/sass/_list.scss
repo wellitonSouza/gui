@@ -289,6 +289,7 @@ $status: #0c343d;
     background-color: #f3f3f3;
     margin: 0;
     height: 22rem;
+    // height: 400px; // this makes me sad, but the map needs a fixed height parent
     width: 100%;
     padding: 1rem;
     font-family: 'Open Sans', sans-serif;
@@ -583,6 +584,10 @@ $status: #0c343d;
   &.padding10 {
     padding-top: 10rem;
   }
+
+  &.subtle {
+    font-size: 1.2em;
+  }
 }
 
 .lst-entry span .row {
@@ -606,4 +611,26 @@ $status: #0c343d;
 .lst-entry .icon img {
   height: auto;
   width: 100%;
+}
+
+.card {
+
+  .main {
+    margin-bottom: 1rem;
+  }
+
+  .label {
+    font-size: 65%;
+    color: $silver;
+    position: relative;
+  }
+
+  .value {
+    font-size: 110%;
+    color: $default;
+
+    &.title {
+      font-size: 170%;
+    }
+  }
 }

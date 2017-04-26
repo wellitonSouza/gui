@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import deviceManager from '../../comms/devices/DeviceManager';
 
+import util from "../../comms/util/util";
 import DeviceStore from '../../stores/DeviceStore';
 import DeviceActions from '../../actions/DeviceActions';
 import TemplateStore from '../../stores/TemplateStore';
@@ -24,15 +25,40 @@ function TagList (props) {
   const tags = props.tags;
   return (
     <span>
-      {
+      { (tags.length > 0) ? (
         tags.map((tag) =>
           <span className="tag" key={tag}>
             <i className="fa fa-tag"></i>{tag}
           </span>
         )
-      }
+      ) : (
+        <sapn className="tag">No tags set</sapn>
+      )}
     </span>
   )
+}
+
+class DeviceTag extends Component {
+  constructor(props) {
+    super(props);
+
+    this.handleRemove = this.handleRemove.bind(this);
+  }
+
+  handleRemove(e) {
+    this.props.removeTag(this.props.tag);
+  }
+
+  render() {
+    return (
+      <div key={this.props.tag}>
+        {this.props.tag} &nbsp;
+        <a title="Remove tag" className="btn-item" onClick={this.handleRemove}>
+          <i className="fa fa-times" aria-hidden="true"></i>
+        </a>
+      </div>
+    )
+  }
 }
 
 function SummaryItem(props) {
@@ -58,18 +84,14 @@ function SummaryItem(props) {
 
       <div className="lst-entry-body col s12">
         {/* TODO fill those with actual metrics */}
-        <div className="col s6 metric">
-          <div className="metric-value">{props.device.attrs.length}</div>
+        <div className="col s3 metric">
+          <div className="metric-value">{props.device.attrs.length + props.device.static_attrs.length}</div>
           <div className="metric-label">Attributes</div>
         </div>
-        <div className="col s6 metric last">
-          <div className="metric-value">N/A</div>
+        <div className="col s9 metric last">
+          <div className="metric-value">{util.printTime(props.device.updated)}</div>
           <div className="metric-label">Last update</div>
         </div>
-        {/* <div className="col s4 metric last">
-          <div className="metric-value">12345</div>
-          <div className="metric-label">Uptime</div>
-        </div> */}
       </div>
     </div>
   )
@@ -81,8 +103,25 @@ class Graph extends Component{
   }
 
   render() {
+    let labels = [];
+    let values = [];
+    this.props.data.map((i) => {
+      labels.push(i.recvTime);
+
+      if (i.attrType.toLowerCase() === 'integer') {
+        values.push(parseInt(i.attrValue));
+      } else if (i.attrType.toLowerCase() === 'float') {
+        values.push(parseFloat(i.attrValue));
+      } else {
+        console.error('unknown field type');
+        values.push(parseInt(i.attrValue));
+      }
+
+
+    })
+
     const data = {
-      labels: ['', '', '', '', '', '', ''],
+      labels: labels,
       datasets: [
         {
           label: 'Device data',
@@ -103,7 +142,7 @@ class Graph extends Component{
           pointHoverBorderWidth: 2,
           pointRadius: 1,
           pointHitRadius: 10,
-          data: [23.1, 23.0, 22.6, 22.7, 23.3, 22.9, 22.8]
+          data: values
         }
       ]
     }
@@ -122,61 +161,148 @@ class Graph extends Component{
   }
 }
 
+class PositionRenderer extends Component {
+  componentDidMount(){}
+
+  render() {
+    const position = [-22.8132384,-47.0448855];
+    return (
+      <Map center={position} zoom={19}>
+        <TileLayer
+          url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        />
+        <Marker position={position}></Marker>
+      </Map>
+    )
+  }
+}
+
 function Position(props) {
-  const position = [-22.8132384,-47.0448855];
+  if (props.position == null) {
+    // render not available message
+    return (
+      <div className="full-height valign-wrapper background-info subtle relative graph">
+        <div className="horizontal-center">
+          <i className="material-icons">report_problem</i>
+          <div>No position data available</div>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <Map center={position} zoom={19}>
-      <TileLayer
-        url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
-        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-      />
-      <Marker position={position}></Marker>
-    </Map>
+    <AltContainer store={MeasureStore}>
+      <PositionRenderer />
+    </AltContainer>
   )
+}
+
+class DetailAttrs extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    this.props.device.attrs.map((i) => {
+      MeasureActions.fetchMeasures.defer(this.props.device.label, i.name)
+    })
+  }
+
+  render() {
+    const device = this.props.device;
+
+    let count = 0;
+    if (device.static_attrs.length > 0) { count++; }
+    count += device.attrs.length;
+    count = count % 4;
+
+    let horizontalSize = "col s4";
+    if (count == 2 && device.static_attrs.length > 0) {
+      horizontalSize = "col s8";
+    } else if (count != 0) {
+      horizontalSize = "col s" + (12 / count);
+    }
+
+    function AttrList(props) {
+      return (
+        <span>
+          { device.attrs.map((i, k) =>
+            (k < count) && (
+              <div className={horizontalSize + " metric-card full-height"} key={i.object_id} >
+                {(props.devices[device.label] && props.devices[device.label][i.name].data) ? (
+                  <div className="graph z-depth-2 full-height">
+                    <div className="title row">
+                      <span>{i.name}</span>
+                      <span className="right"
+                            onClick={() => MeasureActions.fetchMeasures(device.label, i.name)}>
+                        <i className="fa fa-refresh" />
+                      </span>
+                    </div>
+                    <div className="contents"><Graph data={props.devices[device.label][i.name].data}/></div>
+                  </div>
+                ) : (
+                  <div className="graph z-depth-2 full-height">
+                    <span className="title">{i.name}</span>
+                    <div className="contents">
+                      <div className="background-info valign-wrapper full-height relative">
+                        <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center"/>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )
+          )}
+        </span>
+      )
+    }
+
+    if (device.static_attrs.length > 0) {
+      count--;
+      return (
+        <div className="row half-height">
+          <div className="col s4 full-height">
+            <div className="text-info full-height">
+              <div className="title">Attributes</div>
+              <div className="">
+                <ul>
+                  {device.static_attrs.map((i, k) =>
+                    (k < 3) && (
+                      <li key={i.name}>
+                        <span className="col s6 label">{i.name}</span>
+                        <span className="col s6 value">{i.value}</span>
+                      </li>
+                    )
+                  )}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <AttrList devices={this.props.devices} />
+        </div>
+      )
+    } else {
+      return (
+        <div className="row half-height">
+          <AttrList devices={this.props.devices} />
+        </div>
+      )
+    }
+  }
 }
 
 class DetailItem extends Component {
   constructor(props) {
     super(props);
-
-    this.props.device.tags = ["cpqd", "bld11", "temp"];
-    const status = props.device.status ? 'online' : 'offline';
-
-    this.state =  {
-      measures: MeasureStore.getState().measures
-    }
-
-    this.onChange = this.onChange.bind(this);
     this.remove = this.remove.bind(this);
-    this.edit = this.edit.bind(this);
-    this.detail = this.detail.bind(this);
-  }
-
-  onChange(state) {
-    this.setState(state);
-  }
-
-  componentDidMount() {
-    MeasureStore.listen(this.onChange);
-    MeasureActions.fetchMeasures("temperature");
-  }
-
-  componentWillUnmount() {
-    MeasureStore.unlisten(this.onChange);
   }
 
   remove(e) {
     e.preventDefault();
     DeviceActions.triggerRemoval(this.props.device);
     this.props.handleDismiss();
-  }
-
-  edit(e) {
-    e.preventDefault();
-  }
-
-  detail(e) {
-    e.preventDefault();
   }
 
   render() {
@@ -187,6 +313,17 @@ class DetailItem extends Component {
       if (('enabled' in this.props.device) && this.props.device.enabled) {
         status = "offline";
       }
+    }
+
+    let position = null;
+    function getPosition(i) {
+      if (i.type == "geo") {
+        position = i;
+      }
+    }
+    this.props.device.attrs.map((i) => {getPosition(i)})
+    if (position === null) {
+      this.props.device.static_attrs.map((i) => {getPosition(i)})
     }
 
     return (
@@ -222,12 +359,12 @@ class DetailItem extends Component {
                   <div className="metrics col s12">
                     <div className="metric col s4">
                       <span className="label">Attributes</span>
-                      <span className="value">4</span>
+                      <span className="value">{this.props.device.attrs.length + this.props.device.static_attrs.length}</span>
                       {/* <span className="value">{this.props.device.attrs.length}</span> */}
                     </div>
                     <div className="metric col s4">
                       <span className="label">Last update</span>
-                      <span className="value">2017/03/29 10:42:27</span>
+                      <span className="value">{util.printTime(this.props.device.updated)}</span>
                     </div>
                     <div className="metric col s4">
                       <span className="label">Uptime</span>
@@ -247,48 +384,12 @@ class DetailItem extends Component {
                   </div>
                 </div>
               </div>
-              <div className="row half-height">
-                <div className="col s4 full-height">
-                  <div className="text-info full-height">
-                    <div className="title">Attributes</div>
-                    <div className="">
-                      <ul>
-                        <li>
-                          {/* TODO get this from store */}
-                          <span className="col s6 label">Manufacturer</span>
-                          <span className="col s6 value">CPqD</span>
-                        </li>
-                        <li>
-                          {/* TODO get this from store */}
-                          <span className="col s6 label">Software version</span>
-                          <span className="col s6 value">0.0.0</span>
-                        </li>
-                        <li>
-                          {/* TODO get this from store */}
-                          <span className="col s6 label">Serial number</span>
-                          <span className="col s6 value">04b4-11e7-80c1</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col s4 metric-card full-height">
-                  <div className="graph z-depth-2 full-height">
-                    <span className="title">Temperature</span>
-                    <div className="contents"><Graph /></div>
-                  </div>
-                </div>
-                <div className="col s4 metric-card full-height">
-                  <div className="graph z-depth-2 full-height">
-                    <span className="title">Metric Name</span>
-                    <div className="contents"><Graph /></div>
-                  </div>
-                </div>
-              </div>
+              <AltContainer store={MeasureStore} inject={{device: this.props.device}} >
+                <DetailAttrs />
+              </AltContainer>
             </div>
-            <div className="col s3 map z-depth-2">
-              <Position />
+            <div className="col s3 map z-depth-2 full-height">
+              <Position position={position} />
             </div>
           </div>
         </div>
@@ -505,29 +606,6 @@ class DeviceList extends Component {
   }
 }
 
-class DeviceTag extends Component {
-  constructor(props) {
-    super(props);
-
-    this.handleRemove = this.handleRemove.bind(this);
-  }
-
-  handleRemove(e) {
-    this.props.removeTag(this.props.tag);
-  }
-
-  render() {
-    return (
-      <div key={this.props.tag}>
-        {this.props.tag} &nbsp;
-        <a title="Remove tag" className="btn-item" onClick={this.handleRemove}>
-          <i className="fa fa-times" aria-hidden="true"></i>
-        </a>
-      </div>
-    )
-  }
-}
-
 class Devices extends Component {
 
   constructor(props) {
@@ -566,4 +644,5 @@ class Devices extends Component {
     );
   }
 }
+
 export { Devices };

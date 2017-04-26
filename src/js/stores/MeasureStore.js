@@ -5,7 +5,7 @@ import util from '../comms/util';
 
 class MeasureStore {
   constructor() {
-    this.measures = [];
+    this.devices = {};
     this.error = null;
 
     this.bindListeners({
@@ -15,13 +15,27 @@ class MeasureStore {
     });
   }
 
-  handleUpdateMeasures(measures) {
-    this.measures = measures;
-    this.error = null;
+  handleUpdateMeasures(measureData) {
+    if (! ('device' in measureData)) { console.error("Missing device id"); }
+    if (! ('attr' in measureData)) { console.error("Missing attr id"); }
+    if (! ('data' in measureData)) { console.error("Missing device data"); }
+
+    if (measureData.device in this.devices) {
+      this.devices[measureData.device][measureData.attr] = { loading: false, data: measureData.data };
+    } else {
+      this.error = "Device not found"
+    }
   }
 
-  handleFetchMeasures(id) {
-    this.measures = [];
+  handleFetchMeasures(measureData) {
+    if (! ('device' in measureData)) { console.error("Missing device id"); }
+    if (! ('attr' in measureData)) { console.error("Missing attr id"); }
+
+    if (! (measureData.device in this.devices)) {
+      this.devices[measureData.device] = {}
+    }
+
+    this.devices[measureData.device][measureData.attr] = {loading: true};
   }
 
   handleFailure(error) {

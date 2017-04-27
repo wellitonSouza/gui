@@ -349,8 +349,8 @@ function ListRender(props) {
 
   if (props.loading) {
     return (
-      <div className="background-info valign-wrapper">
-        <i className="fa fa-circle-o-notch fa-spin fa-fw"/>
+      <div className="background-info valign-wrapper full-height">
+        <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center"/>
       </div>
     )
   }
@@ -400,7 +400,9 @@ function ListRender(props) {
     )
   } else {
     return  (
-      <div className="background-info valign-wrapper">No configured devices</div>
+      <div className="background-info valign-wrapper full-height">
+        <span className="horizontal-center">No configured devices</span>
+      </div>
     )
   }
 }
@@ -485,7 +487,7 @@ class DeviceList extends Component {
     const filteredList = this.applyFiltering(this.props.devices);
 
     return (
-      <div className="col m10 s12 offset-m1 full-height relative">
+      <div className="col m10 s12 offset-m1 relative full-height">
 
         { this.state.isDisplayList === false && <MapRender devices={filteredList} loading={this.props.loading}/>  }
         { this.state.isDisplayList && <ListRender devices={filteredList}

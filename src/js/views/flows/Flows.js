@@ -68,8 +68,10 @@ class ListRender extends Component {
       )
     } else {
       return  (
-        <div className="col s12">
-          <span className="background-info valign-wrapper">No configured flows</span>
+        <div className="row full-height relative">
+          <div className="background-info valign-wrapper full-height">
+            <span className="horizontal-center">No configured flows</span>
+          </div>
         </div>
       )
     }

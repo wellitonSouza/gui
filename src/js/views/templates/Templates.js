@@ -491,9 +491,9 @@ class TemplateList extends Component {
 
     if (this.props.loading) {
       return (
-        <div className="full-height relative">
-          <div className="background-info valign-wrapper">
-            <i className="fa fa-circle-o-notch fa-spin fa-fw"/>
+        <div className="row full-height relative">
+          <div className="background-info valign-wrapper full-height">
+            <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center"/>
           </div>
         </div>
       )
@@ -514,7 +514,9 @@ class TemplateList extends Component {
             )}
           </div>
         ) : (
-          <div className="background-info valign-wrapper">No configured templates</div>
+          <div className="background-info valign-wrapper full-height">
+            <span className="horizontal-center">No configured templates</span>
+          </div>
         )}
 
         {/* <!-- footer --> */}

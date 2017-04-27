@@ -575,18 +575,6 @@ $status: #0c343d;
   color: $subtle;
   font-size: 200%;
   text-align: center;
-  // margin-top: 20%;
-  display: block;
-
-  &.valign-wrapper {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    height: 1em;
-  }
 
   i.material-icons {
     font-size: 5em;

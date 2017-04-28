@@ -9,9 +9,19 @@ class DeviceManager {
     return util.GET(this.baseUrl + '/device');
   }
 
+  // @TODO probably here isn't a good place to handle stats
+  getStats() {
+    return util.GET(this.baseUrl + '/metric/admin/metrics/');
+  }
+
+  getLastDevices(field) {
+    return util.GET(this.baseUrl + "/device?limit=10&sortDsc="+field);
+  }
+
   getDevice(id) {
     return util.GET(this.baseUrl + "/device/" + id);
   }
+
 
   setDevice(detail) {
     return util.PUT(this.baseUrl + "/device/" + detail.id, detail);

@@ -1,0 +1,370 @@
+
+.bg-pink
+{
+  background-color: $pink-like;
+}
+.bg-ciano
+{
+  background-color: $ciano;
+}
+.bg-black
+{
+  background-color: $black;
+}
+
+
+.color-online
+{
+  background-color: $green;
+}
+
+.color-offline
+{
+  background-color: $red;
+}
+
+.color-disabled
+{
+  background-color: $dark-silver;
+}
+
+
+.main-div{
+  height:100%;
+
+   div{
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .name-info
+  {
+    font-family: 'Droid Sans', sans-serif;
+    font-weight: 900;
+    font-size: 16px;
+    height: 100%;
+    padding: 17px 25px;
+  }
+
+  .time-info
+  {
+    font-family: 'Open Sans', sans-serif;
+    text-align: right;
+    padding-right: 35px;
+    padding-top: 10px;
+    title{
+      display: block;
+      font-size: 15px;
+      font-weight: bold;
+    }
+    span{
+      display: block;
+      color: $silver;
+      font-size: 12px;
+      font-weight: lighter;
+      text-transform: uppercase;
+    }
+  }
+
+  .item{
+      background: $white;
+      height:70px;
+      position: relative;
+      color: $black;
+      &:hover
+      {
+        background: $gray;
+      }
+
+    &:hover .item-hovered {
+      position: absolute;
+      padding: 10px;
+      height: 100%;
+      opacity: 1;
+      width: 95%;
+      color:#FFF;
+
+      div{
+        opacity: 1;
+      }
+    }
+
+    .item-hovered {
+      position: absolute;
+      width: 7px;
+      left: 0;
+      top: 0;
+      opacity: 1;
+      transition: width 1s ease;
+      overflow: hidden;
+      height: 100%;
+      display: inline-block;
+
+      div{
+        transition: all 0.5s ease;
+        opacity: 0;
+      }
+
+      .time-info{
+        title{
+          text-transform: uppercase;
+          color:$white;
+        }
+        span{
+          color:$white;
+
+        }
+      }
+
+    }
+  }
+}
+
+.no-items-box
+{
+  padding: 100px 0px !important;
+}
+.main-painel
+{
+  background: $porcelain;
+  width: 100%;
+  margin-bottom: 0px;
+}
+
+.right-painel-info
+{
+    height: 100%;
+    float: left;
+    width:  calc(100% - (335px));
+    padding-right: 45px;
+    padding-top: 45px;
+    padding-bottom: 45px;
+
+    .box {
+        font-family: 'Cuprum', sans-serif;
+        color: $white;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        width:46%;
+        margin-left:4%;
+        padding: 0px;
+        height: 770px;
+        display: inline-block;
+
+        .box-title
+        {
+            height:70px;
+            position: relative;
+
+            .icon{
+              width: 43px;
+              float: left;
+              background: $white;
+              border-radius: 50%;
+              height: 43px;
+              margin: 13px;
+            }
+
+            .number{
+              float: left;
+              width:70px;
+              font-family: 'Open Sans', sans-serif;
+              font-size:24pt;
+              padding:10px;
+              color: $white;
+              font-weight: bolder;
+            }
+
+            .subtitle
+            {
+              color: $white;
+              font-size: 18px;
+              padding-top: 4px;
+              display: inline-block;
+            }
+
+            .title
+            {
+              color: $white;
+              font-size: 27px;
+              position: absolute;
+              left: 138px;
+              bottom: 3px;
+              font-weight: 300;
+
+            }
+        }
+
+
+    }
+
+
+}
+
+.left-painel-info
+{
+    width: 335px;
+    float: left;
+    background: white;
+
+    .main-header{
+        height: 470px;
+    }
+
+    .box-stats{
+      height: 100%;
+
+      .stats{
+        padding: 0px 43px;
+
+      .lst-item{
+        color: $dark-silver;
+        font-family: 'Roboto', sans-serif;
+        font-weight: bolder;
+        padding: 0px;
+        padding-bottom: 11px;
+
+        p{
+          padding: 0px;
+          margin: 0px;
+        }
+
+        .key{
+          font-size: 12pt;
+        }
+
+        .value{
+          font-size: 30pt;
+          top: -5px;
+          position: relative;
+          color:$ciano;
+        }
+
+        &.sub{
+
+          &:nth-child(odd) {text-align: left;}
+          &:nth-child(even) {text-align: right;}
+
+          .key{
+            font-size: 9pt;
+          }
+
+          .value{
+            font-size: 19pt;
+            top: 0px;
+            position: inherit;
+            color: $pink-like;
+            padding-bottom: 16px;
+          }
+
+        }
+      }
+    }
+
+      .main-title{
+        display: inline-block;
+        width: 100%;
+        text-align: center;
+        padding: 0px 10px;
+        padding-bottom: 20px;
+
+        label{
+          font-family: 'Cuprum', sans-serif;
+          font-size: 12pt;
+          padding: 0px 20px;
+          color: $silver;
+          text-transform: uppercase;
+          font-weight: bold;
+          // z-index: 3;
+          background-color: $white;
+          display: inline-block;
+          z-index: 2;
+          position: relative;
+        }
+      }
+
+      .main-title::before{
+            content: "";
+            width: 100%;
+            height: 1px;
+            display: inline-block;
+            border-bottom: 1px solid $silver;
+            float: left;
+            position: relative;
+            top: 12px;
+            margin: auto;
+      }
+    }
+
+
+    .photo-big
+    {
+        margin-left: auto;
+        width: 100%;
+        padding-top: 82px;
+        margin-right: auto;
+        width: 250px;
+    }
+
+    .circle-after
+    {
+        width: 200px;
+        height: 200px;
+        margin: auto;
+
+        img {
+          border: 2px solid $silver;
+          border-radius: 81%;
+        }
+    }
+
+    .circle-after::before {
+        content: '';
+        display: inline;
+        float: left;
+        -moz-border-radius: 7.5px;
+        border: 2px solid $silver;
+        margin: -1.5em -1.5em -1.5em -1.5em;
+        height: 245px;
+        width: 245px;
+        position: absolute;
+        border-radius: 50%;
+    }
+
+    .title{
+      font-size: 52px;
+      text-align: center;
+      padding-top: 50px;
+      font-family: 'Raleway', sans-serif;
+      color: $black;
+    }
+
+    .subtitle
+    {
+      font-family: 'Raleway', sans-serif;
+      font-size: 30px;
+      text-align: center;
+      top: -5px;
+      font-weight: 200;
+      position: relative;
+      color: $black;
+    }
+
+}
+
+.header-card-info
+{
+
+  .title
+  {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 10pt;
+    color: $silver;
+  }
+
+  .subtitle
+  {
+    font-family: 'Droid Sans', sans-serif;
+    font-size: 14pt;
+    color: $dark-silver;
+  }
+}

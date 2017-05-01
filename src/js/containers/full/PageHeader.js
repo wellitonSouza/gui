@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 function PageHeader(props) {
   return (
-    <div className="page-header">
+    <div className={(props.shadow=="true") ? "page-header box-shadow" : "page-header"}>
       <div className="data">
         <div className="title-area">
           <div className="page-title caps">{props.title}</div>

@@ -13,20 +13,19 @@
   .title-area {
     position: absolute;
     top: 20%;
-
     font-weight: bold;
   }
 
   .page-title {
     // should be droid-sans
     font-size: 105%;
-    font-family: "Roboto", sans-serif;
-    padding-top: 6px;
+    font-family: 'Raleway', sans-serif;
+    padding-bottom: 6px;
   }
 
   .page-subtitle {
     // should be open-sans
-    color: $silver;
+    color: $soft-blue;
     font-family: 'Open Sans', sans-serif;
     font-size: 100%;
     position: relative;
@@ -67,9 +66,10 @@
   box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
 
   .title {
-    font-size: 1.5em;
-    font-family: 'Droid-sans', sans-serif;
+    font-size: 1.3em;
+    font-family: 'Raleway', sans-serif;
   }
+
   .actions {
     position: absolute;;
     right: 20px;

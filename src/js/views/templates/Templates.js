@@ -491,7 +491,7 @@ class TemplateList extends Component {
 
     if (this.props.loading) {
       return (
-        <div className="row full-height relative">
+        <div className="row full-height relative bg-gray">
           <div className="background-info valign-wrapper full-height">
             <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center"/>
           </div>
@@ -499,7 +499,7 @@ class TemplateList extends Component {
       )
     }
     return (
-      <div className="row full-height relative">
+      <div className="row full-height relative bg-gray">
         { filteredList.length > 0 ? (
           <div className="col s12 m10 offset-m1 lst-wrapper">
             { filteredList.map((device) =>
@@ -552,7 +552,7 @@ class Templates extends Component {
           transitionAppearTimeout={500}
           transitionEnterTimeout={500}
           transitionLeaveTimeout={500} >
-        <PageHeader title="device manager" subtitle="Templates">
+        <PageHeader title="device manager" subtitle="Templates" shadow='true'>
           <Filter onChange={this.filterChange} />
           {/* TODO new template should be here */}
         </PageHeader>

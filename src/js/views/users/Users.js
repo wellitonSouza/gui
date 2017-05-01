@@ -262,12 +262,12 @@ class UserFormImpl extends Component {
 
           <div className="col s6 buttons">
             <div className="pull-left">
-              <a onClick={this.props.dismiss} className="waves-light btn red">Cancel</a>
+              <a onClick={this.props.dismiss} className="waves-light btn-flat red">Cancel</a>
             </div>
           </div>
           <div className="col s6">
             <div className="pull-right">
-              <button type="submit" className="waves-light btn teal darken-4">Save</button>
+              <button type="submit" className="waves-light btn-flat teal darken-4">Save</button>
             </div>
           </div>
         </form>
@@ -461,8 +461,8 @@ class UserList extends Component {
       <span>
 
         {/* TODO promote this */}
-        <div className="row z-depth-2 userSubHeader" id="inner-header">
-          <div className="col s4 m4">List of Users</div>
+        <div className="row z-depth-2 userSubHeader p0" id="inner-header">
+          <div className="col s4 m4 main-title">List of Users</div>
 
           <div className="col s2 m2 header-card-info">
             <div className="title"># Users</div>
@@ -472,7 +472,7 @@ class UserList extends Component {
           <div className="col s4 header-card-info"></div>
 
           <div className="col s6 m2 button">
-            <a className="waves-effect waves-light btn right" onClick={this.handleCreate}>New User</a>
+            <a className="waves-effect waves-light btn-flat" onClick={this.handleCreate}>New User</a>
           </div>
         </div>
 

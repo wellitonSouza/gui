@@ -142,8 +142,8 @@ class CreateDeviceActions extends Component {
   render() {
     return (
       <div>
-        <a className="waves-effect waves-light btn" onClick={this.save} tabIndex="-1">save</a>
-        <Link to="/device/list" className="waves-effect waves-light btn" tabIndex="-1">dismiss</Link>
+        <a className="waves-effect waves-light btn-flat btn-ciano" onClick={this.save} tabIndex="-1">save</a>
+        <Link to="/device/list" className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1">dismiss</Link>
       </div>
     )
   }
@@ -240,7 +240,7 @@ class NewAttr extends Component {
   render() {
     return (
       <span>
-        <button data-target="newAttrsForm" className="btn waves waves-light">new</button>
+        <button data-target="newAttrsForm" className="btn-flat waves waves-light">new</button>
         <div className="modal" id="newAttrsForm" ref="modal">
           <div className="modal-content full">
             <div className="title row">New Attribute</div>
@@ -267,11 +267,11 @@ class NewAttr extends Component {
               </div>
 
               <div className="row">
-                <div className="horizontal-spacer col s2 right">
-                  <button type="submit" className="btn waves waves-light">save</button>
-                </div>
-                <div className="horizontal-spacer col s2 right">
+                <div className="col s6 text-left">
                   <button type="button" className="btn waves waves-light" onClick={this.dismiss}>dismiss</button>
+                </div>
+                <div className="col s6 text-right">
+                  <button type="submit" className="btn waves waves-light">save</button>
                 </div>
               </div>
             </form>
@@ -329,9 +329,9 @@ class DeviceForm extends Component {
                 <img src="images/ciShadow.svg" />
               </div>
             </div>
-            <div className="col s9">
+            <div className="col s9 pt20px">
               <div>
-                <div className="input-field large col s12">
+                <div className="input-field large col s12 ">
                   <label htmlFor="fld_name">Name</label>
                   <input id="fld_name" type="text"
                          name="label" value={this.props.device.label}
@@ -350,7 +350,7 @@ class DeviceForm extends Component {
                     <div className="row">
                       <div className="col s11">
                         <div className="input-field">
-                          <label htmlFor="fld_newTag" >Tag</label>
+                          <label htmlFor="fld_newTag" >Add a new tag</label>
                           <input id="fld_newTag" type="text"
                                  value={this.props.newTag} onChange={this.handleTagChange} />
                         </div>

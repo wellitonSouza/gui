@@ -245,7 +245,7 @@ class DetailAttrs extends Component {
                   <div className="graph z-depth-2 full-height">
                     <span className="title">{i.name}</span>
                     <div className="contents">
-                      <div className="background-info valign-wrapper full-height relative">
+                      <div className="background-info valign-wrapper full-height relative bg-gray">
                         <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center"/>
                       </div>
                     </div>
@@ -630,10 +630,10 @@ class Devices extends Component {
         transitionAppearTimeout={500}
         transitionEnterTimeout={500}
         transitionLeaveTimeout={500} >
-        <PageHeader title="device manager" subtitle="Devices">
+        <PageHeader title="device manager" subtitle="Devices" shadow='true'>
           {/* <Filter onChange={this.filterChange} /> */}
-          <Link to="/device/new" className="waves-effect waves-light btn">
-            New Device
+          <Link to="/device/new" className="btn-item btn-floating waves-effect waves-light cyan darken-2">
+            <i className="fa fa-plus"/>
           </Link>
         </PageHeader>
         <AltContainer store={DeviceStore}>

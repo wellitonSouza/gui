@@ -1,11 +1,16 @@
 
 .login-area-left-side {
-  background-color: #fff;
+  background-color: $gray;
   // height: 100%;
   position: absolute;
   overflow: auto;
-  top: calc(50% - 150px);
+  // top: calc(50% - 150px);
+  font-family: Open Sans,sans-serif;
   left:0 !important;
+  color: $almost-black;
+  height: 100%;
+  top: 0px;
+  padding-top: 100px !important;
 }
 
 .login-area-left-side p {
@@ -23,7 +28,9 @@
   overflow: auto;
   position: absolute;
   top: 0;
+  font-family: "Raleway", sans-serif;
   right:0 !important;
+  padding-top: 100px !important;
 
   /* label underline focus color */
   input:not([type]), input[type=text], input[type=password], input[type=email], input[type=url], input[type=time], input[type=date], input[type=datetime], input[type=datetime-local], input[type=tel], input[type=number], input[type=search], textarea.materialize-textarea {
@@ -49,11 +56,16 @@
 /* label color */
 .login-area-right-side .input-field label {
   color: #fff;
+  font-weight: bold;
 }
 
 .login-area-right-side i.material-icons {
   color: #fff;
-  padding-top: 20px ;
+  padding-top: 10px ;
+  // border-bottom: 2px white solid;
+  font-size: 18px;
+  padding-bottom: 17px;
+  text-align: right;
 }
 
 .login-area-right-side .input-field .prefix {
@@ -62,15 +74,15 @@
 }
 
 .login-area-right-side .login-page-title {
-  font-size: 175%;
-  font-family: "Roboto", sans-serif;
+  font-size: 35px;
+  font-family: "Cuprum", "Roboto", sans-serif;
   font-weight: bold;
   color: #fff;
 }
 
 .login-area-right-side .login-page-subtitle {
   font-size: 105%;
-  font-family: "Roboto", sans-serif;
+  font-family: "Raleway", sans-serif;
   font-weight: bold;
   color: #fff;
 }
@@ -107,8 +119,10 @@
 
   .info {
     position: relative;
-    width: 80%;
-    left: 10%;
+    width: 70%;
+    left: 15%;
     text-align: center;
+    font-weight: lighter;
+    font-size: 15px;
   }
 }

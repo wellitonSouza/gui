@@ -83,7 +83,7 @@
 
   &.active {
     background-color: #fff;
-    width: 101%;
+    // width: 101%;
     z-index: 5;
     border-left: 3px solid darkcyan;
 
@@ -205,14 +205,17 @@
   width: 100% - (2* $margin) !important;
 
   // 82 px is the height of the inner header TODO set a fixed height for the inner header
-  min-height: calc(100% - (#{$page-header-size} + 82px + 1em));
+  // min-height: calc(100% - (#{$page-header-size} + 82px + 1em));
   // min-height: 685px;
-
+  min-height: 475px;
   margin: 5px $margin 10px $margin !important;
   padding-bottom: 5em !important;
   padding-top: $page-header-size + 5px;
   position: relative;
   z-index: 0;
+  animation-name: opacity-50-to-100;
+  animation-duration: 3s;
+  animation-iteration-count: 1;
 
   background-color: #f8f8f8 !important; // TODO add this to color scheme
 
@@ -267,6 +270,7 @@
 
 }
 
+//@TODO change to pr10px and move to _apps.scss
 .paddingRight10 {
   padding-right: 10px;
 }
@@ -277,7 +281,7 @@
 
 .userSubHeader {
   background-color: #fff;;
-  padding: 5px 30px !important;
+  padding-top:10px;
   font-size: 16pt;
   font-family: 'Droid Sans', sans-serif;
   color: #666;
@@ -287,21 +291,30 @@
   position: absolute;
   width: 100%;
   height: $page-header-size;
+  animation-name: height-opacity-0-to-100;
+  animation-duration: 1.5s;
+  animation-iteration-count: 1;
+
+  .main-title
+  {
+        font-family: 'Raleway', sans-serif;
+        padding-left:4em;
+  }
 
   .button a {
-    font-size: 0.7rem;
-    margin-top: 10px !important;
-    color: inherit;
-    height: 29px;
-    font-weight: 900;
-    line-height: 2em;
-    width: 9em;
-    text-align: center;
-    color: #fff;
-    border-radius: 10px;
-    overflow: hidden;
-    padding: 5px 0px;
-    background-color: $offline;
+    // font-size: 0.7rem;
+    // margin-top: 10px !important;
+    // color: inherit;
+    // height: 29px;
+    // font-weight: 900;
+    // line-height: 2em;
+    // width: 9em;
+    // text-align: center;
+    // color: #fff;
+    // border-radius: 10px;
+    // overflow: hidden;
+    // padding: 5px 0px;
+    // background-color: $offline;
   }
 }
 
@@ -314,4 +327,35 @@
   position: relative;
   width: 100%;
   height: 100%;
+}
+
+@keyframes height-opacity-0-to-100 {
+    0% {
+      height: 0px;
+      opacity: 0;
+    }
+    25% {
+      height: 15px;
+      opacity: 0;
+    }
+    50% {
+      height: 30px;
+      opacity: 0;
+    }
+    100% {
+      height: 65px;
+      opacity: 1;
+    }
+}
+
+@keyframes opacity-50-to-100 {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

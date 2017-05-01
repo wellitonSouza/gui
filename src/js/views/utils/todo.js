@@ -4,7 +4,7 @@ export default function Todo(props) {
   console.log('will render todo');
   return (
     <div className="full-height relative background-info">
-      <div className="valign-wrapper center-align full-height">
+      <div className="valign-wrapper center-align full-height todo-div">
         <div className="full-width">
           <i className="material-icons">new_releases</i>
           <div>This feature is not yet implemented.</div>

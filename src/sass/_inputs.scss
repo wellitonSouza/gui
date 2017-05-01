@@ -1,0 +1,56 @@
+.btn-flat {
+    /* font-weight: bolder; */
+    /* font-size: 10px !important; */
+    letter-spacing: .5px;
+    font-weight: bolder;
+    font-size: 13px;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: .5px;
+    height: 27px;
+    line-height: 28px;
+    padding: 0 2rem;
+    text-transform: uppercase;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
+    background-color: #5891e1;
+    margin-left:10px;
+
+    &.btn-ciano
+    {
+       background-color: $ciano;
+    }
+ }
+
+ .btn-flat:hover {
+     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
+     background-color: rgba(0, 0, 0, 0.1);
+     color: gray !important;
+ }
+
+
+.btn-flat-minimal {
+  font-weight: bolder;
+  font-size: 13px;
+  letter-spacing: .5px;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
+}
+
+.btn-circle {
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
+  padding: 0px 10px;
+  border-radius: 50%;
+  background: #5eaac0;
+  color: white;
+  border-radius: 50%;
+  padding: 0px;
+  width: 30px;
+  height: 30px;
+  margin-bottom: 10px;
+
+  i {
+    position: absolute;
+    top: -2px;
+    left: 9px;
+    font-size: 15px;
+  }
+}

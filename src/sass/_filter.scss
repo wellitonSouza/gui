@@ -1,9 +1,9 @@
 .filter-wrapper {
   width: 100%;
-
+  bottom: -8px;
   font-size: 80%;
   color: $silver;
-
+    position: relative;
   input {
     margin-bottom: 1em !important;
   }

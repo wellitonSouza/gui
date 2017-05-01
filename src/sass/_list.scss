@@ -211,8 +211,7 @@ $status: #0c343d;
 
   .lst-entry-body {
     height: 4em;
-    background-color: rgba(#ecf0f1, 0.92);
-
+    background-color: #fdfdfd;
     .metric {
       margin-top: 4%;
       border-right: $silver solid 1px;
@@ -286,7 +285,8 @@ $status: #0c343d;
   }
 
   .detail-body {
-    background-color: #f3f3f3;
+    // background-color: #f3f3f3;
+    background-color: #fbfbfb;
     margin: 0;
     height: 22rem;
     // height: 400px; // this makes me sad, but the map needs a fixed height parent
@@ -575,6 +575,7 @@ $status: #0c343d;
 .background-info {
   color: $subtle;
   font-size: 200%;
+  font-family: 'Cuprum', sans-serif;
   text-align: center;
 
   i.material-icons {

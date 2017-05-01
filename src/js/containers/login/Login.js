@@ -60,7 +60,7 @@ class Content extends Component {
           </div>
           <div className="col s12 m8 login-area-right-side">
             <div className="row">
-              <div className="col s12 m5 offset-m3 margin-top">
+              <div className="col s12 m5 offset-m3">
                 <div className="login-page-title">Login</div>
               </div>
             </div>
@@ -93,7 +93,7 @@ class Content extends Component {
               </div>
               <div className="row">
                 <div className="col s12 m5 offset-m3">
-                  <div><i className="material-icons prefix">info_outline</i> Forgot your password?</div>
+                  <div><i> Forgot your password?</i></div>
                 </div>
               </div>
               <div className="row">
@@ -103,7 +103,9 @@ class Content extends Component {
                         <i className="fa fa-circle-o-notch fa-spin fa-fw"/>
                       </button>
                     ) : (
-                      <button type="submit" className=" waves-effect waves-green btn-flat">Login</button>
+                      <button type="submit" className=" waves-effect waves-green btn-flat">Login
+                        <i className="fa fa-check"/>
+                      </button>
                     )}
                 </div>
               </div>

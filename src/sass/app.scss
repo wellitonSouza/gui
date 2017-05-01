@@ -1,5 +1,3 @@
-
-
 @import '_overrides.scss';
 
 // this has actually been deprecated in favor of green/blue
@@ -11,6 +9,8 @@ $subtle: #9e9e9e;
 
 // this the new color scheme
 // blue
+$soft-blue: #598fe5;
+$almost-white: #fbfbfb;
 $almost-black: #666666;
 $gray:#f3f3f3;
 $red :#f85252;
@@ -53,17 +53,18 @@ $details-background-color: #f3f3f3;
 // $main-font-family: Montserrat, sans-serif;
 $main-font-family: Roboto, sans-serif;
 
+
+.full-width {
+  position: relative;
+  width: 100%;
+}
+
 html {
   height: 100%;
 }
 
 .full-height {
   height: 100%;
-}
-
-.full-width {
-  position: relative;
-  width: 100%;
 }
 
 .half-height {
@@ -155,6 +156,36 @@ body {
   height: 100%;
 }
 
+.pt20px
+{
+  padding-top: 20px !important;
+}
+
+.p0
+{
+  padding:0px;
+}
+
+
+.todo-div
+{
+  font-family: 'Cuprum', sans-serif;
+}
+
+.box-shadow{
+  box-shadow: 0 3px 2px rgba(0,0,0,0.16), 0 3px 3px rgba(0,0,0,0.23);
+  margin-bottom: 4px;
+}
+
+
+.bg-gray
+{
+  background-color: $almost-white;
+
+}
+
+
+@import 'inputs';
 @import 'shadow';
 @import 'list';
 @import 'navbar';

@@ -58,8 +58,8 @@ RED.i18n = (function() {
          init: function(done) {
              i18n.init({
                 // TODO how to recriate/emulate this?
-                 resGetPath: 'http://localhost:1880/locales/__ns__',
-                //  resGetPath: 'mashup/locales/__ns__',
+                //  resGetPath: 'http://localhost:1880/locales/__ns__',
+                 resGetPath: 'mashup/locales/__ns__',
                  dynamicLoad: false,
                  load:'current',
                  ns: {
@@ -166,7 +166,8 @@ RED.settings = (function () {
              },
              dataType: "json",
              cache: false,
-             url: 'http://localhost:1880/settings',
+            //  url: 'http://localhost:1880/settings',
+             url: 'mashup/settings',
              success: function (data) {
                  setProperties(data);
                  if (!RED.settings.user || RED.settings.user.anonymous) {

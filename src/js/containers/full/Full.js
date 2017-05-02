@@ -95,7 +95,7 @@ class Sidebar extends Component {
   render() {
     // TODO: active entry styling, set target, add responsiveness
     let entries = [
-      { target: "/device/list", iconClass: "material-icons mi-ic-memory", label: "Devices", desc: "Known devices and configuration", children: [
+      { target: "/device/stats", iconClass: "material-icons mi-ic-memory", label: "Devices", desc: "Known devices and configuration", children: [
         { target: "/device/list", iconClass: "", label: "device"},
         { target: "/template/list", iconClass: "", label: "template"},
         { target: "/alarm?q=device", iconClass: "", label: "alarm"}

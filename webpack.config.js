@@ -25,6 +25,7 @@ module.exports = {
   devServer: {
     port: 8888,
     host: "0.0.0.0",
+    disableHostCheck: true,
     // contentBase: path.join(__dirname, "dist"),
     publicPath: "http://localhost:8888/"
   },

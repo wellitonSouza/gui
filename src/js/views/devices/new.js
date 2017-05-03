@@ -29,14 +29,14 @@ class FActions {
   removeTag(args) { return args; }
   setTag(args) { return args; }
 }
-
 const FormActions = alt.createActions(FActions);
-const AttrActions = alt.generateActions('set', 'update', 'add', 'remove');
+const AttrActions = alt.generateActions('set', 'update', 'add', 'remove', 'error');
 class FStore {
   constructor() {
     this.device = {}; this.set();
     this.newTag = "";
     this.newAttr = {}; this.setAttr();
+    this.attrError = "";
     this.bindListeners({
       set: FormActions.SET,
       updateDevice: FormActions.UPDATE,
@@ -50,6 +50,7 @@ class FStore {
       updAttr: AttrActions.UPDATE,
       addAttr: AttrActions.ADD,
       removeAttr: AttrActions.REMOVE,
+      errorAttr: AttrActions.ERROR,
     });
     this.set(null);
   }
@@ -108,10 +109,16 @@ class FStore {
         value: ''
       };
     }
+
+    this.attrError = "";
   }
 
   updAttr(diff) {
     this.newAttr[diff.f] = diff.v;
+  }
+
+  errorAttr(error) {
+    this.attrError = error;
   }
 
   addAttr() {
@@ -255,9 +262,14 @@ class NewAttr extends Component {
 
   submit(event) {
     event.preventDefault();
-    AttrActions.add();
-    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
-    $(modalElement).modal('close');
+
+    if (this.props.newAttr.name.length > 0) {
+      AttrActions.add();
+      let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+      $(modalElement).modal('close');
+    } else {
+      AttrActions.error("An attribute must have its name defined.");
+    }
   }
 
   render() {
@@ -267,6 +279,9 @@ class NewAttr extends Component {
         <div className="modal" id="newAttrsForm" ref="modal">
           <div className="modal-content full">
             <div className="title row">New Attribute</div>
+            {(this.props.attrError.length > 0) && (
+              <div className="error row">{this.props.attrError}</div>
+            )}
             <form className="row" onSubmit={this.submit}>
               <div className="row">
                 <div className="input-field col s12" >

@@ -127,7 +127,12 @@ $status: #0c343d;
   .title {
     color: $dark-silver;
     font-size: 1.6em;
-    font-family: 'Droid-sans', sans-serif;
+    font-family: 'Raleway', sans-serif;
+  }
+
+  .error {
+    color: $red;
+    font-family: 'Open Sans', sans-serif;
   }
 
   .inner.shadow {

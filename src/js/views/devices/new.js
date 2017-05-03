@@ -332,8 +332,8 @@ class DeviceForm extends Component {
             <div className="col s9 pt20px">
               <div>
                 <div className="input-field large col s12 ">
-                  <label htmlFor="fld_name">Name</label>
-                  <input id="fld_name" type="text"
+                  <label htmlFor="fld_label">Name</label>
+                  <input id="fld_label" type="text"
                          name="label" value={this.props.device.label}
                          key="label" onChange={this.handleChange} />
                 </div>

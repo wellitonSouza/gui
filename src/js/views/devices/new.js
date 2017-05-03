@@ -295,7 +295,7 @@ class DeviceForm extends Component {
   }
 
   componentWillUnmount() {
-    FormActions.set();
+    FormActions.set(null);
   }
 
   componentDidMount() {

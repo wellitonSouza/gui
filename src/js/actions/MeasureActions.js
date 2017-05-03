@@ -1,4 +1,5 @@
 import measureManager from '../comms/measures/MeasureManager';
+import LoginStore from '../stores/LoginStore';
 
 var alt = require('../alt');
 import util from '../comms/util';
@@ -10,21 +11,22 @@ class MeasureActions {
   }
 
   fetchMeasures(device, attr) {
-    function getUrl() {
-      return '/history/STH/v1/contextEntities/type/device/id/' + device + '/attributes/' + attr + '?lastN=5'
+    function getUrl(service) {
+      return '/history/STH/v1/contextEntities/type/' + service + '/id/' + device + '/attributes/' + attr + '?lastN=5'
     }
 
     return (dispatch) => {
       dispatch({device: device, attr: attr});
 
+      const service = LoginStore.getState().user.service;
       const config = {
         method: 'get',
         headers: new Headers({
-          'fiware-service': 'devm',
+          'fiware-service': service,
           'fiware-servicepath': '/'
         })
       }
-      util._runFetch(getUrl(), config)
+      util._runFetch(getUrl(service), config)
         .then((reply) => {
           console.log('got response', reply);
           const data = reply.contextResponses[0].contextElement.attributes[0].values;

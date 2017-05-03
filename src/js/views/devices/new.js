@@ -31,7 +31,7 @@ class FActions {
 }
 
 const FormActions = alt.createActions(FActions);
-const AttrActions = alt.generateActions('set', 'update', 'add');
+const AttrActions = alt.generateActions('set', 'update', 'add', 'remove');
 class FStore {
   constructor() {
     this.device = {}; this.set();
@@ -49,6 +49,7 @@ class FStore {
       setAttr: AttrActions.SET,
       updAttr: AttrActions.UPDATE,
       addAttr: AttrActions.ADD,
+      removeAttr: AttrActions.REMOVE,
     });
     this.set(null);
   }
@@ -124,6 +125,14 @@ class FStore {
     }
     this.setAttr();
   }
+
+  removeAttr(attribute) {
+    if (attribute.value != undefined && attribute.value.length > 0) {
+      this.device.static_attrs = this.device.static_attrs.filter((i) => {return i.object_id !== attribute.object_id});
+    } else {
+      this.device.attrs = this.device.attrs.filter((i) => {return i.object_id !== attribute.object_id});
+    }
+  }
 }
 var DeviceFormStore = alt.createStore(FStore, 'DeviceFormStore');
 
@@ -173,6 +182,17 @@ class DeviceTag extends Component {
 }
 
 class AttrCard extends Component {
+  constructor(props) {
+    super(props);
+
+    this.handleRemove = this.handleRemove.bind(this);
+  }
+
+  handleRemove(event) {
+    event.preventDefault();
+    AttrActions.remove(this.props);
+  }
+
   render() {
     const hasValue = (this.props.value && this.props.value.length > 0);
     const splitSize = "col " + (hasValue ? " s6" : " s12");
@@ -181,9 +201,12 @@ class AttrCard extends Component {
       <div className="col s12 m6 l4">
         <div className="card z-depth-2">
           <div className="card-content row">
-            <div className="col s12 main">
+            <div className="col s10 main">
               <div className="value title">{this.props.name}</div>
               <div className="label">Name</div>
+            </div>
+            <div className="col s2">
+              <i className="clickable fa fa-trash btn-remove-attr-card" onClick={this.handleRemove}/>
             </div>
             <div className={splitSize}>
               <div className="value">{this.props.type}</div>

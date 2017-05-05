@@ -230,7 +230,8 @@ class DetailAttrs extends Component {
           { device.attrs.map((i, k) =>
             (k < count) && (
               <div className={horizontalSize + " metric-card full-height"} key={i.object_id} >
-                {(props.devices[device.id] && props.devices[device.id][i.name].data) ? (
+                {(props.devices[device.id] && props.devices[device.id][i.name] &&
+                  (props.devices[device.id][i.name].loading == false)) ? (
                   <div className="graph z-depth-2 full-height">
                     <div className="title row">
                       <span>{i.name}</span>

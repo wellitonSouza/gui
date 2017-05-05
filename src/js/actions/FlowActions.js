@@ -1,19 +1,40 @@
 
 var alt = require('../alt');
+import util from '../comms/util';
 
 class FlowActions {
 
-  fetch(login) {
+  fetch() {
     return (dispatch) => {
-      fetch('flows/flow')
-        .then((response) => {return response.json()})
-        .then((data) => { this.set(data.flows) })
-        .catch((error) => { this.fail(error)})
+      util.GET('flows/v1/flow')
+        .then((data) => { this.set(data); })
+        .catch((error) => { this.fail(error); })
     }
   }
 
   set(flows) {
     return flows;
+  }
+
+  fetchFlow(flowid) {
+    return (dispatch) => {
+      dispatch();
+      util.GET('flows/v1/flow/' + flowid)
+        .then((data) => { this.setSingle(data); })
+        .catch((error) => { this.fail(error); })
+    }
+  }
+
+  setSingle(flow) {
+    return flow;
+  }
+
+  done() {
+    return (dispatch) => { dispatch(); }
+  }
+
+  load() {
+    return (dispatch) => { dispatch(); }
   }
 
   triggerUpdate(id, flow) {
@@ -24,7 +45,7 @@ class FlowActions {
         headers: { 'content-type': 'application/json' },
         body: new Blob([JSON.stringify(flow)], {type: 'application/json'})
       };
-      fetch ('flows/flow/' + id, config)
+      fetch ('flows/v1/flow/' + id, config)
         .then((response) => { this.update(); })
         .catch((error) => { this.fail(error); })
     }

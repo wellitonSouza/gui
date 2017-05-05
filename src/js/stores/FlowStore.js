@@ -9,14 +9,30 @@ class FlowStore {
     this.flows = {};            // list of known flows
 
     this.newFlow = {};
+    this.canvasLoading = true;
 
     this.bindListeners({
       fail: FlowActions.FAIL,
       fetch: FlowActions.FETCH,
       setFlows: FlowActions.SET,
+
+      fetchFlow: FlowActions.FETCH_FLOW,
+      setSingle: FlowActions.SET_SINGLE,
+
+      done: FlowActions.DONE,
+      load: FlowActions.LOAD
+
       // triggerUpdate: FlowActions.TRIGGER_UPDATE,
       // update: FlowActions.UPDATE,
     });
+  }
+
+  done() {
+    this.canvasLoading = false;
+  }
+
+  load() {
+    this.canvasLoading = true;
   }
 
   fetch() {
@@ -31,8 +47,19 @@ class FlowStore {
 
     this.flows = {};
     flows.map((i) => {
-      this.flows[i.id] = i;
+      this.flows[i.id] = JSON.parse(JSON.stringify(i));
     })
+  }
+
+  fetchFlow() {
+    this.error = null;
+    this.loading = true;
+  }
+
+  setSingle(flow) {
+    this.error = null;
+    this.loading = false;
+    this.flows[flow.flow.id] = JSON.parse(JSON.stringify(flow.flow));
   }
 
   // triggerUpdate() {

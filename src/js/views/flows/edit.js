@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import { Link } from 'react-router'
 
 import {PageHeader} from "../../containers/full/PageHeader";
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
@@ -9,10 +10,16 @@ import FlowStore from '../../stores/FlowStore';
 import AltContainer from 'alt-container';
 
 class FlowCanvas extends Component {
+  constructor(props) {
+    super(props);
+
+    this.__updateCanvas = this.__updateCanvas.bind(this);
+  }
 
   componentDidMount() {
+    FlowActions.load.defer();
     let dynRED = require('./red.js');
-    let RED = dynRED.RED;
+    var RED = dynRED.RED;
     let dynMain = require('./main.js');
 
     // This is required since the nodes' code are run outside of react's scope
@@ -59,28 +66,9 @@ class FlowCanvas extends Component {
         .then((dom) => {
           // this makes me *VERY* sad
           $(domEntryPoint).append(dom);
-          loadFlow();
+          FlowActions.done();
         })
         .catch((error) => { console.error('failed to fetch nodes dom', error); });
-    }
-
-    const flowid = this.props.flow;
-    function loadFlow() {
-      if (flowid) {
-        const config = { headers: {'accept': 'application/json'}}
-        fetch('flows/flow/' + flowid, config)
-          .then((response) => { return response.json(); })
-          .then((flow) => {
-            RED.nodes.version(null);
-            RED.nodes.import(flow.flow);
-            RED.nodes.dirty(false);
-            RED.view.redraw(true);
-            RED.workspaces.show(RED.__currentFlow);
-          })
-          .catch((error) => { console.error('failed to fetch nodes', error); Promise.reject(); });
-      } else {
-        console.log('new flow');
-      }
     }
 
     RED.i18n.init(() => {
@@ -94,14 +82,41 @@ class FlowCanvas extends Component {
     });
   }
 
+  /**
+   * Updates the redered flow when the store finishes loading
+   **/
+  __updateCanvas() {
+    if (this.props.loading == false) {
+      if (this.props.flow) {
+        if (this.props.flow in this.props.flows) {
+          RED.nodes.version(null);
+          RED.nodes.import(this.props.flows[this.props.flow].flow);
+          RED.nodes.dirty(false);
+          RED.view.redraw(true);
+          RED.workspaces.show(RED.__currentFlow);
+        } else {
+          console.error("unknown flow " + this.props.flow);
+        }
+      } else {
+        console.log('new flow');
+      }
+    }
+  }
+
   componentWillUnmount() {
     // makes sure that ongoing edits are not carried over to the next flow rendering session
     RED.workspaces.remove(null);
     RED.nodes.clear();
     window.RED = null;
+    RED = null;
   }
 
   render() {
+    // while not proper rendering per-se, it makes more sense for this to be here
+    if ((this.props.canvasLoading == false) && RED) {
+      this.__updateCanvas();
+    }
+
     return (
       <div className="flows-wrapper">
         <div id="main-container">
@@ -172,22 +187,34 @@ function handleSave(flowid) {
   FlowActions.triggerUpdate(flowid, flow);
 }
 
-function EditFlow(props) {
-  return (
-    <ReactCSSTransitionGroup transitionName="first"
-        transitionAppear={true} transitionAppearTimeout={500}
-        transitionEnterTimeout={500} transitionLeaveTimeout={500} >
-      <PageHeader title="flow manager" subtitle="Flow configuration">
-        <div>
-          <a className="waves-effect waves-light btn" onClick={() => { handleSave(props.params.flowid); }} >save</a>
-          <a className="waves-effect waves-light btn">dismiss</a>
-        </div>
-      </PageHeader>
-      <AltContainer store={FlowStore}>
-        <FlowCanvas flow={props.params.flowid}/>
-      </AltContainer>
-    </ReactCSSTransitionGroup>
-  );
+class EditFlow extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    if (this.props.params.flowid) {
+      FlowActions.fetchFlow.defer(this.props.params.flowid);
+    }
+  }
+
+  render() {
+    return (
+      <ReactCSSTransitionGroup transitionName="first"
+          transitionAppear={true} transitionAppearTimeout={500}
+          transitionEnterTimeout={500} transitionLeaveTimeout={500} >
+        <PageHeader title="flow manager" subtitle="Flow configuration">
+          <div>
+            <a className="waves-effect waves-light btn-flat btn-ciano" onClick={() => { handleSave(this.props.params.flowid); }} >save</a>
+            <Link to="/flows" className="waves-effect waves-light btn-flat btn-ciano">Dismiss</Link>
+          </div>
+        </PageHeader>
+        <AltContainer store={FlowStore}>
+          <FlowCanvas flow={this.props.params.flowid}/>
+        </AltContainer>
+      </ReactCSSTransitionGroup>
+    );
+  }
 }
 
 export { EditFlow };

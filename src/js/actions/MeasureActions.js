@@ -11,8 +11,8 @@ class MeasureActions {
   }
 
   fetchMeasures(device, attr) {
-    function getUrl(service) {
-      return '/history/STH/v1/contextEntities/type/' + service + '/id/' + device + '/attributes/' + attr + '?lastN=5'
+    function getUrl() {
+      return '/history/STH/v1/contextEntities/type/device/id/' + device + '/attributes/' + attr + '?lastN=5'
     }
 
     return (dispatch) => {
@@ -26,7 +26,7 @@ class MeasureActions {
           'fiware-servicepath': '/'
         })
       }
-      util._runFetch(getUrl(service), config)
+      util._runFetch(getUrl(), config)
         .then((reply) => {
           console.log('got response', reply);
           const data = reply.contextResponses[0].contextElement.attributes[0].values;

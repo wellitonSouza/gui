@@ -205,7 +205,7 @@ class DetailAttrs extends Component {
 
   componentDidMount() {
     this.props.device.attrs.map((i) => {
-      MeasureActions.fetchMeasures.defer(this.props.device.label, i.name)
+      MeasureActions.fetchMeasures.defer(this.props.device.id, i.name)
     })
   }
 
@@ -230,16 +230,16 @@ class DetailAttrs extends Component {
           { device.attrs.map((i, k) =>
             (k < count) && (
               <div className={horizontalSize + " metric-card full-height"} key={i.object_id} >
-                {(props.devices[device.label] && props.devices[device.label][i.name].data) ? (
+                {(props.devices[device.id] && props.devices[device.id][i.name].data) ? (
                   <div className="graph z-depth-2 full-height">
                     <div className="title row">
                       <span>{i.name}</span>
                       <span className="right"
-                            onClick={() => MeasureActions.fetchMeasures(device.label, i.name)}>
+                            onClick={() => MeasureActions.fetchMeasures(device.id, i.name)}>
                         <i className="fa fa-refresh" />
                       </span>
                     </div>
-                    <div className="contents"><Graph data={props.devices[device.label][i.name].data}/></div>
+                    <div className="contents"><Graph data={props.devices[device.id][i.name].data}/></div>
                   </div>
                 ) : (
                   <div className="graph z-depth-2 full-height">

@@ -24,6 +24,7 @@ class MeasureStore {
       this.devices[measureData.device][measureData.attr] = { loading: false, data: measureData.data };
     } else {
       this.error = "Device not found"
+      console.error('failed to find device in current measures');
     }
   }
 

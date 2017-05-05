@@ -22,7 +22,8 @@ class LoginStore {
     this.bindListeners({
       handleAuthenticate: LoginActions.AUTHENTICATE,
       handleFailure: LoginActions.LOGIN_FAILED,
-      handleSuccess: LoginActions.LOGIN_SUCCESS
+      handleSuccess: LoginActions.LOGIN_SUCCESS,
+      handleLogout: LoginActions.LOGOUT,
     });
   }
 
@@ -44,6 +45,14 @@ class LoginStore {
 
   handleFailure(error) {
     this.error = error;
+    this.loading = false;
+    this.authenticated = false;
+    this.token = null;
+    sessionStorage.jwt = null;
+  }
+
+  handleLogout() {
+    this.error = null;
     this.loading = false;
     this.authenticated = false;
     this.token = null;

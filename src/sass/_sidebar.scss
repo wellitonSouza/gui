@@ -186,6 +186,18 @@
   padding-left: $sidebar-width-closed;
 }
 
+.rightsidebar {
+  position: fixed;
+  left: calc(100% - #{$right-sidebar-width});
+  top: 0;
+  z-index: 999;
+  width: $right-sidebar-width;
+  height: calc(100% - #{$header-height});
+  margin-top: $header-height;
+  color: #fff;
+  background-color: $sidebar-bg;
+  box-shadow:  0 8px 10px -5px rgba(0, 0, 0, 0.5);
+}
 
 @media only screen and (min-width: 601px) {
   .sidebar {

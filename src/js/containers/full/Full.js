@@ -7,29 +7,115 @@ import AltContainer from 'alt-container';
 import MenuActions from '../../actions/MenuActions';
 import MenuStore from '../../stores/MenuStore';
 import LoginStore from '../../stores/LoginStore';
+import LoginActions from '../../actions/LoginActions';
 
-function Navbar(props) {
+class Navbar extends Component {
   // TODO: header widgets should be received as children to this (Navbar) node
+  constructor(props) {
+    super(props);
 
-  return (
-    <nav className="nav outer-header line-normal">
-      <div className="nav-wrapper">
-        <div className="nav-status row">
-          {/* TODO: add props for badge indicator */}
-          <div className="status-item status-icon fa fa-bell-o"></div>
-          <div className="status-item user-area">
-              <div className="user-pic">
-                <img src="https://www.gravatar.com/avatar/ea4531646bf8ece65e914901535397f3?d=identicon" />
-              </div>
-              <div className="user-name">{(props.user.name ? props.user.name : props.user.username)}</div>
-              <div className="">
-                <i className="fa fa-caret-down line-normal center-caret" />
-              </div>
+    this.state = {
+      open: false,
+    };
+
+    this.handleClick = this.handleClick.bind(this);
+    this.gravatar = "https://www.gravatar.com/avatar/" + btoa(this.props.user.username) + "?d=identicon";
+  }
+
+  handleClick(e) {
+    e.preventDefault();
+
+    if (this.state.open === true) {
+      this.setState({open: false})
+    } else {
+      this.setState({open: true})
+    }
+  }
+
+  render() {
+    return (
+      <nav className="nav outer-header line-normal">
+        <div className="nav-wrapper">
+          <div className="nav-status row">
+            {/* TODO: add props for badge indicator */}
+            <div className="status-item status-icon fa fa-bell-o"></div>
+            <div className="status-item user-area">
+                <div className="user-pic">
+                  <img src={this.gravatar} />
+                </div>
+                <div className="user-name">{(this.props.user.name ? this.props.user.name : this.props.user.username)}</div>
+                <div className="" onClick={this.handleClick}>
+                  <i className="fa fa-caret-down line-normal center-caret" />
+                  { this.state.open === true && <RightSideBar user={this.props.user} gravatar={this.gravatar} /> }
+                </div>
+            </div>
           </div>
         </div>
+      </nav>
+    )
+  }
+}
+
+class RightSideBar extends Component {
+  constructor(props) {
+    super(props);
+
+    this.logout = this.logout.bind(this);
+    this.dismiss = this.dismiss.bind(this);
+  }
+
+  logout(event) {
+    event.preventDefault();
+    LoginActions.logout();
+  }
+
+  dismiss(event) {
+    event.preventDefault();
+  }
+
+  render() {
+    return (
+      <div className="rightsidebar logout-page">
+        <form onSubmit={this.logout}>
+          <div className="col s12 m12 logout-page-photo">
+            <img src={this.props.gravatar} />
+          </div>
+          <div className="col s12 m12">
+            <div className="logout-page-subtitle">You are logged in!</div>
+          </div>
+
+          <div className="col s12 m12">
+            <div className="logout-page-info">{this.props.user.username}</div>
+          </div>
+
+          <div className="col s12 m12">
+            <div className="logout-page-label"> Username</div>
+          </div>
+
+          {(this.props.user.email != undefined) && (
+            <div>
+            <div className="col s12 m12">
+              <div className="logout-page-info">{this.props.user.email}</div>
+            </div>
+
+            <div className="col s12 m12">
+              <div className="logout-page-label"> E-mail</div>
+            </div>
+            </div>
+          )}
+
+          <div className="row logout-page-buttons">
+            <div className="s12 m6">
+              <button type="button" className="btn waves waves-light" onClick={this.dismiss}>dismiss</button>
+            </div>
+            <div className="s12 m6">
+              <button type="button" className="btn waves-light" onClick={this.logout}>logout</button>
+            </div>
+          </div>
+        </form>
       </div>
-    </nav>
-  )
+    )
+  }
 }
 
 function SidebarItem(props) {
@@ -164,7 +250,7 @@ class Full extends Component {
     return (
       <span>
         <AltContainer store={LoginStore}>
-          <Navbar path={this.props.location.pathname} userName="new user"/>
+          <Navbar/>
         </AltContainer>
         <AltContainer store={MenuStore}>
           <Content router={this.props.router}>{this.props.children}</Content>

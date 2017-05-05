@@ -24,6 +24,10 @@ class LoginActions {
   loginFailed(error) {
     return error;
   }
+
+  logout() {
+    return true;
+  }
 }
 
 alt.createActions(LoginActions, exports);

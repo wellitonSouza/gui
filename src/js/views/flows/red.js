@@ -4833,7 +4833,6 @@ RED.workspaces = (function() {
     var workspaceIndex = 0;
 
     function addWorkspace(ws,skipHistoryEntry) {
-        RED.__currentFlow = ws.id;
         if (ws) {
             workspace_tabs.addTab(ws);
             workspace_tabs.resize();
@@ -4852,6 +4851,7 @@ RED.workspaces = (function() {
                 RED.nodes.dirty(true);
             }
         }
+        RED.__currentFlow = ws.id;
         return ws;
     }
     function deleteWorkspace(ws) {

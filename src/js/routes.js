@@ -44,6 +44,7 @@ export default (
       <Route path="flows" name="Information Flows">
         <IndexRoute component={Flows} />
         <Route path="id/:flowid" name="Flow detail" component={EditFlow} />
+        <Route path="new" name="New flow" component={EditFlow} />
       </Route>
 
       <Route path="alarm" name="Alarm" component={Todo} />

@@ -37,22 +37,55 @@ class FlowActions {
     return (dispatch) => { dispatch(); }
   }
 
+  triggerCreate(flow, cb) {
+    return (dispatch) => {
+      dispatch();
+      util.POST('flows/v1/flow', flow)
+        .then((response) => {
+          this.create(response);
+          cb(response.flow);
+        })
+        .catch((error) => {this.fail(error);})
+    }
+  }
+
+  create(response) {
+    return (dispatch) => { dispatch(response); }
+  }
+
   triggerUpdate(id, flow) {
     return (dispatch) => {
       dispatch();
-      const config = {
-        method: 'PUT',
-        headers: { 'content-type': 'application/json' },
-        body: new Blob([JSON.stringify(flow)], {type: 'application/json'})
-      };
-      fetch ('flows/v1/flow/' + id, config)
-        .then((response) => { this.update(); })
+      // TODO replace this with proper usage of PUT/PATCH
+      util.DELETE('flows/v1/flow/' + id)
+        .then((response) => {
+          util.POST('flows/v1/flow', flow)
+            .then((response) => {
+              this.update(response.flow);
+            })
+        })
         .catch((error) => { this.fail(error); })
     }
   }
 
   update(flow) {
     return flow;
+  }
+
+  triggerRemove(id, cb) {
+    return (dispatch) => {
+      dispatch();
+      util.DELETE('flows/v1/flow/' + id)
+        .then((response) => {
+          this.remove(id);
+          cb(id);
+        })
+        .catch((error) => { this.fail(error); })
+    }
+  }
+
+  remove(id) {
+    return id;
   }
 
   fail(error) {

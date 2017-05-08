@@ -8,8 +8,9 @@ class FlowStore {
     this.loading = false;       // list pending request indicator
     this.flows = {};            // list of known flows
 
-    this.newFlow = {};
+    this.newFlow = { name: 'unnamed' };
     this.canvasLoading = true;
+    this.waiting = false;
 
     this.bindListeners({
       fail: FlowActions.FAIL,
@@ -20,10 +21,15 @@ class FlowStore {
       setSingle: FlowActions.SET_SINGLE,
 
       done: FlowActions.DONE,
-      load: FlowActions.LOAD
+      load: FlowActions.LOAD,
 
-      // triggerUpdate: FlowActions.TRIGGER_UPDATE,
-      // update: FlowActions.UPDATE,
+      triggerUpdate: FlowActions.TRIGGER_UPDATE,
+      update: FlowActions.UPDATE,
+
+      triggerCreate: FlowActions.TRIGGER_CREATE,
+      create: FlowActions.CREATE,
+      triggerRemove: FlowActions.TRIGGER_REMOVE,
+      remove: FlowActions.REMOVE,
     });
   }
 
@@ -62,24 +68,47 @@ class FlowStore {
     this.flows[flow.flow.id] = JSON.parse(JSON.stringify(flow.flow));
   }
 
-  // triggerUpdate() {
-  //   this.error = null;
-  //   this.loading = true;
-  // }
-  //
-  // update(flow) {
-  //   this.error = null;
-  //   this.loading = false;
-  //   for(let i = 0; i < this.flows.length; i++) {
-  //     if (this.flows[i].id === flow.id) {
-  //       this.flows[i] = JSON.parse(JSON.stringify(flow));
-  //     }
-  //   }
-  // }
+  triggerUpdate() {
+    console.log('trigger');
+    this.error = null;
+    this.waiting = true;
+  }
+
+  update(flow) {
+    console.log('upd');
+    this.error = null;
+    this.waiting = false;
+    this.flows[flow.id] = JSON.parse(JSON.stringify(flow));
+  }
+
+  triggerCreate() {
+    this.error = null;
+    this.waiting = true;
+  }
+
+  create(flow) {
+    this.error = null;
+    this.waiting = false;
+
+    this.newFlow = { 'name': '' };
+    this.flows[flow.flow.id] = flow.flow;
+  }
+
+  triggerRemove() {
+    this.error = null;
+    this.waiting = true;
+  }
+
+  remove(id) {
+    this.error = null;
+    this.waiting = false;
+    delete this.flows[id];
+  }
 
   fail(error) {
     this.error = error;
     this.loading = false;
+    this.waiting = false;
   }
 }
 

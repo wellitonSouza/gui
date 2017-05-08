@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Link } from 'react-router'
+import { Link, hashHistory } from 'react-router'
 
 import {PageHeader} from "../../containers/full/PageHeader";
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
@@ -86,7 +86,13 @@ class FlowCanvas extends Component {
    * Updates the redered flow when the store finishes loading
    **/
   __updateCanvas() {
+
     if (this.props.loading == false) {
+
+      // to be on the safe side (avoids re-importing things after save)
+      RED.workspaces.remove(null);
+      RED.nodes.clear();
+
       if (this.props.flow) {
         if (this.props.flow in this.props.flows) {
           RED.nodes.version(null);
@@ -98,7 +104,11 @@ class FlowCanvas extends Component {
           console.error("unknown flow " + this.props.flow);
         }
       } else {
-        console.log('new flow');
+        RED.nodes.version(null);
+        RED.workspaces.add();
+        RED.nodes.dirty(false);
+        RED.view.redraw(true);
+        RED.workspaces.show(RED.__currentFlow);
       }
     }
   }
@@ -109,6 +119,7 @@ class FlowCanvas extends Component {
     RED.nodes.clear();
     window.RED = null;
     RED = null;
+    FlowActions.load();
   }
 
   render() {
@@ -183,8 +194,67 @@ function handleSave(flowid) {
 
   // update flow's actual configuration data
   flow.flow = RED.nodes.createCompleteNodeSet();
-  console.log('full flow', flow);
-  FlowActions.triggerUpdate(flowid, flow);
+
+  if (flowid) {
+    FlowActions.triggerUpdate(flowid, flow);
+  } else {
+    FlowActions.triggerCreate(flow, function(flow){ hashHistory.push('/flows/id/' + flow.id); });
+  }
+}
+
+class RemoveBtn extends Component {
+  constructor(props) {
+    super(props);
+
+    this.remove = this.remove.bind(this);
+    this.dismiss = this.dismiss.bind(this);
+  }
+  componentDidMount() {
+    // materialize jquery makes me sad
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(modalElement).ready(function() {
+      $('.modal').modal();
+    })
+  }
+
+  remove() {
+    FlowActions.triggerRemove(this.props.id, () => {
+      let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+      $(modalElement).modal('close');
+      hashHistory.push('/flows');
+    })
+  }
+
+  dismiss(event) {
+    event.preventDefault();
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(modalElement).modal('close');
+  }
+
+  render() {
+    if (this.props.id) {
+      return (
+        <span>
+          <button className="waves-effect waves-light btn-flat btn-red" data-target="confirmDiag">remove</button>
+          <div className="modal" id="confirmDiag" ref="modal">
+            <div className="modal-content full">
+              <div className="row center background-info">
+                <div><i className="fa fa-exclamation-triangle fa-4x" /></div>
+                <div>You are about to remove this flow.</div>
+                <div>Are you sure?</div>
+              </div>
+            </div>
+            <div className="modal-footer right">
+                <button type="button" className="btn-flat btn-ciano waves-effect waves-light" onClick={this.dismiss}>cancel</button>
+                <button type="submit" className="btn-flat btn-red waves-effect waves-light" onClick={this.remove}>remove</button>
+            </div>
+          </div>
+        </span>
+      )
+    } else {
+      return null;
+    }
+  }
 }
 
 class EditFlow extends Component {
@@ -206,7 +276,9 @@ class EditFlow extends Component {
         <PageHeader title="flow manager" subtitle="Flow configuration">
           <div>
             <a className="waves-effect waves-light btn-flat btn-ciano" onClick={() => { handleSave(this.props.params.flowid); }} >save</a>
+            <RemoveBtn id={this.props.params.flowid}/>
             <Link to="/flows" className="waves-effect waves-light btn-flat btn-ciano">Dismiss</Link>
+
           </div>
         </PageHeader>
         <AltContainer store={FlowStore}>

@@ -33,7 +33,7 @@ function SummaryItem(props) {
 
       <div className="lst-entry-body col s12">
         <div className="col s3 metric">
-          <div className="metric-value">{props.flow.nodeCount}</div>
+          <div className="metric-value">{props.flow.flow.length - 1}</div>
           <div className="metric-label">Nodes</div>
         </div>
         <div className="col s9 metric last">
@@ -177,14 +177,16 @@ class Flows extends Component {
   }
 
   render() {
-    console.log("about to display flows");
     return (
       <ReactCSSTransitionGroup
           transitionName="first"
           transitionAppear={true} transitionAppearTimeout={500}
           transitionEnterTimeout={500} transitionLeaveTimeout={500} >
         <PageHeader title="data flows" subtitle="">
-          <Filter onChange={this.filterChange} />
+          {/* <Filter onChange={this.filterChange} /> */}
+          <Link to="/flows/new" className="btn-item btn-floating waves-effect waves-light cyan darken-2">
+            <i className="fa fa-plus"/>
+          </Link>
         </PageHeader>
         <AltContainer store={FlowStore}>
           <ListRender />

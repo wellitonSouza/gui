@@ -26,6 +26,9 @@ module.exports = {
     port: 8888,
     host: "0.0.0.0",
     disableHostCheck: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*'
+    },
     // contentBase: path.join(__dirname, "dist"),
     publicPath: "http://localhost:8888/"
   },

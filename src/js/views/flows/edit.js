@@ -8,6 +8,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import FlowActions from '../../actions/FlowActions';
 import FlowStore from '../../stores/FlowStore';
 import AltContainer from 'alt-container';
+import util from '../../comms/util/util';
 
 class FlowCanvas extends Component {
   constructor(props) {
@@ -26,6 +27,7 @@ class FlowCanvas extends Component {
     // Since node-red compatibility is an interesting plus, this workaround is needed
     // TODO this makes me remarkably sad
     window.RED = RED;
+    window.util = util;
 
     function initNodes() {
       const config = { headers: {'accept': 'application/json'}}

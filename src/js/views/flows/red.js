@@ -10614,8 +10614,6 @@ RED.tray = (function() {
     }
 
     function showTray(options) {
-        console.log('should show tray');
-
         var el = $('<div class="editor-tray"></div>');
         var header = $('<div class="editor-tray-header"></div>').appendTo(el);
         var bodyWrapper = $('<div class="editor-tray-body-wrapper"></div>').appendTo(el);
@@ -10655,7 +10653,6 @@ RED.tray = (function() {
             }
         }
 
-        console.log('should append now', el, editorStack, stack, options);
         el.appendTo(editorStack);
         var tray = {
             tray: el,
@@ -10698,7 +10695,6 @@ RED.tray = (function() {
             });
 
         function finishBuild() {
-            console.log('will finish tray build');
             $("#header-shade").attr("style", "display: block !important");
             $("#editor-shade").attr("style", "display: block !important");
             $("#palette-shade").attr("style", "display: block !important");
@@ -10760,8 +10756,6 @@ RED.tray = (function() {
         } else {
             finishBuild();
         }
-
-        console.log('show tray finished');
     }
 
     function handleWindowResize() {
@@ -10800,9 +10794,7 @@ RED.tray = (function() {
             });
         },
         show: function show(options) {
-            console.log('show wrapper', stack);
             if (stack.length > 0) {
-                console.log('will use stack');
                 var oldTray = stack[stack.length-1];
                 oldTray.tray.css({
                     right: -(oldTray.tray.width()+10)+"px"
@@ -10812,7 +10804,6 @@ RED.tray = (function() {
                     showTray(options);
                 },250)
             } else {
-                console.log('fresh tray');
                 RED.events.emit("editor:open");
                 showTray(options);
             }

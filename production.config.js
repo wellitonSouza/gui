@@ -33,6 +33,7 @@ module.exports = {
       { from: 'src/components', to: 'components' },
       { from: 'node_modules/leaflet/dist/leaflet.css', to: 'leaflet.css' },
       { from: 'node_modules/leaflet/dist/images', to: 'images' },
+      { from: 'src/js/views/flows/vendor.js', to: 'js/vendor.js' },
       { from: 'src/img', to: 'images' }
     ]),
 

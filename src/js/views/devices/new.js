@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import { PageHeader, ActionHeader } from "../../containers/full/PageHeader";
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import { Link } from 'react-router'
+import { Link, hashHistory } from 'react-router'
 
 import alt from '../../alt';
 import AltContainer from 'alt-container';
@@ -460,10 +460,20 @@ class NewDevice extends Component {
 
   render() {
     let title = "New device";
-    let ops = DeviceActions.addDevice;
+    let ops = function(device) {
+      DeviceActions.addDevice(device, (device) => {
+        FormActions.set(device);
+        hashHistory.push('/device/id/' + device.id + '/edit')
+        Materialize.toast('Device created', 4000);
+      });
+    }
     if (this.props.params.device) {
       title = "Edit device";
-      ops = DeviceActions.triggerUpdate;
+      ops = function(device) {
+        DeviceActions.triggerUpdate(device, () => {
+          Materialize.toast('Device updated', 4000);
+        });
+      }
     }
 
     return (
@@ -474,7 +484,9 @@ class NewDevice extends Component {
           transitionEnterTimeout={500} transitionLeaveTimeout={500} >
           <PageHeader title="device manager" subtitle="Devices" />
           <ActionHeader title={title}>
-            <CreateDeviceActions operator={ops}/>
+            <AltContainer store={DeviceStore} >
+              <CreateDeviceActions operator={ops} />
+            </AltContainer>
           </ActionHeader>
           <AltContainer store={DeviceFormStore} >
             <DeviceForm />

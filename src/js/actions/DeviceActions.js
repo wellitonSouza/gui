@@ -21,13 +21,16 @@ class DeviceActions {
     return list;
   }
 
-  addDevice(device) {
+  addDevice(device, cb) {
     const newDevice = device;
     return (dispatch) => {
       dispatch();
       deviceManager.addDevice(newDevice)
         .then((response) => {
-          this.insertDevice(newDevice);
+          this.insertDevice(response.device);
+          if (cb) {
+            cb(response.device);
+          }
         })
         .catch((error) => {
           this.devicesFailed("Failed to add device to list");
@@ -39,13 +42,16 @@ class DeviceActions {
     return devices;
   }
 
-  triggerUpdate(device) {
+  triggerUpdate(device, cb) {
     return (dispatch) => {
       dispatch();
-
+      console.log('will update dev', device);
       deviceManager.setDevice(device)
         .then((response) => {
           this.updateSingle(device);
+          if (cb) {
+            cb(device);
+          }
         })
         .catch((error) => {
           this.devicesFailed("Failed to update given device");

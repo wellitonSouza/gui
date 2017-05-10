@@ -63,12 +63,15 @@ class DeviceActions {
     return devices;
   }
 
-  triggerRemoval(device) {
+  triggerRemoval(device, cb) {
     return (dispatch) => {
       dispatch();
       deviceManager.deleteDevice(device.id)
         .then((response) => {
-          this.removeSingle(device.id);
+          this.removeSingle(response.id);
+          if (cb) {
+            cb(response);
+          }
         })
         .catch((error) => {
           this.devicesFailed("Failed to remove given device");

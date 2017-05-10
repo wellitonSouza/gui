@@ -329,7 +329,6 @@ class DetailItem extends Component {
 
     return (
       <div className={"lst-entry-wrapper z-depth-2 col s12 " + status}>
-
         <div className="row detail-header">
           <div className="title">
             <div className="label">{this.props.device.label}</div>
@@ -337,7 +336,9 @@ class DetailItem extends Component {
           </div>
           <div className="actions">
             <div><i className="clickable fa fa-code" /></div>
-            <div><i className="clickable fa fa-expand" /></div>
+            <Link to={"/device/id/" + this.props.device.id + "/detail"} >
+              <div><i className="clickable fa fa-expand" /></div>
+            </Link>
             <Link to={"/device/id/" + this.props.device.id + "/edit"} >
               <div><i className="clickable fa fa-pencil" /></div>
             </Link>
@@ -442,7 +443,7 @@ class ListRender extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {detail: null};
+    this.state = {detail: props.deviceid};
     this.setDetail = this.setDetail.bind(this);
   }
 
@@ -556,9 +557,9 @@ class DeviceList extends Component {
       <div className="col m10 s12 offset-m1 relative full-height">
 
         {(this.state.isDisplayList) ? (
-            <ListRender devices={filteredList} loading={this.props.loading} />
+            <ListRender devices={filteredList} loading={this.props.loading} deviceid={this.props.deviceid} />
         ) : (
-            <MapRender devices={filteredList} loading={this.props.loading}/>
+            <MapRender devices={filteredList} loading={this.props.loading} deviceid={this.props.deviceid} />
         )}
 
         {/* <!-- footer --> */}
@@ -586,6 +587,7 @@ class Devices extends Component {
   }
 
   render() {
+    const detail = ('detail' in this.props.location.query) ? this.props.location.query.detail : null;
     return (
       <ReactCSSTransitionGroup
         transitionName="first"
@@ -600,7 +602,7 @@ class Devices extends Component {
           </Link>
         </PageHeader>
         <AltContainer store={DeviceStore}>
-          <DeviceList />
+          <DeviceList deviceid={detail}/>
         </AltContainer>
         {/* <NewDevice /> */}
       </ReactCSSTransitionGroup>

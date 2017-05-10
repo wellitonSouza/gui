@@ -405,40 +405,32 @@ class ListItem extends Component {
 
     this.handleDetail = this.handleDetail.bind(this);
     this.handleDismiss = this.handleDismiss.bind(this);
-    this.handleRemove = this.handleRemove.bind(this);
   }
 
   handleDetail(e) {
     e.preventDefault();
-    this.props.detailedTemplate({id: this.props.device.id, pos: this.props.position});
+    this.props.setDetail(this.props.device.id);
   }
 
   handleDismiss(e) {
     if (e) {
       e.preventDefault();
     }
-    this.props.detailedTemplate(undefined);
-  }
-
-  handleRemove(e) {
-    e.preventDefault();
+    this.props.setDetail(null);
   }
 
   render() {
-    const detail = this.props.detail && (this.props.detail.id === this.props.device.id);
-    const edit = false;
+    const detail = this.props.detail
 
-    if (detail && !edit) {
+    if (detail) {
       return (
-        <div className="lst-entry col s12 detail" id={this.props.device.id} onClick={detail ? null : this.handleDetail}>
-          <DetailItem device={this.props.device} handleEdit={this.handleEdit} handleDismiss={this.handleDismiss}/>
+        <div className="lst-entry col s12 detail" id={this.props.device.id} >
+          <DetailItem device={this.props.device} handleDismiss={this.handleDismiss}/>
         </div>
       )
-    }
-
-    if (!detail) {
+    } else {
       return (
-        <div className="lst-entry col s12 m6 l4" id={this.props.device.id} onClick={detail ? null : this.handleDetail}>
+        <div className="lst-entry col s12 m6 l4" id={this.props.device.id} onClick={this.handleDetail}>
           <SummaryItem device={this.props.device} />
         </div>
       )
@@ -446,66 +438,66 @@ class ListItem extends Component {
   }
 }
 
-function ListRender(props) {
-  let deviceList = props.devices;
+class ListRender extends Component {
+  constructor(props) {
+    super(props);
 
-  if (props.loading) {
-    return (
-      <div className="background-info valign-wrapper full-height">
-        <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center"/>
-      </div>
-    )
+    this.state = {detail: null};
+    this.setDetail = this.setDetail.bind(this);
   }
 
-  if (deviceList.length > 0) {
+  setDetail(id) {
+    this.setState({detail: id});
+  }
 
-    function setPos(a, pos) {
-      if (a === undefined || a === null) { return; }
-      if (!a.hasOwnProperty('orgPos')) {
-        a.orgPos = pos;
-      }
-    }
-
-    function getPos(device, idx) {
-      if (device.hasOwnProperty('orgPos')) { return device.orgPos; }
-      return idx;
-    }
-
-    // swap positions to push assimetry to the end of the list
-    let swapped = false;
-    let offset = 0;
-    if (props.detail && (offset = props.detail.pos % 3)){
-      for (let i = props.detail.pos; i > props.detail.pos - offset; i--){
-        setPos(deviceList[i], i);
-        setPos(deviceList[i - 1], i - 1);
-        let t = deviceList[i];
-        deviceList[i] = deviceList[i-1];
-        deviceList[i-1] = t;
-      }
-      swapped = true;
-    }
-
-    return (
-      <div className="row">
-        <div className="col s12  lst-wrapper">
-          { deviceList.map((device, idx) =>
-            <ListItem device={device} key={device.id}
-              detail={props.detail}
-              detailedTemplate={props.detailedTemplate}
-              edit={props.edit}
-              editTemplate={props.editTemplate}
-              position={getPos(device, idx)}
-            />
-          )}
+  render() {
+    if (this.props.loading) {
+      return (
+        <div className="background-info valign-wrapper full-height">
+          <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center"/>
         </div>
-      </div>
-    )
-  } else {
-    return  (
-      <div className="background-info valign-wrapper full-height">
-        <span className="horizontal-center">No configured devices</span>
-      </div>
-    )
+      )
+    }
+
+    // handles reordering of cards to keep horizontal alignment
+    const target = this.state.detail;
+    const horSize = 3;
+    let display_list = JSON.parse(JSON.stringify(this.props.devices));
+    display_list.move = function(from, to) {
+      this.splice(to, 0, this.splice(from, 1)[0]);
+    }
+    if (target != null) {
+      for (let i = 0; i < display_list.length; i++) {
+        if (display_list[i].id == target) {
+          display_list.move(i,i - (i % horSize));
+          break;
+        }
+      }
+    }
+
+    if (display_list.length > 0) {
+      return (
+        <div className="row">
+          <div className="col s12  lst-wrapper">
+
+            { display_list.map((device, idx) =>
+              <ListItem device={device} key={device.id}
+                detail={device.id === this.state.detail}
+                setDetail={this.setDetail}
+              />
+            )}
+
+
+          </div>
+        </div>
+      )
+    } else {
+      return  (
+        <div className="background-info valign-wrapper full-height">
+          <span className="horizontal-center">No configured devices</span>
+        </div>
+      )
+    }
   }
 }
 
@@ -529,38 +521,10 @@ class DeviceList extends Component {
 
     this.handleViewChange = this.handleViewChange.bind(this);
     this.applyFiltering = this.applyFiltering.bind(this);
-    this.detailedTemplate = this.detailedTemplate.bind(this);
-    this.editTemplate = this.editTemplate.bind(this);
   }
 
   handleViewChange(event) {
     this.setState({isDisplayList: ! this.state.isDisplayList})
-  }
-
-  detailedTemplate(id) {
-    let temp = this.state;
-
-    if (this.state.detail && this.state.edit) {
-      console.log("are you sure???");
-      if (id === undefined) {
-        temp.edit = undefined;
-      }
-    }
-
-    temp.detail = id;
-    this.setState(temp);
-    return true;
-  }
-
-  editTemplate(id) {
-    if (this.state.detail === id) {
-      let temp = this.state;
-      temp.edit = id;
-      this.setState(temp);
-      return true;
-    }
-
-    return false;
   }
 
   // handleSearchChange(event) {
@@ -591,13 +555,11 @@ class DeviceList extends Component {
     return (
       <div className="col m10 s12 offset-m1 relative full-height">
 
-        { this.state.isDisplayList === false && <MapRender devices={filteredList} loading={this.props.loading}/>  }
-        { this.state.isDisplayList && <ListRender devices={filteredList}
-                                                  detail={this.state.detail}
-                                                  detailedTemplate={this.detailedTemplate}
-                                                  edit={this.state.edit}
-                                                  editTemplate={this.editTemplate}
-                                                  loading={this.props.loading} /> }
+        {(this.state.isDisplayList) ? (
+            <ListRender devices={filteredList} loading={this.props.loading} />
+        ) : (
+            <MapRender devices={filteredList} loading={this.props.loading}/>
+        )}
 
         {/* <!-- footer --> */}
         <div className="col s12"></div>

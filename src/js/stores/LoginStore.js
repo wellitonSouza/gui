@@ -5,18 +5,18 @@ import Util from '../comms/util/util';
 class LoginStore {
   constructor() {
 
-    if (sessionStorage.jwt) {
+    if (('jwt' in sessionStorage) && (sessionStorage.jwt != null)) {
       try {
-        this.user = JSON.parse(atob(this.token.split('.')[1]));
         this.token = sessionStorage.jwt;
+        this.user = JSON.parse(atob(this.token.split('.')[1]));
         Util.token = this.token;
         this.authenticated = true;
       } catch (e) {
-        log.console.error('invalid session information detected', e);
+        console.error('invalid session information detected', e);
         this.authenticated = false;
         this.user = null;
         this.token = undefined;
-        sessionStorage.jwt = null;
+        delete sessionStorage.jwt;
       }
     } else {
       this.authenticated = false;
@@ -56,7 +56,7 @@ class LoginStore {
     this.loading = false;
     this.authenticated = false;
     this.token = null;
-    sessionStorage.jwt = null;
+    delete sessionStorage.jwt
   }
 
   handleLogout() {
@@ -64,7 +64,7 @@ class LoginStore {
     this.loading = false;
     this.authenticated = false;
     this.token = null;
-    sessionStorage.jwt = null;
+    delete sessionStorage.jwt
   }
 }
 

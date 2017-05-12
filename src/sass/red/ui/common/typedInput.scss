@@ -151,7 +151,7 @@
 }
 .red-ui-typedInput-options {
     @include component-shadow;
-    position: absolute;
+    position: fixed;
     border: 1px solid $primary-border-color;
     background: #fff;
     z-index: 2000;

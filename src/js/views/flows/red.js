@@ -4218,10 +4218,8 @@ RED.tabs = (function() {
                     that._hideMenu(menu);
                 });
             });
-            menu.css({
-                display: "none",
-            });
-            menu.appendTo(document.body);
+            menu.css({display: "none",});
+            menu.appendTo($('.flows-wrapper'));
 
             menu.on('keydown', function(evt) {
                 if (evt.keyCode === 40) {
@@ -4235,10 +4233,7 @@ RED.tabs = (function() {
                 }
             })
 
-
-
             return menu;
-
         },
         _showMenu: function(menu,relativeTo) {
             if (this.disarmClick) {
@@ -4278,7 +4273,7 @@ RED.tabs = (function() {
                     position:"absolute",
                     top:0,
                     left:-1000
-                }).appendTo(document.body);
+                }).appendTo($('.flows-wrapper'));
                 var newTrigger = label.clone().appendTo(container);
                 labelWidth = newTrigger.outerWidth();
                 container.remove();
@@ -10609,9 +10604,7 @@ RED.tray = (function() {
     var editorStack = null;
     var openingTray = false;
 
-    function resize() {
-      console.log('should resize tray - commented?');
-    }
+    function resize() {}
 
     function showTray(options) {
         var el = $('<div class="editor-tray"></div>');

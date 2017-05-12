@@ -215,7 +215,7 @@ class DetailAttrs extends Component {
     let count = 0;
     if (device.static_attrs.length > 0) { count++; }
     count += device.attrs.length;
-    count = count % 4;
+    count = (count > 3 ? 3 : count);
 
     let horizontalSize = "col s4";
     if (count == 2 && device.static_attrs.length > 0) {

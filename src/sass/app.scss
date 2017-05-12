@@ -152,42 +152,39 @@ body {
   background-color: none !important;
 }
 
-.w100p
-{
+.w100p {
   width: 100%;
 }
 
-.h100p
-{
+.h100p {
   height: 100%;
 }
 
-.pt20px
-{
+.pt20px {
   padding-top: 20px !important;
 }
 
-.p0
-{
+.p0 {
   padding:0px;
 }
 
 
-.todo-div
-{
+.todo-div {
   font-family: 'Cuprum', sans-serif;
 }
 
-.box-shadow{
+.box-shadow {
   box-shadow: 0 3px 2px rgba(0,0,0,0.16), 0 3px 3px rgba(0,0,0,0.23);
   margin-bottom: 4px;
 }
 
 
-.bg-gray
-{
+.bg-gray {
   background-color: $almost-white;
+}
 
+.scrollable {
+  overflow-y: scroll;
 }
 
 

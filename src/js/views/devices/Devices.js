@@ -107,7 +107,6 @@ class Graph extends Component{
     let values = [];
     this.props.data.map((i) => {
       labels.push(i.recvTime);
-
       if (i.attrType.toLowerCase() === 'integer') {
         values.push(parseInt(i.attrValue));
       } else if (i.attrType.toLowerCase() === 'float') {
@@ -116,8 +115,6 @@ class Graph extends Component{
         console.error('unknown field type');
         values.push(parseInt(i.attrValue));
       }
-
-
     })
 
     const data = {
@@ -198,6 +195,47 @@ function Position(props) {
   )
 }
 
+function HistoryList(props) {
+  let trimmedList = props.data.filter((i) => {
+    return i.attrValue.trim().length > 0
+  })
+
+  if (trimmedList.length > 0) {
+    return (
+      <div className="full-height scrollable history-list">
+        {trimmedList.map((i,k) =>
+          <div className={"row " + (k % 2 ? "alt-row" : "")} key={i.recvTime}>
+            <div className="col s12 value">{i.attrValue}</div>
+            <div className="col s12 label">{i.recvTime}</div>
+          </div>
+        )}
+      </div>
+    )
+  } else {
+    return (
+      <div className="full-height background-info valign-wrapper center">
+        <div className="center full-width">No data available</div>
+      </div>
+    )
+  }
+}
+
+function Attr(props) {
+  const known = {
+    'integer': Graph,
+    'float': Graph,
+    'string': HistoryList,
+    'default': HistoryList
+    // TODO to be implemented
+    // 'geo': PositionHistory,
+  }
+
+  const Renderer = props.type in known ? known[props.type] : known['default'];
+  return (
+    <Renderer {...props} />
+  )
+}
+
 class DetailAttrs extends Component {
   constructor(props) {
     super(props);
@@ -205,7 +243,7 @@ class DetailAttrs extends Component {
 
   componentDidMount() {
     this.props.device.attrs.map((i) => {
-      MeasureActions.fetchMeasures.defer(this.props.device.id, i.name)
+      MeasureActions.fetchMeasures.defer(this.props.device.id, i);
     })
   }
 
@@ -236,11 +274,13 @@ class DetailAttrs extends Component {
                     <div className="title row">
                       <span>{i.name}</span>
                       <span className="right"
-                            onClick={() => MeasureActions.fetchMeasures(device.id, i.name)}>
+                            onClick={() => MeasureActions.fetchMeasures(device.id, i)}>
                         <i className="fa fa-refresh" />
                       </span>
                     </div>
-                    <div className="contents"><Graph data={props.devices[device.id][i.name].data}/></div>
+                    <div className="contents">
+                      <Attr type={props.devices[device.id][i.name].type} data={props.devices[device.id][i.name].data}/>
+                    </div>
                   </div>
                 ) : (
                   <div className="graph z-depth-2 full-height">

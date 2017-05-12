@@ -21,7 +21,8 @@ class MeasureStore {
     if (! ('data' in measureData)) { console.error("Missing device data"); }
 
     if (measureData.device in this.devices) {
-      this.devices[measureData.device][measureData.attr] = { loading: false, data: measureData.data };
+      this.devices[measureData.device][measureData.attr.name].loading = false;
+      this.devices[measureData.device][measureData.attr.name].data = measureData.data;
     } else {
       this.error = "Device not found"
       console.error('failed to find device in current measures');
@@ -36,7 +37,8 @@ class MeasureStore {
       this.devices[measureData.device] = {}
     }
 
-    this.devices[measureData.device][measureData.attr] = {loading: true};
+    this.devices[measureData.device][measureData.attr.name] = JSON.parse(JSON.stringify(measureData.attr));
+    this.devices[measureData.device][measureData.attr.name].loading = true;
   }
 
   handleFailure(error) {

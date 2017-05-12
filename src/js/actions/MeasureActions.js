@@ -12,7 +12,7 @@ class MeasureActions {
 
   fetchMeasures(device, attr) {
     function getUrl() {
-      return '/history/STH/v1/contextEntities/type/device/id/' + device + '/attributes/' + attr + '?lastN=5'
+      return '/history/STH/v1/contextEntities/type/device/id/' + device + '/attributes/' + attr.name + '?lastN=10'
     }
 
     return (dispatch) => {

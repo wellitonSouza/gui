@@ -640,3 +640,24 @@ $status: #0c343d;
     }
   }
 }
+
+.history-list {
+  .value {
+    font-size: 1.5em;
+  }
+  .label {
+    font-size: 0.75em;
+    text-align: right;
+  }
+  .alt-row {
+    background-color: $almost-white
+  }
+
+  .row {
+    padding: 0.3em;
+
+    .col {
+      padding: 0;
+    }
+  }
+}

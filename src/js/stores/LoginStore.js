@@ -6,10 +6,18 @@ class LoginStore {
   constructor() {
 
     if (sessionStorage.jwt) {
-      this.token = sessionStorage.jwt;
-      Util.token = this.token;
-      this.authenticated = true;
-      this.user = JSON.parse(atob(this.token.split('.')[1]));
+      try {
+        this.user = JSON.parse(atob(this.token.split('.')[1]));
+        this.token = sessionStorage.jwt;
+        Util.token = this.token;
+        this.authenticated = true;
+      } catch (e) {
+        log.console.error('invalid session information detected', e);
+        this.authenticated = false;
+        this.user = null;
+        this.token = undefined;
+        sessionStorage.jwt = null;
+      }
     } else {
       this.authenticated = false;
       this.user = null;

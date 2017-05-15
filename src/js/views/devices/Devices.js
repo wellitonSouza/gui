@@ -106,16 +106,26 @@ class Graph extends Component{
     let labels = [];
     let values = [];
     this.props.data.map((i) => {
-      labels.push(i.recvTime);
-      if (i.attrType.toLowerCase() === 'integer') {
-        values.push(parseInt(i.attrValue));
-      } else if (i.attrType.toLowerCase() === 'float') {
-        values.push(parseFloat(i.attrValue));
-      } else {
-        console.error('unknown field type');
-        values.push(parseInt(i.attrValue));
+      if (i.attrValue.trim().length > 0) {
+        labels.push(i.recvTime);
+        if (i.attrType.toLowerCase() === 'integer') {
+          values.push(parseInt(i.attrValue));
+        } else if (i.attrType.toLowerCase() === 'float') {
+          values.push(parseFloat(i.attrValue));
+        } else {
+          console.error('unknown field type');
+          values.push(parseInt(i.attrValue));
+        }
       }
     })
+
+    if (values.length == 0) {
+      return (
+        <div className="valign-wrapper full-height background-info">
+          <div className="full-width center">No data available</div>
+        </div>
+      )
+    }
 
     const data = {
       labels: labels,

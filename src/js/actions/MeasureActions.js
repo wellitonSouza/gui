@@ -10,9 +10,15 @@ class MeasureActions {
     return {device: device, attr: attr, data: data};
   }
 
-  fetchMeasures(device, attr) {
+  fetchMeasures(device, type, attr) {
+
+    let devType = 'device';
+    if (type == "virtual") {
+      devType = "virtual";
+    }
+    
     function getUrl() {
-      return '/history/STH/v1/contextEntities/type/device/id/' + device + '/attributes/' + attr.name + '?lastN=10'
+      return '/history/STH/v1/contextEntities/type/' + devType + '/id/' + device + '/attributes/' + attr.name + '?lastN=10'
     }
 
     return (dispatch) => {

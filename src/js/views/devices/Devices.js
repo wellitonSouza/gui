@@ -199,6 +199,7 @@ function HistoryList(props) {
   let trimmedList = props.data.filter((i) => {
     return i.attrValue.trim().length > 0
   })
+  trimmedList.reverse();
 
   if (trimmedList.length > 0) {
     return (
@@ -242,8 +243,9 @@ class DetailAttrs extends Component {
   }
 
   componentDidMount() {
+    console.log('device: ', this.props.device);
     this.props.device.attrs.map((i) => {
-      MeasureActions.fetchMeasures.defer(this.props.device.id, i);
+      MeasureActions.fetchMeasures.defer(this.props.device.id, this.props.device.protocol, i);
     })
   }
 
@@ -274,7 +276,7 @@ class DetailAttrs extends Component {
                     <div className="title row">
                       <span>{i.name}</span>
                       <span className="right"
-                            onClick={() => MeasureActions.fetchMeasures(device.id, i)}>
+                            onClick={() => MeasureActions.fetchMeasures(device.id, device.protocol, i)}>
                         <i className="fa fa-refresh" />
                       </span>
                     </div>
@@ -458,6 +460,7 @@ class ListItem extends Component {
       e.preventDefault();
     }
     this.props.setDetail(null);
+    Materialize.toast('Device removed', 4000);
   }
 
   render() {

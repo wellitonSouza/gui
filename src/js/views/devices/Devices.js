@@ -362,7 +362,9 @@ class DetailItem extends Component {
 
   remove(e) {
     e.preventDefault();
-    DeviceActions.triggerRemoval(this.props.device);
+    DeviceActions.triggerRemoval(this.props.device, () => {
+      Materialize.toast('Device removed', 4000);
+    });
     this.props.handleDismiss();
   }
 
@@ -474,7 +476,6 @@ class ListItem extends Component {
       e.preventDefault();
     }
     this.props.setDetail(null);
-    Materialize.toast('Device removed', 4000);
   }
 
   render() {

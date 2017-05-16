@@ -37,7 +37,7 @@ function SummaryItem(props) {
           <div className="metric-label">Nodes</div>
         </div>
         <div className="col s9 metric last">
-          <div className="metric-value">{util.printTime(props.flow.updated)}</div>
+          <div className="metric-value">{util.printTime(props.flow.updated / 1000)}</div>
           <div className="metric-label">Last update</div>
         </div>
       </div>

@@ -239,6 +239,8 @@ class NewAttr extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.dismiss = this.dismiss.bind(this);
     this.submit = this.submit.bind(this);
+    this.validateName = this.validateName.bind(this);
+    this.isNameValid = this.isNameValid.bind(this);
   }
 
   componentDidMount() {
@@ -254,6 +256,23 @@ class NewAttr extends Component {
     AttrActions.update({f: event.target.name, v: event.target.value});
   }
 
+  isNameValid(name) {
+    if (name.match(/^[a-zA-Z0-9]+$/) == null) {
+      AttrActions.error('Invalid name - only alphanumeric characters (no spaces) supported');
+      return false;
+    } else {
+      AttrActions.error('');
+      return true;
+    }
+  }
+
+  validateName(event) {
+    event.preventDefault();
+    const value = event.target.value;
+    this.isNameValid(value);
+    this.handleChange(event);
+  }
+
   dismiss(event) {
     event.preventDefault();
     let modalElement = ReactDOM.findDOMNode(this.refs.modal);
@@ -262,6 +281,10 @@ class NewAttr extends Component {
 
   submit(event) {
     event.preventDefault();
+
+    if (!this.isNameValid(this.props.newAttr.name)) {
+      return;
+    }
 
     if (this.props.newAttr.name.length > 0) {
       AttrActions.add();
@@ -288,7 +311,7 @@ class NewAttr extends Component {
                   <label htmlFor="fld_name">Name</label>
                   <input id="fld_name" type="text"
                           name="name" value={this.props.newAttr.name}
-                          key="protocol" onChange={this.handleChange} />
+                          key="protocol" onChange={this.validateName} />
                 </div>
                 <div className="input-field col s4" >
                   <label htmlFor="fld_type">Type</label>

@@ -103,7 +103,7 @@ class Graph extends Component{
     let values = [];
     this.props.data.map((i) => {
       if (i.attrValue.trim().length > 0) {
-        labels.push(i.recvTime);
+        labels.push(util.printTime(Date.parse(i.recvTime)/1000));
         if (i.attrType.toLowerCase() === 'integer') {
           values.push(parseInt(i.attrValue));
         } else if (i.attrType.toLowerCase() === 'float') {
@@ -123,8 +123,17 @@ class Graph extends Component{
       )
     }
 
+    let filteredLabels = labels.map((i,k) => {
+      if ((k == 0) || (k == values.length - 1)) {
+        return i;
+      } else {
+        return "";
+      }
+    })
+
     const data = {
       labels: labels,
+      xLabels: filteredLabels,
       datasets: [
         {
           label: 'Device data',
@@ -154,7 +163,10 @@ class Graph extends Component{
       maintainAspectRatio: false,
       legend: { display: false },
       scales: {
-        xAxes: [{ display: false }]
+        xAxes: [
+          { display: false },
+          { ticks: { autoSkip: true, maxRotation: 0, minRotation: 0 }}
+        ],
       }
     }
 
@@ -213,7 +225,7 @@ function HistoryList(props) {
         {trimmedList.map((i,k) =>
           <div className={"row " + (k % 2 ? "alt-row" : "")} key={i.recvTime}>
             <div className="col s12 value">{i.attrValue}</div>
-            <div className="col s12 label">{i.recvTime}</div>
+            <div className="col s12 label">{util.printTime(Date.parse(i.recvTime)/1000)}</div>
           </div>
         )}
       </div>

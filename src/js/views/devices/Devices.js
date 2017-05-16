@@ -64,11 +64,7 @@ class DeviceTag extends Component {
 function SummaryItem(props) {
   let status = "disabled";
   if (props.device.status) {
-    status = "online";
-  } else {
-    if (('enabled' in props.device) && props.device.enabled) {
-      status = "offline";
-    }
+    status = props.device.status;
   }
 
   return (
@@ -361,11 +357,7 @@ class DetailItem extends Component {
   render() {
     let status = "disabled";
     if (this.props.device.status) {
-      status = "online";
-    } else {
-      if (('enabled' in this.props.device) && this.props.device.enabled) {
-        status = "offline";
-      }
+      status = this.props.device.status;
     }
 
     let position = null;

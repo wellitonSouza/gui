@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import { PageHeader, ActionHeader } from "../../containers/full/PageHeader";
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import { Link } from 'react-router'
+import { Link, hashHistory } from 'react-router'
 
 import alt from '../../alt';
 import AltContainer from 'alt-container';
@@ -29,7 +29,6 @@ class FActions {
   removeTag(args) { return args; }
   setTag(args) { return args; }
 }
-
 const FormActions = alt.createActions(FActions);
 const AttrActions = alt.generateActions('set', 'update', 'add', 'remove');
 class FStore {
@@ -136,6 +135,55 @@ class FStore {
 }
 var TemplateFormStore = alt.createStore(FStore, 'TemplateFormStore');
 
+class ModalPlaceholder extends Component {
+  constructor(props) {
+    super(props);
+
+    this.remove = this.remove.bind(this);
+    this.dismiss = this.dismiss.bind(this);
+  }
+
+  componentDidMount() {
+    // materialize jquery makes me sad
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(modalElement).ready(function() {
+      $('.modal').modal();
+    })
+  }
+
+  remove() {
+    TemplateActions.triggerRemoval(this.props.id, () => {
+      let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+      $(modalElement).modal('close');
+      hashHistory.push('/template/list');
+    })
+  }
+
+  dismiss(event) {
+    event.preventDefault();
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(modalElement).modal('close');
+  }
+
+  render() {
+    return (
+      <div className="modal" id={this.props.target} ref="modal">
+        <div className="modal-content full">
+          <div className="row center background-info">
+            <div><i className="fa fa-exclamation-triangle fa-4x" /></div>
+            <div>You are about to remove this template.</div>
+            <div>Are you sure?</div>
+          </div>
+        </div>
+        <div className="modal-footer right">
+            <button type="button" className="btn-flat btn-ciano waves-effect waves-light" onClick={this.dismiss}>cancel</button>
+            <button type="submit" className="btn-flat btn-red waves-effect waves-light" onClick={this.remove}>remove</button>
+        </div>
+      </div>
+    )
+  }
+}
+
 class CreateTemplateActions extends Component {
   constructor(props) {
     super(props);
@@ -152,6 +200,9 @@ class CreateTemplateActions extends Component {
     return (
       <div>
         <a className="waves-effect waves-light btn-flat btn-ciano" onClick={this.save} tabIndex="-1">save</a>
+        {(this.props.id != undefined && this.props.id != null) && (
+          <button className="waves-effect waves-light btn-flat btn-red" data-target="confirmDiag">remove</button>
+        )}
         <Link to="/template/list" className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1">dismiss</Link>
       </div>
     )
@@ -443,12 +494,15 @@ class NewTemplate extends Component {
           transitionEnterTimeout={500} transitionLeaveTimeout={500} >
           <PageHeader title="device manager" subtitle="Templates" />
           <ActionHeader title={title}>
-            <CreateTemplateActions operator={ops}/>
+            <CreateTemplateActions operator={ops} id={this.props.params.template}/>
           </ActionHeader>
           <AltContainer store={TemplateFormStore} >
             <DeviceForm />
           </AltContainer>
         </ReactCSSTransitionGroup>
+
+        {/* id prop is actually used by the trigger, that is created elsewhere  */}
+        <ModalPlaceholder id={this.props.params.template} target='confirmDiag'/>
       </div>
     )
   }

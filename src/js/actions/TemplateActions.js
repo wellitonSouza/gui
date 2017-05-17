@@ -76,18 +76,20 @@ class TemplateActions {
     return id;
   }
 
-  triggerRemoval(template) {
+  triggerRemoval(template, cb) {
     return (dispatch) => {
-      templateManager.deleteTemplate(template.id)
+      dispatch();
+      templateManager.deleteTemplate(template)
         .then((response) => {
-          this.removeSingle(template.id);
+          this.removeSingle(template);
+          if (cb) {
+            cb();
+          }
         })
         .catch((error) => {
           console.log("Error!", error);
           this.templatesFailed("Failed to remove given template");
         })
-
-      dispatch();
     }
   }
 

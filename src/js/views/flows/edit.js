@@ -204,7 +204,7 @@ function handleSave(flowid) {
   }
 }
 
-class RemoveBtn extends Component {
+class RemoveDialog extends Component {
   constructor(props) {
     super(props);
 
@@ -234,28 +234,21 @@ class RemoveBtn extends Component {
   }
 
   render() {
-    if (this.props.id) {
-      return (
-        <span>
-          <button className="waves-effect waves-light btn-flat btn-red" data-target="confirmDiag">remove</button>
-          <div className="modal" id="confirmDiag" ref="modal">
-            <div className="modal-content full">
-              <div className="row center background-info">
-                <div><i className="fa fa-exclamation-triangle fa-4x" /></div>
-                <div>You are about to remove this flow.</div>
-                <div>Are you sure?</div>
-              </div>
-            </div>
-            <div className="modal-footer right">
-                <button type="button" className="btn-flat btn-ciano waves-effect waves-light" onClick={this.dismiss}>cancel</button>
-                <button type="submit" className="btn-flat btn-red waves-effect waves-light" onClick={this.remove}>remove</button>
-            </div>
+    return (
+      <div className="modal" id={this.props.target} ref="modal">
+        <div className="modal-content full">
+          <div className="row center background-info">
+            <div><i className="fa fa-exclamation-triangle fa-4x" /></div>
+            <div>You are about to remove this flow.</div>
+            <div>Are you sure?</div>
           </div>
-        </span>
-      )
-    } else {
-      return null;
-    }
+        </div>
+        <div className="modal-footer right">
+            <button type="button" className="btn-flat btn-ciano waves-effect waves-light" onClick={this.dismiss}>cancel</button>
+            <button type="submit" className="btn-flat btn-red waves-effect waves-light" onClick={this.remove}>remove</button>
+        </div>
+      </div>
+    )
   }
 }
 
@@ -278,7 +271,9 @@ class EditFlow extends Component {
         <PageHeader title="flow manager" subtitle="Flow configuration">
           <div>
             <a className="waves-effect waves-light btn-flat btn-ciano" onClick={() => { handleSave(this.props.params.flowid); }} >save</a>
-            <RemoveBtn id={this.props.params.flowid}/>
+            {(this.props.params.flowid) && (
+              <button className="waves-effect waves-light btn-flat btn-red" data-target="confirmDiag">remove</button>
+            )}
             <Link to="/flows" className="waves-effect waves-light btn-flat btn-ciano">Dismiss</Link>
 
           </div>
@@ -286,6 +281,7 @@ class EditFlow extends Component {
         <AltContainer store={FlowStore}>
           <FlowCanvas flow={this.props.params.flowid}/>
         </AltContainer>
+        <RemoveDialog id={this.props.params.flowid} target="confirmDiag"/>
       </ReactCSSTransitionGroup>
     );
   }

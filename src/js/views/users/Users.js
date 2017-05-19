@@ -486,7 +486,7 @@ class UserList extends Component {
                               detailedUser={this.detailedUser}/>
                 )}
                 <div className="col s4 userCanvasFooter">
-                  <div className="col s12 m6">Showing {displayed} of {this.state.listOfUser.length}</div>
+                  <div className="col s12 m6">Showing {this.state.listOfUserByPage.length} of {this.state.listOfUser.length}</div>
                   <div className="col s6 m3 clickable">
                     <a className={prevPageClass} onClick={this.prevPage}><i className="fa fa-chevron-left paddingRight10"></i>PREV</a>
                   </div>

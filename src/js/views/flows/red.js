@@ -10847,7 +10847,7 @@ RED.tray = (function() {
 
 // handles toaster notifications
 // RED.notify is not needed | TODO: implement this as a plugin for the outer system
-RED.notify = (function(){})();
+RED.notify = function(){};
 
 // RED.search is not needed
 

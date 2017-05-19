@@ -13,6 +13,7 @@ import Filter from "../utils/Filter";
 
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
+
 function SummaryItem(props) {
   const selectedClass = "lst-entry-users " + (props.isActive ? " active" : "");
   const name = ((props.user.name && (props.user.name.length > 0)) ? props.user.name : props.user.username);
@@ -21,11 +22,10 @@ function SummaryItem(props) {
      <div className="col hovered">
        <div className="col s12">
           <div className="col s9 title2">{name}</div>
-          <div className="col s3 text-right subtitle">ID: {props.user.id}</div>
        </div>
        <div className="col s12 paddingTop10">
           <div className="col s3 openSans8">Service:</div>
-          <div className="col s9 text-right subtitle"><label className='badge'>{props.user.service}</label></div>
+          <div className="col s9 text-right subtitle"><label className="badge">{props.user.service}</label></div>
        </div>
      </div>
       <div className="col div-img">
@@ -95,7 +95,7 @@ class DetailItem extends Component {
         <div className="lst-user-detail" >
           <div className="lst-line col s12">
             <div className="col s3">
-              <p><img className="photo_big" src="images/user.png"/></p>
+                <p><img className="photo_big" src="images/user.png"/></p>
             </div>
             <div className="lst-user-title col s6">
               <span>{this.props.user.name}</span>
@@ -216,17 +216,18 @@ class UserFormImpl extends Component {
   render() {
     return (
       <span>
-        <div className="lst-line col s12">
-            <div className="col s2">
-              <p><img src="images/user.png"/></p>
-            </div>
-            <div className="lst-user-title col s10">
-              <span>{this.props.title}</span>
-              <p className="subTitle"><b>Id:</b>{this.props.user.id}</p>
-            </div>
-        </div>
-
         <form onSubmit={this.saveUser}>
+          <div className="lst-line col s12">
+              <div className="col s2">
+                <p><img id="imgForm" src="images/user.png"/></p>
+              </div>
+              <div className="lst-user-title col s10">
+                <span>{this.props.title}</span>
+                <p className="subTitle"><b>Id:</b>{this.props.user.id}</p>
+              </div>
+          </div>
+
+        
           <div className="lst-user-detail" >
             <div className="lst-user-line col s12 input-field">
               <label htmlFor="fld_Name">Name</label>
@@ -472,7 +473,7 @@ class UserList extends Component {
           <div className="col s4 header-card-info"></div>
 
           <div className="col s6 m2 button">
-            <a className="waves-effect waves-light btn-flat" onClick={this.handleCreate}>New User</a>
+            <a id="btnNewUser" className="waves-effect waves-light btn-flat" onClick={this.handleCreate}>New User</a>
           </div>
         </div>
 
@@ -486,11 +487,11 @@ class UserList extends Component {
                               detailedUser={this.detailedUser}/>
                 )}
                 <div className="col s4 userCanvasFooter">
-                  <div className="col s12 m6">Showing {this.state.listOfUserByPage.length} of {this.state.listOfUser.length}</div>
-                  <div className="col s6 m3 clickable">
+                  <div id="labelShowing" className="col s12 m6">Showing {this.state.listOfUserByPage.length} of {this.state.listOfUser.length}</div>
+                  <div id="prevPageId" className="col s6 m3 clickable">
                     <a className={prevPageClass} onClick={this.prevPage}><i className="fa fa-chevron-left paddingRight10"></i>PREV</a>
                   </div>
-                  <div className="col s6 m3 clickable">
+                  <div id="nextPageId" className="col s6 m3 clickable">
                     <a className={nextPageClass} onClick={this.nextPage}>NEXT<i className="fa fa-chevron-right paddingLeft10"></i></a>
                   </div>
                 </div>

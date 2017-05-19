@@ -90,6 +90,10 @@
     .title {
       color: #0b5394; // TODO move this to color scheme
     }
+
+    .subtitle{
+      overflow: hidden;
+    }
   }
 
   .lst-entry-users-title {
@@ -99,6 +103,7 @@
   .title, .title2 {
     font-family: 'Droid Sans', sans-serif;
     font-weight: bold;
+    overflow: hidden;
   }
 
   .subtitle {
@@ -123,7 +128,7 @@
 }
 
 .lst-user-detail{
-  padding: 50px;
+  padding: 5px;
   // padding-left: 50px;
   // padding-top: 30px;
   // padding-right: 50px;
@@ -144,6 +149,8 @@
   max-width: 100%;
   color: #0b5394;
   font-size: 185%;
+  position: relative;
+  left: 7px;
 }
 
 .lst-user-title .subTitle {
@@ -182,9 +189,12 @@
 }
 
 .subTitle {
+  position: relative;
   color: #b8b8b8;
   font-size: 125%;
   margin-bottom: 0px;
+  left: 7px;
+  white-space:nowrap;
 }
 
 .initialUserMessage {
@@ -241,6 +251,7 @@
   overflow: auto;
   padding-bottom: 30px;
 
+
   &.selected {
     background-color: $white;
   }
@@ -282,11 +293,13 @@
 .userSubHeader {
   background-color: #fff;;
   padding-top:10px;
+  padding-bottom:62px;
   font-size: 16pt;
   font-family: 'Droid Sans', sans-serif;
   color: #666;
   margin: 0;
   z-index: 1000;
+  overflow: hidden;
 
   position: absolute;
   width: 100%;
@@ -359,3 +372,177 @@
     opacity: 1;
   }
 }
+
+.photo_big{
+  position:relative;
+  right: 15px;
+}
+
+.btn-flat{
+  position:relative;
+  right: 5px;
+}
+
+
+@media screen and (max-width: 800px){
+  .div-img{
+    display: none;
+  }
+
+  .lst-entry-users{
+    &:hover{
+      .openSans8{
+        display: none;
+        position:relative;
+        width:100%;
+        right:10px;
+      }
+
+      .badge{
+        position:relative;
+        left:-18px;
+        text-align: left;
+      }
+      .title2{
+        position:relative;
+        right:0px;
+      }
+
+
+    }
+  }
+  .subTitle{
+    font-size: 12px;
+    position:relative;
+    bottom: 0px;
+    left: -95px;
+    white-space: nowrap; 
+  }
+
+  .lst-user-title span{
+    left: -95px;
+    font-size:18px;
+    top:7px;
+  }
+
+  .photo_big{
+    display: none;
+  }
+
+  .lst-user-line s12{
+    position:relative;
+    bottom:200px;
+  }
+
+  .btn-floating{
+    bottom: 8px;
+    left: 15px;
+  }
+
+  #btnNewUser{
+    right:30px;
+  }
+
+  form{
+    .lst-user-title span{
+      left:10px;
+      top:20px;
+    }
+    #imgForm{
+      position:relative;
+      left:-10px;
+    }
+
+    .subTitle{
+      left:10px;
+      top:10px;
+    }
+    .lst-user-line{
+      position:relative;
+      top:10px;
+    }
+
+    .btn-flat{
+      position:relative;
+      top:10px;
+      right:3px;
+    }
+  }
+  #labelShowing{
+    white-space: pre;
+    position:relative;
+    left:15px;
+    top:-15px;
+    font-size: 16px;
+  }
+
+  #nextPageId{
+    position:relative;
+    left:0px;
+    top:31px;
+
+    i{
+      position:relative;
+      bottom:42px;
+    }
+  }
+
+  #prevPageId{
+    position:relative;
+    left:-90px;
+    top: 10px;
+
+    i{
+      position:relative;
+      left: 8px;
+    }
+  }
+
+  //When menu is closed
+  .app-body.full-height.closed{
+    .content.expand{
+      .userCanvas{
+        #user-list{
+          .lst-entry-users{
+            &:hover{
+              .badge{
+                width:auto;
+                position:relative;
+                left:-50px;
+              }
+            }
+          }
+          .userCanvasFooter{
+            #nextPageId{
+              position:relative;
+              bottom:0px;
+
+              i{
+                position:relative;
+                bottom:42px;
+                right:2px;
+              }
+            }
+
+            #prevPageId{
+              position:relative;
+              bottom:0px;
+
+              i{
+                position:relative;
+                bottom:0px;
+                left:6px;
+              }
+            }
+            #labelShowing{
+              position:relative;
+              left:40px;
+
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

@@ -8,8 +8,10 @@ import { Link, hashHistory } from 'react-router'
 import alt from '../../alt';
 import AltContainer from 'alt-container';
 import TemplateActions from '../../actions/TemplateActions';
+import TagActions from '../../actions/TagActions';
 import templateManager from '../../comms/templates/TemplateManager';
 import TemplateStore from '../../stores/TemplateStore';
+import TagForm from '../../components/TagForm';
 import util from "../../comms/util/util";
 
 class FActions {
@@ -24,26 +26,21 @@ class FActions {
       .catch((error) => { console.error('Failed to get template', error); })
     }
   }
-
-  addTag(args) { return args; }
-  removeTag(args) { return args; }
-  setTag(args) { return args; }
 }
+
 const FormActions = alt.createActions(FActions);
 const AttrActions = alt.generateActions('set', 'update', 'add', 'remove');
 class FStore {
   constructor() {
     this.device = {}; this.set();
-    this.newTag = "";
     this.newAttr = {}; this.setAttr();
     this.bindListeners({
       set: FormActions.SET,
       updateDevice: FormActions.UPDATE,
       fetch: FormActions.FETCH,
 
-      addTag: FormActions.ADD_TAG,
-      removeTag: FormActions.REMOVE_TAG,
-      setTag: FormActions.SET_TAG,
+      addTag: TagActions.ADD,
+      removeTag: TagActions.REMOVE,
 
       setAttr: AttrActions.SET,
       updAttr: AttrActions.UPDATE,
@@ -83,13 +80,8 @@ class FStore {
     this.device[diff.f] = diff.v;
   }
 
-  setTag(tagName) {
-    this.newTag = tagName;
-  }
-
-  addTag() {
-    this.device.tags.push(this.newTag);
-    this.newTag = "";
+  addTag(tag) {
+    this.device.tags.push(tag);
   }
 
   removeTag(tag) {
@@ -204,29 +196,6 @@ class CreateTemplateActions extends Component {
           <button className="waves-effect waves-light btn-flat btn-red" data-target="confirmDiag">remove</button>
         )}
         <Link to="/template/list" className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1">dismiss</Link>
-      </div>
-    )
-  }
-}
-
-class DeviceTag extends Component {
-  constructor(props) {
-    super(props);
-
-    this.handleRemove = this.handleRemove.bind(this);
-  }
-
-  handleRemove(e) {
-    this.props.removeTag(this.props.tag);
-  }
-
-  render() {
-    return (
-      <div key={this.props.tag}>
-        {this.props.tag} &nbsp;
-        <a title="Remove tag" className="btn-item clickable" onClick={this.handleRemove}>
-          <i className="fa fa-times" aria-hidden="true"></i>
-        </a>
       </div>
     )
   }
@@ -347,16 +316,11 @@ class NewAttr extends Component {
   }
 }
 
-class DeviceForm extends Component {
+class TemplateForm extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      options: [ "MQTT", "CoAP", "Virtual" ]
-    };
-
     this.handleChange = this.handleChange.bind(this);
-    this.handleTagChange = this.handleTagChange.bind(this);
   }
 
   componentWillUnmount() {
@@ -376,11 +340,6 @@ class DeviceForm extends Component {
     const f = event.target.name;
     const v = event.target.value;
     FormActions.update({f: f, v: v});
-  }
-
-  handleTagChange(event) {
-    event.preventDefault();
-    FormActions.setTag(event.target.value);
   }
 
   render() {
@@ -405,29 +364,7 @@ class DeviceForm extends Component {
 
                 <div className="col s12">
                   <div className="col s8" >
-                    <div className="row">
-                      <div className="col s11">
-                        <div className="input-field">
-                          <label htmlFor="fld_newTag" >Add a new tag</label>
-                          <input id="fld_newTag" type="text"
-                                 value={this.props.newTag} onChange={this.handleTagChange} />
-                        </div>
-                      </div>
-                      <div className="col s1" >
-                        <div title="Add tag"
-                             className="btn btn-item btn-floating waves-effect waves-light cyan darken-2"
-                             onClick={FormActions.addTag}>
-                          <i className="fa fa-plus"></i>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="wrapping-list">
-                        { this.props.device.tags.map((tag) =>(
-                            <DeviceTag key={tag} tag={tag} removeTag={FormActions.removeTag} />
-                        ))}
-                      </div>
-                    </div>
+                    <TagForm tags={this.props.device.tags} />
                   </div>
                 </div>
               </div>
@@ -497,7 +434,7 @@ class NewTemplate extends Component {
             <CreateTemplateActions operator={ops} id={this.props.params.template}/>
           </ActionHeader>
           <AltContainer store={TemplateFormStore} >
-            <DeviceForm />
+            <TemplateForm />
           </AltContainer>
         </ReactCSSTransitionGroup>
 

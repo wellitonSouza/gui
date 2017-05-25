@@ -25,4 +25,19 @@
   .palette-scroll {
     top: 0;
   }
+
+  .leaflet-clickable {
+    cursor: pointer;
+  }
+
+  .leaflet-marker-pane .leaflet-clickable {
+    pointer-events: auto !important;
+  }
+
+  .leaflet-dragging .leaflet-container,
+  .leaflet-dragging .leaflet-clickable {
+    cursor: move;
+    cursor: -webkit-grabbing;
+    cursor:  -moz-grabbing;
+  }
 }

@@ -1,7 +1,16 @@
 
 class Util {
-  constructor() {
-    this.token = undefined;
+
+  getToken() {
+    return localStorage.jwt;
+  }
+
+  setToken(token) {
+    if (token === null || token === undefined) {
+      delete localStorage.jwt;
+    } else {
+      localStorage.jwt = token;
+    }
   }
 
   GET(url) {
@@ -43,17 +52,17 @@ class Util {
 
     var authConfig = config;
     authConfig.credentials = 'include';
-    if (this.token) {
+    if (this.getToken()) {
       if (authConfig) {
         if (authConfig.headers) {
-          authConfig.headers.append('Authorization', 'Bearer ' + this.token);
+          authConfig.headers.append('Authorization', 'Bearer ' + this.getToken());
         } else {
           authConfig.headers = new Headers();
-          authConfig.headers.append('Authorization', 'Bearer ' + this.token);
+          authConfig.headers.append('Authorization', 'Bearer ' + this.getToken());
         }
       } else {
         let headers = new Headers();
-        headers.append('Authorization', 'Bearer ' + this.token);
+        headers.append('Authorization', 'Bearer ' + this.getToken());
         authConfig = { headers: headers };
       }
     }

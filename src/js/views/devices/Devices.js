@@ -180,7 +180,44 @@ class PositionRenderer extends Component {
   componentDidMount(){}
 
   render() {
-    const position = [-22.8132384,-47.0448855];
+    function NoData() {
+      return (
+        <div className="full-height valign-wrapper background-info subtle relative graph">
+          <div className="horizontal-center">
+            <i className="material-icons">report_problem</i>
+            <div>No position data available</div>
+          </div>
+        </div>
+      )
+    }
+
+    if ((this.props.attr == null) ||
+        (! (this.props.deviceId in this.props.devices)) ||
+        (! (this.props.attr in this.props.devices[this.props.deviceId]))) {
+      return (<NoData />);
+    }
+
+    let pos = this.props.value;
+    let parsed = null;
+    if (pos === undefined) {
+      const posData = this.props.devices[this.props.deviceId][this.props.attr];
+      if (!posData.loading) {
+        pos = posData.data[posData.data.length - 1].attrValue;
+      } else {
+        return (
+          <div className="background-info valign-wrapper full-height relative bg-gray">
+            <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center"/>
+          </div>
+        )
+      }
+    }
+
+    parsed = pos.match(/^([+-]?\d+(\.\d+)?)\s*[,]\s*([+-]?\d+(\.\d+)?)$/)
+    if (parsed == null) {
+      return (<NoData />)
+    }
+
+    const position = [parseFloat(parsed[1]),parseFloat(parsed[3])];
     return (
       <Map center={position} zoom={19}>
         <TileLayer
@@ -193,24 +230,31 @@ class PositionRenderer extends Component {
   }
 }
 
-function Position(props) {
-  if (props.position == null) {
-    // render not available message
-    return (
-      <div className="full-height valign-wrapper background-info subtle relative graph">
-        <div className="horizontal-center">
-          <i className="material-icons">report_problem</i>
-          <div>No position data available</div>
-        </div>
-      </div>
-    )
+class Position extends Component {
+  constructor(props) {
+    super(props);
   }
 
-  return (
-    <AltContainer store={MeasureStore}>
-      <PositionRenderer />
-    </AltContainer>
-  )
+  componentDidMount() {
+    if ((this.props.position != null) && ('name' in this.props.position)) {
+      MeasureActions.fetchMeasures.defer(this.props.device.id, this.props.device.protocol, this.props.position);
+    }
+  }
+
+  render () {
+    let geoAttr = null;
+    let value = undefined;
+    if ((this.props.position != null) && ('name' in this.props.position)) {
+      geoAttr = this.props.position.name;
+      value = this.props.position.value;
+    }
+
+    return (
+      <AltContainer store={MeasureStore}>
+        <PositionRenderer deviceId={this.props.device.id} attr={geoAttr} value={value}/>
+      </AltContainer>
+    )
+  }
 }
 
 function HistoryList(props) {
@@ -261,7 +305,6 @@ class DetailAttrs extends Component {
   }
 
   componentDidMount() {
-    console.log('device: ', this.props.device);
     this.props.device.attrs.map((i) => {
       MeasureActions.fetchMeasures.defer(this.props.device.id, this.props.device.protocol, i);
     })
@@ -270,13 +313,15 @@ class DetailAttrs extends Component {
   render() {
     const device = this.props.device;
 
+    let filteredStatics = this.props.device.static_attrs.filter((a) => { return (a.type.toLowerCase() != "geo")});
+
     let count = 0;
-    if (device.static_attrs.length > 0) { count++; }
+    if (filteredStatics.length > 0) { count++; }
     count += device.attrs.length;
     count = (count > 3 ? 3 : count);
 
     let horizontalSize = "col s4";
-    if (count == 2 && device.static_attrs.length > 0) {
+    if (count == 2 && filteredStatics.length > 0) {
       horizontalSize = "col s8";
     } else if (count != 0) {
       horizontalSize = "col s" + (12 / count);
@@ -319,7 +364,7 @@ class DetailAttrs extends Component {
       )
     }
 
-    if (device.static_attrs.length > 0) {
+    if (filteredStatics.length > 0) {
       count--;
       return (
         <div className="row half-height">
@@ -328,8 +373,8 @@ class DetailAttrs extends Component {
               <div className="title">Attributes</div>
               <div className="">
                 <ul>
-                  {device.static_attrs.map((i, k) =>
-                    (k < 3) && (
+                  {filteredStatics.map((i, k) =>
+                    (k < 3) && (i.type.toLowerCase() != "geo") && (
                       <li key={i.name}>
                         <span className="col s6 label">{i.name}</span>
                         <span className="col s6 value">{i.value}</span>
@@ -380,9 +425,9 @@ class DetailItem extends Component {
         position = i;
       }
     }
-    this.props.device.attrs.map((i) => {getPosition(i)})
+    this.props.device.static_attrs.map((i) => {getPosition(i)})
     if (position === null) {
-      this.props.device.static_attrs.map((i) => {getPosition(i)})
+      this.props.device.attrs.map((i) => {getPosition(i)})
     }
 
     return (
@@ -449,7 +494,7 @@ class DetailItem extends Component {
               </AltContainer>
             </div>
             <div className="col s3 map z-depth-2 full-height">
-              <Position position={position} />
+              <Position device={this.props.device} position={position}/>
             </div>
           </div>
         </div>

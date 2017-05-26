@@ -68,6 +68,9 @@ class FlowCanvas extends Component {
         .then((dom) => {
           // this makes me *VERY* sad
           $(domEntryPoint).append(dom);
+          $.getScript('js/ace/ace.js', function () {
+            ace.config.set("basePath", 'js/ace');
+          });
           FlowActions.done();
         })
         .catch((error) => { console.error('failed to fetch nodes dom', error); });

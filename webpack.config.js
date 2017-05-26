@@ -51,6 +51,7 @@ module.exports = {
       { from: 'src/js/views/flows/vendor.js', to: 'js/vendor.js' },
       { from: 'node_modules/leaflet/dist/leaflet.css', to: 'leaflet.css' },
       { from: 'node_modules/leaflet/dist/images', to: 'images' },
+      { from: 'node_modules/ace-builds/src-min', to: 'js/ace'},
       { from: 'src/img', to: 'images' }
     ])
   ]

@@ -80,6 +80,9 @@ class Util {
     if (response.status >= 200 && response.status < 300) {
       return Promise.resolve(response);
     } else {
+      if (response.status == 401) {
+        this.setToken(undefined);
+      }
       return Promise.reject(new Error(response.statusText));
     }
   }

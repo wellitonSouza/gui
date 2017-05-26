@@ -158,6 +158,8 @@ $status: #0c343d;
   &.offline  { background-color: $offline; }
   &.disabled { background-color: $disabled; }
 
+
+
   .lst-entry-title {
     position: relative;
     height: 5em;
@@ -391,6 +393,25 @@ $status: #0c343d;
         padding: 3px;
         height: $title-height;
         font-size: 80%;
+      }
+
+      .contents {
+        padding: 0.4em;
+        height: calc(100% - #{$title-height});
+      }
+    }
+
+    .graphLarge {
+      background-color: #fff;
+
+      $title-height: 30px;
+      .title {
+        display: block;
+        width: 100%;
+        background-color: #eceff1;
+        padding: 3px;
+        height: $title-height;
+        font-size: 100%;
       }
 
       .contents {

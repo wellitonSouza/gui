@@ -72,6 +72,10 @@ html {
   height: 50%;
 }
 
+.auto-height {
+  height: auto !important;
+}
+
 body {
   background-color: #fff;
   font-family: $main-font-family;
@@ -168,7 +172,9 @@ body {
   padding:0px;
 }
 
-
+.mb20 {
+  margin-bottom:20px;
+}
 .todo-div {
   font-family: 'Cuprum', sans-serif;
 }

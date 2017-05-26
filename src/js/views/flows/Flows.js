@@ -26,7 +26,7 @@ function SummaryItem(props) {
           <i className="material-icons mi-device-hub shadow" />
         </div>
 
-        <div className="user-label">{props.flow.name}</div>
+        <div className="user-label truncate">{props.flow.name}</div>
         <div className="label">flow name</div>
         <span className={"badge " + status}>{status}</span>
       </div>

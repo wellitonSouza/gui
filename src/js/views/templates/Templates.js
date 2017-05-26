@@ -83,7 +83,7 @@ function SummaryItem(props) {
   return (
     <div className="lst-entry-wrapper z-depth-2 col s12">
       <div className="lst-entry-title col s12">
-        <div className="user-label">{props.template.label}</div>
+        <div className="user-label truncate">{props.template.label}</div>
         <div className="label">template name</div>
       </div>
 

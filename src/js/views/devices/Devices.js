@@ -73,7 +73,7 @@ function SummaryItem(props) {
         <div className="img">
           <img src="images/ciShadow.svg" />
         </div>
-        <div className="user-label">{props.device.label}</div>
+        <div className="user-label truncate">{props.device.label}</div>
         <div className="label">device name</div>
         <span className={"badge " + status}>{status}</span>
       </div>
@@ -433,22 +433,28 @@ class DetailItem extends Component {
     return (
       <div className={"lst-entry-wrapper z-depth-2 col s12 " + status}>
         <div className="row detail-header">
-          <div className="title">
-            <div className="label">{this.props.device.label}</div>
+          <div className="title col s10">
+            <div className="label truncate">{this.props.device.label}</div>
             <div className="id">ID {this.props.device.id}</div>
           </div>
-          <div className="actions">
-            <div><i className="clickable fa fa-code" /></div>
-            <Link to={"/device/id/" + this.props.device.id + "/detail"} >
-              <div><i className="clickable fa fa-expand" /></div>
-            </Link>
-            <Link to={"/device/id/" + this.props.device.id + "/edit"} >
-              <div><i className="clickable fa fa-pencil" /></div>
-            </Link>
-            <div><i className="clickable fa fa-trash" onClick={this.remove}/></div>
-            <div><i className="clickable fa fa-times" onClick={this.props.handleDismiss}/></div>
+          <div className="col s2 title">
+            <div className="relative full-width">
+              <div className="label">&nbsp;</div>
+              <div className="id">&nbsp;</div>
+              <div className="actions">
+                <div><i className="clickable fa fa-code" /></div>
+                <Link to={"/device/id/" + this.props.device.id + "/detail"} >
+                  <div><i className="clickable fa fa-expand" /></div>
+                </Link>
+                <Link to={"/device/id/" + this.props.device.id + "/edit"} >
+                  <div><i className="clickable fa fa-pencil" /></div>
+                </Link>
+                <div><i className="clickable fa fa-trash" onClick={this.remove}/></div>
+                <div><i className="clickable fa fa-times" onClick={this.props.handleDismiss}/></div>
+              </div>
+              <div className="status">{status}</div>
+            </div>
           </div>
-          <div className="status">{status}</div>
         </div>
 
         <div className="row detail-body">

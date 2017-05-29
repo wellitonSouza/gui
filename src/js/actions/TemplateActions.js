@@ -12,18 +12,21 @@ class TemplateActions {
     return template;
   }
 
-  addTemplate(template) {
+  addTemplate(template, cb) {
     const newTemplate = template;
     return (dispatch) => {
+      dispatch();
       templateManager.addTemplate(newTemplate)
         .then((response) => {
-          this.insertTemplate(newTemplate);
+          this.insertTemplate(response.template);
+          if (cb) {
+            cb(response.template);
+          }
         })
         .catch((error) => {
           this.templatesFailed("Failed to add template to list");
         })
 
-      dispatch();
     }
   }
 
@@ -42,11 +45,14 @@ class TemplateActions {
     }
   }
 
-  triggerUpdate(template) {
+  triggerUpdate(template, cb) {
     return (dispatch) => {
       templateManager.setTemplate(template)
         .then((response) => {
           this.updateSingle(template);
+          if (cb) {
+            cb(response.template);
+          }
         })
         .catch((error) => {
           console.log("Error!", error);

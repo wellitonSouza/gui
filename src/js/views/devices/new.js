@@ -143,7 +143,10 @@ class CreateDeviceActions extends Component {
 
   save(e) {
     e.preventDefault();
-    this.props.operator(JSON.parse(JSON.stringify(DeviceFormStore.getState().device)));
+    const ongoingOps = DeviceStore.getState().loading;
+    if (ongoingOps == false) {
+      this.props.operator(JSON.parse(JSON.stringify(DeviceFormStore.getState().device)));
+    }
   }
 
   render() {

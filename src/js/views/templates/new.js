@@ -185,7 +185,10 @@ class CreateTemplateActions extends Component {
 
   save(e) {
     e.preventDefault();
-    this.props.operator(JSON.parse(JSON.stringify(TemplateFormStore.getState().device)));
+    const ongoingOps = TemplateStore.getState().loading;
+    if (ongoingOps == false) {
+      this.props.operator(JSON.parse(JSON.stringify(TemplateFormStore.getState().device)));
+    }
   }
 
   render() {
@@ -417,10 +420,20 @@ class NewTemplate extends Component {
 
   render() {
     let title = "New template";
-    let ops = TemplateActions.addTemplate;
+    let ops = function(template) {
+      TemplateActions.addTemplate(template, (template) => {
+        FormActions.set(template);
+        hashHistory.push('/template/id/' + template.id + '/edit')
+        Materialize.toast('Template created', 4000);
+      });
+    }
     if (this.props.params.template) {
       title = "Edit template";
-      ops = TemplateActions.triggerUpdate;
+      ops = function(template) {
+        TemplateActions.triggerUpdate(template, () => {
+          Materialize.toast('Template updated', 4000);
+        });
+      }
     }
 
     return (

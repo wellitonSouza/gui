@@ -58,7 +58,7 @@ class FStore {
       this.device = {
         label: "",
         id: "",
-        protocol: "",
+        protocol: "MQTT",
         templates: [],
         tags: [],
         attrs: [],
@@ -318,10 +318,6 @@ class DeviceForm extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      options: [ "MQTT", "CoAP", "Virtual" ]
-    };
-
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -331,6 +327,13 @@ class DeviceForm extends Component {
 
   componentDidMount() {
     Materialize.updateTextFields();
+
+    let callback = this.handleChange.bind(this);
+    let dropdown = ReactDOM.findDOMNode(this.refs.dropdown);
+    $(dropdown).ready(function() {
+      $('select').material_select();
+      $(dropdown).on('change', callback);
+    })
   }
 
   componentDidUpdate() {
@@ -366,10 +369,13 @@ class DeviceForm extends Component {
 
                 <div className="col s12">
                   <div className="input-field col s4" >
-                      <label htmlFor="fld_prot">Protocol</label>
-                      <input id="fld_prot" type="text"
-                             name="protocol" value={this.props.device.protocol}
-                             key="protocol" onChange={this.handleChange} />
+                      <select id="fld_prot" ref='dropdown'
+                              name="protocol" value={this.props.device.protocol}
+                              key="protocol" onChange={this.handleChange} >
+                        <option value="MQTT">MQTT</option>
+                        <option value="virtual">Virtual</option>
+                      </select>
+                      <label htmlFor="fld_prot">Device type</label>
                   </div>
 
                   <div className="col s8" >

@@ -1,3 +1,4 @@
+import LoginActions from '../../actions/LoginActions';
 
 class Util {
 
@@ -81,7 +82,10 @@ class Util {
       return Promise.resolve(response);
     } else {
       if (response.status == 401) {
-        this.setToken(undefined);
+        LoginActions.logout();
+      }
+      if (response.status == 403) {
+        LoginActions.logout();
       }
       return Promise.reject(new Error(response.statusText));
     }
@@ -107,8 +111,7 @@ class Util {
   }
 
   // to get formatted date
-  timestamp_to_date(timestamp)
-  {
+  timestamp_to_date(timestamp) {
       let date = new Date(null);
       date.setSeconds(Math.floor(timestamp));
       return date.toLocaleString();

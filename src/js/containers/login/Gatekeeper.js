@@ -20,14 +20,20 @@ function GatekeeperRenderer(props) {
   }
 }
 
-function Gatekeeper(props) {
-  return (
-    <AltContainer store={LoginStore}>
-      <GatekeeperRenderer>
-        {props.children}
-      </GatekeeperRenderer>
-    </AltContainer>
-  )
+class Gatekeeper extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <AltContainer store={LoginStore}>
+        <GatekeeperRenderer key={localStorage.jwt}>
+          {this.props.children}
+        </GatekeeperRenderer>
+      </AltContainer>
+    )
+  }
 }
 
 export default Gatekeeper;

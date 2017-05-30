@@ -6,14 +6,17 @@ import routes from './routes';
 import Gatekeeper from './containers/login/Gatekeeper.js';
 
 
+import AltContainer from 'alt-container';
+import LoginStore from './stores/LoginStore';
+
 require ('../sass/app.scss');
 require ('../components/font-awesome/scss/font-awesome.scss');
 
 function Main(props) {
   return (
-    <Gatekeeper>
-      <Router routes={routes} history={hashHistory} />
-    </Gatekeeper>
+      <Gatekeeper>
+        <Router routes={routes} history={hashHistory} />
+      </Gatekeeper>
   )
 }
 

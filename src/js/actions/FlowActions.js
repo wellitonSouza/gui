@@ -92,6 +92,10 @@ class FlowActions {
     console.error(error);
     return error;
   }
+
+  setName(name) {
+    return name;
+  }
 }
 
 alt.createActions(FlowActions, exports);

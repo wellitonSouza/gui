@@ -14,6 +14,7 @@ class FlowCanvas extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {done: false}
     this.__updateCanvas = this.__updateCanvas.bind(this);
   }
 
@@ -91,8 +92,7 @@ class FlowCanvas extends Component {
    * Updates the redered flow when the store finishes loading
    **/
   __updateCanvas() {
-
-    if (this.props.loading == false) {
+    if ((this.props.loading == false) && (this.state.done == false)) {
 
       // to be on the safe side (avoids re-importing things after save)
       RED.workspaces.remove(null);
@@ -115,6 +115,12 @@ class FlowCanvas extends Component {
         RED.view.redraw(true);
         RED.workspaces.show(RED.__currentFlow);
       }
+    }
+  }
+
+  componentDidUpdate() {
+    if ((this.props.loading == false) && (this.props.canvasLoading == false) && (this.state.done == false)) {
+      this.setState({done: true});
     }
   }
 
@@ -171,17 +177,7 @@ class FlowCanvas extends Component {
   }
 }
 
-class FlowForm extends Component {
-  render() {
-    return (
-      <form>
-      </form>
-    )
-  }
-}
-
 function handleSave(flowid) {
-
   // fetch existing data for flow
   const fData = FlowStore.getState();
   let flow = null;
@@ -198,8 +194,8 @@ function handleSave(flowid) {
   }
 
   // update flow's actual configuration data
+  flow.name = fData.flowName;
   flow.flow = RED.nodes.createCompleteNodeSet();
-
   if (flowid) {
     FlowActions.triggerUpdate(flowid, flow);
   } else {
@@ -255,6 +251,34 @@ class RemoveDialog extends Component {
   }
 }
 
+class NameForm extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    Materialize.updateTextFields();
+  }
+
+  componentDidUpdate() {
+    Materialize.updateTextFields();
+  }
+
+  render() {
+    return (
+      <div className="input-field col s8">
+        <label htmlFor="fld_name">Flow name</label>
+        <input id="fld_flowname" type="text"
+          name="name" value={this.props.flowName} className="no-margin"
+          key="name" onChange={(e) => {
+            e.preventDefault();
+            FlowActions.setName(e.target.value)
+          }} />
+      </div>
+    )
+  }
+}
+
 class EditFlow extends Component {
   constructor(props) {
     super(props);
@@ -263,6 +287,8 @@ class EditFlow extends Component {
   componentDidMount() {
     if (this.props.params.flowid) {
       FlowActions.fetchFlow.defer(this.props.params.flowid);
+    } else {
+      FlowActions.setName("");
     }
   }
 
@@ -272,13 +298,24 @@ class EditFlow extends Component {
           transitionAppear={true} transitionAppearTimeout={500}
           transitionEnterTimeout={500} transitionLeaveTimeout={500} >
         <PageHeader title="flow manager" subtitle="Flow configuration">
-          <div>
-            <a className="waves-effect waves-light btn-flat btn-ciano" onClick={() => { handleSave(this.props.params.flowid); }} >save</a>
+          <div className="row valign-wrapper full-width no-margin">
+            <AltContainer store={FlowStore}>
+              <NameForm />
+            </AltContainer>
+            <div className="col">
+              <a className="waves-effect waves-light btn-flat btn-ciano"
+                  onClick={() => { handleSave(this.props.params.flowid); }} >
+                save
+              </a>
+            </div>
             {(this.props.params.flowid) && (
-              <button className="waves-effect waves-light btn-flat btn-red" data-target="confirmDiag">remove</button>
+              <div className="col">
+                <button className="waves-effect waves-light btn-flat btn-red" data-target="confirmDiag">remove</button>
+              </div>
             )}
-            <Link to="/flows" className="waves-effect waves-light btn-flat btn-ciano">Dismiss</Link>
-
+            <div className="col">
+              <Link to="/flows" className="waves-effect waves-light btn-flat btn-ciano">Dismiss</Link>
+            </div>
           </div>
         </PageHeader>
         <AltContainer store={FlowStore}>

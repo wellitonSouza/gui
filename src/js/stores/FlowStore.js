@@ -8,7 +8,8 @@ class FlowStore {
     this.loading = false;       // list pending request indicator
     this.flows = {};            // list of known flows
 
-    this.newFlow = { name: 'unnamed' };
+    this.flowName = '';
+    this.newFlow = { name: '' };
     this.canvasLoading = true;
     this.waiting = false;
 
@@ -16,6 +17,7 @@ class FlowStore {
       fail: FlowActions.FAIL,
       fetch: FlowActions.FETCH,
       setFlows: FlowActions.SET,
+      setName: FlowActions.SET_NAME,
 
       fetchFlow: FlowActions.FETCH_FLOW,
       setSingle: FlowActions.SET_SINGLE,
@@ -66,6 +68,7 @@ class FlowStore {
     this.error = null;
     this.loading = false;
     this.flows[flow.flow.id] = JSON.parse(JSON.stringify(flow.flow));
+    this.flowName = flow.flow.name;
   }
 
   triggerUpdate() {
@@ -109,6 +112,10 @@ class FlowStore {
     this.error = error;
     this.loading = false;
     this.waiting = false;
+  }
+
+  setName(name) {
+    this.flowName = name;
   }
 }
 

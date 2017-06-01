@@ -13,19 +13,20 @@
 }
 
 
-.color-online
-{
+.color-online {
   background-color: $green;
 }
 
-.color-offline
-{
+.color-offline {
   background-color: $red;
 }
 
-.color-disabled
-{
+.color-disabled {
   background-color: $dark-silver;
+}
+
+.color-virtual {
+  background-color: $default-blue;
 }
 
 

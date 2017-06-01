@@ -61,23 +61,9 @@ class DeviceTag extends Component {
   }
 }
 
-function parseDeviceStatus(device) {
-  // TODO move this to some common place, perhaps device manager/store
-  if (device.protocol.toLowerCase() == 'virtual') {
-    return device.protocol.toLowerCase();
-  } else {
-    if (device.status) {
-      return device.status;
-    }
-  }
-  return "disabled"
-}
-
 function SummaryItem(props) {
-  let status = parseDeviceStatus(props.device);
-
   return (
-    <div className={"clickable lst-entry-wrapper z-depth-2 col s12 " + status}>
+    <div className={"clickable lst-entry-wrapper z-depth-2 col s12 " + props.device._status}>
       <div className="lst-entry-title col s12">
         <div className="img">
           <img src="images/ciShadow.svg" />
@@ -423,8 +409,6 @@ class DetailItem extends Component {
   }
 
   render() {
-    let status = parseDeviceStatus(this.props.device);
-
     let position = null;
     function getPosition(i) {
       if (i.type == "geo") {
@@ -437,7 +421,7 @@ class DetailItem extends Component {
     }
 
     return (
-      <div className={"lst-entry-wrapper z-depth-2 col s12 " + status}>
+      <div className={"lst-entry-wrapper z-depth-2 col s12 " + this.props.device._status}>
         <div className="row detail-header">
           <div className="title col s10">
             <div className="label truncate">{this.props.device.label}</div>

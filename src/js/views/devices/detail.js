@@ -385,18 +385,6 @@ function TagList (props) {
   )
 }
 
-function parseDeviceStatus(device) {
-  // TODO move this to some common place, perhaps device manager/store
-  if (props.device.protocol.toLowerCase() == 'virtual') {
-    return props.device.protocol.toLowerCase();
-  } else {
-    if (props.device.status) {
-      return props.device.status;
-    }
-  }
-  return "disabled"
-}
-
 class DeviceForm extends Component {
   constructor(props) {
     super(props);
@@ -419,8 +407,6 @@ class DeviceForm extends Component {
   }
 
   render() {
-    let status = parseDeviceStatus(this.props.device);
-
     let position = null;
     function getPosition(i) {
       if (i.type == "geo") {
@@ -433,7 +419,7 @@ class DeviceForm extends Component {
     }
 
     return (
-      <div className={"lst-entry-wrapper col s12 auto-height " + status}>
+      <div className={"lst-entry-wrapper col s12 auto-height " + this.props.device._status}>
         <div className="row detail-header">
           <div className="title">
             <div className="label">{this.props.device.label}</div>

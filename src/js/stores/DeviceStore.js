@@ -23,10 +23,23 @@ class DeviceStore {
     });
   }
 
+  parseStatus(device) {
+    if (device.protocol.toLowerCase() == 'virtual') {
+      return device.protocol.toLowerCase();
+    } else {
+      if (device.status) {
+        return device.status;
+      }
+    }
+
+    return "disabled"
+  }
+
   handleUpdateSingle(device) {
     for (let i = 0; i < this.devices.length; i++) {
       if (this.devices[i].id == device.id) {
         let newDevice = JSON.parse(JSON.stringify(device))
+        newDevice._status = this.parseStatus(device);
         this.devices[i] = newDevice;
       }
     }
@@ -53,6 +66,7 @@ class DeviceStore {
   }
 
   handleInsertDevice(device) {
+    device._status="disabled"
     this.devices.push(device);
     this.error = null;
     this.laoding = false;
@@ -65,6 +79,10 @@ class DeviceStore {
   }
 
   handleUpdateDeviceList(devices) {
+    for (let idx = 0; idx < devices.length; idx++) {
+      devices[idx]._status = this.parseStatus(devices[idx]);
+    }
+
     this.devices = devices;
     this.error = null;
     this.loading = false;

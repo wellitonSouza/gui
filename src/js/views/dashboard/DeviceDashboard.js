@@ -16,10 +16,6 @@ class DeviceItem extends Component {
   }
 
   render() {
-    let status = this.props.data.attrs.status;
-    if (status == undefined)
-      status = 'disabled';
-
     let uptime = this.props.data.attrs.uptime;
     if (uptime == undefined)
       uptime = '-';
@@ -34,7 +30,7 @@ class DeviceItem extends Component {
                 <title>{uptime}</title>
                 <span>UPTIME</span>
           </div>
-          <div className={'item-hovered no-padding color-'+status}>
+          <div className={'item-hovered no-padding color-'+this.props.data._status}>
           <div className="col s4 name-info">
                 {this.props.data.label}
           </div>
@@ -95,17 +91,16 @@ class ElementList extends Component {
   }
 
   //@TODO this is like a dict, I think would be better isolate it
-  getInfoByType(type)
-  {
-    if (type == "devices")
+  getInfoByType(type) {
+    if (type == "devices"){
       return {
           img_url: 'images/chip-shadow-material.png',
           color: 'pink',
           subtitle: 'Last added',
           title: 'Devices'
       }
-    else {
-      return{
+    } else {
+      return {
         img_url: 'images/templates-shadow-material.png',
         color: 'ciano',
         subtitle: 'Created',
@@ -116,9 +111,7 @@ class ElementList extends Component {
 
   listItems(type){
     if (this.props.list.length > 0) {
-
-      if (type == "devices")
-      {
+      if (type == "devices") {
         return (
           <div className="col s12 no-padding">
               {

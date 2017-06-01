@@ -18,8 +18,23 @@ class DeviceDashboardStore {
      });
   }
 
+  parseStatus(device) {
+    if (device.protocol.toLowerCase() == 'virtual') {
+      return device.protocol.toLowerCase();
+    } else {
+      if (device.status) {
+        return device.status;
+      }
+    }
+
+    return "disabled"
+  }
+
   handleUpdateDeviceList(devices) {
     console.log("handleUpdateDeviceList",devices);
+    for (let idx = 0; idx < devices.length; idx++) {
+      devices[idx]._status = this.parseStatus(devices[idx]);
+    }
     this.last_devices = devices;
     this.error = null;
   }

@@ -106,6 +106,9 @@ class DetailItem extends Component {
                 <a className="btn-floating waves-red right" onClick={this.handleEdit}>
                   <i className="material-icons">mode_edit</i>
                 </a>
+                <a className="btn-floating waves-red right" onClick={this.handleRemove}>
+                  <i className="fa fa-trash" />
+                </a>
               </div>
             </div>
           </div>
@@ -227,7 +230,7 @@ class UserFormImpl extends Component {
               </div>
           </div>
 
-        
+
           <div className="lst-user-detail" >
             <div className="lst-user-line col s12 input-field">
               <label htmlFor="fld_Name">Name</label>
@@ -355,6 +358,8 @@ class UserList extends Component {
 
   deleteUser(user) {
     UserActions.triggerRemoval(user);
+    const state = {detail: undefined, create: undefined};
+    this.setState(state);
   }
 
   handleCreate() {

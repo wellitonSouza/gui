@@ -27,7 +27,7 @@ class UserActions {
       dispatch();
       userManager.addUser(newUser)
         .then((response) => {
-          this.insertUser(newUser);
+          this.insertUser(response.user);
         })
         .catch((error) => {
           this.usersFailed("Failed to add User to list");

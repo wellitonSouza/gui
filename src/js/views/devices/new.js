@@ -173,7 +173,7 @@ class AttrCard extends Component {
 
   render() {
     const hasValue = (this.props.value && this.props.value.length > 0);
-    const splitSize = "col " + (hasValue ? " s6" : " s12");
+    const splitSize = "col " + (hasValue ? " s4" : " s12");
 
     return (
       <div className="col s12 m6 l4">
@@ -191,8 +191,8 @@ class AttrCard extends Component {
               <div className="label">Type</div>
             </div>
             {(hasValue > 0) && (
-              <div className={splitSize}>
-                <div className="value">{this.props.value}</div>
+              <div className="col s8">
+                <div className="value full-width truncate">{this.props.value}</div>
                 <div className="label">Value</div>
               </div>
             )}

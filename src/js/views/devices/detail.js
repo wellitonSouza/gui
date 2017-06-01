@@ -99,23 +99,6 @@ class CreateDeviceActions extends Component {
   }
 }
 
-function TagList (props) {
-  const tags = props.tags;
-  return (
-    <span>
-      { (tags.length > 0) ? (
-        tags.map((tag) =>
-          <span className="tag" key={tag}>
-            <i className="fa fa-tag"></i>{tag}
-          </span>
-        )
-      ) : (
-        <sapn className="tag">No tags set</sapn>
-      )}
-    </span>
-  )
-}
-
 class Graph extends Component{
   constructor(props) {
     super(props);
@@ -402,6 +385,18 @@ function TagList (props) {
   )
 }
 
+function parseDeviceStatus(device) {
+  // TODO move this to some common place, perhaps device manager/store
+  if (props.device.protocol.toLowerCase() == 'virtual') {
+    return props.device.protocol.toLowerCase();
+  } else {
+    if (props.device.status) {
+      return props.device.status;
+    }
+  }
+  return "disabled"
+}
+
 class DeviceForm extends Component {
   constructor(props) {
     super(props);
@@ -424,11 +419,7 @@ class DeviceForm extends Component {
   }
 
   render() {
-    let status = "disabled";
-
-    if (this.props.device.status) {
-      status = this.props.device.status;
-    }
+    let status = parseDeviceStatus(this.props.device);
 
     let position = null;
     function getPosition(i) {

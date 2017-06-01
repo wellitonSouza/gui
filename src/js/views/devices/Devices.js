@@ -61,11 +61,20 @@ class DeviceTag extends Component {
   }
 }
 
-function SummaryItem(props) {
-  let status = "disabled";
-  if (props.device.status) {
-    status = props.device.status;
+function parseDeviceStatus(device) {
+  // TODO move this to some common place, perhaps device manager/store
+  if (device.protocol.toLowerCase() == 'virtual') {
+    return device.protocol.toLowerCase();
+  } else {
+    if (device.status) {
+      return device.status;
+    }
   }
+  return "disabled"
+}
+
+function SummaryItem(props) {
+  let status = parseDeviceStatus(props.device);
 
   return (
     <div className={"clickable lst-entry-wrapper z-depth-2 col s12 " + status}>
@@ -414,10 +423,7 @@ class DetailItem extends Component {
   }
 
   render() {
-    let status = "disabled";
-    if (this.props.device.status) {
-      status = this.props.device.status;
-    }
+    let status = parseDeviceStatus(this.props.device);
 
     let position = null;
     function getPosition(i) {

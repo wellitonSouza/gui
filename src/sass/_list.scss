@@ -762,3 +762,21 @@ $status: #0c343d;
     }
   }
 }
+
+$action-area-width: 200px;
+
+.action-area {
+  height: 100%;
+  width: $action-area-width;
+  position: absolute;
+  right: 0;
+
+  .status {
+    position: absolute;
+    bottom: 0;
+  }
+}
+
+.title-area {
+  width: calc(100% - #{$action-area-width});
+}

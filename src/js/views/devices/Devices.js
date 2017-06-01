@@ -423,14 +423,12 @@ class DetailItem extends Component {
     return (
       <div className={"lst-entry-wrapper z-depth-2 col s12 " + this.props.device._status}>
         <div className="row detail-header">
-          <div className="title col s10">
+          <div className="title col title-area">
             <div className="label truncate">{this.props.device.label}</div>
             <div className="id">ID {this.props.device.id}</div>
           </div>
-          <div className="col s2 title">
-            <div className="relative full-width">
-              <div className="label">&nbsp;</div>
-              <div className="id">&nbsp;</div>
+          <div className="col action-area">
+            <div className="relative full-width full-height">
               <div className="actions">
                 <div><i className="clickable fa fa-code" /></div>
                 <Link to={"/device/id/" + this.props.device.id + "/detail"} >

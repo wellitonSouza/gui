@@ -22,6 +22,11 @@
     bottom: 0;
   }
 
+  [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+    position: initial;
+    opacity: initial;
+  }
+
   .palette-scroll {
     top: 0;
   }

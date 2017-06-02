@@ -21,6 +21,8 @@ import { Link } from 'react-router'
 import { Line } from 'react-chartjs-2';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 
+import ReactResizeDetector from 'react-resize-detector';
+
 function TagList (props) {
   const tags = props.tags;
   return (
@@ -172,7 +174,11 @@ class Graph extends Component{
 }
 
 class PositionRenderer extends Component {
-  componentDidMount(){}
+  resize() {
+    if (this.leafletMap !== undefined) {
+      this.leafletMap.leafletElement.invalidateSize();
+    }
+  }
 
   render() {
     function NoData() {
@@ -214,7 +220,8 @@ class PositionRenderer extends Component {
 
     const position = [parseFloat(parsed[1]),parseFloat(parsed[3])];
     return (
-      <Map center={position} zoom={19}>
+      <Map center={position} zoom={19} ref={m => {this.leafletMap = m;}}>
+        <ReactResizeDetector handleWidth onResize={this.resize.bind(this)} />
         <TileLayer
           url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

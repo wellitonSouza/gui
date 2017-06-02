@@ -198,9 +198,8 @@ class Graph extends Component{
     )
   }
 }
-class PositionRenderer extends Component {
-  componentDidMount(){}
 
+class PositionRenderer extends Component {
   render() {
     function NoData() {
       return (
@@ -213,41 +212,29 @@ class PositionRenderer extends Component {
       )
     }
 
-    if ((this.props.attr == null) ||
-        (! (this.props.deviceId in this.props.devices)) ||
-        (! (this.props.attr in this.props.devices[this.props.deviceId]))) {
+    if (this.props.value.attrValue == null) {
       return (<NoData />);
     }
 
-    let pos = this.props.value;
-    let parsed = null;
-    if (pos === undefined) {
-      const posData = this.props.devices[this.props.deviceId][this.props.attr];
-      if (!posData.loading) {
-        pos = posData.data[posData.data.length - 1].attrValue;
-      } else {
-        return (
-          <div className="background-info valign-wrapper full-height relative bg-gray">
-            <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center"/>
-          </div>
-        )
-      }
-    }
+    let pos = this.props.value.attrValue;
+    let parsed = pos.match(/^([+-]?\d+(\.\d+)?)\s*[,]\s*([+-]?\d+(\.\d+)?)$/)
 
-    parsed = pos.match(/^([+-]?\d+(\.\d+)?)\s*[,]\s*([+-]?\d+(\.\d+)?)$/)
     if (parsed == null) {
       return (<NoData />)
     }
 
     const position = [parseFloat(parsed[1]),parseFloat(parsed[3])];
+
     return (
-      <Map center={position} zoom={19}>
-        <TileLayer
-          url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        />
-        <Marker position={position}></Marker>
-      </Map>
+      <div className="map">
+        <Map center={position} zoom={19}>
+          <TileLayer
+            url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          />
+          <Marker position={position}></Marker>
+        </Map>
+      </div>
     )
   }
 }
@@ -257,24 +244,15 @@ class Position extends Component {
     super(props);
   }
 
-  componentDidMount() {
-    if ((this.props.position != null) && ('name' in this.props.position)) {
-      MeasureActions.fetchMeasures.defer(this.props.device.id, this.props.device.protocol, this.props.position);
-    }
-  }
-
   render () {
-    let geoAttr = null;
     let value = undefined;
-    if ((this.props.position != null) && ('name' in this.props.position)) {
-      geoAttr = this.props.position.name;
-      value = this.props.position.value;
+
+    if (this.props.data.length > 0) {
+      value = this.props.data[this.props.data.length - 1];
     }
 
     return (
-      <AltContainer store={MeasureStore}>
-        <PositionRenderer deviceId={this.props.device.id} attr={geoAttr} value={value}/>
-      </AltContainer>
+      <PositionRenderer deviceId={this.props.device.id} value={value}/>
     )
   }
 }
@@ -310,9 +288,8 @@ function Attr(props) {
     'integer': Graph,
     'float': Graph,
     'string': HistoryList,
+    'geo': Position,
     'default': HistoryList
-    // TODO to be implemented
-    // 'geo': PositionHistory,
   }
 
   const Renderer = props.type in known ? known[props.type] : known['default'];
@@ -341,11 +318,11 @@ class DetailAttrs extends Component {
       return (
         <span>
           { device.attrs.map((i, k) =>
-              <div className={"col s6 metric-card full-height mb20"} key={i.object_id} >
+              <div className={"col s12 m6 l6 metric-card full-height mt10"} key={i.object_id} >
                 {(props.devices[device.id] && props.devices[device.id][i.name] &&
                   (props.devices[device.id][i.name].loading == false)) ? (
                   <div className="graphLarge z-depth-2 full-height">
-                    <div className="title row">
+                    <div className="title ">
                       <span>{i.name}</span>
                       <span className="right"
                             onClick={() => MeasureActions.fetchMeasures(device.id, device.protocol, i)}>
@@ -353,7 +330,7 @@ class DetailAttrs extends Component {
                       </span>
                     </div>
                     <div className="contents">
-                      <Attr type={props.devices[device.id][i.name].type} data={props.devices[device.id][i.name].data}/>
+                      <Attr device={device} type={props.devices[device.id][i.name].type} data={props.devices[device.id][i.name].data}/>
                     </div>
                   </div>
                 ) : (
@@ -373,29 +350,30 @@ class DetailAttrs extends Component {
     }
 
     if (filteredStatics.length > 0) {
-      count--;
       return (
-        <div className="row half-height">
-          <div className="col s4 full-height">
-            <div className="text-info full-height">
-              <div className="title">Attributes</div>
-              <div className="">
-                <ul>
-                  {filteredStatics.map((i, k) =>
-                    (i.type.toLowerCase() != "geo") && (
-                      <li key={i.name}>
-                        <span className="col s6 label">{i.name}</span>
-                        <span className="col s6 value">{i.value}</span>
-                      </li>
-                    )
-                  )}
-                </ul>
-              </div>
+        <span>
+          <div className="row">
+            {filteredStatics.map((i, k) =>
+              (i.type.toLowerCase() != "geo") && (
+                <div className="col s12 m3 l3">
+                  <div className="card z-depth-2">
+                    <div className="card-content row">
+                      <div className="col s12 main">
+                        <div className="value title">{i.name}</div>
+                        <div className="label">Name</div>
+                      </div>
+                      <div className="col s12">
+                        <div className="value">{i.value}</div>
+                        <div className="label">Value</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+            )}
             </div>
-          </div>
-
-          <AttrList devices={this.props.devices} />
-        </div>
+            <AttrList devices={this.props.devices} />
+        </span>
       )
     } else {
       return (
@@ -472,51 +450,50 @@ class DeviceForm extends Component {
           </div>
           <div className="status">{status}</div>
         </div>
-        <div className="row detail-body ">
-          <div className="row content">
-            <div className="col s9 full-height">
-              <div className="row half-height">
-                <div className="col s3 full-height">
-                  <div className="img full-height">
-                    <img src="images/ciShadow.svg" />
+        <div className="row device">
+          <div className="row detail-header">
+            <div className="col s12 m10 offset-m1 valign-wrapper">
+              <div className="col s3">
+                {/* TODO clickable, file upload */}
+                <div className="img">
+                  <img src="images/ciShadow.svg" />
+                </div>
+              </div>
+              <div className="col s9 detail-body-full-view">
+                <div className="metrics col s9">
+                  <div className="metric fullPage col s4">
+                    <span className="label">Attributes</span>
+                    <span className="value">{this.props.device.attrs.length + this.props.device.static_attrs.length}</span>
+                    {/* <span className="value">{this.props.device.attrs.length}</span> */}
+                  </div>
+                  <div className="metric fullPage col s4">
+                    <span className="label">Last update</span>
+                    <span className="value">{util.printTime(this.props.device.updated)}</span>
+                  </div>
+                  <div className="metric fullPage ol s4">
+                    <span className="label">Uptime</span>
+                    <span className="value">N/A</span>
                   </div>
                 </div>
-                <div className="col s9">
-                  <div className="metrics col s12">
-                    <div className="metric col s4">
-                      <span className="label">Attributes</span>
-                      <span className="value">{this.props.device.attrs.length + this.props.device.static_attrs.length}</span>
-                      {/* <span className="value">{this.props.device.attrs.length}</span> */}
-                    </div>
-                    <div className="metric col s4">
-                      <span className="label">Last update</span>
-                      <span className="value">{util.printTime(this.props.device.updated)}</span>
-                    </div>
-                    <div className="metric col s4">
-                      <span className="label">Uptime</span>
-                      <span className="value">N/A</span>
-                    </div>
-                  </div>
 
-                  <div className="metrics col s12">
-                    <div className="metric col s4" >
-                      <span className="label">Protocol</span>
-                      <span className="value">{this.props.device.protocol ? this.props.device.protocol : "MQTT"}</span>
-                    </div>
-                    <div className="metric col s8" >
-                      <span className="label">Tags</span>
-                      <TagList tags={this.props.device.tags} />
-                    </div>
+                <div className="metrics col s9">
+                  <div className="metric fullPage col s4" >
+                    <span className="label">Protocol</span>
+                    <span className="value">{this.props.device.protocol ? this.props.device.protocol : "MQTT"}</span>
+                  </div>
+                  <div className="metric fullPage col s8" >
+                    <span className="label">Tags</span>
+                    <TagList tags={this.props.device.tags} />
                   </div>
                 </div>
               </div>
-              <AltContainer store={MeasureStore} inject={{device: this.props.device}} >
-                <DetailAttrs />
-              </AltContainer>
             </div>
-            <div className="col s3 map z-depth-2 full-height">
-              <Position device={this.props.device} position={position}/>
-            </div>
+          </div>
+          <div className="col s12 detail-attributes-full-view" >
+            <div className="title col s12 paddingTop10">Attributes</div>
+            <AltContainer store={MeasureStore} inject={{device: this.props.device}} >
+              <DetailAttrs />
+            </AltContainer>
           </div>
         </div>
       </div>

@@ -293,6 +293,84 @@ $status: #0c343d;
     }
   }
 
+  .detail-attributes-full-view {
+    background-color: #fff;
+
+    $label-color: #b7b7b7;
+    $value-color: #000;
+    $title-color: #666;
+
+    .graphLarge {
+      background-color: #fff;
+
+      $title-height: 30px;
+      .title {
+        display: block;
+        width: 100%;
+        background-color: #eceff1;
+        padding: 3px;
+        height: $title-height;
+        font-size: 100%;
+      }
+
+      .contents {
+        padding: 0.4em;
+        height: calc(100% - #{$title-height});
+      }
+    }
+
+    .map {
+      padding: 0;
+      .leaflet-container {
+        height: 20rem;
+        width: 100%;
+      }
+    }
+
+    .metric-card {
+      height: 23rem;
+      margin-bottom: 25px;
+    }
+  }
+
+  .detail-body-full-view {
+    margin: 0;
+    height: 22rem;
+    width: 100%;
+    padding: 1rem;
+    font-family: 'Open Sans', sans-serif;
+
+    $label-color: #b7b7b7;
+    $value-color: #000;
+    $title-color: #666;
+
+    .content {
+      height: 100%;
+      padding: 0;
+    }
+
+    .row {
+      margin: 0;
+    }
+
+    .metrics {
+      font-size: 130%;
+      margin-top: 2.5em;
+
+      .metric {
+        float: left;
+
+        span {
+          display: block;
+        }
+
+        .label { color: $label-color; }
+        .value { color: $value-color; }
+      }
+
+    }
+  }
+
   .detail-body {
     // background-color: #f3f3f3;
     background-color: #fbfbfb;

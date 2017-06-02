@@ -331,7 +331,7 @@ class DetailAttrs extends Component {
       return (
         <span>
           { device.attrs.map((i, k) =>
-            (k < count) && (
+            ((k < count) && (i.type.toLowerCase() != "geo")) && (
               <div className={horizontalSize + " metric-card full-height"} key={i.object_id} >
                 {(props.devices[device.id] && props.devices[device.id][i.name] &&
                   (props.devices[device.id][i.name].loading == false)) ? (

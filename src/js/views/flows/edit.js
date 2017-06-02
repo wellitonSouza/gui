@@ -145,6 +145,7 @@ class FlowCanvas extends Component {
           <div id="workspace">
             <div id="chart" tabIndex="1"></div>
             <div id="workspace-toolbar"></div>
+            <div id="editor-shade" className="hide"></div>
           </div>
           <div id="editor-stack"></div>
 

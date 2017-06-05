@@ -484,7 +484,7 @@ class ViewDevice extends Component {
   }
 
   componentDidMount() {
-    FormActions.fetch(this.props.params.device);
+    FormActions.fetch.defer(this.props.params.device);
   }
 
   render() {

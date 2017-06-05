@@ -33,6 +33,11 @@ class Navbar extends Component {
   }
 
   render() {
+    if (this.props.user == undefined) {
+      console.error('no active user session');
+      return null;
+    }
+
     return (
       <nav className="nav outer-header line-normal">
         <div className="nav-wrapper">

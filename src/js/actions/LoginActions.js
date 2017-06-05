@@ -12,6 +12,7 @@ class LoginActions {
           this.loginSuccess(response);
         })
         .catch((error) => {
+          console.error('Caught exception (May be a misusage of defer().)', error);
           this.loginFailed("Login failed");
         })
     }

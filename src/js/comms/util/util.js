@@ -73,7 +73,9 @@ class Util {
         .then(local._status)
         .then(local._json)
         .then(function(data) { resolve(data); })
-        .catch(function(error) { reject(error); })
+        .catch(function(error) {
+          reject(error);
+        })
     })
   }
 

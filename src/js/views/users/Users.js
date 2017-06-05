@@ -24,7 +24,7 @@ function SummaryItem(props) {
           <div className="col s9 title2">{name}</div>
        </div>
        <div className="col s12 paddingTop10">
-          <div className="col s3 openSans8">Service:</div>
+          <div className="col s3 openSans8 truncate">Service:</div>
           <div className="col s9 text-right subtitle"><label className="badge">{props.user.service}</label></div>
        </div>
      </div>
@@ -126,7 +126,7 @@ class DetailItem extends Component {
             <span className='value'> {this.props.user.email} </span>
           </div>
           <div className="lst-user-line col s12">
-            <span className="field">Login</span>
+            <span className="field">Username</span>
           </div>
           <div className="lst-user-line col s12 data">
             <span className='value'> {this.props.user.username} </span>
@@ -319,7 +319,7 @@ class UserFormImpl extends Component {
                      key="username" onChange={this.handleChange} />
               <label htmlFor="fld_login"
                      data-error="Invalid login. Must contain only lowercase alphanumeric characters or underscores."
-                     data-success="">Login</label>
+                     data-success="">Username</label>
             </div>
             <div className="lst-user-line col s12 input-field">
               <input id="fld_password" type="password" className={this.getValidClass('passwd')} pattern=".*"
@@ -335,7 +335,7 @@ class UserFormImpl extends Component {
                      key="service" onChange={this.handleChange} />
               <label htmlFor="fld_service"
                      data-error="Invalid service. Must contain only lowercase alphanumeric characters or underscores."
-                     data-success="">Managed service</label>
+                     data-success="">Service</label>
             </div>
           </div>
 

@@ -3,3 +3,4 @@ npm-debug.log
 public/*
 dist/*
 src/components/*
+nohup.out

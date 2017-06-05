@@ -143,13 +143,14 @@ class DetailItem extends Component {
   }
 }
 
-const FormActions = alt.generateActions('set', 'update', 'reset');
+const FormActions = alt.generateActions('set', 'update', 'reset', 'invalidate');
 class FStore {
   constructor() {
     this.user = {};
     this.bindListeners({
       set: FormActions.SET,
-      update: FormActions.UPDATE
+      update: FormActions.UPDATE,
+      invalidate: FormActions.INVALIDATE,
     });
     this.set(null);
   }
@@ -163,6 +164,8 @@ class FStore {
         passwd: "",
         service: ""
       };
+      // map used to tell whether a field is invalid or not
+      this.invalid = {}
     } else {
       this.user = user;
     }
@@ -170,6 +173,10 @@ class FStore {
 
   update(diff) {
     this.user[diff.f] = diff.v;
+  }
+
+  invalidate(pair) {
+    this.invalid[pair.key] = pair.value;
   }
 }
 var FormStore = alt.createStore(FStore, 'FormStore');
@@ -193,6 +200,9 @@ class UserFormImpl extends Component {
     super(props);
     this.saveUser = this.saveUser.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.validate = this.validate.bind(this);
+    this.isValid = this.isValid.bind(this);
+    this.getValidClass = this.getValidClass.bind(this);
   }
 
   componentDidMount() {
@@ -203,10 +213,53 @@ class UserFormImpl extends Component {
     Materialize.updateTextFields();
   }
 
+  validate(name, value) {
+    let handlers = {
+      email: function(value) {
+        let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return (value.length > 0) && re.test(value);
+      },
+      username: function(value) {
+        let re = /^[a-z0-9_]+$/;
+        return re.test(value);
+      },
+      passwd: function(value) {
+        return value.length > 0;
+      },
+      name: function(value) {
+        return value.length > 0;
+      },
+      service: function(value) {
+        let re = /^[a-z0-9_]+$/;
+        return re.test(value);
+      }
+    }
+
+    if (name in handlers) {
+      return handlers[name](value);
+    }
+
+    return true;
+  }
+
   saveUser(e) {
     e.preventDefault();
-    this.props.save(this.props.user);
-    // TODO dismiss/select created user
+    let valid = true;
+    for (let k in this.props.user) {
+      if (this.props.user.hasOwnProperty(k)) {
+        if (this.validate(k,this.props.user[k]) == false) {
+          FormActions.invalidate({key: k, value: true});
+          valid = false;
+        }
+      }
+    }
+
+    if (valid) {
+      this.props.save(this.props.user);
+    } else {
+      this.forceUpdate();
+      Materialize.toast('Failed to validate user data', 4000);
+    }
   }
 
   handleChange(e) {
@@ -214,6 +267,19 @@ class UserFormImpl extends Component {
     const f = e.target.name;
     const v = e.target.value;
     FormActions.update({f: f, v: v});
+  }
+
+  isValid(name) {
+    if (name in this.props.invalid) {
+      return this.props.invalid[name];
+    }
+
+    return false;
+  }
+
+  getValidClass(name) {
+    if (this.isValid(name) == false) return "validate";
+    return "validate " + "invalid"
   }
 
   render() {
@@ -230,37 +296,46 @@ class UserFormImpl extends Component {
               </div>
           </div>
 
-
           <div className="lst-user-detail" >
             <div className="lst-user-line col s12 input-field">
-              <label htmlFor="fld_Name">Name</label>
-              <input id="fld_Name" type="text"
+              <input id="fld_Name" type="text" className={this.getValidClass('name')} pattern=".*"
                      name="name" value={this.props.user.name}
                      key="name" onChange={this.handleChange} />
+              <label htmlFor="fld_Name"
+                     data-error="Required field"
+                     data-success="">Name</label>
             </div>
             <div className="lst-user-line col s12 input-field">
-              <label htmlFor="fld_Email">Email</label>
-              <input id="fld_Email" type="text"
+              <input id="fld_Email" type="email" className={this.getValidClass('email')}
                      name="email" value={this.props.user.email}
                      key="email" onChange={this.handleChange} />
+              <label htmlFor="fld_Email"
+                     data-error="Invalid email address"
+                     data-success="">Email</label>
             </div>
             <div className="lst-user-line col s12 input-field">
-              <label htmlFor="fld_login">Login</label>
-              <input id="fld_login" type="text"
+              <input id="fld_login" type="text" className={this.getValidClass('username')} pattern="[a-z0-9_]+"
                      name="username" value={this.props.user.username}
                      key="username" onChange={this.handleChange} />
+              <label htmlFor="fld_login"
+                     data-error="Invalid login. Must contain only lowercase alphanumeric characters or underscores."
+                     data-success="">Login</label>
             </div>
             <div className="lst-user-line col s12 input-field">
-              <label htmlFor="fld_password">Password</label>
-              <input id="fld_password" type="password"
+              <input id="fld_password" type="password" className={this.getValidClass('passwd')} pattern=".*"
                      name="passwd" value={this.props.user.passwd}
                      key="passwd" onChange={this.handleChange} />
+              <label htmlFor="fld_password"
+                     data-error="Required field"
+                     data-success="">Password</label>
             </div>
             <div className="lst-user-line col s12 input-field">
-              <label htmlFor="fld_service">Managed service</label>
-              <input id="fld_service" type="text"
+              <input id="fld_service" type="text" className={this.getValidClass('service')} pattern="[a-z0-9_]+"
                      name="service" value={this.props.user.service}
                      key="service" onChange={this.handleChange} />
+              <label htmlFor="fld_service"
+                     data-error="Invalid service. Must contain only lowercase alphanumeric characters or underscores."
+                     data-success="">Managed service</label>
             </div>
           </div>
 

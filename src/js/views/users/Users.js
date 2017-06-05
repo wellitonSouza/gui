@@ -339,14 +339,12 @@ class UserFormImpl extends Component {
             </div>
           </div>
 
-          <div className="col s6 buttons">
-            <div className="pull-left">
-              <a onClick={this.props.dismiss} className="waves-light btn-flat red">Cancel</a>
+          <div className="row right">
+            <div className="col">
+              <button type="submit" className="waves-light btn waves">Save</button>
             </div>
-          </div>
-          <div className="col s6">
-            <div className="pull-right">
-              <button type="submit" className="waves-light btn-flat teal darken-4">Save</button>
+            <div className="col">
+              <a onClick={this.props.dismiss} className="waves-light btn waves">Dismiss</a>
             </div>
           </div>
         </form>

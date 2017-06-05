@@ -303,12 +303,12 @@ class NewAttr extends Component {
                 </div>
               </div>
 
-              <div className="row">
-                <div className="col s6 text-left">
-                  <button type="button" className="btn waves waves-light" onClick={this.dismiss}>dismiss</button>
-                </div>
-                <div className="col s6 text-right">
+              <div className="row right">
+                <div className="col">
                   <button type="submit" className="btn waves waves-light">save</button>
+                </div>
+                <div className="col">
+                  <button type="button" className="btn waves waves-light" onClick={this.dismiss}>dismiss</button>
                 </div>
               </div>
             </form>

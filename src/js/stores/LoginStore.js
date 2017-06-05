@@ -41,7 +41,6 @@ class LoginStore {
   }
 
   handleAuthenticate(login) {
-    this.error = null;
     this.authenticated = false;
     this.loading = true;
   }

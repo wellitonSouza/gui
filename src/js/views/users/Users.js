@@ -648,7 +648,7 @@ class Users extends Component {
             transitionAppearTimeout={500}
             transitionEnterTimeout={500}
             transitionLeaveTimeout={500} >
-          <PageHeader title="Access control list" subtitle="Users">
+          <PageHeader title="Auth" subtitle="Users">
             <Filter onChange={this.filterChange} />
           </PageHeader>
           <UserList users={this.state.users} />

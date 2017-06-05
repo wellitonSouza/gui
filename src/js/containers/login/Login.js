@@ -98,15 +98,15 @@ class Content extends Component {
               </div>
               <div className="row">
                 <div className="col s12 m1 offset-m7">
-                    { this.props.loading ? (
+                    {/* { this.props.loading ? (
                       <button type="" className=" waves-effect waves-green btn-flat">
                         <i className="fa fa-circle-o-notch fa-spin fa-fw"/>
                       </button>
-                    ) : (
-                      <button type="submit" className=" waves-effect waves-green btn-flat">Login
-                        <i className="fa fa-check"/>
+                    ) : ( */}
+                      <button type="submit" className=" waves-effect waves-dark btn-flat">
+                        Login
                       </button>
-                    )}
+                    {/* )} */}
                 </div>
               </div>
             </form>

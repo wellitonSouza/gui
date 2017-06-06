@@ -39,6 +39,12 @@ class DeviceStore {
     for (let i = 0; i < this.devices.length; i++) {
       if (this.devices[i].id == device.id) {
         let newDevice = JSON.parse(JSON.stringify(device))
+        if (newDevice.attrs == undefined) {
+          newDevice.attrs = [];
+        }
+        if (newDevice.static_attrs == undefined) {
+          newDevice.static_attrs = [];
+        }
         newDevice._status = this.parseStatus(device);
         this.devices[i] = newDevice;
       }
@@ -81,6 +87,15 @@ class DeviceStore {
   handleUpdateDeviceList(devices) {
     for (let idx = 0; idx < devices.length; idx++) {
       devices[idx]._status = this.parseStatus(devices[idx]);
+      if (devices[idx].attrs == undefined) {
+        devices[idx].attrs = [];
+      }
+      if (devices[idx].static_attrs == undefined) {
+        devices[idx].static_attrs = [];
+      }
+      if (devices[idx].tags == undefined) {
+        devices[idx].tags = [];
+      }
     }
 
     this.devices = devices;

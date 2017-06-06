@@ -64,6 +64,10 @@ class DeviceTag extends Component {
 }
 
 function SummaryItem(props) {
+  let attrs = 0;
+  if (props.device.attrs) attrs += props.device.attrs.length
+  if (props.device.static_attrs) attrs += props.device.static_attrs.length
+
   return (
     <div className={"clickable lst-entry-wrapper z-depth-2 col s12 " + props.device._status}>
       <div className="lst-entry-title col s12">
@@ -78,7 +82,7 @@ function SummaryItem(props) {
       <div className="lst-entry-body col s12">
         {/* TODO fill those with actual metrics */}
         <div className="col s3 metric">
-          <div className="metric-value">{props.device.attrs.length + props.device.static_attrs.length}</div>
+          <div className="metric-value">{attrs}</div>
           <div className="metric-label">Attributes</div>
         </div>
         <div className="col s9 metric last">
@@ -313,9 +317,16 @@ class DetailAttrs extends Component {
   }
 
   render() {
-    const device = this.props.device;
+    let device = this.props.device;
 
-    let filteredStatics = this.props.device.static_attrs.filter((a) => { return (a.type.toLowerCase() != "geo")});
+    let filteredStatics = [];
+    if (device.static_attrs) {
+      filteredStatics = device.static_attrs.filter((a) => { return (a.type.toLowerCase() != "geo")});
+    }
+
+    if (device.attrs == undefined) {
+      device.attrs = [];
+    }
 
     let count = 0;
     if (filteredStatics.length > 0) { count++; }
@@ -363,6 +374,14 @@ class DetailAttrs extends Component {
             )
           )}
         </span>
+      )
+    }
+
+    if (filteredStatics.length == 0 && device.attrs.length == 0) {
+      return (
+        <div className="row half-height valign-wrapper">
+          <span className="full-width background-info center">No attributes set</span>
+        </div>
       )
     }
 

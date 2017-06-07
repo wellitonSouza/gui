@@ -537,7 +537,7 @@ class UserList extends Component {
 
 
     return (
-      <span>
+      <span className="fill flex-wrapper">
 
         {/* TODO promote this */}
         <div className="row z-depth-2 userSubHeader p0" id="inner-header">
@@ -555,8 +555,8 @@ class UserList extends Component {
           </div>
         </div>
 
-        <div className={"row userCanvas z-depth-2" + detailAreaStatus}>
-        { this.state.listOfUserByPage.length > 0 ? (
+        <div className={"fill row userCanvas z-depth-2" + detailAreaStatus}>
+          { this.state.listOfUserByPage.length > 0 ? (
               <div className="col s4 no-padding" id="user-list">
                 { this.state.listOfUserByPage.map((user) =>
                     <ListItem user={user}
@@ -603,7 +603,6 @@ class UserList extends Component {
                   </div>
                 ))}
           </div>
-
         </div>
       </span>
     )
@@ -639,18 +638,11 @@ class Users extends Component {
 
   render() {
     return (
-      <span id="userMain">
-        <ReactCSSTransitionGroup
-            transitionName="first"
-            transitionAppear={true}
-            transitionAppearTimeout={500}
-            transitionEnterTimeout={500}
-            transitionLeaveTimeout={500} >
+      <span id="userMain" class="flex-wrapper">
           <PageHeader title="Auth" subtitle="Users">
             <Filter onChange={this.filterChange} />
           </PageHeader>
           <UserList users={this.state.users} />
-        </ReactCSSTransitionGroup>
       </span>
     );
   }

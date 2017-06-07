@@ -653,18 +653,35 @@ class DeviceList extends Component {
   //   this.setState(state);
   // }
 
-  applyFiltering(deviceList) {
-    const filter = this.state.filter;
-    const idFilter = filter.match(/id:\W*([-a-fA-F0-9]+)\W?/);
+  applyFiltering(deviceMap) {
+    // turns the stored device map into a list
+    let list = [];
+    for (let k in deviceMap) {
+      list.push(deviceMap[k]);
+    }
 
-    return deviceList.filter(function(e) {
-      let result = false;
-      if (idFilter && idFilter[1]) {
-        result = result || e.id.toUpperCase().includes(idFilter[1].toUpperCase());
+    // TODO ordering should be defined by the user
+    list.sort((a,b) => {
+      if (a.updated > b.updated) {
+        return 1;
+      } else {
+        return -1;
       }
+    })
 
-      return result || e.label.toUpperCase().includes(filter.toUpperCase());
-    });
+    return list;
+
+    // const filter = this.state.filter;
+    // const idFilter = filter.match(/id:\W*([-a-fA-F0-9]+)\W?/);
+    //
+    // return deviceList.filter(function(e) {
+    //   let result = false;
+    //   if (idFilter && idFilter[1]) {
+    //     result = result || e.id.toUpperCase().includes(idFilter[1].toUpperCase());
+    //   }
+    //
+    //   return result || e.label.toUpperCase().includes(filter.toUpperCase());
+    // });
   }
 
   render() {

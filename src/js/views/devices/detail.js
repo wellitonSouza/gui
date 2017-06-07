@@ -10,67 +10,14 @@ import AltContainer from 'alt-container';
 import MeasureStore from '../../stores/MeasureStore';
 import MeasureActions from '../../actions/MeasureActions';
 import DeviceActions from '../../actions/DeviceActions';
-import deviceManager from '../../comms/devices/DeviceManager';
 import DeviceStore from '../../stores/DeviceStore';
+import deviceManager from '../../comms/devices/DeviceManager';
 import util from "../../comms/util/util";
 
 import { Line } from 'react-chartjs-2';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 
-class FActions {
-  set(args) { return args; }
-
-  fetch(id) {
-    return (dispatch) => {
-      dispatch();
-      deviceManager.getDevice(id)
-      .then((d) => { this.set(d); })
-      .catch((error) => { console.error('Failed to get device', error); })
-    }
-  }
-}
-const FormActions = alt.createActions(FActions);
-const AttrActions = alt.generateActions('set');
-class FStore {
-  constructor() {
-    this.device = {};
-    this.set();
-    this.bindListeners({
-      set: FormActions.SET,
-      fetch: FormActions.FETCH,
-    });
-    this.set(null);
-  }
-
-  fetch(id) {}
-
-  set(device) {
-    if (device === null || device === undefined) {
-      this.device = {
-        label: "",
-        id: "",
-        protocol: "",
-        templates: [],
-        tags: [],
-        attrs: [],
-        static_attrs: []
-      };
-    } else {
-      if (device.attrs == null || device.attrs == undefined) {
-        device.attrs = []
-      }
-
-      if (device.static_attrs == null || device.static_attrs == undefined) {
-        device.static_attrs = []
-      }
-
-      this.device = device;
-    }
-  }
-}
-var DeviceFormStore = alt.createStore(FStore, 'DeviceFormStore');
-
-class CreateDeviceActions extends Component {
+class DeviceUserActions extends Component {
   constructor(props) {
     super(props);
 
@@ -89,16 +36,27 @@ class CreateDeviceActions extends Component {
   render() {
     return (
       <div>
-        <a className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1"><i className="clickable fa fa-code"/></a>
-        <Link to={"/device/list?detail=" + this.props.deviceid} className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1"><i className="clickable fa fa-compress" /></Link>
-        <Link to={"/device/id/" + this.props.deviceid + "/edit"} className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1"><i className="clickable fa fa-pencil" /></Link>
-        <a className="waves-effect waves-light btn-flat btn-ciano" onClick={this.remove} tabIndex="-1"><i className="clickable fa fa-trash"/></a>
-        <Link to={"/device/list"} className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1"><i className="clickable fa fa-times" /></Link>
+        <a className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1">
+          <i className="clickable fa fa-code"/>
+        </a>
+        <Link to={"/device/list?detail=" + this.props.deviceid} className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1">
+          <i className="clickable fa fa-compress" />
+        </Link>
+        <Link to={"/device/id/" + this.props.deviceid + "/edit"} className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1">
+          <i className="clickable fa fa-pencil" />
+        </Link>
+        <a className="waves-effect waves-light btn-flat btn-ciano" onClick={this.remove} tabIndex="-1">
+          <i className="clickable fa fa-trash"/>
+        </a>
+        <Link to={"/device/list"} className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1">
+          <i className="clickable fa fa-times" />
+        </Link>
       </div>
     )
   }
 }
 
+// TODO move this to its own component
 class Graph extends Component{
   constructor(props) {
     super(props);
@@ -182,6 +140,7 @@ class Graph extends Component{
   }
 }
 
+// TODO move this to its own component
 class PositionRenderer extends Component {
   render() {
     function NoData() {
@@ -222,6 +181,7 @@ class PositionRenderer extends Component {
   }
 }
 
+// TODO move this to its own component
 class Position extends Component {
   constructor(props) {
     super(props);
@@ -240,6 +200,7 @@ class Position extends Component {
   }
 }
 
+// TODO move this to its own component
 function HistoryList(props) {
   let trimmedList = props.data.filter((i) => {
     return i.attrValue.trim().length > 0
@@ -266,6 +227,7 @@ function HistoryList(props) {
   }
 }
 
+// TODO move this to its own component
 function Attr(props) {
   const known = {
     'integer': Graph,
@@ -280,6 +242,7 @@ function Attr(props) {
     <Renderer {...props} />
   )
 }
+
 
 class DetailAttrs extends Component {
   constructor(props) {
@@ -385,45 +348,45 @@ function TagList (props) {
   )
 }
 
-class DeviceForm extends Component {
-  constructor(props) {
-    super(props);
-    this.remove = this.remove.bind(this);
-  }
-
-  componentDidMount() {
-    console.log('device: ', this.props.device);
-    this.props.device.attrs.map((i) => {
-      MeasureActions.fetchMeasures.defer(this.props.device.id, this.props.device.protocol, i);
-    })
-  }
-
-  remove(e) {
-    e.preventDefault();
-    DeviceActions.triggerRemoval(this.props.device, () => {
-      Materialize.toast('Device removed', 4000);
-    });
-    this.props.handleDismiss();
-  }
-
+class DeviceDetail extends Component {
   render() {
+    if (this.props.deviceid == null || !this.props.devices.hasOwnProperty(this.props.deviceid)) {
+      console.error('Failed to load device attribute data', this.props.deviceid, this.props.devices);
+      return (
+        //  TODO This appears so many times it might be worth making it a component on its own
+        <div className="background-info valign-wrapper full-height relative bg-gray">
+          <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center"/>
+        </div>
+      )
+    }
+
+    const device = this.props.devices[this.props.deviceid];
+    if (device.loading) {
+      return (
+        //  TODO This appears so many times it might be worth making it a component on its own
+        <div className="background-info valign-wrapper full-height relative bg-gray">
+          <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center"/>
+        </div>
+      )
+    }
+
     let position = null;
     function getPosition(i) {
       if (i.type == "geo") {
         position = i;
       }
     }
-    this.props.device.static_attrs.map((i) => {getPosition(i)})
+    device.static_attrs.map((i) => {getPosition(i)})
     if (position === null) {
-      this.props.device.attrs.map((i) => {getPosition(i)})
+      device.attrs.map((i) => {getPosition(i)})
     }
 
     return (
-      <div className={"lst-entry-wrapper col s12 auto-height " + this.props.device._status}>
+      <div className={"lst-entry-wrapper col s12 auto-height " + device._status}>
         <div className="row detail-header">
           <div className="title">
-            <div className="label">{this.props.device.label}</div>
-            <div className="id">ID {this.props.device.id}</div>
+            <div className="label">{device.label}</div>
+            <div className="id">ID {device.id}</div>
           </div>
           <div className="status">{status}</div>
         </div>
@@ -440,12 +403,11 @@ class DeviceForm extends Component {
                 <div className="metrics col s9">
                   <div className="metric fullPage col s4">
                     <span className="label">Attributes</span>
-                    <span className="value">{this.props.device.attrs.length + this.props.device.static_attrs.length}</span>
-                    {/* <span className="value">{this.props.device.attrs.length}</span> */}
+                    <span className="value">{device.attrs.length + device.static_attrs.length}</span>
                   </div>
                   <div className="metric fullPage col s4">
                     <span className="label">Last update</span>
-                    <span className="value">{util.printTime(this.props.device.updated)}</span>
+                    <span className="value">{util.printTime(device.updated)}</span>
                   </div>
                   <div className="metric fullPage ol s4">
                     <span className="label">Uptime</span>
@@ -456,11 +418,11 @@ class DeviceForm extends Component {
                 <div className="metrics col s9">
                   <div className="metric fullPage col s4" >
                     <span className="label">Protocol</span>
-                    <span className="value">{this.props.device.protocol ? this.props.device.protocol : "MQTT"}</span>
+                    <span className="value">{device.protocol ? device.protocol : "MQTT"}</span>
                   </div>
                   <div className="metric fullPage col s8" >
                     <span className="label">Tags</span>
-                    <TagList tags={this.props.device.tags} />
+                    <TagList tags={device.tags} />
                   </div>
                 </div>
               </div>
@@ -468,7 +430,7 @@ class DeviceForm extends Component {
           </div>
           <div className="col s12 detail-attributes-full-view" >
             <div className="title col s12 paddingTop10">Attributes</div>
-            <AltContainer store={MeasureStore} inject={{device: this.props.device}} >
+            <AltContainer store={MeasureStore} inject={{device: device}} >
               <DetailAttrs />
             </AltContainer>
           </div>
@@ -484,7 +446,13 @@ class ViewDevice extends Component {
   }
 
   componentDidMount() {
-    FormActions.fetch.defer(this.props.params.device);
+    function loadValues(device) {
+      device.attrs.map((i) => {
+        MeasureActions.fetchMeasures.defer(device.id, device.protocol, i);
+      })
+    }
+
+    DeviceActions.fetchSingle.defer(this.props.params.device, loadValues);
   }
 
   render() {
@@ -497,11 +465,11 @@ class ViewDevice extends Component {
           transitionAppear={true} transitionAppearTimeout={500}
           transitionEnterTimeout={500} transitionLeaveTimeout={500} >
           <PageHeader title="device manager" subtitle="Devices" />
-          <ActionHeader title={title} store={DeviceFormStore}>
-            <CreateDeviceActions deviceid={this.props.params.device}/>
+          <ActionHeader title={title}>
+            <DeviceUserActions deviceid={this.props.params.device}/>
           </ActionHeader>
-          <AltContainer store={DeviceFormStore} >
-            <DeviceForm />
+          <AltContainer store={DeviceStore} >
+            <DeviceDetail deviceid={this.props.params.device}/>
           </AltContainer>
         </ReactCSSTransitionGroup>
       </div>

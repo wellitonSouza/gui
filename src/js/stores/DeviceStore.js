@@ -3,15 +3,16 @@ var DeviceActions = require('../actions/DeviceActions');
 
 class DeviceStore {
   constructor() {
-    this.devices = [];
+    this.devices = {};
     this.error = null;
     this.loading = false;
 
     this.bindListeners({
       handleUpdateDeviceList: DeviceActions.UPDATE_DEVICES,
-      handleInsertDevice: DeviceActions.INSERT_DEVICE,
-      handleAddDevice: DeviceActions.ADD_DEVICE,
       handleFetchDeviceList: DeviceActions.FETCH_DEVICES,
+
+      handleInsertDevice: DeviceActions.INSERT_DEVICE,
+      handleTriggerInsertion: DeviceActions.ADD_DEVICE,
 
       handleTriggerUpdate: DeviceActions.TRIGGER_UPDATE,
       handleUpdateSingle: DeviceActions.UPDATE_SINGLE,
@@ -36,19 +37,18 @@ class DeviceStore {
   }
 
   handleUpdateSingle(device) {
-    for (let i = 0; i < this.devices.length; i++) {
-      if (this.devices[i].id == device.id) {
-        let newDevice = JSON.parse(JSON.stringify(device))
-        if (newDevice.attrs == undefined) {
-          newDevice.attrs = [];
-        }
-        if (newDevice.static_attrs == undefined) {
-          newDevice.static_attrs = [];
-        }
-        newDevice._status = this.parseStatus(device);
-        this.devices[i] = newDevice;
-      }
+    let newDevice = JSON.parse(JSON.stringify(device))
+    if (newDevice.attrs == undefined) {
+      newDevice.attrs = [];
     }
+    if (newDevice.static_attrs == undefined) {
+      newDevice.static_attrs = [];
+    }
+    newDevice._status = this.parseStatus(device);
+    newDevice.loading = false;
+
+    this.devices[device.id] = newDevice;
+
     this.loading = false;
   }
 
@@ -65,26 +65,28 @@ class DeviceStore {
   }
 
   handleRemoveSingle(id) {
-    this.devices = this.devices.filter(function(e) {
-      return e.id != id;
-    })
+    if (this.devices.hasOwnProperty(id)) {
+      delete this.devices[id];
+    }
+
     this.loading = false;
   }
 
   handleInsertDevice(device) {
     device._status="disabled"
-    this.devices.push(device);
+    this.devices[device.id] = JSON.parse(JSON.stringify(device));
     this.error = null;
-    this.laoding = false;
+    this.loading = false;
   }
 
-  handleAddDevice(newDevice) {
+  handleTriggerInsertion(newDevice) {
     // this is actually just a intermediary while addition happens asynchonously
     this.error = null;
     this.loading = true;
   }
 
   handleUpdateDeviceList(devices) {
+    this.devices = {};
     for (let idx = 0; idx < devices.length; idx++) {
       devices[idx]._status = this.parseStatus(devices[idx]);
       if (devices[idx].attrs == undefined) {
@@ -96,16 +98,20 @@ class DeviceStore {
       if (devices[idx].tags == undefined) {
         devices[idx].tags = [];
       }
+      this.devices[devices[idx].id] = JSON.parse(JSON.stringify(devices[idx]))
     }
 
-    this.devices = devices;
     this.error = null;
     this.loading = false;
   }
 
   handleFetchDeviceList() {
-    this.devices = [];
+    this.devices = {};
     this.loading = true;
+  }
+
+  fetchSingle(deviceid) {
+    this.devices[deviceid] = {loading: true};
   }
 
   handleFailure(error) {

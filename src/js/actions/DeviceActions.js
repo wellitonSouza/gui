@@ -17,6 +17,24 @@ class DeviceActions {
     }
   }
 
+  fetchSingle(deviceid, cb) {
+    return (dispatch) => {
+      dispatch();
+
+      deviceManager.getDevice(deviceid)
+        .then((device) => {
+          this.updateSingle(device);
+          if (cb) {
+            cb(device);
+          }
+        })
+        .catch((error) => {
+          console.error("Failed to fetch single device", error);
+          this.devicesFailed(error);
+        })
+    }
+  }
+
   updateDevices(list) {
     return list;
   }
@@ -59,8 +77,8 @@ class DeviceActions {
     }
   }
 
-  updateSingle(devices) {
-    return devices;
+  updateSingle(device) {
+    return device;
   }
 
   triggerRemoval(device, cb) {

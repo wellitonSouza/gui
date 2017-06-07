@@ -319,18 +319,12 @@ class DetailAttrs extends Component {
   render() {
     let device = this.props.device;
 
-    let filteredStatics = [];
-    if (device.static_attrs) {
-      filteredStatics = device.static_attrs.filter((a) => { return (a.type.toLowerCase() != "geo")});
-    }
-
-    if (device.attrs == undefined) {
-      device.attrs = [];
-    }
+    let filteredStatics = device.static_attrs.filter((a) => { return (a.type.toLowerCase() != "geo")});
+    let filteredAttrs = device.attrs.filter((a) => { return (a.type.toLowerCase() != "geo")});
 
     let count = 0;
     if (filteredStatics.length > 0) { count++; }
-    count += device.attrs.length;
+    count += filteredAttrs.length;
     count = (count > 3 ? 3 : count);
 
     let horizontalSize = "col s4";
@@ -343,7 +337,7 @@ class DetailAttrs extends Component {
     function AttrList(props) {
       return (
         <span>
-          { device.attrs.map((i, k) =>
+          { filteredAttrs.map((i, k) =>
             ((k < count) && (i.type.toLowerCase() != "geo")) && (
               <div className={horizontalSize + " metric-card full-height"} key={i.object_id} >
                 {(props.devices[device.id] && props.devices[device.id][i.name] &&

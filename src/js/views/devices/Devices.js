@@ -76,7 +76,7 @@ function SummaryItem(props) {
         </div>
         <div className="user-label truncate">{props.device.label}</div>
         <div className="label">device name</div>
-        <span className={"badge " + status}>{status}</span>
+        <span className={"badge " + status}>{props.device._status}</span>
       </div>
 
       <div className="lst-entry-body col s12">

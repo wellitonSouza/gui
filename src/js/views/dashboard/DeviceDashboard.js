@@ -6,7 +6,6 @@ import AltContainer from 'alt-container';
 import LoginStore from '../../stores/LoginStore';
 import util from '../../comms/util/util';
 
-
 var DeviceDashboardStore = require('../../stores/DeviceDashboardStore');
 var DeviceDashboardActions = require('../../actions/DeviceDashboardActions');
 
@@ -16,9 +15,8 @@ class DeviceItem extends Component {
   }
 
   render() {
-    let uptime = this.props.data.attrs.uptime;
-    if (uptime == undefined)
-      uptime = '-';
+    // TODO IOTMID-511
+    let uptime = '-';
 
     return (
       <div className='main-div'>
@@ -39,7 +37,7 @@ class DeviceItem extends Component {
                 <span>LAST UPDATE</span>
           </div>
           <div className="col s4 time-info upper">
-                <title>{status}</title>
+                <title>{this.props.data._status}</title>
                 <span>STATUS</span>
           </div>
           </div>
@@ -173,7 +171,6 @@ class MainPainel extends Component {
     }
 
     render() {
-      console.log("Reloading MainPainel");
       return (
         <div className="right-painel-info">
           <ElementList type='devices' list={this.props.devices} />
@@ -236,9 +233,13 @@ class DeviceDashboard extends Component {
     super(props);
   }
 
+  // componentDidMount() {
+  //   DeviceDashboardActions.fetchAll('admin');
+  // }
+
   render() {
     return (
-      <AltContainer store={LoginStore}>
+      <AltContainer stores={{devices: DeviceDashboardStore, user: LoginStore}} >
         <DeviceDashboardImpl {...this.props} />
       </AltContainer>
     )
@@ -247,33 +248,9 @@ class DeviceDashboard extends Component {
 
 
 class DeviceDashboardImpl extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      stats : {},
-      last_devices : [],
-      last_templates : []
-    };
-
-    this.state = DeviceDashboardStore.getState();
-    this.onChange = this.onChange.bind(this);
-  }
-
   componentDidMount() {
-    DeviceDashboardStore.listen(this.onChange);
-    DeviceDashboardActions.fetchAll(this.props.user.service);
+    DeviceDashboardActions.fetchAll(this.props.user.user.service);
   }
-
-  componentWillUnmount() {
-    DeviceDashboardStore.unlisten(this.onChange);
-  }
-
-  onChange() {
-    this.setState(DeviceDashboardStore.getState());
-    console.log("dashboard container component - onChange", this.state);
-  }
-
   render() {
     return (
       <ReactCSSTransitionGroup
@@ -283,8 +260,8 @@ class DeviceDashboardImpl extends Component {
       transitionEnterTimeout={500}
       transitionLeaveTimeout={500} >
       <div className="row col s12 main-painel">
-       <LeftPainel id='div_devices' mainTitle="Devices" subtitle="Dashboard" stats={this.state.stats} />
-        <MainPainel devices={this.state.last_devices} templates={this.state.last_templates} />
+       <LeftPainel id='div_devices' mainTitle="Devices" subtitle="Dashboard" stats={this.props.devices.stats} />
+        <MainPainel devices={this.props.devices.last_devices} templates={this.props.devices.last_templates} />
       </div>
       </ReactCSSTransitionGroup>
     );

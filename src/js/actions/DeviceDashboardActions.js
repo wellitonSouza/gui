@@ -4,20 +4,10 @@ import templateManager from '../comms/templates/TemplateManager';
 
 var alt = require('../alt');
 
-// TODO remove this
-function fakeFetch() {
-  return new Promise(function(resolve, reject) {
-    setTimeout(function() {
-      resolve();
-    }, 250);
-  });
-}
-
 class DeviceDashboardActions {
 
   updateStats(data, user) {
 
-    console.log("DeviceDashboardActions", data, user);
     let aux = {'incomingTransactions':'-',
       'outgoingTransactions':'-',
       'serviceTime':'-'};
@@ -50,17 +40,19 @@ class DeviceDashboardActions {
 
 
   fetchAll(user) {
-    console.log("fetchAll")
-    this.fetchDevices();
-    this.fetchTemplates();
-    this.fetchStats(user);
+    return (dispatch) => {
+      dispatch();
+
+      this.fetchDevices();
+      this.fetchTemplates();
+      this.fetchStats(user);
+    }
   }
 
   fetchTemplates() {
     return (dispatch) => {
       templateManager.getLastTemplates("created")
         .then((data) => {
-          console.log("templates webservice done");
           this.updateTemplates(data.templates);
         })
         .catch((error) => {
@@ -71,10 +63,8 @@ class DeviceDashboardActions {
 
   fetchStats(user) {
     return (dispatch) => {
-      // fakeFetch()
       deviceManager.getStats()
         .then((stats) => {
-          console.log("stats webservice done");
           this.updateStats(stats,user);
         })
         .catch((error) => {
@@ -87,7 +77,6 @@ class DeviceDashboardActions {
     return (dispatch) => {
       deviceManager.getLastDevices("updated")
         .then((data) => {
-          console.log("devices webservice done");
           this.updateDevices(data.devices);
         })
         .catch((error) => {
@@ -97,7 +86,7 @@ class DeviceDashboardActions {
   }
 
   unknownFailed(error) {
-    console.log("error", error);
+    console.error("error", error);
     return error;
   }
 

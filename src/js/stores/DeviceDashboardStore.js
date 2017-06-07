@@ -31,7 +31,6 @@ class DeviceDashboardStore {
   }
 
   handleUpdateDeviceList(devices) {
-    console.log("handleUpdateDeviceList",devices);
     for (let idx = 0; idx < devices.length; idx++) {
       devices[idx]._status = this.parseStatus(devices[idx]);
     }
@@ -40,18 +39,15 @@ class DeviceDashboardStore {
   }
 
   handleFetchDeviceList() {
-    console.log("handleFetchDeviceList");
     this.last_devices = [];
   }
 
   handleUpdateTemplateList(templates) {
-    console.log("handleUpdateTemplateList", templates);
     this.last_templates = templates;
     this.error = null;
   }
 
   handleFetchTemplateList() {
-    console.log("handleFetchTemplateList");
     this.last_templates = [];
   }
 

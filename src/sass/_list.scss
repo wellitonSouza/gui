@@ -268,13 +268,17 @@ $status: #0c343d;
       color: #fff;
       display: inline;
 
-      div {
+      &>*:not(.modal) {
         float: left;
         margin: 0 0.25em;
       }
 
       i {
         color: #fff;
+      }
+
+      .modal i {
+        color: inherit;
       }
     }
 

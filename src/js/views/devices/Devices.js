@@ -414,6 +414,55 @@ class DetailAttrs extends Component {
   }
 }
 
+// TODO make this its own component
+class RemoveDialog extends Component {
+  constructor(props) {
+    super(props);
+
+    this.dismiss = this.dismiss.bind(this);
+    this.remove = this.remove.bind(this);
+  }
+
+  componentDidMount() {
+    // materialize jquery makes me sad
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(modalElement).ready(function() {
+      $('.modal').modal();
+    })
+  }
+
+  dismiss(event) {
+    event.preventDefault();
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(modalElement).modal('close');
+  }
+
+  remove(event) {
+    event.preventDefault();
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(modalElement).modal('close');
+    this.props.callback(event);
+  }
+
+  render() {
+    return (
+      <div className="modal" id={this.props.target} ref="modal">
+        <div className="modal-content full">
+          <div className="row center background-info">
+            <div><i className="fa fa-exclamation-triangle fa-4x" /></div>
+            <div>You are about to remove this device.</div>
+            <div>Are you sure?</div>
+          </div>
+        </div>
+        <div className="modal-footer right">
+            <button type="button" className="btn-flat btn-ciano waves-effect waves-light" onClick={this.dismiss}>cancel</button>
+            <button type="submit" className="btn-flat btn-red waves-effect waves-light" onClick={this.remove}>remove</button>
+        </div>
+      </div>
+    )
+  }
+}
+
 class DetailItem extends Component {
   constructor(props) {
     super(props);
@@ -457,8 +506,10 @@ class DetailItem extends Component {
                 <Link to={"/device/id/" + this.props.device.id + "/edit"} >
                   <div><i className="clickable fa fa-pencil" /></div>
                 </Link>
-                <div><i className="clickable fa fa-trash" onClick={this.remove}/></div>
+                <div><i className="clickable fa fa-trash" onClick={(e) => {e.preventDefault(); $('#confirmDiag').modal('open');}}/></div>
+                {/* <button className="" data-target="confirmDiag"><i className="fa fa-trash" /></button> */}
                 <div><i className="clickable fa fa-times" onClick={this.props.handleDismiss}/></div>
+                <RemoveDialog callback={this.remove} target="confirmDiag" />
               </div>
             </div>
           </div>

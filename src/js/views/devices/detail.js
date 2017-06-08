@@ -17,22 +17,56 @@ import util from "../../comms/util/util";
 import { Line } from 'react-chartjs-2';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 
-class DeviceUserActions extends Component {
+// TODO make this its own component
+class RemoveDialog extends Component {
   constructor(props) {
     super(props);
 
-    this.device = { id: props.deviceid };
+    this.dismiss = this.dismiss.bind(this);
     this.remove = this.remove.bind(this);
   }
 
-  remove(e) {
-    e.preventDefault();
-    DeviceActions.triggerRemoval(this.device, (device) => {
-      hashHistory.push('/device/list');
-      Materialize.toast('Device removed', 4000);
-    });
+  componentDidMount() {
+    // materialize jquery makes me sad
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(modalElement).ready(function() {
+      $('.modal').modal();
+    })
   }
 
+  dismiss(event) {
+    event.preventDefault();
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(modalElement).modal('close');
+  }
+
+  remove(event) {
+    event.preventDefault();
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    this.props.callback(event);
+    $(modalElement).modal('close');
+  }
+
+  render() {
+    return (
+      <div className="modal" id={this.props.target} ref="modal">
+        <div className="modal-content full">
+          <div className="row center background-info">
+            <div><i className="fa fa-exclamation-triangle fa-4x" /></div>
+            <div>You are about to remove this device.</div>
+            <div>Are you sure?</div>
+          </div>
+        </div>
+        <div className="modal-footer right">
+            <button type="button" className="btn-flat btn-ciano waves-effect waves-light" onClick={this.dismiss}>cancel</button>
+            <button type="submit" className="btn-flat btn-red waves-effect waves-light" onClick={this.remove}>remove</button>
+        </div>
+      </div>
+    )
+  }
+}
+
+class DeviceUserActions extends Component {
   render() {
     return (
       <div>
@@ -45,7 +79,8 @@ class DeviceUserActions extends Component {
         <Link to={"/device/id/" + this.props.deviceid + "/edit"} className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1">
           <i className="clickable fa fa-pencil" />
         </Link>
-        <a className="waves-effect waves-light btn-flat btn-ciano" onClick={this.remove} tabIndex="-1">
+        <a className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1"
+           onClick={(e) => {e.preventDefault(); $('#' + this.props.confirmTarget).modal('open');}}>
           <i className="clickable fa fa-trash"/>
         </a>
         <Link to={"/device/list"} className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1">
@@ -442,6 +477,8 @@ class DeviceDetail extends Component {
 class ViewDevice extends Component {
   constructor(props) {
     super(props);
+
+    this.remove = this.remove.bind(this);
   }
 
   componentDidMount() {
@@ -452,6 +489,17 @@ class ViewDevice extends Component {
     }
 
     DeviceActions.fetchSingle.defer(this.props.params.device, loadValues);
+  }
+
+  remove(e) {
+    // This should be on DeviceUserActions -
+    // this is not good, but will have to make do because of z-index on the action header
+    e.preventDefault();
+    console.log('will remove ' + this.props.params.device);
+    DeviceActions.triggerRemoval({id: this.props.params.device}, (device) => {
+      hashHistory.push('/device/list');
+      Materialize.toast('Device removed', 4000);
+    });
   }
 
   render() {
@@ -465,11 +513,12 @@ class ViewDevice extends Component {
           transitionEnterTimeout={500} transitionLeaveTimeout={500} >
           <PageHeader title="device manager" subtitle="Devices" />
           <ActionHeader title={title}>
-            <DeviceUserActions deviceid={this.props.params.device}/>
+            <DeviceUserActions deviceid={this.props.params.device} confirmTarget="confirmDiag"/>
           </ActionHeader>
           <AltContainer store={DeviceStore} >
             <DeviceDetail deviceid={this.props.params.device}/>
           </AltContainer>
+          <RemoveDialog callback={this.remove} target="confirmDiag" />
         </ReactCSSTransitionGroup>
       </div>
     )

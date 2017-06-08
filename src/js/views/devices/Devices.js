@@ -206,6 +206,9 @@ class PositionRenderer extends Component {
     let parsed = null;
     if (pos === undefined) {
       const posData = this.props.devices[this.props.deviceId][this.props.attr];
+      if (posData.data.length == 0) {
+        return (<NoData />);
+      }
       if (!posData.loading) {
         pos = posData.data[posData.data.length - 1].attrValue;
       } else {

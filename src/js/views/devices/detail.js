@@ -388,7 +388,6 @@ class DeviceDetail extends Component {
             <div className="label">{device.label}</div>
             <div className="id">ID {device.id}</div>
           </div>
-          <div className="status">{status}</div>
         </div>
         <div className="row device">
           <div className="row detail-header">
@@ -410,8 +409,8 @@ class DeviceDetail extends Component {
                     <span className="value">{util.printTime(device.updated)}</span>
                   </div>
                   <div className="metric fullPage ol s4">
-                    <span className="label">Uptime</span>
-                    <span className="value">N/A</span>
+                    <span className="label">Status</span>
+                    <span className="value">{device._status}</span>
                   </div>
                 </div>
 

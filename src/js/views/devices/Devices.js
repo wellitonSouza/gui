@@ -460,7 +460,6 @@ class DetailItem extends Component {
                 <div><i className="clickable fa fa-trash" onClick={this.remove}/></div>
                 <div><i className="clickable fa fa-times" onClick={this.props.handleDismiss}/></div>
               </div>
-              <div className="status">{status}</div>
             </div>
           </div>
         </div>
@@ -486,8 +485,8 @@ class DetailItem extends Component {
                       <span className="value">{util.printTime(this.props.device.updated)}</span>
                     </div>
                     <div className="metric col s4">
-                      <span className="label">Uptime</span>
-                      <span className="value">N/A</span>
+                      <span className="label">Status</span>
+                      <span className="value">{this.props.device._status}</span>
                     </div>
                   </div>
 

@@ -24,10 +24,6 @@ class DeviceItem extends Component {
           <div className="col s6 name-info">
                 {this.props.data.label}
           </div>
-          <div className="col s6 time-info">
-                <title>{uptime}</title>
-                <span>UPTIME</span>
-          </div>
           <div className={'item-hovered no-padding color-'+this.props.data._status}>
           <div className="col s4 name-info">
                 {this.props.data.label}

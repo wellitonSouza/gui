@@ -13,20 +13,47 @@ module.exports = {
     path: path.resolve(__dirname, 'dist')
   },
   module: {
-    loaders: [
-        { test: /\.js$/, loaders: ['react-hot', 'jsx', 'babel'], exclude: /(node_modules|src\/components)/ },
-        { test: /\.scss$/, loader: ExtractTextPlugin.extract('css!sass') },
-        { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'file-loader?mimetype=image/svg+xml'},
-        { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader?mimetype=application/font-woff"},
-        { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader?mimetype=application/font-woff"},
-        { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader?mimetype=application/octet-stream"},
-        { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader"}
+    rules: [
+      {
+        test: /\.js$/,
+        use: [{loader: 'react-hot-loader'}, {loader: 'jsx-loader'}, {loader: 'babel-loader'}],
+        exclude: /(node_modules|src\/components)/
+      },
+      {
+        test: /\.scss$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: ['css-loader', 'sass-loader']
+        })
+      },
+      {
+        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'file-loader',
+        options: {mimetype: 'image/svg+xml'}
+      },
+      {
+        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+        loader: "file-loader",
+        options: {mimetype: "application/font-woff"}
+      },
+      {
+        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+        loader: "file-loader",
+        options: {mimetype: "application/font-woff"}
+      },
+      {
+        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+        loader: "file-loader",
+        options: {mimetype:"application/octet-stream"}
+      },
+      {
+        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+        loader: "file-loader"
+      }
     ]
   },
   plugins: [
-    new ExtractTextPlugin('style.css', {
-      allChunks: true
-    }),
+    new ExtractTextPlugin('style.css'),
 
     new CopyWebpackPlugin([
       { from: 'src/html/index.html', to: 'index.html' },

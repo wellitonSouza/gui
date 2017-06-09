@@ -33,14 +33,44 @@ module.exports = {
     publicPath: "http://localhost:8888/"
   },
   module: {
-    loaders: [
-        { test: /\.js$/, loaders: ['react-hot', 'jsx', 'babel'], exclude: /(node_modules|src\/components)/ },
-        { test: /\.scss$/, loaders: ['style', 'css?sourceMap', 'sass?sourceMap'] },
-        { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'file-loader?mimetype=image/svg+xml'},
-        { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader?mimetype=application/font-woff"},
-        { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader?mimetype=application/font-woff"},
-        { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader?mimetype=application/octet-stream"},
-        { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader"}
+    rules: [
+      {
+        test: /\.js$/,
+        use: [{loader: 'react-hot-loader'}, {loader: 'jsx-loader'}, {loader: 'babel-loader'}],
+        exclude: /(node_modules|src\/components)/
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          {loader:'style-loader'},
+          {loader:'css-loader', options:{sourceMap: true}},
+          {loader:'sass-loader', options:{sourceMap: true}}
+        ]
+      },
+      {
+        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'file-loader',
+        options: {mimetype: 'image/svg+xml'}
+      },
+      {
+        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+        loader: "file-loader",
+        options: {mimetype: "application/font-woff"}
+      },
+      {
+        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+        loader: "file-loader",
+        options: {mimetype: "application/font-woff"}
+      },
+      {
+        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+        loader: "file-loader",
+        options: {mimetype:"application/octet-stream"}
+      },
+      {
+        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+        loader: "file-loader"
+      }
     ]
   },
   plugins: [

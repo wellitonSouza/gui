@@ -22,8 +22,8 @@ class FActions {
     return (dispatch) => {
       dispatch();
       deviceManager.getDevice(id)
-      .then((d) => { this.set(d); })
-      .catch((error) => { console.error('Failed to get device', error); })
+        .then((d) => { this.set(d); })
+        .catch((error) => { console.error('Failed to get device', error); })
     }
   }
 }
@@ -338,6 +338,7 @@ class DeviceForm extends Component {
 
   componentDidUpdate() {
     Materialize.updateTextFields();
+    $('select').material_select();
   }
 
   handleChange(event) {

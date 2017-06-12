@@ -14,6 +14,8 @@ import DeviceStore from '../../stores/DeviceStore';
 import TagForm from '../../components/TagForm';
 import util from "../../comms/util/util";
 
+import MaterialSelect from "../../components/MaterialSelect";
+
 class FActions {
   set(args) { return args; }
   update(args) { return args; }
@@ -96,7 +98,7 @@ class FStore {
       this.newAttr = {
         object_id: '',
         name: '',
-        type: '',
+        type: 'string',
         value: ''
       };
     }
@@ -187,7 +189,7 @@ class AttrCard extends Component {
               <i className="clickable fa fa-trash btn-remove-attr-card right" onClick={this.handleRemove}/>
             </div>
             <div className={splitSize}>
-              <div className="value">{this.props.type}</div>
+              <div className="value">{attrType.translate(this.props.type)}</div>
               <div className="label">Type</div>
             </div>
             {(hasValue > 0) && (
@@ -203,6 +205,36 @@ class AttrCard extends Component {
   }
 }
 
+class TypeDisplay {
+  constructor() {
+    this.availableTypes = {
+      'geo:point': 'Geo',
+      'float':'Float',
+      'integer':'Integer',
+      'string':'Text',
+      'boolean':'Boolean',
+    }
+  }
+
+  getTypes() {
+    let list = []
+    for (let k in this.availableTypes) {
+      list.push({'value': k, 'label': this.availableTypes[k]})
+    }
+
+    return list;
+  }
+
+  translate(value) {
+    if (this.availableTypes.hasOwnProperty(value)) {
+      return this.availableTypes[value];
+    }
+    return undefined;
+  }
+}
+
+var attrType = new TypeDisplay();
+
 class NewAttr extends Component {
   constructor(props) {
     super(props);
@@ -212,6 +244,8 @@ class NewAttr extends Component {
     this.submit = this.submit.bind(this);
     this.validateName = this.validateName.bind(this);
     this.isNameValid = this.isNameValid.bind(this);
+
+    this.availableTypes = attrType.getTypes();
   }
 
   componentDidMount() {
@@ -270,7 +304,7 @@ class NewAttr extends Component {
     return (
       <span>
         <button data-target="newAttrsForm" className="btn-flat waves waves-light">new</button>
-        <div className="modal" id="newAttrsForm" ref="modal">
+        <div className="modal visible-overflow-y" id="newAttrsForm" ref="modal">
           <div className="modal-content full">
             <div className="title row">New Attribute</div>
             {(this.props.attrError.length > 0) && (
@@ -285,10 +319,13 @@ class NewAttr extends Component {
                           key="protocol" onChange={this.validateName} />
                 </div>
                 <div className="input-field col s4" >
+                  <MaterialSelect id="fld_type" name="type" key="protocol"
+                                  value={this.props.newAttr.type} onChange={this.handleChange} >
+                    {this.availableTypes.map((opt) =>
+                      <option value={opt.value} key={opt.label}>{opt.label}</option>
+                    )}
+                  </MaterialSelect>
                   <label htmlFor="fld_type">Type</label>
-                  <input id="fld_type" type="text"
-                        name="type" value={this.props.newAttr.type}
-                        key="protocol" onChange={this.handleChange} />
                 </div>
                 <div className="input-field col s8" >
                   <label htmlFor="fld_value">Default value</label>
@@ -327,18 +364,10 @@ class DeviceForm extends Component {
 
   componentDidMount() {
     Materialize.updateTextFields();
-
-    let callback = this.handleChange.bind(this);
-    let dropdown = ReactDOM.findDOMNode(this.refs.dropdown);
-    $(dropdown).ready(function() {
-      $('select').material_select();
-      $(dropdown).on('change', callback);
-    })
   }
 
   componentDidUpdate() {
     Materialize.updateTextFields();
-    $('select').material_select();
   }
 
   handleChange(event) {
@@ -370,13 +399,13 @@ class DeviceForm extends Component {
 
                 <div className="col s12">
                   <div className="input-field col s4" >
-                      <select id="fld_prot" ref='dropdown'
-                              name="protocol" value={this.props.device.protocol}
-                              key="protocol" onChange={this.handleChange} >
-                        <option value="MQTT">MQTT</option>
-                        <option value="virtual">Virtual</option>
-                      </select>
-                      <label htmlFor="fld_prot">Device type</label>
+                    <MaterialSelect id="fld_prot" name="protocol"
+                                    value={this.props.device.protocol}
+                                    onChange={this.handleChange} >
+                      <option value="MQTT">MQTT</option>
+                      <option value="virtual">Virtual</option>
+                    </MaterialSelect>
+                    <label htmlFor="fld_prot">Device type</label>
                   </div>
 
                   <div className="col s8" >

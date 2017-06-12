@@ -203,7 +203,7 @@ class PositionRenderer extends Component {
     const position = [parseFloat(parsed[1]),parseFloat(parsed[3])];
 
     return (
-      <div className="map">
+      <div className="map full-height">
         <Map center={position} zoom={19}>
           <TileLayer
             url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
@@ -268,7 +268,7 @@ function Attr(props) {
     'integer': Graph,
     'float': Graph,
     'string': HistoryList,
-    'geo': Position,
+    'geo:point': Position,
     'default': HistoryList
   }
 
@@ -293,7 +293,7 @@ class DetailAttrs extends Component {
   render() {
     const device = this.props.device;
 
-    let filteredStatics = this.props.device.static_attrs.filter((a) => { return (a.type.toLowerCase() != "geo")});
+    let filteredStatics = this.props.device.static_attrs.filter((a) => { return (a.type.toLowerCase() != "geo:point")});
 
     function AttrList(props) {
       return (
@@ -310,7 +310,7 @@ class DetailAttrs extends Component {
                         <i className="fa fa-refresh" />
                       </span>
                     </div>
-                    <div className="contents">
+                    <div className="contents no-padding">
                       <Attr device={device} type={props.devices[device.id][i.name].type} data={props.devices[device.id][i.name].data}/>
                     </div>
                   </div>
@@ -335,7 +335,7 @@ class DetailAttrs extends Component {
         <span>
           <div className="row">
             {filteredStatics.map((i, k) =>
-              (i.type.toLowerCase() != "geo") && (
+              (i.type.toLowerCase() != "geo:point") && (
                 <div className="col s12 m3 l3">
                   <div className="card z-depth-2">
                     <div className="card-content row">
@@ -407,7 +407,7 @@ class DeviceDetail extends Component {
 
     let position = null;
     function getPosition(i) {
-      if (i.type == "geo") {
+      if (i.type == "geo:point") {
         position = i;
       }
     }

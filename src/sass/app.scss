@@ -222,6 +222,10 @@ body {
   }
 }
 
+.visible-overflow-y {
+  overflow-y: visible;
+}
+
 
 @import 'inputs';
 @import 'shadow';

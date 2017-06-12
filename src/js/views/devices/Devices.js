@@ -322,8 +322,8 @@ class DetailAttrs extends Component {
   render() {
     let device = this.props.device;
 
-    let filteredStatics = device.static_attrs.filter((a) => { return (a.type.toLowerCase() != "geo")});
-    let filteredAttrs = device.attrs.filter((a) => { return (a.type.toLowerCase() != "geo")});
+    let filteredStatics = device.static_attrs.filter((a) => { return (a.type.toLowerCase() != "geo:point")});
+    let filteredAttrs = device.attrs.filter((a) => { return (a.type.toLowerCase() != "geo:point")});
 
     let count = 0;
     if (filteredStatics.length > 0) { count++; }
@@ -341,7 +341,7 @@ class DetailAttrs extends Component {
       return (
         <span>
           { filteredAttrs.map((i, k) =>
-            ((k < count) && (i.type.toLowerCase() != "geo")) && (
+            ((k < count) && (i.type.toLowerCase() != "geo:point")) && (
               <div className={horizontalSize + " metric-card full-height"} key={i.object_id} >
                 {(props.devices[device.id] && props.devices[device.id][i.name] &&
                   (props.devices[device.id][i.name].loading == false)) ? (
@@ -353,7 +353,7 @@ class DetailAttrs extends Component {
                         <i className="fa fa-refresh" />
                       </span>
                     </div>
-                    <div className="contents">
+                    <div className="contents no-padding">
                       <Attr type={props.devices[device.id][i.name].type} data={props.devices[device.id][i.name].data}/>
                     </div>
                   </div>
@@ -392,7 +392,7 @@ class DetailAttrs extends Component {
               <div className="">
                 <ul>
                   {filteredStatics.map((i, k) =>
-                    (k < 3) && (i.type.toLowerCase() != "geo") && (
+                    (k < 3) && (i.type.toLowerCase() != "geo:point") && (
                       <li key={i.name}>
                         <span className="col s6 label">{i.name}</span>
                         <span className="col s6 value">{i.value}</span>
@@ -483,7 +483,7 @@ class DetailItem extends Component {
   render() {
     let position = null;
     function getPosition(i) {
-      if (i.type == "geo") {
+      if (i.type == "geo:point") {
         position = i;
       }
     }

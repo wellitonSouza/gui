@@ -38,22 +38,14 @@ class DeviceDashboardActions {
     return list;
   }
 
-
-  fetchAll(user) {
-    return (dispatch) => {
-      dispatch();
-
-      this.fetchDevices();
-      this.fetchTemplates();
-      this.fetchStats(user);
-    }
-  }
-
-  fetchTemplates() {
+  fetchTemplates(cb) {
     return (dispatch) => {
       templateManager.getLastTemplates("created")
         .then((data) => {
           this.updateTemplates(data.templates);
+          if (cb) {
+            cb(data);
+          }
         })
         .catch((error) => {
           this.unknownFailed(error);
@@ -61,11 +53,14 @@ class DeviceDashboardActions {
     }
   }
 
-  fetchStats(user) {
+  fetchStats(user, cb) {
     return (dispatch) => {
       deviceManager.getStats()
         .then((stats) => {
           this.updateStats(stats,user);
+          if (cb) {
+            cb(data);
+          }
         })
         .catch((error) => {
           this.unknownFailed(error);
@@ -73,11 +68,14 @@ class DeviceDashboardActions {
     }
   }
 
-  fetchDevices() {
+  fetchDevices(cb) {
     return (dispatch) => {
       deviceManager.getLastDevices("updated")
         .then((data) => {
           this.updateDevices(data.devices);
+          if (cb) {
+            cb(data);
+          }
         })
         .catch((error) => {
           this.unknownFailed(error);

@@ -245,8 +245,13 @@ class DeviceDashboard extends Component {
 
 class DeviceDashboardImpl extends Component {
   componentDidMount() {
-    DeviceDashboardActions.fetchAll(this.props.user.user.service);
+    DeviceDashboardActions.fetchDevices(() => {
+      DeviceDashboardActions.fetchTemplates(() => {
+        DeviceDashboardActions.fetchStats(this.props.user.user.service);
+      })
+    })
   }
+
   render() {
     return (
       <ReactCSSTransitionGroup

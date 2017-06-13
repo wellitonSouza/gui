@@ -172,7 +172,7 @@ class Graph extends Component{
     }
 
     return (
-      <Line data={data} options={options}/>
+      <Line data={data} options={options} />
     )
   }
 }
@@ -291,20 +291,50 @@ function HistoryList(props) {
   }
 }
 
-function Attr(props) {
-  const known = {
-    'integer': Graph,
-    'float': Graph,
-    'string': HistoryList,
-    'default': HistoryList
-    // TODO to be implemented
-    // 'geo': PositionHistory,
+class Attr extends Component{
+  constructor(props) {
+    super(props);
   }
 
-  const Renderer = props.type in known ? known[props.type] : known['default'];
-  return (
-    <Renderer {...props} />
-  )
+  isLoading(devices) {
+    if (devices === undefined || devices === null) {
+      devices = this.props.devices;
+    }
+
+    return !(
+      devices[this.props.id] &&
+      devices[this.props.id][this.props.attr] &&
+      (devices[this.props.id][this.props.attr].loading == false)
+    )
+  }
+
+  render() {
+
+    const known = {
+      'integer': Graph,
+      'float': Graph,
+      'string': HistoryList,
+      'default': HistoryList
+      // TODO to be implemented
+      // 'geo': PositionHistory,
+    }
+
+    if (this.isLoading() == false) {
+      const type = this.props.devices[this.props.id][this.props.attr].type;
+      const data = this.props.devices[this.props.id][this.props.attr].data;
+      const Renderer = type in known ? known[type] : known['default'];
+
+      return (
+        <Renderer type={type} data={data} />
+      )
+    } else {
+      return (
+        <div className="background-info valign-wrapper full-height relative bg-gray">
+          <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center"/>
+        </div>
+      )
+    }
+  }
 }
 
 class DetailAttrs extends Component {
@@ -342,30 +372,20 @@ class DetailAttrs extends Component {
           { filteredAttrs.map((i, k) =>
             ((k < count) && (i.type.toLowerCase() != "geo:point")) && (
               <div className={horizontalSize + " metric-card full-height"} key={i.object_id} >
-                {(props.devices[device.id] && props.devices[device.id][i.name] &&
-                  (props.devices[device.id][i.name].loading == false)) ? (
-                  <div className="graph z-depth-2 full-height">
-                    <div className="title row">
-                      <span>{i.name}</span>
-                      <span className="right"
-                            onClick={() => MeasureActions.fetchMeasures(device.id, device.protocol, i)}>
-                        <i className="fa fa-refresh" />
-                      </span>
-                    </div>
-                    <div className="contents no-padding">
-                      <Attr type={props.devices[device.id][i.name].type} data={props.devices[device.id][i.name].data}/>
-                    </div>
+                <div className="graph z-depth-2 full-height">
+                  <div className="title row">
+                    <span>{i.name}</span>
+                    <span className="right"
+                          onClick={() => MeasureActions.fetchMeasures(device.id, device.protocol, i)}>
+                      <i className="fa fa-refresh" />
+                    </span>
                   </div>
-                ) : (
-                  <div className="graph z-depth-2 full-height">
-                    <span className="title">{i.name}</span>
-                    <div className="contents">
-                      <div className="background-info valign-wrapper full-height relative bg-gray">
-                        <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center"/>
-                      </div>
-                    </div>
+                  <div className="contents no-padding">
+                    <AltContainer store={MeasureStore} >
+                      <Attr id={device.id} attr={i.name} />
+                    </AltContainer>
                   </div>
-                )}
+                </div>
               </div>
             )
           )}
@@ -555,9 +575,7 @@ class DetailItem extends Component {
                   </div>
                 </div>
               </div>
-              <AltContainer store={MeasureStore} inject={{device: this.props.device}} >
-                <DetailAttrs />
-              </AltContainer>
+              <DetailAttrs device={this.props.device} />
             </div>
             <div className="col s3 map z-depth-2 full-height">
               <Position device={this.props.device} position={position}/>

@@ -195,7 +195,7 @@ class AttrCard extends Component {
             {(hasValue > 0) && (
               <div className="col s8">
                 <div className="value full-width truncate">{this.props.value}</div>
-                <div className="label">Value</div>
+                <div className="label">Static value</div>
               </div>
             )}
           </div>
@@ -328,7 +328,7 @@ class NewAttr extends Component {
                   <label htmlFor="fld_type">Type</label>
                 </div>
                 <div className="input-field col s8" >
-                  <label htmlFor="fld_value">Default value</label>
+                  <label htmlFor="fld_value">Static value</label>
                   <input id="fld_value" type="text"
                         name="value" value={this.props.newAttr.value}
                         key="protocol" onChange={this.handleChange} />

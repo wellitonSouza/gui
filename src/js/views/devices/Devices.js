@@ -206,17 +206,16 @@ class PositionRenderer extends Component {
     let parsed = null;
     if (pos === undefined) {
       const posData = this.props.devices[this.props.deviceId][this.props.attr];
-      if (posData.data.length == 0) {
-        return (<NoData />);
-      }
-      if (!posData.loading) {
-        pos = posData.data[posData.data.length - 1].attrValue;
-      } else {
+      if (posData.loading) {
         return (
           <div className="background-info valign-wrapper full-height relative bg-gray">
             <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center"/>
           </div>
         )
+      } else if (posData.data.length == 0) {
+        return (<NoData />);
+      } else  {
+        pos = posData.data[posData.data.length - 1].attrValue;
       }
     }
 

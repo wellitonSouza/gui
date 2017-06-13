@@ -16,7 +16,7 @@ class MeasureActions {
     if (type == "virtual") {
       devType = "virtual";
     }
-    
+
     function getUrl() {
       return '/history/STH/v1/contextEntities/type/' + devType + '/id/' + device + '/attributes/' + attr.name + '?lastN=10'
     }
@@ -34,7 +34,6 @@ class MeasureActions {
       }
       util._runFetch(getUrl(), config)
         .then((reply) => {
-          console.log('got response', reply);
           const data = reply.contextResponses[0].contextElement.attributes[0].values;
           this.updateMeasures(device, attr, data);
         })

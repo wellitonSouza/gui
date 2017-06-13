@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { Link } from 'react-router'
 
 import alt from '../../alt';
 import AltContainer from 'alt-container';
@@ -19,26 +20,22 @@ class DeviceItem extends Component {
     let uptime = '-';
 
     return (
-      <div className='main-div'>
+      <Link className='main-div' to={'/device/list?detail=' + this.props.data.id}>
         <div className="item">
           <div className="col s6 name-info">
                 {this.props.data.label}
           </div>
           <div className={'item-hovered no-padding color-'+this.props.data._status}>
-          <div className="col s4 name-info">
+          <div className="col s6 name-info">
                 {this.props.data.label}
           </div>
-          <div className="col s4 time-info">
-                <title>{util.timestamp_to_date(this.props.data.updated)}</title>
-                <span>LAST UPDATE</span>
-          </div>
-          <div className="col s4 time-info upper">
+          <div className="col s6 time-info upper">
                 <title>{this.props.data._status}</title>
                 <span>STATUS</span>
           </div>
           </div>
         </div>
-      </div>
+      </Link>
     )
   }
 }
@@ -109,19 +106,19 @@ class ElementList extends Component {
         return (
           <div className="col s12 no-padding">
               {
-                 this.props.list.map((it) =>
-                 <DeviceItem key={it.id} data={it} />)
-               }
+                this.props.list.map((it) =>
+                  <DeviceItem key={it.id} data={it} />)
+              }
           </div>
         )
       }
       else {
         return (
           <div className="col s12 no-padding">
-              {
-                 this.props.list.map((it) =>
-                 <TemplateItem key={it.id} data={it} />)
-               }
+            {
+              this.props.list.map((it) =>
+                <TemplateItem key={it.id} data={it} />)
+            }
           </div>
         )
       }
@@ -228,10 +225,6 @@ class DeviceDashboard extends Component {
   constructor(props) {
     super(props);
   }
-
-  // componentDidMount() {
-  //   DeviceDashboardActions.fetchAll('admin');
-  // }
 
   render() {
     return (

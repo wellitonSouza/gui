@@ -75,7 +75,7 @@ function SummaryItem(props) {
           <img src="images/ciShadow.svg" />
         </div>
         <div className="user-label truncate">{props.device.label}</div>
-        <div className="label">device name</div>
+        <div className="label">ID {props.device.id}</div>
         <span className={"badge " + status}>{props.device._status}</span>
       </div>
 

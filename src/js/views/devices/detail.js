@@ -189,7 +189,7 @@ class PositionRenderer extends Component {
       )
     }
 
-    if (this.props.value.attrValue == null) {
+    if ((this.props.value === undefined) || (this.props.value.attrValue == null)) {
       return (<NoData />);
     }
 

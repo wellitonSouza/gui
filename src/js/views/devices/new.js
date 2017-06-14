@@ -280,6 +280,7 @@ class NewAttr extends Component {
 
   dismiss(event) {
     event.preventDefault();
+    AttrActions.set();
     let modalElement = ReactDOM.findDOMNode(this.refs.modal);
     $(modalElement).modal('close');
   }

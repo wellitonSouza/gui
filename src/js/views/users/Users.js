@@ -537,74 +537,75 @@ class UserList extends Component {
 
 
     return (
-      <span className="fill flex-wrapper">
+      <div className="fill">
+        <div className="flex-wrapper">
+          {/* TODO promote this */}
+          <div className="row z-depth-2 userSubHeader p0" id="inner-header">
+            <div className="col s4 m4 main-title">List of Users</div>
 
-        {/* TODO promote this */}
-        <div className="row z-depth-2 userSubHeader p0" id="inner-header">
-          <div className="col s4 m4 main-title">List of Users</div>
+            <div className="col s2 m2 header-card-info">
+              <div className="title"># Users</div>
+              <div className="subtitle">{this.state.listOfUser.length}</div>
+            </div>
 
-          <div className="col s2 m2 header-card-info">
-            <div className="title"># Users</div>
-            <div className="subtitle">{this.state.listOfUser.length}</div>
+            <div className="col s4 header-card-info"></div>
+
+            <div className="col s6 m2 button">
+              <a id="btnNewUser" className="waves-effect waves-light btn-flat" onClick={this.handleCreate}>New User</a>
+            </div>
           </div>
 
-          <div className="col s4 header-card-info"></div>
-
-          <div className="col s6 m2 button">
-            <a id="btnNewUser" className="waves-effect waves-light btn-flat" onClick={this.handleCreate}>New User</a>
-          </div>
-        </div>
-
-        <div className={"fill row userCanvas z-depth-2" + detailAreaStatus}>
-          { this.state.listOfUserByPage.length > 0 ? (
-              <div className="col s4 no-padding" id="user-list">
-                { this.state.listOfUserByPage.map((user) =>
-                    <ListItem user={user}
-                              key={user.id}
-                              detail={this.state.detail}
-                              detailedUser={this.detailedUser}/>
-                )}
-                <div className="col s4 userCanvasFooter">
-                  <div id="labelShowing" className="col s12 m6">Showing {this.state.listOfUserByPage.length} of {this.state.listOfUser.length}</div>
-                  <div id="prevPageId" className="col s6 m3 clickable">
-                    <a className={prevPageClass} onClick={this.prevPage}><i className="fa fa-chevron-left paddingRight10"></i>PREV</a>
-                  </div>
-                  <div id="nextPageId" className="col s6 m3 clickable">
-                    <a className={nextPageClass} onClick={this.nextPage}>NEXT<i className="fa fa-chevron-right paddingLeft10"></i></a>
+          <div className={"fill row userCanvas z-depth-2" + detailAreaStatus}>
+            { this.state.listOfUserByPage.length > 0 ? (
+                <div className="col s4 no-padding" id="user-list">
+                  { this.state.listOfUserByPage.map((user) =>
+                      <ListItem user={user}
+                                key={user.id}
+                                detail={this.state.detail}
+                                detailedUser={this.detailedUser}/>
+                  )}
+                  <div className="col s4 userCanvasFooter">
+                    <div id="labelShowing" className="col s12 m6">Showing {this.state.listOfUserByPage.length} of {this.state.listOfUser.length}</div>
+                    <div id="prevPageId" className="col s6 m3 clickable">
+                      <a className={prevPageClass} onClick={this.prevPage}><i className="fa fa-chevron-left paddingRight10"></i>PREV</a>
+                    </div>
+                    <div id="nextPageId" className="col s6 m3 clickable">
+                      <a className={nextPageClass} onClick={this.nextPage}>NEXT<i className="fa fa-chevron-right paddingLeft10"></i></a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ) : (
-              <div className="col s4 background-info">
-                <span className="background-info">No configured users</span>
-              </div>
-            )
-          }
+              ) : (
+                <div className="col s4 background-info">
+                  <span className="background-info">No configured users</span>
+                </div>
+              )
+            }
 
-          <div className={"col s8" + detailAreaStatus} id="detail-area">
-            {this.state.create != undefined ? (
-                <UserForm dismiss={this.clearSelection}
-                          save={this.newUser}
-                          title="New User" />
-            ) : this.state.edit != undefined ? (
-                <UserForm dismiss={this.clearSelection}
-                          save={UserActions.triggerUpdate}
-                          title={this.state.user.name} />
-                ) : (
-                this.state.detail != undefined ? (
-                  <DetailItem user={this.state.user}
-                              editUser={this.editUser}
-                              clearSelection={this.clearSelection}
-                              deleteUser={this.deleteUser}/>
-                ) : (
-                  <div className="initialUserMessage">
-                    <p>Select a user</p>
-                    <p>to see its details</p>
-                  </div>
-                ))}
+            <div className={"col s8" + detailAreaStatus} id="detail-area">
+              {this.state.create != undefined ? (
+                  <UserForm dismiss={this.clearSelection}
+                            save={this.newUser}
+                            title="New User" />
+              ) : this.state.edit != undefined ? (
+                  <UserForm dismiss={this.clearSelection}
+                            save={UserActions.triggerUpdate}
+                            title={this.state.user.name} />
+                  ) : (
+                  this.state.detail != undefined ? (
+                    <DetailItem user={this.state.user}
+                                editUser={this.editUser}
+                                clearSelection={this.clearSelection}
+                                deleteUser={this.deleteUser}/>
+                  ) : (
+                    <div className="initialUserMessage">
+                      <p>Select a user</p>
+                      <p>to see its details</p>
+                    </div>
+                  ))}
+            </div>
           </div>
         </div>
-      </span>
+      </div>
     )
   }
 }
@@ -638,7 +639,7 @@ class Users extends Component {
 
   render() {
     return (
-      <span id="userMain" class="flex-wrapper">
+      <span id="userMain" className="flex-wrapper">
           <PageHeader title="Auth" subtitle="Users">
             <Filter onChange={this.filterChange} />
           </PageHeader>

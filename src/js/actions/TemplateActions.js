@@ -34,7 +34,6 @@ class TemplateActions {
     return (dispatch) => {
       templateManager.getTemplates()
         .then((templateList) => {
-          console.log("templates webservice done");
           this.updateTemplates(templateList.templates);
         })
         .catch((error) => {
@@ -55,7 +54,6 @@ class TemplateActions {
           }
         })
         .catch((error) => {
-          console.log("Error!", error);
           this.templatesFailed("Failed to update given template");
         })
 
@@ -67,11 +65,9 @@ class TemplateActions {
     return (dispatch) => {
       templateManager.setIcon(id, icon)
         .then((response) => {
-          console.log("done");
           this.setIcon(id);
         })
         .catch(function(error) {
-          console.log("Failed to update icon", error);
         })
 
       dispatch();
@@ -93,7 +89,6 @@ class TemplateActions {
           }
         })
         .catch((error) => {
-          console.log("Error!", error);
           this.templatesFailed("Failed to remove given template");
         })
     }

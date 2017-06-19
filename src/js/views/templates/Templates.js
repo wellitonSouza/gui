@@ -38,12 +38,10 @@ class DeviceImageUpload extends Component {
   }
 
   onDrop(acceptedFiles) {
-    console.log("got files", acceptedFiles);
     this.setState({selection: acceptedFiles[0]});
   }
 
   upload(e) {
-    console.log("about to upload", this.state.selection.name);
     TemplateActions.triggerIconUpdate(this.props.targetDevice, this.state.selection);
   }
 
@@ -139,7 +137,6 @@ class ListItem extends Component {
   handleDismiss(e) {
     e.preventDefault();
     this.props.detailedTemplate(undefined);
-    console.log("will dismiss - " + this.state.device.id);
   }
 
   updateDevice(e) {
@@ -147,7 +144,6 @@ class ListItem extends Component {
       let device = this.state.device;
       device.has_icon = this.props.device.has_icon;
       TemplateActions.triggerUpdate(this.state.device);
-      console.log("will update - " + this.state.device.id);
   }
 
   deleteDevice(e) {
@@ -195,7 +191,6 @@ class ListItem extends Component {
     let detail = this.props.detail === this.props.device.id;
     let edit = (this.props.edit === this.props.device.id) && detail;
 
-    // console.log("about to check for icon: " + this.props.device.id + " " + this.props.device.has_icon);
     // let labelSize = this.props.device.has_icon ? "lst-title col s10" : "lst-title col s12";
     // let iconUrl = "http://localhost:5000/template/" + this.props.device.id + "/icon";
 
@@ -406,9 +401,7 @@ class TemplateList extends Component {
   }
 
   detailedTemplate(id) {
-    console.log("about to set detail: " + id);
     if (this.state.detail && this.state.edit) {
-      console.log("are you sure???");
     }
 
     let temp = this.state;
@@ -512,7 +505,6 @@ class TemplateList extends Component {
 class Templates extends Component {
 
   constructor(props) {
-    console.log('templates init');
     super(props);
   }
 
@@ -522,11 +514,9 @@ class Templates extends Component {
 
   filterChange(newFilter) {
     // TODO make this work properly
-    console.log("about to change filter: " + newFilter);
   }
 
   render() {
-    console.log('templates render');
     return (
       <ReactCSSTransitionGroup
           transitionName="first"

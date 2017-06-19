@@ -18,11 +18,9 @@ export class ViewDevice extends Component {
   }
 
   handleChange(event) {
-    console.log("handleChange");
   }
 
   render() {
-    console.log("view device details ");
     return (
       <page>
           <div className="view paddingElements">

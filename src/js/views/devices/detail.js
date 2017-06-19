@@ -495,7 +495,6 @@ class ViewDevice extends Component {
     // This should be on DeviceUserActions -
     // this is not good, but will have to make do because of z-index on the action header
     e.preventDefault();
-    console.log('will remove ' + this.props.params.device);
     DeviceActions.triggerRemoval({id: this.props.params.device}, (device) => {
       hashHistory.push('/device/list');
       Materialize.toast('Device removed', 4000);

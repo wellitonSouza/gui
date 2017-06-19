@@ -6,7 +6,6 @@ class UserManager {
   }
 
   getUsers() {
-    console.log("About to fetch users");
     return util.GET(this.baseUrl);
   }
 

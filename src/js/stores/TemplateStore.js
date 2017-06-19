@@ -33,7 +33,6 @@ class TemplateStore {
   }
 
   handleUpdateIcon(id) {
-    console.log('update icon');
     this.error = null;
     this.loading = false;
     for (let i = 0; i < this.templates.length; i++) {
@@ -42,7 +41,6 @@ class TemplateStore {
         // newTemplate.has_icon = true;
         newTemplate.has_icon = util.guid();
         newTemplate.toggle = !newTemplate.toggle;
-        console.log("new template", newTemplate);
         this.templates[i] = newTemplate;
       }
     }

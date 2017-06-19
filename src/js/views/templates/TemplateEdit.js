@@ -35,7 +35,6 @@ class ListItem extends Component {
   handleDismiss(e) {
     e.preventDefault();
     this.props.detailedTemplate(undefined);
-    console.log("will dismiss - " + this.state.device.id);
   }
 
   updateDevice(e) {
@@ -43,7 +42,6 @@ class ListItem extends Component {
       let device = this.state.device;
       device.has_icon = this.props.device.has_icon;
       TemplateActions.triggerUpdate(this.state.device);
-      console.log("will update - " + this.state.device.id);
   }
 
   deleteDevice(e) {
@@ -91,7 +89,6 @@ class ListItem extends Component {
     let detail = this.props.detail === this.props.device.id;
     let edit = (this.props.edit === this.props.device.id) && detail;
 
-    // console.log("about to check for icon: " + this.props.device.id + " " + this.props.device.has_icon);
     // let labelSize = this.props.device.has_icon ? "lst-title col s10" : "lst-title col s12";
     // let iconUrl = "http://localhost:5000/template/" + this.props.device.id + "/icon";
 

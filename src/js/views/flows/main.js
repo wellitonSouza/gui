@@ -84,7 +84,6 @@ function loadFlows() {
         // url: 'http://localhost:1880/flows',
         success: function(nodes) {
             let data = JSON.parse(nodes);
-            // console.log('got nodes', data, data.flow);
             nodes = data.flow;
             RED.nodes.version(null);
             RED.nodes.import(nodes);

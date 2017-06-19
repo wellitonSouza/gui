@@ -69,8 +69,8 @@ class UserActions {
           this.removeSingle(user.id);
         })
         .catch((error) => {
-          console.log("Error!", error);
-          this.usersFailed("Failed to remove given user");
+          const msg = "Failed to remove given user";
+          this.usersFailed(msg);
         })
     }
   }

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 export default function Todo(props) {
-  console.log('will render todo');
   return (
     <div className="full-height relative background-info">
       <div className="valign-wrapper center-align full-height todo-div">

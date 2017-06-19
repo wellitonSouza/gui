@@ -100,7 +100,6 @@ class FlowList extends Component {
     let temp = this.state;
 
     if (this.state.detail && this.state.edit) {
-      console.log("are you sure???");
       if (id === undefined) {
         temp.edit = undefined;
       }

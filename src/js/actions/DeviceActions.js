@@ -63,7 +63,6 @@ class DeviceActions {
   triggerUpdate(device, cb) {
     return (dispatch) => {
       dispatch();
-      console.log('will update dev', device);
       deviceManager.setDevice(device)
         .then((response) => {
           this.updateSingle(device);

@@ -512,7 +512,6 @@ class UserList extends Component {
   componentDidMount() {
     // TODO: use this later on to set the number of entries to be presented in each page
     // const height = document.getElementsByClassName('userCanvas')[0].clientHeight;
-    // console.log("got height: " + height);
   }
 
   newUser(user) {
@@ -630,11 +629,9 @@ class Users extends Component {
 
   onChange(newState) {
     this.setState(UserStore.getState());
-    console.log("users container component - onChange", this.state);
   }
 
   filterChange(newFilter) {
-    console.log("about to change filter: " + newFilter);
   }
 
   render() {

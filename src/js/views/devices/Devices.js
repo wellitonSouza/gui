@@ -787,7 +787,6 @@ class Devices extends Component {
   }
 
   filterChange(newFilter) {
-    console.log("about to change filter: " + newFilter);
   }
 
   render() {

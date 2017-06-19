@@ -46,7 +46,6 @@ class LoginStore {
   }
 
   handleSuccess(login) {
-    console.log('login success');
     this.error = undefined;
     this.set(login.jwt);
   }

@@ -132,7 +132,6 @@ function SidebarItem(props) {
   // isActive  = true;
   const entryClass = "nav-link" + (isActive ? " active" : "");
 
-  // console.log(props.item.label + " " + isActive + " " + props.router.location.pathname);
 
   if (props.open) {
     return (

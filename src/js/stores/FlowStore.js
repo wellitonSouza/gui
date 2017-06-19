@@ -72,13 +72,11 @@ class FlowStore {
   }
 
   triggerUpdate() {
-    console.log('trigger');
     this.error = null;
     this.waiting = true;
   }
 
   update(flow) {
-    console.log('upd');
     this.error = null;
     this.waiting = false;
     this.flows[flow.id] = JSON.parse(JSON.stringify(flow));

@@ -13,13 +13,8 @@ import Filter from "../utils/Filter";
 import util from "../../comms/util/util";
 
 function SummaryItem(props) {
-  let status = "disabled";
-  if (props.flow.status) {
-    status = props.flow.status;
-  }
-
   return (
-    <div className={"lst-entry-wrapper z-depth-2 col s12 " + status}>
+    <div className={"lst-entry-wrapper z-depth-2 col s12"}>
       <div className="lst-entry-title col s12">
 
         <div className="app-icon img">

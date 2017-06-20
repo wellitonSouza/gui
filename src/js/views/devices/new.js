@@ -186,7 +186,7 @@ class AttrCard extends Component {
               <div className="label">Name</div>
             </div>
             <div className="col s2">
-              <i className="clickable fa fa-trash btn-remove-attr-card right" onClick={this.handleRemove}/>
+              <i className="clickable fa fa-trash btn-remove-attr-card right" title="Remove attribute" onClick={this.handleRemove}/>
             </div>
             <div className={splitSize}>
               <div className="value">{attrType.translate(this.props.type)}</div>

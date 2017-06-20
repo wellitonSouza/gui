@@ -49,7 +49,7 @@ class Navbar extends Component {
                   <img src={this.gravatar} />
                 </div>
                 <div className="user-name">{(this.props.user.name ? this.props.user.name : this.props.user.username)}</div>
-                <div className="" onClick={this.handleClick}>
+                <div className="clickable" onClick={this.handleClick} title="Login details">
                   <i className="fa fa-caret-down line-normal center-caret" />
                   { this.state.open === true && <RightSideBar user={this.props.user} gravatar={this.gravatar} /> }
                 </div>
@@ -147,7 +147,7 @@ function SidebarItem(props) {
           <ul className="nav-2nd">
             { props.item.children.map((child) =>
               <li className="" key={child.label} >
-                <Link to={child.target} className="nav-2nd-item" activeClassName="active" tabIndex="-1">
+                <Link to={child.target} className="nav-2nd-item" activeClassName="active" tabIndex="-1" title={child.title}>
                       <span className="caps">{child.label}</span>
                 </Link>
               </li>
@@ -186,20 +186,20 @@ class Sidebar extends Component {
     // TODO: active entry styling, set target, add responsiveness
     let entries = [
       { target: "/device/stats", iconClass: "material-icons mi-ic-memory", label: "Devices", desc: "Known devices and configuration", children: [
-        { target: "/device/list", iconClass: "", label: "device"},
-        { target: "/template/list", iconClass: "", label: "template"},
-        { target: "/alarm?q=device", iconClass: "", label: "alarm"}
+        { target: "/device/list", iconClass: "", label: "device", title: "Devices list"},
+        { target: "/template/list", iconClass: "", label: "template", title: "Templates list"},
+        { target: "/alarm?q=device", iconClass: "", label: "alarm", title: "Alarms list"}
       ]},
-      { target: "/flows", iconClass: "material-icons mi-device-hub", label: "data flows", desc: "Processing flows to be executed" },
+      { target: "/flows", iconClass: "material-icons mi-device-hub", label: "data flows", desc: "Processing flows to be executed"},
       { target: "/alarm", iconClass: "fa fa-bell-o", label: "alarms", desc: "System events and alarms"},
       { target: "/auth", iconClass: "fa fa-unlock-alt", label: "auth", desc: "User and permissions management", children: [
-        { target: "/auth/user", iconClass: "", label: "users"},
-        { target: "/auth/permissions", iconClass: "", label: "permissions"}
+        { target: "/auth/user", iconClass: "", label: "users", title: "Users list"},
+        { target: "/auth/permissions", iconClass: "", label: "permissions", title: "Permissions list"}
       ]},
       { target: "/deploy", iconClass: "fa fa-cogs", label: "deploy", desc: "Application and plugin management", children: [
-        { target: "/deploy/plugins", iconClass: "", label: "plugins"},
-        { target: "/deploy/applications", iconClass: "", label: "applications"},
-        { target: "/alarm?q=deploy", iconClass: "", label: "alarm"},
+        { target: "/deploy/plugins", iconClass: "", label: "plugins", title: "Plugins list"},
+        { target: "/deploy/applications", iconClass: "", label: "applications", title: "Applications list"},
+        { target: "/alarm?q=deploy", iconClass: "", label: "alarm", title: "Alarms list"},
       ]}
     ];
 

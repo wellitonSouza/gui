@@ -220,7 +220,7 @@ class AttrCard extends Component {
               <div className="label">Name</div>
             </div>
             <div className="col s2">
-              <i className="clickable fa fa-trash btn-remove-attr-card right" onClick={() => {AttrActions.remove(attr);}}/>
+              <i className="clickable fa fa-trash btn-remove-attr-card right" onClick={() => {AttrActions.remove(attr);}} title="Remove attribute"/>
             </div>
             <div className={splitSize}>
               <div className="value">{attr.type}</div>

@@ -18,7 +18,7 @@ function SummaryItem(props) {
   const selectedClass = "lst-entry-users " + (props.isActive ? " active" : "");
   const name = ((props.user.name && (props.user.name.length > 0)) ? props.user.name : props.user.username);
   return (
-    <div className={selectedClass}>
+    <div className={selectedClass} title="View details">
      <div className="col hovered">
        <div className="col s12">
           <div className="col s9 title2">{name}</div>
@@ -103,10 +103,10 @@ class DetailItem extends Component {
             </div>
             <div className="lst-title col s3">
               <div className="edit right inline-actions">
-                <a className="btn-floating waves-red right" onClick={this.handleEdit}>
+                <a className="btn-floating waves-red right" onClick={this.handleEdit} title="Edit user">
                   <i className="material-icons">mode_edit</i>
                 </a>
-                <a className="btn-floating waves-red right" onClick={this.handleRemove}>
+                <a className="btn-floating waves-red right" onClick={this.handleRemove} title="Remove user">
                   <i className="fa fa-trash" />
                 </a>
               </div>

@@ -79,7 +79,7 @@ function SummaryItem(props) {
   let ts = (props.template.updated ? util.printTime(props.template.updated) : "N/A");
   let attrs = (props.template.attrs ? props.template.attrs.length : '0');
   return (
-    <div className="lst-entry-wrapper z-depth-2 col s12">
+    <div className="lst-entry-wrapper z-depth-2 col s12" title="View details">
       <div className="lst-entry-title col s12">
         <div className="user-label truncate">{props.template.label}</div>
         <div className="label">template name</div>
@@ -526,7 +526,7 @@ class Templates extends Component {
           transitionLeaveTimeout={500} >
         <PageHeader title="device manager" subtitle="Templates" shadow='true'>
           {/* <Filter onChange={this.filterChange} /> */}
-          <Link to="/template/new" className="btn-item btn-floating waves-effect waves-light cyan darken-2">
+          <Link to="/template/new" className="btn-item btn-floating waves-effect waves-light cyan darken-2" title="Create a new template">
             <i className="fa fa-plus"/>
           </Link>
         </PageHeader>

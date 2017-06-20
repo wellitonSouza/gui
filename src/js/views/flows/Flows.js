@@ -178,7 +178,7 @@ class Flows extends Component {
           transitionEnterTimeout={500} transitionLeaveTimeout={500} >
         <PageHeader title="data flows" subtitle="">
           {/* <Filter onChange={this.filterChange} /> */}
-          <Link to="/flows/new" className="btn-item btn-floating waves-effect waves-light cyan darken-2">
+          <Link to="/flows/new" className="btn-item btn-floating waves-effect waves-light cyan darken-2" title="Create a new data flow">
             <i className="fa fa-plus"/>
           </Link>
         </PageHeader>

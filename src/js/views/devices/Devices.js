@@ -69,7 +69,7 @@ function SummaryItem(props) {
   if (props.device.static_attrs) attrs += props.device.static_attrs.length
 
   return (
-    <div className={"clickable lst-entry-wrapper z-depth-2 col s12 " + props.device._status}>
+    <div className={"clickable lst-entry-wrapper z-depth-2 col s12 " + props.device._status}  title="View details">
       <div className="lst-entry-title col s12">
         <div className="img">
           <img src="images/ciShadow.svg" />
@@ -521,16 +521,16 @@ class DetailItem extends Component {
           <div className="col action-area">
             <div className="relative full-width full-height">
               <div className="actions">
-                <div><i className="clickable fa fa-code" /></div>
-                <Link to={"/device/id/" + this.props.device.id + "/detail"} >
+                <div><i className="clickable fa fa-code" title="Get code"/></div>
+                <Link to={"/device/id/" + this.props.device.id + "/detail"} title="View all details">
                   <div><i className="clickable fa fa-expand" /></div>
                 </Link>
-                <Link to={"/device/id/" + this.props.device.id + "/edit"} >
+                <Link to={"/device/id/" + this.props.device.id + "/edit"} title="Edit device">
                   <div><i className="clickable fa fa-pencil" /></div>
                 </Link>
-                <div><i className="clickable fa fa-trash" onClick={(e) => {e.preventDefault(); $('#confirmDiag').modal('open');}}/></div>
+                <div><i className="clickable fa fa-trash" title="Remove device" onClick={(e) => {e.preventDefault(); $('#confirmDiag').modal('open');}}/></div>
                 {/* <button className="" data-target="confirmDiag"><i className="fa fa-trash" /></button> */}
-                <div><i className="clickable fa fa-times" onClick={this.props.handleDismiss}/></div>
+                <div><i className="clickable fa fa-times" onClick={this.props.handleDismiss} title="Hide details"/></div>
                 <RemoveDialog callback={this.remove} target="confirmDiag" />
               </div>
             </div>
@@ -800,7 +800,7 @@ class Devices extends Component {
         transitionLeaveTimeout={500} >
         <PageHeader title="device manager" subtitle="Devices" shadow='true'>
           {/* <Filter onChange={this.filterChange} /> */}
-          <Link to="/device/new" className="btn-item btn-floating waves-effect waves-light cyan darken-2">
+          <Link to="/device/new" title="Create a new device" className="btn-item btn-floating waves-effect waves-light cyan darken-2">
             <i className="fa fa-plus"/>
           </Link>
         </PageHeader>

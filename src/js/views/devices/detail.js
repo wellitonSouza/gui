@@ -70,20 +70,20 @@ class DeviceUserActions extends Component {
   render() {
     return (
       <div>
-        <a className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1">
+        <a className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1" title="Get code">
           <i className="clickable fa fa-code"/>
         </a>
-        <Link to={"/device/list?detail=" + this.props.deviceid} className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1">
+        <Link to={"/device/list?detail=" + this.props.deviceid} className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1" title="Hide all details">
           <i className="clickable fa fa-compress" />
         </Link>
-        <Link to={"/device/id/" + this.props.deviceid + "/edit"} className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1">
+        <Link to={"/device/id/" + this.props.deviceid + "/edit"} className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1" title="Edit device">
           <i className="clickable fa fa-pencil" />
         </Link>
-        <a className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1"
+        <a className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1" title="Remove device"
            onClick={(e) => {e.preventDefault(); $('#' + this.props.confirmTarget).modal('open');}}>
           <i className="clickable fa fa-trash"/>
         </a>
-        <Link to={"/device/list"} className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1">
+        <Link to={"/device/list"} className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1" title="Return to device list">
           <i className="clickable fa fa-times" />
         </Link>
       </div>

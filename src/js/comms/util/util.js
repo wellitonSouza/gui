@@ -1,5 +1,15 @@
 import LoginActions from '../../actions/LoginActions';
 
+function FetchError(data, message) {
+  this.name = "FetchError";
+  this.message = message || "Call failed";
+  this.stack = (new Error()).stack;
+  this.data = data;
+}
+
+FetchError.prototype = Object.create(Error.prototype);
+FetchError.prototype.constructor = FetchError;
+
 class Util {
 
   getToken() {
@@ -83,13 +93,10 @@ class Util {
     if (response.status >= 200 && response.status < 300) {
       return Promise.resolve(response);
     } else {
-      if (response.status == 401) {
+      if ((response.status == 401) || (response.status == 403)) {
         LoginActions.logout();
       }
-      if (response.status == 403) {
-        LoginActions.logout();
-      }
-      return Promise.reject(new Error(response.statusText));
+      return Promise.reject(new FetchError(response, response.statusText));
     }
   }
 

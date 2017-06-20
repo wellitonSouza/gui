@@ -68,7 +68,7 @@ class Content extends Component {
               <div className="col s12 m4 offset-m4">
                 <div className="login-page-subtitle">Sign in to start your session</div>
                 { this.props.error && (
-                  <div className="login-page-error">Authentication failed</div>
+                  <div className="login-page-error">{this.props.error}</div>
                 )}
               </div>
             </div>

@@ -131,6 +131,12 @@
   padding-top: 20% !important;
 }
 
+@media screen and (max-width: 800px){
+  .logout-page {
+    padding-top: 10% !important;
+  }
+}
+
 .logout-page .logout-page-subtitle {
   font-size: 130%;
   font-family: "Raleway", sans-serif;

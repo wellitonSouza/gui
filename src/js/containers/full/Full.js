@@ -90,7 +90,7 @@ class RightSideBar extends Component {
           </div>
 
           <div className="col s12 m12">
-            <div className="logout-page-info">{this.props.user.username}</div>
+            <div className="logout-page-info truncate">{this.props.user.username}</div>
           </div>
 
           <div className="col s12 m12">
@@ -100,7 +100,7 @@ class RightSideBar extends Component {
           {(this.props.user.email != undefined) && (
             <div>
             <div className="col s12 m12">
-              <div className="logout-page-info">{this.props.user.email}</div>
+              <div className="logout-page-info truncate">{this.props.user.email}</div>
             </div>
 
             <div className="col s12 m12">

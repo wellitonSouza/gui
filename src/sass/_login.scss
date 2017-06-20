@@ -150,7 +150,8 @@
   font-size: 150%;
   font-family: "Raleway", sans-serif;
   color: #fff;
-  text-align: center;
+  text-align: left;
+  width: $right-sidebar-width - $right-sidebar-margin;
 }
 
 .logout-page .logout-page-label {

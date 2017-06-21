@@ -35,6 +35,10 @@ class FStore {
   constructor() {
     this.device = {}; this.set();
     this.newAttr = {}; this.setAttr();
+
+    // Map used to filter out duplicated attr names. Do check loadAttrs() for further notes.
+    this.attrNames = {}; this.loadAttrs();
+
     this.attrError = "";
     this.bindListeners({
       set: FormActions.SET,
@@ -51,6 +55,23 @@ class FStore {
       errorAttr: AttrActions.ERROR,
     });
     this.set(null);
+  }
+
+  loadAttrs () {
+    // TODO: it actually makes for sense in the long run to use (id, key) for attrs which
+    //       will allow name updates as well as better payload to event mapping.
+    if ((this.devices === undefined) || (this.devices === null)) {
+      this.attrNames = {};
+      return;
+    }
+
+    if (this.devices.hasOwnProperty('attrs')){
+      this.devices.attrs.map((attr) => this.attrNames[attr.name] = attr.name);
+    }
+
+    if (this.devices.hasOwnProperty('static_attrs')){
+      this.devices.static_attrs.map((attr) => this.attrNames[attr.name] = attr.name);
+    }
   }
 
   fetch(id) {}
@@ -77,6 +98,8 @@ class FStore {
 
       this.device = device;
     }
+
+    this.loadAttrs();
   }
 
   updateDevice(diff) {
@@ -115,6 +138,14 @@ class FStore {
   }
 
   addAttr() {
+    // check for duplicate names. Do check loadAttrs() for further details.
+    if (this.attrNames.hasOwnProperty(this.newAttr.name)) {
+      this.attrError = "There is already an attribute named '" + this.newAttr.name + "'";
+      return;
+    } else {
+      this.attrNames[this.newAttr.name] = this.newAttr.name;
+    }
+
     this.newAttr.object_id = util.sid();
     if (this.newAttr.type === "") { this.newAttr.type = 'string'; }
     if (this.newAttr.value.length > 0) {
@@ -264,6 +295,9 @@ class NewAttr extends Component {
   isNameValid(name) {
     if (name.match(/^[a-zA-Z0-9]+$/) == null) {
       AttrActions.error('Invalid name - only alphanumeric characters (no spaces) supported');
+      return false;
+    } if (this.props.attrNames.hasOwnProperty(name)) {
+      AttrActions.error("There is already an attribute named '" + name + "'");
       return false;
     } else {
       AttrActions.error('');

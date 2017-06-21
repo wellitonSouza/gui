@@ -126,12 +126,30 @@ class RightSideBar extends Component {
 function SidebarItem(props) {
   let isActive = props.router.location.pathname === props.item.target;
   if (!isActive && ('children' in props.item)) {
-    props.item.children.map((child) => isActive = isActive || (props.router.location.pathname == child.target));
+    props.item.children.map((child) => {
+      let inner = false;
+      if (child.hasOwnProperty('siblings')) {
+        child.siblings.map((sibling) => {
+          inner = inner || props.router.location.pathname.startsWith(sibling)
+        });
+      }
+      isActive = isActive || (props.router.location.pathname == child.target) || inner;
+    });
   }
 
   // isActive  = true;
   const entryClass = "nav-link" + (isActive ? " active" : "");
 
+  function getSubItemClass(child) {
+    let inner = false;
+    if (child.hasOwnProperty('siblings')) {
+      child.siblings.map((sibling) => {
+        inner = inner || props.router.location.pathname.startsWith(sibling)
+      });
+    }
+
+    return "nav-2nd-item" + (inner ? " active" : "");
+  }
 
   if (props.open) {
     return (
@@ -147,7 +165,7 @@ function SidebarItem(props) {
           <ul className="nav-2nd">
             { props.item.children.map((child) =>
               <li className="" key={child.label} >
-                <Link to={child.target} className="nav-2nd-item" activeClassName="active" tabIndex="-1" title={child.title}>
+                <Link to={child.target} className={getSubItemClass(child)} activeClassName="active" tabIndex="-1" title={child.title}>
                       <span className="caps">{child.label}</span>
                 </Link>
               </li>
@@ -183,11 +201,10 @@ class Sidebar extends Component {
   }
 
   render() {
-    // TODO: active entry styling, set target, add responsiveness
     let entries = [
       { target: "/device/stats", iconClass: "material-icons mi-ic-memory", label: "Devices", desc: "Known devices and configuration", children: [
-        { target: "/device/list", iconClass: "", label: "device", title: "Devices list"},
-        { target: "/template/list", iconClass: "", label: "template", title: "Templates list"},
+        { target: "/device/list", iconClass: "", label: "device", title: "Devices list", siblings: ['/device/id', '/device/new']},
+        { target: "/template/list", iconClass: "", label: "template", title: "Templates list", siblings: ['/template/id', '/template/new']},
         { target: "/alarm?q=device", iconClass: "", label: "alarm", title: "Alarms list"}
       ]},
       { target: "/flows", iconClass: "material-icons mi-device-hub", label: "data flows", desc: "Processing flows to be executed"},

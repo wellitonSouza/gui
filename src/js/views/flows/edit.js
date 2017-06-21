@@ -198,9 +198,14 @@ function handleSave(flowid) {
   flow.name = fData.flowName;
   flow.flow = RED.nodes.createCompleteNodeSet();
   if (flowid) {
-    FlowActions.triggerUpdate(flowid, flow);
+    FlowActions.triggerUpdate(flowid, flow, function (flow) {
+      Materialize.toast('Flow updated', 4000);
+    });
   } else {
-    FlowActions.triggerCreate(flow, function(flow){ hashHistory.push('/flows/id/' + flow.id); });
+    FlowActions.triggerCreate(flow, function(flow){
+      Materialize.toast('Flow created', 4000);
+      hashHistory.push('/flows/id/' + flow.id);
+    });
   }
 }
 
@@ -223,6 +228,7 @@ class RemoveDialog extends Component {
     FlowActions.triggerRemove(this.props.id, () => {
       let modalElement = ReactDOM.findDOMNode(this.refs.modal);
       $(modalElement).modal('close');
+      Materialize.toast('Flow removed', 4000);
       hashHistory.push('/flows');
     })
   }

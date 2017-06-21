@@ -53,7 +53,7 @@ class FlowActions {
     return (dispatch) => { dispatch(response); }
   }
 
-  triggerUpdate(id, flow) {
+  triggerUpdate(id, flow, cb) {
     return (dispatch) => {
       dispatch();
       // TODO replace this with proper usage of PUT/PATCH
@@ -62,6 +62,9 @@ class FlowActions {
           util.POST('flows/v1/flow', flow)
             .then((response) => {
               this.update(response.flow);
+              if (cb) {
+                cb(response.flow);
+              }
             })
         })
         .catch((error) => { this.fail(error); })

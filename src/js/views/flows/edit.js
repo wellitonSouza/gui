@@ -110,7 +110,7 @@ class FlowCanvas extends Component {
         }
       } else {
         RED.nodes.version(null);
-        RED.workspaces.add();
+        RED.nodes.import([]);
         RED.nodes.dirty(false);
         RED.view.redraw(true);
         RED.workspaces.show(RED.__currentFlow);

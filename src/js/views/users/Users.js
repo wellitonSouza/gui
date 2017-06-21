@@ -292,7 +292,7 @@ class UserFormImpl extends Component {
               </div>
               <div className="lst-user-title col s10">
                 <span>{this.props.title}</span>
-                <p className="subTitle"><b>Id:</b>{this.props.user.id}</p>
+                <p className="subTitle"><b>ID:</b>{this.props.user.id}</p>
               </div>
           </div>
 

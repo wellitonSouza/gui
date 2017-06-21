@@ -80,8 +80,8 @@ class RightSideBar extends Component {
 
   render() {
     return (
-      <div className="rightsidebar logout-page">
-        <form onSubmit={this.logout}>
+      <div className="rightsidebar" onClick={this.dismiss}>
+        <div className="rightsidebarchild logout-page">
           <div className="col s12 m12 logout-page-photo">
             <img src={this.props.gravatar} />
           </div>
@@ -111,13 +111,13 @@ class RightSideBar extends Component {
 
           <div className="row logout-page-buttons">
             <div className="s12 m6">
-              <button type="button" className="btn waves waves-light" onClick={this.dismiss}>dismiss</button>
+              <a className="btn waves-light" onClick={this.dismiss}>dismiss</a>
             </div>
             <div className="s12 m6">
               <button type="button" className="btn waves-light" onClick={this.logout}>logout</button>
             </div>
           </div>
-        </form>
+        </div>
       </div>
     )
   }

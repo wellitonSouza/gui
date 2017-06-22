@@ -213,9 +213,13 @@
 
     .box-stats{
       height: 100%;
+      position:relative;
+      bottom: 60px;
 
       .stats{
         padding: 0px 43px;
+        position: relative;
+        bottom: 20px;
 
       .lst-item{
         color: $dark-silver;
@@ -227,6 +231,11 @@
         p{
           padding: 0px;
           margin: 0px;
+        }
+
+        &:nth-child(2){
+          position: relative;
+          bottom:20px;
         }
 
         .key{
@@ -242,8 +251,21 @@
 
         &.sub{
 
-          &:nth-child(odd) {text-align: left;}
-          &:nth-child(even) {text-align: right;}
+          &:nth-child(3){
+            position:relative;
+            bottom: 20px;
+          }
+
+          &:nth-child(4){
+            position: relative;
+            bottom: -65px;
+            right: 115px;
+          }
+
+          &:nth-child(5){
+            position: relative;
+            bottom: -50px;
+          }
 
           .key{
             font-size: 9pt;
@@ -304,6 +326,8 @@
         padding-top: 82px;
         margin-right: auto;
         width: 250px;
+        position: relative;
+        bottom:50px;
     }
 
     .circle-after
@@ -337,6 +361,8 @@
       padding-top: 50px;
       font-family: 'Raleway', sans-serif;
       color: $black;
+      position: relative;
+      bottom:70px;
     }
 
     .subtitle
@@ -348,6 +374,7 @@
       font-weight: 200;
       position: relative;
       color: $black;
+      top: -60px;
     }
 
 }

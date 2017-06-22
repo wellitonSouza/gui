@@ -125,8 +125,8 @@ class ElementList extends Component {
     }
     else {
       return (
-          <div className="col s12 no-items-box">
-            <span className="background-info">No items.</span>
+          <div className="col s12 valign-wrapper full-height">
+            <div className="background-info no-items-box full-width">No items</div>
           </div>
       )
     }
@@ -139,7 +139,7 @@ class ElementList extends Component {
       tam = this.props.list.length;
 
     return (
-        <div className="col box" >
+        <div className="col box">
             <div className={"box-title bg-"+info.color}>
               <img className="icon" src={info.img_url}/>
               <label className='number'>{tam}</label>
@@ -147,7 +147,7 @@ class ElementList extends Component {
               <label className='title'>{info.title}</label>
               <i className="fa fa-menu"></i>
             </div>
-            <div className="box-content">
+            <div className="box-content full-height">
               { this.listItems(this.props.type) }
             </div>
         </div>

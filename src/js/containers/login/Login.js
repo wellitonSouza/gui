@@ -67,11 +67,17 @@ class Content extends Component {
             <div className="row">
               <div className="col s12 m4 offset-m4">
                 <div className="login-page-subtitle">Sign in to start your session</div>
-                { this.props.error && (
-                  <div className="login-page-error">{this.props.error}</div>
-                )}
               </div>
             </div>
+            { this.props.error && (
+              <div className="row">
+                <div className="col s12 m4 offset-m4">
+                  <div className="login-page-error">
+                    {this.props.error}<i className="material-icons prefix">info_outline</i>
+                  </div>
+                </div>
+              </div>
+            )}
             <form onSubmit={this.login}>
               <div className="row">
                   <div className="input-field col s12 m4 offset-m4">

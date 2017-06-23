@@ -108,7 +108,24 @@
 }
 
 .login-page-error {
-  color: #000;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+  font-weight: bold;
+  color: $dark-gray;
+  padding-left: 5%;
+  float: left;
+  width: 100%;
+  padding-left: 5%;
+  padding-right: 5%;
+  padding-top:  3%;
+  padding-bottom:  3%;
+}
+
+.login-page-error i.material-icons {
+  color: $dark-gray;
+  float: right;
+  padding-top: 2px;
+  padding-bottom: 0;
 }
 
 .login {

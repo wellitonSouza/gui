@@ -758,18 +758,30 @@ class DeviceList extends Component {
     const filteredList = this.applyFiltering(this.props.devices);
 
     return (
-      <div className="col m10 s12 offset-m1 relative full-height">
+        <div className = "flex-wrapper">
+          <div className="row z-depth-2 devicesSubHeader p0" id="inner-header">
+            <div className="col s4 m4 main-title">List of Devices</div>
+            <div className= "col s2 m2 header-info">
+              <div className= "title"># Devices</div>
+              <div className= "subtitle">{filteredList.length}</div>
+            </div>
+            <Link to="/device/new" title="Create a new device" className="waves-effect waves-light btn-flat">
+              New Device
+            </Link>
+          </div>
 
-        {(this.state.isDisplayList) ? (
-            <ListRender devices={filteredList} loading={this.props.loading} deviceid={this.props.deviceid} />
-        ) : (
-            <MapRender devices={filteredList} loading={this.props.loading} deviceid={this.props.deviceid} />
-        )}
+          <div className="deviceCanvas col m10 s12 offset-m1 relative full-height">
+            {(this.state.isDisplayList) ? (
+                <ListRender devices={filteredList} loading={this.props.loading} deviceid={this.props.deviceid} />
+            ) : (
+                <MapRender devices={filteredList} loading={this.props.loading} deviceid={this.props.deviceid} />
+            )}
 
-        {/* <!-- footer --> */}
-        <div className="col s12"></div>
-        <div className="col s12">&nbsp;</div>
-      </div>
+            {/* <!-- footer --> */}
+            <div className="col s12"></div>
+            <div className="col s12">&nbsp;</div>
+          </div>
+        </div>
     )
   }
 }
@@ -800,9 +812,9 @@ class Devices extends Component {
         transitionLeaveTimeout={500} >
         <PageHeader title="device manager" subtitle="Devices" shadow='true'>
           {/* <Filter onChange={this.filterChange} /> */}
-          <Link to="/device/new" title="Create a new device" className="btn-item btn-floating waves-effect waves-light cyan darken-2">
+          {/*<Link to="/device/new" title="Create a new device" className="btn-item btn-floating waves-effect waves-light cyan darken-2">
             <i className="fa fa-plus"/>
-          </Link>
+          </Link> */}
         </PageHeader>
         <AltContainer store={DeviceStore}>
           <DeviceList deviceid={detail}/>

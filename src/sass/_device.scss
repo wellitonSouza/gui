@@ -1,0 +1,52 @@
+.devicesSubHeader {
+
+  background-color: #fff;;
+  padding-top:10px;
+  padding-bottom:62px;
+  font-size: 16pt;
+  font-family: 'Droid Sans', sans-serif;
+  color: #666;
+  margin: 0;
+  z-index: 1000;
+  overflow: hidden;
+
+  position: relative;
+  width: 100%;
+  height: $page-header-size;
+  animation-name: height-opacity-0-to-100;
+  animation-duration: 1.5s;
+  animation-iteration-count: 1;
+  bottom:5px;
+
+  .main-title{
+    font-family: 'Raleway', sans-serif;
+    padding-left:4em;
+  }
+
+  .header-info{
+    .title
+    {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 10pt;
+      color: $silver;
+    }
+
+    .subtitle
+    {
+      font-family: 'Droid Sans', sans-serif;
+      font-size: 14pt;
+      color: $dark-silver;
+    }
+
+  }
+
+  .btn-flat{
+    position: absolute;
+    right: 120px;
+  }
+}
+
+.deviceCanvas{
+  padding-top: $page-header-size + 5px;
+  top:-50px;
+}

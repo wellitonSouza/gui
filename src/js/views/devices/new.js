@@ -275,6 +275,7 @@ class NewAttr extends Component {
     this.submit = this.submit.bind(this);
     this.validateName = this.validateName.bind(this);
     this.isNameValid = this.isNameValid.bind(this);
+    this.cleanBuffer = this.cleanBuffer.bind(this);
 
     this.availableTypes = attrType.getTypes();
   }
@@ -335,10 +336,14 @@ class NewAttr extends Component {
     }
   }
 
+  cleanBuffer(event){
+    AttrActions.error('');
+  }
+
   render() {
     return (
       <span>
-        <button data-target="newAttrsForm" className="btn-flat waves waves-light">new</button>
+        <button data-target="newAttrsForm" className="btn-flat waves waves-light" onClick={this.cleanBuffer}>new</button>
         <div className="modal visible-overflow-y" id="newAttrsForm" ref="modal">
           <div className="modal-content full">
             <div className="title row">New Attribute</div>

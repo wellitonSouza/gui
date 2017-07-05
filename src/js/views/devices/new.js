@@ -60,17 +60,17 @@ class FStore {
   loadAttrs () {
     // TODO: it actually makes for sense in the long run to use (id, key) for attrs which
     //       will allow name updates as well as better payload to event mapping.
-    if ((this.devices === undefined) || (this.devices === null)) {
-      this.attrNames = {};
+    this.attrNames = {};
+    if ((this.device === undefined) || (this.device === null)) {
       return;
     }
 
-    if (this.devices.hasOwnProperty('attrs')){
-      this.devices.attrs.map((attr) => this.attrNames[attr.name] = attr.name);
+    if (this.device.hasOwnProperty('attrs')){
+      this.device.attrs.map((attr) => this.attrNames[attr.name] = attr.name);
     }
 
-    if (this.devices.hasOwnProperty('static_attrs')){
-      this.devices.static_attrs.map((attr) => this.attrNames[attr.name] = attr.name);
+    if (this.device.hasOwnProperty('static_attrs')){
+      this.device.static_attrs.map((attr) => this.attrNames[attr.name] = attr.name);
     }
   }
 
@@ -155,6 +155,7 @@ class FStore {
       this.device.attrs.push(JSON.parse(JSON.stringify(this.newAttr)));
     }
     this.setAttr();
+    this.loadAttrs();
   }
 
   removeAttr(attribute) {
@@ -163,6 +164,7 @@ class FStore {
     } else {
       this.device.attrs = this.device.attrs.filter((i) => {return i.object_id !== attribute.object_id});
     }
+    this.loadAttrs();
   }
 }
 var DeviceFormStore = alt.createStore(FStore, 'DeviceFormStore');

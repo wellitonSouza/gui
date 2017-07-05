@@ -4443,6 +4443,7 @@ RED.tabs = (function() {
             return result;
         },
         show: function() {
+            this.uiSelect.show();
             this._resize();
         },
         hide: function() {

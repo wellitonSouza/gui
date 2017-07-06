@@ -194,11 +194,13 @@ class CreateDeviceActions extends Component {
   }
 }
 
+
 class AttrCard extends Component {
   constructor(props) {
     super(props);
 
     this.handleRemove = this.handleRemove.bind(this);
+
   }
 
   handleRemove(event) {
@@ -220,6 +222,7 @@ class AttrCard extends Component {
             </div>
             <div className="col s2">
               <i className="clickable fa fa-trash btn-remove-attr-card right" title="Remove attribute" onClick={this.handleRemove}/>
+              <i className="clickable material-icons right" title="Edit attribute" onClick={this.handleEdit}>mode_edit</i>
             </div>
             <div className={splitSize}>
               <div className="value">{attrType.translate(this.props.type)}</div>
@@ -254,8 +257,8 @@ class TypeDisplay {
     for (let k in this.availableTypes) {
       list.push({'value': k, 'label': this.availableTypes[k]})
     }
-
     return list;
+
   }
 
   translate(value) {
@@ -278,6 +281,8 @@ class NewAttr extends Component {
     this.validateName = this.validateName.bind(this);
     this.isNameValid = this.isNameValid.bind(this);
     this.cleanBuffer = this.cleanBuffer.bind(this);
+    this.validateType = this.validateType.bind(this);
+    this.isTypeValid = this.isTypeValid.bind(this);
 
     this.availableTypes = attrType.getTypes();
   }
@@ -315,6 +320,71 @@ class NewAttr extends Component {
     this.handleChange(event);
   }
 
+  validateType(event){
+
+    event.preventDefault();
+    const staticValue = event.target.value;
+    this.isTypeValid(staticValue);
+    this.handleChange(event);
+  }
+
+  isTypeValid(type){
+
+    if(this.props.newAttr.type == 'string'){
+          AttrActions.error('');
+          return true;
+    }
+
+    if(this.props.newAttr.type == 'geo:point'){
+      while(type){
+        if(type.match(/^(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)$/) == null){
+          AttrActions.error('Invalid type - Type is not compatible with Static Value (Insert a geo-point value)');
+          return false;
+        }else{
+          AttrActions.error('');
+          return true;
+        }
+      }
+    }
+
+    if(this.props.newAttr.type == 'integer'){
+      while(type){
+        if(type.match(/^[-+]?[1-9]\d*$/)==null){
+          AttrActions.error('Invalid type - Type is not compatible with Static Value (Insert a integer value)');
+          return false;
+        }else{
+          AttrActions.error('');
+          return true;
+        }
+      }
+    }
+
+    if(this.props.newAttr.type == 'float'){
+      while(type){
+        if(type.match(/^[+-]?\d+(\.\d+)?$/)==null){
+          AttrActions.error('Invalid type - Type is not compatible with Static Value (Insert a float value)');
+          return false;
+        } else {
+          AttrActions.error('');
+          return true
+        }
+      }
+    }
+
+    if(this.props.newAttr.type == 'boolean'){
+      while(type){
+        if(type.match(/^(0|1|true|false)$/)==null){
+          AttrActions.error('Invalid type - Type is not compatible with Static Value (Insert a boolean value (0 or 1, true or false))');
+          return false;
+        } else {
+          AttrActions.error('');
+          return true
+        }
+      }
+    }
+  }
+
+
   dismiss(event) {
     event.preventDefault();
     AttrActions.set();
@@ -329,12 +399,16 @@ class NewAttr extends Component {
       return;
     }
 
-    if (this.props.newAttr.name.length > 0) {
+    if(!this.isTypeValid(this.props.newAttr.value) && (this.props.newAttr.value.length > 0)){
+      return;
+    }
+
+    if ((this.props.newAttr.name.length > 0) && (this.props.newAttr.value.length >= 0)) {
       AttrActions.add();
       let modalElement = ReactDOM.findDOMNode(this.refs.modal);
       $(modalElement).modal('close');
     } else {
-      AttrActions.error("An attribute must have its name defined.");
+        AttrActions.error("An attribute must have its name defined.");
     }
   }
 
@@ -369,11 +443,11 @@ class NewAttr extends Component {
                   </MaterialSelect>
                   <label htmlFor="fld_type">Type</label>
                 </div>
-                <div className="input-field col s8" >
+                <div className="input-field col s8">
                   <label htmlFor="fld_value">Static value</label>
                   <input id="fld_value" type="text"
                         name="value" value={this.props.newAttr.value}
-                        key="protocol" onChange={this.handleChange} />
+                        key="protocol" onChange={this.validateType}/>
                 </div>
               </div>
 

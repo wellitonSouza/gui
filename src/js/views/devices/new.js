@@ -349,7 +349,7 @@ class NewAttr extends Component {
 
     if(this.props.newAttr.type == 'integer'){
       while(type){
-        if(type.match(/^[-+]?[1-9]\d*$/)==null){
+        if(type.match(/^(([-+]?[1-9]\d*)|([0-9]\d*))$/)==null){
           AttrActions.error('Invalid type - Type is not compatible with Static Value (Insert a integer value)');
           return false;
         }else{
@@ -361,7 +361,7 @@ class NewAttr extends Component {
 
     if(this.props.newAttr.type == 'float'){
       while(type){
-        if(type.match(/^[+-]?\d+(\.\d+)?$/)==null){
+        if(type.match(/^(([+-]?[1-9]\d*(\.\d+)?)|([0-9]\d*(\.\d+)*)?|([-][0]\d*(\.\d+)))$/)==null){
           AttrActions.error('Invalid type - Type is not compatible with Static Value (Insert a float value)');
           return false;
         } else {

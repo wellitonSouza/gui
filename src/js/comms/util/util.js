@@ -13,15 +13,22 @@ FetchError.prototype.constructor = FetchError;
 class Util {
 
   getToken() {
-    return localStorage.jwt;
+    return window.localStorage.getItem("jwt");
   }
 
   setToken(token) {
-    if (token === null || token === undefined) {
-      delete localStorage.jwt;
-    } else {
-      localStorage.jwt = token;
-    }
+    try {
+       // Test webstorage existence.
+       if (!window.localStorage || !window.sessionStorage) throw "exception";
+       // Test webstorage accessibility - Needed for Safari private browsing.
+       if (token === null || token === undefined) {
+         window.localStorage.removeItem("jwt");
+       } else {
+         window.localStorage.setItem("jwt", token);
+       }
+     } catch (e) {
+       localStoragePolyFill();
+     }
   }
 
   GET(url) {

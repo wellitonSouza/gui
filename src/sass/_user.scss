@@ -43,6 +43,7 @@
       display: inline-block;
       padding: 5px 11px;
       background-color: $shark;
+      width: 7em;
   }
 
   .div-img{
@@ -402,6 +403,7 @@
         position:relative;
         left:-18px;
         text-align: left;
+        width:5em;
       }
       .title2{
         position:relative;
@@ -506,9 +508,9 @@
           .lst-entry-users{
             &:hover{
               .badge{
-                width:auto;
+                width:6em;
                 position:relative;
-                left:-50px;
+                left:-40px;
               }
             }
           }

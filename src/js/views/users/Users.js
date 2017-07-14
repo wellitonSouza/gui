@@ -23,11 +23,11 @@ function SummaryItem(props) {
     <div className={selectedClass} title="View details">
      <div className="col hovered">
        <div className="col s12">
-          <div className="col s9 title2">{name}</div>
+          <div className="col s9 title2 truncate">{name}</div>
        </div>
        <div className="col s12 paddingTop10">
-          <div className="col s3 openSans8 truncate">Service:</div>
-          <div className="col s9 text-right subtitle"><label className="badge">{props.user.service}</label></div>
+          <div className="col s3 openSans8">Service:</div>
+          <div className="col s9 text-right subtitle"><label className="badge center-align truncate">{props.user.service}</label></div>
        </div>
      </div>
       <div className="col div-img">
@@ -35,8 +35,8 @@ function SummaryItem(props) {
         <img src="images/user.png"/>
       </div>
       <div className="lst-entry-users-title col div-with-img">
-        <div className="title">{name}</div>
-        <div className="subtitle">{props.user.email}</div>
+        <div className="title truncate">{name}</div>
+        <div className="subtitle truncate">{props.user.email}</div>
       </div>
     </div>
   )

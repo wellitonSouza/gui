@@ -13,6 +13,8 @@ import Filter from "../utils/Filter";
 
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
+import MaterialSelect from "../../components/MaterialSelect";
+
 
 function SummaryItem(props) {
   const selectedClass = "lst-entry-users " + (props.isActive ? " active" : "");
@@ -137,6 +139,12 @@ class DetailItem extends Component {
           <div className="lst-user-line col s12 data">
             <span className='value'> {this.props.user.service} </span>
           </div>
+          <div className="lst-user-line col s12">
+            <span className="field">Profile</span>
+          </div>
+          <div className="lst-user-line col s12 data">
+            <span className="value">{this.props.user.profile}</span>
+          </div>
         </div>
       </span>
     )
@@ -162,7 +170,8 @@ class FStore {
         email: "",
         username: "",
         passwd: "",
-        service: ""
+        service: "",
+        profile: "admin"
       };
       // map used to tell whether a field is invalid or not
       this.invalid = {}
@@ -336,6 +345,15 @@ class UserFormImpl extends Component {
               <label htmlFor="fld_service"
                      data-error="Invalid service. Must contain only lowercase alphanumeric characters or underscores."
                      data-success="">Service</label>
+            </div>
+            <div className="lst-user-line col s12 input-field">
+              <MaterialSelect id="flr_profile" name="profile"
+                              value={this.props.user.profile}
+                              onChange={this.handleChange} >
+                <option value="admin">admin</option>
+                <option value="user">user</option>
+              </MaterialSelect>
+              <label htmlFor="fld_profile">Profile type</label>
             </div>
           </div>
 

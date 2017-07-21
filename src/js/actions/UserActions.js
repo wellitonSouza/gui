@@ -61,12 +61,15 @@ class UserActions {
     }
   }
 
-  triggerRemoval(user) {
+  triggerRemoval(user, cb) {
     return (dispatch) => {
       dispatch()
       userManager.deleteUser(user.id)
         .then((response) => {
           this.removeSingle(user.id);
+          if(cb){
+            cb(response);
+          }
         })
         .catch((error) => {
           const msg = "Failed to remove given user";

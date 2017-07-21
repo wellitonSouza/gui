@@ -63,6 +63,56 @@ class ListItem extends Component {
   }
 }
 
+
+class RemoveDialog extends Component {
+  constructor(props) {
+    super(props);
+
+    this.dismiss = this.dismiss.bind(this);
+    this.remove = this.remove.bind(this);
+  }
+
+  componentDidMount() {
+    // materialize jquery makes me sad
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(modalElement).ready(function() {
+      $('.modal').modal();
+    })
+  }
+
+  dismiss(event) {
+    event.preventDefault();
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(modalElement).modal('close');
+  }
+
+  remove(event) {
+    event.preventDefault();
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(modalElement).modal('close');
+    this.props.callback(event);
+  }
+
+  render() {
+    return (
+      <div className="modal" id={this.props.target} ref="modal">
+        <div className="modal-content full">
+          <div className="row center background-info">
+            <div><i className="fa fa-exclamation-triangle fa-4x" /></div>
+            <div>You are about to remove this user.</div>
+            <div>Are you sure?</div>
+          </div>
+        </div>
+        <div className="modal-footer right">
+            <button type="button" className="btn-flat btn-ciano waves-effect waves-light" onClick={this.dismiss}>cancel</button>
+            <button type="submit" className="btn-flat btn-red waves-effect waves-light" onClick={this.remove}>remove</button>
+        </div>
+      </div>
+    )
+  }
+}
+
+
 class DetailItem extends Component {
   constructor(props) {
     super(props);
@@ -108,7 +158,7 @@ class DetailItem extends Component {
                 <a className="btn-floating waves-red right" onClick={this.handleEdit} title="Edit user">
                   <i className="material-icons">mode_edit</i>
                 </a>
-                <a className="btn-floating waves-red right" onClick={this.handleRemove} title="Remove user">
+                <a className="btn-floating waves-red right" onClick={(e) => {e.preventDefault(); $('#confirmDiag').modal('open');}}  title="Remove user">
                   <i className="fa fa-trash" />
                 </a>
               </div>
@@ -447,8 +497,11 @@ class UserList extends Component {
       UserActions.triggerUpdate(user);
   }
 
-  deleteUser(user) {
-    UserActions.triggerRemoval(user);
+  deleteUser(e) {
+    e.preventDefault();
+    UserActions.triggerRemoval(this.state.user, () => {
+      Materialize.toast('User removed', 4000);
+    });
     const state = {detail: undefined, create: undefined};
     this.setState(state);
   }
@@ -555,18 +608,16 @@ class UserList extends Component {
 
     return (
       <div className="fill">
+        <RemoveDialog callback={this.deleteUser} target="confirmDiag" />
         <div className="flex-wrapper">
           {/* TODO promote this */}
           <div className="row z-depth-2 userSubHeader p0" id="inner-header">
             <div className="col s4 m4 main-title">List of Users</div>
-
             <div className="col s2 m2 header-card-info">
               <div className="title"># Users</div>
               <div className="subtitle">{this.state.listOfUser.length}</div>
             </div>
-
             <div className="col s4 header-card-info"></div>
-
             <div className="col s6 m2 button">
               <a id="btnNewUser" className="waves-effect waves-light btn-flat" onClick={this.handleCreate}>New User</a>
             </div>

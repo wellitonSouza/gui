@@ -21,13 +21,16 @@ class UserActions {
     return user;
   }
 
-  addUser(user) {
+  addUser(user, cb) {
     const newUser = user;
     return (dispatch) => {
       dispatch();
       userManager.addUser(newUser)
         .then((response) => {
           this.insertUser(response.user);
+          if(cb){
+            cb(response);
+          }
         })
         .catch((error) => {
           this.usersFailed("Failed to add User to list");

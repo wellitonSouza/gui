@@ -586,7 +586,9 @@ class UserList extends Component {
   }
 
   newUser(user) {
-    UserActions.addUser(user);
+    UserActions.addUser(user, () => {
+      Materialize.toast('User created', 4000);
+    });
     const state = {detail: undefined, create: undefined};
     this.setState(state);
   }

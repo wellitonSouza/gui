@@ -41,3 +41,12 @@ textarea.materialize-textarea.validate + label {
   width: 100%;
   pointer-events: none;
 }
+
+.input-field label:not(.active):after {
+    font-size: 0.8rem;
+    -webkit-transform: translateY(-1.7rem);
+    -moz-transform: translateY(-1.7rem);
+    -ms-transform: translateY(-1.7rem);
+    -o-transform: translateY(-1.7rem);
+    transform: translateY(-1.7rem);
+}

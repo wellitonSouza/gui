@@ -380,7 +380,8 @@ class UserFormImpl extends Component {
     return (
       <span>
         <form onSubmit={this.saveUser}>
-          <div className="lst-line col s12">
+          <div className="row">
+            <div className="lst-line col s12">
               <div className="col s2">
                 <p><img id="imgForm" src="images/user.png"/></p>
               </div>
@@ -388,9 +389,14 @@ class UserFormImpl extends Component {
                 <span>{this.props.title}</span>
                 <p className="subTitle"><b>ID:</b>{this.props.user.id}</p>
               </div>
+            </div>
           </div>
 
-          <div className="lst-user-detail" >
+          <div className="row">
+            <div className="col s12">{this.props.error}</div>
+          </div>
+
+          <div className="lst-user-detail row" >
             <div className="lst-user-line col s12 input-field">
               <input id="fld_Name" type="text" className={this.getValidClass('name')} pattern=".*"
                      name="name" value={this.props.user.name}
@@ -423,7 +429,7 @@ class UserFormImpl extends Component {
                      data-error={this.props.invalid['passwd']}
                      data-success="">Password</label>
             </div>
-            <div className="lst-user-line col s12 input-field">
+            <div className="lst-user-line col s6 input-field">
               <input id="fld_service" type="text" className={this.getValidClass('service')} pattern="[a-z0-9_]+"
                      name="service" value={this.props.user.service}
                      key="service" onChange={this.handleChange} />
@@ -431,7 +437,7 @@ class UserFormImpl extends Component {
                      data-error={this.props.invalid['service']}
                      data-success="">Service</label>
             </div>
-            <div className="lst-user-line col s12 input-field">
+            <div className="lst-user-line col s6 input-field">
               <MaterialSelect id="flr_profile" name="profile"
                               value={this.props.user.profile}
                               onChange={this.handleChange} >
@@ -444,7 +450,13 @@ class UserFormImpl extends Component {
 
           <div className="row right">
             <div className="col">
-              <button type="submit" className="waves-light btn waves">Save</button>
+              <button type="submit" className="waves-light btn waves">
+                { this.props.loading ? (
+                  <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center"/>
+                ) : (
+                  <span>Save</span>
+                )}
+              </button>
             </div>
             <div className="col">
               <a onClick={this.props.dismiss} className="waves-light btn waves">Dismiss</a>
@@ -686,12 +698,14 @@ class UserList extends Component {
                             save={this.newUser}
                             edit={false}
                             error={this.props.error}
+                            loading={this.props.loading}
                             title="New User" />
               ) : this.state.edit != undefined ? (
                   <UserForm dismiss={this.clearSelection}
                             save={UserActions.triggerUpdate}
                             edit={true}
                             error={this.props.error}
+                            loading={this.props.loading}
                             title={this.state.user.name} />
                   ) : (
                   this.state.detail != undefined ? (

@@ -6,6 +6,7 @@ import util from '../comms/util';
 class UserStore {
   constructor() {
     this.users = [];
+    this.loading = false;
     this.error = null;
 
     this.bindListeners({
@@ -29,6 +30,7 @@ class UserStore {
     for (let i = 0; i < users.length; i++) { users[i].passwd = ''; }
     this.users = users;
     this.error = null;
+    this.loading = false;
   }
 
   handleUpdateSingle(user) {
@@ -49,7 +51,7 @@ class UserStore {
   }
 
   handleTriggerRemoval(user) {
-    // trigger handler for updateSingle
+    // trigger handler for removeSingle
     this.error = null;
     this.loading = true;
   }

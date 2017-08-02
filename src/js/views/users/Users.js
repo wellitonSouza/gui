@@ -204,14 +204,50 @@ class DetailItem extends Component {
   }
 }
 
-const FormActions = alt.generateActions('set', 'update', 'reset', 'invalidate');
+function userDataValidate(field, value, edit) {
+  if (edit === undefined || edit === null) { edit = false; }
+
+  let handlers = {
+    email: function(value) {
+      let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return (value.length > 0) && re.test(value);
+    },
+    username: function(value) {
+      let re = /^[a-z0-9_]+$/;
+      return re.test(value);
+    },
+    passwd: function(value) {
+      if (edit == true && value.length == 0) { return true; }
+      return value.length > 0;
+    },
+    name: function(value) {
+      return value.length > 0;
+    },
+    service: function(value) {
+      let re = /^[a-z0-9_]+$/;
+      return re.test(value);
+    }
+  }
+
+  if (field in handlers) {
+    const result = handlers[field](value);
+    return result;
+  }
+
+  return true;
+}
+
+const FormActions = alt.generateActions('set', 'update', 'edit', 'check');
 class FStore {
   constructor() {
     this.user = {};
+    this.invalid = {};
+    this.edit = false;
     this.bindListeners({
       set: FormActions.SET,
       update: FormActions.UPDATE,
-      invalidate: FormActions.INVALIDATE,
+      handleEdit: FormActions.EDIT,
+      check: FormActions.CHECK,
     });
     this.set(null);
   }
@@ -229,16 +265,32 @@ class FStore {
       // map used to tell whether a field is invalid or not
       this.invalid = {}
     } else {
-      this.user = user;
+      this.user = JSON.parse(JSON.stringify(user));
+      for (let k in this.user) {
+        if (this.user.hasOwnProperty(k)) {
+          this.invalid[k] = !userDataValidate(k, this.user[k], this.edit);
+        }
+      }
+    }
+  }
+
+  check(field) {
+    if (this.user.hasOwnProperty(field)){
+      this.invalid[field] = !userDataValidate(field, this.user[field], this.edit);
     }
   }
 
   update(diff) {
     this.user[diff.f] = diff.v;
+    this.invalid[diff.f] = !userDataValidate(diff.f, diff.v, this.edit);
   }
 
-  invalidate(pair) {
-    this.invalid[pair.key] = pair.value;
+  handleEdit(flag) {
+    if (flag === undefined || flag === null) {
+      this.edit = false;
+    } else {
+      this.edit = flag;
+    }
   }
 }
 var FormStore = alt.createStore(FStore, 'FormStore');
@@ -262,7 +314,6 @@ class UserFormImpl extends Component {
     super(props);
     this.saveUser = this.saveUser.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.validate = this.validate.bind(this);
     this.isValid = this.isValid.bind(this);
     this.getValidClass = this.getValidClass.bind(this);
   }
@@ -275,51 +326,20 @@ class UserFormImpl extends Component {
     Materialize.updateTextFields();
   }
 
-  validate(name, value) {
-    let handlers = {
-      email: function(value) {
-        let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return (value.length > 0) && re.test(value);
-      },
-      username: function(value) {
-        let re = /^[a-z0-9_]+$/;
-        return re.test(value);
-      },
-      passwd: function(value) {
-        return value.length > 0;
-      },
-      name: function(value) {
-        return value.length > 0;
-      },
-      service: function(value) {
-        let re = /^[a-z0-9_]+$/;
-        return re.test(value);
-      }
-    }
-
-    if (name in handlers) {
-      return handlers[name](value);
-    }
-
-    return true;
-  }
-
   saveUser(e) {
     e.preventDefault();
     let valid = true;
     for (let k in this.props.user) {
-      if (this.props.user.hasOwnProperty(k)) {
-        if (this.validate(k,this.props.user[k]) == false) {
-          FormActions.invalidate({key: k, value: true});
-          valid = false;
-        }
+      if (userDataValidate(k, this.props.user[k], this.props.edit) == false) {
+        FormActions.check(k);
+        valid = false;
       }
     }
 
     if (valid) {
       this.props.save(this.props.user);
+      FormActions.update({f: 'passwd', v: ''});
     } else {
-      this.forceUpdate();
       Materialize.toast('Failed to validate user data', 4000);
     }
   }
@@ -328,20 +348,20 @@ class UserFormImpl extends Component {
     e.preventDefault();
     const f = e.target.name;
     const v = e.target.value;
-    FormActions.update({f: f, v: v});
+    FormActions.update({f: f, v: v, e: this.props.edit});
   }
 
   isValid(name) {
     if (name in this.props.invalid) {
-      return this.props.invalid[name];
+      return !this.props.invalid[name];
     }
 
-    return false;
+    return true;
   }
 
   getValidClass(name) {
-    if (this.isValid(name) == false) return "validate";
-    return "validate " + "invalid"
+    if (this.isValid(name)) return "react-validate";
+    return "react-validate invalid";
   }
 
   render() {
@@ -364,7 +384,7 @@ class UserFormImpl extends Component {
                      name="name" value={this.props.user.name}
                      key="name" onChange={this.handleChange} />
               <label htmlFor="fld_Name"
-                     data-error="Required field"
+                     data-error="You can't leave this empty"
                      data-success="">Name</label>
             </div>
             <div className="lst-user-line col s12 input-field">
@@ -372,15 +392,15 @@ class UserFormImpl extends Component {
                      name="email" value={this.props.user.email}
                      key="email" onChange={this.handleChange} />
               <label htmlFor="fld_Email"
-                     data-error="Invalid email address"
+                     data-error="Please enter a valid email address"
                      data-success="">Email</label>
             </div>
             <div className="lst-user-line col s12 input-field">
-              <input id="fld_login" type="text" className={this.getValidClass('username')} pattern="[a-z0-9_]+"
+              <input id="fld_login" type="text" className={this.getValidClass('username')}
                      name="username" value={this.props.user.username}
                      key="username" onChange={this.handleChange} />
               <label htmlFor="fld_login"
-                     data-error="Invalid login. Must contain only lowercase alphanumeric characters or underscores."
+                     data-error="Please use only letters (a-z), numbers (0-9) and underscores (_)."
                      data-success="">Username</label>
             </div>
             <div className="lst-user-line col s12 input-field">
@@ -388,7 +408,7 @@ class UserFormImpl extends Component {
                      name="passwd" value={this.props.user.passwd}
                      key="passwd" onChange={this.handleChange} />
               <label htmlFor="fld_password"
-                     data-error="Required field"
+                     data-error="You can't leave this empty"
                      data-success="">Password</label>
             </div>
             <div className="lst-user-line col s12 input-field">
@@ -396,7 +416,7 @@ class UserFormImpl extends Component {
                      name="service" value={this.props.user.service}
                      key="service" onChange={this.handleChange} />
               <label htmlFor="fld_service"
-                     data-error="Invalid service. Must contain only lowercase alphanumeric characters or underscores."
+                     data-error="Please use only letters (a-z), numbers (0-9) and underscores (_)."
                      data-success="">Service</label>
             </div>
             <div className="lst-user-line col s12 input-field">
@@ -440,7 +460,6 @@ class UserList extends Component {
       height: undefined
     };
 
-    this.handleFieldChange = this.handleFieldChange.bind(this);
     this.clearSelection = this.clearSelection.bind(this);
     this.detailedUser = this.detailedUser.bind(this);
     this.editUser = this.editUser.bind(this);
@@ -459,12 +478,6 @@ class UserList extends Component {
     this.newUser = this.newUser.bind(this);
   }
 
-  handleFieldChange(e) {
-    let state = this.state;
-    state[e.target.name] = e.target.value;
-    this.setState(state);
-  }
-
   clearSelection() {
     let temp = this.state;
     temp.edit = undefined;
@@ -477,6 +490,7 @@ class UserList extends Component {
   detailedUser(user) {
     let temp = this.state;
     temp.detail = user.id;
+    FormActions.edit(true);
     FormActions.set(user);
     temp.user = user;
     temp.create = undefined;
@@ -510,6 +524,7 @@ class UserList extends Component {
   }
 
   handleCreate() {
+    FormActions.edit(false);
     FormActions.set(null);
     this.clearSelection();
     let temp = this.state;
@@ -563,7 +578,6 @@ class UserList extends Component {
   isLastPage() {
     return this.state.listOfUser.length <= ((this.state.current) * this.state.usersByPage);
   }
-
 
   prevPage(list) {
     let state = this.state;
@@ -658,10 +672,14 @@ class UserList extends Component {
               {this.state.create != undefined ? (
                   <UserForm dismiss={this.clearSelection}
                             save={this.newUser}
+                            edit={false}
+                            error={this.props.error}
                             title="New User" />
               ) : this.state.edit != undefined ? (
                   <UserForm dismiss={this.clearSelection}
                             save={UserActions.triggerUpdate}
+                            edit={true}
+                            error={this.props.error}
                             title={this.state.user.name} />
                   ) : (
                   this.state.detail != undefined ? (

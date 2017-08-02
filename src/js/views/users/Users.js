@@ -329,15 +329,17 @@ class UserFormImpl extends Component {
   saveUser(e) {
     e.preventDefault();
     let valid = true;
-    for (let k in this.props.user) {
-      if (userDataValidate(k, this.props.user[k], this.props.edit) == false) {
+    let user = JSON.parse(JSON.stringify(this.props.user));
+    for (let k in user) {
+      user[k] = user[k].trim();
+      if (userDataValidate(k, user[k], this.props.edit) == false) {
         FormActions.check(k);
         valid = false;
       }
     }
 
     if (valid) {
-      this.props.save(this.props.user);
+      this.props.save(user);
       FormActions.update({f: 'passwd', v: ''});
     } else {
       Materialize.toast('Failed to validate user data', 4000);

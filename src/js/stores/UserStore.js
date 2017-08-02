@@ -26,6 +26,7 @@ class UserStore {
   }
 
   handleUpdateUserList(users) {
+    for (let i = 0; i < users.length; i++) { users[i].passwd = ''; }
     this.users = users;
     this.error = null;
   }
@@ -34,6 +35,7 @@ class UserStore {
     for (let i = 0; i < this.users.length; i++) {
       if (this.users[i].id == user.id) {
         let newUser = JSON.parse(JSON.stringify(user))
+        newUser.password = ""
         this.users[i] = newUser;
       }
     }

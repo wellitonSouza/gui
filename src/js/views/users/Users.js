@@ -684,57 +684,35 @@ class UserList extends Component {
 }
 
 class Users extends Component {
-
-  constructor(props) {
-    super(props);
-
-    this.state = UserStore.getState();
-    this.onChange = this.onChange.bind(this);
-
-  }
-
   componentDidMount() {
-
-    let loggedUser = LoginStore.getState();
-
-    if(loggedUser.user.profile == "admin"){
-      UserStore.listen(this.onChange);
+    if(LoginStore.getState().user.profile == "admin"){
       UserActions.fetchUsers.defer();
     }
-
-  }
-
-  componentWillUnmount() {
-    UserStore.unlisten(this.onChange);
-  }
-
-  onChange(newState) {
-    this.setState(UserStore.getState());
   }
 
   filterChange(newFilter) {
+    // TODO
   }
 
   render() {
-
-    let loggedUser = LoginStore.getState();
-
-    return (
-        loggedUser.user.profile == "admin" ? (
-          <span id="userMain" className="flex-wrapper">
-            <PageHeader title="Auth" subtitle="Users">
-              <Filter onChange={this.filterChange} />
-            </PageHeader>
-            <UserList users={this.state.users} />
-            {console.log(loggedUser.user.profile)}
-          </span>
-        ) : (
-          <span id="userMain" className="flex-wrapper">
-           <AutheticationFailed />
-           {console.log(loggedUser.user.profile)}
-          </span>
-        )   
-    );
+    if(LoginStore.getState().user.profile == "admin") {
+      return (
+        <span id="userMain" className="flex-wrapper">
+          <PageHeader title="Auth" subtitle="Users">
+            <Filter onChange={this.filterChange} />
+          </PageHeader>
+          <AltContainer store={UserStore} >
+            <UserList />
+          </AltContainer>
+        </span>
+      );
+    } else {
+      return (
+        <span id="userMain" className="flex-wrapper">
+         <AutheticationFailed />
+        </span>
+      );
+    }
   }
 }
 

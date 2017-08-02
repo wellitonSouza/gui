@@ -27,7 +27,12 @@ class UserActions {
       dispatch();
       userManager.addUser(newUser)
         .then((response) => {
-          this.insertUser(response.user);
+          // @bug: backend won't return full public record of the created user, so merge the
+          //       server-side data (id) with the known record of the user.
+          let updatedUser = JSON.parse(JSON.stringify(newUser));
+          updatedUser['id'] = response.user.id;
+          updatedUser['passwd'] = '';
+          this.insertUser(updatedUser);
           if(cb){
             cb(response);
           }
@@ -54,6 +59,11 @@ class UserActions {
   triggerUpdate(user) {
     return (dispatch) => {
       dispatch()
+      // special case (for now): allow edits to not repeat the password
+      if (user.passwd.trim().length == 0) {
+        delete user.passwd;
+      }
+
       userManager.setUser(user)
         .then((response) => {
           this.updateSingle(user);

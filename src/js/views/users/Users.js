@@ -14,6 +14,9 @@ import Filter from "../utils/Filter";
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import MaterialSelect from "../../components/MaterialSelect";
+import AutheticationFailed from "../../components/AuthenticationFailed";
+
+import LoginStore from "../../stores/LoginStore";
 
 
 function SummaryItem(props) {
@@ -687,11 +690,18 @@ class Users extends Component {
 
     this.state = UserStore.getState();
     this.onChange = this.onChange.bind(this);
+
   }
 
   componentDidMount() {
-    UserStore.listen(this.onChange);
-    UserActions.fetchUsers.defer();
+
+    let loggedUser = LoginStore.getState();
+
+    if(loggedUser.user.profile == "admin"){
+      UserStore.listen(this.onChange);
+      UserActions.fetchUsers.defer();
+    }
+
   }
 
   componentWillUnmount() {
@@ -706,13 +716,24 @@ class Users extends Component {
   }
 
   render() {
+
+    let loggedUser = LoginStore.getState();
+
     return (
-      <span id="userMain" className="flex-wrapper">
-          <PageHeader title="Auth" subtitle="Users">
-            <Filter onChange={this.filterChange} />
-          </PageHeader>
-          <UserList users={this.state.users} />
-      </span>
+        loggedUser.user.profile == "admin" ? (
+          <span id="userMain" className="flex-wrapper">
+            <PageHeader title="Auth" subtitle="Users">
+              <Filter onChange={this.filterChange} />
+            </PageHeader>
+            <UserList users={this.state.users} />
+            {console.log(loggedUser.user.profile)}
+          </span>
+        ) : (
+          <span id="userMain" className="flex-wrapper">
+           <AutheticationFailed />
+           {console.log(loggedUser.user.profile)}
+          </span>
+        )   
     );
   }
 }

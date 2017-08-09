@@ -412,6 +412,7 @@ class UserFormImpl extends Component {
             <div className="lst-user-line col s12 input-field">
               <input id="fld_login" type="text" className={this.getValidClass('username')}
                      name="username" value={this.props.user.username}
+                     disabled={this.props.edit}
                      key="username" onChange={this.handleChange} />
               <label htmlFor="fld_login"
                      data-error={this.props.invalid['username']}

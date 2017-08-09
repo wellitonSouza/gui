@@ -392,10 +392,6 @@ class UserFormImpl extends Component {
             </div>
           </div>
 
-          <div className="row">
-            <div className="col s12">{this.props.error}</div>
-          </div>
-
           <div className="lst-user-detail row" >
             <div className="lst-user-line col s12 input-field">
               <input id="fld_Name" type="text" className={this.getValidClass('name')} pattern=".*"
@@ -535,7 +531,9 @@ class UserList extends Component {
   }
 
   updateUser(user) {
-      UserActions.triggerUpdate(user);
+    UserActions.triggerUpdate(user, () => {
+      Materialize.toast("User updated", 4000);
+    });
   }
 
   deleteUser(e) {
@@ -702,7 +700,7 @@ class UserList extends Component {
                             title="New User" />
               ) : this.state.edit != undefined ? (
                   <UserForm dismiss={this.clearSelection}
-                            save={UserActions.triggerUpdate}
+                            save={this.updateUser}
                             edit={true}
                             error={this.props.error}
                             loading={this.props.loading}

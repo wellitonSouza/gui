@@ -56,7 +56,7 @@ class UserActions {
     }
   }
 
-  triggerUpdate(user) {
+  triggerUpdate(user, cb) {
     return (dispatch) => {
       dispatch()
       // special case (for now): allow edits to not repeat the password
@@ -67,6 +67,9 @@ class UserActions {
       userManager.setUser(user)
         .then((response) => {
           this.updateSingle(user);
+          if (cb) {
+            cb();
+          }
         })
         .catch((error) => {
           this.usersFailed("Failed to update given user");

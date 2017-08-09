@@ -21,7 +21,7 @@ class UserActions {
     return user;
   }
 
-  addUser(user, cb) {
+  addUser(user, cb, error_cb) {
     const newUser = user;
     return (dispatch) => {
       dispatch();
@@ -39,6 +39,12 @@ class UserActions {
         })
         .catch((error) => {
           this.usersFailed("Failed to add User to list");
+          error.data.json()
+            .then((data) => {
+              if (error_cb) {
+                error_cb(data);
+              }
+            })
         })
     }
   }
@@ -56,7 +62,7 @@ class UserActions {
     }
   }
 
-  triggerUpdate(user, cb) {
+  triggerUpdate(user, cb, error_cb) {
     return (dispatch) => {
       dispatch()
       // special case (for now): allow edits to not repeat the password
@@ -73,6 +79,12 @@ class UserActions {
         })
         .catch((error) => {
           this.usersFailed("Failed to update given user");
+          error.data.json()
+            .then((data) => {
+              if (error_cb) {
+                error_cb(data);
+              }
+            })
         })
     }
   }

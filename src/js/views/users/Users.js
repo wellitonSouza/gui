@@ -247,7 +247,7 @@ function userDataValidate(field, value, edit) {
   return undefined;
 }
 
-const FormActions = alt.generateActions('set', 'update', 'edit', 'check');
+const FormActions = alt.generateActions('set', 'update', 'edit', 'check', 'invalidate');
 class FStore {
   constructor() {
     this.user = {};
@@ -258,6 +258,7 @@ class FStore {
       update: FormActions.UPDATE,
       handleEdit: FormActions.EDIT,
       check: FormActions.CHECK,
+      invalidate: FormActions.INVALIDATE,
     });
     this.set(null);
   }
@@ -293,6 +294,10 @@ class FStore {
   update(diff) {
     this.user[diff.f] = diff.v;
     this.invalid[diff.f] = userDataValidate(diff.f, diff.v, this.edit);
+  }
+
+  invalidate(map) {
+    this.invalid[map.key] = map.value;
   }
 
   handleEdit(flag) {
@@ -350,7 +355,6 @@ class UserFormImpl extends Component {
 
     if (valid) {
       this.props.save(user);
-      FormActions.update({f: 'passwd', v: ''});
     } else {
       Materialize.toast('Failed to validate user data', 4000);
     }
@@ -465,6 +469,21 @@ class UserFormImpl extends Component {
   }
 }
 
+function errorTranslate(error) {
+  const messages = [
+    // TODO 'to' field should come from i18n
+    {from: "email already in use", to: "E-mail already in use", field: 'email'},
+    {from: "user already exists", to: "User already exists", field: 'username'}
+  ]
+
+  for (let i = 0; i < messages.length; ++i) {
+    if (error === messages[i].from) {
+      FormActions.invalidate({key: messages[i].field, value: messages[i].to});
+      break;
+    }
+  }
+}
+
 class UserList extends Component {
   constructor(props) {
     super(props);
@@ -534,6 +553,10 @@ class UserList extends Component {
   updateUser(user) {
     UserActions.triggerUpdate(user, () => {
       Materialize.toast("User updated", 4000);
+      FormActions.update({f: 'passwd', v: ''});
+    }, (data) => {
+      errorTranslate(data.message);
+      Materialize.toast("Failed to update user", 4000);
     });
   }
 
@@ -626,11 +649,14 @@ class UserList extends Component {
   }
 
   newUser(user) {
-    UserActions.addUser(user, () => {
+    UserActions.addUser(user, (data) => {
       Materialize.toast('User created', 4000);
+      FormActions.update({f: 'passwd', v: ''});
+      this.setState({detail: undefined, create: undefined, edit: undefined});
+    }, (data) => {
+      errorTranslate(data.message);
+      Materialize.toast("Failed to create user", 4000);
     });
-    const state = {detail: undefined, create: undefined};
-    this.setState(state);
   }
 
   render() {

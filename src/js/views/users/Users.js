@@ -207,25 +207,35 @@ class DetailItem extends Component {
 function userDataValidate(field, value, edit) {
   if (edit === undefined || edit === null) { edit = false; }
 
+  // TODO those should come from i18n
+  const mandatory = "You can't leave this empty.";
+  const alnum = "Please use only letters (a-z), numbers (0-9) and underscores (_).";
+  const email = "Please enter a valid email address.";
   let handlers = {
     email: function(value) {
-      let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      return (value.length > 0) && re.test(value);
+      const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      if (value.length == 0) { return mandatory; }
+      return re.test(value) ? undefined : email;
     },
     username: function(value) {
-      let re = /^[a-z0-9_]+$/;
-      return re.test(value);
+      const re = /^[a-z0-9_]+$/;
+      if (value.length == 0) { return mandatory; }
+      return re.test(value) ? undefined : alnum;
     },
     passwd: function(value) {
-      if (edit == true && value.length == 0) { return true; }
-      return value.length > 0;
+      if (edit == true && value.length == 0) { return undefined; }
+      return (value.length == 0) ? mandatory : undefined;
     },
     name: function(value) {
-      return value.length > 0;
+      return (value.length == 0) ? mandatory : undefined;
+    },
+    profile: function(value) {
+      return (value.length == 0) ? mandatory : undefined;
     },
     service: function(value) {
-      let re = /^[a-z0-9_]+$/;
-      return re.test(value);
+      const re = /^[a-z0-9_]+$/;
+      if (value.length == 0) { return mandatory; }
+      return re.test(value) ? undefined : alnum;
     }
   }
 
@@ -234,7 +244,7 @@ function userDataValidate(field, value, edit) {
     return result;
   }
 
-  return true;
+  return undefined;
 }
 
 const FormActions = alt.generateActions('set', 'update', 'edit', 'check');
@@ -268,7 +278,7 @@ class FStore {
       this.user = JSON.parse(JSON.stringify(user));
       for (let k in this.user) {
         if (this.user.hasOwnProperty(k)) {
-          this.invalid[k] = !userDataValidate(k, this.user[k], this.edit);
+          this.invalid[k] = userDataValidate(k, this.user[k], this.edit);
         }
       }
     }
@@ -276,13 +286,13 @@ class FStore {
 
   check(field) {
     if (this.user.hasOwnProperty(field)){
-      this.invalid[field] = !userDataValidate(field, this.user[field], this.edit);
+      this.invalid[field] = userDataValidate(field, this.user[field], this.edit);
     }
   }
 
   update(diff) {
     this.user[diff.f] = diff.v;
-    this.invalid[diff.f] = !userDataValidate(diff.f, diff.v, this.edit);
+    this.invalid[diff.f] = userDataValidate(diff.f, diff.v, this.edit);
   }
 
   handleEdit(flag) {
@@ -332,7 +342,7 @@ class UserFormImpl extends Component {
     let user = JSON.parse(JSON.stringify(this.props.user));
     for (let k in user) {
       user[k] = user[k].trim();
-      if (userDataValidate(k, user[k], this.props.edit) == false) {
+      if (userDataValidate(k, user[k], this.props.edit) !== undefined) {
         FormActions.check(k);
         valid = false;
       }
@@ -355,7 +365,7 @@ class UserFormImpl extends Component {
 
   isValid(name) {
     if (name in this.props.invalid) {
-      return !this.props.invalid[name];
+      return this.props.invalid[name] === undefined ;
     }
 
     return true;
@@ -386,7 +396,7 @@ class UserFormImpl extends Component {
                      name="name" value={this.props.user.name}
                      key="name" onChange={this.handleChange} />
               <label htmlFor="fld_Name"
-                     data-error="You can't leave this empty"
+                     data-error={this.props.invalid['name']}
                      data-success="">Name</label>
             </div>
             <div className="lst-user-line col s12 input-field">
@@ -394,7 +404,7 @@ class UserFormImpl extends Component {
                      name="email" value={this.props.user.email}
                      key="email" onChange={this.handleChange} />
               <label htmlFor="fld_Email"
-                     data-error="Please enter a valid email address"
+                     data-error={this.props.invalid['email']}
                      data-success="">Email</label>
             </div>
             <div className="lst-user-line col s12 input-field">
@@ -402,7 +412,7 @@ class UserFormImpl extends Component {
                      name="username" value={this.props.user.username}
                      key="username" onChange={this.handleChange} />
               <label htmlFor="fld_login"
-                     data-error="Please use only letters (a-z), numbers (0-9) and underscores (_)."
+                     data-error={this.props.invalid['username']}
                      data-success="">Username</label>
             </div>
             <div className="lst-user-line col s12 input-field">
@@ -410,7 +420,7 @@ class UserFormImpl extends Component {
                      name="passwd" value={this.props.user.passwd}
                      key="passwd" onChange={this.handleChange} />
               <label htmlFor="fld_password"
-                     data-error="You can't leave this empty"
+                     data-error={this.props.invalid['passwd']}
                      data-success="">Password</label>
             </div>
             <div className="lst-user-line col s12 input-field">
@@ -418,7 +428,7 @@ class UserFormImpl extends Component {
                      name="service" value={this.props.user.service}
                      key="service" onChange={this.handleChange} />
               <label htmlFor="fld_service"
-                     data-error="Please use only letters (a-z), numbers (0-9) and underscores (_)."
+                     data-error={this.props.invalid['service']}
                      data-success="">Service</label>
             </div>
             <div className="lst-user-line col s12 input-field">

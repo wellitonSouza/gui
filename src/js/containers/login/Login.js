@@ -15,20 +15,50 @@ class Content extends Component {
       login: {
         username: "",
         passwd: ""
-      }
+      },
+      invalid: {},
+      error: ""
     }
 
     this.login = this.login.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.validate = this.validate.bind(this);
   }
 
   componentDidMount() {
     let callback = this.handleChange.bind(this);
   }
 
+  validate() {
+    console.log(this.state)
+    let result = {};
+    let invalid = {}
+    const username = /^[a-z0-9_]+$/;
+    if (this.state.login.username.trim().length == 0) {
+      invalid['username'] = "This can't be empty";
+    } else if (username.test(this.state.login.username) == false) {
+      result.error = "Authentication failed";
+    }
+
+    if (this.state.login.passwd.trim().length == 0) {
+      invalid['passwd'] = "This can't be empty";
+    }
+
+    console.log(invalid);
+    if (Object.keys(invalid).length > 0) { result['invalid'] = invalid; }
+    return Object.keys(result).length > 0 ? result : undefined;
+  }
+
   login(e) {
     e.preventDefault();
-    LoginActions.authenticate(JSON.parse(JSON.stringify(this.state.login)));
+    const results = this.validate();
+    console.log(results);
+    if (results !== undefined) {
+      this.setState(results);
+    } else {
+      this.setState({error: '', invalid: {}})
+      LoginActions.authenticate(JSON.parse(JSON.stringify(this.state.login)));
+    }
   }
 
   handleChange(event) {
@@ -41,6 +71,21 @@ class Content extends Component {
   }
 
   render() {
+    const state = this.state;
+    const error = this.props.error;
+
+    function getClass(field) {
+      if (state.invalid.hasOwnProperty(field)) {
+        return "react-validate invalid";
+      } else {
+        return "react-validate";
+      }
+    }
+
+    function getError() {
+      return state.error.length > 0 ? state.error : error;
+    }
+
     return (
       <div className="login">
         <div className="row">
@@ -73,7 +118,7 @@ class Content extends Component {
               <div className="row">
                 <div className="col s12 m4 offset-m4">
                   <div className="login-page-error">
-                    {this.props.error}<i className="material-icons prefix">info_outline</i>
+                    {getError()}<i className="material-icons prefix">info_outline</i>
                   </div>
                 </div>
               </div>
@@ -81,20 +126,22 @@ class Content extends Component {
             <form onSubmit={this.login}>
               <div className="row">
                   <div className="input-field col s12 m4 offset-m4">
-                    <label htmlFor="fld_user">Username</label>
                     <input id="fld_user" type="text"
-                           name="username"
+                           name="username"  className={getClass('username')}
                            onChange={this.handleChange}
                            value={this.state.login.user} />
-                           <i className="material-icons prefix">account_circle</i>
+                    <label htmlFor="fld_user" data-success=""
+                           data-error={this.state.invalid.username}>Username</label>
+                    <i className="material-icons prefix">account_circle</i>
                   </div>
                   <div className="input-field col s12 m4 offset-m4">
-                    <label htmlFor="fld_password">Password</label>
                     <input id="fld_password" type="password"
-                           name="passwd"
+                           name="passwd" className={getClass('passwd')}
                            onChange={this.handleChange}
                            value={this.state.login.password} />
-                           <i className="material-icons prefix">lock_open</i>
+                    <label htmlFor="fld_password" data-success=""
+                           data-error={this.state.invalid.passwd}>Password</label>
+                    <i className="material-icons prefix">lock_open</i>
                   </div>
               </div>
               <div className="row">
@@ -104,15 +151,15 @@ class Content extends Component {
               </div>
               <div className="row">
                 <div className="col s12 m1 offset-m7">
-                    {/* { this.props.loading ? (
-                      <button type="" className=" waves-effect waves-green btn-flat">
+                    { this.props.loading ? (
+                      <button type="submit" className="waves-effect waves-dark btn-flat">
                         <i className="fa fa-circle-o-notch fa-spin fa-fw"/>
                       </button>
-                    ) : ( */}
-                      <button type="submit" className=" waves-effect waves-dark btn-flat">
+                    ) : (
+                      <button type="submit" className="waves-effect waves-dark btn-flat">
                         Login
                       </button>
-                    {/* )} */}
+                    )}
                 </div>
               </div>
             </form>

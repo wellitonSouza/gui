@@ -43,6 +43,53 @@
     border-bottom: 1px solid #fff !important;
     box-shadow: none !important;
   }
+
+  input:not([type]).invalid + label:after,
+  input:not([type]):focus.invalid + label:after,
+  input[type=text].invalid + label:after,
+  input[type=text]:focus.invalid + label:after,
+  input[type=password].invalid + label:after,
+  input[type=password]:focus.invalid + label:after,
+  input[type=email].invalid + label:after,
+  input[type=email]:focus.invalid + label:after,
+  input[type=url].invalid + label:after,
+  input[type=url]:focus.invalid + label:after,
+  input[type=time].invalid + label:after,
+  input[type=time]:focus.invalid + label:after,
+  input[type=date].invalid + label:after,
+  input[type=date]:focus.invalid + label:after,
+  input[type=datetime].invalid + label:after,
+  input[type=datetime]:focus.invalid + label:after,
+  input[type=datetime-local].invalid + label:after,
+  input[type=datetime-local]:focus.invalid + label:after,
+  input[type=tel].invalid + label:after,
+  input[type=tel]:focus.invalid + label:after,
+  input[type=number].invalid + label:after,
+  input[type=number]:focus.invalid + label:after,
+  input[type=search].invalid + label:after,
+  input[type=search]:focus.invalid + label:after,
+  textarea.materialize-textarea.invalid + label:after,
+  textarea.materialize-textarea:focus.invalid + label:after {
+    color: #fff;
+    font-weight: normal;
+  }
+
+  input:not([type]):focus:not([readonly]) + label,
+  input[type=text]:focus:not([readonly]) + label,
+  input[type=password]:focus:not([readonly]) + label,
+  input[type=email]:focus:not([readonly]) + label,
+  input[type=url]:focus:not([readonly]) + label,
+  input[type=time]:focus:not([readonly]) + label,
+  input[type=date]:focus:not([readonly]) + label,
+  input[type=datetime]:focus:not([readonly]) + label,
+  input[type=datetime-local]:focus:not([readonly]) + label,
+  input[type=tel]:focus:not([readonly]) + label,
+  input[type=number]:focus:not([readonly]) + label,
+  input[type=search]:focus:not([readonly]) + label,
+  textarea.materialize-textarea:focus:not([readonly]) + label {
+    color: #fff;
+    font-weight: 900;
+  }
 }
 
 .login-area-right-side .margin-top {
@@ -56,7 +103,7 @@
 /* label color */
 .login-area-right-side .input-field label {
   color: #fff;
-  font-weight: bold;
+  // font-weight: bold;
 }
 
 .login-area-right-side i.material-icons {

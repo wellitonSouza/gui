@@ -133,8 +133,10 @@ class Graph extends Component{
     this.props.data.map((i) => {
       let value = getValue(i);
       if (value !== undefined) {
-        labels.push(util.printTime(Date.parse(i.recvTime)/1000));
-        values.push(value);
+        if (!((value === 0) && (this.props.data.length == 1))){
+          labels.push(util.printTime(Date.parse(i.recvTime)/1000));
+          values.push(value);
+        }
       }
     })
 
@@ -200,11 +202,8 @@ class PositionRenderer extends Component {
   render() {
     function NoData() {
       return (
-        <div className="full-height valign-wrapper background-info subtle relative graph">
-          <div className="horizontal-center">
-            <i className="material-icons">report_problem</i>
-            <div>No position data available</div>
-          </div>
+        <div className="valign-wrapper full-height background-info">
+          <div className="full-width center">No data available</div>
         </div>
       )
     }
@@ -221,6 +220,9 @@ class PositionRenderer extends Component {
     }
 
     const position = [parseFloat(parsed[1]),parseFloat(parsed[3])];
+    if (position[0] == 0 && position[1] == 0) {
+      return (<NoData />)
+    }
 
     return (
       <div className="map full-height">

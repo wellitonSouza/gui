@@ -42,7 +42,7 @@
 
   .btn-flat{
     position: absolute;
-    right: 120px;
+    right: 140px;
   }
 }
 
@@ -267,12 +267,93 @@
 
 .div-btn-side-painel{
   position: absolute;
-  right: 385px;
-  top: 30px;
+  right: 20px;
+  top: 20px;
   z-index: 100110;
 
   &.push-left{
     right: 386px;
+  }
+}
+
+.toggle-icon
+{
+  width: 17px;
+  height: auto;
+  display: inline-block;
+  margin: 0 3px;
+  float:left;
+
+   i
+   {
+       font-size: 21px;
+   }
+
+
+  img
+  {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.toggle-map
+{
+  width: 56px;
+  float: left;
+  display: inline-block;
+}
+
+
+.box-sh
+{
+  padding: 20px;
+  width: auto;
+  position: relative;
+  height: 100%;
+  display: inline-block;
+  float: right;
+
+}
+
+.box-sh-item.active {
+  border-bottom: 5px solid #425A8D;
+  color: #425A8D;
+}
+
+
+.box-sh-item {
+  padding: 16px 10px 10px 10px;
+  width: auto;
+  border-bottom: 5px solid #BDBDBD;
+  color: #828282;
+  height: 100%;
+  display: inline-block;
+  float: left;
+  margin: 0 10px;
+
+  .icon
+  {
+    width: 26px;
+    display: inline-block;
+    float: left;
+    height: 100%;
+    position: relative;
+    padding-top: 3px;
+
+    img {
+      width: 100%;
+    }
+  }
+
+
+  .text
+  {
+    display: inline-block;
+    padding-left: 10px;
+    float: left;
+    text-transform: uppercase;
+    margin: 7px;
   }
 }
 

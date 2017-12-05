@@ -149,7 +149,7 @@ class Sidebar extends Component {
 
     return(
       <div className="col m12">
-        <div className="col m12 div-btn-side-painel" >
+        <div className={"col m12 div-btn-side-painel " + (this.state.sideBarOpened ? 'push-left' : 'no-left')} >
           <button type="button" className='btn btn-circle sideBarToggle' onClick={this.toggleSideBar}>
             <i className={btnSideBarClass} aria-hidden="true"></i>
           </button>

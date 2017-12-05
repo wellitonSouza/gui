@@ -615,9 +615,9 @@ class ListItem extends Component {
                                        onChangeValue={this.handleChangeAttribute}
                                        removeAttribute={this.removeAttribute}/>)}
 
-                    {this.state.device.config.map((attributes, index) =>
-                        <ConfigList key={index} index={index} attributes={attributes} editable={this.state.isEditable}
-                                    onChangeValue={this.handleChangeConfig} removeAttribute={this.removeAttribute}/>)}
+                    {/*{this.state.device.config.map((attributes, index) =>*/}
+                        {/*<ConfigList key={index} index={index} attributes={attributes} editable={this.state.isEditable}*/}
+                                    {/*onChangeValue={this.handleChangeConfig} removeAttribute={this.removeAttribute}/>)}*/}
                 </div>
 
                 <div className={"card-footer  " + (this.state.isConfiguration ? 'config-footer' : '')}>

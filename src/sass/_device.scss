@@ -12,7 +12,7 @@
 
   position: relative;
   width: 100%;
-  height: $page-header-size;
+  //height: $page-header-size;
   animation-name: height-opacity-0-to-100;
   animation-duration: 1.5s;
   animation-iteration-count: 1;
@@ -21,9 +21,13 @@
   .main-title{
     font-family: 'Raleway', sans-serif;
     padding-left:4em;
+    position:relative;
+    top: 10px;
   }
 
   .header-info{
+    position:relative;
+    top: 10px;
     .title
     {
       font-family: 'Open Sans', sans-serif;
@@ -42,6 +46,7 @@
 
   .btn-flat{
     position: absolute;
+    top:15px;
     right: 140px;
   }
 }

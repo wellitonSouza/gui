@@ -5,6 +5,7 @@ import DeviceStore from '../../stores/DeviceStore';
 import DeviceActions from '../../actions/DeviceActions';
 
 import { PageHeader } from "../../containers/full/PageHeader";
+import { NewPageHeader } from "../../containers/full/PageHeader";
 import AltContainer from 'alt-container';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Link } from 'react-router'
@@ -72,7 +73,12 @@ class Devices extends Component {
         transitionAppearTimeout={500}
         transitionEnterTimeout={500}
         transitionLeaveTimeout={500} >
-        <PageHeader title="device manager" subtitle="Devices" shadow='true'></PageHeader>
+        <NewPageHeader title="Devices" subtitle="" icon="device">
+          {/* <Filter onChange={this.filterChange} /> */}
+          {/*<Link to="/device/new" title="Create a new device" className="btn-item btn-floating waves-effect waves-light cyan darken-2">
+            <i className="fa fa-plus"/>
+          </Link> */}
+          </NewPageHeader>
         <AltContainer store={DeviceStore}>
           {this.state.displayList ? (
             <DeviceCardList deviceid={detail} toggle={displayToggle}/>

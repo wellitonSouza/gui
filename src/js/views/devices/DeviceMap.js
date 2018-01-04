@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import deviceManager from '../../comms/devices/DeviceManager';
-import DojotBtnLink from '../../components/DojotButton';
+
 import util from "../../comms/util/util";
 // import DeviceStore from '../../stores/DeviceStore';
 // import DeviceActions from '../../actions/DeviceActions';
@@ -17,6 +17,7 @@ import { Line } from 'react-chartjs-2';
 import { Map, Marker, Popup, TileLayer, Tooltip, ScaleControl } from 'react-leaflet';
 import ReactResizeDetector from 'react-resize-detector';
 import Sidebar from '../../components/DeviceRightSidebar';
+import { DojotBtnLink, DojotButton } from "../../components/DojotButton";
 
 import io from 'socket.io-client';
 
@@ -280,12 +281,13 @@ class DeviceList extends Component {
     let filteredList = this.applyFiltering(validDevices);
     const device_icon  = (<img src='images/icons/chip.png' />)
 
+
     // pos: (k.position != undefined ? k.position : k.static_attrs[0].value.split(",") ),
 
-    const displayDevicesCount = "Showing " + filteredList.length + " of " + validDevices.length + " device(s)";
 
-    return (
-    <div className="flex-wrapper">
+    const displayDevicesCount = "Showing " + filteredList.length + " device(s)";
+
+    return <div className="flex-wrapper">
         <div className="row z-depth-2 devicesSubHeader p0" id="inner-header">
           <div className="col s4 m4 main-title">List of Devices</div>
           <div className="col s4 m4 header-info hide-on-small-only">
@@ -293,7 +295,11 @@ class DeviceList extends Component {
             <div className="subtitle">{displayDevicesCount}</div>
           </div>
           <div className="col s4 m4">
-            <DojotBtnLink to="/device/new" label="New Device" alt="Create a new device" icon="fa fa-plus" />
+            <DojotBtnLink linkto="/device/new" label="New Device" alt="Create a new device" icon="fa fa-plus" />
+            {/* <DojotButton /> */}
+            {/* <Link to="/device/new" title="Create a new device" className="waves-effect waves-light btn-flat"> */}
+              {/* New Device */}
+            {/* </Link> */}
             {this.props.toggle}
           </div>
         </div>
@@ -301,8 +307,7 @@ class DeviceList extends Component {
           <PositionRenderer devices={filteredList} />
           <Sidebar devices={validDevices} hideAll={this.hideAll} showAll={this.showAll} selectedDevice={this.selectedDevice} toggleDisplay={this.toggleDisplay} />
         </div>
-      </div>
-    )
+      </div>;
   }
 }
 

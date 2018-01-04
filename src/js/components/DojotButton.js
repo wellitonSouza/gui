@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router'
+import { Link } from 'react-router';
 
 class DojotBtnLink extends Component {
   constructor(props) {
@@ -8,10 +8,10 @@ class DojotBtnLink extends Component {
 
   render() {
   return (
-    <Link to={this.props.to} className="new-btn-flat red waves-effect waves-light " title={this.props.alt}>
+    <Link to={this.props.linkto} className="new-btn-flat red waves-effect waves-light " title={this.props.alt}>
       {this.props.label} <i className={this.props.icon} />
     </Link>
-    )
+  )
   }
 }
 
@@ -46,4 +46,4 @@ class DojotBtnFlat extends Component {
   }
 }
 
-export default { DojotBtnLink, DojotButton, DojotBtnFlat };
+export { DojotBtnLink, DojotButton, DojotBtnFlat };

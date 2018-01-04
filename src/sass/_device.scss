@@ -1,3 +1,4 @@
+ 
 .no-data-notification
 {
     width: 100%;
@@ -221,18 +222,17 @@
     animation-name: height-opacity-0-to-100;
     animation-duration: 1.0s;
     animation-iteration-count: 1;
+    padding-top: 14px !important;
 
   .main-title{
     font-family: 'Raleway', sans-serif;
     padding-left:4em;
     position:relative;
-    top: 17px;
     font-size: 16px;
   }
 
   .header-info{
     position:relative;
-    top: 10px;
     .title
     {
       font-family: 'Open Sans', sans-serif;
@@ -250,9 +250,7 @@
   }
 
   .btn-flat{
-    position: absolute;
     top:15px;
-    right: 140px;
   }
 }
 
@@ -515,7 +513,7 @@
 
 .box-sh
 {
-  padding: 20px;
+  padding: 0px;
   width: auto;
   position: relative;
   height: 100%;
@@ -533,7 +531,7 @@
   padding: 16px 10px 10px 10px;
   width: auto;
   border-bottom: 5px solid #BDBDBD;
-  color: #828282;
+  color: #969696;
   height: 100%;
   float: left;
   margin: 0 10px;

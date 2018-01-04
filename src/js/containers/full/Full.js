@@ -153,17 +153,6 @@ function SidebarItem(props) {
   // isActive  = true;
   const entryClass = "nav-link" + (isActive ? " active" : "");
 
-  function getSubItemClass(child) {
-    let inner = false;
-    if (child.hasOwnProperty('siblings')) {
-      child.siblings.map((sibling) => {
-        inner = inner || props.router.location.pathname.startsWith(sibling)
-      });
-    }
-
-    return "nav-2nd-item" + (inner ? " active" : "");
-  }
-
   if (props.open) {
     return (
       <li className="nav-item">
@@ -205,9 +194,9 @@ class Sidebar extends Component {
     let entries = [
       { image: 'chip', target: "/device", iconClass: "material-icons mi-ic-memory", label: "Devices", desc: "Known devices and configuration", children: [
         { target: "/device/list", iconClass: "", label: "device", title: "Devices list", siblings: ['/device/id', '/device/new']},
-        { target: "/template/list", iconClass: "", label: "template", title: "Templates list", siblings: ['/template/id', '/template/new']},
         { target: "/alarm?q=device", iconClass: "", label: "alarm", title: "Alarms list"}
       ]},
+      { image: 'template', target: "/template/list", iconClass: "fa fa-cubes", label: "template", desc: "Template management"},
       { image: 'graph', target: "/flows", iconClass: "material-icons mi-device-hub", label: "data flows", desc: "Processing flows to be executed"},
       { image: 'bell', target: "/alarm", iconClass: "fa fa-bell-o", label: "alarms", desc: "System events and alarms"},
       { image: 'auth', target: "/auth", iconClass: "fa fa-unlock-alt", label: "auth", desc: "User and permissions management", children: [

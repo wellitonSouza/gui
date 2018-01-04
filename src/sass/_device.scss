@@ -23,10 +23,9 @@
   display: inline-block;
   width: 80%;
 
-  .attr-fields
+  /*.attr-fields
   {
-    // padding-top: 10px;
-  }
+  }*/
 
   .fix-inputs
   {
@@ -162,8 +161,6 @@
       .empty-layer
       {
         cursor: pointer;
-        height: 100%;
-        width: 100%;
         display: inline;
         position: absolute;
         left: 0px;
@@ -172,8 +169,6 @@
 
       .active-layer
       {
-        height: 100%;
-        width: 100%;
         display: inline;
         position: absolute;
         left: 0px;
@@ -214,27 +209,18 @@
 
 
 
-
 .devicesSubHeader {
-
-  background-color: #fff;
-  padding-bottom:62px;
-  font-size: 16pt;
-  font-family: 'Droid Sans', sans-serif;
-  color: #666;
-  height: 92px;
-  padding-top: 4px !important;
-  margin: 0;
-  z-index: 1000;
-  overflow: hidden;
-
-  position: relative;
-  width: 100%;
-  //height: $page-header-size;
-  animation-name: height-opacity-0-to-100;
-  animation-duration: 1.5s;
-  animation-iteration-count: 1;
-  bottom:5px;
+    background-color: $white;
+    padding-bottom: 62px;
+    color: $black;
+    height: 92px;
+    margin: 0;
+    z-index: 1000;
+    overflow: hidden;
+    width: 100%;
+    animation-name: height-opacity-0-to-100;
+    animation-duration: 1.0s;
+    animation-iteration-count: 1;
 
   .main-title{
     font-family: 'Raleway', sans-serif;
@@ -257,7 +243,7 @@
     .subtitle
     {
       font-family: 'Droid Sans', sans-serif;
-      font-size: 14pt;
+      font-size: 13pt;
       color: $dark-silver;
     }
 
@@ -504,7 +490,6 @@
 {
   width: 17px;
   height: auto;
-  display: inline-block;
   margin: 0 3px;
   float:left;
 
@@ -524,7 +509,6 @@
 .toggle-map
 {
   width: 56px;
-  float: left;
   display: inline-block;
 }
 
@@ -535,7 +519,6 @@
   width: auto;
   position: relative;
   height: 100%;
-  display: inline-block;
   float: right;
 
 }
@@ -552,14 +535,12 @@
   border-bottom: 5px solid #BDBDBD;
   color: #828282;
   height: 100%;
-  display: inline-block;
   float: left;
   margin: 0 10px;
 
   .icon
   {
     width: 26px;
-    display: inline-block;
     float: left;
     height: 100%;
     position: relative;
@@ -573,7 +554,6 @@
 
   .text
   {
-    display: inline-block;
     padding-left: 10px;
     float: left;
     text-transform: uppercase;
@@ -583,9 +563,9 @@
 
 @media screen and (max-width: 600px){
   .title-area{
-      .page-title{
+     /* .page-title{
 
-      }
+      }*/
       .page-subtitle{
         display:none;
       }

@@ -196,7 +196,7 @@ class Sidebar extends Component {
         { target: "/device/list", iconClass: "", label: "device", title: "Devices list", siblings: ['/device/id', '/device/new']},
         { target: "/alarm?q=device", iconClass: "", label: "alarm", title: "Alarms list"}
       ]},
-      { image: 'template', target: "/template/list", iconClass: "fa fa-cubes", label: "template", desc: "Template management"},
+      { image: 'template', target: "/template/list", iconClass: "fa fa-cubes", label: "Templates ", desc: "Template management"},
       { image: 'graph', target: "/flows", iconClass: "material-icons mi-device-hub", label: "data flows", desc: "Processing flows to be executed"},
       { image: 'bell', target: "/alarm", iconClass: "fa fa-bell-o", label: "alarms", desc: "System events and alarms"},
       { image: 'auth', target: "/auth", iconClass: "fa fa-unlock-alt", label: "auth", desc: "User and permissions management", children: [

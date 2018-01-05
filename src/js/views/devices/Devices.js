@@ -10,7 +10,7 @@ import AltContainer from 'alt-container';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Link } from 'react-router'
 
-
+import { DojotBtnLink } from "../../components/DojotButton";
 import {DeviceList} from './DeviceMap';
 import {DeviceCardList} from './DeviceCard';
 
@@ -66,29 +66,23 @@ class Devices extends Component {
 
     const displayToggle = (<ToggleWidget toggleState={this.state.displayList} toggle={this.toggleDisplay} />)
 
-    return (
-      <ReactCSSTransitionGroup
-        transitionName="first"
-        transitionAppear={true}
-        transitionAppearTimeout={500}
-        transitionEnterTimeout={500}
-        transitionLeaveTimeout={500} >
+    return <ReactCSSTransitionGroup transitionName="first" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={500} transitionLeaveTimeout={500}>
         <NewPageHeader title="Devices" subtitle="" icon="device">
           {/* <Filter onChange={this.filterChange} /> */}
           {/*<Link to="/device/new" title="Create a new device" className="btn-item btn-floating waves-effect waves-light cyan darken-2">
             <i className="fa fa-plus"/>
           </Link> */}
-          </NewPageHeader>
+            <DojotBtnLink linkto="/device/new" label="New Device" alt="Create a new device" icon="fa fa-plus" />
+            {displayToggle}
+        </NewPageHeader>
         <AltContainer store={DeviceStore}>
           {this.state.displayList ? (
-            <DeviceCardList deviceid={detail} toggle={displayToggle}/>
-          ):(
-            <DeviceList deviceid={detail} toggle={displayToggle}/>
+            <DeviceCardList deviceid={detail} toggle={displayToggle} />
+          ) : (
+            <DeviceList deviceid={detail} toggle={displayToggle} />
           )}
-
         </AltContainer>
-      </ReactCSSTransitionGroup>
-    );
+      </ReactCSSTransitionGroup>;
   }
 }
 

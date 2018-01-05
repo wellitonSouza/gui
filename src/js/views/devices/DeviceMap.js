@@ -17,7 +17,7 @@ import { Line } from 'react-chartjs-2';
 import { Map, Marker, Popup, TileLayer, Tooltip, ScaleControl } from 'react-leaflet';
 import ReactResizeDetector from 'react-resize-detector';
 import Sidebar from '../../components/DeviceRightSidebar';
-import { DojotBtnLink, DojotButton } from "../../components/DojotButton";
+import { DojotBtnLink } from "../../components/DojotButton";
 
 import io from 'socket.io-client';
 
@@ -295,12 +295,6 @@ class DeviceList extends Component {
             <div className="subtitle">{displayDevicesCount}</div>
           </div>
           <div className="col s4 m4">
-            <DojotBtnLink linkto="/device/new" label="New Device" alt="Create a new device" icon="fa fa-plus" />
-            {/* <DojotButton /> */}
-            {/* <Link to="/device/new" title="Create a new device" className="waves-effect waves-light btn-flat"> */}
-              {/* New Device */}
-            {/* </Link> */}
-            {this.props.toggle}
           </div>
         </div>
         <div className="deviceMapCanvas deviceMapCanvas-map col m12 s12 relative">

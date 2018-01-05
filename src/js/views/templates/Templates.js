@@ -741,29 +741,26 @@ class TemplateList extends Component {
                 </div>
             )
         }
-        return (
-            <div className="full-height relative bg-gray">
-                {filteredList.length > 0 ? (
-                    <div className="col s12 lst-wrapper">
-                        {filteredList.map((device) =>
-                            <ListItem device={device}
-                                      key={device.id}
-                                      detail={this.state.detail}
-                                      detailedTemplate={this.detailedTemplate}
-                                      edit={this.state.edit}
-                                      editTemplate={this.editTemplate}
-                                      updateDevice={this.updateDevice}
-                                      deleteDevice={this.deleteDevice}/>
-                        )}
-                    </div>
-                ) : (
-                    <div className="background-info valign-wrapper full-height">
-                        <span className="horizontal-center">No configured templates</span>
-                    </div>
-                )}
-
-            </div>
-        )
+        return <div className="full-height relative bg-gray">
+            {filteredList.length > 0 ? <div className="col s12 lst-wrapper">
+                {filteredList.map(template => (
+                  <ListItem
+                    device={template}
+                    key={template.id}
+                    detail={this.state.detail}
+                    detailedTemplate={this.detailedTemplate}
+                    edit={this.state.edit}
+                    editTemplate={this.editTemplate}
+                    updateDevice={this.updateDevice}
+                    deleteDevice={this.deleteDevice}
+                  />
+                ))}
+              </div> : <div className="background-info valign-wrapper full-height">
+                <span className="horizontal-center">
+                  No configured templates
+                </span>
+              </div>}
+          </div>;
     }
 }
 

@@ -14,6 +14,13 @@
 .specific-attr
 {
   padding-top: 30px;
+
+  .bg-gray
+  {
+    background: #F7F7F7;
+    padding: 11px;
+    border-radius: 9px;
+  }
 }
 
 .attr-box
@@ -86,11 +93,11 @@
       padding: 20px 10px;
 
       label{
-        font-family:"Roboto", sans-serif;
-        font-style: normal;
-        font-weight: 'bold';
-        font-size: 17px;
         color:$black;
+        font-family: 'Raleway', sans-serif;
+        position: relative;
+        font-size: 16px;
+        font-weight: 500;
       }
 
 
@@ -162,15 +169,15 @@
       .empty-layer
       {
         cursor: pointer;
-        display: inline;
         position: absolute;
         left: 0px;
         top: 0px;
+        width: 100%;
+        height: 100%;
       }
 
       .active-layer
       {
-        display: inline;
         position: absolute;
         left: 0px;
         cursor: pointer;
@@ -179,6 +186,8 @@
         background-color: rgba(42, 42, 42, 0.49);
         text-align: center;
         font-size: 55px;
+        width: 100%;
+        height: 100%;
 
         i{
           color: $white;

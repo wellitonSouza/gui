@@ -260,7 +260,7 @@ class SpecificAttrs extends Component {
             <div className="attr-title">Specific Attributes</div>
         </div>
           {( this.props.attrs.length > 0) ? (
-            <div className="col s12">
+            <div className="col s12 bg-gray">
               {
                 this.props.attrs.map((attr) =>
                       <div key={attr.label} className="col s4 attr-fields">
@@ -487,8 +487,8 @@ class DeviceForm extends Component {
 
     return (
       <div className={"row device device-frame mb0 " + (this.props.className ? this.props.className : "")}>
-          <div className="col s6 data-frame">
-            <div className="col s12">
+          <div className="col s7 data-frame">
+            <div className="col s12 pb20">
               <div className="col s3">
                 {/* TODO clickable, file upload */}
                 <div className="img">
@@ -508,9 +508,7 @@ class DeviceForm extends Component {
             {
               (this.state.selectedTemplates.length > 0) ? (
                 <div className="react-bug-escape">
-                {
-                  <SpecificAttrs attrs={this.state.staticAttrs} change={this.state.changeAttr} />
-                }
+                <SpecificAttrs attrs={this.state.staticAttrs} change={this.state.changeAttr} />
                 { this.state.selectedTemplates.map((tplt) =>
                   <AttrBox key={tplt.id} {...tplt}/>)
                 }
@@ -538,7 +536,7 @@ class DeviceForm extends Component {
 
           </div>
 
-          <div className="col s6 p0">
+          <div className="col s5 p0">
           { this.state.templateState == 0 ? (
             <TemplateFrame setTemplateState={this.setTemplateState} toggleTemplate={this.toggleTemplate} templates={this.state.selectedTemplates} state={this.state.templateState} />
           ) : (

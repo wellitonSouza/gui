@@ -11,8 +11,8 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Link } from 'react-router'
 
 import { DojotBtnLink } from "../../components/DojotButton";
-import {DeviceList} from './DeviceMap';
-import {DeviceCardList} from './DeviceCard';
+import {DeviceMap} from './DeviceMap';
+import {DeviceCard} from './DeviceCard';
 
 // UI elements
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -66,23 +66,25 @@ class Devices extends Component {
 
     const displayToggle = (<ToggleWidget toggleState={this.state.displayList} toggle={this.toggleDisplay} />)
 
-    return <ReactCSSTransitionGroup transitionName="first" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={500} transitionLeaveTimeout={500}>
+    return (<ReactCSSTransitionGroup transitionName="first" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={500} transitionLeaveTimeout={500}>
         <NewPageHeader title="Devices" subtitle="" icon="device">
           {/* <Filter onChange={this.filterChange} /> */}
           {/*<Link to="/device/new" title="Create a new device" className="btn-item btn-floating waves-effect waves-light cyan darken-2">
             <i className="fa fa-plus"/>
           </Link> */}
+          <div className='pt10'>
             <DojotBtnLink linkto="/device/new" label="New Device" alt="Create a new device" icon="fa fa-plus" />
             {displayToggle}
+          </div>
         </NewPageHeader>
         <AltContainer store={DeviceStore}>
           {this.state.displayList ? (
-            <DeviceCardList deviceid={detail} toggle={displayToggle} />
+            <DeviceCard deviceid={detail} toggle={displayToggle} />
           ) : (
-            <DeviceList deviceid={detail} toggle={displayToggle} />
+            <DeviceMap deviceid={detail} toggle={displayToggle} />
           )}
         </AltContainer>
-      </ReactCSSTransitionGroup>;
+      </ReactCSSTransitionGroup>);
   }
 }
 

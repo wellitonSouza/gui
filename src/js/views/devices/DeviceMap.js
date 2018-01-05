@@ -115,7 +115,7 @@ class PositionRenderer extends Component {
   }
 }
 
-class DeviceList extends Component {
+class DeviceMap extends Component {
   constructor(props) {
     super(props);
 
@@ -289,12 +289,10 @@ class DeviceList extends Component {
 
     return <div className="flex-wrapper">
         <div className="row z-depth-2 devicesSubHeader p0" id="inner-header">
-          <div className="col s4 m4 main-title">List of Devices</div>
-          <div className="col s4 m4 header-info hide-on-small-only">
+          <div className="col s4 m4 main-title">Map Visualization</div>
+          <div className="col s8 m8 header-info hide-on-small-only">
             <div className="title"># Devices</div>
             <div className="subtitle">{displayDevicesCount}</div>
-          </div>
-          <div className="col s4 m4">
           </div>
         </div>
         <div className="deviceMapCanvas deviceMapCanvas-map col m12 s12 relative">
@@ -305,4 +303,4 @@ class DeviceList extends Component {
   }
 }
 
-export { DeviceList, PositionRenderer };
+export { DeviceMap, PositionRenderer };

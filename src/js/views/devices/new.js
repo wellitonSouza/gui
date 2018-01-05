@@ -11,7 +11,7 @@ import deviceManager from '../../comms/devices/DeviceManager';
 import DeviceStore from '../../stores/DeviceStore';
 import TagForm from '../../components/TagForm';
 import util from "../../comms/util/util";
-import { DojotBtnFlat, DojotButton } from "../../components/DojotButton";
+import { DojotBtnCircle, DojotButton } from "../../components/DojotButton";
 
 import TemplateStore from '../../stores/TemplateStore';
 import TemplateActions from '../../actions/TemplateActions';
@@ -600,11 +600,11 @@ class TemplateFrame extends Component {
 
           <div className="col s6 text-right" >
           { this.props.state == 0 ? (
-            <DojotBtnFlat click={this.setAditionMode} icon={'fa fa-plus'} tooltip='Add templates' />
+            <DojotBtnCircle click={this.setAditionMode} icon={'fa fa-plus'} tooltip='Add templates' />
           ) : (
             <div>
-              <DojotBtnFlat click={this.setRemovalMode} icon={'fa fa-chevron-left'} tooltip='Remove templates'/>
-              <DojotBtnFlat click={this.showSearchBox} icon={'fa fa-search'} />
+              <DojotBtnCircle click={this.setRemovalMode} icon={'fa fa-chevron-left'} tooltip='Remove templates'/>
+              <DojotBtnCircle click={this.showSearchBox} icon={'fa fa-search'} />
             </div>
           )}
            </div>

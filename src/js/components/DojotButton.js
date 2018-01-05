@@ -15,6 +15,19 @@ class DojotBtnLink extends Component {
   }
 }
 
+class DojotBtnClassic extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+  return (
+    <Link to={this.props.linkto}  title={this.props.alt} className="waves-effect waves-light btn-flat">
+     {this.props.label}
+    </Link>
+  )
+  }
+}
 
 class DojotButton extends Component {
   constructor(props) {
@@ -32,7 +45,7 @@ class DojotButton extends Component {
 }
 
 
-class DojotBtnFlat extends Component {
+class DojotBtnCircle extends Component {
   constructor(props) {
     super(props);
   }
@@ -46,4 +59,4 @@ class DojotBtnFlat extends Component {
   }
 }
 
-export { DojotBtnLink, DojotButton, DojotBtnFlat };
+export { DojotBtnCircle, DojotBtnClassic, DojotBtnLink, DojotButton };

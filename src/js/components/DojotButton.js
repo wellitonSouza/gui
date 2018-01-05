@@ -7,11 +7,9 @@ class DojotBtnLink extends Component {
   }
 
   render() {
-  return (
-    <Link to={this.props.linkto} className="new-btn-flat red waves-effect waves-light " title={this.props.alt}>
+  return <Link to={this.props.linkto} className="waves-effect waves-light new-btn-flat red waves-effect waves-light " title={this.props.alt}>
       {this.props.label} <i className={this.props.icon} />
-    </Link>
-  )
+    </Link>;
   }
 }
 
@@ -52,7 +50,7 @@ class DojotBtnCircle extends Component {
 
   render() {
     return (
-      <button type="button" className='btn new-btn-circle' onClick={this.props.click}>
+      <button type="button" className='btn waves-effect waves-light new-btn-circle' onClick={this.props.click}>
         <i className={this.props.icon} aria-hidden="true"></i>
       </button>
     )

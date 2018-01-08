@@ -17,6 +17,7 @@ import { Line } from 'react-chartjs-2';
 import { Map, Marker, Popup, TileLayer, Tooltip, ScaleControl } from 'react-leaflet';
 import ReactResizeDetector from 'react-resize-detector';
 import Sidebar from '../../components/DeviceRightSidebar';
+import { DojotBtnLink } from "../../components/DojotButton";
 
 import io from 'socket.io-client';
 
@@ -114,7 +115,7 @@ class PositionRenderer extends Component {
   }
 }
 
-class DeviceList extends Component {
+class DeviceMap extends Component {
   constructor(props) {
     super(props);
 
@@ -284,32 +285,22 @@ class DeviceList extends Component {
     // pos: (k.position != undefined ? k.position : k.static_attrs[0].value.split(",") ),
 
 
-    const displayDevicesCount = "Showing " + filteredList.length + " of " +
-                        validDevices.length + " device(s)";
+    const displayDevicesCount = "Showing " + filteredList.length + " device(s)";
 
-    return (
-        <div className = "flex-wrapper">
-          <div className="row z-depth-2 devicesSubHeader p0" id="inner-header">
-            <div className="col s4 m4 main-title">List of Devices</div>
-            <div className= "col s2 m2 header-info hide-on-small-only">
-              <div className= "title"># Devices</div>
-              <div className= "subtitle">{displayDevicesCount}</div>
-              {// <div className= "subtitle">{filteredList.length}</div>
-            }
-            </div>
-            <Link to="/device/new" title="Create a new device" className="waves-effect waves-light btn-flat">
-              New Device
-            </Link>
-            {this.props.toggle}
-          </div>
-          <div className="deviceMapCanvas deviceMapCanvas-map col m12 s12 relative">
-            <PositionRenderer devices={filteredList} />
-            <Sidebar devices={validDevices} hideAll={this.hideAll} showAll={this.showAll} selectedDevice={this.selectedDevice}
-                      toggleDisplay={this.toggleDisplay}/>
+    return <div className="flex-wrapper">
+        <div className="row z-depth-2 devicesSubHeader p0" id="inner-header">
+          <div className="col s4 m4 main-title">Map Visualization</div>
+          <div className="col s8 m8 header-info hide-on-small-only">
+            <div className="title"># Devices</div>
+            <div className="subtitle">{displayDevicesCount}</div>
           </div>
         </div>
-    )
+        <div className="deviceMapCanvas deviceMapCanvas-map col m12 s12 relative">
+          <PositionRenderer devices={filteredList} />
+          <Sidebar devices={validDevices} hideAll={this.hideAll} showAll={this.showAll} selectedDevice={this.selectedDevice} toggleDisplay={this.toggleDisplay} />
+        </div>
+      </div>;
   }
 }
 
-export { DeviceList, PositionRenderer };
+export { DeviceMap, PositionRenderer };

@@ -23,7 +23,6 @@ export default (
         <Route path="device" name="Devices">
           <IndexRoute component={Devices} />
           <Route path="list" name="Device list" component={Devices} />
-          <Route path="stats" name="Device Dashboard" component={Devices} />
           <Route path="new" name="" component={NewDevice} />
           <Route path="id/:device/detail" name="Device detail" component={ViewDevice} />
           <Route path="id/:device/edit" name="Device edit" component={NewDevice} />
@@ -31,7 +30,6 @@ export default (
         <Route path="template" name="Templates">
           <IndexRoute component={TemplateList} />
           <Route path="list" name="Template list" component={TemplateList} />
-          <Route path="stats" name="Template Dashboard" component={Todo} />
           <Route path="new" name="" component={NewTemplate} />
           <Route path="id/:templateId" name="Template detail" component={TemplateList} />
           <Route path="id/:template/edit" name="Template detail" component={NewTemplate} />

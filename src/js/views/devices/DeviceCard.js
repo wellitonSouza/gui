@@ -45,7 +45,7 @@ function SummaryItem(props) {
 }
 
 
-class DeviceCardList extends Component {
+class DeviceCard extends Component {
   constructor(props) {
     super(props);
   }
@@ -66,22 +66,18 @@ class DeviceCardList extends Component {
     }
 
     const device_icon  = (<img src='images/icons/chip.png' />)
+    const header = (<div className="row z-depth-2 devicesSubHeader p0" id="inner-header">
+        <div className="col s4 m4 main-title">List of Devices</div>
+        <div className="col s8 m8 header-info hide-on-small-only">
+          <div className="title"># Devices</div>
+          <div className="subtitle">{filteredList.length}</div>
+        </div>
+  </div>);
+
     if (filteredList.length > 0) {
       return (
+       <div> {header}
         <div className = "flex-wrapper bg-light-gray">
-          {/* TODO refactor this to a different file */}
-          <div className="row z-depth-2 devicesSubHeader p0" id="inner-header">
-            <div className="col s4 m4 main-title">List of Devices</div>
-            <div className= "col s2 m2 header-info hide-on-small-only">
-              <div className= "title"># Devices</div>
-              <div className= "subtitle">{filteredList.length}</div>
-            </div>
-            <Link to="/device/new" title="Create a new device" className="waves-effect waves-light btn-flat">
-              New Device
-            </Link>
-            {this.props.toggle}
-          </div>
-
           <div className="deviceMapCanvas col m12 s12 relative">
             <div className="row">
               <div className="col s12  lst-wrapper extra-padding">
@@ -90,15 +86,17 @@ class DeviceCardList extends Component {
             </div>
           </div>
         </div>
+         </div>
       )
     } else {
       return  (
+        <div> {header}
         <div className="background-info valign-wrapper full-height relative">
           <span className="horizontal-center">No configured devices</span>
-        </div>
+        </div> </div>
       )
     }
   }
 }
 
-export { DeviceCardList };
+export { DeviceCard };

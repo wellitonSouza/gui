@@ -64,6 +64,20 @@
       height: 26px;
     }
 
+    .icon-template
+    {
+      background: url(/images/icons/template.png);
+      width: 28px;
+      height: 25px;
+    }
+
+    &:hover .icon-template
+    {
+      background: url(/images/icons/template-wt.png);
+      width: 28px;
+      height: 25px;
+    }
+    
     .icon-chip
     {
       background: url(/images/icons/chip.png);

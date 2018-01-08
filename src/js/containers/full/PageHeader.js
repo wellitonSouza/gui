@@ -7,11 +7,11 @@ class SubMenu extends Component {
   }
   render() {
     let children = {};
-      children['device'] = [
-        { target: "/device/list", iconClass: "", label: "device", title: "Devices list", siblings: ['/device/id', '/device/new']},
-        { target: "/template/list", iconClass: "", label: "template", title: "Templates list", siblings: ['/template/id', '/template/new']},
-        { target: "/alarm?q=device", iconClass: "", label: "alarm", title: "Alarms list"}
-      ];
+      // children['device'] = [
+      //   { target: "/device/list", iconClass: "", label: "device", title: "Devices list", siblings: ['/device/id', '/device/new']},
+      //   { target: "/template/list", iconClass: "", label: "template", title: "Templates list", siblings: ['/template/id', '/template/new']},
+      //   { target: "/alarm?q=device", iconClass: "", label: "alarm", title: "Alarms list"}
+      // ];
       children['auth'] = [
         { target: "/auth/user", iconClass: "", label: "users", title: "Users list"},
         { target: "/auth/permissions", iconClass: "", label: "permissions", title: "Permissions list"}

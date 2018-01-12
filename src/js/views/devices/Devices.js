@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import deviceManager from '../../comms/devices/DeviceManager';
 import DeviceStore from '../../stores/DeviceStore';
+import MeasureStore from '../../stores/MeasureStore';
 import DeviceActions from '../../actions/DeviceActions';
+
+import MeasureActions from '../../actions/MeasureActions';
 
 import { PageHeader } from "../../containers/full/PageHeader";
 import { NewPageHeader } from "../../containers/full/PageHeader";
@@ -11,7 +14,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Link } from 'react-router'
 
 import { DojotBtnLink } from "../../components/DojotButton";
-import {DeviceMap} from './DeviceMap';
+import {DeviceMap, PositionRenderer} from './DeviceMap';
 import {DeviceCard} from './DeviceCard';
 
 // UI elements
@@ -37,7 +40,32 @@ function ToggleWidget(props) {
   )
 }
 
+class MapWrapper extends Component {
+  constructor(props){
+    super(props)
+  }
 
+  componentDidMount(){
+    let devices = this.props.devices;
+    for(let k in devices){
+      for(let j in devices[k].attrs){
+        for(let i in devices[k].attrs[j]){
+          if(devices[k].attrs[j][i].value_type == "geo"){
+              MeasureActions.fetchMeasures.defer(devices[k], devices[k].id, devices[k].attrs[j][i].label);
+          }
+        }
+      }
+    }
+
+  }
+  render(){
+    return(
+      <AltContainer store={MeasureStore}>
+        <DeviceMap devices={this.props.devices}/>
+      </AltContainer>
+    )
+  }
+}
 
 class Devices extends Component {
 
@@ -63,7 +91,6 @@ class Devices extends Component {
 
   render() {
     const detail = ('detail' in this.props.location.query) ? this.props.location.query.detail : null;
-
     const displayToggle = (<ToggleWidget toggleState={this.state.displayList} toggle={this.toggleDisplay} />)
 
     return (<ReactCSSTransitionGroup transitionName="first" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={500} transitionLeaveTimeout={500}>
@@ -81,7 +108,7 @@ class Devices extends Component {
           {this.state.displayList ? (
             <DeviceCard deviceid={detail} toggle={displayToggle} />
           ) : (
-            <DeviceMap deviceid={detail} toggle={displayToggle} />
+            <MapWrapper deviceid={detail} toggle={displayToggle} />
           )}
         </AltContainer>
       </ReactCSSTransitionGroup>);

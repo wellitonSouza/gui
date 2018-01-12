@@ -25,7 +25,7 @@ class DeviceStore {
   }
 
   parseStatus(device) {
-    if (device.protocol.toLowerCase() == 'virtual') {
+    if (device.protocol && device.protocol.toLowerCase() == 'virtual') {
       return device.protocol.toLowerCase();
     } else {
       if (device.status) {

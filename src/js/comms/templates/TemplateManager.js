@@ -24,7 +24,6 @@ class TemplateManager {
   }
 
   addTemplate(d) {
-    d.id = util.guid();
     return util.POST(this.baseUrl + "/template", d);
   }
 

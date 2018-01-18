@@ -54,15 +54,15 @@ class Graph extends Component{
 
     function getValue(tuple) {
       let val_type = typeof tuple.attrValue;
-      if (val_type == "string" && tuple.attrType != "string") {
+      if (val_type === "string" && tuple.attrType !== "string") {
         if (tuple.attrValue.trim().length > 0) {
-          if (tuple.attrType.toLowerCase() == 'integer') {
+          if (tuple.attrType.toLowerCase() === 'integer') {
             return parseInt(tuple.attrValue);
-          } else if (tuple.attrType.toLowerCase() == 'float'){
+          } else if (tuple.attrType.toLowerCase() === 'float'){
             return parseFloat(tuple.attrValue);
           }
         }
-      } else if (val_type == "number") {
+      } else if (val_type === "number") {
         return tuple.attrValue;
       }
 
@@ -75,9 +75,9 @@ class Graph extends Component{
     this.props.data.data[this.props.attr].map((i) => {
       labels.push(util.iso_to_date(i.ts));
       values.push(i.value);
-    })
+    });
 
-    if (values.length == 0) {
+    if (values.length === 0) {
       return (
         <div className="valign-wrapper full-height background-info no-data-av">
           <div className="full-width center">No data available</div>
@@ -86,12 +86,12 @@ class Graph extends Component{
     }
 
     let filteredLabels = labels.map((i,k) => {
-      if ((k == 0) || (k == values.length - 1)) {
+      if ((k === 0) || (k === values.length - 1)) {
         return i;
       } else {
         return "";
       }
-    })
+    });
 
     const data = {
       labels: labels,
@@ -119,7 +119,7 @@ class Graph extends Component{
           data: values
         }
       ]
-    }
+    };
 
     const options = {
       maintainAspectRatio: false,
@@ -130,7 +130,7 @@ class Graph extends Component{
       layout: {
         padding: { left: 10, right: 10 }
       }
-    }
+    };
 
     return (
       <Line data={data} options={options}/>
@@ -151,7 +151,7 @@ function HistoryList(props) {
     let data = props.data.data[props.attr];
     let trimmedList = data.filter((i) => {
       return i.value.trim().length > 0
-    })
+    });
     trimmedList.reverse();
 
     if (trimmedList.length > 0) {
@@ -181,7 +181,7 @@ function Attr(props) {
     'string': HistoryList,
     'geo:point': HistoryList,
     'default': HistoryList
-  }
+  };
 
   const Renderer = props.type in known ? known[props.type] : known['default'];
   return (
@@ -251,10 +251,10 @@ class AttributeBox extends Component {
 
   render() {
     let device = this.props.device;
-    let attr = []
+    let attr = [];
     if (this.state.selected !== null) {
       attr = device.attrs.filter((k) => {
-        return k.name.toUpperCase() == this.state.selected.toUpperCase();
+        return k.name.toUpperCase() === this.state.selected.toUpperCase();
       });
     }
 
@@ -263,7 +263,7 @@ class AttributeBox extends Component {
       if (this.props.data.data.hasOwnProperty(this.state.selected)){
         if (this.props.data.data[this.state.selected].length > 0){
           const to = util.iso_to_date(this.props.data.data[this.state.selected][0]['ts']);
-          let length = this.props.data.data[this.state.selected].length
+          let length = this.props.data.data[this.state.selected].length;
           const from = util.iso_to_date(this.props.data.data[this.state.selected][length - 1]['ts']);
           timeRange = "Data from " + from + " to " + to;
         }
@@ -277,7 +277,7 @@ class AttributeBox extends Component {
           <div className='col s12 attr-box-body'>
           {this.props.attrs.map((attr) => {
             let data = undefined;
-            let active = this.state.selected && (attr.toUpperCase() == this.state.selected.toUpperCase());
+            let active = this.state.selected && (attr.toUpperCase() === this.state.selected.toUpperCase());
             if (this.props.data && this.props.data.hasOwnProperty('data')) {
               if (this.props.data.data.hasOwnProperty(attr)){
                 if (this.props.data.data[attr].length > 0){
@@ -350,7 +350,7 @@ class AttrSelector extends Component {
   handleAddAttribute(event) {
     event.preventDefault();
     this.setState({new_attr: ""});
-    if (this.state.new_attr == ""){ return; }
+    if (this.state.new_attr === ""){ return; }
     if (this.props.selected.includes(this.state.new_attr)) { return; }
 
     const attrList = this.props.selected.concat([this.state.new_attr]);
@@ -376,9 +376,9 @@ class AttrSelector extends Component {
                             value={this.state.new_attr}
                             onChange={this.handleSelectedAttribute}>
               <option value="">Select attribute to display</option>
-              {this.props.attrs.map((attr) => (
-                <option value={attr.name} key={attr.object_id} >{attr.name}</option>
-              ))}
+              {/*{this.props.attrs.map((attr) => (*/}
+                {/*<option value={attr.name} key={attr.object_id} >{attr.name}</option>*/}
+              {/*))}*/}
             </MaterialSelect>
           </div>
           <div className="col s12 actions-buttons">
@@ -422,7 +422,7 @@ class PositionWrapper extends Component {
       if (!hasPosition) // check in static attrs
       {
         for (let j in device.static_attrs) {
-          if (device.static_attrs[j].type == "geo:point"){
+          if (device.static_attrs[j].type === "geo:point"){
             let hasPosition = true;
             position = device.static_attrs[j].value.split(",");
           }
@@ -488,7 +488,7 @@ class DeviceDetail extends Component {
         "temperature",
         'sinr'
       ]
-    }
+    };
 
     this.onChange = this.onChange.bind(this);
   }
@@ -535,7 +535,7 @@ class DeviceDetail extends Component {
 
 function ConnectivityStatus(props) {
   const status = props.devices[props.device_id]['_status'];
-  if (status == "online") {
+  if (status === "online") {
     return (
       <span className='status-on-off clr-green'><i className="fa fa-info-circle" />Online</span>
     )
@@ -551,6 +551,7 @@ class ViewDeviceImpl extends Component {
     let title = "View device";
 
     let device = undefined;
+    let teste = DeviceMeta.getState();
     if (this.props.devices !== undefined){
       if (this.props.devices.hasOwnProperty(this.props.device_id)) {
         device = this.props.devices[this.props.device_id];
@@ -558,7 +559,7 @@ class ViewDeviceImpl extends Component {
     }
 
     if (device === undefined) {
-      return (<Loading />);
+      // return (<Loading />);
     }
 
     return (
@@ -598,16 +599,16 @@ class ViewDevice extends Component {
 
       const fields = ['ts', 'temperature', 'sinr'];
       let device_data = {device_id: data.device_id};
-      device_data.position = [data.lat.value, data.lng.value]
+      device_data.position = [data.lat.value, data.lng.value];
       fields.map((field) => {
         if (data.hasOwnProperty(field)){
-          if (field == 'ts') {
+          if (field === 'ts') {
             device_data[field] = util.timestamp_to_date(Date.now());
           } else {
             device_data[field] = data[field].value;
           }
         }
-      })
+      });
       MeasureActions.updatePosition(device_data);
     });
   }

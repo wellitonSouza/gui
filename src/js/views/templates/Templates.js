@@ -1,72 +1,74 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import AltContainer from 'alt-container';
+import Materialize from 'materialize-css';
 import TemplateStore from '../../stores/TemplateStore';
 import TemplateActions from '../../actions/TemplateActions';
-import AltContainer from 'alt-container';
+import util from "../../comms/util/util";
 import {NewPageHeader} from "../../containers/full/PageHeader";
-import Dropzone from 'react-dropzone';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import ReactDOM from 'react-dom';
 
-class DeviceImageUpload extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            selection: ""
-        };
-
-        this.onDrop = this.onDrop.bind(this);
-        this.upload = this.upload.bind(this);
-    }
-
-    // this allows us to remove the global script required by materialize as in docs
-    componentDidMount() {
-        let mElement = ReactDOM.findDOMNode(this.refs.modal);
-        $(mElement).ready(function () {
-            $('.modal').modal();
-        })
-    }
-
-    onDrop(acceptedFiles) {
-        this.setState({selection: acceptedFiles[0]});
-    }
-
-    upload(e) {
-        TemplateActions.triggerIconUpdate(this.props.targetDevice, this.state.selection);
-    }
-
-    render() {
-        return (
-            <div className="modal" id="imageUpload" ref="modal">
-                <div className="modal-content">
-                    <div className="row">
-                        <Dropzone onDrop={this.onDrop} className="dropbox">
-                            <div className="dropbox-help">Try dropping some files here, or click to select files to
-                                upload.
-                            </div>
-                        </Dropzone>
-                    </div>
-                    {this.state.selection ? (
-                        <div className="row fileSelection">
-                            <span className="label">Selected file</span>
-                            <span className="data">{this.state.selection.name}</span>
-                        </div>
-                    ) : (
-                        <div className="row fileSelection">
-                            <span className="data">No file selected</span>
-                        </div>
-                    )}
-                    <div className="pull-right padding-bottom">
-                        <a onClick={this.upload}
-                           className=" modal-action modal-close waves-effect waves-green btn-flat">Update</a>
-                        <a className=" modal-action modal-close waves-effect waves-red btn-flat">Cancel</a>
-                    </div>
-                </div>
-            </div>
-        )
-    }
-}
+// import ReactDOM from 'react-dom';
+// import Dropzone from 'react-dropzone';
+// import {Link} from 'react-router'
+// class TemplateImageUpload extends Component {
+//     constructor(props) {
+//         super(props);
+//
+//         this.state = {
+//             selection: ""
+//         };
+//
+//         this.onDrop = this.onDrop.bind(this);
+//         this.upload = this.upload.bind(this);
+//     }
+//
+//     // this allows us to remove the global script required by materialize as in docs
+//     componentDidMount() {
+//         let mElement = ReactDOM.findDOMNode(this.refs.modal);
+//         $(mElement).ready(function () {
+//             $('.modal').modal();
+//         })
+//     }
+//
+//     onDrop(acceptedFiles) {
+//         this.setState({selection: acceptedFiles[0]});
+//     }
+//
+//     upload(e) {
+//         TemplateActions.triggerIconUpdate(this.props.targetTemplate, this.state.selection);
+//     }
+//
+//     render() {
+//         return (
+//             <div className="modal" id="imageUpload" ref="modal">
+//                 <div className="modal-content">
+//                     <div className="row">
+//                         <Dropzone onDrop={this.onDrop} className="dropbox">
+//                             <div className="dropbox-help">Try dropping some files here, or click to select files to
+//                                 upload.
+//                             </div>
+//                         </Dropzone>
+//                     </div>
+//                     {this.state.selection ? (
+//                         <div className="row fileSelection">
+//                             <span className="label">Selected file</span>
+//                             <span className="data">{this.state.selection.name}</span>
+//                         </div>
+//                     ) : (
+//                         <div className="row fileSelection">
+//                             <span className="data">No file selected</span>
+//                         </div>
+//                     )}
+//                     <div className="pull-right padding-bottom">
+//                         <a onClick={this.upload}
+//                            className=" modal-action modal-close waves-effect waves-green btn-flat">Update</a>
+//                         <a className=" modal-action modal-close waves-effect waves-red btn-flat">Cancel</a>
+//                     </div>
+//                 </div>
+//             </div>
+//         )
+//     }
+// }
 
 class TemplateTypes {
     constructor() {
@@ -82,7 +84,7 @@ class TemplateTypes {
             {"value": "static", "label": "Static Value"}
         ];
         this.configTypes = [
-            {"value": "MQTT", "label": "MQTT"}
+            {"value": "mqtt", "label": "MQTT"}
         ];
         this.configValueTypes = [
             {"value": "protocol", "label": "Protocol"},
@@ -144,7 +146,7 @@ class AttributeList extends Component {
             <div className={"attr-area " + (this.state.isSuppressed ? 'suppressed' : '')}>
                 <div className="attr-row">
                     <div className="icon">
-                        <img src="images/tag.png"/>
+                        <img src={"images/tag.png"}/>
                     </div>
 
                     <div className={"attr-content"}>
@@ -175,14 +177,14 @@ class AttributeList extends Component {
                     <div className={(this.props.editable ? '' : 'none') + " center-text-parent material-btn right-side"}
                          title={"Remove Attribute"}
                          onClick={this.removeAttribute.bind(this, this.props.index)}>
-                        <i className={"fa fa-minus-circle center-text-child icon-remove"}/>
+                        <i className={"fa fa-trash center-text-child icon-remove"}/>
                     </div>
                 </div>
                 <div className="attr-row">
                     <div className="icon"/>
                     <div className={"attr-content"}>
-                        <input type="text" value={this.props.attributes.value} disabled={!this.props.editable}
-                               name={"value"} onChange={this.handleChange}/>
+                        <input type="text" value={this.props.attributes.static_value} disabled={!this.props.editable}
+                               name={"static_value"} onChange={this.handleChange}/>
                         <select id="select_attribute_type" className="card-select mini-card-select"
                                 name={"type"}
                                 value={this.props.attributes.type}
@@ -238,12 +240,12 @@ class ConfigList extends Component {
             <div className={"attr-area " + (this.state.isSuppressed ? 'suppressed' : '')}>
                 <div className="attr-row">
                     <div className="icon">
-                        <img src="images/gear-dark.png"/>
+                        <img src={"images/gear-dark.png"}/>
                     </div>
                     <div className={"attr-content"}>
                         <select id="select_attribute_type" className="card-select"
-                                name={"value_type"}
-                                value={this.props.attributes.value_type}
+                                name={"label"}
+                                value={this.props.attributes.label}
                                 disabled={!this.props.editable}
                                 onChange={this.handleChange}>
                             <option value="">Select type</option>
@@ -260,13 +262,13 @@ class ConfigList extends Component {
                 <div className="attr-row">
                     <div className="icon"/>
                     <div className={"attr-content"}>
-                        <input className={(this.props.attributes.value_type === "protocol" ? 'none' : '')} type="text"
-                               name={"value"} value={this.props.attributes.value}
+                        <input className={(this.props.attributes.label === "protocol" ? 'none' : '')} type="text"
+                               name={"static_value"} value={this.props.attributes.static_value}
                                disabled={!this.props.editable} onChange={this.handleChange}/>
                         <select id="select_attribute_type"
-                                className={(this.props.attributes.value_type === "protocol" ? '' : 'none') + " card-select"}
-                                name={"value"}
-                                value={this.props.attributes.value}
+                                className={(this.props.attributes.label === "protocol" ? '' : 'none') + " card-select"}
+                                name={"static_value"}
+                                value={this.props.attributes.static_value}
                                 disabled={!this.props.editable}
                                 onChange={this.handleChange}>
                             <option value="">Select type</option>
@@ -279,7 +281,7 @@ class ConfigList extends Component {
                     <div className={(this.props.editable ? '' : 'none') + " center-text-parent material-btn right-side"}
                          title={"Remove Attribute"}
                          onClick={this.removeAttribute.bind(this, this.props.index)}>
-                        <i className={"fa fa-minus-circle center-text-child icon-remove"}/>
+                        <i className={"fa fa-trash center-text-child icon-remove"}/>
                     </div>
                 </div>
             </div>
@@ -295,7 +297,7 @@ class NewAttribute extends Component {
             isSuppressed: true,
             isConfiguration: false,
             newAttr: {
-                "type": "static",
+                "type": "meta",
                 "value_type": "",
                 "value": "",
                 "label": ""
@@ -342,7 +344,7 @@ class NewAttribute extends Component {
     discardAttribute() {
         let state = this.state;
         state.newAttr = {
-            "type": "static",
+            "type": "meta",
             "value_type": "",
             "value": "",
             "label": ""
@@ -360,7 +362,7 @@ class NewAttribute extends Component {
                     <div className={"add-btn add-config"} onClick={this.suppress.bind(this, true)}
                          title={"Add New Configuration"}>
                         <div className={"icon"}>
-                            <img src="images/add-gear.png"/>
+                            <img src={"images/add-gear.png"}/>
                         </div>
                         <div className={"text"}>
                             <span>configuration</span>
@@ -369,7 +371,7 @@ class NewAttribute extends Component {
                     <div className={"add-btn add-attr"} onClick={this.suppress.bind(this, false)}
                          title={"Add New Attribute"}>
                         <div className={"icon"}>
-                            <img src="images/add-tag.png"/>
+                            <img src={"images/add-tag.png"}/>
                         </div>
                         <div className={"text"}>
                             <span>attribute</span>
@@ -381,7 +383,7 @@ class NewAttribute extends Component {
                 <div className={(this.state.isSuppressed ? 'invisible' : '')}>
                     <div className={"attr-row " + (this.state.isConfiguration ? 'none' : '')}>
                         <div className="icon">
-                            <img src="images/add-tag.png"/>
+                            <img src={"images/add-tag.png"}/>
                         </div>
 
                         <div className={"attr-content "}>
@@ -392,7 +394,7 @@ class NewAttribute extends Component {
                     </div>
                     <div className="attr-row">
                         <div className="icon">
-                            <img className={(this.state.isConfiguration ? '' : 'none')} src="images/add-gear.png"/>
+                            <img className={(this.state.isConfiguration ? '' : 'none')} src={"images/add-gear.png"}/>
                         </div>
                         <div className={"attr-content"}>
                             <select id="select_attribute_type" className="card-select dark-background"
@@ -462,101 +464,117 @@ class ListItem extends Component {
         super(props);
 
         this.state = {
-            device: this.props.device,
-            attribute: "",
-            typeAttribute: "",
+            template: this.props.template,
             isSuppressed: true,
             isEditable: false,
             isConfiguration: false
         };
 
-        this.clone = JSON.parse(JSON.stringify(this.state.device));
+        this.clone = JSON.parse(JSON.stringify(this.state.template));
         this.handleDismiss = this.handleDismiss.bind(this);
         this.addAttribute = this.addAttribute.bind(this);
         this.removeAttribute = this.removeAttribute.bind(this);
         this.handleAttribute = this.handleAttribute.bind(this);
-        this.updateDevice = this.updateDevice.bind(this);
-        this.deleteDevice = this.deleteDevice.bind(this);
+        this.updateTemplate = this.updateTemplate.bind(this);
+        this.deleteTemplate = this.deleteTemplate.bind(this);
         this.suppress = this.suppress.bind(this);
         this.getStatus = this.getStatus.bind(this);
         this.editCard = this.editCard.bind(this);
         this.handleChangeAttribute = this.handleChangeAttribute.bind(this);
         this.handleChangeConfig = this.handleChangeConfig.bind(this);
+        this.addTemplate = this.addTemplate.bind(this);
+        this.discardUnsavedTemplate = this.discardUnsavedTemplate.bind(this);
+    }
+
+    componentDidMount() {
+        let state = this.state;
+        if (state.template.isNewTemplate) {
+            state.isEditable = true;
+            state.isSuppressed = false;
+        }
+        this.setState(state);
     }
 
     handleDismiss(e) {
         e.preventDefault();
         let state = this.state;
-        state.device = state.device = JSON.parse(JSON.stringify(this.clone));
+        state.template = state.template = JSON.parse(JSON.stringify(this.clone));
         this.editCard();
     }
 
-    updateDevice(e) {
+    updateTemplate(e) {
         e.preventDefault();
-        let device = this.state.device;
-        device.has_icon = this.props.device.has_icon;
-        TemplateActions.triggerUpdate(this.state.device);
+        if (!util.isNameValid(this.state.template.label)) {
+            Materialize.toast("Missing label.", 4000);
+            return;
+        }
+        let template = this.state.template;
+        template.has_icon = this.props.template.has_icon;
+        this.state.template.attrs = [];
+        this.state.template.attrs.push.apply(this.state.template.attrs, this.state.template.data_attrs);
+        this.state.template.attrs.push.apply(this.state.template.attrs ,this.state.template.config_attrs);
+        TemplateActions.triggerUpdate(this.state.template);
     }
 
-    deleteDevice(e) {
+    deleteTemplate(e) {
         e.preventDefault();
-        TemplateActions.triggerRemoval(this.state.device);
+        TemplateActions.triggerRemoval(this.state.template);
     }
 
     addAttribute(attribute, isConfiguration) {
-        let state = this.state.device;
+        let state = this.state.template;
         if (isConfiguration) {
-            state.config.push({
+            state.config_attrs.push({
+                label: attribute.value_type,
+                value_type: "string",
                 type: attribute.type,
-                value_type: attribute.value_type,
-                value: attribute.value
+                static_value: attribute.value
             });
 
         } else {
-            state.attrs.push({
+            state.data_attrs.push({
                 label: attribute.label,
                 type: attribute.type,
                 value_type: attribute.value_type,
-                value: attribute.value
+                static_value: attribute.value
             });
         }
         attribute.label = '';
         attribute.type = '';
         attribute.value_type = '';
         attribute.value = '';
-        this.setState({device: state});
+        this.setState({template: state});
     }
 
     removeAttribute(index, isConfiguration) {
-        let state = this.state.device;
+        let state = this.state.template;
         if (isConfiguration)
-            state.config.splice(index, 1);
+            state.config_attrs.splice(index, 1);
         else
-            state.attrs.splice(index, 1);
-        this.setState({device: state});
+            state.data_attrs.splice(index, 1);
+        this.setState({template: state});
     }
 
     handleAttribute(event) {
         const target = event.target;
         let state = this.state;
-        state[target.name] = target.value;
+        state.template[target.name] = target.value;
         this.setState(state);
     }
 
     handleChangeAttribute(event, key) {
         const target = event.target;
         let state = this.state;
-        state.device.attrs[key][target.name] = target.value;
+        state.template.data_attrs[key][target.name] = target.value;
         this.setState(state);
     }
 
     handleChangeConfig(event, key) {
         const target = event.target;
         let state = this.state;
-        state.device.config[key][target.name] = target.value;
+        state.template.config_attrs[key][target.name] = target.value;
         this.setState(state);
     }
-
 
     suppress() {
         let state = this.state;
@@ -576,18 +594,37 @@ class ListItem extends Component {
         this.setState(state);
     }
 
+    addTemplate(e) {
+        e.preventDefault();
+        if (!util.isNameValid(this.state.template.label)) {
+            Materialize.toast("Missing label.", 4000);
+            return;
+        }
+        this.state.template.attrs.push.apply(this.state.template.attrs, this.state.template.data_attrs);
+        this.state.template.attrs.push.apply(this.state.template.attrs ,this.state.template.config_attrs);
+        TemplateActions.addTemplate(this.state.template);
+        TemplateActions.fetchTemplates.defer();
+    }
+
+    discardUnsavedTemplate(e) {
+        e.preventDefault();
+        TemplateActions.fetchTemplates.defer();
+    }
+
 
     render() {
-        let attrs = (this.state.device.attrs ? this.state.device.attrs.length : '0');
+        let attrs = this.state.template.data_attrs.length + this.state.template.config_attrs.length;
         return (
             <div
                 className={"card-size lst-entry-wrapper z-depth-2 " + (this.state.isSuppressed ? 'suppressed' : 'fullHeight')}
                 id={this.props.id}>
 
                 <div className="lst-entry-title col s12">
-                    <img className="title-icon" src="images/model-icon.png"/>
+                    <img className="title-icon" src={"images/model-icon.png"}/>
                     <div className="title-text">
-                        <span className="text"> {this.state.device.label} </span>
+                        {/*<span className="text"> {this.state.template.label} </span>*/}
+                        <textarea maxLength="40" placeholder={"Template Title"} readOnly={!this.state.isEditable}
+                                  value={this.state.template.label} name={"label"} onChange={this.handleAttribute}/>
                     </div>
                 </div>
 
@@ -609,13 +646,13 @@ class ListItem extends Component {
                 </div>
 
                 <div className={"attr-list"} id={"style-3"}>
-                    {this.state.device.attrs.map((attributes, index) =>
+                    {this.state.template.data_attrs.map((attributes, index) =>
                         <AttributeList key={index} index={index} attributes={attributes}
                                        editable={this.state.isEditable}
                                        onChangeValue={this.handleChangeAttribute}
                                        removeAttribute={this.removeAttribute}/>)}
 
-                    {this.state.device.config.map((attributes, index) =>
+                    {this.state.template.config_attrs.map((attributes, index) =>
                         <ConfigList key={index} index={index} attributes={attributes} editable={this.state.isEditable}
                                     onChangeValue={this.handleChangeConfig} removeAttribute={this.removeAttribute}/>)}
                 </div>
@@ -630,16 +667,29 @@ class ListItem extends Component {
                             <span className="text center-text-child">edit</span>
                         </div>
 
-                        <div className={"material-btn center-text-parent " + (this.state.isEditable ? '' : 'none')}
-                             title="Edit Attributes" onClick={this.updateDevice}>
-                            <span className="text center-text-child">save</span>
+                        <div className={(this.state.isEditable ? (this.state.template.isNewTemplate ? 'none' : '') : 'none')}>
+                            <div className={"material-btn center-text-parent "}
+                                 title="Edit Attributes" onClick={this.updateTemplate}>
+                                <span className="text center-text-child">save</span>
+                            </div>
+
+                            <div className={"material-btn center-text-parent "}
+                                 title="Edit Attributes" onClick={this.handleDismiss}>
+                                <span className="text center-text-child">discard</span>
+                            </div>
                         </div>
 
-                        <div className={"material-btn center-text-parent " + (this.state.isEditable ? '' : 'none')}
-                             title="Edit Attributes" onClick={this.handleDismiss}>
-                            <span className="text center-text-child">discard</span>
+                        <div className={(this.state.isEditable ? (this.state.template.isNewTemplate ? '' : 'none') : 'none')}>
+                            <div
+                                className={"material-btn center-text-parent "}
+                                title="Edit Attributes" onClick={this.addTemplate}>
+                                <span className="text center-text-child">create</span>
+                            </div>
+                            <div className={"material-btn center-text-parent "}
+                                 title="Edit Attributes" onClick={this.discardUnsavedTemplate}>
+                                <span className="text center-text-child">discard</span>
+                            </div>
                         </div>
-
                         <div
                             className={"center-text-parent material-btn right-side " + (this.state.isEditable ? 'none' : '')}
                             onClick={this.suppress}>
@@ -660,12 +710,13 @@ class TemplateList extends Component {
             filter: ''
         };
 
+
         this.handleSearchChange = this.handleSearchChange.bind(this);
         this.applyFiltering = this.applyFiltering.bind(this);
         this.detailedTemplate = this.detailedTemplate.bind(this);
         this.editTemplate = this.editTemplate.bind(this);
-        this.updateDevice = this.updateDevice.bind(this);
-        this.deleteDevice = this.deleteDevice.bind(this);
+        this.updateTemplate = this.updateTemplate.bind(this);
+        this.deleteTemplate = this.deleteTemplate.bind(this);
     }
 
     detailedTemplate(id) {
@@ -702,7 +753,7 @@ class TemplateList extends Component {
 
         // const filter = this.state.filter;
         // const idFilter = filter.match(/id:\W*([-a-fA-F0-9]+)\W?/);
-        // return this.props.devices.filter(function (e) {
+        // return this.props.templates.filter(function (e) {
         //     let result = false;
         //     if (idFilter && idFilter[1]) {
         //         result = result || e.id.toUpperCase().includes(idFilter[1].toUpperCase());
@@ -712,16 +763,16 @@ class TemplateList extends Component {
         // });
     }
 
-    updateDevice(device) {
-        this.props.updateDevice(device);
+    updateTemplate(template) {
+        this.props.updateTemplate(template);
 
         let state = this.state;
         state.edit = undefined;
         this.setState(state);
     }
 
-    deleteDevice(id) {
-        this.props.deleteDevice(id);
+    deleteTemplate(id) {
+        this.props.deleteTemplate(id);
 
         let state = this.state;
         state.edit = undefined;
@@ -745,14 +796,14 @@ class TemplateList extends Component {
             {filteredList.length > 0 ? <div className="col s12 lst-wrapper">
                 {filteredList.map(template => (
                   <ListItem
-                    device={template}
+                    template={template}
                     key={template.id}
                     detail={this.state.detail}
                     detailedTemplate={this.detailedTemplate}
                     edit={this.state.edit}
                     editTemplate={this.editTemplate}
-                    updateDevice={this.updateDevice}
-                    deleteDevice={this.deleteDevice}
+                    updateTemplate={this.updateTemplate}
+                    deleteTemplate={this.deleteTemplate}
                   />
                 ))}
               </div> : <div className="background-info valign-wrapper full-height">
@@ -768,6 +819,19 @@ class Templates extends Component {
 
     constructor(props) {
         super(props);
+
+        this.addTemplate = this.addTemplate.bind(this);
+    }
+    addTemplate() {
+        let template =
+            {
+                "label": "",
+                "data_attrs": [],
+                "config_attrs": [],
+                "attrs": [],
+                "isNewTemplate": true
+            };
+        TemplateActions.insertTemplate(template);
     }
 
     componentDidMount() {
@@ -783,10 +847,10 @@ class Templates extends Component {
                 transitionEnterTimeout={500}
                 transitionLeaveTimeout={500}>
                 <NewPageHeader title="Templates" subtitle="Templates" icon='template'>
-                    <Link to="/template/new" className="btn-item btn-floating waves-effect waves-light cyan darken-2"
+                    <div onClick={this.addTemplate} className="btn-item btn-floating waves-effect waves-light cyan darken-2"
                           title="Create a new template">
                         <i className="fa fa-plus"/>
-                    </Link>
+                    </div>
                 </NewPageHeader>
                 <AltContainer store={TemplateStore}>
                     <TemplateList/>

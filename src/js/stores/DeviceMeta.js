@@ -11,13 +11,13 @@ class DeviceMeta {
   }
 
   parseStatus(device) {
-    if (device.protocol.toLowerCase() == 'virtual') {
-      return device.protocol.toLowerCase();
-    } else {
+    // if (device.protocol.toLowerCase() == 'virtual') {
+    //   return device.protocol.toLowerCase();
+    // } else {
       if (device.status) {
         return device.status;
       }
-    }
+    // }
 
     return "disabled"
   }

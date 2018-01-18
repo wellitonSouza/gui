@@ -12,7 +12,6 @@ import { NewPageHeader } from "../../containers/full/PageHeader";
 import AltContainer from 'alt-container';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Link } from 'react-router'
-
 import { DojotBtnLink } from "../../components/DojotButton";
 import {DeviceMap, PositionRenderer} from './DeviceMap';
 import {DeviceCard} from './DeviceCard';
@@ -71,7 +70,7 @@ class Devices extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {displayList: false};
+    this.state = {displayList: true};
 
     this.filterChange = this.filterChange.bind(this);
     this.toggleDisplay = this.toggleDisplay.bind(this);

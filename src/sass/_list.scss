@@ -834,6 +834,14 @@ $action-area-width: 200px;
     float: left;
     display: table;
     font-size: 18px;
+    textarea {
+      float: left;
+      resize: none;
+      border: none;
+      vertical-align: middle;
+      height: 62px;
+      margin: 6.5px 0;
+    }
 
     .text {
       display: table-cell;
@@ -905,6 +913,7 @@ $action-area-width: 200px;
       height: 50px;
       width: 100%;
       .attr-content {
+        padding: 8px 0;
         float: left;
         height: 50px;
         width: 175px;
@@ -927,7 +936,7 @@ $action-area-width: 200px;
         float: left;
         width: 100%;
         color: #4F4F4F;
-        margin: 8px 0 0 0 !important;
+        margin: 0 !important;
         font-size: 14px;
 
         &:disabled {
@@ -1086,7 +1095,7 @@ $action-area-width: 200px;
   color: #4F4F4F;
   font-size: 14px;
   height: 18px;
-  margin: 8px 0 0 0 !important;
+  margin: 0 !important;
   display: block;
 
   &:disabled {
@@ -1110,3 +1119,4 @@ $action-area-width: 200px;
   color: #ffffff;
   background-color: #4f4f4f !important;
 }
+

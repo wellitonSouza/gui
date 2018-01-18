@@ -53,15 +53,15 @@ class TagForm extends Component{
         </div>
         <div className="row">
           <div className="wrapping-list">
-            { this.props.tags.map((tag) =>(
-              <div key={tag}>
-                {tag} &nbsp;
-                <a title="Remove tag" className="btn-item clickable"
-                   onClick={(e) => {e.preventDefault(); TagActions.remove(tag)}}>
-                  <i className="fa fa-times" aria-hidden="true"></i>
-                </a>
-              </div>
-            ))}
+            {/*{ this.props.tags.map((tag) =>(*/}
+              {/*<div key={tag}>*/}
+                {/*{tag} &nbsp;*/}
+                {/*<a title="Remove tag" className="btn-item clickable"*/}
+                   {/*onClick={(e) => {e.preventDefault(); TagActions.remove(tag)}}>*/}
+                  {/*<i className="fa fa-times" aria-hidden="true"></i>*/}
+                {/*</a>*/}
+              {/*</div>*/}
+            {/*))}*/}
           </div>
         </div>
       </span>

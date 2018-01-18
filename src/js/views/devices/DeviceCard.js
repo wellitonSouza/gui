@@ -4,9 +4,8 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import util from "../../comms/util/util";
 
 import { Link } from 'react-router'
-
+import {Loading} from "../../components/Loading";
 import { PageHeader } from "../../containers/full/PageHeader";
-
 import SideBar from "../../components/DeviceRightSidebar";
 
 

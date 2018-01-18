@@ -7,8 +7,9 @@ import util from '../comms/util';
 class MeasureActions {
 
   appendMeasures(data) { return data; }
-  updateMeasures(data) { console.log("MeasureActions: updateMeasures , ",data); return data; }
-
+  updateMeasures(data) {
+    return data;
+  }
 
   fetchMeasure(device_id, attrs, history_length, callback) {
 
@@ -77,42 +78,38 @@ class MeasureActions {
     }
   }
 
+  fetchMeasures(device, device_id, attrName){
+    function getUrl() {
+      return '/metric/v2/entities/' + device_id + '/attrs/' + attrName;
+    }
+
+    return (dispatch) => {
+      dispatch({device: device, attr: attrName});
+
+      const service = LoginStore.getState().user.service;
+      const config = {
+        method: 'get',
+        headers: new Headers({
+          'fiware-service': service,
+          'fiware-servicepath': '/'
+        })
+      }
+      util._runFetch(getUrl(), config)
+        .then((reply) => {
+          if(reply.value !== null){
+            device.position = reply.value.split(",");
+            const data = device;
+            this.updateMeasures(data);
+          }
+        })
+        .catch((error) => {console.error("failed to fetch data", error);});
+    }
+  }
 
 
-  //   updateMeasuresAttr(device, attr, data) {
-  //     return {device: device, attr: attr, data: data};
-  //   }
-  //
-  // fetchMeasures(device, type, attr) {
-  //
-  //   let devType = 'device';
-  //   if (type == "virtual") {
-  //     devType = "virtual";
-  //   }
-  //
-  //   function getUrl() {
-  //     return '/history/STH/v1/contextEntities/type/' + devType + '/id/' + device + '/attributes/' + attr.name + '?lastN=10'
-  //   }
-  //
-  //   return (dispatch) => {
-  //     dispatch({device: device, attr: attr});
-  //
-  //     const service = LoginStore.getState().user.service;
-  //     const config = {
-  //       method: 'get',
-  //       headers: new Headers({
-  //         'fiware-service': service,
-  //         'fiware-servicepath': '/'
-  //       })
-  //     }
-  //     util._runFetch(getUrl(), config)
-  //       .then((reply) => {
-  //         const data = reply.contextResponses[0].contextElement.attributes[0].values;
-  //         this.updateMeasuresAttr(device, attr, data);
-  //       })
-  //       .catch((error) => {console.error("failed to fetch data", error);});
-  //   }
-  // }
+  updateMeasuresAttr(device, attr, data) {
+    return {device: device, attr: attr, data: data};
+  }
 
   measuresFailed(error) {
     return error;

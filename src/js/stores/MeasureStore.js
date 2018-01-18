@@ -5,7 +5,7 @@ import util from '../comms/util';
 
 class MeasureStore {
   constructor() {
-    this.devices = {};
+    //this.devices = {};
     this.error = null;
 
     this.bindListeners({
@@ -16,8 +16,8 @@ class MeasureStore {
     // handleFetchMeansures: MeasureActions.FETCH_MEASURES,
   }
 
-  handleUpdateMeasures(measureData) {
 
+  handleUpdateMeasures(measureData) {
     if (this.data == undefined)
       this.data = measureData;
     else if (this.data.device == measureData.device) {
@@ -42,6 +42,7 @@ class MeasureStore {
     // }
   }
 
+
   handleAppendMeasures(measureData) {
     if (this.data.device == measureData.device_id) {
       for (let k in measureData) {
@@ -58,17 +59,17 @@ class MeasureStore {
     }
   }
 
-  // handleFetchMeasures(measureData) {
-  //   if (! ('device' in measureData)) { console.error("Missing device id"); }
-  //   if (! ('attr' in measureData)) { console.error("Missing attr id"); }
-  //
-  //   if (! (measureData.device in this.devices)) {
-  //     this.devices[measureData.device] = {}
-  //   }
-  //
-  //   this.devices[measureData.device][measureData.attr.name] = JSON.parse(JSON.stringify(measureData.attr));
-  //   this.devices[measureData.device][measureData.attr.name].loading = true;
-  // }
+   handleFetchMeasures(measureData) {
+     if (! ('device' in measureData)) { console.error("Missing device id"); }
+     if (! ('attr' in measureData)) { console.error("Missing attr id"); }
+
+     if (! (measureData.device in this.devices)) {
+       this.devices[measureData.device] = {}
+     }
+
+     this.devices[measureData.device][measureData.attr.name] = JSON.parse(JSON.stringify(measureData.attr));
+     this.devices[measureData.device][measureData.attr.name].loading = true;
+   }
 
   handleFailure(error) {
     this.error = error;

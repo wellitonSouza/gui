@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom';
 import deviceManager from '../../comms/devices/DeviceManager';
 
 import util from "../../comms/util/util";
-// import DeviceStore from '../../stores/DeviceStore';
+import DeviceStore from '../../stores/DeviceStore';
 // import DeviceActions from '../../actions/DeviceActions';
 // import TemplateStore from '../../stores/TemplateStore';
 // import TemplateActions from '../../actions/TemplateActions';
-// import MeasureStore from '../../stores/MeasureStore';
+import MeasureStore from '../../stores/MeasureStore';
 import MeasureActions from '../../actions/MeasureActions';
 
 import AltContainer from 'alt-container';
@@ -30,7 +30,7 @@ class PositionRenderer extends Component {
       isTerrain: true,
       selectedPin: true,
       center: (this.props.center ? this.props.center : [-21.277057, -47.9590129]),
-      zoom: (this.props.zoom ? this.props.zoom : 13)
+      zoom: (this.props.zoom ? this.props.zoom :7.2)
     }
 
     this.setTiles = this.setTiles.bind(this);
@@ -67,18 +67,17 @@ class PositionRenderer extends Component {
     }
 
     let parsedEntries = this.props.devices.reduce((result,k) => {
+      if (k.position !== undefined){
         result.push({
           id: k.id,
-          type: k.static_attrs[0].type,
           pos: k.position,
-          //  != undefined ? k.position : k.static_attrs[0].value.split(",") ),
           name: k.label,
           pin: getPin(k),
-          key: (k.unique_key ? k.unique_key : k.id)
+          key: k.id
         });
+      }
       return result;
     }, []);
-
 
     const tileURL = this.state.isTerrain ? (
       'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2ZyYW5jaXNjbyIsImEiOiJjajhrN3VlYmowYXNpMndzN2o2OWY1MGEwIn0.xPCJwpMTrID9uOgPGK8ntg'
@@ -123,12 +122,14 @@ class DeviceMap extends Component {
       isDisplayList: true,
       filter: '',
       displayMap:{},
-      selectedDevice:{}
+      selectedDevice:{},
+      templates_id: {},
+      listOfDevices: [],
     };
 
     this.handleViewChange = this.handleViewChange.bind(this);
     this.applyFiltering = this.applyFiltering.bind(this);
-    this.shouldShow = this.shouldShow.bind(this);
+    //this.shouldShow = this.shouldShow.bind(this);
     this.showSelected = this.showSelected.bind(this);
     this.selectedDevice = this.selectedDevice.bind(this);
     this.getDevicesWithPosition = this.getDevicesWithPosition.bind(this);
@@ -136,19 +137,19 @@ class DeviceMap extends Component {
     this.showAll = this.showAll.bind(this);
     this.hideAll = this.hideAll.bind(this);
     this.toggleDisplay = this.toggleDisplay.bind(this);
-    this.setDisplay = this.setDisplay.bind(this);
-    this.setDisplayMap = this.setDisplayMap.bind(this);
+    //this.setDisplay = this.setDisplay.bind(this);
+    //this.setDisplayMap = this.setDisplayMap.bind(this);
   }
 
-  setDisplay(device, status) {
-    let displayMap = this.state.displayMap;
-    displayMap[device] = status;
-    this.setState({displayMap: displayMap});
-  }
+  //setDisplay(device, status) {
+  //  let displayMap = this.state.displayMap;
+  //  displayMap[device] = status;
+  //  this.setState({displayMap: displayMap});
+  //}
 
-  setDisplayMap(displayMap) {
-    this.setState({displayMap: displayMap});
-  }
+  //setDisplayMap(displayMap) {
+  //  this.setState({displayMap: displayMap});
+  //}
 
   componentDidMount() {
     const options = {
@@ -164,12 +165,11 @@ class DeviceMap extends Component {
 
     // initially, shows all devices;
     this.showAll();
-  }
+   }
 
   componentWillUnmount() {
     this.io.close();
   }
-
 
   handleViewChange(event) {
     this.setState({isDisplayList: ! this.state.isDisplayList})
@@ -195,6 +195,7 @@ class DeviceMap extends Component {
   }
 
   showAll(){
+  // TODO filter using user queries
     let displayMap = this.state.displayMap;
     for(let k in this.props.devices){
       let device = this.props.devices[k];
@@ -204,14 +205,12 @@ class DeviceMap extends Component {
   }
 
   applyFiltering(devices) {
-    // TODO filter using user queries
-
     let list = [];
     for (let k in devices) {
-      if (this.state.displayMap[devices[k].id])
+      if (this.state.displayMap[devices[k].id]){
         list.push(devices[k]);
+      }
     }
-
     list.sort((a,b) => {
       if (a.updated > b.updated) {
         return 1;
@@ -222,12 +221,12 @@ class DeviceMap extends Component {
     return list;
   }
 
-  shouldShow(device) {
-    if (this.state.displayMap.hasOwnProperty(device)) {
-      return this.state.displayMap[device];
-    }
-    return true;
-  }
+  //shouldShow(device) {
+  //  if (this.state.displayMap.hasOwnProperty(device)) {
+  //    return this.state.displayMap[device];
+  //  }
+  //  return true;
+  //}
 
   showSelected(device){
     if(this.state.selectedDevice.hasOwnProperty(device)){
@@ -246,33 +245,45 @@ class DeviceMap extends Component {
     this.setState({displayMap: displayMap});
   }
 
-  getDevicesWithPosition(devices)
-  {
-    let validDevices = [];
-    if ((devices !== undefined) && (devices !== null)) {
-      for (let k in devices) {
-          let device = devices[k];
-          device.hasPosition = device.hasOwnProperty('position');
+  getDevicesWithPosition(devices){
 
-          if (!device.hasPosition) // check in static attrs
-          {
-            for (let j in device.static_attrs) {
-              if (device.static_attrs[j].type == "geo:point"){
-                device.hasPosition = true;
-                device.position = device.static_attrs[j].value.split(",");
+    let validDevices = [];
+    if ((devices !== undefined) || (devices !== null)){
+      for(let k in devices){
+        // Verify if device has property position
+        devices[k].hasPosition = devices[k].hasOwnProperty('position');
+
+        /* devices [k].hasPosition is false when you have static_attrs or the dynamic geo attrs values have not yet been published */
+        if(!devices[k].hasPosition){
+          for(let j in devices[k].attrs){
+            for(let i in devices[k].attrs[j]){
+              if(devices[k].attrs[j][i].type == "static"){
+                if(devices[k].attrs[j][i].value_type == "geo"){
+                  devices[k].position = devices[k].attrs[j][i].static_value.split(",");
+                  devices[k].select = this.showSelected(k);
+                  validDevices.push(devices[k]);
+                }
+              }
+              if(devices[k].attrs[j][i].type == "dynamic"){
+                if(devices[k].attrs[j][i].value_type == "geo"){
+                  /*When devices have geo attributes but values have not yet been published, so... it's necessary verify if value is null.
+                   Only push device if value if different of null */
+                  if(devices[k].position != null){
+                    devices[k].select = this.showSelected(k);
+                    validDevices.push(devices[k]);
+                  }
+                }
               }
             }
           }
-
-          if (device.hasPosition)
-          {
-            device.hide = false;
-            device.select = false;
-            validDevices.push(device);
-          }
+        } else{
+            if(devices[k].position !== null){
+              devices[k].select = this.showSelected(k);
+              validDevices.push(devices[k]);
+            }
+        }
       }
     }
-    console.log("validDevices", validDevices);
     return validDevices;
   }
 
@@ -281,11 +292,7 @@ class DeviceMap extends Component {
     let filteredList = this.applyFiltering(validDevices);
     const device_icon  = (<img src='images/icons/chip.png' />)
 
-
-    // pos: (k.position != undefined ? k.position : k.static_attrs[0].value.split(",") ),
-
-
-    const displayDevicesCount = "Showing " + filteredList.length + " device(s)";
+    const displayDevicesCount = "Showing " +  validDevices.length + " device(s)";
 
     return <div className="flex-wrapper">
         <div className="row z-depth-2 devicesSubHeader p0" id="inner-header">

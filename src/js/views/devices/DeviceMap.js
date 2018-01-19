@@ -70,7 +70,7 @@ class PositionRenderer extends Component {
       if (k.position !== undefined){
         result.push({
           id: k.id,
-          pos: k.position,
+          pos: k.position[0].split(" "),
           name: k.label,
           pin: getPin(k),
           key: k.id
@@ -102,7 +102,7 @@ class PositionRenderer extends Component {
         {parsedEntries.map((k) => {
         return (
           <Marker
-            position={k.pos} key={k.key} icon={k.pin}>
+            position={[parseFloat(k.pos[0]), parseFloat(k.pos[1])]} key={k.key} icon={k.pin}>
             <Tooltip>
               <span>{k.id} : {k.name}</span>
             </Tooltip>
@@ -246,41 +246,39 @@ class DeviceMap extends Component {
   }
 
   getDevicesWithPosition(devices){
+    //console.log("Devices: ", devices);
 
     let validDevices = [];
-    if ((devices !== undefined) || (devices !== null)){
+    if((devices !== undefined) || (devices !== null)){
       for(let k in devices){
-        // Verify if device has property position
-        devices[k].hasPosition = devices[k].hasOwnProperty('position');
+        devices[k].hasPosition = devices[k].hasOwnProperty('value');
 
-        /* devices [k].hasPosition is false when you have static_attrs or the dynamic geo attrs values have not yet been published */
         if(!devices[k].hasPosition){
           for(let j in devices[k].attrs){
             for(let i in devices[k].attrs[j]){
-              if(devices[k].attrs[j][i].type == "static"){
-                if(devices[k].attrs[j][i].value_type == "geo"){
-                  devices[k].position = devices[k].attrs[j][i].static_value.split(",");
+              if(devices[k].attrs[j][i].value_type == "geo"){
+                if(devices[k].attrs[j][i].type == "static"){
+                  devices[k].position = devices[k].attrs[j][i].static_value;
                   devices[k].select = this.showSelected(k);
                   validDevices.push(devices[k]);
                 }
-              }
-              if(devices[k].attrs[j][i].type == "dynamic"){
-                if(devices[k].attrs[j][i].value_type == "geo"){
-                  /*When devices have geo attributes but values have not yet been published, so... it's necessary verify if value is null.
-                   Only push device if value if different of null */
-                  if(devices[k].position != null){
+                if(devices[k].attrs[j][i].type == "dynamic"){
+                  if((devices[k].value !== null) || (devices[k].value !== undefined)){
+                    devices[k].position = devices[k].value;
                     devices[k].select = this.showSelected(k);
                     validDevices.push(devices[k]);
                   }
+
                 }
               }
             }
           }
-        } else{
-            if(devices[k].position !== null){
-              devices[k].select = this.showSelected(k);
-              validDevices.push(devices[k]);
-            }
+        } else {
+          if(devices[k].value !== null){
+            devices[k].position = devices[k].value;
+            devices[k].select = this.showSelected(k);
+            validDevices.push(devices[k]);
+          }
         }
       }
     }
@@ -290,7 +288,7 @@ class DeviceMap extends Component {
   render() {
     let validDevices = this.getDevicesWithPosition(this.props.devices);
     let filteredList = this.applyFiltering(validDevices);
-    const device_icon  = (<img src='images/icons/chip.png' />)
+    const device_icon  = (<img src='images/icons/chip.png' />);
 
     const displayDevicesCount = "Showing " +  validDevices.length + " device(s)";
 

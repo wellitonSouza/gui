@@ -107,4 +107,5 @@ class TemplateActions {
   }
 }
 
-alt.createActions(TemplateActions, exports);
+let _action =  alt.createActions(TemplateActions, exports);
+export default _action;

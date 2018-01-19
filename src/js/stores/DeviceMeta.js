@@ -15,13 +15,13 @@ class DeviceMeta {
 * It's necessary discuss about status of a device.
 *
   parseStatus(device) {
-    if (device.protocol.toLowerCase() == 'virtual') {
-      return device.protocol.toLowerCase();
-    } else {
+    // if (device.protocol.toLowerCase() == 'virtual') {
+    //   return device.protocol.toLowerCase();
+    // } else {
       if (device.status) {
         return device.status;
       }
-    }
+    // }
 
     return "disabled"
   }

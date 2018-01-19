@@ -13,6 +13,7 @@ import templateManager from '../../comms/templates/TemplateManager';
 import TemplateStore from '../../stores/TemplateStore';
 import TagForm from '../../components/TagForm';
 import util from "../../comms/util/util";
+import Materialize from 'materialize-css';
 
 class FActions {
   set(args) { return args; }
@@ -188,7 +189,9 @@ class CreateTemplateActions extends Component {
     e.preventDefault();
     const ongoingOps = TemplateStore.getState().loading;
     if (ongoingOps == false) {
-      this.props.operator(JSON.parse(JSON.stringify(TemplateFormStore.getState().device)));
+      let teste = JSON.parse(JSON.stringify(TemplateFormStore.getState().device));
+      delete teste.id;
+      this.props.operator(teste);
     }
   }
 

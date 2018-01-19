@@ -50,7 +50,7 @@ class MapWrapper extends Component {
       for(let j in devices[k].attrs){
         for(let i in devices[k].attrs[j]){
           if(devices[k].attrs[j][i].value_type == "geo"){
-              MeasureActions.fetchMeasures.defer(devices[k], devices[k].id, devices[k].attrs[j][i].label);
+              MeasureActions.fetchMeasure.defer(devices[k], devices[k].id, devices[k].templates, devices[k].attrs[j][i].label);
           }
         }
       }

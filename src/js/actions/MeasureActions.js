@@ -11,26 +11,40 @@ class MeasureActions {
     return data;
   }
 
-  fetchMeasure(device_id, attrs, history_length, callback) {
+  fetchMeasure(device, device_id, templates, attrs, history_length, callback) {
 
     console.log("MeasureActions, fetchMeasure", device_id, attrs, history_length, callback);
     function getUrl() {
       if (history_length === undefined) { history_length = 1; }
-      let url = '/history/device/' + device_id + '/history' + '?lastN=' + history_length;
-      attrs.map((attr) => {url += '&attr=' + attr});
+      let url = '/history/STH/v1/contextEntities/type/template_' + templates + '/id/' + device_id + '/attributes/' + attrs + '?lastN=' + history_length;
       return url;
     }
 
     return (dispatch) => {
       dispatch();
-      util._runFetch(getUrl(), {method: 'get'})
+
+      const service = LoginStore.getState().user.service;
+      const config = {
+        method: 'get',
+        headers: new Headers({
+          'fiware-service': service,
+          'fiware-servicepath': '/'
+        })
+      }
+      util._runFetch(getUrl(), config)
         .then((reply) => {
-          let data = {device: device_id, data: reply};
-          if (attrs.length == 1) {
-            data.data = {};
-            data.data[attrs[0]] = reply;
+          if(reply.contextResponses[0].contextElement.attributes[0].values !== null || reply.contextResponses[0].contextElement.attributes[0].values !== undefined){
+            let history = reply.contextResponses[0].contextElement.attributes[0].values;
+            let values = [];
+            for(let k in history){
+              if(history[k].attrValue !== null){
+                values[k] = history[k].attrValue;
+              }
+            }
+            device.value = values;
+            const data = device;
+            this.updateMeasures(data);
           }
-          this.updateMeasures(data);
           if (callback) {callback(reply)}
         })
         .catch((error) => {console.error("failed to fetch data", error);});
@@ -78,33 +92,33 @@ class MeasureActions {
     }
   }
 
-  fetchMeasures(device, device_id, attrName){
-    function getUrl() {
-      return '/metric/v2/entities/' + device_id + '/attrs/' + attrName;
-    }
+  //fetchMeasures(device, device_id, attrName){
+  //  function getUrl() {
+  //    return '/metric/v2/entities/' + device_id + '/attrs/' + attrName;
+  //  }
 
-    return (dispatch) => {
-      dispatch({device: device, attr: attrName});
+  //  return (dispatch) => {
+  //    dispatch({device: device, attr: attrName});
 
-      const service = LoginStore.getState().user.service;
-      const config = {
-        method: 'get',
-        headers: new Headers({
-          'fiware-service': service,
-          'fiware-servicepath': '/'
-        })
-      }
-      util._runFetch(getUrl(), config)
-        .then((reply) => {
-          if(reply.value !== null){
-            device.position = reply.value.split(",");
-            const data = device;
-            this.updateMeasures(data);
-          }
-        })
-        .catch((error) => {console.error("failed to fetch data", error);});
-    }
-  }
+  //    const service = LoginStore.getState().user.service;
+  //    const config = {
+  //      method: 'get',
+  //      headers: new Headers({
+  //        'fiware-service': service,
+  //        'fiware-servicepath': '/'
+  //      })
+  //    }
+  //    util._runFetch(getUrl(), config)
+  //      .then((reply) => {
+  //        if(reply.value !== null){
+  //          device.position = reply.value.split(",");
+  //          const data = device;
+  //          this.updateMeasures(data);
+  //        }
+  //      })
+  //      .catch((error) => {console.error("failed to fetch data", error);});
+  //  }
+  //}
 
 
   updateMeasuresAttr(device, attr, data) {

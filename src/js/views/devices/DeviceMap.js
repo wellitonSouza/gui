@@ -70,7 +70,7 @@ class PositionRenderer extends Component {
       if (k.position !== undefined){
         result.push({
           id: k.id,
-          pos: k.position[0].split(" "),
+          pos: k.position,
           name: k.label,
           pin: getPin(k),
           key: k.id
@@ -102,7 +102,7 @@ class PositionRenderer extends Component {
         {parsedEntries.map((k) => {
         return (
           <Marker
-            position={[parseFloat(k.pos[0]), parseFloat(k.pos[1])]} key={k.key} icon={k.pin}>
+            position={k.pos} key={k.key} icon={k.pin}>
             <Tooltip>
               <span>{k.id} : {k.name}</span>
             </Tooltip>
@@ -246,41 +246,26 @@ class DeviceMap extends Component {
   }
 
   getDevicesWithPosition(devices){
+    function parserPosition(position){
+      let parsedPosition = position.split(", ");
+      return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
+    }
     //console.log("Devices: ", devices);
 
+    // verify if device is static
     let validDevices = [];
-    if((devices !== undefined) || (devices !== null)){
-      for(let k in devices){
-        devices[k].hasPosition = devices[k].hasOwnProperty('value');
-
-        if(!devices[k].hasPosition){
-          for(let j in devices[k].attrs){
-            for(let i in devices[k].attrs[j]){
-              if(devices[k].attrs[j][i].value_type == "geo"){
-                if(devices[k].attrs[j][i].type == "static"){
-                  devices[k].position = devices[k].attrs[j][i].static_value;
-                  devices[k].select = this.showSelected(k);
-                  validDevices.push(devices[k]);
-                }
-                if(devices[k].attrs[j][i].type == "dynamic"){
-                  if((devices[k].value !== null) || (devices[k].value !== undefined)){
-                    devices[k].position = devices[k].value;
-                    devices[k].select = this.showSelected(k);
-                    validDevices.push(devices[k]);
-                  }
-
-                }
-              }
+    for(let k in devices){
+      for(let j in devices[k].attrs){
+        for(let i in devices[k].attrs[j]){
+          if(devices[k].attrs[j][i].type == "static"){
+            if(devices[k].attrs[j][i].value_type == "geo"){
+              devices[k].position = parserPosition(devices[k].attrs[j][i].static_value);
             }
-          }
-        } else {
-          if(devices[k].value !== null){
-            devices[k].position = devices[k].value;
-            devices[k].select = this.showSelected(k);
-            validDevices.push(devices[k]);
           }
         }
       }
+      devices[k].select = this.showSelected(k);
+      validDevices.push(devices[k]);
     }
     return validDevices;
   }

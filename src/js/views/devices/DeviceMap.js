@@ -250,9 +250,7 @@ class DeviceMap extends Component {
       let parsedPosition = position.split(", ");
       return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
     }
-    //console.log("Devices: ", devices);
 
-    // verify if device is static
     let validDevices = [];
     for(let k in devices){
       for(let j in devices[k].attrs){
@@ -264,8 +262,12 @@ class DeviceMap extends Component {
           }
         }
       }
+
       devices[k].select = this.showSelected(k);
-      validDevices.push(devices[k]);
+      if(devices[k].position !== null){
+        validDevices.push(devices[k]);
+      }
+
     }
     return validDevices;
   }

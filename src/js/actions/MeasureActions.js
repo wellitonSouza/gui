@@ -62,7 +62,6 @@ class MeasureActions {
     }
 
     function parserPosition(position){
-      //console.log("Position: ", position.split(", "));
       let parsedPosition = position.split(", ");
       return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
     }
@@ -81,10 +80,10 @@ class MeasureActions {
 
       util._runFetch(getUrl(), config)
         .then((reply) => {
-          let position = {};
+          let position = null;
           let values = reply.contextResponses[0].contextElement.attributes[0].values;
           for(let k in values){
-            if(values[k].attrValue !== null || values[k].attrValue !== undefined){
+            if(values[k].attrValue !== null){
               position = parserPosition(values[k].attrValue);
             }
           }

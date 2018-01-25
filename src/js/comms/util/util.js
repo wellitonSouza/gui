@@ -139,15 +139,15 @@ class Util {
 
   isNameValid(name) {
     if (name.length == 0) {
-      // ErrorActions.setField('name', "You can't leave this empty");
+      Materialize.toast("You can't leave name empty", 4000);
       return false;
     }
 
     if (name.match(/^\w+$/) == null) {
+      Materialize.toast("Please use only letters (a-z), numbers (0-9) and underscores (_).", 4000);
       // ErrorActions.setField('name', "Please use only letters (a-z), numbers (0-9) and underscores (_).");
       return false;
     } else {
-      // ErrorActions.setField('name', "");
       return true;
     }
   }
@@ -155,13 +155,17 @@ class Util {
   isTypeValid(value, type){
     const validator = {
       'string': function (value) {
-        return value.trim().length > 0;
+        const result = value.trim().length > 0;
+        if (result == false) {
+        Materialize.toast("Mandatory value is empty.", 4000);
+        }
+        return result;
       },
       'geo:point': function (value) {
         const re = /^([+-]?\d+(\.\d+)?)([,]\s*)([+-]?\d+(\.\d+)?)$/
         const result = re.test(value);
         if (result == false) {
-          ErrorActions.setField('value', 'This is not a valid coordinate')
+          Materialize.toast("Coordinate is not a valid one.", 4000);
         }
         return result;
       },
@@ -169,7 +173,7 @@ class Util {
         const re = /^[+-]?\d+$/
         const result = re.test(value);
         if (result == false) {
-          ErrorActions.setField('value', 'This is not an integer')
+          Materialize.toast("Integer error.", 4000);
         }
         return result;
       },
@@ -177,7 +181,7 @@ class Util {
         const re = /^[+-]?\d+(\.\d+)?$/
         const result = re.test(value);
         if (result == false) {
-          ErrorActions.setField('value', 'This is not a float')
+          Materialize.toast("Float error.", 4000);
         }
         return result;
       },
@@ -185,12 +189,12 @@ class Util {
         const re = /^0|1|true|false$/
         const result = re.test(value);
         if (result == false) {
-          ErrorActions.setField('value', 'This is not a boolean')
+          Materialize.toast("Boolean error.", 4000);
+          // ErrorActions.setField('value', 'This is not a boolean')
         }
         return result;
       },
     };
-
 
     if (validator.hasOwnProperty(type)) {
       const result = validator[type](value)

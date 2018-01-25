@@ -51,7 +51,7 @@ class MapWrapper extends Component {
         for(let i in devices[k].attrs[j]){
           if(devices[k].attrs[j][i].type == "dynamic"){
             if(devices[k].attrs[j][i].value_type == "geo"){
-                MeasureActions.fetchPosition.defer(devices[k], devices[k].id, devices[k].templates, devices[k].attrs[j][i].label, 10);
+                MeasureActions.fetchPosition.defer(devices[k], devices[k].id, devices[k].templates, devices[k].attrs[j][i].label, 1);
             }
           }
         }

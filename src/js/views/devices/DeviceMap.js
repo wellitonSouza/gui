@@ -279,7 +279,7 @@ class DeviceMap extends Component {
 
     const displayDevicesCount = "Showing " +  validDevices.length + " device(s)";
 
-    return <div className="flex-wrapper">
+    return <div className="fix-map-bug">
         <div className="row z-depth-2 devicesSubHeader p0" id="inner-header">
           <div className="col s4 m4 main-title">Map Visualization</div>
           <div className="col s8 m8 header-info hide-on-small-only">
@@ -287,10 +287,12 @@ class DeviceMap extends Component {
             <div className="subtitle">{displayDevicesCount}</div>
           </div>
         </div>
+      <div className="flex-wrapper">
         <div className="deviceMapCanvas deviceMapCanvas-map col m12 s12 relative">
           <PositionRenderer devices={filteredList} />
           <Sidebar devices={validDevices} hideAll={this.hideAll} showAll={this.showAll} selectedDevice={this.selectedDevice} toggleDisplay={this.toggleDisplay} />
         </div>
+      </div>
       </div>;
   }
 }

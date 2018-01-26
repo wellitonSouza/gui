@@ -22,7 +22,7 @@ $default: rgba(0, 0, 0, 0.87);
 $almost-black: #666666;
 $gray:#f3f3f3;
 $dark-gray:#212121;
-
+$shark: #1c2733;
 
 // this the new color scheme
 // blue
@@ -37,7 +37,6 @@ $dark-ciano:#12BDBA;
 
 $bluewood: #2c3e50;
 $spruce: #3d505b;
-$shark: #1c2733;
 $white: #fff;
 $kashmir: #51779f;
 $kashmir-border: #436788;
@@ -275,6 +274,10 @@ body {
   margin-bottom: 0px !important;
 }
 
+.mt3px, .mt3
+{
+    margin-top: 3px;
+}
 @import 'inputs';
 @import 'shadow';
 @import 'list';

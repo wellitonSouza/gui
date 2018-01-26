@@ -125,20 +125,20 @@
   border: none;
   transition: ease 350ms;
   &:hover {
+    background-color: #F44336;
     color: #ffffff;
     border: none;
     transition: ease 350ms;
   }
   &:focus {
     color: #fff;
+    background-color: #EF5350;
   }
 }
 
 
 .device-map
 {
-
-    //margin-top: -10px;
     position: absolute;
     right: 0px !important;
     width: 75%;
@@ -289,15 +289,19 @@
   }
 }
 
+.dropdown-content li>a, .dropdown-content li>span{
+  color: #444444;
+}
+
 .detail-box-header {
     font-family: 'Open Sans', 'Roboto';
     font-size: 12px;
     letter-spacing: 0.42px;
     font-weight: 400;
     text-transform: uppercase;
-    color: #2D9CDB;
+    color: #D23F3F;
     padding: 6px 22px;
-    border-bottom: 2px solid #2D9CDB;
+    border-bottom: 2px solid #D23F3F;
     text-align: right;
 }
 
@@ -329,14 +333,14 @@
   position: relative;
 
   .detail-box-header {
+      color: #D23F3F;
       font-family: 'Open Sans', 'Roboto', sans-serif;
       font-size: 12px;
       letter-spacing: 0.42px;
       font-weight: 400;
       text-transform: uppercase;
-      color: #2D9CDB;
       padding: 6px 22px;
-      border-bottom: 2px solid #2D9CDB;
+      border-bottom: 2px solid #D23F3F;
       text-align: right;
   }
 
@@ -405,6 +409,18 @@
   height: 100%;
   display: inline-block;
   float: right;
+
+  .edit-btn-flat{
+    background: linear-gradient(269.31deg, #F88383 9.21%, #F26F6F 42.78%, #EB5757 84.23%);
+  }
+
+  .remove-btn-flat{
+    background: linear-gradient(269.31deg, #F88383 9.21%, #F26F6F 42.78%, #EB5757 84.23%);
+  }
+
+  .return-btn-flat{
+    background: linear-gradient(269.31deg, #F88383 9.21%, #F26F6F 42.78%, #EB5757 84.23%);
+  }
 }
 
 
@@ -981,43 +997,14 @@
   padding: 3px;
   margin: 0 auto;
   border: 1px solid #FFFFFF;
+  width: 20px !important;
+  height: 20px !important;
   // box-shadow: 0 0 7px 6px lightgray;
   border-radius: 50%;
 }
 
-.bg-true-black {
-  background: #000;
-}
-
-.bg-black{
-  background: #2c3e50;
-}
-
 .bg-red{
-  background: #F22613;
-}
-
-.bg-orange{
-  background: #F89406;
-}
-
-.bg-light-blue{
-  background: #6BB9F0;
-}
-
-.bg-blue{
-  background: #19B5FE;
-}
-
-.bg-greyish-blue{
-  background: #4B77BE;
-}
-
-.bg-dark-blue{
-  background: #3A539B;
-}
-.bg-medium-gray {
-  background: #949494;
+  background: #D23F3F;
 }
 
 h1, h2, p {

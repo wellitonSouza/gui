@@ -21,6 +21,13 @@ import { DojotBtnLink } from "../../components/DojotButton";
 
 import io from 'socket.io-client';
 
+
+var redPin = L.divIcon({className: 'icon-marker bg-red'});
+var selectedPin = L.icon({
+  iconUrl: 'images/mapMarker.png',
+  iconSize: [40, 40]
+});
+
 class PositionRenderer extends Component {
   constructor(props) {
     super(props);
@@ -47,22 +54,11 @@ class PositionRenderer extends Component {
   }
 
   render() {
-
-    var selectedPin = L.icon({
-      iconUrl: 'images/mapMarker.png',
-      iconSize: [40, 40]
-    });
-
-    var defaultPin = L.icon({
-      iconUrl: 'images/defaultMapMarker.png',
-      iconSize: [30, 30]
-    });
-
     function getPin(device){
-      if(device.select == true){
-        return selectedPin;
+      if(!device.select == true){
+        return redPin;
       } else {
-        return defaultPin;
+        return selectedPin;
       }
     }
 

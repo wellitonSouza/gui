@@ -55,7 +55,6 @@ class RemoveDialog extends Component {
   }
 
   render() {
-    console.log("Alou!!!!!");
     return (
       <div className="modal" id={this.props.target} ref="modal">
         <div className="modal-content full">

@@ -5,12 +5,12 @@ import util from "../../comms/util/util";
 
 function SummaryItem(props) {
 
-    let attrs = 0; // = props.device.attrs[1].length + props.device.static_attrs.length;
+    let attrs = 0;
 
-    for(const [key, value] of Object.entries(props.device.attrs)) {
-        attrs += value.length;
+    for(let attribute in props.device.attrs) {
+        attrs += props.device.attrs[attribute].length;
     }
-//util.iso_to_date(props.device.created)
+
   return (
       <Link to={"/device/id/" + props.device.id + "/detail"}>
           <div className={"card-size lst-entry-wrapper z-depth-2 fullHeight"}>

@@ -15,7 +15,7 @@ class Navbar extends Component {
     super(props);
 
     this.state = {
-      open: false,
+      // open: false,
       page: '',
       page_icon: false,
     };
@@ -31,12 +31,12 @@ class Navbar extends Component {
 
   handleClick(e) {
     e.preventDefault();
-
-    if (this.state.open === true) {
-      this.setState({open: false})
-    } else {
-      this.setState({open: true})
-    }
+    // if (this.state.open === true) {
+    //   this.setState({open: false})
+    // } else {
+    //   this.setState({open: true})
+    // }
+    this.props.toggleSidebar();
   }
 
   render() {
@@ -63,8 +63,9 @@ class Navbar extends Component {
                 </div>
                 <div className="user-name">{(this.props.user.name ? this.props.user.name : this.props.user.username)}</div>
                 <div className="clickable" onClick={this.handleClick} title="Login details">
-                  <i className="fa fa-caret-down line-normal center-caret" />
-                  { this.state.open === true && <RightSideBar user={this.props.user} gravatar={this.gravatar} /> }
+                {this.props.open === false &&  <i className="fa fa-caret-down line-normal center-caret" />}
+                {this.props.open === true && <i className="fa fa-caret-up line-normal center-caret" />}
+
                 </div>
             </div>
           </div>
@@ -89,14 +90,24 @@ class RightSideBar extends Component {
 
   dismiss(event) {
     event.preventDefault();
+    this.props.toggleSidebar();
   }
 
   render() {
+    console.log("this,props",this.props);
+  
+    if (this.props.user == undefined) {
+      console.error('no active user session');
+      return null;
+    }
+
+    let gravatar = "https://www.gravatar.com/avatar/" + btoa(this.props.user.username) + "?d=identicon";
+
     return (
-      <div className="rightsidebar" onClick={this.dismiss}>
+      <div className="">
         <div className="rightsidebarchild logout-page">
           <div className="col s12 m12 logout-page-photo">
-            <img src={this.props.gravatar} />
+            <img src={gravatar} />
           </div>
           <div className="col s12 m12">
             <div className="logout-page-subtitle">You are logged in!</div>
@@ -123,16 +134,15 @@ class RightSideBar extends Component {
           )}
 
           <div className="row logout-page-buttons">
-            <div className="s12 m6">
-              <a className="btn waves-light" onClick={this.dismiss}>dismiss</a>
-            </div>
-            <div className="s12 m6">
-              <button type="button" className="btn waves-light" onClick={this.logout}>logout</button>
-            </div>
+            <a className="waves-effect waves-light btn-flat btn-ciano" onClick={this.dismiss}>dismiss</a>
+            <button type="button" className="waves-effect waves-light btn-flat btn-ciano" onClick={this.logout}>logout</button>
           </div>
         </div>
+      <div className="rightsidebar" onClick={this.dismiss}>
       </div>
-    )
+      </div >
+
+)
   }
 }
 
@@ -269,11 +279,30 @@ function SpanWrapper(props) {
 }
 
 class Full extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user_sidebar: false,
+    };
+
+    this.toggleUserSidebar = this.toggleUserSidebar.bind(this);
+  }
+
+  toggleUserSidebar() 
+  {
+    console.log("toggleUserSidebar");
+    this.setState({ user_sidebar: !this.state.user_sidebar});
+  }
+
   render() {
     return (
       <span>
+        
         <AltContainer store={LoginStore}>
-          <Navbar/>
+          {(this.state.user_sidebar) ? (
+            <RightSideBar toggleSidebar={this.toggleUserSidebar} />
+          ): ( <div></div> )}
+          <Navbar toggleSidebar={this.toggleUserSidebar} open={this.state.user_sidebar}/>
         </AltContainer>
         <AltContainer store={MenuStore}>
           <Content router={this.props.router}>{this.props.children}</Content>

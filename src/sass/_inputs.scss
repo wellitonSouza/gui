@@ -33,12 +33,15 @@
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.3);
   color: white;
   font-weight: bold;
-  transition: all .4s ease-out;
-  -webkit-transition: all .4s ease-out;
+  transition: all .2s ease-out;
+  -webkit-transition: all .2s ease-out;
 
   &:hover {
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2) !important;
-    background: linear-gradient(269.31deg, #F2994A 9.21%, #FF7800 84.23%);
+    // background: linear-gradient(269.31deg, #F2994A 9.21%, #FF7800 84.23%);
+    background: $white !important;
+    color: $almost-black;
+    border: 1px solid yellow;
   }
 
   i {

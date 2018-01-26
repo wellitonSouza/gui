@@ -24,7 +24,7 @@ import MaterialInput from "../../components/MaterialInput";
  Below begins the React Flux's hell
 */
 
-class FActions {
+class DeviceHandlerActions {
   set(args) { return args; }
   update(args) { return args; }
 
@@ -37,18 +37,20 @@ class FActions {
     }
   }
 }
-const FormActions = alt.createActions(FActions);
+const FormActions = alt.createActions(DeviceHandlerActions);
 // const AttrActions = alt.generateActions('set', 'update', 'add', 'remove');
 const AttrActions = alt.generateActions('update');
 
-class FStore {
+class DeviceHandlerStore {
   constructor() {
     this.device = {}; this.set();
+    this.usedTemplates = {};
     // this.newAttr = {};
     // this.setAttr();
 
     // Map used to filter out duplicated attr names. Do check loadAttrs() for further notes.
-    this.attrNames = {}; this.loadAttrs();
+    this.attrNames = {};
+    //  this.loadAttrs();
 
     // General form-wide sticky error messages
     this.attrError = "";
@@ -60,7 +62,7 @@ class FStore {
       updateDevice: FormActions.UPDATE,
       fetch: FormActions.FETCH,
       // setAttr: AttrActions.SET,
-      setAllAttrs : AttrActions.UPDATE,
+      setAttributes : AttrActions.UPDATE,
       // updAttr: AttrActions.UPDATE,
       // addAttr: AttrActions.ADD,
       // removeAttr: AttrActions.REMOVE,
@@ -68,7 +70,7 @@ class FStore {
     this.set(null);
   }
 
-  //
+  
   loadAttrs () {
     // TODO: it actually makes for sense in the long run to use (id, key) for attrs which
     //       will allow name updates as well as better payload to event mapping.
@@ -77,18 +79,20 @@ class FStore {
       return;
     }
 
-    if (this.device.hasOwnProperty('attrs')){
-      this.device.attrs.map((attr) => this.attrNames[attr.name] = attr.name);
+    for (let tmp_id in this.device.attrs) {
+      for (let index in this.device.attrs[tmp_id])
+      {
+        let att = this.device.attrs[tmp_id][index];
+        if (String(att.type) == 'static' )
+        {
+          this.attrNames[att.id] = att.static_value;
+        }
+      }
     }
-
-    if (this.device.hasOwnProperty('static_attrs')){
-      this.device.static_attrs.map((attr) => this.attrNames[attr.name] = attr.name);
-    }
-    console.log("loading attributes to store");
-    console.log("Device was updated in Store: ",this.device);
   }
 
-  fetch(id) {}
+  fetch(id) {
+  }
 
   set(device) {
     if (device === null || device === undefined) {
@@ -98,44 +102,35 @@ class FStore {
         protocol: "MQTT",
         templates: [],
         tags: [],
-        attrs: [],
-        static_attrs: []
+        attrs: []
       };
+      this.usedTemplates = {};
     } else {
-      if (device.attrs == null || device.attrs == undefined) {
-        device.attrs = []
-      }
-
-      if (device.static_attrs == null || device.static_attrs == undefined) {
-        device.static_attrs = []
-      }
-
       this.device = device;
+      this.usedTemplates = device.templates;
+      // creating a map makes easy to quickly find attributes
+      this.loadAttrs();
       console.log("Device was updated in Store: ",this.device);
     }
-
-    this.loadAttrs();
   }
 
   updateDevice(diff) {
     this.device[diff.f] = diff.v;
   }
 
-  setAllAttrs(attr_list){
-    console.log(attr_list);
-    this.device.static_attrs = [];
+  setAttributes(attr_list){
     this.device.attrs = [];
     for(let k in attr_list){
-      if (String(attr_list[k].type) == "static") {
-        this.device.static_attrs.push(JSON.parse(JSON.stringify(attr_list[k])));
-      } else {
-        delete attr_list[k].static_value;
-        this.device.attrs.push(JSON.parse(JSON.stringify(attr_list[k])));
+      
+      // First at all, checks the relation between value and its type.
+      if (!util.isTypeValid(attr_list[k].value, attr_list[k].type)){
+        return;
       }
-    }
-    console.log("set all attr", this.device);
-  }
 
+      this.device.attrs.push(JSON.parse(JSON.stringify(attr_list[k])));
+    }
+   console.log("All attributes were set.", this.device);
+  }
   // setAttr(attr) {
   //   if (attr) {
   //     this.newAttr = attr;
@@ -152,7 +147,7 @@ class FStore {
   // updAttr(diff) {
   //   this.newAttr[diff.f] = diff.v;
   // }
-  //
+
   // addAttr() {
   //   // check for duplicate names. Do check loadAttrs() for further details.
   //   // if (this.attrNames.hasOwnProperty(this.newAttr.name)) {
@@ -187,59 +182,11 @@ class FStore {
   // }
 }
 
-var DeviceFormStore = alt.createStore(FStore, 'DeviceFormStore');
-
-// class AttrCard extends Component {
-//   constructor(props) {
-//     super(props);
-//
-//     this.handleRemove = this.handleRemove.bind(this);
-//
-//   }
-//
-//   handleRemove(event) {
-//     event.preventDefault();
-//     AttrActions.remove(this.props);
-//   }
-//
-//   render() {
-//     const hasValue = (this.props.value && this.props.value.length > 0);
-//     const splitSize = "col " + (hasValue ? " s4" : " s12");
-//
-//     return (
-//       <div className="col s12 m6 l4">
-//         <div className="card z-depth-2">
-//           <div className="card-content row">
-//             <div className="col s10 main">
-//               <div className="value title truncate">{this.props.name}</div>
-//               <div className="label">Name</div>
-//             </div>
-//             <div className="col s2">
-//               <i className="clickable fa fa-trash btn-remove-attr-card right" title="Remove attribute" onClick={this.handleRemove}/>
-//             </div>
-//             <div className={splitSize}>
-//               <div className="value">{attrType.translate(this.props.type)}</div>
-//               <div className="label">Type</div>
-//             </div>
-//             {(hasValue > 0) && (
-//               <div className="col s8">
-//                 <div className="value full-width truncate">{this.props.value}</div>
-//                 <div className="label">Static value</div>
-//               </div>
-//             )}
-//           </div>
-//         </div>
-//       </div>
-//     )
-//   }
-// }
-
+var DeviceFormStore = alt.createStore(DeviceHandlerStore, 'DeviceFormStore');
 
 // var attrType = new TypeDisplay();
 
-/* Below stuffs that makes sense */
-
-class SpecificAttrs extends Component {
+class StaticAttributes extends Component {
   constructor(props) {
     super(props);
 
@@ -247,10 +194,10 @@ class SpecificAttrs extends Component {
   }
 
   handleChange(event) {
-      event.preventDefault();
-      const f = event.target.name;
-      const v = event.target.value;
-      this.props.changeAttr(f,v);
+    event.preventDefault();
+    const f = event.target.name;
+    const v = event.target.value;
+    this.props.onChange(f,v);
   }
 
   render() {
@@ -267,7 +214,7 @@ class SpecificAttrs extends Component {
                         <div className="attr-name">{attr.label}</div>
                         <div className="attr-type">{attr.value_type}</div>
                         <div className="attr-name input-field fix-inputs">
-                          <MaterialInput className='mt0px' id="fld_label" value={attr.static_value} name="label" onChange={this.handleChange}></MaterialInput>
+                    <MaterialInput className='mt0px' id="fld_label" value={attr.value} name={attr.label}  onChange={this.handleChange}></MaterialInput>
                         </div>
                         <div className="attr-type fix-value ">Value</div>
                       </div>
@@ -276,14 +223,41 @@ class SpecificAttrs extends Component {
             </div>
           ) : (
             <div className="col s12">
-                <div className="no-data-notification">No attributes.</div>
+                <div className="no-data-notification">No static attributes.</div>
             </div>
       )}
-
       </div>
     )
   }
 }
+
+
+class DeviceHeader extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <div className="col s12 pb20">
+        <div className="col s3">
+          {/* TODO clickable, file upload */}
+          <div className="img">
+            <img src="images/big-chip.png" />
+          </div>
+        </div>
+        <div className="col s9 pt20px">
+          <div>
+            <div className="input-field large col s12 ">
+              <MaterialInput id="fld_label" value={this.props.name} name="label" onChange={this.props.onChange}> Name </MaterialInput>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
+
 
 
 class AttrBox extends Component {
@@ -295,19 +269,25 @@ class AttrBox extends Component {
     return (
       <div className="attr-box">
         <div className="col s12">
-            <div className="attr-title">{this.props.label}</div>
+            <div className="attr-title">Template: <b>{this.props.label}</b></div>
         </div>
         {( this.props.attrs.length > 0) ? (
           <div className="col s12">
             {
-              this.props.attrs.map((attr) =>
-                    <div className="col s4">
-                    { String(attr.type) != 'static' ? (
-                        <div>
-                      <div className="attr-name">{attr.label}</div>
-                      <div className="attr-type">{attr.value_type}</div>
-                      </div>) : ( null ) }
-                    </div>
+              // <div className="icon">
+              //   <img src={"images/tag.png"} />
+              // </div>
+              this.props.attrs.map((attr,index) =>
+                    { 
+                      if (String(attr.type) != 'static')
+                      return (
+                        <div key={index} className='col s4'>
+                        <div className='bg-gray'>
+                          <div className="attr-name">{attr.label}</div>
+                          <div className="attr-type">{attr.value_type}</div>
+                          </div>
+                        </div>)
+                     }
               )
             }
             </div>
@@ -323,16 +303,12 @@ class AttrBox extends Component {
 }
 
 
-
-
-
-
-
 class DeviceForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
       templateState: 0,
+      staticAttrs: [],
       templates: [],
       selectedTemplates: [],
       loaded:false,
@@ -340,65 +316,74 @@ class DeviceForm extends Component {
     // templateState = 0 - Removal painel
     // templateState = 1 - Addition painel
     this.handleChange = this.handleChange.bind(this);
+    this.handleChangeAttr = this.handleChangeAttr.bind(this);
+  
     this.toggleTemplate = this.toggleTemplate.bind(this);
     this.setTemplateState = this.setTemplateState.bind(this);
     this.save = this.save.bind(this);
-    this.changeAttr = this.changeAttr.bind(this);
-    this.createStaticAttrs = this.createStaticAttrs.bind(this);
+  
+    this.getStaticAttributes = this.getStaticAttributes.bind(this);
+    this.removeStaticAttributes = this.removeStaticAttributes.bind(this);
   }
 
   componentDidMount() {
-      console.log("Edition mode: ", this.props.edition);
-  }
+      if (!this.props.edition)
+        this.setState({templateState: 1});
+    }
 
   componentDidUpdate() {
-      console.log("componentDidUpdate,",DeviceStore.getState().loading);
-      // @TODO probably not the best way to do it
-      if (this.props.edition && !this.state.loaded && DeviceFormStore.getState().device.id  != "" )
-      {
-          console.log("device", this.device, DeviceFormStore.getState().device);
-          let dev = DeviceFormStore.getState().device;
-          console.log("templates", dev.templates);
+    // if is edition mode, we should wait for template list and iterate it updating the selected templates    
+    let templates = this.props.templates.templates;
+    if (
+      !this.state.loaded &&
+      templates != undefined &&
+      templates.length > 0 &&
+      Object.keys(this.props.device.usedTemplates).length &&
+      this.state.selectedTemplates.length == 0
+    ) {
+      let list = [];
+      let currentAttrs = this.state.staticAttrs;
 
-          // let selectedTemplates = [];
-          // for(let k in this.state.selectedTemplates){
-          //   template_list.push(this.state.selectedTemplates[k].id);
-          // }
-          // this.state.selectedTemplates
-          this.setState({selectedTemplates: dev.templates,loaded:true});
+      for (let tmp_id in this.props.device.usedTemplates) {
+        for (let k in templates) {
+          if (templates[k].id == this.props.device.usedTemplates[tmp_id]) {
+            templates[k].active = true;
+            list.push(JSON.parse(JSON.stringify(templates[k])));
+            currentAttrs = currentAttrs.concat(this.getStaticAttributes(templates[k]));
+            break;
+          }
+        }
       }
+      this.setState({ selectedTemplates: list, loaded: true, staticAttrs: currentAttrs });
+    }
   }
 
   save(e) {
     e.preventDefault();
 
-    // First at all, checks all static values
-
-    // @TODO we should show the errors
     let to_be_checked = DeviceFormStore.getState().device;
     if (!util.isNameValid(to_be_checked.label)) {
       Materialize.toast("Missing label.", 4000);
       return;
     }
-    // if(!util.isTypeValid(this.props.newAttr.value,this.props.newAttr.type)){
-    //   return;
-    // }
 
-    // set all static attributes on device
+    // templates describe all attributes that should be applied to device, so we only need set values related to static attributes.
     AttrActions.update(this.state.staticAttrs);
-    // set dynamic attributes if necessary
-    // AttrActions.update(this.state.attrs);
+
+    
+    // set templates used
     let template_list = [];
     for(let k in this.state.selectedTemplates){
       template_list.push(this.state.selectedTemplates[k].id);
     }
-
     FormActions.update({f:"templates", v:template_list});
+
     console.log("Object to go: ",JSON.parse(JSON.stringify(DeviceFormStore.getState().device)));
 
     // Now, saves the device;
     const ongoingOps = DeviceStore.getState().loading;
     if (ongoingOps == false) {
+      console.log("ongoingOps");
       this.props.operator(JSON.parse(JSON.stringify(DeviceFormStore.getState().device)));
     }
   }
@@ -412,28 +397,26 @@ class DeviceForm extends Component {
   }
 
   toggleTemplate(tmpt) {
-    // check if template is active
-    let selectedTemplate = this.state.selectedTemplates.filter(function(item) {
-        return item.id === tmpt.id
-    })
-
+    // check if the template have already been added
+    let selectedTemplate = this.state.selectedTemplates.filter(function(item) {return item.id === tmpt.id})
+    let currentAttrs = this.state.staticAttrs; 
     let list = [];
-    if (selectedTemplate.length == 0 ) //adding template
+    if (selectedTemplate.length == 0 ) //adding new template
     {
       list = this.state.selectedTemplates;
       list.push(tmpt);
+      currentAttrs = currentAttrs.concat(this.getStaticAttributes(tmpt));
     }
     else { //removing template
       list = this.state.selectedTemplates.filter(function(item) {
           return item.id !== tmpt.id
       })
+      currentAttrs = this.removeStaticAttributes(tmpt, currentAttrs);
     }
-
-    this.createStaticAttrs();
-    // this isn't the better way to do it.
-
+   
     this.setState({
-      selectedTemplates: list
+      selectedTemplates: list,
+      staticAttrs: currentAttrs
     });
   }
 
@@ -444,7 +427,7 @@ class DeviceForm extends Component {
     FormActions.update({f: f, v: v});
   }
 
-  changeAttr(label, val){
+  handleChangeAttr(label, val){
     let st = this.state.staticAttrs;
     for(let k in st){
       if (st[k].label == label)
@@ -453,27 +436,39 @@ class DeviceForm extends Component {
     this.setState({staticAttrs: st});
   }
 
-  createStaticAttrs()
+  removeStaticAttributes(template,current_list)
   {
-    let st = this.state.selectedTemplates;
-    let static_attrs = [];
-    for(let k in st){
-      let list = st[k].attrs
-        .filter((i) => {return String(i.type) == "static"})
-        .map(function(attr){
-            attr.value = '';
-            attr.id = util.sid();
-            attr.template_id = st[k].id;
-          return attr;
-        });
-      static_attrs = static_attrs.concat(list);
-    }
-    this.setState({staticAttrs: static_attrs});
+    let list = current_list
+      .filter((i) => { return String(i.template_id) != template.id })
+    return list;
   }
 
+  getStaticAttributes(template){
+    let list = template.attrs
+      .filter((i) => { return String(i.type) == "static" })
+      .map((attr) => {
+        // check if there is a current static value in device store
+        if (attr.id)
+        {
+          if (this.props.device.attrNames[attr.id])
+            attr.value = this.props.device.attrNames[attr.id];
+          else
+            attr.value = attr.static_value;
+        }
+        else
+        {
+          attr.id = util.sid();
+          attr.value = attr.static_value;
+        }
+        attr.template_id = template.id;
+        return attr;
+      });
+      return list;
+  }
 
   render() {
 
+    // preparing template list to be used
     let templates = this.props.templates.templates;
     for(let k in templates){
       templates[k].active = false;
@@ -484,34 +479,21 @@ class DeviceForm extends Component {
         }
       }
     }
-
+    // console.log("this.state.selectedTemplates",this.state.selectedTemplates)
     return (
       <div className={"row device device-frame mb0 " + (this.props.className ? this.props.className : "")}>
           <div className="col s7 data-frame">
-            <div className="col s12 pb20">
-              <div className="col s3">
-                {/* TODO clickable, file upload */}
-                <div className="img">
-                  <img src="images/big-chip.png" />
-                </div>
-              </div>
-              <div className="col s9 pt20px">
-                <div>
-                  <div className="input-field large col s12 ">
-                    <MaterialInput id="fld_label" value={this.props.device.device.label} name="label" onChange={this.handleChange}> Name </MaterialInput>
-                  </div>
-                </div>
-              </div>
-            </div>
-
+       
             <div className="col s12">
             {
               (this.state.selectedTemplates.length > 0) ? (
                 <div className="react-bug-escape">
-                <SpecificAttrs attrs={this.state.staticAttrs} change={this.state.changeAttr} />
-                { this.state.selectedTemplates.map((tplt) =>
-                  <AttrBox key={tplt.id} {...tplt}/>)
-                }
+                  <DeviceHeader name={this.props.device.device.label} onChange={this.handleChange}/>
+                  <StaticAttributes attrs={this.state.staticAttrs} onChange={this.handleChangeAttr} />
+                  { this.state.selectedTemplates.map((tplt) =>
+                    
+                    <AttrBox key={tplt.id} {...tplt}/>)
+                  }
                 </div>
               )
               : (
@@ -524,23 +506,17 @@ class DeviceForm extends Component {
             {(this.state.selectedTemplates.length > 0) && (
 
             <div className='col s12 footer text-right'>
-            {
-              // <button type="button" className="waves-effect waves-dark red btn-flat">
-              //   Save
-              // <DojotButton color='white' click='' label='Discard' />
-              // </button>
-            }
-              <a className="waves-effect waves-light btn-flat btn-ciano" onClick={this.save} tabIndex="-1">save</a>
-              <Link to="/device/list" className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1">dismiss</Link>
+              <a className="waves-effect waves-light btn-flat btn-ciano" onClick={this.save} tabIndex="-1">Save</a>
+              <Link to="/device/list" className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1">Discard</Link>
             </div>)}
 
           </div>
 
           <div className="col s5 p0">
           { this.state.templateState == 0 ? (
-            <TemplateFrame setTemplateState={this.setTemplateState} toggleTemplate={this.toggleTemplate} templates={this.state.selectedTemplates} state={this.state.templateState} />
+            <TemplateFrame changeState={this.setTemplateState} toggleTemplate={this.toggleTemplate} templates={this.state.selectedTemplates} state={this.state.templateState} />
           ) : (
-            <TemplateFrame setTemplateState={this.setTemplateState} toggleTemplate={this.toggleTemplate} templates={templates} state={this.state.templateState} />
+            <TemplateFrame changeState={this.setTemplateState} toggleTemplate={this.toggleTemplate} templates={templates} state={this.state.templateState} />
           )}
           </div>
       </div>
@@ -560,10 +536,6 @@ class TemplateFrame extends Component {
     this.showSearchBox = this.showSearchBox. bind(this);
   }
 
-  // componentDidMount() {
-  //     console.log("TemplateFrame = this.props",this.props);
-  // }
-
   removeTemplate(template){
     this.props.toggleTemplate(template);
   }
@@ -573,11 +545,11 @@ class TemplateFrame extends Component {
   }
 
   setAditionMode(){
-    this.props.setTemplateState(1);
+    this.props.changeState(1);
   }
 
   setRemovalMode(){
-    this.props.setTemplateState(0);
+    this.props.changeState(0);
   }
 
   showSearchBox()
@@ -592,11 +564,14 @@ class TemplateFrame extends Component {
 
   render() {
     // const hasValue = (this.props.templates && this.props.templates.length > 0);
-    console.log("this", this.props.templates);
     return (
       <div className="col s12 template-frame">
         <div className="col s12 header">
-          <label className="col s6 text-left" >All Templates </label>
+        { this.props.state == 0 ? (
+          <label className="col s6 text-left" >Selected Templates </label>
+        ) : (
+            <label className="col s6 text-left" >All Templates </label>
+            )}
 
           <div className="col s6 text-right" >
           { this.props.state == 0 ? (
@@ -669,9 +644,9 @@ class NewDevice extends Component {
 
     let ops = function(device) {
       DeviceActions.addDevice(device, (device) => {
-        FormActions.set(device);
-        hashHistory.push('/device/id/' + device.id + '/edit')
+        // FormActions.set(device);
         Materialize.toast('Device created', 4000);
+        hashHistory.push('/device/list')
       });
     }
     if (this.props.params.device) {
@@ -692,7 +667,7 @@ class NewDevice extends Component {
           <NewPageHeader title="Devices" subtitle="device manager" icon="device">
           </NewPageHeader>
           <AltContainer stores={{device: DeviceFormStore, templates: TemplateStore}} >
-          <DeviceForm deviceid={this.props.params.device} edition={edition} operator={ops} />
+           <DeviceForm deviceid={this.props.params.device} edition={edition} operator={ops} />
           </AltContainer>
         </ReactCSSTransitionGroup>
       </div>

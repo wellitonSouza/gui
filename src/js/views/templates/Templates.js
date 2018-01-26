@@ -73,10 +73,10 @@ import {NewPageHeader} from "../../containers/full/PageHeader";
 class TemplateTypes {
     constructor() {
         this.availableValueTypes = [
-            {"value": "geo", "label": "Geo"},
+            {"value": "geo:point", "label": "Geo"},
             {"value": "float", "label": "Float"},
             {"value": "integer", "label": "Integer"},
-            {"value": "string", "label": "Text"},
+            {"value": "string", "label": "String"},
             {"value": "boolean", "label": "Boolean"}
         ];
         this.availableTypes = [
@@ -92,19 +92,15 @@ class TemplateTypes {
             {"value": "translator", "label": "Translator"}
         ];
     }
-
     getValueTypes() {
         return this.availableValueTypes;
     }
-
     getTypes() {
         return this.availableTypes;
     }
-
     getConfigValueTypes() {
         return this.configValueTypes;
     }
-
     getConfigTypes() {
         return this.configTypes;
     }
@@ -148,7 +144,6 @@ class AttributeList extends Component {
                     <div className="icon">
                         <img src={"images/tag.png"}/>
                     </div>
-
                     <div className={"attr-content"}>
                         <input type="text" value={this.props.attributes.label} disabled={!this.props.editable}
                                name={"label"} onChange={this.handleChange}/>
@@ -174,7 +169,7 @@ class AttributeList extends Component {
 
                         <span>Type</span>
                     </div>
-                    <div className={(this.props.editable ? '' : 'none') + " center-text-parent material-btn right-side"}
+                    <div className={(this.props.editable ? '' : 'none') + " center-text-parent material-btn right-side raised-btn"}
                          title={"Remove Attribute"}
                          onClick={this.removeAttribute.bind(this, this.props.index)}>
                         <i className={"fa fa-trash center-text-child icon-remove"}/>
@@ -195,12 +190,9 @@ class AttributeList extends Component {
                                 <option value={opt.value} key={opt.label}>{opt.label}</option>
                             )}
                         </select>
-
-
                     </div>
                 </div>
             </div>
-
         )
     }
 }
@@ -276,9 +268,9 @@ class ConfigList extends Component {
                                 <option value={opt.value} key={opt.label}>{opt.label}</option>
                             )}
                         </select>
-                        <span>{this.props.attributes.type}</span>
+                        <span>{'Meta Value'}</span>
                     </div>
-                    <div className={(this.props.editable ? '' : 'none') + " center-text-parent material-btn right-side"}
+                    <div className={(this.props.editable ? '' : 'none') + " center-text-parent material-btn right-side raised-btn"}
                          title={"Remove Attribute"}
                          onClick={this.removeAttribute.bind(this, this.props.index)}>
                         <i className={"fa fa-trash center-text-child icon-remove"}/>
@@ -297,7 +289,7 @@ class NewAttribute extends Component {
             isSuppressed: true,
             isConfiguration: false,
             newAttr: {
-                "type": "meta",
+                "type": "",
                 "value_type": "",
                 "value": "",
                 "label": ""
@@ -325,6 +317,8 @@ class NewAttribute extends Component {
         let state = this.state;
         state.isSuppressed = !state.isSuppressed;
         state.isConfiguration = property;
+
+        property === true ?  state.newAttr.type = 'meta': state.newAttr.type = 'dynamic';
         this.setState(state);
         this.handleChangeStatus(property);
     }
@@ -337,6 +331,23 @@ class NewAttribute extends Component {
     }
 
     addAttribute(attribute) {
+        if (!util.isNameValid(attribute.label) && !this.state.isConfiguration) {
+            Materialize.toast("Missing label.", 4000);
+            return;
+        }
+
+        if (attribute.value_type === "") {
+            Materialize.toast("Missing type.", 4000);
+            return;
+        }
+
+        let ret = util.isTypeValid(attribute.value, attribute.value_type, attribute.type);
+        if (!ret.result){
+            Materialize.toast(ret.error, 4000);
+            return;
+        }
+
+
         this.props.addAttribute(attribute, this.state.isConfiguration);
         this.suppress();
     }
@@ -344,7 +355,7 @@ class NewAttribute extends Component {
     discardAttribute() {
         let state = this.state;
         state.newAttr = {
-            "type": "meta",
+            "type": "",
             "value_type": "",
             "value": "",
             "label": ""
@@ -380,7 +391,7 @@ class NewAttribute extends Component {
                     <div className={"middle-line"}/>
                 </div>
 
-                <div className={(this.state.isSuppressed ? 'invisible' : '')}>
+                <div className={(this.state.isSuppressed ? 'invisible' : 'padding5')}>
                     <div className={"attr-row " + (this.state.isConfiguration ? 'none' : '')}>
                         <div className="icon">
                             <img src={"images/add-tag.png"}/>
@@ -419,7 +430,7 @@ class NewAttribute extends Component {
                                    name={"value"}/>
 
                             <select id="select_attribute_type"
-                                    className={(this.state.isConfiguration ? (this.state.newAttr.value_type === "protocol" ? '' : 'none') : 'none') + " card-select dark-background"}
+                                    className={(this.state.isConfiguration ? (this.state.newAttr.value_type === 'protocol' ? '' : 'none') : 'none') + " card-select dark-background"}
                                     name={"value"}
                                     value={this.state.newAttr.value}
                                     onChange={this.handleChange}>
@@ -518,7 +529,7 @@ class ListItem extends Component {
 
     deleteTemplate(e) {
         e.preventDefault();
-        TemplateActions.triggerRemoval(this.state.template);
+        TemplateActions.triggerRemoval(this.state.template.id);
     }
 
     addAttribute(attribute, isConfiguration) {
@@ -639,9 +650,15 @@ class ListItem extends Component {
                     </div>
 
                     <div
-                        className={"center-text-parent material-btn expand-btn right-side " + (this.state.isSuppressed ? '' : 'invisible')}
+                        className={"center-text-parent material-btn expand-btn right-side " + (this.state.isSuppressed ? '' : 'invisible none')}
                         onClick={this.suppress}>
                         <i className="fa fa-angle-down center-text-child text"/>
+                    </div>
+
+                    <div title={"Remove card"}
+                        className={"raised-btn  center-text-parent material-btn expand-btn right-side " + (this.state.isEditable ? (this.state.template.isNewTemplate ? 'none' : '') : 'none')}
+                        onClick={this.deleteTemplate}>
+                        <i className="fa fa-trash center-text-child text icon-remove"/>
                     </div>
                 </div>
 

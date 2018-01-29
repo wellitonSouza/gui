@@ -22,21 +22,19 @@ import Toggle from 'material-ui/Toggle';
 
 
 function ToggleWidget(props) {
-  return (
-    <div className="box-sh">
-      <div className='toggle-icon'>
-        <img src='images/icons/pin.png' />
+  return <div className="box-sh">
+      <div className="toggle-icon" onClick={props.setState.bind(this,false)}>
+        <img src="images/icons/pin.png" />
       </div>
-      <div className='toggle-map'>
+      <div className="toggle-map">
         <MuiThemeProvider>
-          <Toggle label="" defaultToggled={props.toggleState} onToggle={props.toggle}/>
+          <Toggle label="" defaultToggled={props.toggleState} onToggle={props.toggle} />
         </MuiThemeProvider>
       </div>
-      <div className='toggle-icon'>
-        <i className="fa fa-th-large" aria-hidden="true"></i>
+      <div className="toggle-icon" onClick={props.setState.bind(this,true)}>
+        <i className="fa fa-th-large" aria-hidden="true" />
       </div>
-    </div>
-  )
+    </div>;
 }
 
 class MapWrapper extends Component {
@@ -76,6 +74,7 @@ class Devices extends Component {
 
     this.filterChange = this.filterChange.bind(this);
     this.toggleDisplay = this.toggleDisplay.bind(this);
+    this.setDisplay = this.setDisplay.bind(this);
   }
 
   componentDidMount() {
@@ -85,6 +84,10 @@ class Devices extends Component {
   filterChange(newFilter) {
   }
 
+  setDisplay(state) {
+    this.setState({ displayList: state });
+  }
+
   toggleDisplay() {
     const last = this.state.displayList;
     this.setState({displayList: !last});
@@ -92,7 +95,7 @@ class Devices extends Component {
 
   render() {
     const detail = ('detail' in this.props.location.query) ? this.props.location.query.detail : null;
-    const displayToggle = (<ToggleWidget toggleState={this.state.displayList} toggle={this.toggleDisplay} />)
+    const displayToggle = <ToggleWidget toggleState={this.state.displayList} toggle={this.toggleDisplay} setState={this.setDisplay} />;
 
     return (<ReactCSSTransitionGroup transitionName="first" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={500} transitionLeaveTimeout={500}>
         <NewPageHeader title="Devices" subtitle="" icon="device">

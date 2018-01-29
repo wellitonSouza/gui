@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
 
 class MaterialInput extends Component {
-  constructor(){
+  constructor() {
     super();
     this.isValid = this.isValid.bind(this);
     this.getName = this.getName.bind(this);
@@ -21,7 +20,7 @@ class MaterialInput extends Component {
   }
 
   getClass() {
-    return (this.isValid() ? "react-validate" : "react-validate invalid");
+    return this.isValid() ? "react-validate" : "react-validate invalid";
   }
 
   getName() {
@@ -38,37 +37,53 @@ class MaterialInput extends Component {
 
     if (this.props.validate) {
       let result = this.props.validate(this.props.value);
-      if (typeof(result) === "boolean") {
+      if (typeof result === "boolean") {
         valid = result;
       }
 
-      if (typeof(result) === "object") {
-        if (result.hasOwnProperty('valid')) { valid = result['valid']; }
-        if (result.hasOwnProperty('error')) { error = result['error']; }
+      if (typeof result === "object") {
+        if (result.hasOwnProperty("valid")) {
+          valid = result["valid"];
+        }
+        if (result.hasOwnProperty("error")) {
+          error = result["error"];
+        }
       }
     }
 
-    const outerClass = "input-field " + (this.props.className ? this.props.className : "");
-    const labelClass = (this.props.value.length > 0 ? "active " : "");
+    const outerClass =
+      "input-field " + (this.props.className ? this.props.className : "");
+    const labelClass = this.props.value.length > 0 ? "active " : "";
+
+    let inputType;
+
+    if (this.props.type !== undefined) {
+      inputType = this.props.type;
+    } else {
+      inputType = "text";
+    }
 
     return (
       <div className={outerClass}>
-        <input type="text"
-               id={this.props.id}
-               name={this.getName()}
-               key={this.getName()}
-               className={this.getClass()}
-               value={this.props.value}
-               onChange={this.props.onChange}
+        <input
+          type={inputType}
+          id={this.props.id}
+          name={this.getName()}
+          key={this.getName()}
+          className={this.getClass()}
+          value={this.props.value}
+          onChange={this.props.onChange}
         />
-        <label htmlFor={this.props.id}
-               data-error={this.props.error}
-               data-success=""
-               className={labelClass}>
+        <label
+          htmlFor={this.props.id}
+          data-error={this.props.error}
+          data-success=""
+          className={labelClass}
+        >
           {this.props.children}
         </label>
       </div>
-    )
+    );
   }
 }
 

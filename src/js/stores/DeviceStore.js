@@ -21,6 +21,8 @@ class DeviceStore {
       handleRemoveSingle: DeviceActions.REMOVE_SINGLE,
 
       handleFailure: DeviceActions.DEVICES_FAILED,
+
+      fetchSingle: DeviceActions.FETCH_SINGLE,
     });
   }
 

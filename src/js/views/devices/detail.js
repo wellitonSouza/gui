@@ -408,7 +408,7 @@ class AttrSelector extends Component {
     this.handleClear = this.handleClear.bind(this);
     this.getAttrList = this.getAttrList.bind(this);
   }
- 
+
   componentWillMount(){
     let attrs = [];
     console.log("this.props.device", this.props.device);
@@ -439,12 +439,14 @@ class AttrSelector extends Component {
     this.props.onChange([]);
   }
 
-  getAttrList(attributes){
-    for(let k in attributes){
-      for(let j in attributes[k]){
-          return attributes[k][j];
+  getAttrList(attributes) {
+    let attrList = [];
+    for (let templateID in attributes) {
+      for (let attributeID in attributes[templateID]) {
+        attrList.push(attributes[templateID][attributeID]);
       }
     }
+    return attrList;
   }
 
   render() {
@@ -463,9 +465,9 @@ class AttrSelector extends Component {
                             value={this.state.new_attr}
                             onChange={this.handleSelectedAttribute}>
               <option value="">Select attribute to display</option>
-              {this.state.attributes.map((attr) => (
-                <option value={attr.label} key={attr.id} >{attr.label}</option>
-              ))}
+                {this.getAttrList(this.props.attrs).map((attr) => (
+                    <option value={attr.label} key={attr.id}>{attr.label}</option>
+                ))}
 
             </MaterialSelect>
           </div>
@@ -559,7 +561,8 @@ class DeviceDetail extends Component {
         <div className="col s3 detail-box full-height">
           <div className="detail-box-header">General</div>
             <HeaderWrapper device={device} />
-          <AttrSelector device = {device} 
+          <AttrSelector device = {device}
+                        attrs={device.attrs}
                         selected={this.state.selected_attributes}
                         onChange={this.onChange} />
         </div>
@@ -612,7 +615,7 @@ class ViewDeviceImpl extends Component {
         }
       }
     }
-    
+
     let devices = this.props.devices;
     for(let k in devices){
       for(let j in devices[k].attrs){

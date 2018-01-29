@@ -278,6 +278,19 @@ body {
 {
     margin-top: 3px;
 }
+
+#toast-container {
+  margin: auto !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: 0%;
+  left:50%;
+}
+
+.toast{
+    background-color: #ee6e73 !important;
+}
+
 @import 'inputs';
 @import 'shadow';
 @import 'list';

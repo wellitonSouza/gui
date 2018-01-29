@@ -402,11 +402,21 @@ function StatusDisplay(props) {
 class AttrSelector extends Component {
   constructor(props) {
     super(props);
-    this.state = {new_attr: ""};
+    this.state = {attributes: [], new_attr: ""};
     this.handleSelectedAttribute = this.handleSelectedAttribute.bind(this);
     this.handleAddAttribute = this.handleAddAttribute.bind(this);
     this.handleClear = this.handleClear.bind(this);
     this.getAttrList = this.getAttrList.bind(this);
+  }
+
+  componentWillMount(){
+    let attrs = [];
+    console.log("this.props.device", this.props.device);
+    for (let index in this.props.device.attrs) {
+      attrs = attrs.concat(this.props.device.attrs[index]);
+    }
+     this.setState({ attributes: attrs });
+    console.log("Attr list", attrs);
   }
 
   handleSelectedAttribute(event) {
@@ -440,12 +450,14 @@ class AttrSelector extends Component {
   }
 
   render() {
+
+    console.log("Checking props ",this.props);
     return (
       <div className="col 12 attribute-box">
         <div className="col 12 attribute-header">All Attributes</div>
         <span className="highlight">
           Showing <b> {this.props.selected.length} </b>
-          of <b> {this.props.attrs.length} </b> attributes
+          of <b> {this.state.attributes.length} </b> attributes
         </span>
         <div className="col s12 p16">
           <div className="input-field col s12">
@@ -544,7 +556,7 @@ class DeviceDetail extends Component {
   render() {
     const device = this.props.devices[this.props.deviceid];
 
-    return (
+     return (
       <div className="row detail-body">
         <div className="col s3 detail-box full-height">
           <div className="detail-box-header">General</div>
@@ -590,18 +602,20 @@ class ViewDeviceImpl extends Component {
 
     this.remove = this.remove.bind(this);
   }
-  componentWillMount(){
+
+  componentDidMount(){
     const device = this.props.devices[this.props.device_id];
-    for(let i in device.attrs){
-      for(let j in device.attrs[i]){
-        if(device.attrs[i][j].value_type == "geo"){
-          MeasureActions.fetchPosition.defer(device, device.id, device.templates, device.attrs[i][j].label)
+    if (device == undefined)
+      return; //not ready
+
+    for (let i in device.attrs) {
+      for (let j in device.attrs[i]) {
+        if (device.attrs[i][j].value_type == "geo") {
+          MeasureActions.fetchPosition.defer(device, device.id, device.templates, device.attrs[i][j].label);
         }
       }
     }
-  }
 
-  componentDidMount(){
     let devices = this.props.devices;
     for(let k in devices){
       for(let j in devices[k].attrs){
@@ -636,7 +650,7 @@ class ViewDeviceImpl extends Component {
     }
 
     if (device === undefined) {
-      // return (<Loading />);
+      return (<Loading />);
     }
 
     return (
@@ -667,20 +681,22 @@ class ViewDevice extends Component {
     super(props);
   }
 
-  componentDidMount() {
-    DeviceActions.fetchSingle.defer(this.props.params.device);
+  componentWillMount() {
+      DeviceActions.fetchSingle.defer(this.props.params.device);
+  }
 
-    const options = {transports: ['websocket']};
+  componentDidMount() {
+    const options = { transports: ["websocket"] };
     this.io = io(window.location.host, options);
     this.io.on(this.props.params.device, function(data) {
       MeasureActions.appendMeasures(data);
 
-      const fields = ['ts', 'temperature', 'sinr'];
-      let device_data = {device_id: data.device_id};
+      const fields = ["ts", "temperature", "sinr"];
+      let device_data = { device_id: data.device_id };
       device_data.position = [data.lat.value, data.lng.value];
-      fields.map((field) => {
-        if (data.hasOwnProperty(field)){
-          if (field === 'ts') {
+      fields.map(field => {
+        if (data.hasOwnProperty(field)) {
+          if (field === "ts") {
             device_data[field] = util.timestamp_to_date(Date.now());
           } else {
             device_data[field] = data[field].value;
@@ -700,14 +716,17 @@ class ViewDevice extends Component {
       <div className="full-width full-height">
         <ReactCSSTransitionGroup
           transitionName="first"
-          transitionAppear={true} transitionAppearTimeout={500}
-          transitionEnterTimeout={500} transitionLeaveTimeout={500} >
-          <AltContainer store={DeviceMeta} >
-            <ViewDeviceImpl device_id={this.props.params.device}/>
+          transitionAppear={true}
+          transitionAppearTimeout={500}
+          transitionEnterTimeout={500}
+          transitionLeaveTimeout={500}
+        >
+          <AltContainer store={DeviceStore}>
+            <ViewDeviceImpl device_id={this.props.params.device} />
           </AltContainer>
         </ReactCSSTransitionGroup>
       </div>
-    )
+    );
   }
 }
 

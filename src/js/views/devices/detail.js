@@ -429,12 +429,14 @@ class AttrSelector extends Component {
     this.props.onChange([]);
   }
 
-  getAttrList(attributes){
-    for(let k in attributes){
-      for(let j in attributes[k]){
-          return attributes[k][j];
+  getAttrList(attributes) {
+    let attrList = [];
+    for (let templateID in attributes) {
+      for (let attributeID in attributes[templateID]) {
+        attrList.push(attributes[templateID][attributeID]);
       }
     }
+    return attrList;
   }
 
   render() {
@@ -451,9 +453,9 @@ class AttrSelector extends Component {
                             value={this.state.new_attr}
                             onChange={this.handleSelectedAttribute}>
               <option value="">Select attribute to display</option>
-              {this.props.attrs[this.props.device.templates].map((attr) => (
-                <option value={attr.label} key={attr.id} >{attr.label}</option>
-              ))}
+                {this.getAttrList(this.props.attrs).map((attr) => (
+                    <option value={attr.label} key={attr.id}>{attr.label}</option>
+                ))}
 
             </MaterialSelect>
           </div>

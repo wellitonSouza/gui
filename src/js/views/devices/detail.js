@@ -19,22 +19,72 @@ import {Loading} from "../../components/Loading";
 
 import { Line } from 'react-chartjs-2';
 import { PositionRenderer } from './DeviceMap.js'
+import { MapWrapper } from './Devices.js'
 import MaterialSelect from "../../components/MaterialSelect";
 
 import io from 'socket.io-client';
+
+
+class RemoveDialog extends Component {
+  constructor(props) {
+    super(props);
+
+    this.dismiss = this.dismiss.bind(this);
+    this.remove = this.remove.bind(this);
+  }
+
+  componentDidMount() {
+    // materialize jquery makes me sad
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(modalElement).ready(function() {
+      $('.modal').modal();
+    })
+  }
+
+  dismiss(event) {
+    event.preventDefault();
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(modalElement).modal('close');
+  }
+
+  remove(event) {
+    event.preventDefault();
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    this.props.callback(event);
+    $(modalElement).modal('close');
+  }
+
+  render() {
+    return (
+      <div className="modal" id={this.props.target} ref="modal">
+        <div className="modal-content full">
+          <div className="row center background-info">
+            <div><i className="fa fa-exclamation-triangle fa-4x" /></div>
+            <div>You are about to remove this device.</div>
+            <div>Are you sure?</div>
+          </div>
+        </div>
+        <div className="modal-footer right">
+            <button type="button" className="btn-flat btn-ciano waves-effect waves-light" onClick={this.dismiss}>cancel</button>
+            <button type="submit" className="btn-flat btn-red waves-effect waves-light" onClick={this.remove}>remove</button>
+        </div>
+      </div>
+    )
+  }
+}
 
 class DeviceUserActions extends Component {
   render() {
     return (
       <div>
-        <Link to={"/device/id/" + this.props.deviceid + "/edit"} className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1" title="Edit device">
+        <Link to={"/device/id/" + this.props.deviceid + "/edit"} className="waves-effect waves-light btn-flat edit-btn-flat" tabIndex="-1" title="Edit device">
           <i className="clickable fa fa-pencil" />
         </Link>
-        <a className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1" title="Remove device"
+        <a className="waves-effect waves-light btn-flat remove-btn-flat" tabIndex="-1" title="Remove device"
            onClick={(e) => {e.preventDefault(); $('#' + this.props.confirmTarget).modal('open');}}>
           <i className="clickable fa fa-trash"/>
         </a>
-        <Link to={"/device/list"} className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1" title="Return to device list">
+        <Link to={"/device/list"} className="waves-effect waves-light btn-flat return-btn-flat" tabIndex="-1" title="Return to device list" >
           <i className="clickable fa fa-arrow-left" />
         </Link>
       </div>
@@ -68,14 +118,10 @@ class Graph extends Component{
 
       return undefined;
     }
-    //
-    // if (this.props.data == undefined) {
-    //   return (<NoData />);
-    // }
-    //console.log("this.props.attrs: ", this.props.attrs);
+
     this.props.data.value.map((i) => {
       labels.push(util.iso_to_date(i.ts));
-      values.push(i);
+      values.push(i.trim());
     })
 
     if (values.length === 0) {
@@ -103,16 +149,16 @@ class Graph extends Component{
           fill: false,
           lineTension: 0.1,
           backgroundColor: 'rgba(75,192,192,0.4)',
-          borderColor: 'rgba(75,192,192,1)',
+          borderColor: 'rgba(235,87,87,1)',
           borderCapStyle: 'butt',
           borderDash: [],
           borderDashOffset: 0.0,
           borderJoinStyle: 'miter',
-          pointBorderColor: 'rgba(75,192,192,1)',
+          pointBorderColor: 'rgba(235,87,87,1)',
           pointBackgroundColor: '#fff',
           pointBorderWidth: 1,
           pointHoverRadius: 5,
-          pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+          pointHoverBackgroundColor: 'rgba(235,87,87,1)',
           pointHoverBorderColor: 'rgba(220,220,220,1)',
           pointHoverBorderWidth: 2,
           pointRadius: 1,
@@ -143,7 +189,7 @@ class Graph extends Component{
 // TODO move this to its own component
 function HistoryList(props) {
   const empty = (
-    <div className="full-height background-info valign-wrapper center">
+    <div className="full-height background-info valign-wrapper no-data-av">
       <div className="center full-width">No data available</div>
     </div>
   );
@@ -155,7 +201,7 @@ function HistoryList(props) {
   }
 
 
-  if (props.data && value){
+  if (value){
     let data = value;
     let trimmedList = data.filter((i) => {
       return i.trim().length > 0
@@ -223,10 +269,6 @@ class AttrHistory extends Component {
     super(props);
   }
 
-  componentDidMount() {
-    MeasureActions.fetchMeasure(this.props.device, this.props.device.id, this.props.device.templates, [this.props.attr], 250);
-  }
-
   render() {
     return (
       <div className="graphLarge">
@@ -255,12 +297,13 @@ class AttributeBox extends Component {
 
   changeAttribute(attr_id) {
     this.setState({selected: attr_id});
-    MeasureActions.fetchMeasure(this.props.device, this.props.device.id, this.props.device.templates, [attr_id], 250);
+    MeasureActions.fetchMeasure(this.props.device, this.props.device.id, this.props.device.templates, attr_id, 250);
   }
 
   render() {
     let device = this.props.device;
     let attr = [];
+
     if (this.state.selected !== null) {
       attr = device.attrs[device.templates].filter((k) => {
         return k.label.toUpperCase() == this.state.selected.toUpperCase();
@@ -268,16 +311,24 @@ class AttributeBox extends Component {
     }
 
     let timeRange = undefined;
-    if (attr[0]) {
-      if (this.props.attrs[0][device.templates].hasOwnProperty(this.state.selected)){
-        if (this.props.data.data[this.state.selected].length > 0){
-          const to = util.iso_to_date(this.props.data.data[this.state.selected][0]['ts']);
-          let length = this.props.data.data[this.state.selected].length;
-          const from = util.iso_to_date(this.props.data.data[this.state.selected][length - 1]['ts']);
-          timeRange = "Data from " + from + " to " + to;
+
+    /*
+    * Maybe it's better to talk about time range. Think about the best way to show this value
+    * or even if it's necessary to show this value.
+    */
+    if(attr[0]){
+      for(let k in this.props.data.attrs[device.templates]){
+        if(this.props.data.attrs[device.templates][k].label == this.state.selected){
+          if(this.props.data.value.length !== 0){
+            let length = this.props.data.value.length;
+            const from = util.iso_to_date(this.props.data.value[length - 1]['ts']);
+            timeRange = "Data from " + from;
+            //const to = util.iso_to_date(this.props.data.value['ts']);
+          }
         }
       }
     }
+
 
     return (
       <div className="col s12 p0 full-height">
@@ -287,12 +338,10 @@ class AttributeBox extends Component {
           {this.props.attrs.map((attr) => {
             let data = undefined;
             let active = this.state.selected && (attr.toUpperCase() === this.state.selected.toUpperCase());
-            if (this.props.data && this.props.data.hasOwnProperty('data')) {
-              if (this.props.data.data.hasOwnProperty(attr)){
-                if (this.props.data.data[attr].length > 0){
-                  data = this.props.data.data[attr][0].attrValue;
+            if (this.props.data && this.props.data.hasOwnProperty('value')) {
+                if (this.props.data.value.length > 0){
+                  data = this.props.data.value[this.props.data.value.length - 1];
                 }
-              }
             }
             return (
               <AttributeSelector label={attr} key={attr}
@@ -318,13 +367,21 @@ class AttributeBox extends Component {
 }
 
 
+function getAttrsLength(attrs){
+  let length = 0;
+  for(let k in attrs){
+    length = length + attrs[k].length;
+  }
+  return length;
+}
 
 function StatusDisplay(props) {
+  const numAttributes = getAttrsLength(props.device.attrs);
   return (
     <div className="detail-box-body">
       <div className="metric">
           <span className="label">Attributes</span>
-          <span className="value">{props.device.attrs.length + props.device.static_attrs.length}</span>
+          <span className="value">{numAttributes}</span>
       </div>
       <div className="metric">
           <span className="label">Last update</span>
@@ -349,6 +406,7 @@ class AttrSelector extends Component {
     this.handleSelectedAttribute = this.handleSelectedAttribute.bind(this);
     this.handleAddAttribute = this.handleAddAttribute.bind(this);
     this.handleClear = this.handleClear.bind(this);
+    this.getAttrList = this.getAttrList.bind(this);
   }
 
   handleSelectedAttribute(event) {
@@ -371,17 +429,25 @@ class AttrSelector extends Component {
     this.props.onChange([]);
   }
 
+  getAttrList(attributes){
+    for(let k in attributes){
+      for(let j in attributes[k]){
+          return attributes[k][j];
+      }
+    }
+  }
+
   render() {
     return (
       <div className="col 12 attribute-box">
         <div className="col 12 attribute-header">All Attributes</div>
         <span className="highlight">
-          Showing <b>{this.props.selected.length}</b>
-          of <b>{this.props.attrs.length}</b> attributes
+          Showing <b> {this.props.selected.length} </b>
+          of <b> {this.props.attrs.length} </b> attributes
         </span>
         <div className="col s12 p16">
           <div className="input-field col s12">
-            <MaterialSelect id="attributes-select" name="attribute"
+            <MaterialSelect id="attributes-select" style="color: #D23F3F;" name="attribute"
                             value={this.state.new_attr}
                             onChange={this.handleSelectedAttribute}>
               <option value="">Select attribute to display</option>
@@ -399,7 +465,7 @@ class AttrSelector extends Component {
               </a>
             </div>
             <div className="col s6 button ta-center" type="submit" onClick={this.handleAddAttribute}>
-              <a className="waves-effect waves-light btn" id="btn-add" tabIndex="-1" title="Add">
+              <a className="waves-effect waves-light btn red lighten-1" id="btn-add" tabIndex="-1" title="Add">
                 <i className="clickable fa fa-plus"/>
               </a>
             </div>
@@ -410,40 +476,15 @@ class AttrSelector extends Component {
   }
 }
 
+
 class PositionWrapper extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      wasChecked: false,
       hasPosition: false,
       pos: []
     };
-
-    this.hasPosition = this.hasPosition.bind(this);
   }
-
-  hasPosition(device)
-  {
-      if (this.state.wasChecked)
-        return;
-      let position = [];
-      let hasPosition = device.hasOwnProperty('position');
-
-      if (!hasPosition) // check in static attrs
-      {
-        for (let j in device.static_attrs) {
-          if (device.static_attrs[j].type === "geo:point"){
-            let hasPosition = true;
-            position = device.static_attrs[j].value.split(",");
-          }
-        }
-      }
-      else {
-        position = device.position;
-      }
-      this.setState({wasChecked: true, hasPosition: hasPosition, pos: position});
-  }
-
 
   render() {
     function NoData() {
@@ -454,34 +495,25 @@ class PositionWrapper extends Component {
         )
     }
 
-    let device = this.props.devices[this.props.device_id];
-    this.hasPosition(device);
-    if (!this.state.hasPosition)
+    let device = this.props.device;
+    if (!device.hasOwnProperty('position') || device.position == null)
     {
       return (<NoData />);
+    } else {
+      return (<PositionRenderer devices={[device]} allowContextMenu={false} center={device.position}/>)
     }
-    device.position = this.state.pos;
-
-    // let pos = this.props.value.attrValue;
-    // let parsed = pos.match(/^([+-]?\d+(\.\d+)?)\s*[,]\s*([+-]?\d+(\.\d+)?)$/)
-    // const position = [parseFloat(parsed[1]),parseFloat(parsed[3])];
-    // if (position[0] == 0 && position[1] == 0) {
-      // return (<NoData />)
-    // }
-    return (
-      <PositionRenderer devices={[device]} allowContextMenu={false} center={this.state.pos}/>
-    )
   }
 }
 
 // TODO do this properly, using props.children
 function HeaderWrapper(props) {
-  const device = props.devices[props.device_id];
+  const device = props.device;
+
   let location = "";
-  if (device.position !== undefined) {
-    // location = "Lat: "+device.position[0].toFixed(6)+" Lng: "+device.position[1].toFixed(6);
-    location = device.position;
+  if (device.position !== undefined && device.position !== null) {
+     location = "Lat: "+device.position[0].toFixed(4)+", Lng: "+device.position[1].toFixed(4);
   }
+
   return (
     <StatusDisplay location={location} device={device} />
   )
@@ -502,10 +534,6 @@ class DeviceDetail extends Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  componentDidMount() {
-    MeasureActions.fetchMeasure.defer(this.props.deviceid, this.props.devices[this.props.deviceid].templates, this.state.selected_attributes,250);
-  }
-
   onChange(attrs) {
     MeasureActions.fetchMeasure.defer(this.props.deviceid,this.props.devices[this.props.deviceid].templates, attrs, 1);
     this.setState({selected_attributes: attrs});
@@ -518,9 +546,7 @@ class DeviceDetail extends Component {
       <div className="row detail-body">
         <div className="col s3 detail-box full-height">
           <div className="detail-box-header">General</div>
-          <AltContainer store={DeviceStore} >
-            <HeaderWrapper device_id={this.props.deviceid} />
-          </AltContainer>
+            <HeaderWrapper device={device} />
           <AttrSelector device = {device}
                         attrs={device.attrs}
                         selected={this.state.selected_attributes}
@@ -529,7 +555,7 @@ class DeviceDetail extends Component {
         <div className="col s9 device-map full-height">
           <div className="col s12 device-map-box">
             <AltContainer store={DeviceStore} >
-              <PositionWrapper device_id={this.props.deviceid}/>
+              <PositionWrapper device={device}/>
             </AltContainer>
           </div>
           <div className="col s12 p0 data-box full-height">
@@ -557,11 +583,50 @@ function ConnectivityStatus(props) {
 }
 
 class ViewDeviceImpl extends Component {
+  constructor(props) {
+    super(props);
+
+    this.remove = this.remove.bind(this);
+  }
+  componentWillMount(){
+    const device = this.props.devices[this.props.device_id];
+    for(let i in device.attrs){
+      for(let j in device.attrs[i]){
+        if(device.attrs[i][j].value_type == "geo"){
+          MeasureActions.fetchPosition.defer(device, device.id, device.templates, device.attrs[i][j].label)
+        }
+      }
+    }
+  }
+
+  componentDidMount(){
+    let devices = this.props.devices;
+    for(let k in devices){
+      for(let j in devices[k].attrs){
+        for(let i in devices[k].attrs[j]){
+          MeasureActions.fetchMeasure.defer(devices[k], devices[k].id, devices[k].templates, devices[k].attrs[j][i].label, 10);
+        }
+      }
+    }
+  }
+
+  remove(e) {
+    // This should be on DeviceUserActions -
+    // this is not good, but will have to make do because of z-index on the action header
+    e.preventDefault();
+      DeviceActions.triggerRemoval({id: this.props.devices[this.props.device_id].id}, (device) => {
+      hashHistory.push('/device/list');
+      Materialize.toast('Device removed', 4000);
+    });
+  }
+
   render() {
     let title = "View device";
 
     let device = undefined;
     let teste = DeviceMeta.getState();
+
+
     if (this.props.devices !== undefined){
       if (this.props.devices.hasOwnProperty(this.props.device_id)) {
         device = this.props.devices[this.props.device_id];
@@ -579,13 +644,14 @@ class ViewDeviceImpl extends Component {
             <label> Viewing Device </label> <div className="device_name">{device.label}</div>
           </div>
           <div className="box-sh">
-            <DeviceUserActions deviceid={device.id} confirmTarget="confirmDiag"/>
+            <DeviceUserActions devices={this.props.devices} deviceid={device.id} confirmTarget="confirmDiag"/>
           </div>
           <div className="box-sh">
             <AltContainer store={DeviceStore}>
               <ConnectivityStatus device_id={device.id} />
             </AltContainer>
           </div>
+          <RemoveDialog callback={this.remove} target="confirmDiag" />
         </NewPageHeader>
         <DeviceDetail deviceid={device.id} devices={this.props.devices}/>
       </div>
@@ -593,10 +659,10 @@ class ViewDeviceImpl extends Component {
   }
 }
 
+
 class ViewDevice extends Component {
   constructor(props) {
     super(props);
-    this.remove = this.remove.bind(this);
   }
 
   componentDidMount() {
@@ -625,16 +691,6 @@ class ViewDevice extends Component {
 
   componentWillUnmount() {
     this.io.close();
-  }
-
-  remove(e) {
-    // This should be on DeviceUserActions -
-    // this is not good, but will have to make do because of z-index on the action header
-    e.preventDefault();
-      DeviceActions.triggerRemoval({id: this.props.params.device}, (device) => {
-      hashHistory.push('/device/list');
-      Materialize.toast('Device removed', 4000);
-    });
   }
 
   render() {

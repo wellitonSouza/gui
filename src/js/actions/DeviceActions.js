@@ -85,7 +85,6 @@ class DeviceActions {
       dispatch();
       deviceManager.deleteDevice(device.id)
         .then((response) => {
-          this.removeSingle(device.id);
           if (cb) {
             cb(response);
           }
@@ -96,8 +95,8 @@ class DeviceActions {
     }
   }
 
-  removeSingle(devices) {
-    return devices;
+  removeSingle(device_id) {
+    return device_id;
   }
 
   devicesFailed(error) {

@@ -233,7 +233,7 @@ body {
 .flex-wrapper {
   display: flex;
   flex-flow: column;
-  height: 100%;
+  height: calc(100% - 63px);
 
   .fill {
     flex: 1;

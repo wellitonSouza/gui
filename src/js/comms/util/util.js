@@ -143,7 +143,7 @@ class Util {
       return false;
     }
 
-    if (name.match(/^[a-zA-Z0-9_ ]*$/) == null) {
+    if (name.match(/^[a-zA-Z0-9_\- ]*$/) == null) {
       // ErrorActions.setField('name', "Please use only letters (a-z), numbers (0-9) and underscores (_).");
       return false;
     } else {

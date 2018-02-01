@@ -331,8 +331,9 @@ class NewAttribute extends Component {
     }
 
     addAttribute(attribute) {
-        if (!util.isNameValid(attribute.label) && !this.state.isConfiguration) {
-            Materialize.toast("Missing label.", 4000);
+        let ret = util.isNameValid(attribute.label);
+        if (!ret.result && !this.state.isConfiguration) {
+            Materialize.toast(ret.error, 4000);
             return;
         }
 
@@ -341,7 +342,7 @@ class NewAttribute extends Component {
             return;
         }
 
-        let ret = util.isTypeValid(attribute.value, attribute.value_type, attribute.type);
+        ret = util.isTypeValid(attribute.value, attribute.value_type, attribute.type);
         if (!ret.result){
             Materialize.toast(ret.error, 4000);
             return;
@@ -515,8 +516,9 @@ class ListItem extends Component {
 
     updateTemplate(e) {
         e.preventDefault();
-        if (!util.isNameValid(this.state.template.label)) {
-            Materialize.toast("Missing label.", 4000);
+        let ret = util.isNameValid(this.state.template.label);
+        if (!ret.result && !this.state.isConfiguration) {
+            Materialize.toast(ret.error, 4000);
             return;
         }
         let template = this.state.template;
@@ -607,8 +609,9 @@ class ListItem extends Component {
 
     addTemplate(e) {
         e.preventDefault();
-        if (!util.isNameValid(this.state.template.label)) {
-            Materialize.toast("Missing label.", 4000);
+        let ret = util.isNameValid(this.state.template.label);
+        if (!ret.result && !this.state.isConfiguration) {
+            Materialize.toast(ret.error, 4000);
             return;
         }
         this.state.template.attrs.push.apply(this.state.template.attrs, this.state.template.data_attrs);
@@ -633,35 +636,28 @@ class ListItem extends Component {
                 <div className="lst-entry-title col s12">
                     <img className="title-icon" src={"images/model-icon.png"}/>
                     <div className="title-text">
-                        {/*<span className="text"> {this.state.template.label} </span>*/}
-                        <textarea maxLength="40" placeholder={"Template Title"} readOnly={!this.state.isEditable}
+                        <textarea maxLength="40" placeholder={"Template Name"} readOnly={!this.state.isEditable}
                                   value={this.state.template.label} name={"label"} onChange={this.handleAttribute}/>
                     </div>
                 </div>
-
                 <div className="lst-entry-body">
-
                     <div className="icon-area center-text-parent">
                         <span className="center-text-child">{attrs}</span>
                     </div>
-
                     <div className="text-area center-text-parent">
                         <span className="middle-text-child">Properties</span>
                     </div>
-
                     <div
                         className={"center-text-parent material-btn expand-btn right-side " + (this.state.isSuppressed ? '' : 'invisible none')}
                         onClick={this.suppress}>
                         <i className="fa fa-angle-down center-text-child text"/>
                     </div>
-
                     <div title={"Remove card"}
                         className={"raised-btn  center-text-parent material-btn expand-btn right-side " + (this.state.isEditable ? (this.state.template.isNewTemplate ? 'none' : '') : 'none')}
                         onClick={this.deleteTemplate}>
                         <i className="fa fa-trash center-text-child text icon-remove"/>
                     </div>
                 </div>
-
                 <div className={"attr-list"} id={"style-3"}>
                     {this.state.template.data_attrs.map((attributes, index) =>
                         <AttributeList key={index} index={index} attributes={attributes}
@@ -683,7 +679,6 @@ class ListItem extends Component {
                              title="Edit Attributes" onClick={this.editCard}>
                             <span className="text center-text-child">edit</span>
                         </div>
-
                         <div className={(this.state.isEditable ? (this.state.template.isNewTemplate ? 'none' : '') : 'none')}>
                             <div className={"material-btn center-text-parent "}
                                  title="Edit Attributes" onClick={this.updateTemplate}>
@@ -695,7 +690,6 @@ class ListItem extends Component {
                                 <span className="text center-text-child">discard</span>
                             </div>
                         </div>
-
                         <div className={(this.state.isEditable ? (this.state.template.isNewTemplate ? '' : 'none') : 'none')}>
                             <div
                                 className={"material-btn center-text-parent "}
@@ -864,9 +858,9 @@ class Templates extends Component {
                 transitionEnterTimeout={500}
                 transitionLeaveTimeout={500}>
                 <NewPageHeader title="Templates" subtitle="Templates" icon='template'>
-                    <div onClick={this.addTemplate} className="btn-item btn-floating waves-effect waves-light cyan darken-2"
+                    <div onClick={this.addTemplate} className="new-btn-flat red waves-effect waves-light"
                           title="Create a new template">
-                        <i className="fa fa-plus"/>
+                        New Template<i className="fa fa-plus"/>
                     </div>
                 </NewPageHeader>
                 <AltContainer store={TemplateStore}>

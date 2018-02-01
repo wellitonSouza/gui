@@ -95,7 +95,7 @@ class RightSideBar extends Component {
 
   render() {
     console.log("this,props",this.props);
-  
+
     if (this.props.user == undefined) {
       console.error('no active user session');
       return null;
@@ -147,7 +147,16 @@ class RightSideBar extends Component {
 }
 
 function SidebarItem(props) {
-  let isActive = props.router.location.pathname === props.item.target;
+  let isActive = false;
+
+  if (props.router.location.pathname !== props.item.target) {
+    if (props.router.location.pathname === "/") {
+      if (props.item.target === "/device") {
+          isActive = true;
+      }
+    }
+  } else isActive = true;
+
   if (!isActive && ('children' in props.item)) {
     props.item.children.map((child) => {
       let inner = false;
@@ -156,11 +165,10 @@ function SidebarItem(props) {
           inner = inner || props.router.location.pathname.startsWith(sibling)
         });
       }
-      isActive = isActive || (props.router.location.pathname == child.target) || inner;
+      isActive = isActive || (props.router.location.pathname === child.target) || inner;
     });
   }
 
-  // isActive  = true;
   const entryClass = "nav-link" + (isActive ? " active" : "");
 
   if (props.open) {
@@ -168,7 +176,7 @@ function SidebarItem(props) {
       <li className="nav-item">
         <Link to={props.item.target} className={entryClass} activeClassName="active" tabIndex="-1">
           <div className="nav-icon">
-            <div className={"icon-"+props.item.image+" icon-prop"}></div>
+            <div className={"icon-"+props.item.image+" icon-prop"}/>
           </div>
           <div className="nav-title">{props.item.label}</div>
           <div className="nav-desc">{props.item.desc}</div>
@@ -180,7 +188,7 @@ function SidebarItem(props) {
       <li className="nav-item">
         <Link to={props.item.target} className={entryClass} activeClassName="active" tabIndex="-1">
           <div className="nav-icon">
-            <div className={"icon-"+props.item.image+" icon-prop"}></div>
+            <div className={"icon-"+props.item.image+" icon-prop"}/>
           </div>
         </Link>
       </li>
@@ -288,7 +296,7 @@ class Full extends Component {
     this.toggleUserSidebar = this.toggleUserSidebar.bind(this);
   }
 
-  toggleUserSidebar() 
+  toggleUserSidebar()
   {
     console.log("toggleUserSidebar");
     this.setState({ user_sidebar: !this.state.user_sidebar});
@@ -297,7 +305,7 @@ class Full extends Component {
   render() {
     return (
       <span>
-        
+
         <AltContainer store={LoginStore}>
           {(this.state.user_sidebar) ? (
             <RightSideBar toggleSidebar={this.toggleUserSidebar} />

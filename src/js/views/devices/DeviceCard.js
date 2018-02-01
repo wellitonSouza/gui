@@ -76,7 +76,7 @@ class DeviceCard extends Component {
         <div className="col s4 m4 main-title">List of Devices</div>
         <div className="col s8 m8 header-info hide-on-small-only">
           <div className="title"># Devices</div>
-          <div className="subtitle">{filteredList.length}</div>
+          <div className="subtitle">Showing {filteredList.length} device(s)</div>
         </div>
   </div>);
 

@@ -138,16 +138,19 @@ class Util {
 
 
   isNameValid(name) {
-    if (name.length == 0) {
-      // ErrorActions.setField('name', "You can't leave this empty");
-      return false;
+    let ret = {result: true, error: ""};
+    if (name.length === 0) {
+        ret.result = false;
+        ret.error = "You can't leave the name empty.";
+      return ret;
     }
 
     if (name.match(/^[a-zA-Z0-9_\- ]*$/) == null) {
-      // ErrorActions.setField('name', "Please use only letters (a-z), numbers (0-9) and underscores (_).");
-      return false;
+      ret.result = false;
+      ret.error = "Please use only letters (a-z), numbers (0-9) and underscores (_).";
+      return ret;
     } else {
-      return true;
+      return ret;
     }
   }
 

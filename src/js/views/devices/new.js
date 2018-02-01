@@ -18,6 +18,7 @@ import TemplateActions from '../../actions/TemplateActions';
 
 import MaterialSelect from "../../components/MaterialSelect";
 import MaterialInput from "../../components/MaterialInput";
+import Materialize from "materialize-css";
 
 
 /*
@@ -70,7 +71,7 @@ class DeviceHandlerStore {
     this.set(null);
   }
 
-  
+
   loadAttrs () {
     // TODO: it actually makes for sense in the long run to use (id, key) for attrs which
     //       will allow name updates as well as better payload to event mapping.
@@ -121,7 +122,7 @@ class DeviceHandlerStore {
   setAttributes(attr_list){
     this.device.attrs = [];
     for(let k in attr_list){
-      
+
       // First at all, checks the relation between value and its type.
       if (!util.isTypeValid(attr_list[k].value, attr_list[k].type)){
         return;
@@ -278,7 +279,7 @@ class AttrBox extends Component {
               //   <img src={"images/tag.png"} />
               // </div>
               this.props.attrs.map((attr,index) =>
-                    { 
+                    {
                       if (String(attr.type) != 'static')
                       return (
                         <div key={index} className='col s4'>
@@ -317,11 +318,11 @@ class DeviceForm extends Component {
     // templateState = 1 - Addition painel
     this.handleChange = this.handleChange.bind(this);
     this.handleChangeAttr = this.handleChangeAttr.bind(this);
-  
+
     this.toggleTemplate = this.toggleTemplate.bind(this);
     this.setTemplateState = this.setTemplateState.bind(this);
     this.save = this.save.bind(this);
-  
+
     this.getStaticAttributes = this.getStaticAttributes.bind(this);
     this.removeStaticAttributes = this.removeStaticAttributes.bind(this);
   }
@@ -332,7 +333,7 @@ class DeviceForm extends Component {
     }
 
   componentDidUpdate() {
-    // if is edition mode, we should wait for template list and iterate it updating the selected templates    
+    // if is edition mode, we should wait for template list and iterate it updating the selected templates
     let templates = this.props.templates.templates;
     if (
       !this.state.loaded &&
@@ -362,15 +363,16 @@ class DeviceForm extends Component {
     e.preventDefault();
 
     let to_be_checked = DeviceFormStore.getState().device;
-    if (!util.isNameValid(to_be_checked.label)) {
-      Materialize.toast("Missing label.", 4000);
+    let ret = util.isNameValid(to_be_checked.label);
+    if (!ret.result) {
+      Materialize.toast(ret.error, 4000);
       return;
     }
 
     // templates describe all attributes that should be applied to device, so we only need set values related to static attributes.
     AttrActions.update(this.state.staticAttrs);
 
-    
+
     // set templates used
     let template_list = [];
     for(let k in this.state.selectedTemplates){
@@ -399,7 +401,7 @@ class DeviceForm extends Component {
   toggleTemplate(tmpt) {
     // check if the template have already been added
     let selectedTemplate = this.state.selectedTemplates.filter(function(item) {return item.id === tmpt.id})
-    let currentAttrs = this.state.staticAttrs; 
+    let currentAttrs = this.state.staticAttrs;
     let list = [];
     if (selectedTemplate.length == 0 ) //adding new template
     {
@@ -413,7 +415,7 @@ class DeviceForm extends Component {
       })
       currentAttrs = this.removeStaticAttributes(tmpt, currentAttrs);
     }
-   
+
     this.setState({
       selectedTemplates: list,
       staticAttrs: currentAttrs
@@ -483,7 +485,7 @@ class DeviceForm extends Component {
     return (
       <div className={"row device device-frame mb0 " + (this.props.className ? this.props.className : "")}>
           <div className="col s7 data-frame">
-       
+
             <div className="col s12">
             {
               (this.state.selectedTemplates.length > 0) ? (
@@ -491,7 +493,7 @@ class DeviceForm extends Component {
                   <DeviceHeader name={this.props.device.device.label} onChange={this.handleChange}/>
                   <StaticAttributes attrs={this.state.staticAttrs} onChange={this.handleChangeAttr} />
                   { this.state.selectedTemplates.map((tplt) =>
-                    
+
                     <AttrBox key={tplt.id} {...tplt}/>)
                   }
                 </div>

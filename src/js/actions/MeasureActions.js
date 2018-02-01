@@ -63,7 +63,9 @@ class MeasureActions {
 
     function parserPosition(position){
       let parsedPosition = position.split(", ");
-      return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
+      if(parsedPosition.length > 1){
+        return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
+      }
     }
 
     return (dispatch) => {

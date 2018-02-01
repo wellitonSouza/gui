@@ -1,9 +1,11 @@
 var alt = require('../alt');
 var DeviceActions = require('../actions/DeviceActions');
+var TrackingActions = require('../actions/TrackingActions');
 
 class DeviceStore {
   constructor() {
     this.devices = {};
+    this.tracking = {};
     this.error = null;
     this.loading = false;
 
@@ -23,6 +25,7 @@ class DeviceStore {
       handleFailure: DeviceActions.DEVICES_FAILED,
 
       fetchSingle: DeviceActions.FETCH_SINGLE,
+
     });
   }
 

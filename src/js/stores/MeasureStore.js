@@ -1,21 +1,38 @@
 var alt = require('../alt');
 var MeasureActions = require('../actions/MeasureActions');
+var TrackingActions = require('../actions/TrackingActions');
 
 import util from '../comms/util';
 
 class MeasureStore {
   constructor() {
     //this.devices = {};
+    this.tracking = {};
     this.error = null;
 
     this.bindListeners({
       handleAppendMeasures: MeasureActions.APPEND_MEASURES,
       handleUpdateMeasures: MeasureActions.UPDATE_MEASURES,
       handleFailure: MeasureActions.MEASURES_FAILED,
+
+      handleTrackingFetch: TrackingActions.FETCH,
+      handleTrackingSet: TrackingActions.SET,
+      handleTrackingDismiss: TrackingActions.DISMISS
     });
     // handleFetchMeansures: MeasureActions.FETCH_MEASURES,
   }
 
+
+  handleTrackingFetch(){}
+  handleTrackingSet(history){
+    this.tracking[history.device_id] = history.data;
+  }
+
+  handleTrackingDismiss(device_id){
+    if (this.tracking.hasOwnProperty(device_id)){
+      delete this.tracking[device_id];
+    }
+  }
 
   handleUpdateMeasures(measureData) {
     if (this.data == undefined)

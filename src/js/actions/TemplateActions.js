@@ -1,4 +1,5 @@
 import templateManager from '../comms/templates/TemplateManager';
+import Materialize from 'materialize-css';
 
 var alt = require('../alt');
 
@@ -89,7 +90,7 @@ class TemplateActions {
           }
         })
         .catch((error) => {
-          this.templatesFailed("Failed to remove given template");
+          this.templatesFailed(error);
         })
     }
   }
@@ -103,6 +104,7 @@ class TemplateActions {
   }
 
   templatesFailed(error) {
+      Materialize.toast(error.message, 4000);
     return error;
   }
 }

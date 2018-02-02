@@ -28,7 +28,8 @@ class TemplateManager {
   }
 
   deleteTemplate(id) {
-    return util.DELETE(this.baseUrl + "/template/" + id);
+    let ret = util.DELETE(this.baseUrl + "/template/" + id);
+    return ret;
   }
 
   setIcon(id, icon) {

@@ -86,7 +86,7 @@ class TemplateActions {
         .then((response) => {
           this.removeSingle(template);
           if (cb) {
-            cb();
+            cb(response);
           }
         })
         .catch((error) => {

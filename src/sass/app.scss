@@ -284,11 +284,15 @@ body {
   top: auto !important;
   right: auto !important;
   bottom: 0%;
-  left:50%;
+  left:40%;
 }
 
 .toast{
     background-color: #ee6e73 !important;
+}
+
+.modal {
+  z-index: 9999 !important;
 }
 
 @import 'inputs';

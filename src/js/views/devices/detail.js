@@ -764,4 +764,4 @@ class ViewDevice extends Component {
   }
 }
 
-export { ViewDevice, PositionWrapper };
+export { ViewDevice };

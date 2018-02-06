@@ -1,4 +1,5 @@
 import deviceManager from '../comms/devices/DeviceManager';
+import Materialize from 'materialize-css';
 
 var alt = require('../alt');
 
@@ -42,7 +43,7 @@ class DeviceActions {
   insertDevice(devices) {
     return devices;
   }
-  
+
   addDevice(device, cb) {
     const newDevice = device;
     return (dispatch) => {
@@ -71,7 +72,7 @@ class DeviceActions {
           }
         })
         .catch((error) => {
-          this.devicesFailed("Failed to update given device");
+          this.devicesFailed(error);
         })
     }
   }
@@ -100,7 +101,7 @@ class DeviceActions {
   }
 
   devicesFailed(error) {
-    Materialize.toast(error, 4000);
+    Materialize.toast(error.message, 4000);
     return error;
   }
 }

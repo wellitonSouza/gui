@@ -131,11 +131,6 @@ class Content extends Component {
                     </div>
                 </div>
                 <div className="row">
-                  <div className="col s12 m5 offset-m1 forget-password">
-                    <div><i> Forgot your password?</i></div>
-                  </div>
-                </div>
-                <div className="row">
                   <div className="col s12 m1 offset-m7">
                       { this.props.loading ? (
                         <button type="submit" className="waves-effect waves-dark red btn-flat">

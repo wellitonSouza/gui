@@ -510,27 +510,52 @@ class PositionWrapper extends Component {
     }
 
     let device = this.props.device;
+
+    for (let k in device.attrs){
+      if(device.attrs[k][0].type == 'static'){
+        device.position = device.attrs[k][0].static_value.split(", ");
+      }
+    }
+
     if (!device.hasOwnProperty('position') || device.position == null)
     {
       return (<NoData />);
     } else {
-      return (<PositionRenderer devices={[device]} allowContextMenu={false} center={device.position}/>)
+      return (<PositionRenderer devices={[device]} allowContextMenu={false} center={device.position} />)
     }
   }
 }
 
-// TODO do this properly, using props.children
-function HeaderWrapper(props) {
-  const device = props.device;
 
-  let location = "";
-  if (device.position !== undefined && device.position !== null) {
-     location = "Lat: "+device.position[0].toFixed(4)+", Lng: "+device.position[1].toFixed(4);
+class HeaderWrapper extends Component {
+  constructor(props){
+    super(props);
+
+    this.state = {
+      device: [],
+    };
   }
 
-  return (
-    <StatusDisplay location={location} device={device} />
-  )
+  componentWillMount(){
+    this.setState({device: this.props.device});
+  }
+
+  componentWillUnmount(){
+    delete this.state.device;
+  }
+
+  render(){
+    const device = this.state.device;
+    let location = "";
+
+    if (this.state,device.position !== undefined && this.state.device.position !== null) {
+          location = "Lat: "+this.state.device.position[0]+", Lng: "+this.state.device.position[1];
+      }
+
+    return (
+      <StatusDisplay location={location} device={device} />
+    )
+  }
 }
 
 class DeviceDetail extends Component {
@@ -538,6 +563,7 @@ class DeviceDetail extends Component {
     super(props);
 
     this.state = {
+      device: [0],
       selected_attributes: [
         //"ts",
         //"temperature",
@@ -553,8 +579,16 @@ class DeviceDetail extends Component {
     this.setState({selected_attributes: attrs});
   }
 
+  componentWillMount(){
+    this.setState({device: this.props.devices[this.props.deviceid]});
+  }
+
+  componentWillUnmount(){
+    delete this.state.device;
+  }
+
   render() {
-    const device = this.props.devices[this.props.deviceid];
+    const device = this.state.device;
 
      return (
       <div className="row detail-body">
@@ -568,7 +602,7 @@ class DeviceDetail extends Component {
         </div>
         <div className="col s9 device-map full-height">
           <div className="col s12 device-map-box">
-            <AltContainer store={DeviceStore} >
+            <AltContainer store={MeasureStore} >
               <PositionWrapper device={device}/>
             </AltContainer>
           </div>
@@ -610,7 +644,7 @@ class ViewDeviceImpl extends Component {
 
     for (let i in device.attrs) {
       for (let j in device.attrs[i]) {
-        if (device.attrs[i][j].value_type == "geo") {
+        if (device.attrs[i][j].value_type == "geo:point") {
           MeasureActions.fetchPosition.defer(device, device.id, device.templates, device.attrs[i][j].label);
         }
       }

@@ -150,8 +150,8 @@ class Content extends Component {
                 <img src="images/dojot_white.png" />
               </div>
               <div className="slogan">
-                <b>Do IoT</b><br />Easy<br />
-                Fast and<br /> Secure
+                <b>Do IoT</b><br />Easy to use<br />
+                Fast to develop<br /> Safe to deploy
               </div>
             </div>
           </div>

@@ -202,33 +202,68 @@ class StaticAttributes extends Component {
   }
 
   render() {
-    return (
-      <div className="attr-box specific-attr">
-        <div className="col s12">
-            <div className="attr-title">Specific Attributes</div>
-        </div>
-          {( this.props.attrs.length > 0) ? (
-            <div className="col s12 bg-gray">
-              {
-                this.props.attrs.map((attr) =>
-                      <div key={attr.label} className="col s4 attr-fields">
-                        <div className="attr-name">{attr.label}</div>
-                        <div className="attr-type">{attr.value_type}</div>
-                        <div className="attr-name input-field fix-inputs">
-                    <MaterialInput className='mt0px' id="fld_label" value={attr.value} name={attr.label}  onChange={this.handleChange}></MaterialInput>
-                        </div>
-                        <div className="attr-type fix-value ">Value</div>
-                      </div>
-                )
-              }
-            </div>
-          ) : (
+
+    if (!this.props.attrs.length) {
+      return (
+        <div> </div>
+      )
+    }
+
+    let statics = this.props.attrs.filter(item => {
+      return String(item.type) == "static";
+    });
+    let properties = this.props.attrs.filter(item => {
+      return String(item.type) == "meta";
+    });
+    return <div className="attr-box specific-attr">
+        {statics.length > 0 && <div className="col s6">
             <div className="col s12">
-                <div className="no-data-notification">No static attributes.</div>
+              <div className="attr-title">Static Attributes</div>
             </div>
-      )}
-      </div>
-    )
+            <div className="col s12 bg-gray">
+              {statics.map(attr => (
+                <div key={attr.label} className="col s6 attr-fields">
+                  <div className="attr-name">{attr.label}</div>
+                  <div className="attr-type">{attr.value_type}</div>
+                  <div className="attr-name input-field fix-inputs">
+                    <MaterialInput
+                      className="mt0px"
+                      id="fld_label"
+                      value={attr.value}
+                      name={attr.label}
+                      onChange={this.handleChange}
+                    />
+                  </div>
+                  <div className="attr-type fix-value ">Value</div>
+                </div>
+              ))}
+            </div>
+          </div>}
+        {/* Properties */}
+        {properties.length > 0 && <div className="col s6">
+            <div className="col s12">
+              <div className="attr-title">Properties</div>
+            </div>
+            <div className="col s12 bg-gray">
+              {properties.map(attr => (
+                <div key={attr.label} className="col s6 attr-fields">
+                  <div className="attr-name">{attr.label}</div>
+                  <div className="attr-type">{attr.value_type}</div>
+                  <div className="attr-name input-field fix-inputs">
+                    <MaterialInput
+                      className="mt0px"
+                      id="fld_label"
+                      value={attr.value}
+                      name={attr.label}
+                      onChange={this.handleChange}
+                    />
+                  </div>
+                  <div className="attr-type fix-value ">Value</div>
+                </div>
+              ))}
+            </div>
+          </div>}
+      </div>;
   }
 }
 
@@ -267,39 +302,31 @@ class AttrBox extends Component {
   }
 
   render() {
-    return (
-      <div className="attr-box">
-        <div className="col s12">
-            <div className="attr-title">Template: <b>{this.props.label}</b></div>
-        </div>
-        {( this.props.attrs.length > 0) ? (
-          <div className="col s12">
-            {
-              // <div className="icon">
-              //   <img src={"images/tag.png"} />
-              // </div>
-              this.props.attrs.map((attr,index) =>
-                    {
-                      if (String(attr.type) != 'static')
-                      return (
-                        <div key={index} className='col s4'>
-                        <div className='bg-gray'>
-                          <div className="attr-name">{attr.label}</div>
-                          <div className="attr-type">{attr.value_type}</div>
-                          </div>
-                        </div>)
-                     }
-              )
-            }
-            </div>
-          ) : (
-            <div className="col s12">
-                <div className="no-data-notification">No attributes.</div>
-            </div>
-          )}
 
-      </div>
-    )
+    let attr_list = this.props.attrs.filter((attr) => { return attr.type == 'dynamic'});
+    console.log("attr_list", attr_list);
+    return <div className="attr-box">
+        <div className="col s12">
+          <div className="attr-title">
+            <b> Template {this.props.label}<br/></b> Dynamic attributes ({attr_list.length})
+          </div>
+        </div>
+        {attr_list.length > 0 ? <div className="col s12">
+            {// <div className="icon">
+            //   <img src={"images/tag.png"} />
+            // </div>
+            attr_list.map((attr, index) => {
+              return <div key={index} className="col s4">
+                  <div className="bg-gray">
+                    <div className="attr-name">{attr.label}</div>
+                    <div className="attr-type">{attr.value_type}</div>
+                  </div>
+                </div>;
+            })}
+          </div> : <div className="col s12">
+            <div className="no-data-notification">No attributes.</div>
+          </div>}
+      </div>;
   }
 }
 
@@ -333,7 +360,7 @@ class DeviceForm extends Component {
     }
 
   componentDidUpdate() {
-    // if is edition mode, we should wait for template list and iterate it updating the selected templates
+    // if is edition mode, we should wait for templates and iterate over them updating the selected templates
     let templates = this.props.templates.templates;
     if (
       !this.state.loaded &&
@@ -447,7 +474,7 @@ class DeviceForm extends Component {
 
   getStaticAttributes(template){
     let list = template.attrs
-      .filter((i) => { return String(i.type) == "static" })
+      .filter((i) => { return (String(i.type) == "static")|| (String(i.type) == "meta") })
       .map((attr) => {
         // check if there is a current static value in device store
         if (attr.id)
@@ -493,7 +520,6 @@ class DeviceForm extends Component {
                   <DeviceHeader name={this.props.device.device.label} onChange={this.handleChange}/>
                   <StaticAttributes attrs={this.state.staticAttrs} onChange={this.handleChangeAttr} />
                   { this.state.selectedTemplates.map((tplt) =>
-
                     <AttrBox key={tplt.id} {...tplt}/>)
                   }
                 </div>

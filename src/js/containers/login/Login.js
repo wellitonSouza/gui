@@ -131,11 +131,6 @@ class Content extends Component {
                     </div>
                 </div>
                 <div className="row">
-                  <div className="col s12 m5 offset-m1 forget-password">
-                    <div><i> Forgot your password?</i></div>
-                  </div>
-                </div>
-                <div className="row">
                   <div className="col s12 m1 offset-m7">
                       { this.props.loading ? (
                         <button type="submit" className="waves-effect waves-dark red btn-flat">
@@ -155,8 +150,8 @@ class Content extends Component {
                 <img src="images/dojot_white.png" />
               </div>
               <div className="slogan">
-                <b>Do IoT</b><br />Easy<br />
-                Fast and<br /> Secure
+                <b>Do IoT</b><br />Easy to use<br />
+                Fast to develop<br /> Safe to deploy
               </div>
             </div>
           </div>

@@ -571,15 +571,23 @@ class ListItem extends Component {
             Materialize.toast(ret.error, 4000);
             return;
         }
+
+        for (let i = 0; i < this.state.template.config_attrs.length; i++) {
+          if (this.state.template.config_attrs[i].label === "") {
+              Materialize.toast("Missing type.", 4000);
+              return;
+          }
+        }
+
         let template = this.state.template;
         template.has_icon = this.props.template.has_icon;
         this.state.template.attrs = [];
         this.state.template.attrs.push.apply(this.state.template.attrs, this.state.template.data_attrs);
         this.state.template.attrs.push.apply(this.state.template.attrs ,this.state.template.config_attrs);
-        let aaaa = TemplateActions.triggerUpdate(this.state.template, (template) => {
-          Materialize.toast('Template removed', 4000);
+
+        TemplateActions.triggerUpdate(this.state.template, (template) => {
+          Materialize.toast('Template updated', 4000);
         });
-        console.log("asdsad", aaaa);
     }
 
     deleteTemplate(e) {

@@ -576,7 +576,10 @@ class ListItem extends Component {
         this.state.template.attrs = [];
         this.state.template.attrs.push.apply(this.state.template.attrs, this.state.template.data_attrs);
         this.state.template.attrs.push.apply(this.state.template.attrs ,this.state.template.config_attrs);
-        TemplateActions.triggerUpdate(this.state.template);
+        let aaaa = TemplateActions.triggerUpdate(this.state.template, (template) => {
+          Materialize.toast('Template removed', 4000);
+        });
+        console.log("asdsad", aaaa);
     }
 
     deleteTemplate(e) {

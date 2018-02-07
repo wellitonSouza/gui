@@ -56,7 +56,7 @@ class DeviceActions {
           }
         })
         .catch((error) => {
-          this.devicesFailed("Failed to add device to list");
+          this.devicesFailed(error);
         })
     }
   }

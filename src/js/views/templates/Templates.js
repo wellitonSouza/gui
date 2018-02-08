@@ -716,11 +716,6 @@ class ListItem extends Component {
                         onClick={this.suppress}>
                         <i className="fa fa-angle-down center-text-child text"/>
                     </div>
-                    <div title={"Remove card"}
-                        className={"raised-btn  center-text-parent material-btn expand-btn right-side " + (this.state.isEditable ? (this.state.template.isNewTemplate ? 'none' : '') : 'none')}
-                        onClick={(e) => {e.preventDefault(); $('#' + this.props.confirmTarget).modal('open');}}>
-                        <i className="fa fa-trash center-text-child text icon-remove"/>
-                    </div>
                 </div>
                 <div className={"attr-list"} id={"style-3"}>
                     {this.state.template.data_attrs.map((attributes, index) =>
@@ -742,6 +737,10 @@ class ListItem extends Component {
                         <div className={"material-btn center-text-parent " + (this.state.isEditable ? 'none' : '')}
                              title="Edit Attributes" onClick={this.editCard}>
                             <span className="text center-text-child">edit</span>
+                        </div>
+                        <div className={"material-btn center-text-parent raised-btn " + (this.state.isEditable ? 'none' : '')}
+                            title="Remove template" onClick={(e) => {e.preventDefault(); $('#' + this.props.confirmTarget).modal('open');}}>
+                            <span className="text center-text-child">remove</span>
                         </div>
                         <div className={(this.state.isEditable ? (this.state.template.isNewTemplate ? 'none' : '') : 'none')}>
                             <div className={"material-btn center-text-parent "}

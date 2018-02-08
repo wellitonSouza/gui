@@ -216,12 +216,13 @@ class StaticAttributes extends Component {
       return String(item.type) == "meta";
     });
     return <div className="attr-box specific-attr">
-        {statics.length > 0 && <div className="col s6">
+        {/* Configurations */}
+        {properties.length > 0 && <div className="col s6">
             <div className="col s12">
-              <div className="attr-title">Static Attributes</div>
+              <div className="attr-title">Configurations</div>
             </div>
             <div className="col s12 bg-gray">
-              {statics.map(attr => (
+              {properties.map(attr => (
                 <div key={attr.label} className="col s6 attr-fields">
                   <div className="attr-name">{attr.label}</div>
                   <div className="attr-type">{attr.value_type}</div>
@@ -239,13 +240,13 @@ class StaticAttributes extends Component {
               ))}
             </div>
           </div>}
-        {/* Properties */}
-        {properties.length > 0 && <div className="col s6">
+          {/* Static Attributes */}
+        {statics.length > 0 && <div className="col s6">
             <div className="col s12">
-              <div className="attr-title">Properties</div>
+              <div className="attr-title">Static Attributes</div>
             </div>
             <div className="col s12 bg-gray">
-              {properties.map(attr => (
+              {statics.map(attr => (
                 <div key={attr.label} className="col s6 attr-fields">
                   <div className="attr-name">{attr.label}</div>
                   <div className="attr-type">{attr.value_type}</div>
@@ -305,12 +306,7 @@ class AttrBox extends Component {
 
     let attr_list = this.props.attrs.filter((attr) => { return attr.type == 'dynamic'});
     console.log("attr_list", attr_list);
-    return <div className="attr-box">
-        <div className="col s12">
-          <div className="attr-title">
-            <b> Template {this.props.label}<br/></b> Dynamic attributes ({attr_list.length})
-          </div>
-        </div>
+    return <div >
         {attr_list.length > 0 ? <div className="col s12">
             {// <div className="icon">
             //   <img src={"images/tag.png"} />
@@ -323,9 +319,7 @@ class AttrBox extends Component {
                   </div>
                 </div>;
             })}
-          </div> : <div className="col s12">
-            <div className="no-data-notification">No attributes.</div>
-          </div>}
+          </div> : null }
       </div>;
   }
 }
@@ -509,46 +503,52 @@ class DeviceForm extends Component {
       }
     }
     // console.log("this.state.selectedTemplates",this.state.selectedTemplates)
-    return (
-      <div className={"row device device-frame mb0 " + (this.props.className ? this.props.className : "")}>
-          <div className="col s7 data-frame">
-
-            <div className="col s12">
-            {
-              (this.state.selectedTemplates.length > 0) ? (
-                <div className="react-bug-escape">
-                  <DeviceHeader name={this.props.device.device.label} onChange={this.handleChange}/>
-                  <StaticAttributes attrs={this.state.staticAttrs} onChange={this.handleChangeAttr} />
-                  { this.state.selectedTemplates.map((tplt) =>
-                    <AttrBox key={tplt.id} {...tplt}/>)
-                  }
+    return <div className={"row device device-frame mb0 " + (this.props.className ? this.props.className : "")}>
+        <div className="col s7 data-frame">
+          <div className="col s12">
+            {this.state.selectedTemplates.length > 0 ? <div className="react-bug-escape">
+                <DeviceHeader name={this.props.device.device.label} onChange={this.handleChange} />
+                <StaticAttributes attrs={this.state.staticAttrs} onChange={this.handleChangeAttr} />
+                <div className="attr-box">
+                  <div className="col s12">
+                    <div className="attr-title">Dynamic attributes</div>
+                  </div>
+                  {this.state.selectedTemplates.map(tplt => (
+                    <AttrBox key={tplt.id} {...tplt} />
+                  ))}
                 </div>
-              )
-              : (
-                <div className="padding10 background-info pb160px">
-                  Select a template to start
-                </div>
-              )
-            }
-            </div>
-            {(this.state.selectedTemplates.length > 0) && (
-
-            <div className='col s12 footer text-right'>
-              <a className="waves-effect waves-light btn-flat btn-ciano" onClick={this.save} tabIndex="-1">Save</a>
-              <Link to="/device/list" className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1">Discard</Link>
-            </div>)}
-
+              </div> : <div className="padding10 background-info pb160px">
+                Select a template to start
+              </div>}
           </div>
+          {this.state.selectedTemplates.length > 0 && <div className="col s12 footer text-right">
+              <a className="waves-effect waves-light btn-flat btn-ciano" onClick={this.save} tabIndex="-1">
+                Save
+              </a>
+              <Link to="/device/list" className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1">
+                Discard
+              </Link>
+            </div>}
+        </div>
 
-          <div className="col s5 p0">
-          { this.state.templateState == 0 ? (
-            <TemplateFrame changeState={this.setTemplateState} toggleTemplate={this.toggleTemplate} templates={this.state.selectedTemplates} state={this.state.templateState} />
+        <div className="col s5 p0">
+          {this.state.templateState == 0 ? (
+            <TemplateFrame
+              changeState={this.setTemplateState}
+              toggleTemplate={this.toggleTemplate}
+              templates={this.state.selectedTemplates}
+              state={this.state.templateState}
+            />
           ) : (
-            <TemplateFrame changeState={this.setTemplateState} toggleTemplate={this.toggleTemplate} templates={templates} state={this.state.templateState} />
+            <TemplateFrame
+              changeState={this.setTemplateState}
+              toggleTemplate={this.toggleTemplate}
+              templates={templates}
+              state={this.state.templateState}
+            />
           )}
-          </div>
-      </div>
-    )
+        </div>
+      </div>;
   }
 }
 

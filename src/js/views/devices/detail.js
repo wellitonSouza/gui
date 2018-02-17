@@ -33,8 +33,13 @@ class DeviceHeader extends Component {
   render() {
     return <div className="row devicesSubHeader p0 device-details-header">
         <div className="col s4 m4">
-          <label className="col s12 device-label"> {this.props.device.label}</label>
-          <div className="col s12 device-label-name">Name</div>
+          <label className="col s12 device-label">
+            {" "}
+            {this.props.device.label}
+          </label>
+          <div className="coDynamicAttributeListl s12 device-label-name">
+            Name
+          </div>
         </div>
         {/* <div className="col s8 m8 infos">
           <div className="title">Created at</div>
@@ -334,24 +339,24 @@ class DeviceUserActions extends Component {
 }
 
 
-class AttributeSelector extends Component {
-  render() {
-    const outerClass = this.props.active ? " active" : "";
-    return (
-      <div className={"col s12 p0 attr-line" + outerClass}>
-        <a className="waves-effect waves-light"
-           onClick={() => {this.props.onClick(this.props.label)}} >
-          <span className="attr-name">{this.props.label}</span>
-          {this.props.currentValue ? (
-            <span>Last received value: {this.props.currentValue}</span>
-          ) : (
-            <span>No data available to display</span>
-          )}
-        </a>
-      </div>
-    )
-  }
-}
+// class AttributeSelector extends Component {
+//   render() {
+//     const outerClass = this.props.active ? " active" : "";
+//     return (
+//       <div className={"col s12 p0 attr-line" + outerClass}>
+//         <a className="waves-effect waves-light"
+//            onClick={() => {this.props.onClick(this.props.label)}} >
+//           <span className="attr-name">{this.props.label}</span>
+//           {this.props.currentValue ? (
+//             <span>Last received value: {this.props.currentValue}</span>
+//           ) : (
+//             <span>No data available to display</span>
+//           )}
+//         </a>
+//       </div>
+//     )
+//   }
+// }
 
 class AttrHistory extends Component {
   constructor(props){
@@ -377,224 +382,224 @@ class AttrHistory extends Component {
   }
 }
 
-class AttrHistoryWrapper extends Component {
-  constructor(props) {
-    super(props);
-  }
+// class AttrHistoryWrapper extends Component {
+//   constructor(props) {
+//     super(props);
+//   }
 
-  componentDidMount() {
-    // this.setState({ selected: attr_id });
-    MeasureActions.fetchMeasure(
-      this.props.device,
-      this.props.device.id,
-      this.props.device.templates,
-      this.props.attr.id,
-      250
-    );
-  }
+//   componentDidMount() {
+//     // this.setState({ selected: attr_id });
+//     MeasureActions.fetchMeasure(
+//       this.props.device,
+//       this.props.device.id,
+//       this.props.device.templates,
+//       this.props.attr.id,
+//       250
+//     );
+//   }
 
-  render() {
-    // let device = this.props.device;
-    // let attr = [];
+//   render() {
+//     // let device = this.props.device;
+//     // let attr = [];
 
-    // if (this.state.selected !== null) {
-    //   attr = device.attrs[device.templates].filter(k => {
-    //     return k.label.toUpperCase() == this.state.selected.toUpperCase();
-    //   });
-    // }
+//     // if (this.state.selected !== null) {
+//     //   attr = device.attrs[device.templates].filter(k => {
+//     //     return k.label.toUpperCase() == this.state.selected.toUpperCase();
+//     //   });
+//     // }
 
-    // let timeRange = undefined;
+//     // let timeRange = undefined;
 
-    /*
-    * Maybe it's better to talk about time range. Think about the best way to show this value
-    * or even if it's necessary to show this value.
-    */
-    console.log("this.props.data.attrs", this.props.data.attrs);
-    // if (attr[0]) {
-    //   for (let k in this.props.data.attrs[device.templates]) {
-    //     if (
-    //       this.props.data.attrs[device.templates][k].label ==
-    //       this.state.selected
-    //     ) {
-    //       if (this.props.data.value.length !== 0) {
-    //         let length = this.props.data.value.length;
-    //         const from = util.iso_to_date(
-    //           this.props.data.value[length - 1]["ts"]
-    //         );
-    //         timeRange = "Data from " + from;
-    //         //const to = util.iso_to_date(this.props.data.value['ts']);
-    //       }
-    //     }
-    //   }
-    // }
+//     /*
+//     * Maybe it's better to talk about time range. Think about the best way to show this value
+//     * or even if it's necessary to show this value.
+//     */
+//     console.log("this.props.data.attrs", this.props.data.attrs);
+//     // if (attr[0]) {
+//     //   for (let k in this.props.data.attrs[device.templates]) {
+//     //     if (
+//     //       this.props.data.attrs[device.templates][k].label ==
+//     //       this.state.selected
+//     //     ) {
+//     //       if (this.props.data.value.length !== 0) {
+//     //         let length = this.props.data.value.length;
+//     //         const from = util.iso_to_date(
+//     //           this.props.data.value[length - 1]["ts"]
+//     //         );
+//     //         timeRange = "Data from " + from;
+//     //         //const to = util.iso_to_date(this.props.data.value['ts']);
+//     //       }
+//     //     }
+//     //   }
+//     // }
 
-    return (
-      <div className="col s12 p0 full-height">
-        {/* <div className="col s5 card-box">
-          <div className="detail-box-header">Attributes</div>
-          <div className="col s12 attr-box-body">
-            {this.props.attrs.map(attr => {
-              let data = undefined;
-              let active =
-                this.state.selected &&
-                attr.toUpperCase() === this.state.selected.toUpperCase();
-              if (this.props.data && this.props.data.hasOwnProperty("value")) {
-                if (this.props.data.value.length > 0) {
-                  data = this.props.data.value[
-                    this.props.data.value.length - 1
-                  ];
-                }
-              }
-              return (
-                <AttributeSelector
-                  label={attr}
-                  key={attr}
-                  currentValue={data}
-                  active={active}
-                  onClick={this.changeAttribute}
-                />
-              );
-            })}
-          </div>
-        </div> */}
-        {/* <div className="col s12 legend">{timeRange}</div> */}
-        <div className="col s7 graph-box">
-          {attr[0] !== undefined ? (
-              <AttrHistory
-                device={this.props.device}
-                type={attr[0].value_type}
-                attr={attr[0].label}
-              />
-          ) : null}
-        </div>
-      </div>
-    );
-  }
-}
+//     return (
+//       <div className="col s12 p0 full-height">
+//         {/* <div className="col s5 card-box">
+//           <div className="detail-box-header">Attributes</div>
+//           <div className="col s12 attr-box-body">
+//             {this.props.attrs.map(attr => {
+//               let data = undefined;
+//               let active =
+//                 this.state.selected &&
+//                 attr.toUpperCase() === this.state.selected.toUpperCase();
+//               if (this.props.data && this.props.data.hasOwnProperty("value")) {
+//                 if (this.props.data.value.length > 0) {
+//                   data = this.props.data.value[
+//                     this.props.data.value.length - 1
+//                   ];
+//                 }
+//               }
+//               return (
+//                 <AttributeSelector
+//                   label={attr}
+//                   key={attr}
+//                   currentValue={data}
+//                   active={active}
+//                   onClick={this.changeAttribute}
+//                 />
+//               );
+//             })}
+//           </div>
+//         </div> */}
+//         {/* <div className="col s12 legend">{timeRange}</div> */}
+//         <div className="col s7 graph-box">
+//           {attr[0] !== undefined ? (
+//               <AttrHistory
+//                 device={this.props.device}
+//                 type={attr[0].value_type}
+//                 attr={attr[0].label}
+//               />
+//           ) : null}
+//         </div>
+//       </div>
+//     );
+//   }
+// }
 
 
-function getAttrsLength(attrs){
-  let length = 0;
-  for(let k in attrs){
-    length = length + attrs[k].length;
-  }
-  return length;
-}
+// function getAttrsLength(attrs){
+//   let length = 0;
+//   for(let k in attrs){
+//     length = length + attrs[k].length;
+//   }
+//   return length;
+// }
 
-function StatusDisplay(props) {
-  const numAttributes = getAttrsLength(props.device.attrs);
-  return (
-    <div className="detail-box-body">
-      <div className="metric">
-          <span className="label">Attributes</span>
-          <span className="value">{numAttributes}</span>
-      </div>
-      <div className="metric">
-          <span className="label">Last update</span>
-          <span className="value">{util.iso_to_date(props.device.ts)}</span>
-      </div>
-      <div className="metric">
-          <span className="label">Location</span>
-          <span className="value">{props.location}</span>
-      </div>
-      <div className="metric">
-          <span className="label">Protocol</span>
-          <span className="value">{props.device.protocol ? props.device.protocol : "MQTT"}</span>
-      </div>
-    </div>
-  )
-}
+// function StatusDisplay(props) {
+//   const numAttributes = getAttrsLength(props.device.attrs);
+//   return (
+//     <div className="detail-box-body">
+//       <div className="metric">
+//           <span className="label">Attributes</span>
+//           <span className="value">{numAttributes}</span>
+//       </div>
+//       <div className="metric">
+//           <span className="label">Last update</span>
+//           <span className="value">{util.iso_to_date(props.device.ts)}</span>
+//       </div>
+//       <div className="metric">
+//           <span className="label">Location</span>
+//           <span className="value">{props.location}</span>
+//       </div>
+//       <div className="metric">
+//           <span className="label">Protocol</span>
+//           <span className="value">{props.device.protocol ? props.device.protocol : "MQTT"}</span>
+//       </div>
+//     </div>
+//   )
+// }
 
-class AttrSelector extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {attributes: [], new_attr: ""};
-    this.handleSelectedAttribute = this.handleSelectedAttribute.bind(this);
-    this.handleAddAttribute = this.handleAddAttribute.bind(this);
-    this.handleClear = this.handleClear.bind(this);
-    this.getAttrList = this.getAttrList.bind(this);
-  }
+// class AttrSelector extends Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {attributes: [], new_attr: ""};
+//     this.handleSelectedAttribute = this.handleSelectedAttribute.bind(this);
+//     this.handleAddAttribute = this.handleAddAttribute.bind(this);
+//     this.handleClear = this.handleClear.bind(this);
+//     this.getAttrList = this.getAttrList.bind(this);
+//   }
 
-  componentWillMount(){
-    let attrs = [];
-    console.log("this.props.device", this.props.device);
-    for (let index in this.props.device.attrs) {
-      attrs = attrs.concat(this.props.device.attrs[index]);
-    }
-     this.setState({ attributes: attrs });
-    console.log("Attr list", attrs);
-  }
+//   componentWillMount(){
+//     let attrs = [];
+//     console.log("this.props.device", this.props.device);
+//     for (let index in this.props.device.attrs) {
+//       attrs = attrs.concat(this.props.device.attrs[index]);
+//     }
+//      this.setState({ attributes: attrs });
+//     console.log("Attr list", attrs);
+//   }
 
-  handleSelectedAttribute(event) {
-    event.preventDefault();
-    this.setState({new_attr: event.target.value});
-  }
+//   handleSelectedAttribute(event) {
+//     event.preventDefault();
+//     this.setState({new_attr: event.target.value});
+//   }
 
-  handleAddAttribute(event) {
-    event.preventDefault();
-    this.setState({new_attr: ""});
-    if (this.state.new_attr === ""){ return; }
-    if (this.props.selected.includes(this.state.new_attr)) { return; }
+//   handleAddAttribute(event) {
+//     event.preventDefault();
+//     this.setState({new_attr: ""});
+//     if (this.state.new_attr === ""){ return; }
+//     if (this.props.selected.includes(this.state.new_attr)) { return; }
 
-    const attrList = this.props.selected.concat([this.state.new_attr]);
-    this.props.onChange(attrList);
-  }
+//     const attrList = this.props.selected.concat([this.state.new_attr]);
+//     this.props.onChange(attrList);
+//   }
 
-  handleClear(event) {
-    event.preventDefault();
-    this.props.onChange([]);
-  }
+//   handleClear(event) {
+//     event.preventDefault();
+//     this.props.onChange([]);
+//   }
 
-  getAttrList(attributes) {
-    let attrList = [];
-    for (let templateID in attributes) {
-      for (let attributeID in attributes[templateID]) {
-        attrList.push(attributes[templateID][attributeID]);
-      }
-    }
-    return attrList;
-  }
+//   getAttrList(attributes) {
+//     let attrList = [];
+//     for (let templateID in attributes) {
+//       for (let attributeID in attributes[templateID]) {
+//         attrList.push(attributes[templateID][attributeID]);
+//       }
+//     }
+//     return attrList;
+//   }
 
-  render() {
+//   render() {
 
-    console.log("Checking props ",this.props);
-    return (
-      <div className="col 12 attribute-box">
-        <div className="col 12 attribute-header">All Attributes</div>
-        <span className="highlight">
-          Showing <b> {this.props.selected.length} </b>
-          of <b> {this.state.attributes.length} </b> attributes
-        </span>
-        <div className="col s12 p16">
-          <div className="input-field col s12">
-            <MaterialSelect id="attributes-select" style="color: #D23F3F;" name="attribute"
-                            value={this.state.new_attr}
-                            onChange={this.handleSelectedAttribute}>
-              <option value="">Select attribute to display</option>
-                {this.getAttrList(this.props.attrs).map((attr) => (
-                    <option value={attr.label} key={attr.id}>{attr.label}</option>
-                ))}
+//     console.log("Checking props ",this.props);
+//     return (
+//       <div className="col 12 attribute-box">
+//         <div className="col 12 attribute-header">All Attributes</div>
+//         <span className="highlight">
+//           Showing <b> {this.props.selected.length} </b>
+//           of <b> {this.state.attributes.length} </b> attributes
+//         </span>
+//         <div className="col s12 p16">
+//           <div className="input-field col s12">
+//             <MaterialSelect id="attributes-select" style="color: #D23F3F;" name="attribute"
+//                             value={this.state.new_attr}
+//                             onChange={this.handleSelectedAttribute}>
+//               <option value="">Select attribute to display</option>
+//                 {this.getAttrList(this.props.attrs).map((attr) => (
+//                     <option value={attr.label} key={attr.id}>{attr.label}</option>
+//                 ))}
 
-            </MaterialSelect>
-          </div>
-          <div className="col s12 actions-buttons">
-            <div className="col s6 button ta-center">
-              <a className="waves-effect waves-light btn btn-light" id="btn-clear" tabIndex="-1"
-                 title="Clear" onClick={this.handleClear}>
-                Clear
-              </a>
-            </div>
-            <div className="col s6 button ta-center" type="submit" onClick={this.handleAddAttribute}>
-              <a className="waves-effect waves-light btn red lighten-1" id="btn-add" tabIndex="-1" title="Add">
-                <i className="clickable fa fa-plus"/>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-}
+//             </MaterialSelect>
+//           </div>
+//           <div className="col s12 actions-buttons">
+//             <div className="col s6 button ta-center">
+//               <a className="waves-effect waves-light btn btn-light" id="btn-clear" tabIndex="-1"
+//                  title="Clear" onClick={this.handleClear}>
+//                 Clear
+//               </a>
+//             </div>
+//             <div className="col s6 button ta-center" type="submit" onClick={this.handleAddAttribute}>
+//               <a className="waves-effect waves-light btn red lighten-1" id="btn-add" tabIndex="-1" title="Add">
+//                 <i className="clickable fa fa-plus"/>
+//               </a>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     )
+//   }
+// }
 
 
 class PositionWrapper extends Component {
@@ -689,6 +694,14 @@ class DeviceDetail extends Component {
     super(props);
   }
 
+  componentWillMount(){
+    this.setState({device: this.props.devices[this.props.deviceid]});
+  }
+
+  componentWillUnmount(){
+    delete this.state.device;
+  }
+
   render() {
      console.log("device : ",this.props.device);
      let attr_list = [];
@@ -776,7 +789,7 @@ class ViewDeviceImpl extends Component {
 
     for (let i in device.attrs) {
       for (let j in device.attrs[i]) {
-        if (device.attrs[i][j].value_type == "geo") {
+        if (device.attrs[i][j].value_type == "geo:point") {
           MeasureActions.fetchPosition.defer(device, device.id, device.templates, device.attrs[i][j].label);
         }
       }

@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AltContainer from 'alt-container';
 import Materialize from 'materialize-css';
@@ -6,6 +7,7 @@ import TemplateStore from '../../stores/TemplateStore';
 import TemplateActions from '../../actions/TemplateActions';
 import util from "../../comms/util/util";
 import {NewPageHeader} from "../../containers/full/PageHeader";
+import { hashHistory } from 'react-router';
 
 // import ReactDOM from 'react-dom';
 // import Dropzone from 'react-dropzone';
@@ -471,6 +473,54 @@ class NewAttribute extends Component {
     }
 }
 
+class RemoveDialog extends Component {
+  constructor(props) {
+    super(props);
+
+    this.dismiss = this.dismiss.bind(this);
+    this.remove = this.remove.bind(this);
+  }
+
+  componentDidMount() {
+    // materialize jquery makes me sad
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(modalElement).ready(function() {
+      $('.modal').modal();
+    })
+  }
+
+  dismiss(event) {
+    event.preventDefault();
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    $(modalElement).modal('close');
+  }
+
+  remove(event) {
+    event.preventDefault();
+    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+    this.props.callback(event);
+    $(modalElement).modal('close');
+  }
+
+  render() {
+    return (
+      <div className="modal" id={this.props.target} ref="modal">
+        <div className="modal-content full">
+          <div className="row center background-info">
+            <div><i className="fa fa-exclamation-triangle fa-4x" /></div>
+            <div>You are about to remove this template.</div>
+            <div>Are you sure?</div>
+          </div>
+        </div>
+        <div className="modal-footer right">
+            <button type="button" className="btn-flat btn-ciano waves-effect waves-light" onClick={this.dismiss}>cancel</button>
+            <button type="submit" className="btn-flat btn-red waves-effect waves-light" onClick={this.remove}>remove</button>
+        </div>
+      </div>
+    )
+  }
+}
+
 class ListItem extends Component {
     constructor(props) {
         super(props);
@@ -521,17 +571,31 @@ class ListItem extends Component {
             Materialize.toast(ret.error, 4000);
             return;
         }
+
+        for (let i = 0; i < this.state.template.config_attrs.length; i++) {
+          if (this.state.template.config_attrs[i].label === "") {
+              Materialize.toast("Missing type.", 4000);
+              return;
+          }
+        }
+
         let template = this.state.template;
         template.has_icon = this.props.template.has_icon;
         this.state.template.attrs = [];
         this.state.template.attrs.push.apply(this.state.template.attrs, this.state.template.data_attrs);
         this.state.template.attrs.push.apply(this.state.template.attrs ,this.state.template.config_attrs);
-        TemplateActions.triggerUpdate(this.state.template);
+
+        TemplateActions.triggerUpdate(this.state.template, (template) => {
+          Materialize.toast('Template updated', 4000);
+        });
     }
 
     deleteTemplate(e) {
         e.preventDefault();
-        TemplateActions.triggerRemoval(this.state.template.id);
+          TemplateActions.triggerRemoval(this.state.template.id, (template) => {
+          hashHistory.push('/template/list');
+          Materialize.toast('Template removed', 4000);
+        });
     }
 
     addAttribute(attribute, isConfiguration) {
@@ -632,7 +696,7 @@ class ListItem extends Component {
             <div
                 className={"card-size lst-entry-wrapper z-depth-2 " + (this.state.isSuppressed ? 'suppressed' : 'fullHeight')}
                 id={this.props.id}>
-
+                <RemoveDialog callback={this.deleteTemplate} target="confirmDiag" />
                 <div className="lst-entry-title col s12">
                     <img className="title-icon" src={"images/model-icon.png"}/>
                     <div className="title-text">
@@ -651,11 +715,6 @@ class ListItem extends Component {
                         className={"center-text-parent material-btn expand-btn right-side " + (this.state.isSuppressed ? '' : 'invisible none')}
                         onClick={this.suppress}>
                         <i className="fa fa-angle-down center-text-child text"/>
-                    </div>
-                    <div title={"Remove card"}
-                        className={"raised-btn  center-text-parent material-btn expand-btn right-side " + (this.state.isEditable ? (this.state.template.isNewTemplate ? 'none' : '') : 'none')}
-                        onClick={this.deleteTemplate}>
-                        <i className="fa fa-trash center-text-child text icon-remove"/>
                     </div>
                 </div>
                 <div className={"attr-list"} id={"style-3"}>
@@ -678,6 +737,10 @@ class ListItem extends Component {
                         <div className={"material-btn center-text-parent " + (this.state.isEditable ? 'none' : '')}
                              title="Edit Attributes" onClick={this.editCard}>
                             <span className="text center-text-child">edit</span>
+                        </div>
+                        <div className={"material-btn center-text-parent raised-btn " + (this.state.isEditable ? 'none' : '')}
+                            title="Remove template" onClick={(e) => {e.preventDefault(); $('#' + this.props.confirmTarget).modal('open');}}>
+                            <span className="text center-text-child">remove</span>
                         </div>
                         <div className={(this.state.isEditable ? (this.state.template.isNewTemplate ? 'none' : '') : 'none')}>
                             <div className={"material-btn center-text-parent "}
@@ -815,6 +878,7 @@ class TemplateList extends Component {
                     editTemplate={this.editTemplate}
                     updateTemplate={this.updateTemplate}
                     deleteTemplate={this.deleteTemplate}
+                    confirmTarget="confirmDiag"
                   />
                 ))}
               </div> : <div className="background-info valign-wrapper full-height">

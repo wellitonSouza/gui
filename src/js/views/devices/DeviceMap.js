@@ -16,6 +16,8 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Link } from 'react-router'
 import { Line } from 'react-chartjs-2';
 import { Map, Marker, Popup, TileLayer, Tooltip, ScaleControl, Polyline } from 'react-leaflet';
+import Script from 'react-load-script';
+
 import ReactResizeDetector from 'react-resize-detector';
 import Sidebar from '../../components/DeviceRightSidebar';
 import { DojotBtnLink } from "../../components/DojotButton";
@@ -45,6 +47,23 @@ class PositionRenderer extends Component {
     this.handleTracking = this.handleTracking.bind(this);
     this.handleContextMenu = this.handleContextMenu.bind(this);
   }
+
+  componentDidMount() {
+  if (this.leafletMap !== undefined) {
+
+    console.log('will attempt to add layer', MQ.mapLayer, this.leafletMap);
+    // mq = require('..//../external/mq-map.js');
+
+    let mapLayer = MQ.mapLayer();
+    mapLayer.addTo(this.leafletMap.leafletElement);
+
+    L.control.layers({
+      'Map': MQ.mapLayer(),
+      'Hibrid': MQ.hybridLayer(),
+      'Satellite': MQ.satelliteLayer()
+    }).addTo(this.leafletMap.leafletElement);
+  }
+}
 
   handleTracking(device_id) {
     this.props.toggleTracking(device_id);
@@ -135,26 +154,23 @@ class PositionRenderer extends Component {
       null
     )
 
-    const tileURL = this.state.isTerrain ? (
-      'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2ZyYW5jaXNjbyIsImEiOiJjajhrN3VlYmowYXNpMndzN2o2OWY1MGEwIn0.xPCJwpMTrID9uOgPGK8ntg'
-    ) : (
-      'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiZm1lc3NpYXMiLCJhIjoiY2o4dnZ1ZHdhMWg5azMycDhncjdqMTg1eiJ9.Y75W4n6dTd9DOpctpizPrQ'
-    )
-    const attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> and Mapbox contributors';
+    //const tileURL = this.state.isTerrain ? (
+    //  'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2ZyYW5jaXNjbyIsImEiOiJjajhrN3VlYmowYXNpMndzN2o2OWY1MGEwIn0.xPCJwpMTrID9uOgPGK8ntg'
+    //) : (
+    //  'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiZm1lc3NpYXMiLCJhIjoiY2o4dnZ1ZHdhMWg5azMycDhncjdqMTg1eiJ9.Y75W4n6dTd9DOpctpizPrQ'
+    //)
+    //const attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> and Mapbox contributors';
 
     return (
       <Map center={this.state.center}
            zoom={this.state.zoom}
            ref={m => {this.leafletMap = m;}}>
-        <TileLayer
-          url={tileURL}
-          attribution={attribution}
-        />
+
         {contextMenu}
         <ReactResizeDetector handleWidth onResize={this.resize.bind(this)} />
         <div className="mapOptions col s12">
-          <div className="mapView" onClick = {() => this.setTiles(true)}>Terrain</div>
-          <div className="satelliteView" onClick = {() => this.setTiles(false)}>Satellite</div>
+          {/*<div className="mapView" onClick = {() => this.setTiles(true)}>Terrain</div>
+          <div className="satelliteView" onClick = {() => this.setTiles(false)}>Satellite</div>*/}
         </div>
         {parsedEntries.map((k) => {
         return (
@@ -184,6 +200,7 @@ class DeviceMap extends Component {
       selectedDevice:{},
       templates_id: {},
       listOfDevices: [],
+      mapquest: false
     };
 
     this.handleViewChange = this.handleViewChange.bind(this);
@@ -198,6 +215,8 @@ class DeviceMap extends Component {
     this.showAll = this.showAll.bind(this);
     this.hideAll = this.hideAll.bind(this);
     this.toggleDisplay = this.toggleDisplay.bind(this);
+
+    this.mqLoaded = this.mqLoaded.bind(this);
     //this.setDisplay = this.setDisplay.bind(this);
     //this.setDisplayMap = this.setDisplayMap.bind(this);
   }
@@ -230,6 +249,10 @@ class DeviceMap extends Component {
 
   componentWillUnmount() {
     this.io.close();
+  }
+
+  mqLoaded(){
+    this.setState({mapquest: true});
   }
 
   handleViewChange(event) {
@@ -327,6 +350,7 @@ class DeviceMap extends Component {
     }
 
     let validDevices = [];
+    //console.log("deviceS: ", devices);
     for(let k in devices){
       for(let j in devices[k].attrs){
         for(let i in devices[k].attrs[j]){
@@ -347,6 +371,7 @@ class DeviceMap extends Component {
   }
 
   render() {
+
     let validDevices = this.getDevicesWithPosition(this.props.devices);
     let filteredList = this.applyFiltering(validDevices);
 
@@ -383,7 +408,14 @@ class DeviceMap extends Component {
         </div>
       <div className="flex-wrapper">
         <div className="deviceMapCanvas deviceMapCanvas-map col m12 s12 relative">
-          <PositionRenderer devices={pointList} toggleTracking={this.toggleTracking} tracking={this.props.tracking} allowContextMenu={true}/>
+          <Script url="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=zvpeonXbjGkoRqVMtyQYCGVn4JQG8rd9"
+                  onLoad={this.mqLoaded}>
+          </Script>
+          {this.state.mapquest ? (
+            <PositionRenderer devices={pointList} toggleTracking={this.toggleTracking} allowContextMenu={true}/>
+          ) : (
+            <div>dummy</div>
+          )}
           <Sidebar devices={validDevices} hideAll={this.hideAll} showAll={this.showAll} selectedDevice={this.selectedDevice} toggleDisplay={this.toggleDisplay} />
         </div>
       </div>

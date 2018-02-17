@@ -1,5 +1,6 @@
 import LoginActions from '../../actions/LoginActions';
 import moment from 'moment'
+import 'babel-polyfill'
 
 function FetchError(data, message) {
   this.name = "FetchError";
@@ -85,30 +86,36 @@ class Util {
         authConfig = { headers: headers };
       }
     }
-
     return new Promise(function(resolve, reject) {
       fetch(url, authConfig)
         .then(local._status)
-        .then(local._json)
-        .then(function(data) { resolve(data); })
+        // .then(local._json)
+        .then(function(data) { resolve(data[1]); })
         .catch(function(error) {
-          reject(error);
+          reject(local.checkContent(error));
         })
     })
   }
 
-  _status(response) {
-    if (response.status >= 200 && response.status < 300) {
-      return Promise.resolve(response);
-    } else {
-      if ((response.status == 401) || (response.status == 403)) {
-        LoginActions.logout();
-      }
-      return Promise.reject(new FetchError(response, response.statusText));
+    async _status(response) {
+    let body = await response.json();
+    response.message = body.message;
+        if (response.status >= 200 && response.status < 300) {
+            return [Promise.resolve(response), body];
+        } else {
+            if ((response.status === 401) || (response.status === 403)) {
+                LoginActions.logout();
+            }
+            // return Promise.reject(new FetchError(response, response.statusText ));
+            return Promise.reject(response);
+        }
     }
-  }
 
-  _json(response) {
+    checkContent(data) {
+        return(new FetchError(data, data.message ));
+    }
+
+     _json(response) {
     return response.json();
   }
 
@@ -223,7 +230,6 @@ class Util {
     //   if (result) { ErrorActions.setField('value', ''); }
     //   return result;
     // }
-
     return ret;
   }
 

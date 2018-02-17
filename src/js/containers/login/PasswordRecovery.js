@@ -7,20 +7,19 @@ import AltContainer from 'alt-container';
 import LoginActions from '../../actions/LoginActions';
 import LoginStore from '../../stores/LoginStore';
 
-class Content extends Component {
+class Recovery extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      login: {
-        username: "",
-        passwd: ""
+      password: {
+        passwd: "",
+        confirmPassword: ""
       },
-      invalid: {},
-      error: ""
+      invalid: {}
     }
 
-    this.login = this.login.bind(this);
+    this.password = this.password.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.validate = this.validate.bind(this);
   }
@@ -33,37 +32,34 @@ class Content extends Component {
     let result = {};
     let invalid = {}
     const username = /^[a-z0-9_]+$/;
-    if (this.state.login.username.trim().length == 0) {
-      invalid['username'] = "This can't be empty";
-    } else if (username.test(this.state.login.username) == false) {
-      result.error = "Authentication failed";
+    if (this.state.password.passwd.trim().length == 0) {
+      invalid['password'] = "This can't be empty";
     }
 
-    if (this.state.login.passwd.trim().length == 0) {
-      invalid['passwd'] = "This can't be empty";
+    if (this.state.password.confirmPassword.trim().length == 0) {
+      invalid['confirmPassword'] = "This can't be empty";
     }
 
     if (Object.keys(invalid).length > 0) { result['invalid'] = invalid; }
     return Object.keys(result).length > 0 ? result : undefined;
   }
 
-  login(e) {
+  password(e) {
     e.preventDefault();
     const results = this.validate();
     if (results !== undefined) {
       this.setState(results);
     } else {
       this.setState({error: '', invalid: {}})
-      LoginActions.authenticate(JSON.parse(JSON.stringify(this.state.login)));
     }
   }
 
   handleChange(event) {
     const target = event.target;
-    let state = this.state.login;
+    let state = this.state.password;
     state[target.name] = target.value;
     this.setState({
-      login: state
+      password: state
     });
   }
 
@@ -79,68 +75,49 @@ class Content extends Component {
       }
     }
 
-    function getError() {
-      return state.error.length > 0 ? state.error : error;
-    }
-
     return (
       <div className="row m0">
         <div className="login col s12 p0 bg-left">
           <div className="col  s4 p0 left-side">
           </div>
-          <div className="col s8 login-area-right-side bg-right">
+          <div className="col s8 recovery-password-area-right-side bg-right">
             <div className="col s7">
               <div className="row">
                 <div className="col s12  offset-m1">
-                  <div className="login-page-title">[&nbsp;&nbsp;Login&nbsp;&nbsp;]</div>
+                  <div className="recovery-password-page-title">[&nbsp;&nbsp;Password recovery&nbsp;&nbsp;]</div>
                 </div>
               </div>
               <div className="row">
                 <div className="col s12  offset-m2">
-                  <div className="login-page-subtitle">Sign in to start your session</div>
+                  <div className="recovery-password-page-subtitle">Type your password</div>
                 </div>
               </div>
-              { this.props.error && (
+              <form onSubmit={this.password}>
                 <div className="row">
-                  <div className="col s12 m4 offset-m2">
-                    <div className="login-page-error">
-                      {getError()}<i className="material-icons prefix">info_outline</i>
-                    </div>
-                  </div>
-                </div>
-            )}
-              <form onSubmit={this.login}>
-                <div className="row">
-                    <div className="input-field col s12 m6 offset-m2">
-                      <input id="fld_user" type="text"
-                             name="username"  className={getClass('username')}
-                             onChange={this.handleChange}
-                             value={this.state.login.user} />
-                      <label htmlFor="fld_user" data-success=""
-                             data-error={this.state.invalid.username}>Username</label>
-                      <i className="material-icons prefix">account_circle</i>
-                    </div>
                     <div className="input-field col s12 m6 offset-m2">
                       <input id="fld_password" type="password"
-                             name="passwd" className={getClass('passwd')}
+                             name="passwd"  className={getClass('password')}
                              onChange={this.handleChange}
-                             value={this.state.login.password} />
+                             value={this.state.password.passwd} />
                       <label htmlFor="fld_password" data-success=""
-                             data-error={this.state.invalid.passwd}>Password</label>
-                      <i className="material-icons prefix">lock_open</i>
+                        data-error={this.state.invalid.password}>Password</label>
+                      <i className="material-icons prefix">lock</i>
+                    </div>
+                    <div className="input-field col s12 m6 offset-m2">
+                      <input id="fld_confirmPassword" type="password"
+                             name="confirmPassword" className={getClass('confirmPassword')}
+                             onChange={this.handleChange}
+                             value={this.state.password.confirmPassword} />
+                      <label htmlFor="fld_confirmPassword" data-success=""
+                        data-error={this.state.invalid.confirmPassword}>Confirm your password</label>
+                      <i className="material-icons prefix">lock</i>
                     </div>
                 </div>
                 <div className="row">
                   <div className="col s12 m1 offset-m7">
-                      { this.props.loading ? (
-                        <button type="submit" className="waves-effect waves-dark red btn-flat">
-                          <i className="fa fa-circle-o-notch fa-spin fa-fw"/>
-                        </button>
-                      ) : (
-                        <button type="submit" className="waves-effect waves-dark red btn-flat">
-                          Login
-                        </button>
-                      )}
+                    <button type="submit" className="waves-effect waves-dark red btn-flat">
+                      Submit
+                    </button>
                   </div>
                 </div>
               </form>
@@ -161,7 +138,7 @@ class Content extends Component {
   }
 }
 
-class Login extends Component {
+class PasswordRecovery extends Component {
   constructor (props) {
     super(props);
   }
@@ -175,11 +152,11 @@ class Login extends Component {
           transitionEnterTimeout={500}
           transitionLeaveTimeout={500} >
         <AltContainer store={LoginStore}>
-          <Content />
+          <Recovery />
         </AltContainer>
       </ReactCSSTransitionGroup>
     );
   }
 }
 
-export default Login;
+export default PasswordRecovery;

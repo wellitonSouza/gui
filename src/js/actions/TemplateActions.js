@@ -1,4 +1,5 @@
 import templateManager from '../comms/templates/TemplateManager';
+import Materialize from 'materialize-css';
 
 var alt = require('../alt');
 
@@ -50,11 +51,11 @@ class TemplateActions {
         .then((response) => {
           this.updateSingle(template);
           if (cb) {
-            cb(response.template);
+            cb(response);
           }
         })
         .catch((error) => {
-          this.templatesFailed("Failed to update given template");
+          this.templatesFailed(error);
         })
 
       dispatch();
@@ -85,11 +86,11 @@ class TemplateActions {
         .then((response) => {
           this.removeSingle(template);
           if (cb) {
-            cb();
+            cb(response);
           }
         })
         .catch((error) => {
-          this.templatesFailed("Failed to remove given template");
+          this.templatesFailed(error);
         })
     }
   }
@@ -103,6 +104,7 @@ class TemplateActions {
   }
 
   templatesFailed(error) {
+      Materialize.toast(error.message, 4000);
     return error;
   }
 }

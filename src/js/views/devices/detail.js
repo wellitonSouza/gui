@@ -20,6 +20,7 @@ import { Attr } from "../../components/HistoryElements";
 import { Line } from 'react-chartjs-2';
 import { PositionRenderer } from './DeviceMap.js'
 import { MapWrapper } from './Devices.js'
+import { DojotBtnRedCircle } from "../../components/DojotButton";
 import MaterialSelect from "../../components/MaterialSelect";
 
 import io from 'socket.io-client';
@@ -33,13 +34,8 @@ class DeviceHeader extends Component {
   render() {
     return <div className="row devicesSubHeader p0 device-details-header">
         <div className="col s4 m4">
-          <label className="col s12 device-label">
-            {" "}
-            {this.props.device.label}
-          </label>
-          <div className="coDynamicAttributeListl s12 device-label-name">
-            Name
-          </div>
+          <label className="col s12 device-label"> {this.props.device.label}</label>
+          <div className="col s12 device-label-name">Name</div>
         </div>
         {/* <div className="col s8 m8 infos">
           <div className="title">Created at</div>
@@ -93,7 +89,6 @@ class Configurations extends Component {
   constructor(props) {
     super(props);
   }
-
   render() {
     return <div>
         <GenericList img="images/gear-dark.png" attrs={this.props.attrs} box_title="Configurations" />
@@ -101,13 +96,10 @@ class Configurations extends Component {
   }
 }
 
-
-
 class StaticAttributes extends Component {
   constructor(props) {
     super(props);
   }
-
   render() {
     return <div>
         <GenericList img="images/tag.png" attrs={this.props.attrs} box_title="Static Attributes" />
@@ -152,7 +144,6 @@ class GenericList extends Component {
 
 
 
-
 class DyAttributeArea extends Component {
   constructor(props) {
     super(props);
@@ -176,23 +167,12 @@ class DyAttributeArea extends Component {
        sa.push(attr);
        current_attrs[attr.id] = true;
     }
-    // attr.visible = !attr.visible;
-    // if (attr.visible) 
-    //   current_attrs.push(attr);
-    // else
-    //   current_attrs = current_attrs.filter(function(el) {
-    //   return el.id != attr.id;
-    // }); 
 
     // iterate over attrs
-
-     
- 
     this.setState({
         selected_attributes: sa,
         visible_attributes: current_attrs
       });
-    console.log("new attr list", current_attrs);
   }
 
     // onChange(attrs) {
@@ -200,9 +180,7 @@ class DyAttributeArea extends Component {
   //   this.setState({ selected_attrs: attrs });
   // }
 
-
   render() {
-
     let lista = this.props.attrs;
     for (let index in lista)
     {
@@ -234,6 +212,7 @@ class DynamicAttributeList extends Component {
 
   clickAttr(attr)
   {
+      console.log("clickAttr");
       this.props.change_attr(attr);
   }
 
@@ -320,21 +299,38 @@ class RemoveDialog extends Component {
 }
 
 class DeviceUserActions extends Component {
+  constructor(props) {
+    super(props);
+    this.removeDevice = this.removeDevice.bind(this);
+  }
+
+  removeDevice(event) {
+      event.preventDefault();
+      $("#" + this.props.confirmTarget).modal("open");
+    // };
+  }
+
+
   render() {
     return (
       <div>
-        <Link to={"/device/id/" + this.props.deviceid + "/edit"} className="waves-effect waves-light btn-flat edit-btn-flat" tabIndex="-1" title="Edit device">
-          <i className="clickable fa fa-pencil" />
-        </Link>
-        <a className="waves-effect waves-light btn-flat remove-btn-flat" tabIndex="-1" title="Remove device"
-           onClick={(e) => {e.preventDefault(); $('#' + this.props.confirmTarget).modal('open');}}>
-          <i className="clickable fa fa-trash"/>
-        </a>
-        <Link to={"/device/list"} className="waves-effect waves-light btn-flat return-btn-flat" tabIndex="-1" title="Return to device list" >
-          <i className="clickable fa fa-arrow-left" />
-        </Link>
+        <DojotBtnRedCircle
+          to={"/device/id/" + this.props.deviceid + "/edit"}
+          icon="fa fa-pencil"
+          tooltip="Edit device"
+        />
+        <DojotBtnRedCircle
+          icon=" fa fa-trash"
+          tooltip="Remove device"
+          click={this.removeDevice}
+        />
+        <DojotBtnRedCircle
+          to={"/device/list"}
+          icon="fa fa-arrow-left"
+          tooltip="Return to device list"
+        />
       </div>
-    )
+    );
   }
 }
 
@@ -478,37 +474,37 @@ class AttrHistory extends Component {
 // }
 
 
-// function getAttrsLength(attrs){
-//   let length = 0;
-//   for(let k in attrs){
-//     length = length + attrs[k].length;
-//   }
-//   return length;
-// }
+function getAttrsLength(attrs){
+  let length = 0;
+  for(let k in attrs){
+    length = length + attrs[k].length;
+  }
+  return length;
+}
 
-// function StatusDisplay(props) {
-//   const numAttributes = getAttrsLength(props.device.attrs);
-//   return (
-//     <div className="detail-box-body">
-//       <div className="metric">
-//           <span className="label">Attributes</span>
-//           <span className="value">{numAttributes}</span>
-//       </div>
-//       <div className="metric">
-//           <span className="label">Last update</span>
-//           <span className="value">{util.iso_to_date(props.device.ts)}</span>
-//       </div>
-//       <div className="metric">
-//           <span className="label">Location</span>
-//           <span className="value">{props.location}</span>
-//       </div>
-//       <div className="metric">
-//           <span className="label">Protocol</span>
-//           <span className="value">{props.device.protocol ? props.device.protocol : "MQTT"}</span>
-//       </div>
-//     </div>
-//   )
-// }
+function StatusDisplay(props) {
+  const numAttributes = getAttrsLength(props.device.attrs);
+  return (
+    <div className="detail-box-body">
+      <div className="metric">
+          <span className="label">Attributes</span>
+          <span className="value">{numAttributes}</span>
+      </div>
+      <div className="metric">
+          <span className="label">Last update</span>
+          <span className="value">{util.iso_to_date(props.device.ts)}</span>
+      </div>
+      <div className="metric">
+          <span className="label">Location</span>
+          <span className="value">{props.location}</span>
+      </div>
+      <div className="metric">
+          <span className="label">Protocol</span>
+          <span className="value">{props.device.protocol ? props.device.protocol : "MQTT"}</span>
+      </div>
+    </div>
+  )
+}
 
 // class AttrSelector extends Component {
 //   constructor(props) {
@@ -694,14 +690,6 @@ class DeviceDetail extends Component {
     super(props);
   }
 
-  componentWillMount(){
-    this.setState({device: this.props.devices[this.props.deviceid]});
-  }
-
-  componentWillUnmount(){
-    delete this.state.device;
-  }
-
   render() {
      console.log("device : ",this.props.device);
      let attr_list = [];
@@ -789,7 +777,7 @@ class ViewDeviceImpl extends Component {
 
     for (let i in device.attrs) {
       for (let j in device.attrs[i]) {
-        if (device.attrs[i][j].value_type == "geo:point") {
+        if (device.attrs[i][j].value_type == "geo") {
           MeasureActions.fetchPosition.defer(device, device.id, device.templates, device.attrs[i][j].label);
         }
       }
@@ -832,8 +820,7 @@ class ViewDeviceImpl extends Component {
       return (<Loading />);
     }
 
-    console.log("device, ",device);
-    return (
+     return (
       <div className="full-height bg-light-gray">
       <NewPageHeader title="Devices" subtitle="device manager" icon="device">
           <div className="box-sh">

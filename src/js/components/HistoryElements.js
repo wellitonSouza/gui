@@ -155,10 +155,23 @@ function Attr(props) {
       )
   }
 
+  function NoDataAv() {
+      return (
+        <div className="mt60px full-height background-info">
+          <div className="full-width center">No data available</div>
+        </div>
+      )
+  }
+
   if (props.data === undefined) {
     return <NoData />;
   }
   
+    if (props.data.value.length == 0) {
+      return <NoDataAv />;
+    }
+  
+
   return (
     <Renderer {...props} />
   )

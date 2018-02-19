@@ -645,7 +645,7 @@ class PositionWrapper extends Component {
     function NoData() {
         return (
           <div className="valign-wrapper full-height background-info">
-            <div className="full-width center">No position available</div>
+            <div className="full-width center">No position <br />available</div>
           </div>
         )
     }
@@ -658,7 +658,7 @@ class PositionWrapper extends Component {
 
     let validDevices = this.getDevicesWithPosition(this.props.device);
     console.log("validDevices", validDevices);
-    if (validDevices[0].position == null) {
+    if (validDevices.length == 0) {
       return <NoData />;
     } else {
       return <div className={"PositionRendererDiv " + (this.state.opened ? "expanded" : "compressed")}> 

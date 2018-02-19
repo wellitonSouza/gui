@@ -291,6 +291,15 @@
 
 .dropdown-content li>a, .dropdown-content li>span{
   color: #444444;
+  position: fixed;
+  background-color: #fff;
+  width: 100%;
+  border-bottom: 1px solid #28807E;
+}
+.dropdown-content li>a:hover, .dropdown-content li>span:hover{
+  color: #444444;
+  background-color: #cecece;
+  border: none;
 }
 
 .detail-box-header {

@@ -1219,6 +1219,7 @@ h1, h2, p {
 
 .device-details-header
 {
+  height: 60px !important;
   padding-left: 111px !important;
   padding-top: 15px !important;
   text-transform: capitalize;
@@ -1474,14 +1475,13 @@ h1, h2, p {
 }
 
 
-/* animations */
 @keyframes opa-width-250 {
     from {opacity: 0.2;width:100px;}
     to {opacity: 1;width:250px;}
 }
 
 @keyframes opa-hei {
-    from {opacity: 0.2;width:220px;}
+    from {opacity: 0.2;height:220px;}
     to {opacity: 1;height:250px;}
 }
 

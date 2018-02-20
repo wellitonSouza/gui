@@ -317,7 +317,7 @@ class DeviceMap extends Component {
       for(let k in this.props.devices[device_id].attrs){
         for(let j in this.props.devices[device_id].attrs[k]){
           if(this.props.devices[device_id].attrs[k][j].value_type == "geo:point"){
-            TrackingActions.fetch(device_id, this.props.devices[device_id].templates, this.props.devices[device_id].attrs[k][j].label);
+            TrackingActions.fetch(device_id, this.props.devices[device_id].attrs[k][j].label);
           }
         }
       }

@@ -36,6 +36,19 @@ class DeviceActions {
     }
   }
 
+  fetchDevicesByTemplate(templateId) {
+    return (dispatch) => {
+      dispatch();
+
+      deviceManager.getDeviceByTemplateId(templateId).then((devicesList) => {
+        this.updateDevices(devicesList.devices);
+      })
+      .catch((error) => {
+        this.devicesFailed(error);
+      });
+    }
+  }
+
   updateDevices(list) {
     return list;
   }
@@ -56,7 +69,7 @@ class DeviceActions {
           }
         })
         .catch((error) => {
-          this.devicesFailed("Failed to add device to list");
+          this.devicesFailed(error);
         })
     }
   }

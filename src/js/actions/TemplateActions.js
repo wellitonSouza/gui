@@ -51,11 +51,11 @@ class TemplateActions {
         .then((response) => {
           this.updateSingle(template);
           if (cb) {
-            cb(response.template);
+            cb(response);
           }
         })
         .catch((error) => {
-          this.templatesFailed("Failed to update given template");
+          this.templatesFailed(error);
         })
 
       dispatch();
@@ -86,7 +86,7 @@ class TemplateActions {
         .then((response) => {
           this.removeSingle(template);
           if (cb) {
-            cb();
+            cb(response);
           }
         })
         .catch((error) => {

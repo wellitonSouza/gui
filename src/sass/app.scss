@@ -279,16 +279,31 @@ body {
     margin-top: 3px;
 }
 
+
+.mt60px, .mt60
+{
+    margin-top: 60px;
+}
+
+.mt5, .mt5px
+{
+    margin-top: 5px;
+}
+
 #toast-container {
   margin: auto !important;
   top: auto !important;
   right: auto !important;
   bottom: 0%;
-  left:50%;
+  left:17%;
 }
 
 .toast{
     background-color: #ee6e73 !important;
+}
+
+.modal {
+  z-index: 9999 !important;
 }
 
 @import 'inputs';
@@ -307,3 +322,4 @@ body {
 @import 'ddashboard';
 @import 'detailsdev';
 @import 'device';
+@import 'recoverypassword';

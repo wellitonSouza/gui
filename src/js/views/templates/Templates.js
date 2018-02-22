@@ -870,7 +870,7 @@ class TemplateList extends Component {
                 ))}
               </div> : <div className="background-info valign-wrapper full-height">
                 <span className="horizontal-center">
-                  No configured templates
+                   No configured templates
                 </span>
               </div>}
           </div>;

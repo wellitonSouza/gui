@@ -10,6 +10,8 @@ import {NewPageHeader} from "../../containers/full/PageHeader";
 import { hashHistory } from 'react-router';
 
 import { GenericModal, RemoveModal } from "../../components/Modal";
+import Toggle from 'material-ui/Toggle';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 // import ReactDOM from 'react-dom';
 // import Dropzone from 'react-dropzone';
@@ -801,6 +803,7 @@ class TemplateList extends Component {
             filter: ''
         };
 
+        this.filteredList = [];
 
         this.handleSearchChange = this.handleSearchChange.bind(this);
         this.applyFiltering = this.applyFiltering.bind(this);
@@ -808,6 +811,12 @@ class TemplateList extends Component {
         this.editTemplate = this.editTemplate.bind(this);
         this.updateTemplate = this.updateTemplate.bind(this);
         this.deleteTemplate = this.deleteTemplate.bind(this);
+        this.filterListByName = this.filterListByName.bind(this);
+    }
+
+    filterListByName (event){
+      event.preventDefault();
+      this.setState({filter: event.target.value});
     }
 
     detailedTemplate(id) {
@@ -841,17 +850,6 @@ class TemplateList extends Component {
 
     applyFiltering(list) {
         return list;
-
-        // const filter = this.state.filter;
-        // const idFilter = filter.match(/id:\W*([-a-fA-F0-9]+)\W?/);
-        // return this.props.templates.filter(function (e) {
-        //     let result = false;
-        //     if (idFilter && idFilter[1]) {
-        //         result = result || e.id.toUpperCase().includes(idFilter[1].toUpperCase());
-        //     }
-        //
-        //     return result || e.label.toUpperCase().includes(filter.toUpperCase());
-        // });
     }
 
     updateTemplate(template) {
@@ -870,9 +868,26 @@ class TemplateList extends Component {
         this.setState(state);
     }
 
-    render() {
+    convertTemplateList() {
+      if (this.state.filter != "") {
+        var updatedList = this.filteredList.filter(function(template) {
+          return template.label.includes(event.target.value);
+        });
+        this.filteredList = updatedList;
+      } else {
+        this.filteredList = [];
+        for (let k in this.props.templates) {
+          if (this.props.templates.hasOwnProperty(k)){
+            this.filteredList.push(this.props.templates[k]);
+          }
+        }
+      }
+    }
 
-        const filteredList = this.applyFiltering(this.props.templates);
+    render() {
+        this.filteredList = this.applyFiltering(this.props.templates);
+
+        this.convertTemplateList();
 
         if (this.props.loading) {
             return (
@@ -883,9 +898,27 @@ class TemplateList extends Component {
                 </div>
             )
         }
+
+        let header = null;
+        if (this.props.showSearchBox)
+         header = <div className={"row z-depth-2 templatesSubHeader " + (this.props.showSearchBox ? "show-dy" : "hide-dy")} id="inner-header">
+              <div className="col s3 m3 main-title">
+                Showing {this.filteredList.length} template(s)
+              </div>
+              <div className="col s1 m1 header-info hide-on-small-only">
+              </div>
+              <div className="col s4 m4">
+                <label htmlFor="fld_template_name">Template Name</label>
+                <input id="fld_template_name" type="text" name="Template Name" className="form-control form-control-lg" placeholder="Search" value={this.state.filter} onChange={this.filterListByName} />
+              </div>
+            </div>;
+
         return <div className="full-height relative">
-            {filteredList.length > 0 ? <div className="col s12 lst-wrapper">
-                {filteredList.map(template => (
+        <ReactCSSTransitionGroup transitionName="templatesSubHeader">
+          {header}
+        </ReactCSSTransitionGroup>
+            {this.filteredList.length > 0 ? <div className="col s12 lst-wrapper">
+                {this.filteredList.map(template => (
                   <ListItem
                     template={template}
                     key={template.id}
@@ -899,8 +932,8 @@ class TemplateList extends Component {
                   />
                 ))}
               </div> : <div className="background-info valign-wrapper full-height">
-                <span className="horizontal-center">
-                  No configured templates
+                <span className="no-template-configured">
+                  No configured devices
                 </span>
               </div>}
           </div>;
@@ -913,7 +946,16 @@ class Templates extends Component {
         super(props);
 
         this.addTemplate = this.addTemplate.bind(this);
+        this.toggleSearchBar = this.toggleSearchBar.bind(this);
+
+        this.state = { showFilter: false };
     }
+
+    toggleSearchBar() {
+        const last = this.state.showFilter;
+        this.setState({ showFilter: !last });
+    }
+
     addTemplate() {
         let template =
             {
@@ -939,13 +981,18 @@ class Templates extends Component {
                 transitionEnterTimeout={500}
                 transitionLeaveTimeout={500}>
                 <NewPageHeader title="Templates" subtitle="Templates" icon='template'>
-                    <div onClick={this.addTemplate} className="new-btn-flat red waves-effect waves-light"
-                          title="Create a new template">
-                        New Template<i className="fa fa-plus"/>
+                    <div className="pt10">
+                        <div className="searchBtn" title="Show search bar" onClick={this.toggleSearchBar.bind(this)}>
+                          <i className="fa fa-search" />
+                        </div>
+                        <div onClick={this.addTemplate} className="new-btn-flat red waves-effect waves-light"
+                              title="Create a new template">
+                            New Template<i className="fa fa-plus"/>
+                        </div>
                     </div>
                 </NewPageHeader>
                 <AltContainer store={TemplateStore}>
-                    <TemplateList/>
+                    <TemplateList showSearchBox={this.state.showFilter}/>
                 </AltContainer>
             </ReactCSSTransitionGroup>
         );

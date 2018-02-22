@@ -1,0 +1,81 @@
+/* animations */
+@keyframes opa-hei-90px {
+    from {opacity: 0.2;height:10px;}
+    to {opacity: 1;height:90px;}
+}
+
+/* animations for ReactCSSTransitionGroup */
+/* begin */
+.templatesSubHeader-enter {
+  opacity: 0.2; height:0px;
+}
+
+.templatesSubHeader-enter.templatesSubHeader-enter-active {
+  opacity: 1; height: 98px;
+}
+
+.templatesSubHeader-leave {
+  opacity: 0.8; height: 98px;
+}
+
+.templatesSubHeader-leave.templatesSubHeader-leave-active {
+  padding-top: 0px;
+  opacity: 0.2; height:0px;
+}
+/* end */
+
+.show-dy{
+  visibility:visible;
+
+}
+
+.hide-dy
+{
+  visibility: hidden;
+}
+
+.templatesSubHeader {
+    background-color: #fff;
+    color: #2c3e50;
+    margin: 0;
+    z-index: 1000;
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+    transition: all 500ms ease;
+    padding-top: 10px;
+
+  .main-title {
+    font-family: "Raleway", sans-serif;
+    padding-left: 4em;
+    position: relative;
+    font-size: 16px;
+  }
+
+  .header-info {
+    position: relative;
+    .title {
+      font-family: "Open Sans", sans-serif;
+      font-size: 10pt;
+      color: $silver;
+    }
+
+    .subtitle {
+      font-family: "Droid Sans", sans-serif;
+      font-size: 12pt;
+      color: $dark-silver;
+    }
+  }
+
+  .btn-flat {
+    top: 15px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .templatesSubHeader {
+    .main-title {
+      padding-left: 0em;
+    }
+  }
+}

@@ -55,8 +55,8 @@ class MapWrapper extends Component {
         }
       }
     }
-
   }
+
   render(){
     return(
       <AltContainer store={MeasureStore}>
@@ -79,6 +79,56 @@ class Devices extends Component {
 
   componentDidMount() {
     DeviceActions.fetchDevices.defer();
+
+    // Realtime
+    var socketio = require('socket.io-client');
+    var axios = require('axios');
+
+    const target = 'http://' + window.location.host;
+    const token_url = target + "/stream/socketio";
+
+    function getToken(username, password) {
+      const uname = username || "admin";
+      const passwd = password || "admin";
+
+      return new Promise((resolve, reject) => {
+        axios({
+          'url': target + '/auth',
+          'method': 'post',
+          'data': { 'username': uname, 'passwd': passwd }
+        }).then((response) => {
+          if (response.status == 200){
+            resolve(response.data.jwt);
+          } else {
+            reject(new Error("Authentication failure", response.data));
+          }
+        }).catch((error) => {
+          reject(error);
+        })
+      });
+    }
+
+    getToken().then((token) => {
+      axios({
+        'url': token_url, 'method': 'get',
+        'headers': {'authorization': 'Bearer ' + token}
+      }).then((response) => {
+        if (response.status == 200) {
+          init(response.data.token);
+        }
+      })
+    }).catch((error) => {
+      console.error('Failed!', error);
+    })
+
+    function init(token){
+      var socket = socketio(target, {query: "token=" + token, transports: ['websocket']});
+
+      socket.on('all', function(data){
+        console.log('got device data', data);
+        MeasureActions.updatePosition.defer(data);
+      });
+    }
   }
 
   filterChange(newFilter) {}
@@ -116,7 +166,7 @@ class Devices extends Component {
           {/*<Link to="/device/new" title="Create a new device" className="btn-item btn-floating waves-effect waves-light cyan darken-2">
             <i className="fa fa-plus"/>
           </Link> */}
-          
+
           <div className="pt10">
             <div className="searchBtn" title="Show search bar" onClick={this.toggleSearchBar.bind(this)}>
               <i className="fa fa-search" />

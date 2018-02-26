@@ -125,8 +125,8 @@ class Devices extends Component {
       var socket = socketio(target, {query: "token=" + token, transports: ['websocket']});
 
       socket.on('all', function(data){
-        console.log('got device data', data);
-        MeasureActions.updatePosition.defer(data);
+        let label = Object.keys(data.attrs);
+        MeasureActions.updatePosition.defer(data.attrs[label[0]]);
       });
     }
   }

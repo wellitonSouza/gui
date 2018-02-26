@@ -43,7 +43,7 @@ class MeasureStore {
       }
     }
     if(data !== undefined){
-      this.data.position = parserPosition(data.attrs.location);
+      this.data.position = parserPosition(data);
     }
 
   }

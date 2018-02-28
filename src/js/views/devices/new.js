@@ -217,7 +217,7 @@ class StaticAttributes extends Component {
     });
     return <div className="attr-box specific-attr">
         {/* Configurations */}
-        {properties.length > 0 && <div className="col s6">
+        {properties.length > 0 && <div className="col s12">
             <div className="col s12">
               <div className="attr-title">Configurations</div>
             </div>

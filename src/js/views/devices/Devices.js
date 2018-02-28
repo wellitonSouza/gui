@@ -16,6 +16,10 @@ import { DojotBtnLink } from "../../components/DojotButton";
 import {DeviceMap, PositionRenderer} from './DeviceMap';
 import {DeviceCard} from './DeviceCard';
 
+import util from '../../comms/util';
+
+import LoginStore from '../../stores/LoginStore';
+
 // UI elements
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Toggle from 'material-ui/Toggle';
@@ -82,44 +86,20 @@ class Devices extends Component {
 
     // Realtime
     var socketio = require('socket.io-client');
-    var axios = require('axios');
 
     const target = 'http://' + window.location.host;
     const token_url = target + "/stream/socketio";
 
-    function getToken(username, password) {
-      const uname = username || "admin";
-      const passwd = password || "admin";
+    const url = token_url;
+    const config = {}
 
-      return new Promise((resolve, reject) => {
-        axios({
-          'url': target + '/auth',
-          'method': 'post',
-          'data': { 'username': uname, 'passwd': passwd }
-        }).then((response) => {
-          if (response.status == 200){
-            resolve(response.data.jwt);
-          } else {
-            reject(new Error("Authentication failure", response.data));
-          }
-        }).catch((error) => {
-          reject(error);
-        })
-      });
-    }
-
-    getToken().then((token) => {
-      axios({
-        'url': token_url, 'method': 'get',
-        'headers': {'authorization': 'Bearer ' + token}
-      }).then((response) => {
-        if (response.status == 200) {
-          init(response.data.token);
-        }
+    util._runFetch(url, config)
+      .then((reply) => {
+        init(reply.token);
       })
-    }).catch((error) => {
-      console.error('Failed!', error);
-    })
+      .catch((error) => {console.log("Failed!", error);
+    });
+
 
     function init(token){
       var socket = socketio(target, {query: "token=" + token, transports: ['websocket']});
@@ -129,6 +109,7 @@ class Devices extends Component {
         MeasureActions.updatePosition.defer(data.attrs[label[0]]);
       });
     }
+
   }
 
   filterChange(newFilter) {}

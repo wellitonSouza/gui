@@ -49,7 +49,7 @@ class RemoveModal extends Component {
   }
 
   render(){
-    let title = "Delete " + this.props.name;
+    let title = "Remove " + this.props.name;
     let first_message = "Are you sure you want remove this";
     let second_message = this.props.name;
     return(

@@ -31,7 +31,7 @@ class Graph extends Component{
       return undefined;
     }
 
-    this.props.data[this.props.attr].map((i) => {
+    this.props.data[this.props.id][this.props.attr].map((i) => {
       labels.push(util.iso_to_date(i.ts));
       values.push(i.trim());
     })
@@ -107,8 +107,8 @@ function HistoryList(props) {
 
   // handle values
   let value = []
-  for(let k in props.data[props.attr]){
-     value[k] = props.data[props.attr][k];
+  for(let k in props.data[props.id][props.attr]){
+     value[k] = props.data[props.id][props.attr][k];
   }
 
   if (value){
@@ -164,12 +164,12 @@ function Attr(props) {
       )
   }
 
-  if (props.data === undefined) {
+  if (props.data[props.id] === undefined) {
     return <NoData />;
   }
 
   let label = props.attr;
-  if (props.data[props.attr].length == 0) {
+  if (props.data[props.id][props.attr] == undefined) {
       return <NoDataAv />;
   }
 

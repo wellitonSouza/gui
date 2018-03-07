@@ -53,7 +53,7 @@ class MeasureStore {
 
   handleUpdateMeasures(measureData) {
     if(measureData !== null || measureData !== undefined){
-      this.data[measureData.id] = measureData
+      this.data[measureData.id] = measureData;
     }
   }
 

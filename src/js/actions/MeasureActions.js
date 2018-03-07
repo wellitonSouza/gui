@@ -32,16 +32,8 @@ class MeasureActions {
       }
       util._runFetch(getUrl(), config)
         .then((reply) => {
-          let values = [];
           if(reply !== null || reply !== undefined){
-            if(reply[0].attr == attrs){
-              for(let k in reply){
-                if(reply[k].value !== null){
-                  values[k] = reply[k].value;
-                }
-              }
-              device[attrs] = values;
-            }
+              device[attrs] = reply.reverse();
           }
           this.updateMeasures(device);
         })

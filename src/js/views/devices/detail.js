@@ -370,7 +370,7 @@ class AttrHistory extends Component {
         </div> */}
         <div className="contents no-padding">
           <AltContainer store={MeasureStore}>
-            <Attr device={this.props.device} type={this.props.type} attr={this.props.attr} id={this.props.device.id}/>
+            <Attr device={this.props.device} type={this.props.type} attr={this.props.attr} />
           </AltContainer>
         </div>
       </div>

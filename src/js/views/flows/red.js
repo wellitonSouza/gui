@@ -63,7 +63,9 @@ RED.i18n = (function() {
                 ns: ["editor","node-red","jsonata","infotips"],
                 defaultNS: 'editor',
                 backend: {
-                  loadPath: 'mashup/locales/__ns__',
+                  loadPath: function(lngs, ns) {
+                    return '/mashup/locales/' + ns;
+                  },
                   withCredentials: true,
                   customHeaders: {'Authorization': accessToken},
                 },
@@ -82,19 +84,15 @@ RED.i18n = (function() {
                   useOptionsAttr: false, // see optionsAttr
                   parseDefaultValueFromContent: true // parses default values from content ele.val or ele.text
                 });
-                RED["_"] = function() {
-                  for (let k in arguments) {
-                    if (typeof arguments[k] == 'string') {
-                      return i18next.t(arguments[k]);
-                    }
-                  }
+                RED["_"] = function(key, options) {
+                  return i18next.t(key, options);
                 }
 
                 done();
               });
         },
         loadCatalog: function(namespace,done) {
-            i18next.loadNamespaces(namespace.replace('/', '.'),done);
+            i18next.loadNamespaces(namespace, done);
         }
      }
  })();

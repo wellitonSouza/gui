@@ -6,19 +6,26 @@
 
 .header-box
 {
+  float: left;
+  width: 100%;
 
   .page-actions
   {
-    top: 55px;
+    top: 50px;
     position: fixed;
     z-index: 9992;
-    right: 0px;
+    right: 0;
     overflow: auto;
     width: 600px;
-    height: 70px;
+    height: 65px;
     padding-right: 39px;
     text-align: right;
-        overflow: hidden;
+    overflow: hidden;
+
+    .pt10 {
+      margin: 7px 0 !important;
+      padding: 10px 0 !important;
+    }
   }
 
   .title-box{

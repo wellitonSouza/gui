@@ -1,13 +1,14 @@
 .filter-wrapper {
-  width: 100%;
-  bottom: -8px;
+  width: 400px;
   font-size: 80%;
-  color: $silver;
-    position: relative;
+  color: #b8b8b8;
+  float: left;
   input {
     margin-bottom: 1em !important;
   }
-
+  .input-field {
+    margin: 0 !important;
+  }
   .input-field .prefix {
     font-size: 230%;
     padding-top: 2%

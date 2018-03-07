@@ -140,6 +140,7 @@ body {
 .clickable {
   cursor: pointer;
   user-select: none;
+  float: left;
 }
 
 .btn-remove-attr-card {
@@ -238,6 +239,12 @@ body {
   .fill {
     flex: 1;
   }
+}
+
+.fill {
+  height: 100%;
+  width: 100%;
+  float: left;
 }
 
 .visible-overflow-y {

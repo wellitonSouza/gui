@@ -922,9 +922,11 @@ class Templates extends Component {
                 transitionEnterTimeout={500}
                 transitionLeaveTimeout={500}>
                 <NewPageHeader title="Templates" subtitle="Templates" icon='template'>
-                    <div onClick={this.addTemplate} className="new-btn-flat red waves-effect waves-light"
-                          title="Create a new template">
-                        New Template<i className="fa fa-plus"/>
+                    <div className={'pt10'}>
+                        <div onClick={this.addTemplate} className="new-btn-flat red waves-effect waves-light"
+                             title="Create a new template">
+                            New Template<i className="fa fa-plus"/>
+                        </div>
                     </div>
                 </NewPageHeader>
                 <AltContainer store={TemplateStore}>

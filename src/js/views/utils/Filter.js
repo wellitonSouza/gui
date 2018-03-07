@@ -21,7 +21,7 @@ class Filter extends Component {
           <div className="input-field">
             {/* <i className="prefix fa fa-search"></i>*/}
             <label htmlFor="deviceFiltering">Filter</label>
-            <input id="deviceFiltering" type="text" onChange={this.handleChange}></input>
+            <input id="deviceFiltering" type="text" onChange={this.handleChange} />
           </div>
         </form>
       </div>

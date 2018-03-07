@@ -16,6 +16,10 @@ import { DojotBtnLink } from "../../components/DojotButton";
 import {DeviceMap, PositionRenderer} from './DeviceMap';
 import {DeviceCard} from './DeviceCard';
 
+import util from '../../comms/util';
+
+import LoginStore from '../../stores/LoginStore';
+
 // UI elements
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Toggle from 'material-ui/Toggle';
@@ -49,14 +53,14 @@ class MapWrapper extends Component {
         for(let i in devices[k].attrs[j]){
           if(devices[k].attrs[j][i].type == "dynamic"){
             if(devices[k].attrs[j][i].value_type == "geo:point"){
-                MeasureActions.fetchPosition.defer(devices[k], devices[k].id, devices[k].templates, devices[k].attrs[j][i].label, 1);
+                MeasureActions.fetchPosition.defer(devices[k], devices[k].id, devices[k].attrs[j][i].label);
             }
           }
         }
       }
     }
-
   }
+
   render(){
     return(
       <AltContainer store={MeasureStore}>
@@ -67,11 +71,11 @@ class MapWrapper extends Component {
 }
 
 class Devices extends Component {
-
   constructor(props) {
     super(props);
-    this.state = {displayList: true};
+    this.state = { displayList: true, showFilter: false };
 
+    this.toggleSearchBar = this.toggleSearchBar.bind(this);
     this.filterChange = this.filterChange.bind(this);
     this.toggleDisplay = this.toggleDisplay.bind(this);
     this.setDisplay = this.setDisplay.bind(this);
@@ -79,9 +83,39 @@ class Devices extends Component {
 
   componentDidMount() {
     DeviceActions.fetchDevices.defer();
+
+    // Realtime
+    var socketio = require('socket.io-client');
+
+    const target = 'http://' + window.location.host;
+    const token_url = target + "/stream/socketio";
+
+    const url = token_url;
+    const config = {}
+
+    util._runFetch(url, config)
+      .then((reply) => {
+        init(reply.token);
+      })
+      .catch((error) => {console.log("Failed!", error);
+    });
+
+
+    function init(token){
+      var socket = socketio(target, {query: "token=" + token, transports: ['websocket']});
+
+      socket.on('all', function(data){
+        MeasureActions.updatePosition.defer(data);
+      });
+    }
+
   }
 
-  filterChange(newFilter) {
+  filterChange(newFilter) {}
+
+  toggleSearchBar() {
+    const last = this.state.showFilter;
+    this.setState({ showFilter: !last });
   }
 
   setDisplay(state) {
@@ -90,32 +124,45 @@ class Devices extends Component {
 
   toggleDisplay() {
     const last = this.state.displayList;
-    this.setState({displayList: !last});
+    this.setState({ displayList: !last });
   }
 
   render() {
-    const detail = ('detail' in this.props.location.query) ? this.props.location.query.detail : null;
-    const displayToggle = <ToggleWidget toggleState={this.state.displayList} toggle={this.toggleDisplay} setState={this.setDisplay} />;
+    const detail =
+      "detail" in this.props.location.query
+        ? this.props.location.query.detail
+        : null;
+    const displayToggle = (
+      <ToggleWidget
+        toggleState={this.state.displayList}
+        toggle={this.toggleDisplay}
+        setState={this.setDisplay}
+      />
+    );
 
-    return (<ReactCSSTransitionGroup transitionName="first" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={500} transitionLeaveTimeout={500}>
+    return <ReactCSSTransitionGroup transitionName="first" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={500} transitionLeaveTimeout={500}>
         <NewPageHeader title="Devices" subtitle="" icon="device">
           {/* <Filter onChange={this.filterChange} /> */}
           {/*<Link to="/device/new" title="Create a new device" className="btn-item btn-floating waves-effect waves-light cyan darken-2">
             <i className="fa fa-plus"/>
           </Link> */}
-          <div className='pt10'>
-            <DojotBtnLink linkto="/device/new" label="New Device" alt="Create a new device" icon="fa fa-plus" />
+
+          <div className="pt10">
+            <div className="searchBtn" title="Show search bar" onClick={this.toggleSearchBar.bind(this)}>
+              <i className="fa fa-search" />
+            </div>
             {displayToggle}
+            <DojotBtnLink linkto="/device/new" label="New Device" alt="Create a new device" icon="fa fa-plus" />
           </div>
         </NewPageHeader>
         <AltContainer store={DeviceStore}>
           {this.state.displayList ? (
-            <DeviceCard deviceid={detail} toggle={displayToggle} />
+            <DeviceCard deviceid={detail} toggle={displayToggle} showSearchBox={this.state.showFilter} />
           ) : (
-            <MapWrapper deviceid={detail} toggle={displayToggle} />
+            <MapWrapper deviceid={detail} toggle={displayToggle} showSearchBox={this.state.showFilter}/>
           )}
         </AltContainer>
-      </ReactCSSTransitionGroup>);
+      </ReactCSSTransitionGroup>;
   }
 }
 

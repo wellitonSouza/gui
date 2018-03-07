@@ -370,7 +370,7 @@ class AttrHistory extends Component {
         </div> */}
         <div className="contents no-padding">
           <AltContainer store={MeasureStore}>
-            <Attr device={this.props.device} type={this.props.type} attr={this.props.attr}/>
+            <Attr device={this.props.device} type={this.props.type} attr={this.props.attr} />
           </AltContainer>
         </div>
       </div>
@@ -629,6 +629,13 @@ class PositionWrapper extends Component {
              if(device.attrs[j][i].value_type == "geo:point"){
                device.position = parserPosition(device.attrs[j][i].static_value);
              }
+           } else{
+             if(device.attrs[j][i].value_type == "geo:point"){
+               let label = device.attrs[j][i].label;
+               console.log("Label: ", label);
+              //  console.log("PROPS: ", parserPosition(device[label][0]));
+              //  device.position = parserPosition(device[label][0]);
+             }
            }
          }
        }
@@ -693,7 +700,7 @@ class DeviceDetail extends Component {
   //    const device = this.props.device;
   //    if (device == undefined)
   //      return; //not ready
-   //
+
   //    for (let i in device.attrs) {
   //      for (let j in device.attrs[i]) {
   //        if(device.attrs[i][j].value_type == "geo:point"){

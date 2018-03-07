@@ -11,12 +11,11 @@ class MeasureActions {
     return data;
   }
 
-  fetchMeasure(device, device_id, templates, attrs, history_length, callback) {
-
-    console.log("MeasureActions, fetchMeasure", device_id, attrs, history_length, callback);
+  fetchMeasure(device, device_id, attrs, history_length) {
+    console.log("MeasureActions, fetchMeasure", device, device_id, attrs, history_length);
     function getUrl() {
       if (history_length === undefined) { history_length = 1; }
-      let url = '/history/STH/v1/contextEntities/type/template_' + templates + '/id/' + device_id + '/attributes/' + attrs + '?lastN=' + history_length;
+      let url = '/history/device/' + device_id + '/history?lastN=' + history_length + '&attr=' + attrs;
       return url;
     }
 
@@ -33,19 +32,10 @@ class MeasureActions {
       }
       util._runFetch(getUrl(), config)
         .then((reply) => {
-          if(reply.contextResponses[0].contextElement.attributes[0].values !== null || reply.contextResponses[0].contextElement.attributes[0].values !== undefined){
-            let history = reply.contextResponses[0].contextElement.attributes[0].values;
-            let values = [];
-            for(let k in history){
-              if(history[k].attrValue !== null){
-                values[k] = history[k].attrValue;
-              }
-            }
-            device.value = values;
-            const data = device;
-            this.updateMeasures(data);
+          if(reply !== null || reply !== undefined){
+              device[attrs] = reply.reverse();
           }
-          if (callback) {callback(reply)}
+          this.updateMeasures(device);
         })
         .catch((error) => {console.error("failed to fetch data", error);});
     }
@@ -53,11 +43,10 @@ class MeasureActions {
 
   updatePosition(data) {return data;}
 
-  fetchPosition(device, device_id, templates, attrName, history_length) {
+  fetchPosition(device, device_id, attr, history_length) {
     function getUrl() {
       if (history_length === undefined) { history_length = 1; }
-      let url = '/history/STH/v1/contextEntities/type/template_' + templates + '/id/' + device_id + '/attributes/' + attrName + '?lastN=' + history_length;
-
+      let url = '/history/device/' + device_id + '/history?lastN=' + history_length + '&attr=' + attr;
       return url;
     }
 
@@ -83,16 +72,11 @@ class MeasureActions {
       util._runFetch(getUrl(), config)
         .then((reply) => {
           let position = null;
-          let values = reply.contextResponses[0].contextElement.attributes[0].values;
-          for(let k in values){
-            if(values[k].attrValue !== null){
-              position = parserPosition(values[k].attrValue);
-            }
+          if(reply[0].value !== "nan"){
+            position = parserPosition(reply[0].value);
           }
-
           device.position = position;
-          const data = device;
-          this.updateMeasures(data);
+          this.updateMeasures(device);
 
         })
         .catch((error) => {console.error("failed to fetch data", error);});

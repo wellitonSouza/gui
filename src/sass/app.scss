@@ -140,7 +140,6 @@ body {
 .clickable {
   cursor: pointer;
   user-select: none;
-  float: left;
 }
 
 .btn-remove-attr-card {
@@ -329,4 +328,6 @@ body {
 @import 'ddashboard';
 @import 'detailsdev';
 @import 'device';
+@import 'template';
 @import 'recoverypassword';
+@import 'modal';

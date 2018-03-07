@@ -1,3 +1,12 @@
+.no-device-configured{
+  padding-top: 38px;
+  display: block;
+    color: #9e9e9e;
+  font-size: 200%;
+  font-family: 'Cuprum', sans-serif;
+  text-align: center;
+}
+
 .no-data-notification {
   width: 100%;
   display: block;
@@ -259,20 +268,58 @@
     margin: 0 0 0 0;
   }
 }
+/* animations */
+@keyframes opa-hei-90px {
+    from {opacity: 0.2;height:10px;}
+    to {opacity: 1;height:90px;}
+}
+
+/* animations for ReactCSSTransitionGroup */
+/* begin */ 
+.devicesSubHeader-enter {
+  opacity: 0.2; height:0px;
+}
+
+.devicesSubHeader-enter.devicesSubHeader-enter-active {
+  opacity: 1; height: 98px;
+}
+
+.devicesSubHeader-leave {
+  opacity: 0.8; height: 98px;
+}
+
+.devicesSubHeader-leave.devicesSubHeader-leave-active {
+  padding-top: 0px;
+  opacity: 0.2; height:0px;
+}
+/* end */ 
+
+
+.show-dy{
+  visibility:visible;
+  
+}
+
+.hide-dy
+{
+  visibility: hidden;
+}
 
 .devicesSubHeader {
     background-color: #fff;
     color: #2c3e50;
-    height: 90px;
+    // height: 90px;
     margin: 0;
     z-index: 1000;
     overflow: hidden;
     width: 100%;
     position: relative;
-    //animation-name: height-opacity-0-to-100;
-    //animation-duration: 1s;
-    //animation-iteration-count: 1;
-    padding-top: 10px !important;
+  //  -webkit-animation-name: opa-hei-90px; /* Safari 4.0 - 8.0 */
+    // -webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
+    // animation-name: opa-hei-90px;
+    // animation-duration: 1s;
+    transition: all 500ms ease;
+    padding-top: 10px;
 
   .main-title {
     font-family: "Raleway", sans-serif;

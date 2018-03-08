@@ -799,38 +799,11 @@ class ViewDeviceImpl extends Component {
 
     for (let i in device.attrs) {
       for (let j in device.attrs[i]) {
-          MeasureActions.fetchMeasure.defer(device, device.id, device.attrs[i][j].label, 10);
+         if (device.attrs[i][j].type != "meta") {
+           MeasureActions.fetchMeasure.defer(device, device.id, device.attrs[i][j].label, 10);
+         }
       }
     }
-  }
-
-  componentDidMount(){
-    // Realtime
-    var socketio = require('socket.io-client');
-
-    const target = 'http://' + window.location.host;
-    const token_url = target + "/stream/socketio";
-
-    const url = token_url;
-    const config = {}
-
-    util._runFetch(url, config)
-      .then((reply) => {
-        init(reply.token);
-      })
-      .catch((error) => {console.log("Failed!", error);
-    });
-
-    function init(token){
-      var socket = socketio(target, {query: "token=" + token, transports: ['websocket']});
-
-      socket.on('all', function(data){
-        let device_data = {device_id: data.metadata.deviceid}
-        let label = Object.keys(data.attrs);
-        MeasureActions.appendMeasures(data)
-      });
-    }
-    //------------------------------------------------------------------------
   }
 
   remove(e) {

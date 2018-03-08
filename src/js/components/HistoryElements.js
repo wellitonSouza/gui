@@ -171,7 +171,7 @@ class PositionWrapper extends Component {
                device.position = parserPosition(device.attrs[j][i].static_value);
              }
            } else{
-             device.position = parserPosition(device[this.props.attr][0].value);
+             device.position = parserPosition(device[this.props.attr][length - 1].value);
            }
          }
        }

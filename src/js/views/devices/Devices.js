@@ -106,9 +106,9 @@ class Devices extends Component {
 
       socket.on('all', function(data){
         MeasureActions.updatePosition.defer(data);
+        MeasureActions.appendMeasures(data);
       });
     }
-
   }
 
   filterChange(newFilter) {}

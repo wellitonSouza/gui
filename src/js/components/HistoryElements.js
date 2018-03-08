@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import util from "../comms/util/util";
 import { Line } from 'react-chartjs-2';
 import { PositionRenderer } from '../views/devices/DeviceMap';
+import Script from 'react-load-script';
+import { Loading } from './Loading.js';
 
 
 class Graph extends Component{
@@ -144,10 +146,16 @@ class PositionWrapper extends Component {
     this.state = {
       opened: false,
       hasPosition: false,
-      pos: []
+      pos: [],
+      mapquest: false
     };
     this.getDevicesWithPosition = this.getDevicesWithPosition.bind(this);
     this.toogleExpand = this.toogleExpand.bind(this);
+    this.mqLoaded = this.mqLoaded.bind(this);
+  }
+
+  mqLoaded(){
+    this.setState({mapquest: true});
   }
 
   toogleExpand(state) {
@@ -198,14 +206,25 @@ class PositionWrapper extends Component {
       return (<NoData />);
     }
 
-    let validDevices = this.getDevicesWithPosition(this.props.data[this.props.id]);
+    let validDevices = this.getDevicesWithPosition(this.props.data[this.props.device.id]);
     console.log("validDevices", validDevices);
     if (validDevices.length == 0) {
       return <NoData />;
     } else {
-      return <div className={"PositionRendererDiv " + (this.state.opened ? "expanded" : "compressed")}>
-          <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} />
+      return(
+        <div className={"PositionRendererDiv " + (this.state.opened ? "expanded" : "compressed")}>
+          <div>
+            <Script url="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=zvpeonXbjGkoRqVMtyQYCGVn4JQG8rd9"
+                    onLoad={this.mqLoaded}>
+            </Script>
+          </div>
+          {this.state.mapquest ? (
+            <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} />
+          ): (
+            <Loading />
+          )}
         </div>
+      )
     }
   }
 }

@@ -786,6 +786,12 @@ class DeviceDetail extends Component {
          }));
      };
 
+     for (let index in config_list) {
+        if (config_list[index].label === "protocol") {
+          config_list[index].static_value = config_list[index].static_value.toUpperCase();
+        }
+     }
+
      return <div className="row detail-body">
          <div className="first-col full-height">
          {/*<div className="col s12 device-map-box">

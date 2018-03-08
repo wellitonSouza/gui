@@ -206,6 +206,7 @@ class PositionWrapper extends Component {
       return (<NoData />);
     }
 
+    console.log("Position Renderer this.props.data", this.props.data);
     let validDevices = this.getDevicesWithPosition(this.props.data[this.props.device.id]);
     console.log("validDevices", validDevices);
     if (validDevices.length == 0) {

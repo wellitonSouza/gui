@@ -175,7 +175,7 @@ class DeviceCard extends Component {
        </div>;
 
    
-      return <div>
+      return <div className="full-height relative">
           <ReactCSSTransitionGroup transitionName="devicesSubHeader">
             {header}
           </ReactCSSTransitionGroup>
@@ -183,9 +183,11 @@ class DeviceCard extends Component {
             <div className="deviceMapCanvas col m12 s12 relative">
               <div className="row">
                 {this.filteredList.length == 0 ? (
-                  <span className="no-device-configured">
-                    No configured devices
-                  </span>
+                  <div className="background-info valign-wrapper full-height">
+                <span className="horizontal-center">
+                   No configured devices
+                </span>
+              </div>
                 ) : (
                   <div className="col s12  lst-wrapper extra-padding">
                     {this.filteredList.map((device, idx) => (

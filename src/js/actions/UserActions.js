@@ -1,15 +1,6 @@
 import userManager from '../comms/users/UserManager';
 
-var alt = require('../alt');
-
-// TODO remove this
-function fakeFetch() {
-  return new Promise(function(resolve, reject) {
-    setTimeout(function() {
-      resolve();
-    }, 250);
-  });
-}
+let alt = require('../alt');
 
 class UserActions {
 
@@ -51,7 +42,7 @@ class UserActions {
 
   fetchUsers() {
     return (dispatch) => {
-      dispatch()
+      dispatch();
       userManager.getUsers()
         .then((userList) => {
           this.updateUsers(userList.users);
@@ -64,11 +55,11 @@ class UserActions {
 
   triggerUpdate(user, cb, error_cb) {
     return (dispatch) => {
-      dispatch()
+      dispatch();
       // special case (for now): allow edits to not repeat the password
-      if (user.passwd.trim().length == 0) {
-        delete user.passwd;
-      }
+      // if (user.passwd.trim().length === 0) {
+      //   delete user.passwd;
+      // }
 
       userManager.setUser(user)
         .then((response) => {
@@ -91,7 +82,7 @@ class UserActions {
 
   triggerRemoval(user, cb) {
     return (dispatch) => {
-      dispatch()
+      dispatch();
       userManager.deleteUser(user.id)
         .then((response) => {
           this.removeSingle(user.id);
@@ -119,4 +110,5 @@ class UserActions {
   }
 }
 
-alt.createActions(UserActions, exports);
+let _user = alt.createActions(UserActions, exports);
+export default _user;

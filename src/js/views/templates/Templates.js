@@ -840,7 +840,7 @@ class TemplateList extends Component {
             let existsNewDevice = false;
             let newTemplate;
 
-            for (let i = 0; i < this.filteredList.length; i++) { 
+            for (let i = 0; i < this.filteredList.length; i++) {
                 if(this.filteredList[i].isNewTemplate != undefined) {
                     if (this.filteredList[i].isNewTemplate) {
                         existsNewDevice = true;
@@ -852,14 +852,14 @@ class TemplateList extends Component {
             if (existsNewDevice) {
                 let filteredListAux = [];
                 filteredListAux[0] = newTemplate;
-                for (let i = 0; i < this.filteredList.length - 1; i++) {  
+                for (let i = 0; i < this.filteredList.length - 1; i++) {
                     if (this.filteredList[i].isNewTemplate === undefined) {
-                        filteredListAux[filteredListAux.length + 1] = this.filteredList[i];                    
+                        filteredListAux[filteredListAux.length + 1] = this.filteredList[i];
                     }
                 }
                 this.filteredList = filteredListAux;
             }
-        }   
+        }
 
         let header = null;
         if (this.props.showSearchBox)
@@ -874,7 +874,7 @@ class TemplateList extends Component {
                 <input id="fld_template_name" type="text" name="Template Name" className="form-control form-control-lg" placeholder="Search" value={this.state.filter} onChange={this.filterListByName} />
               </div>
             </div>;
-        
+
         return <div className="full-height relative">
         <ReactCSSTransitionGroup transitionName="templatesSubHeader">
           {header}

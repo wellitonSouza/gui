@@ -867,35 +867,6 @@ class ViewDeviceImpl extends Component {
     }
   }
 
-  componentDidMount(){
-    // Realtime
-    var socketio = require('socket.io-client');
-
-    const target = 'http://' + window.location.host;
-    const token_url = target + "/stream/socketio";
-
-    const url = token_url;
-    const config = {}
-
-    util._runFetch(url, config)
-      .then((reply) => {
-        init(reply.token);
-      })
-      .catch((error) => {console.log("Failed!", error);
-    });
-
-    function init(token){
-      var socket = socketio(target, {query: "token=" + token, transports: ['websocket']});
-
-      socket.on('all', function(data){
-        let device_data = {device_id: data.metadata.deviceid}
-        let label = Object.keys(data.attrs);
-        MeasureActions.appendMeasures(data)
-      });
-    }
-    //------------------------------------------------------------------------
-  }
-
   remove(e) {
     // This should be on DeviceUserActions -
     // this is not good, but will have to make do because of z-index on the action header

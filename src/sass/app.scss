@@ -240,6 +240,12 @@ body {
   }
 }
 
+.fill {
+  height: 100%;
+  width: 100%;
+  float: left;
+}
+
 .visible-overflow-y {
   overflow-y: visible;
 }

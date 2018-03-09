@@ -36,7 +36,7 @@ class MeasureStore {
     }
   }
 
-  handleUpdatePosition(data){
+  handleUpdatePosition(measureData){
     function parserPosition(position){
       if (position.toString().indexOf(",") > -1) {
         let parsedPosition = position.split(", ");
@@ -46,13 +46,10 @@ class MeasureStore {
       } else {
         return undefined;
       }
-
     }
-    if(data !== undefined){
-      let label = Object.keys(data.attrs);
-      if(this.data[data.metadata.deviceid] !== undefined){
-          this.data[data.metadata.deviceid].position = parserPosition(data.attrs[label[0]]);
-      }
+    let label = Object.keys(measureData.attrs);
+    if(parserPosition(measureData.attrs[label[0]]) !== undefined){
+      this.data[measureData.metadata.deviceid].position = parserPosition(measureData.attrs[label[0]]);
     }
   }
 
@@ -71,7 +68,7 @@ class MeasureStore {
           let attrValue = {"device_id": this.data[k].id, "attr": label[0], "value":measureData.attrs[label[0]], "ts": now};
           this.data[k][label[0]] = this.data[k][label[0]].concat(attrValue);
         } else{
-          this.data[k] = measureData.attrs[label[0]];
+          this.data[k][label[0]] = measureData.attrs[label[0]];
         }
       }
     }

@@ -47,6 +47,7 @@ class PositionRenderer extends Component {
     this.setTiles = this.setTiles.bind(this);
     this.handleTracking = this.handleTracking.bind(this);
     this.handleContextMenu = this.handleContextMenu.bind(this);
+    this.handleCenter = this.handleCenter.bind(this);
   }
 
   componentDidMount() {
@@ -116,6 +117,14 @@ class PositionRenderer extends Component {
     this.setState({isTerrain: isMap});
   }
 
+  handleCenter(){
+    if(this.props.center){
+      this.setState({center: this.props.center})
+    } else {
+      this.setState({center: [-21.277057, -47.9590129]})
+    }
+  }
+
   render() {
     function getPin(device){
       if(!device.select == true){
@@ -163,7 +172,7 @@ class PositionRenderer extends Component {
     //const attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> and Mapbox contributors';
 
     return (
-      <Map center={this.state.center}
+      <Map center={this.props.center ? this.props.center : this.state.center}
            zoom={this.state.zoom}
            ref={m => {this.leafletMap = m;}}>
 

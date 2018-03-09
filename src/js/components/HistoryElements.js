@@ -108,16 +108,16 @@ function HistoryList(props) {
     </div>
   );
 
+
   // handle values
   let value = []
   for(let k in props.data[props.device.id][props.attr]){
      value[k] = props.data[props.device.id][props.attr][k];
   }
 
-  if (value){
-    let data = value;
-    let trimmedList = data.filter((i) => {
-      return i.trim().length > 0
+  if (value.length > 0){
+    let trimmedList = value.filter((i) => {
+      return i.value.length > 0
     })
 
     trimmedList.reverse();
@@ -128,7 +128,7 @@ function HistoryList(props) {
           <div className="full-height full-width scrollable history-list">
             {trimmedList.map((i,k) => {
               return (<div className={"row " + (k % 2 ? "alt-row" : "")} key={i.ts}>
-                <div className="col s7 value">{i}</div>
+                <div className="col s7 value">{i.value}</div>
                 <div className="col s5 label">{util.iso_to_date(i.ts)}</div>
               </div>
             )})}
@@ -136,8 +136,13 @@ function HistoryList(props) {
         </div>
       )
     }
+  } else {
+    return (
+      <div className="valign-wrapper full-height background-info">
+        <div className="full-width center">No data <br />available</div>
+      </div>
+    )
   }
-  return empty;
 }
 
 class PositionWrapper extends Component {

@@ -41,7 +41,7 @@ class PositionRenderer extends Component {
       isTerrain: true,
       selectedPin: true,
       center: (this.props.center ? this.props.center : [-21.277057, -47.9590129]),
-      zoom: (this.props.zoom ? this.props.zoom :7.2)
+      zoom: (this.props.zoom ? this.props.zoom : 2)
     }
 
     this.setTiles = this.setTiles.bind(this);

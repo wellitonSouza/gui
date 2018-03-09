@@ -48,6 +48,7 @@ class MeasureStore {
       }
     }
     let label = Object.keys(measureData.attrs);
+    console.log("handleUpdatePosition", measureData);
     if(parserPosition(measureData.attrs[label[0]]) !== undefined){
       this.data[measureData.metadata.deviceid].position = parserPosition(measureData.attrs[label[0]]);
     }
@@ -61,14 +62,18 @@ class MeasureStore {
 
   handleAppendMeasures(measureData) {
     for(let k in this.data){
+      console.log("k",k);
       if(k == measureData.metadata.deviceid){
-        let label = Object.keys(measureData.attrs);
+        let labels = Object.keys(measureData.attrs);
         let now = new Date();
-        if(this.data[k][label[0]] !== undefined){
-          let attrValue = {"device_id": this.data[k].id, "attr": label[0], "value":measureData.attrs[label[0]], "ts": now};
-          this.data[k][label[0]] = this.data[k][label[0]].concat(attrValue);
-        } else{
-          this.data[k][label[0]] = measureData.attrs[label[0]];
+
+        for (let index in labels) {
+          if(this.data[k][labels[index]] !== undefined){
+            let attrValue = {"device_id": this.data[k].id, "attr": labels[index], "value":measureData.attrs[labels[index]], "ts": now};
+            this.data[k][labels[index]] = this.data[k][labels[index]].concat(attrValue);
+          } else{
+            this.data[k][labels[index]] = measureData.attrs[labels[index]];
+          }
         }
       }
     }

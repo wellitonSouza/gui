@@ -1510,6 +1510,7 @@ h1, h2, p {
   -webkit-animation-duration: 0.5s; /* Safari 4.0 - 8.0 */
   animation-name: opa-hei;
   animation-duration: 0.5s;
+  overflow-y: auto;
 
   .header
   {

@@ -52,7 +52,7 @@ class ListRender extends Component {
           <div className="col s12  lst-wrapper">
             { Object.keys(flowList).map((flowid) =>
               <Link to={"/flows/id/" + flowid} key={flowid} >
-                <div className="lst-entry col s12 m6 l4">
+                <div className="lst-entry col s12 m6 l4 mt30">
                   <SummaryItem flow={flowList[flowid]} />
                 </div>
               </Link>

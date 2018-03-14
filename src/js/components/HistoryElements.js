@@ -225,7 +225,7 @@ class PositionWrapper extends Component {
             </Script>
           </div>
           {this.state.mapquest ? (
-            <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} />
+            <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={7}/>
           ): (
             <Loading />
           )}

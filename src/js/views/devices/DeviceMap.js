@@ -27,10 +27,6 @@ import io from 'socket.io-client';
 
 
 var redPin = L.divIcon({className: 'icon-marker bg-red'});
-var selectedPin = L.icon({
-  iconUrl: 'images/mapMarker.png',
-  iconSize: [40, 40]
-});
 
 class PositionRenderer extends Component {
   constructor(props) {
@@ -126,21 +122,13 @@ class PositionRenderer extends Component {
   }
 
   render() {
-    function getPin(device){
-      if(!device.select == true){
-        return redPin;
-      } else {
-        return selectedPin;
-      }
-    }
-
     let parsedEntries = this.props.devices.reduce((result,k) => {
         if (k.position !== undefined){
           result.push({
             id: k.id,
             pos: k.position,
             name: k.label,
-            pin: getPin(k),
+            pin: redPin,
             key: (k.unique_key ? k.unique_key : k.id)
           });
         }

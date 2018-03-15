@@ -8,7 +8,11 @@ class LoginManager {
   authenticate(login) {
     return util.POST(this.baseUrl + '/auth', login);
   }
+
+  setNewPassword(token) {
+      return util.POST(this.baseUrl + '/auth/password/resetlink?link=' + token.token, token);
+  }
 }
 
-var loginManager = new LoginManager();
+let loginManager = new LoginManager();
 export default loginManager;

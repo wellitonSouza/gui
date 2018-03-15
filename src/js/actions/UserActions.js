@@ -1,4 +1,5 @@
 import userManager from '../comms/users/UserManager';
+import Materialize from "materialize-css";
 
 let alt = require('../alt');
 
@@ -21,7 +22,7 @@ class UserActions {
           // @bug: backend won't return full public record of the created user, so merge the
           //       server-side data (id) with the known record of the user.
           let updatedUser = JSON.parse(JSON.stringify(newUser));
-          updatedUser['id'] = response.user.id;
+          updatedUser['id'] = response[0].user.id;
           updatedUser['passwd'] = '';
           this.insertUser(updatedUser);
           if(cb){
@@ -29,13 +30,13 @@ class UserActions {
           }
         })
         .catch((error) => {
-          this.usersFailed("Failed to add User to list");
-          error.data.json()
-            .then((data) => {
-              if (error_cb) {
-                error_cb(data);
-              }
-            })
+          this.usersFailed(error);
+          // error.data.json()
+            // .then((data) => {
+            //   if (error_cb) {
+            //     error_cb(data);
+            //   }
+            // })
         })
     }
   }
@@ -69,13 +70,13 @@ class UserActions {
           }
         })
         .catch((error) => {
-          this.usersFailed("Failed to update given user");
-          error.data.json()
-            .then((data) => {
-              if (error_cb) {
-                error_cb(data);
-              }
-            })
+          this.usersFailed(error);
+          // error.data.json()
+          //   .then((data) => {
+          //     if (error_cb) {
+          //       error_cb(data);
+          //     }
+          //   })
         })
     }
   }
@@ -91,8 +92,7 @@ class UserActions {
           }
         })
         .catch((error) => {
-          const msg = "Failed to remove given user";
-          this.usersFailed(msg);
+          this.usersFailed(error);
         })
     }
   }
@@ -106,7 +106,8 @@ class UserActions {
   }
 
   usersFailed(error) {
-    return error;
+      Materialize.toast(error.message, 4000);
+      return error;
   }
 }
 

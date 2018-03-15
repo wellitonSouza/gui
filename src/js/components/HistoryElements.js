@@ -183,8 +183,6 @@ class PositionWrapper extends Component {
              if(device.attrs[j][i].value_type == "geo:point"){
                device.position = parserPosition(device.attrs[j][i].static_value);
              }
-           } else{
-             device.position = parserPosition(device[this.props.attr][length - 1].value);
            }
          }
        }
@@ -225,7 +223,7 @@ class PositionWrapper extends Component {
             </Script>
           </div>
           {this.state.mapquest ? (
-            <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={7}/>
+            <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14}/>
           ): (
             <Loading />
           )}

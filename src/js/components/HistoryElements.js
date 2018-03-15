@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import util from "../comms/util/util";
 import { Line } from 'react-chartjs-2';
 import { PositionRenderer } from '../views/devices/DeviceMap';
+import Script from 'react-load-script';
+import { Loading } from './Loading.js';
 
 
 class Graph extends Component{
@@ -106,16 +108,16 @@ function HistoryList(props) {
     </div>
   );
 
+
   // handle values
   let value = []
   for(let k in props.data[props.device.id][props.attr]){
      value[k] = props.data[props.device.id][props.attr][k];
   }
 
-  if (value){
-    let data = value;
-    let trimmedList = data.filter((i) => {
-      return i.trim().length > 0
+  if (value.length > 0){
+    let trimmedList = value.filter((i) => {
+      return i.value.length > 0
     })
 
     trimmedList.reverse();
@@ -126,7 +128,7 @@ function HistoryList(props) {
           <div className="full-height full-width scrollable history-list">
             {trimmedList.map((i,k) => {
               return (<div className={"row " + (k % 2 ? "alt-row" : "")} key={i.ts}>
-                <div className="col s7 value">{i}</div>
+                <div className="col s7 value">{i.value}</div>
                 <div className="col s5 label">{util.iso_to_date(i.ts)}</div>
               </div>
             )})}
@@ -134,8 +136,13 @@ function HistoryList(props) {
         </div>
       )
     }
+  } else {
+    return (
+      <div className="valign-wrapper full-height background-info">
+        <div className="full-width center">No data <br />available</div>
+      </div>
+    )
   }
-  return empty;
 }
 
 class PositionWrapper extends Component {
@@ -144,10 +151,16 @@ class PositionWrapper extends Component {
     this.state = {
       opened: false,
       hasPosition: false,
-      pos: []
+      pos: [],
+      mapquest: false
     };
     this.getDevicesWithPosition = this.getDevicesWithPosition.bind(this);
     this.toogleExpand = this.toogleExpand.bind(this);
+    this.mqLoaded = this.mqLoaded.bind(this);
+  }
+
+  mqLoaded(){
+    this.setState({mapquest: true});
   }
 
   toogleExpand(state) {
@@ -171,7 +184,7 @@ class PositionWrapper extends Component {
                device.position = parserPosition(device.attrs[j][i].static_value);
              }
            } else{
-             device.position = parserPosition(device[this.props.attr][0].value);
+             device.position = parserPosition(device[this.props.attr][length - 1].value);
            }
          }
        }
@@ -198,16 +211,26 @@ class PositionWrapper extends Component {
       return (<NoData />);
     }
 
-    console.log("Position Renderer this.props.id", this.props.id);
     console.log("Position Renderer this.props.data", this.props.data);
     let validDevices = this.getDevicesWithPosition(this.props.data[this.props.device.id]);
     console.log("validDevices", validDevices);
     if (validDevices.length == 0) {
       return <NoData />;
     } else {
-      return <div className={"PositionRendererDiv " + (this.state.opened ? "expanded" : "compressed")}>
-          <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} />
+      return(
+        <div className={"PositionRendererDiv " + (this.state.opened ? "expanded" : "compressed")}>
+          <div>
+            <Script url="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=zvpeonXbjGkoRqVMtyQYCGVn4JQG8rd9"
+                    onLoad={this.mqLoaded}>
+            </Script>
+          </div>
+          {this.state.mapquest ? (
+            <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={7}/>
+          ): (
+            <Loading />
+          )}
         </div>
+      )
     }
   }
 }

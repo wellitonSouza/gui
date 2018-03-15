@@ -36,18 +36,21 @@ class MeasureStore {
     }
   }
 
-  handleUpdatePosition(data){
+  handleUpdatePosition(measureData){
     function parserPosition(position){
-      let parsedPosition = position.split(", ");
-      if(parsedPosition.length > 1){
-        return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
+      if (position.toString().indexOf(",") > -1) {
+        let parsedPosition = position.split(", ");
+        if(parsedPosition.length > 1){
+          return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
+        } 
+      } else {
+        return undefined;
       }
     }
-    if(data !== undefined){
-      let label = Object.keys(data.attrs);
-      if(this.data[data.metadata.deviceid] !== undefined){
-          this.data[data.metadata.deviceid].position = parserPosition(data.attrs[label[0]]);
-      }
+    let label = Object.keys(measureData.attrs);
+    console.log("handleUpdatePosition", measureData);
+    if(parserPosition(measureData.attrs[label[0]]) !== undefined){
+      this.data[measureData.metadata.deviceid].position = parserPosition(measureData.attrs[label[0]]);
     }
   }
 
@@ -57,15 +60,20 @@ class MeasureStore {
     }
   }
 
-
   handleAppendMeasures(measureData) {
     for(let k in this.data){
+      console.log("k",k);
       if(k == measureData.metadata.deviceid){
-        let label = Object.keys(measureData.attrs);
-        if(this.data[k][label[0]] !== undefined){
-          this.data[k][label[0]] = this.data[k][label[0]].concat(measureData.attrs[label[0]]);
-        } else{
-          this.data[k] = measureData.attrs[label[0]];
+        let labels = Object.keys(measureData.attrs);
+        let now = new Date();
+
+        for (let index in labels) {
+          if(this.data[k][labels[index]] !== undefined){
+            let attrValue = {"device_id": this.data[k].id, "attr": labels[index], "value":measureData.attrs[labels[index]], "ts": now};
+            this.data[k][labels[index]] = this.data[k][labels[index]].concat(attrValue);
+          } else{
+            this.data[k][labels[index]] = measureData.attrs[labels[index]];
+          }
         }
       }
     }

@@ -27,10 +27,6 @@ import io from 'socket.io-client';
 
 
 var redPin = L.divIcon({className: 'icon-marker bg-red'});
-var selectedPin = L.icon({
-  iconUrl: 'images/mapMarker.png',
-  iconSize: [40, 40]
-});
 
 class PositionRenderer extends Component {
   constructor(props) {
@@ -41,12 +37,13 @@ class PositionRenderer extends Component {
       isTerrain: true,
       selectedPin: true,
       center: (this.props.center ? this.props.center : [-21.277057, -47.9590129]),
-      zoom: (this.props.zoom ? this.props.zoom :7.2)
+      zoom: (this.props.zoom ? this.props.zoom : 2)
     }
 
     this.setTiles = this.setTiles.bind(this);
     this.handleTracking = this.handleTracking.bind(this);
     this.handleContextMenu = this.handleContextMenu.bind(this);
+    this.handleCenter = this.handleCenter.bind(this);
   }
 
   componentDidMount() {
@@ -116,22 +113,22 @@ class PositionRenderer extends Component {
     this.setState({isTerrain: isMap});
   }
 
-  render() {
-    function getPin(device){
-      if(!device.select == true){
-        return redPin;
-      } else {
-        return selectedPin;
-      }
+  handleCenter(){
+    if(this.props.center){
+      this.setState({center: this.props.center})
+    } else {
+      this.setState({center: [-21.277057, -47.9590129]})
     }
+  }
 
+  render() {
     let parsedEntries = this.props.devices.reduce((result,k) => {
         if (k.position !== undefined){
           result.push({
             id: k.id,
             pos: k.position,
             name: k.label,
-            pin: getPin(k),
+            pin: redPin,
             key: (k.unique_key ? k.unique_key : k.id)
           });
         }
@@ -163,7 +160,7 @@ class PositionRenderer extends Component {
     //const attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> and Mapbox contributors';
 
     return (
-      <Map center={this.state.center}
+      <Map center={this.props.center ? this.props.center : this.state.center}
            zoom={this.state.zoom}
            ref={m => {this.leafletMap = m;}}>
 

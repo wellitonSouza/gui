@@ -52,15 +52,9 @@
 //     cursor: pointer;
 // }
 
-// .graphLarge {
-//   position: relative;
-//   height: calc(100% - 30px);
-//   top: +30px;
-//   .contents {
-//     // margin-top: 7%;
-//     height: 85%;
-//   }
-// }
+.graphLarge {
+  position: relative;
+}
 
 // .300-height
 // {
@@ -1286,10 +1280,10 @@ h1, h2, p {
 .first-col{
   width: 250px;
   display:inline-block;
-  background:#F6F6F6; 
+  background:#F6F6F6;
   float: left;
   box-shadow: 0px -2px 8px rgba(189, 189, 189, 0.5);
-  height: auto;
+  height: 700px;
   -webkit-animation-name: opa-width-250; /* Safari 4.0 - 8.0 */
   -webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
   animation-name: opa-width-250;
@@ -1308,9 +1302,9 @@ h1, h2, p {
     position: relative;
     letter-spacing: 0.05em;
     color: #8a8a8a;
- 
+
    .filter-icon, .search-icon{
-      font-size: 15px;    
+      font-size: 15px;
     }
 
     label
@@ -1328,8 +1322,8 @@ h1, h2, p {
       /* top: 0px; */
       /* float: left; */
     }
-    
-   
+
+
   }
 
   .body{
@@ -1342,7 +1336,7 @@ h1, h2, p {
     height: 50px;
     padding-top: 7px;
     margin-bottom: 7px;
-    
+
     .label
     {
     font-family: "Open Sans";
@@ -1353,7 +1347,7 @@ h1, h2, p {
     color: #aaa;
     padding-top: 5px;
     }
-    
+
     .star
     {
         padding-top: 5px;
@@ -1403,7 +1397,7 @@ h1, h2, p {
 
   .body
   {
-    background: #FCFCFC; 
+    background: #FCFCFC;
     min-height: 200px;
     padding:0px;
   }
@@ -1418,7 +1412,7 @@ h1, h2, p {
     padding-top: 14px;
     padding-bottom: 7px;
     transition: linear 100ms;
-       
+
 
     &:hover{
         background: white;
@@ -1436,7 +1430,7 @@ h1, h2, p {
       font-size: 12px;
       letter-spacing: 0.03em;
       color: #333333;
-      text-transform: capitalize;
+      text-transform: none;
     }
 
     .value-value
@@ -1455,10 +1449,18 @@ h1, h2, p {
     }
 
   }
+  .star
+  {
+    position: relative;
+    right: 5px;
+    top: -5px;
+    cursor: pointer;
+    color: #aaa;
+  }
 }
 
 
-.detail-body 
+.detail-body
 {
   height:auto !important;
 }
@@ -1502,14 +1504,15 @@ h1, h2, p {
   -webkit-animation-duration: 0.5s; /* Safari 4.0 - 8.0 */
   animation-name: opa-hei;
   animation-duration: 0.5s;
-  
+  overflow-y: auto;
+
   .header
   {
     border-radius: 5px 5px 0px 0px;
     color: #4F4F4F;
     background: #FCFCFC;
     padding: 11px 19px 7px 30px;
-    
+
     .label
     {
       font-family: "Open Sans";
@@ -1569,12 +1572,10 @@ h1, h2, p {
 }
 
 
-.clearfix:after { 
+.clearfix:after {
   content: "";
   visibility: hidden;
   display: block;
   height: 0;
   clear: both;
 }
-
-

@@ -27,7 +27,7 @@
 
 .first-enter.first-enter-active {
   opacity: 1;
-  transition: opacity 500ms ease-in;
+  transition: opacity 100ms ease-in;
 }
 
 .first-leave {
@@ -36,7 +36,7 @@
 
 .first-leave.first-leave-active {
   opacity: 0.001;
-  transition: opacity 500ms ease-in;
+  transition: opacity 100ms ease-in;
 }
 
 
@@ -46,7 +46,7 @@
 
 .first-appear.first-appear-active {
   opacity: 1 !important;
-  transition: opacity 0.5s ease-in;
+  transition: opacity 0.1s ease-in;
 }
 
 .resize-enter {

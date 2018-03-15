@@ -13,29 +13,40 @@ import util from "../../comms/util/util";
 
 function SummaryItem(props) {
   return (
-    <div className={"lst-entry-wrapper z-depth-2 col s12"}>
-      <div className="lst-entry-title col s12">
-
-        <div className="app-icon img">
-          <i className="material-icons mi-device-hub shadow" />
-        </div>
-
-        <div className="user-label truncate">{props.flow.name}</div>
-        <div className="label">flow name</div>
-        <span className={"badge " + status}>{status}</span>
+      <div className={"card-size lst-entry-wrapper z-depth-2 fullHeight"}>
+          <div className="lst-entry-title col s12">
+              <img className="title-icon" src={"images/white-chip.png"}/>
+              <div className="title-text">
+                  <span className="text"> {props.flow.name} </span>
+              </div>
+          </div>
+          <div className="attr-list">
+              <div className={"attr-area light-background"}>
+                  <div className="attr-row">
+                      <div className="icon">
+                          <img src={"images/tag.png"}/>
+                      </div>
+                      <div className={"attr-content"}>
+                          <input type="text" value={props.flow.flow.length - 1} disabled={true}/>
+                          <span>Nodes</span>
+                      </div>
+                      <div className="center-text-parent material-btn right-side">
+                      </div>
+                  </div>
+                  <div className="attr-row">
+                      <div className="icon">
+                          <img src={"images/update.png"}/>
+                      </div>
+                      <div className={"attr-content"}>
+                          <input type="text" value={util.printTime(props.flow.updated / 1000)} disabled={true}/>
+                          <span>Last update</span>
+                      </div>
+                      <div className="center-text-parent material-btn right-side">
+                      </div>
+                  </div>
+              </div>
+          </div>
       </div>
-
-      <div className="lst-entry-body col s12">
-        <div className="col s3 metric">
-          <div className="metric-value">{props.flow.flow.length - 1}</div>
-          <div className="metric-label">Nodes</div>
-        </div>
-        <div className="col s9 metric last">
-          <div className="metric-value">{util.printTime(props.flow.updated / 1000)}</div>
-          <div className="metric-label">Last update</div>
-        </div>
-      </div>
-    </div>
   )
 }
 
@@ -173,8 +184,8 @@ class Flows extends Component {
     return (
       <ReactCSSTransitionGroup
           transitionName="first"
-          transitionAppear={true} transitionAppearTimeout={500}
-          transitionEnterTimeout={500} transitionLeaveTimeout={500} >
+          transitionAppear={true} transitionAppearTimeout={100}
+          transitionEnterTimeout={100} transitionLeaveTimeout={100} >
         <NewPageHeader title="data flows" subtitle="" icon="flow">
           <Link to="/flows/new" className="new-btn-flat red waves-effect waves-light " title="Create a new data flow">
             New Flow <i className="fa fa-plus"/>

@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-
 import AltContainer from 'alt-container';
-
 import LoginStore from '../../stores/LoginStore';
 import Login from './Login.js';
+import { Router, hashHistory } from 'react-router';
+import routes from "../../outsideRoutes";
 
 function GatekeeperRenderer(props) {
   if (props.authenticated) {
@@ -15,7 +14,8 @@ function GatekeeperRenderer(props) {
     )
   } else {
     return (
-      <Login />
+      <Router routes={routes} history={hashHistory} />
+      // <Login />
     )
   }
 }

@@ -98,6 +98,9 @@ class Util {
   }
 
     async _status(response) {
+    if (response.status === 500)
+        return Promise.reject(response);
+
     let body = await response.json();
     response.message = body.message;
         if (response.status >= 200 && response.status < 300) {

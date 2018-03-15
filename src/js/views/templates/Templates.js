@@ -939,9 +939,9 @@ class Templates extends Component {
             <ReactCSSTransitionGroup
                 transitionName="first"
                 transitionAppear={true}
-                transitionAppearTimeout={500}
-                transitionEnterTimeout={500}
-                transitionLeaveTimeout={500}>
+                transitionAppearTimeout={100}
+                transitionEnterTimeout={100}
+                transitionLeaveTimeout={100}>
                 <NewPageHeader title="Templates" subtitle="Templates" icon='template'>
                     <div className="pt10">
                         <div className="searchBtn" title="Show search bar" onClick={this.toggleSearchBar.bind(this)}>

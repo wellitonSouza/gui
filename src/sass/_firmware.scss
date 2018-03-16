@@ -1,0 +1,169 @@
+
+.card-active
+{
+    transition: all 200ms cubic-bezier(0, 0, 0.2, 1);
+    margin-top: 16px;
+    box-shadow: 0 6px 5px 0 rgba(204, 113, 0, 0.28), 0 1px 10px 1px rgba(255, 217, 147, 0.96), 0 2px 4px -1px rgba(0, 0, 0, 0.6);
+}
+
+.firmware-card
+{
+    
+    .label-explation
+    {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: normal;
+        line-height: normal;
+        font-size: 11px;
+        color: #FFFFFF;
+        display: block;
+    }
+
+    .lst-entry-title
+    {
+        background: linear-gradient(90.48deg, #28807E 3.7%, #54A7D6 92.73%);
+    }
+
+
+    .input-field
+    {
+        label{
+        top: -15px;
+        left: 3px;
+        }
+    }
+
+    width: auto;
+    max-height: none;
+    
+    .attr-area {
+        padding-left: calc(100% - 300px*3 );
+        height: 200px;
+        max-height: none;
+        overflow: auto !important;
+    }
+
+
+    .lst-blockquote
+    {
+        height: 175px;
+        width:200px;
+        background: $white;
+        display: block;
+        
+        .attr-row{
+            display: inline-block;
+        }
+    
+    }
+
+}
+
+.blockblock
+{
+    padding:40px 27px 0px 26px !important;
+}
+
+.black-attr-row
+{
+    background: gray;
+    color: white;
+    position: relative;
+    padding: 11px 45px 10px 50px; 
+
+    .searchBtn
+    {
+        position: absolute;
+        right: -10px;
+        top: 10px;
+    }
+
+    label
+    {
+        width: 140px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: white !important;
+    }
+
+    span
+    {
+        display:block;
+        font-family: "Open sans";
+        font-weight: 700;
+        color: #ffffff;
+        font-size: 11px;
+    }
+}
+
+.image-card
+{
+    box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.3);
+    border-radius: 2px;
+    height: 176px;
+    width: 250px;
+    margin: 10px;
+    overflow: auto;
+    position: relative;
+    display: inline-grid;
+    float: left;
+
+    .lst-blockquote
+    {
+        height: 100%;
+        width: 250px !important;
+        overflow-y: auto;
+        display: block;
+        padding: 0px;
+        padding-top: 11px;
+
+        .star
+        {
+            position: absolute;
+            right: 20px;
+            color: gray;
+            top:10px;
+        }
+
+        .attr-row{
+            display: inline-block;
+
+            .attr-content {
+                width: 150px;
+             }
+
+            .icon {
+                width: 50px;
+                padding-top: 5px;
+                padding-bottom: 5px;
+            }
+        }
+
+        .new-image-text
+        {
+                color: #9e9e9e;
+                font-size: 21px;
+                font-family: 'Cuprum', sans-serif;
+                text-align: center;
+                height: 164px;
+                display: block;
+                padding-top: 55px;
+                cursor: pointer;
+        }
+
+        label
+        {
+               height: 18px;
+                font-family: Roboto, sans-serif;
+                font-weight: 500;
+                float: left;
+                width: 100%;
+                color: #4F4F4F;
+                margin: 0 !important;
+                font-size: 14px;
+        }
+
+    }
+
+}

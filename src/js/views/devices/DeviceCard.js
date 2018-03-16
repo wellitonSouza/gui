@@ -20,7 +20,10 @@ function SummaryItem(props) {
         attrs += props.device.attrs[attribute].length;
     }
 
-  return (
+    console.log("props.device", props.device);
+
+    return (
+    
       <Link to={"/device/id/" + props.device.id + "/detail"}>
           <div className={"card-size lst-entry-wrapper z-depth-2 fullHeight"}>
               <div className="lst-entry-title col s12">
@@ -30,7 +33,7 @@ function SummaryItem(props) {
                   </div>
               </div>
               <div className="attr-list">
-                  <div className={"attr-area light-background"}>
+                  <div className="attr-area light-background">
                       <div className="attr-row">
                           <div className="icon">
                               <img src={"images/tag.png"}/>
@@ -145,12 +148,12 @@ class DeviceCard extends Component {
       return (<Loading />);
     }
 
-    this.convertDeviceList();
+  this.convertDeviceList();
 
-    this.convertTemplateList();
+  this.convertTemplateList();
 
-    const device_icon  = (<img src='images/icons/chip.png' />);
-   
+  const device_icon  = (<img src='images/icons/chip.png' />);
+  
    let header = null;
    if (this.props.showSearchBox)
     header = <div className={"row z-depth-2 devicesSubHeader " + (this.props.showSearchBox ? "show-dy" : "hide-dy")} id="inner-header">

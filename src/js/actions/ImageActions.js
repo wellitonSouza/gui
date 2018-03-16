@@ -7,6 +7,10 @@ console.log("ImageActions");
 
 class ImageActions {
 
+  updateImages(list) {
+    return list;
+  }
+
   fetchImages() {
     return (dispatch) => {
       dispatch();
@@ -21,27 +25,46 @@ class ImageActions {
     }
   }
 
-  fetchSingle(id, callback) {
+
+  triggerUpdate(image, cb) {
     return (dispatch) => {
       dispatch();
-
-      imageManager.getImage(id)
-        .then((image) => {
-          this.updateSingle(image);
-          if (callback) {
-            callback(image);
+      imageManager.setBinary(image)
+        .then((response) => {
+          this.updateSingle(response.image);
+          if (cb) {
+            cb(response.image);
           }
         })
         .catch((error) => {
-          console.error("Failed to fetch single image", error);
           this.imagesFailed(error);
         })
     }
   }
 
-  updateImages(list) {
-    return list;
+  updateSingle(image) {
+    return image;
   }
+
+  // fetchSingle(id, callback) {
+  //   return (dispatch) => {
+  //     dispatch();
+
+  //     imageManager.getImage(id)
+  //       .then((image) => {
+  //         this.updateSingle(image);
+  //         if (callback) {
+  //           callback(image);
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error("Failed to fetch single image", error);
+  //         this.imagesFailed(error);
+  //       })
+  //   }
+  // }
+
+
 
   insertImage(image) {
     return image;
@@ -64,31 +87,13 @@ class ImageActions {
     }
   }
 
-  triggerUpdate(image, cb) {
-    return (dispatch) => {
-      dispatch();
-        imageManager.setImage(image)
-        .then((response) => {
-            this.updateSingle(image);
-          if (cb) {
-              cb(image);
-          }
-        })
-        .catch((error) => {
-          this.imagesFailed(error);
-        })
-    }
-  }
-
-  updateSingle(image) {
-    return image;
-  }
 
   triggerRemoval(image, cb) {
     return (dispatch) => {
       dispatch();
       imageManager.deleteImage(image.id)
         .then((response) => {
+          this.removeSingle(response.image.id);
           if (cb) {
             cb(response);
           }

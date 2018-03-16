@@ -14,34 +14,96 @@ import LoginStore from '../../stores/LoginStore';
 import { Loading } from "../../components/Loading";
 
 // UI elements
+import Dropzone from 'react-dropzone'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import MaterialInput from "../../components/MaterialInput";
 import Materialize from "materialize-css";
 
-// class ImageInfo extends Component {
-//   constructor(props) {
-//     super(props);
-//     // this.state = {
-//     //   active: true
-//     // }
-//     // this.selectImage = this.selectImage.bind(this);
-//   }
+class UploadDialog extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      files: [] 
+    }
+    this.dismiss = this.dismiss.bind(this);
+    this.save = this.save.bind(this);
+  }
 
-//   // selectImage() {
-//   //   this.props.selectImage(this.props.image.id);
-//   // }
+  onDrop(files) {
+      this.setState({
+        files
+      });
+    }
 
-//   componentDidMount() {
-//   }
+  dismiss(event) {
+    event.preventDefault();
+    this.props.closeModal();
+  }
 
-//   render() {
+  save(event) {
+    event.preventDefault();
+    console.log("save", this.state.files);
 
-//     return (
-//       <div className="col s12"> Devices </div>
-//     )
-//   }
-// }
+    if (this.state.files.length == 0)
+    {
+      Materialize.toast('No image added', 4000);
+      return;
+    }
+
+    let sha1 = util.getSHA1(this.state.files[0]);
+    // console.log("sha1", sha1);
+    let img_binary = {
+      template_id: this.props.template,
+      image_id: this.props.image.id,
+      fw_version: this.props.image.fw_version,
+      has_image: true, 
+      binary: this.state.files[0],
+      sha1: sha1};
+      ImageActions.triggerUpdate(img_binary, () => {
+          Materialize.toast('Image added', 4000);
+          this.props.closeModal();
+      })
+  }
+    
+  componentDidMount() {
+  }
+
+  render() {
+
+    return (
+      <div>
+        <div className="full-background" onClick={this.dismiss}> </div>
+        <div className="modal">
+          <div className="modal-content full">
+            <div className="background-info">
+              <div>Click below to upload a file.</div>
+              <section>
+                <div className="dropzone">
+                  <Dropzone multiple={false} onDrop={this.onDrop.bind(this)}>
+                    <p>Drop the file here or click to select image to upload.</p>
+                  </Dropzone>
+                </div>
+                <aside className="listFiles">
+                  <ul>
+                    {
+                      this.state.files.map(f => <li key={f.name}>{f.name} - {f.size} bytes</li>)
+                    }
+                  </ul>
+                </aside>
+                <div className="modal-footer right">
+                  <button type="button" className="btn-flat btn-ciano waves-effect waves-light" onClick={this.dismiss}>cancel</button>
+                  <button type="submit" className="btn-flat btn-red waves-effect waves-light" onClick={this.save}>save</button>
+                </div>
+              </section>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    )
+  }
+}
 
 class NewImageCard extends Component {
   constructor(props) {
@@ -114,7 +176,7 @@ class NewImageCard extends Component {
           {/* <div className="attr-content black-attr-row">
             <label>No image saved. </label>
             <span>Binary Hash</span>
-            <div className="searchBtn" title="Add a Binary file" onClick={this.openBinaryBox}>
+            <div className="searchBtn" title="Add a Binary file" onClick={this.openBinaryModal}>
               <i className="fa fa-search" />
             </div>
           </div> */}
@@ -139,18 +201,30 @@ class ImageCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      starred: false
+      starred: false,
+      modal_opened: false 
     }
     this.images = [];
+    this.removeImage = this.removeImage.bind(this);
     this.clickStar = this.clickStar.bind(this);
     this.removeBinary = this.removeBinary.bind(this);
-    this.openBinaryBox = this.openBinaryBox.bind(this);
+    this.openBinaryModal = this.openBinaryModal.bind(this);
+    this.closeUploadModal = this.closeUploadModal.bind(this);
   }
 
-  openBinaryBox() {
-    console.log("openBinaryBox");
-    // this.props.changeState(0);
-    // this.setState({ starred: !this.state.starred });
+  removeImage(e)
+  {
+    console.log("removeImage",this.props.image);
+    e.preventDefault();
+    ImageActions.triggerRemoval(this.props.image);
+  }
+
+  closeUploadModal() {
+    this.setState({ modal_opened: false });
+  }
+
+  openBinaryModal() {
+    this.setState({ modal_opened: true });
   }
 
 
@@ -162,6 +236,18 @@ class ImageCard extends Component {
 
 
   removeBinary(){
+    let img_binary = {
+      template_id: this.props.template_id,
+      image_id: this.props.image.id,
+      fw_version: this.props.image.fw_version,
+      has_image: false, 
+      binary: "",
+      sha1: ""
+    };
+    console.log("removeBinary", img_binary);
+    ImageActions.triggerUpdate(img_binary, () => {
+      Materialize.toast('Image updated', 4000);
+    })
     // this.props.changeState(0);
   }
 
@@ -169,12 +255,15 @@ class ImageCard extends Component {
   }
 
   render() {
+    // console.log("asdsdsd")
+    // console.log("this.props.template", this.props.template);
+    // console.log("this.props.image", this.props.image);
 
-  let binaryInfo = null;
+    let binaryInfo = null;
   if (this.props.image.has_image)
     binaryInfo = <div className="attr-content black-attr-row">
-      <label>{this.props.image.sha1}</label>
-      <span>Binary Hash</span>
+      <label title={"SHA1: "+this.props.image.sha1} >{this.props.image.sha1}</label>
+      <span>Binary file</span>
       <div onClick={this.removeBinary} className="searchBtn" title="Remove Binary file">
         <i className="fa fa-trash" />
       </div>
@@ -183,8 +272,8 @@ class ImageCard extends Component {
   else
     binaryInfo = <div className="attr-content black-attr-row">
         <label>No image saved. </label>
-        <span>Binary Hash</span>
-        <div className="searchBtn" title="Add a Binary file" onClick={this.openBinaryBox.bind(this)}>
+      <span>Binary file</span>
+        <div className="searchBtn" title="Add a Binary file" onClick={this.openBinaryModal.bind(this)}>
           <i className="fa fa-upload" />
         </div>
         
@@ -193,14 +282,19 @@ class ImageCard extends Component {
 
     return (
       <div className="image-card">
+        {this.state.modal_opened === true && <UploadDialog closeModal={this.closeUploadModal} image={this.props.image} template={this.props.template_id} />}
         <div className="lst-blockquote col s12">
-          <div className="star" onClick={this.clickStar}>
+          <div onClick={this.removeImage} className="remove-image-icon " title="Remove Image">
+            <i className="fa fa-trash" />
+          </div>
+
+          <div className="star-icon " onClick={this.clickStar}>
             <i className={"fa " + (this.state.starred ? "fa-star" : "fa-star-o")} />
           </div>
 
           <div className="attr-row">
             <div className="icon">
-              <img src={"images/update.png"} />
+              {/* <i className="fa fa-hdd" /> */}
             </div>
             <div className={"attr-content"}>
               <label>{this.props.image.fw_version}</label>
@@ -209,7 +303,7 @@ class ImageCard extends Component {
           </div>
           <div className="attr-row">
             <div className="icon">
-              <img src={"images/update.png"} />
+              {/* <img src={"images/update.png"} /> */}
             </div>
             <div className={"attr-content"}>
               <label>{util.iso_to_date(this.props.image.created_at)} </label>
@@ -264,16 +358,16 @@ class FirmwareCardImpl extends Component {
     return (
       <div className={"card-size lst-entry-wrapper z-depth-2 firmware-card "}>
         <div className="lst-entry-title col s12">
-          <img className="title-icon" src={"images/white-chip.png"} />
+          <img className="title-icon" src={"images/model-icon.png"} />
           <div className="title-text">
             <span className="text"> {this.props.template.label} 
-            <br /><label className="label-explation" >Template Label</label>
+            <br /><label className="label-explation" >Template Name</label>
             </span>
           </div>
         </div>
         <div className="attr-area attr-list light-background">
           {images.map((img, idx) => (
-              <ImageCard image={img} key={idx} />
+              <ImageCard template_id={this.props.template.id} image={img} key={idx} />
                 ))}
           {this.state.creating === false &&  <div className="image-card">
             <div onClick={this.createNewImage} className="lst-blockquote col s12">

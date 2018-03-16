@@ -1,4 +1,30 @@
 
+
+.dropzone 
+{
+    width: 100%;
+
+    & > div{
+        width: 100% !important;
+        height:120px !important;
+    
+        p {
+            font-size: 15px;
+        }
+    }
+}
+   
+.listFiles
+{
+    font-size: 14px !important;
+    ul{
+        padding: 0px;
+        margin:0px;
+        padding-top: 10px;
+        color: black;
+    }
+}
+
 .card-active
 {
     transition: all 200ms cubic-bezier(0, 0, 0.2, 1);
@@ -101,13 +127,31 @@
 {
     box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.3);
     border-radius: 2px;
-    height: 176px;
+    height: 177px;
     width: 250px;
     margin: 10px;
-    overflow: auto;
+    overflow: hidden;
     position: relative;
     display: inline-grid;
     float: left;
+
+    .full-background
+    {
+        display: inline-block;
+        width: 100vw;
+        height: 100vh;
+        top: 0px;
+        position: fixed;
+        left: 0px;
+        background: rgba(70, 63, 63, 0.6);
+        z-index: 9999 !important;
+    }
+
+    .modal
+    {
+        display: inline;
+        top: 100px;
+    }
 
     .lst-blockquote
     {
@@ -117,11 +161,22 @@
         display: block;
         padding: 0px;
         padding-top: 11px;
-
-        .star
+       
+        .remove-image-icon
         {
             position: absolute;
             right: 20px;
+            cursor: pointer;
+            color: gray;
+            top:10px;
+        }
+
+        .star-icon
+        {
+
+            cursor: pointer;
+            position: absolute;
+            left: 20px;
             color: gray;
             top:10px;
         }

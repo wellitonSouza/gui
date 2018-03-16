@@ -29,9 +29,6 @@ class ImageManager {
     return util.GET(this.baseUrl + "/image/" + id);
   }
 
-  setImage(detail) {
-    return util.PUT(this.baseUrl + "/image/" + detail.id, detail);
-  }
 
   addImage(d) {
     d.id = util.sid();
@@ -54,8 +51,32 @@ class ImageManager {
     // return util.POST(this.baseUrl + "/image", d);
   }
 
+  setBinary(image) {
+    console.log("setBinary", image);
+    var p2 = Promise.resolve({
+      "image": {
+        "id": image.image_id,
+        "fw_version": image.fw_version,
+        "has_image": image.has_image,
+        "created_at": Date.now(),
+        "sha1": image.sha1
+      }
+    });
+    return p2;
+    // return util.PUT(this.baseUrl + "/device/" + detail.id, detail);
+  }
+
+
   deleteImage(id) {
-    return util.DELETE(this.baseUrl + "/image/" + id);
+    var p2 = Promise.resolve({
+        "image": {
+          "id": id,
+        }
+    });
+    return p2;
+
+
+    // return util.DELETE(this.baseUrl + "/image/" + id);
   }
 }
 

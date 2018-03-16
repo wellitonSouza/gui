@@ -15,15 +15,15 @@ class ImageStore {
             handleTriggerInsertion:ImageActions.TRIGGER_INSERT,
             handleInsertImage:ImageActions.INSERT_IMAGE,
 
-            handleTriggerUpdate:ImageActions.TRIGGER_UPDATE,
-            handleUpdateSingle:ImageActions.UPDATE_SINGLE,
+            handleTriggerUpdate: ImageActions.TRIGGER_UPDATE,
+            handleUpdateSingle: ImageActions.UPDATE_SINGLE,
 
             handleTriggerRemoval:ImageActions.TRIGGER_REMOVAL,
             handleRemoveSingle:ImageActions.REMOVE_SINGLE,
 
             handleFailure: ImageActions.IMAGES_FAILED,
 
-            fetchSingle: ImageActions.FETCH_SINGLE,
+            // fetchSingle: ImageActions.FETCH_SINGLE,
         });
     }
 
@@ -53,7 +53,6 @@ class ImageStore {
         if (this.images.hasOwnProperty(id)) {
             delete this.images[id];
         }
-
         this.loading = false;
     }
 
@@ -89,9 +88,9 @@ class ImageStore {
         this.loading = false;
     }
 
-    fetchSingle(id) {
-        this.images[id] = { loading: true };
-    }
+    // fetchSingle(id) {
+    //     this.images[id] = { loading: true };
+    // }
 
     handleFailure(error) {
         this.error = error;

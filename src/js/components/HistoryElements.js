@@ -4,6 +4,7 @@ import { Line } from 'react-chartjs-2';
 import { PositionRenderer } from '../views/devices/DeviceMap';
 import Script from 'react-load-script';
 import { Loading } from './Loading.js';
+import MeasureStore from '../stores/MeasureStore';
 
 
 class Graph extends Component{
@@ -13,7 +14,6 @@ class Graph extends Component{
 
   render() {
 
-    console.log("Graph Render", this.props);
     let labels = [];
     let values = [];
 
@@ -164,14 +164,13 @@ class PositionWrapper extends Component {
   }
 
   toogleExpand(state) {
-    console.log("state", state);
     this.setState({opened: state});
   }
 
 
   getDevicesWithPosition(device){
     function parserPosition(position){
-      let parsedPosition = position.split(", ");
+      let parsedPosition = position.split(",");
       return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
     }
 
@@ -182,7 +181,7 @@ class PositionWrapper extends Component {
            if(device.attrs[j][i].type == "static"){
              if(device.attrs[j][i].value_type == "geo:point"){
                device.position = parserPosition(device.attrs[j][i].static_value);
-             }
+             } 
            }
          }
        }
@@ -203,15 +202,12 @@ class PositionWrapper extends Component {
         )
     }
 
-    console.log("Position Renderer ", this.props.device);
     if (this.props.device === undefined)
     {
       return (<NoData />);
     }
 
-    console.log("Position Renderer this.props.data", this.props.data);
     let validDevices = this.getDevicesWithPosition(this.props.data[this.props.device.id]);
-    console.log("validDevices", validDevices);
     if (validDevices.length == 0) {
       return <NoData />;
     } else {
@@ -240,10 +236,10 @@ function Attr(props) {
     'string': HistoryList,
     'geo': HistoryList,
     'default': HistoryList,
+    'boolean': HistoryList,
     'geo:point': PositionWrapper
   };
 
-  console.log("PROPS: ", props);
   const Renderer = props.type in known ? known[props.type] : known['default'];
   function NoData() {
       return (

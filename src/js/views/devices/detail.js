@@ -237,7 +237,7 @@ class DyAttributeArea extends Component {
         lista[index].visible = false;
     }
 
-     return <div className="" >
+     return <div className="content-row" >
          <div className="second-col">
            {this.state.selected_attributes.map(at => (
             <Attribute key={at.id} device={this.props.device} attr={at} />

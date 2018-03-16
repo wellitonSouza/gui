@@ -793,7 +793,7 @@ class DeviceDetail extends Component {
      }
 
      return <div className="row detail-body">
-         <div className="first-col full-height">
+         <div className="first-col">
          {/*<div className="col s12 device-map-box">
            <AltContainer store={MeasureStore}>
              <PositionWrapper device={this.props.device} />

@@ -312,7 +312,7 @@
 
 .detail-body {
   background:#E7EBEE;
-  height: calc(100vh - 118px);
+  height: calc(100% - 60px);
   margin: 0 !important;
   position: relative;
 
@@ -1268,13 +1268,13 @@ h1, h2, p {
   -webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
   animation-name: opa-width-250;
   animation-duration: 1s;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .second-col{
-  width: calc(100% - 500px);
+  width: calc(100% - 250px);
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
   float: left;
 }
 
@@ -1287,8 +1287,15 @@ h1, h2, p {
   -webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
   animation-name: opa-width-250;
   animation-duration: 1s;
-  overflow-y: scroll;
-  height:100vh;
+  overflow-y: auto;
+  height:100%;
+}
+
+.content-row {
+  float: left;
+  height: 100%;
+  width: calc(100% - 250px);
+  overflow: hidden;
 }
 
 .dy_attributes{
@@ -1308,18 +1315,13 @@ h1, h2, p {
 
     label
     {
-        // padding-top: 5px;
         font-family: 'Roboto';
         font-weight: bold;
-        /* line-height: 35px; */
         font-size: 11px;
         letter-spacing: 0.05em;
         text-transform: uppercase;
-        /* padding-left: 30px; */
         height: 100%;
         color: #828282;
-      /* top: 0px; */
-      /* float: left; */
     }
 
 
@@ -1331,21 +1333,25 @@ h1, h2, p {
 
   .line
   {
-    background: #fcfcfc;
+    background: #fbfbfb;
     height: 50px;
     padding-top: 7px;
     margin-bottom: 7px;
     cursor: pointer;
+    transition: 300ms linear;
+    &:hover {
+      background: white;
+    }
 
     .label
     {
-    font-family: "Open Sans";
-    font-weight: 400;
-    line-height: 12px;
-    font-size: 13px;
-    letter-spacing: 0.05em;
-    color: #aaa;
-    padding-top: 5px;
+      font-family: "Roboto";
+      font-weight: 400;
+      line-height: 12px;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      color: #808080;
+      padding-top: 5px;
     }
 
     .star
@@ -1355,8 +1361,6 @@ h1, h2, p {
       color: #aaa;
     }
   }
-
-
 }
 
 .stt-attributes
@@ -1457,12 +1461,6 @@ h1, h2, p {
     cursor: pointer;
     color: #aaa;
   }
-}
-
-
-.detail-body
-{
-  height:auto !important;
 }
 
 

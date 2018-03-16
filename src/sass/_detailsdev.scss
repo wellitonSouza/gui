@@ -1261,36 +1261,35 @@ h1, h2, p {
 .third-col{
   width:250px;
   // display:inline-block;
-  height: 700px;
+  height: 100%;
   float: right;
   box-shadow: 0px 2px 8px rgba(130, 130, 130, 0.5);
    -webkit-animation-name: opa-width-250; /* Safari 4.0 - 8.0 */
   -webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
   animation-name: opa-width-250;
   animation-duration: 1s;
+  overflow-y: scroll;
 }
 
 .second-col{
   width: calc(100% - 500px);
-  // display:inline-block;
-  height: 100vh;
+  height: 100%;
+  overflow-y: scroll;
   float: left;
 }
 
 .first-col{
   width: 250px;
-  display:inline-block;
   background:#F6F6F6;
   float: left;
   box-shadow: 0px -2px 8px rgba(189, 189, 189, 0.5);
-  height: 700px;
   -webkit-animation-name: opa-width-250; /* Safari 4.0 - 8.0 */
   -webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
   animation-name: opa-width-250;
   animation-duration: 1s;
-
+  overflow-y: scroll;
+  height:100vh;
 }
-
 
 .dy_attributes{
   background:#f3f3f2;
@@ -1336,6 +1335,7 @@ h1, h2, p {
     height: 50px;
     padding-top: 7px;
     margin-bottom: 7px;
+    cursor: pointer;
 
     .label
     {

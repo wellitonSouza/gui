@@ -15,7 +15,7 @@ class MeasureStore {
       handleAppendMeasures: MeasureActions.APPEND_MEASURES,
       handleUpdateMeasures: MeasureActions.UPDATE_MEASURES,
       handleFailure: MeasureActions.MEASURES_FAILED,
-      handleUpdatePosition: MeasureActions.UPDATE_POSITION,
+      //handleUpdatePosition: MeasureActions.UPDATE_POSITION,
 
       handleTrackingFetch: TrackingActions.FETCH,
       handleTrackingSet: TrackingActions.SET,
@@ -36,10 +36,16 @@ class MeasureStore {
     }
   }
 
-  handleUpdatePosition(measureData){
+  handleUpdateMeasures(measureData) {
+    if(measureData !== null || measureData !== undefined){
+      this.data[measureData.id] = measureData;
+    }
+  }
+
+  handleAppendMeasures(measureData){
     function parserPosition(position){
       if (position.toString().indexOf(",") > -1) {
-        let parsedPosition = position.split(", ");
+        let parsedPosition = position.split(",");
         if(parsedPosition.length > 1){
           return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
         } 
@@ -47,32 +53,25 @@ class MeasureStore {
         return undefined;
       }
     }
-    let label = Object.keys(measureData.attrs);
-    console.log("handleUpdatePosition", measureData);
-    if(parserPosition(measureData.attrs[label[0]]) !== undefined){
-      this.data[measureData.metadata.deviceid].position = parserPosition(measureData.attrs[label[0]]);
-    }
-  }
 
-  handleUpdateMeasures(measureData) {
-    if(measureData !== null || measureData !== undefined){
-      this.data[measureData.id] = measureData;
-    }
-  }
-
-  handleAppendMeasures(measureData) {
-    for(let k in this.data){
-      console.log("k",k);
-      if(k == measureData.metadata.deviceid){
-        let labels = Object.keys(measureData.attrs);
-        let now = new Date();
-
-        for (let index in labels) {
-          if(this.data[k][labels[index]] !== undefined){
-            let attrValue = {"device_id": this.data[k].id, "attr": labels[index], "value":measureData.attrs[labels[index]], "ts": now};
-            this.data[k][labels[index]] = this.data[k][labels[index]].concat(attrValue);
-          } else{
-            this.data[k][labels[index]] = measureData.attrs[labels[index]];
+    let now = new Date();
+    for(let id in this.data){
+      if(this.data[id].id == measureData.metadata.deviceid){
+        for(let i in this.data[id].attrs){
+          for(let j in this.data[id].attrs[i]){
+            for(let label in measureData.attrs){
+              if(this.data[id].attrs[i][j].label == label){
+                let attrValue = {"device_id": this.data[id].id, "ts": now.toISOString(), "value":measureData.attrs[label], "attr": label };
+                if(this.data[id].attrs[i][j].value_type == "geo:point"){
+                  this.data[id].position = parserPosition(measureData.attrs[label]);
+                } else{
+                  // attr is not geo
+                  if(this.data[id][label] !== undefined){                 
+                    this.data[id][label] = this.data[id][label].concat(attrValue);
+                  }
+                }
+              }
+            }
           }
         }
       }

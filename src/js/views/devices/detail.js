@@ -279,7 +279,7 @@ class DynamicAttributeList extends Component {
         </div>
         <div className="col s12 body">
           {this.props.attrs.map(attr => (
-            <div key={attr.label} className="line">
+            <div key={attr.label} className="line" onClick={this.clickAttr.bind(this, attr)}>
               <div className="col offset-s2 s8">
                 <div className="label">{attr.label}</div>
                 {/* <div className="value-label">{attr.value_type}</div> */}

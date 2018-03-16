@@ -27,7 +27,6 @@ import Script from 'react-load-script';
 
 import io from 'socket.io-client';
 
-
 class DeviceHeader extends Component {
   constructor(props) {
     super(props);
@@ -59,17 +58,14 @@ class Attribute extends Component {
   }
 
   componentDidMount(){
-     console.log("componentDidMount",this.props);
     //  MeasureActions.fetchMeasure(this.props.device, this.props.device.id, this.props.device.templates, this.props.attr.id, 250);
   }
 
   toogleExpand(state) {
-    console.log("state", state);
     this.setState({opened: state});
   }
 
   render() {
-    console.log("attrs", this.props.attr,this.props.expand);
 
     return <div className={"attributeBox " + (this.state.opened ? "expanded" : "compressed")}>
         <div className="header">
@@ -258,14 +254,28 @@ class DynamicAttributeList extends Component {
     this.clickAttr = this.clickAttr.bind(this);
   }
 
+  componentWillMount(){
+    const device = this.props.device;
+    for (let i in device.attrs) {
+      for (let j in device.attrs[i]) {
+        if(device.attrs[i][j].type !== "meta"){
+          if(device.attrs[i][j].type == "dynamic"){
+            if(device.attrs[i][j].value_type == "geo:point"){
+                MeasureActions.fetchPosition.defer(device, device.id, device.attrs[i][j].label);
+            }
+          }
+          MeasureActions.fetchMeasure.defer(device, device.id, device.attrs[i][j].label, 10);
+        }
+      }
+    }
+  }
+
   clickAttr(attr)
   {
-      console.log("clickAttr");
       this.props.change_attr(attr);
   }
 
   render() {
-    console.log("attrs -> ", this.props.attrs);
 
     return <div className=" dy_attributes">
         <div className="col s12 header">
@@ -665,7 +675,6 @@ class PositionStaticWrapper extends Component {
   }
 
   toogleExpand(state) {
-    console.log("state", state);
     this.setState({opened: state});
   }
 
@@ -682,13 +691,6 @@ class PositionStaticWrapper extends Component {
            if(device.attrs[j][i].type == "static"){
              if(device.attrs[j][i].value_type == "geo:point"){
                device.position = parserPosition(device.attrs[j][i].static_value);
-             }
-           } else{
-             if(device.attrs[j][i].value_type == "geo:point"){
-               let label = device.attrs[j][i].label;
-               console.log("Label: ", label);
-              //  console.log("PROPS: ", parserPosition(device[label][0]));
-              //  device.position = parserPosition(device[label][0]);
              }
            }
          }
@@ -710,14 +712,12 @@ class PositionStaticWrapper extends Component {
         )
     }
 
-    console.log("Position Renderer ", this.props.device);
     if (this.props.device === undefined)
     {
       return (<NoData />);
     }
 
     let validDevices = this.getDevicesWithPosition(this.props.device);
-    console.log("validDevices", validDevices);
     if (validDevices.length == 0) {
       return <NoData />;
     } else {
@@ -767,7 +767,6 @@ class DeviceDetail extends Component {
   }
 
   render() {
-     console.log("device : ",this.props.device);
      let attr_list = [];
      let dal = [];
      let config_list = [];
@@ -920,6 +919,32 @@ class ViewDevice extends Component {
       DeviceActions.fetchSingle.defer(this.props.params.device);
   }
 
+  componentDidMount(){
+      // Realtime
+      var socketio = require('socket.io-client');
+  
+      const target = 'http://' + window.location.host;
+      const token_url = target + "/stream/socketio";
+  
+      const url = token_url;
+      const config = {}
+  
+      util._runFetch(url, config)
+        .then((reply) => {
+          init(reply.token);
+        })
+        .catch((error) => {console.log("Failed!", error);
+      });
+      
+      function init(token){
+        var socket = socketio(target, {query: "token=" + token, transports: ['websocket']});
+  
+        socket.on('all', function(data){
+          MeasureActions.appendMeasures(data);
+        });
+      }
+  }
+
   componentDidUpdate() {
     // const options = { transports: ["websocket"] };
     // this.io = io(window.location.host, options);
@@ -942,9 +967,9 @@ class ViewDevice extends Component {
     // });
   }
 
-  // componentWillUnmount() {
-  //   this.io.close();
-  // }
+  componentWillUnmount(){
+    location.reload(true);
+  }
 
   render() {
     return (

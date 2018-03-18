@@ -3,8 +3,16 @@ import ReactDOM from 'react-dom';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AltContainer from 'alt-container';
 import Materialize from 'materialize-css';
+
 import TemplateStore from '../../stores/TemplateStore';
 import TemplateActions from '../../actions/TemplateActions';
+
+import ImageStore from '../../stores/ImageStore';
+import ImageActions from '../../actions/ImageActions';
+
+import { ImageCard, NewImageCard } from "../firmware/list";
+
+
 import util from "../../comms/util/util";
 import {NewPageHeader} from "../../containers/full/PageHeader";
 import { hashHistory } from 'react-router';
@@ -12,6 +20,93 @@ import { hashHistory } from 'react-router';
 import { GenericModal, RemoveModal } from "../../components/Modal";
 import Toggle from 'material-ui/Toggle';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
+
+// this component is pretty similar to FirmwareCardImpl
+
+class ImageModal extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            creating: false
+        };
+
+        this.images = [];
+        this.dismiss = this.dismiss.bind(this);
+        // this.toggleModal = this.toggleModal.bind(this);
+        this.createNewImage = this.createNewImage.bind(this);
+        this.setNewImage = this.setNewImage.bind(this);
+    }
+
+    createNewImage() {
+        this.setState({ creating: true });
+    }
+
+    setNewImage(value) {
+        this.setState({ creating: value });
+    }
+
+    dismiss()
+    {
+        console.log("dismiss");
+        this.props.toggleModal();
+    }
+
+    // toggleModal() {
+    //     this.props.toggleModal();
+    // }
+
+    render() {
+        console.log("this.props.template_2", this.props.template);
+        console.log("this.props.images", this.props.images);
+    
+        let images = [];
+        for (let img in this.props.images)
+            images.push(this.props.images[img]);
+        console.log("images", images);
+        
+        return (
+
+            <div className="image-modal-canvas">
+                <div className="full-background" onClick={this.dismiss}> </div>
+
+                <div className="image-modal-div">
+                    <div className="im-header">
+                    <div className="col s6">
+                        <label className="title">ASDSD</label>
+                        <label className="subtitle">asdsad</label>
+                    </div>
+                    <div className="col s6">
+                        <div className="modal-footer right">
+                            <button type="button" className="btn-flat btn-ciano waves-effect waves-light" onClick={this.dismiss}>cancel</button>
+                            <button type="submit" className="btn-flat btn-red waves-effect waves-light" onClick={this.save}>save</button>
+                        </div>
+                    </div>
+                    </div>
+
+                    <div className="col s12">
+                        <div className="card-size card-size-clear">
+                            <div className="attr-area">
+                                {images.map((img, idx) => (
+                                    <ImageCard template_id={this.props.template.id} image={img} key={idx} />
+                                ))}
+                                {this.state.creating === false && <div className="image-card image-card-attributes">
+                                    <div onClick={this.createNewImage} className="lst-blockquote col s12">
+                                        <span className="new-image-text"> Create a new Image</span>
+                                    </div>
+                                </div >}
+                                {this.state.creating === true && <NewImageCard setNewImage={this.setNewImage} template={this.props.template} />}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        )
+    }
+}
+
 
 class TemplateTypes {
     constructor() {
@@ -490,6 +585,8 @@ class ListItem extends Component {
         this.discardUnsavedTemplate = this.discardUnsavedTemplate.bind(this);
         this.handleModal = this.handleModal.bind(this);
         this.openModal = this.openModal.bind(this);
+        this.openImageModal = this.openImageModal.bind(this);
+        this.toggleImageModal = this.toggleImageModal.bind(this);
     }
 
     componentDidMount() {
@@ -498,6 +595,7 @@ class ListItem extends Component {
             state.isEditable = true;
             state.isSuppressed = false;
         }
+        ImageActions.fetchImages.defer();
         this.setState(state);
     }
 
@@ -641,12 +739,29 @@ class ListItem extends Component {
      this.setState({show_modal: status});
     }
 
+    openImageModal(){
+        this.setState({show_image_modal:true});
+    }
+
+    toggleImageModal(){
+        console.log("toggle_image_modal");
+        this.setState({ show_image_modal: !this.state.show_image_modal });    
+    }
 
     render() {
+
+        console.log("show_image_modal", this.state.show_image_modal);
+        let image_length = 0; 
         let attrs = this.state.template.data_attrs.length + this.state.template.config_attrs.length;
         return (
-            <div
-                className={"card-size lst-entry-wrapper z-depth-2 " + (this.state.isSuppressed ? 'suppressed' : 'fullHeight')}
+            <div>
+            {this.state.show_image_modal ? (
+                <AltContainer store={ImageStore}>
+                   <ImageModal template={this.state.template} toggleModal={this.toggleImageModal} />
+                </AltContainer>
+            ) : null }
+            
+            <div className={"card-size lst-entry-wrapper z-depth-2 " + (this.state.isSuppressed ? 'suppressed' : 'fullHeight')}
                 id={this.props.id}>
                 {this.state.show_modal ?(
                   <RemoveModal name={"template"} remove={this.deleteTemplate} openModal={this.openModal} />
@@ -673,6 +788,21 @@ class ListItem extends Component {
                         <i className="fa fa-angle-down center-text-child text"/>
                     </div>
                 </div>
+
+                <div className="lst-entry-body">
+                    <div className="icon-area center-text-parent">
+                            <span className="center-text-child">{image_length}</span>
+                    </div>
+                    <div className="text-area center-text-parent">
+                        <span className="middle-text-child">Images</span>
+                    </div>
+                    <div
+                        className={"center-text-parent material-btn expand-btn right-side "}
+                        onClick={this.openImageModal}>
+                        <i className="fa fa-pencil center-text-child text" />
+                    </div>
+                </div>
+
                 <div className={"attr-list"} id={"style-3"}>
                     {this.state.template.data_attrs.map((attributes, index) =>
                         <AttributeList key={index} index={index} attributes={attributes}
@@ -727,6 +857,7 @@ class ListItem extends Component {
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         )
     }

@@ -156,7 +156,7 @@ class NewImageCard extends Component {
 
   render() {
     return (
-    <div className="image-card">
+      <div className="image-card image-card-attributes">
         <div className="lst-blockquote col s12 blockblock">
           <div className="attr-row ">
           
@@ -281,9 +281,9 @@ class ImageCard extends Component {
     
 
     return (
-      <div className="image-card">
+      <div className="image-card image-card-attributes">
         {this.state.modal_opened === true && <UploadDialog closeModal={this.closeUploadModal} image={this.props.image} template={this.props.template_id} />}
-        <div className="lst-blockquote col s12">
+        <div className="lst-blockquote col s12 pr">
           <div onClick={this.removeImage} className="remove-image-icon " title="Remove Image">
             <i className="fa fa-trash" />
           </div>
@@ -339,14 +339,10 @@ class FirmwareCardImpl extends Component {
     this.setState({ creating: value });
   }
 
-  componentDidMount() {
-    console.log("entrou aqui");
-  }
-
   render() {
     console.log("this.props.template_2",this.props.template);
-    // this.images = this.props.images;
     console.log("this.props.images", this.props.images);
+    // this.images = this.props.images;
 
     let images = [];
     for (let img in this.props.images)
@@ -369,7 +365,7 @@ class FirmwareCardImpl extends Component {
           {images.map((img, idx) => (
               <ImageCard template_id={this.props.template.id} image={img} key={idx} />
                 ))}
-          {this.state.creating === false &&  <div className="image-card">
+          {this.state.creating === false && <div className="image-card image-card-attributes">
             <div onClick={this.createNewImage} className="lst-blockquote col s12">
               <span className="new-image-text"> Create a new Image</span>
             </div>
@@ -492,7 +488,7 @@ class FirmwareUpdate extends Component {
         : null;
 
     return <ReactCSSTransitionGroup transitionName="first" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={500} transitionLeaveTimeout={500}>
-        <NewPageHeader title="Firmware management" subtitle="" icon="device">
+        <NewPageHeader title="Firmware management" subtitle="" icon="firmware">
           {/* <Filter onChange={this.filterChange} /> */}
           {/*<Link to="/device/new" title="Create a new device" className="btn-item btn-floating waves-effect waves-light cyan darken-2">
             <i className="fa fa-plus"/>
@@ -511,4 +507,4 @@ class FirmwareUpdate extends Component {
   }
 }
 
-export { FirmwareUpdate };
+export { FirmwareUpdate, ImageCard, NewImageCard };

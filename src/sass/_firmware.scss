@@ -123,18 +123,6 @@
     }
 }
 
-.image-card
-{
-    box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.3);
-    border-radius: 2px;
-    height: 177px;
-    width: 250px;
-    margin: 10px;
-    overflow: hidden;
-    position: relative;
-    display: inline-grid;
-    float: left;
-
     .full-background
     {
         display: inline-block;
@@ -145,6 +133,23 @@
         left: 0px;
         background: rgba(70, 63, 63, 0.6);
         z-index: 9999 !important;
+    }
+
+
+.image-card
+{
+
+    &.image-card-attributes
+    {
+        box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.3);
+        border-radius: 2px;
+        height: 177px;
+        width: 250px;
+        margin: 10px;
+        overflow: hidden;
+        position: relative;
+        display: inline-grid;
+        float: left;
     }
 
     .modal
@@ -221,4 +226,56 @@
 
     }
 
+}
+
+
+
+
+/* CSS for template page */
+
+.image-modal-canvas
+{
+
+    .im-header{
+        padding: 36px 53px 0px 55px;
+    }
+   
+    > .full-background{
+        z-index: 109 !important;
+    }
+
+    .image-modal-div{
+       width: calc(100vw - 250px);
+        bottom: 0px;
+        height: 263px;
+        position: fixed;
+        left: 250px;
+        z-index: 200;
+        background: white;
+        overflow: auto;
+    }
+
+}
+
+.card-size-clear
+{
+    max-height: none !important;
+    width: auto;
+    float: left;
+    margin: 0px;
+    overflow: auto;
+    transition: max-height 450ms ease;
+    width: 90%;
+    height: 200px;
+    margin: 1% 5%;
+    background: white !important;
+
+
+    .attr-area{
+
+        background: white;
+        overflow: auto;
+        height: auto;
+        max-height: none;
+    }
 }

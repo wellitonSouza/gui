@@ -749,6 +749,7 @@ class TemplateList extends Component {
         this.updateTemplate = this.updateTemplate.bind(this);
         this.deleteTemplate = this.deleteTemplate.bind(this);
         this.filterListByName = this.filterListByName.bind(this);
+        this.clearInputField = this.clearInputField.bind(this);
     }
 
     filterListByName (event){
@@ -821,6 +822,10 @@ class TemplateList extends Component {
       }
     }
 
+    clearInputField(){
+        this.state.filter = "";
+      }
+
     render() {
         this.filteredList = this.applyFiltering(this.props.templates);
 
@@ -862,18 +867,22 @@ class TemplateList extends Component {
         }
 
         let header = null;
-        if (this.props.showSearchBox)
-         header = <div className={"row z-depth-2 templatesSubHeader " + (this.props.showSearchBox ? "show-dy" : "hide-dy")} id="inner-header">
-              <div className="col s3 m3 main-title">
-                Showing {this.filteredList.length} template(s)
-              </div>
-              <div className="col s1 m1 header-info hide-on-small-only">
-              </div>
-              <div className="col s4 m4">
-                <label htmlFor="fld_template_name">Template Name</label>
-                <input id="fld_template_name" type="text" name="Template Name" className="form-control form-control-lg" placeholder="Search" value={this.state.filter} onChange={this.filterListByName} />
-              </div>
-            </div>;
+        if (this.props.showSearchBox){
+            header = <div className={"row z-depth-2 templatesSubHeader " + (this.props.showSearchBox ? "show-dy" : "hide-dy")} id="inner-header">
+            <div className="col s3 m3 main-title">
+              Showing {this.filteredList.length} template(s)
+            </div>
+            <div className="col s1 m1 header-info hide-on-small-only">
+            </div>
+            <div className="col s4 m4">
+              <label htmlFor="fld_template_name">Template Name</label>
+              <input id="fld_template_name" type="text" name="Template Name" className="form-control form-control-lg" placeholder="Search" value={this.state.filter} onChange={this.filterListByName} />
+            </div>
+          </div>;
+        } else {
+            this.filteredList = this.applyFiltering(this.props.templates);
+            this.clearInputField();
+        }
 
         return <div className="full-height relative">
         <ReactCSSTransitionGroup transitionName="templatesSubHeader">

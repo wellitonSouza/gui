@@ -233,17 +233,21 @@ class DyAttributeArea extends Component {
         lista[index].visible = false;
     }
 
-     return <div className="content-row" >
-         <div className="second-col">
-           {this.state.selected_attributes.map(at => (
-            <Attribute key={at.id} device={this.props.device} attr={at} />
-           ))}
-           {this.props.openStaticMap ? <PositionStaticWrapper device={this.props.device} /> : null}
-         </div>
-         <div className="third-col">
-           <DynamicAttributeList device={this.props.device} attrs={lista} change_attr={this.toggleAttribute} />
-         </div>
-       </div>
+    return <div className="content-row" >
+      <div className="second-col">
+        {this.state.selected_attributes.length == 0 ? 
+          (<div className="second-col-label center-align">To see the data select an static or dynamic attribute</div>) 
+          : null 
+        }
+        {this.state.selected_attributes.map(at => (
+          <Attribute key={at.id} device={this.props.device} attr={at} />
+        ))}
+        {this.props.openStaticMap ? <PositionStaticWrapper device={this.props.device} /> : null}
+      </div>
+      <div className="third-col">
+        <DynamicAttributeList device={this.props.device} attrs={lista} change_attr={this.toggleAttribute} />
+      </div>
+    </div>
   }
 }
 
@@ -295,7 +299,7 @@ class DynamicAttributeList extends Component {
                 {/* <div className="value-label">{attr.value_type}</div> */}
               </div>
               <div className="col s2">
-                <div className="star" onClick={this.clickAttr.bind(this, attr)}>
+                <div className="star" >
                     <i className={"fa " + (attr.visible ? "fa-star" : "fa-star-o")} />
                 </div>
               </div>

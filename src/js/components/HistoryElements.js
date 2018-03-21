@@ -35,7 +35,7 @@ class Graph extends Component{
     }
 
     this.props.data[this.props.device.id][this.props.attr].map((i) => {
-      labels.push(util.iso_to_date(i.ts));
+      labels.push(util.iso_to_date_hour(i.ts));
       values.push(i.value);
     })
 
@@ -87,11 +87,16 @@ class Graph extends Component{
       maintainAspectRatio: false,
       legend: { display: false },
       scales: {
-        xAxes: [{ display: false }]
+        xAxes: [{ ticks:{
+          fontSize: 9,
+          fontColor: '#000000',
+          fontWeight: 'bold'
+          }
+        }],
       },
       layout: {
-        padding: { left: 10, right: 10 }
-      }
+        padding: { left: 10}
+      },
     };
 
     return (

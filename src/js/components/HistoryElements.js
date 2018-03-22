@@ -34,7 +34,7 @@ class Graph extends Component{
       return undefined;
     }
 
-    this.props.data[this.props.device.id][this.props.attr].map((i) => {
+    this.props.data[this.props.device.id]['_'+this.props.attr].map((i) => {
       labels.push(util.iso_to_date_hour(i.ts));
       values.push(i.value);
     })
@@ -107,6 +107,7 @@ class Graph extends Component{
 
 
 function HistoryList(props) {
+  console.log("props: ", props);
   const empty = (
     <div className="full-height background-info valign-wrapper no-data-av">
       <div className="center full-width">No data available</div>
@@ -116,8 +117,8 @@ function HistoryList(props) {
 
   // handle values
   let value = []
-  for(let k in props.data[props.device.id][props.attr]){
-     value[k] = props.data[props.device.id][props.attr][k];
+  for(let k in props.data[props.device.id]['_'+props.attr]){
+     value[k] = props.data[props.device.id]['_'+props.attr][k];
   }
 
   if (value.length > 0){
@@ -180,7 +181,7 @@ class PositionWrapper extends Component {
     }
 
     let validDevices = [];
-    let length = device[this.props.attr].length;
+    let length = device['_'+this.props.attr].length;
        for(let j in device.attrs){
          for(let i in device.attrs[j]){
            if(device.attrs[j][i].type == "static"){
@@ -267,7 +268,7 @@ function Attr(props) {
   }
 
   let label = props.attr;
-  if (props.data[props.device.id][props.attr] == undefined) {
+  if (props.data[props.device.id]['_'+props.attr] == undefined) {
       return <NoDataAv />;
   }
 

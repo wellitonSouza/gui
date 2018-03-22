@@ -66,10 +66,10 @@ class MeasureStore {
                   this.data[id].position = parserPosition(measureData.attrs[label]);
                 } else{
                   // attr is not geo
-                  if(this.data[id][label] !== undefined){              
-                    this.data[id][label] = this.data[id][label].concat(attrValue);
-                    if(this.data[id][label].length > 10){
-                      this.data[id][label].shift();
+                  if(this.data[id]['_'+label] !== undefined){              
+                    this.data[id]['_'+label] = this.data[id]['_'+label].concat(attrValue);
+                    if(this.data[id]['_'+label].length > 10){
+                      this.data[id]['_'+label].shift();
                     }
                   }
                 }

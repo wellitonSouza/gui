@@ -33,7 +33,7 @@ class MeasureActions {
       util._runFetch(getUrl(), config)
         .then((reply) => {
           if(reply !== null || reply !== undefined){
-              device[attrs] = reply.reverse();
+              device['_'+attrs] = reply.reverse();
           }
           this.updateMeasures(device);
         })

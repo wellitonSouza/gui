@@ -874,7 +874,8 @@ class ViewDeviceImpl extends Component {
     // This should be on DeviceUserActions -
     // this is not good, but will have to make do because of z-index on the action header
     e.preventDefault();
-      DeviceActions.triggerRemoval({id: this.props.devices[this.props.device_id].id}, (device) => {
+    //console.log("Id: ", id);
+      DeviceActions.triggerRemoval({id: this.props.device_id}, (device) => {
       hashHistory.push('/device/list');
       Materialize.toast('Device removed', 4000);
     });

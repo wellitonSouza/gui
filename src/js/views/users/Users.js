@@ -448,6 +448,7 @@ function UserFilter(props) {
             // to selected user fields.
             return (
                 e.name.toLowerCase().includes(filter) ||
+                e.name.includes(filter) ||
                 e.username.toLowerCase().includes(filter) ||
                 e.email.toLowerCase().includes(filter) ||
                 e.profile.toLowerCase().includes(filter)

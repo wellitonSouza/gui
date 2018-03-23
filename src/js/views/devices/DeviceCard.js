@@ -191,7 +191,7 @@ class DeviceCard extends Component {
     this.clearInputField();
    }
    
-      return <div className="full-height relative">
+      return <div>
           <ReactCSSTransitionGroup transitionName="devicesSubHeader">
             {header}
           </ReactCSSTransitionGroup>

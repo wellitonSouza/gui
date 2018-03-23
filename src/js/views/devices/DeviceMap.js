@@ -30,7 +30,6 @@ var redPin = L.divIcon({className: 'icon-marker bg-red'});
 var trackingPin = L.divIcon({className: 'icon-marker bg-tracking-marker'});
 
 var listLatLngs = [];
-var polyline = {color: 'red'};
 
 class PositionRenderer extends Component {
   constructor(props) {

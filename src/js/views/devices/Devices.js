@@ -99,8 +99,7 @@ class Devices extends Component {
       })
       .catch((error) => {console.log("Failed!", error);
     });
-
-
+    
     function init(token){
       var socket = socketio(target, {query: "token=" + token, transports: ['websocket']});
 
@@ -108,6 +107,10 @@ class Devices extends Component {
         MeasureActions.appendMeasures(data);
       });
     }
+  }
+
+  componentWillUnmount(){
+    location.reload(true);
   }
 
   filterChange(newFilter) {}

@@ -29,6 +29,9 @@ import io from 'socket.io-client';
 var redPin = L.divIcon({className: 'icon-marker bg-red'});
 var trackingPin = L.divIcon({className: 'icon-marker bg-tracking-marker'});
 
+var listLatLngs = [];
+var polyline = {color: 'red'};
+
 class PositionRenderer extends Component {
   constructor(props) {
     super(props);
@@ -135,8 +138,13 @@ class PositionRenderer extends Component {
       }
     }
 
+    function makeListPositions(position){
+      listLatLngs.push(position);
+    }
+
     let parsedEntries = this.props.devices.reduce((result,k) => {
-        if (k.position !== undefined){   
+        if (k.position !== undefined){
+          makeListPositions(k.position);    
           result.push({
             id: k.id,
             pos: k.position,
@@ -193,6 +201,7 @@ class PositionRenderer extends Component {
             <Tooltip>
               <span>{k.name} : {k.timestamp}</span>
             </Tooltip>
+            <Polyline positions={listLatLngs} color='#7fb2f9' dashArray='10,10'/>
           </Marker>
         )})}
         <ScaleControl />

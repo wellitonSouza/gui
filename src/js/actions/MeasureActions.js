@@ -33,7 +33,7 @@ class MeasureActions {
       util._runFetch(getUrl(), config)
         .then((reply) => {
           if(reply !== null || reply !== undefined){
-              device[attrs] = reply.reverse();
+              device['_'+attrs] = reply.reverse();
           }
           this.updateMeasures(device);
         })
@@ -51,7 +51,7 @@ class MeasureActions {
     }
 
     function parserPosition(position){
-      let parsedPosition = position.split(", ");
+      let parsedPosition = position.split(",");
       if(parsedPosition.length > 1){
         return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
       }

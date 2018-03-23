@@ -146,6 +146,10 @@ class Util {
     return moment(timestamp).format('D/MM/YYYY HH:mm:ss');
   }
 
+  iso_to_date_hour(timestamp){
+    return moment(timestamp).format('D/MM HH:mm');
+  }
+
 
   isNameValid(name) {
     let ret = {result: true, error: ""};

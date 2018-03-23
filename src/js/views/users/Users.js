@@ -186,8 +186,8 @@ class SideBar extends Component {
                                         value={this.state.user.profile}
                                         onChange={this.handleChange}>
                             <option value="" disabled>Choose your option</option>
-                            <option value="admin">Administrator</option>
-                            <option value="user">User</option>
+                            <option value="admin" id={'adm-option'}>Administrator</option>
+                            <option value="user" id={'user-option'}>User</option>
                         </MaterialSelect>
                     </div>
                     <div id={'edit-footer'} className={'action-footer' + (this.props.edit ? '' : ' hide')}>

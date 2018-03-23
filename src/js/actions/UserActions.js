@@ -1,6 +1,5 @@
 import userManager from '../comms/users/UserManager';
 import Materialize from "materialize-css";
-
 let alt = require('../alt');
 
 class UserActions {

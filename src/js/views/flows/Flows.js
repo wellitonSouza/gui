@@ -138,10 +138,10 @@ class ListRender extends Component {
                                         transitionEnterTimeout={100} transitionLeaveTimeout={100}>
             {header}
           </ReactCSSTransitionGroup>
-          <div className="col s12  lst-wrapper">
-            { this.filteredList.map((flow, id) =>
-              <Link to={"/flows/id/" + id} key={id} >
-                <div className="lst-entry col s12 m6 l4 mt30">
+          <div className="col s12 lst-wrapper scroll-bar">
+            { this.filteredList.map((flow, id) =>            
+              <Link to={"/flows/id/" + flow.id} key={flow.id} >           
+                <div className="s12 m6 l4 mt20">
                   <SummaryItem flow={flow} key={flow.id} />
                 </div>
               </Link>

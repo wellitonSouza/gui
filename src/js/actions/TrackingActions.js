@@ -11,7 +11,7 @@ class TrackingActions {
     }
 
     function parserPosition(position){
-      let parsedPosition = position.split(", ");
+      let parsedPosition = position.split(",");
       if(parsedPosition.length > 1){
           return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
       }
@@ -36,6 +36,7 @@ class TrackingActions {
             let data = {device_id:device_id};
             if(reply[k].value !== null && reply[k].value !== undefined){
               data.position = parserPosition(reply[k].value);
+              data.timestamp = reply[k].ts;
             }
             history.data.push(data);
           }

@@ -23,7 +23,7 @@ class ImageStore {
 
             handleFailure: ImageActions.IMAGES_FAILED,
 
-            // fetchSingle: ImageActions.FETCH_SINGLE,
+            fetchSingle: ImageActions.FETCH_SINGLE,
         });
     }
 
@@ -50,6 +50,7 @@ class ImageStore {
     }
 
     handleRemoveSingle(id) {
+        console.log("handleRemoveSingle",id);
         if (this.images.hasOwnProperty(id)) {
             delete this.images[id];
         }
@@ -57,7 +58,7 @@ class ImageStore {
     }
 
     handleInsertImage(image) {
-        this.images[image.id] = JSON.parse(JSON.stringify(image));
+        // this.images[image.id] = JSON.parse(JSON.stringify(image));
         this.error = null;
         this.loading = false;
     }
@@ -69,6 +70,8 @@ class ImageStore {
     }
 
     handleUpdateImageList(images) {
+        console.log("images", images);
+        // let images = images;
         this.images = {};
         for (let idx = 0; idx < images.length; idx++) {
             this.images[images[idx].id] = JSON.parse(JSON.stringify(images[idx]))
@@ -88,9 +91,9 @@ class ImageStore {
         this.loading = false;
     }
 
-    // fetchSingle(id) {
-    //     this.images[id] = { loading: true };
-    // }
+    fetchSingle(id) {
+        this.images = { loading: true };
+    }
 
     handleFailure(error) {
         this.error = error;

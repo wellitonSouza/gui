@@ -216,7 +216,6 @@ class LeftSidebar extends Component {
       ]},
       { image: 'template', target: "/template/list", iconClass: "fa fa-cubes", label: "Templates ", desc: "Template management"},
       { image: 'graph', target: "/flows", iconClass: "material-icons mi-device-hub", label: "data flows", desc: "Processing flows to be executed"},
-      { image: 'firmware', target: "/image", iconClass: "material-icons ", label: "Images", desc: "Firmware management"},    
       /*{ image: 'bell', target: "/alarm", iconClass: "fa fa-bell-o", label: "alarms", desc: "System events and alarms"},*/
       { image: 'auth', target: "/auth", iconClass: "fa fa-unlock-alt", label: "auth", desc: "User and permissions management", children: [
         { target: "/auth/user", iconClass: "", label: "users", title: "Users list"},

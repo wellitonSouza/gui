@@ -10,7 +10,7 @@ import TemplateActions from '../../actions/TemplateActions';
 import ImageStore from '../../stores/ImageStore';
 import ImageActions from '../../actions/ImageActions';
 
-import { ImageCard, NewImageCard } from "../firmware/list";
+import { ImageCard, NewImageCard } from "../firmware/elements";
 
 
 import util from "../../comms/util/util";
@@ -53,29 +53,38 @@ class ImageModal extends Component {
         this.props.toggleModal();
     }
 
+
     // toggleModal() {
     //     this.props.toggleModal();
     // }
 
     render() {
-        console.log("this.props.template_2", this.props.template);
-        console.log("this.props.images", this.props.images);
+        console.log("Rendering Image Modal", this.props.images);
     
         let images = [];
         for (let img in this.props.images)
             images.push(this.props.images[img]);
-        console.log("images", images);
         
+        let default_version = this.props.template.config_attrs.filter(
+            function (elem, index) {
+                return elem.type === "fw_version";
+            }
+        )[0];
+        if (default_version)
+            default_version = default_version.static_value;
+        console.log("default fw_version: ", default_version);
+
         return (
 
             <div className="image-modal-canvas">
                 <div className="full-background" onClick={this.dismiss}> </div>
-
-                <div className="image-modal-div">
-                    <div className="im-header">
+                <ReactCSSTransitionGroup transitionName="imageModal">
+    
+                    <div className="image-modal-div imageModal">
+                    <div className="row im-header">
                     <div className="col s6">
-                        <label className="title">ASDSD</label>
-                        <label className="subtitle">asdsad</label>
+                        <label className="title">{this.props.template.label}</label>
+                        <label className="subtitle">Firmware Management</label>
                     </div>
                     <div className="col s6">
                         <div className="modal-footer right">
@@ -89,18 +98,19 @@ class ImageModal extends Component {
                         <div className="card-size card-size-clear">
                             <div className="attr-area">
                                 {images.map((img, idx) => (
-                                    <ImageCard template_id={this.props.template.id} image={img} key={idx} />
+                                        <ImageCard updateDefaultVersion={this.props.updateDefaultVersion} template_id={this.props.template.id} image={img} key={idx} default_version={default_version}/>
                                 ))}
                                 {this.state.creating === false && <div className="image-card image-card-attributes">
                                     <div onClick={this.createNewImage} className="lst-blockquote col s12">
                                         <span className="new-image-text"> Create a new Image</span>
                                     </div>
                                 </div >}
-                                {this.state.creating === true && <NewImageCard setNewImage={this.setNewImage} template={this.props.template} />}
+                                    {this.state.creating === true && <NewImageCard refreshImages={this.props.refreshImages} setNewImage={this.setNewImage} template={this.props.template} />}
                             </div>
                         </div>
                     </div>
                 </div>
+                </ReactCSSTransitionGroup>
 
             </div>
         )
@@ -125,6 +135,7 @@ class TemplateTypes {
             {"value": "mqtt", "label": "MQTT"}
         ];
         this.configValueTypes = [
+            { "value": "fw_version", "label": "Firmware Version" },
             {"value": "protocol", "label": "Protocol"},
             {"value": "topic", "label": "Topic"},
             {"value": "translator", "label": "Translator"}
@@ -566,7 +577,8 @@ class ListItem extends Component {
             isSuppressed: true,
             isEditable: false,
             isConfiguration: false,
-            show_modal: false
+            show_modal: false,
+            show_image_modal: false, 
         };
 
         this.clone = JSON.parse(JSON.stringify(this.state.template));
@@ -587,6 +599,16 @@ class ListItem extends Component {
         this.openModal = this.openModal.bind(this);
         this.openImageModal = this.openImageModal.bind(this);
         this.toggleImageModal = this.toggleImageModal.bind(this);
+        this.getFwVersion = this.getFwVersion.bind(this);
+        this.refreshImages = this.refreshImages.bind(this);
+        this.updateDefaultVersion = this.updateDefaultVersion.bind(this);
+    }
+    
+
+    refreshImages()
+    {
+        console.log("refreshing Images");
+        ImageActions.fetchSingle.defer(this.state.template.id);
     }
 
     componentDidMount() {
@@ -595,10 +617,17 @@ class ListItem extends Component {
             state.isEditable = true;
             state.isSuppressed = false;
         }
-        ImageActions.fetchImages.defer();
+
+        console.log("this.state.template.id", this.state.template.id);
+        ImageActions.fetchSingle.defer(this.state.template.id);
+        // ImageActions.fetchImages.defer();
         this.setState(state);
     }
 
+    getFwVersion()
+    {
+        return "No image added. ";
+    }
     handleDismiss(e) {
         e.preventDefault();
         let state = this.state;
@@ -607,7 +636,8 @@ class ListItem extends Component {
     }
 
     updateTemplate(e) {
-        e.preventDefault();
+        if (e != undefined)
+            e.preventDefault();
         let ret = util.isNameValid(this.state.template.label);
         if (!ret.result && !this.state.isConfiguration) {
             Materialize.toast(ret.error, 4000);
@@ -748,16 +778,40 @@ class ListItem extends Component {
         this.setState({ show_image_modal: !this.state.show_image_modal });    
     }
 
+    updateDefaultVersion(img)
+    {
+        console.log("update Star", img);
+        // 1. remove previous default version
+        let tmplt = this.state.template;
+        tmplt.config_attrs = tmplt.config_attrs.filter(
+            function( elem, index ) {
+                return elem.type != "fw_version";
+            }
+        );
+
+        // 2. add a new version
+        tmplt.config_attrs.push({
+            label: "fw_version",
+            value_type: "string",
+            type: "fw_version",
+            static_value: img
+        });
+        // 3. update state and after save the template
+        this.setState(
+            { template: tmplt },
+            () => this.updateTemplate()
+        );
+    }
+
     render() {
 
         console.log("show_image_modal", this.state.show_image_modal);
-        let image_length = 0; 
         let attrs = this.state.template.data_attrs.length + this.state.template.config_attrs.length;
         return (
             <div>
             {this.state.show_image_modal ? (
                 <AltContainer store={ImageStore}>
-                   <ImageModal template={this.state.template} toggleModal={this.toggleImageModal} />
+                        <ImageModal updateDefaultVersion={this.updateDefaultVersion} template={this.state.template} refreshImages={this.refreshImages} toggleModal={this.toggleImageModal} />
                 </AltContainer>
             ) : null }
             
@@ -768,7 +822,7 @@ class ListItem extends Component {
                 ) : (
                   <div></div>
                 )}
-                <div className="lst-entry-title col s12">
+                <div className="lst-entry-title bg-gradient-ciano-blue col s12">
                     <img className="title-icon" src={"images/model-icon.png"}/>
                     <div className="title-text">
                         <textarea maxLength="40" placeholder={"Template Name"} readOnly={!this.state.isEditable}
@@ -788,20 +842,25 @@ class ListItem extends Component {
                         <i className="fa fa-angle-down center-text-child text"/>
                     </div>
                 </div>
-
-                <div className="lst-entry-body">
-                    <div className="icon-area center-text-parent">
-                            <span className="center-text-child">{image_length}</span>
-                    </div>
-                    <div className="text-area center-text-parent">
-                        <span className="middle-text-child">Images</span>
-                    </div>
+                
+            {(!this.state.template.isNewTemplate && 
+                <div className="lst-entry-body img-line-on-template">
+                        <div className="attr-row icon-area center-text-parent">
+                            <div className="icon">
+                            </div>
+                        </div>
+                        <div className="text-area center-text-parent attr-content">
+                           <div className="attr-content">
+                                <label>{this.getFwVersion()}</label>
+                                <span>Images</span>
+                           </div>
+                        </div>
                     <div
                         className={"center-text-parent material-btn expand-btn right-side "}
                         onClick={this.openImageModal}>
                         <i className="fa fa-pencil center-text-child text" />
                     </div>
-                </div>
+                        </div>)}
 
                 <div className={"attr-list"} id={"style-3"}>
                     {this.state.template.data_attrs.map((attributes, index) =>
@@ -830,23 +889,23 @@ class ListItem extends Component {
                         </div>
                         <div className={(this.state.isEditable ? (this.state.template.isNewTemplate ? 'none' : '') : 'none')}>
                             <div className={"material-btn center-text-parent "}
-                                 title="Edit Attributes" onClick={this.updateTemplate}>
+                                 title="Save" onClick={this.updateTemplate}>
                                 <span className="text center-text-child">save</span>
                             </div>
 
                             <div className={"material-btn center-text-parent "}
-                                 title="Edit Attributes" onClick={this.handleDismiss}>
+                                 title="Discard" onClick={this.handleDismiss}>
                                 <span className="text center-text-child">discard</span>
                             </div>
                         </div>
                         <div className={(this.state.isEditable ? (this.state.template.isNewTemplate ? '' : 'none') : 'none')}>
                             <div
                                 className={"material-btn center-text-parent "}
-                                title="Edit Attributes" onClick={this.addTemplate}>
+                                title="Create" onClick={this.addTemplate}>
                                 <span className="text center-text-child">create</span>
                             </div>
                             <div className={"material-btn center-text-parent "}
-                                 title="Edit Attributes" onClick={this.discardUnsavedTemplate}>
+                                    title="Discard" onClick={this.discardUnsavedTemplate}>
                                 <span className="text center-text-child">discard</span>
                             </div>
                         </div>
@@ -920,12 +979,13 @@ class TemplateList extends Component {
         return list;
     }
 
+    // @TO_CHECK but every call to the function below don't pass any parameter
     updateTemplate(template) {
         this.props.updateTemplate(template);
 
-        let state = this.state;
-        state.edit = undefined;
-        this.setState(state);
+        // let state = this.state;
+        // state.edit = undefined;
+        this.setState({edit:undefined});
     }
 
     deleteTemplate(id) {
@@ -1010,7 +1070,7 @@ class TemplateList extends Component {
         <ReactCSSTransitionGroup transitionName="templatesSubHeader">
           {header}
         </ReactCSSTransitionGroup>
-            {this.filteredList.length > 0 ? <div className="col s12 lst-wrapper">
+            {this.filteredList.length > 0 ? <div className="col s12 lst-wrapper w100">
                 {this.filteredList.map(template => (
                   <ListItem
                     template={template}

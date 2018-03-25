@@ -5,8 +5,6 @@ import Login from './containers/login/';
 import Dashboard from './views/dashboard/';
 import Full from './containers/full/';
 
-import { FirmwareUpdate } from './views/firmware';
-
 import { Devices, ViewDevice, NewDevice }  from './views/devices';
 import DeviceDashboard from './views/dashboard/DeviceDashboard';
 
@@ -54,8 +52,6 @@ export default (
         <Route path="user" name="User detail" component={Users} />
         <Route path="permissions" name="Permissioning detail" component={Todo} />
       </Route>
-
-      <Route path="image" name="Firmware Management" component={FirmwareUpdate} />
 
       <Route path="deploy" name="Deployment" component={Todo} >
         <Route path="plugins" name="Template detail" component={Todo} />

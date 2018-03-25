@@ -52,12 +52,14 @@ class UploadDialog extends Component {
     }
 
     let sha1 = util.getSHA1(this.state.files[0]);
-    // console.log("sha1", sha1);
+    // "label": "FW_Example",
+    // "fw_version": "1.0.0",
+    // "sha1": "cf23df2207d99a74fbe169e3eba035e633b65d94"
     let img_binary = {
-      template_id: this.props.template,
+      // template_id: this.props.template,
       image_id: this.props.image.id,
-      fw_version: this.props.image.fw_version,
-      has_image: true, 
+      // fw_version: this.props.image.fw_version,
+      // has_image: true, 
       binary: this.state.files[0],
       sha1: sha1};
       ImageActions.triggerUpdate(img_binary, () => {
@@ -128,18 +130,19 @@ class NewImageCard extends Component {
     // let image = ImageStore.getState().new_image;
     // console.log('image', image);
     let img = { 
-      template_id: this.props.template.id,
-      fw_version: this.state.fw_version
+      label: this.props.template.label,
+      fw_version: this.state.fw_version,
+      sha1: ""
     };
-    console.log("image",img);
+    console.log("image", img);
     ImageActions.triggerInsert(img, (img) => {
       Materialize.toast('Image created', 4000);
+      this.props.refreshImages();
     });
     this.props.setNewImage(false);
   }
 
   cancel() {
-    console.log("cancel");
     this.props.setNewImage(false);
   }
 
@@ -214,9 +217,10 @@ class ImageCard extends Component {
 
   removeImage(e)
   {
-    console.log("removeImage",this.props.image);
     e.preventDefault();
-    ImageActions.triggerRemoval(this.props.image);
+    ImageActions.triggerRemoval(this.props.image, () => {
+      Materialize.toast('Image Removed', 4000);
+    })
   }
 
   closeUploadModal() {
@@ -231,7 +235,8 @@ class ImageCard extends Component {
   clickStar() {
     console.log("clickStar");
     // this.props.changeState(0);
-    this.setState({ starred: !this.state.starred });
+    this.props.updateDefaultVersion(this.props.image.fw_version);
+    // this.setState({ starred: !this.state.starred });
   }
 
 
@@ -252,6 +257,8 @@ class ImageCard extends Component {
   }
 
   componentDidMount() {
+    if (this.props.image.fw_version == this.props.default_version )
+      this.setState({ starred: true });
   }
 
   render() {
@@ -318,193 +325,4 @@ class ImageCard extends Component {
   }
 }
 
-
-class FirmwareCardImpl extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      creating: false
-    }
-    this.images = [];
-    this.createNewImage = this.createNewImage.bind(this);
-    this.setNewImage = this.setNewImage.bind(this);
-  }
-
-  createNewImage() {
-    this.setState({ creating: true });
-  }
-
-  setNewImage(value)
-  {
-    this.setState({ creating: value });
-  }
-
-  render() {
-    console.log("this.props.template_2",this.props.template);
-    console.log("this.props.images", this.props.images);
-    // this.images = this.props.images;
-
-    let images = [];
-    for (let img in this.props.images)
-      images.push(this.props.images[img]);
-    console.log("images",images);
-      // return (
-    //   null
-    // )
-    return (
-      <div className={"card-size lst-entry-wrapper z-depth-2 firmware-card "}>
-        <div className="lst-entry-title col s12">
-          <img className="title-icon" src={"images/model-icon.png"} />
-          <div className="title-text">
-            <span className="text"> {this.props.template.label} 
-            <br /><label className="label-explation" >Template Name</label>
-            </span>
-          </div>
-        </div>
-        <div className="attr-area attr-list light-background">
-          {images.map((img, idx) => (
-              <ImageCard template_id={this.props.template.id} image={img} key={idx} />
-                ))}
-          {this.state.creating === false && <div className="image-card image-card-attributes">
-            <div onClick={this.createNewImage} className="lst-blockquote col s12">
-              <span className="new-image-text"> Create a new Image</span>
-            </div>
-          </div >}
-          {this.state.creating === true && <NewImageCard setNewImage={this.setNewImage} template={this.props.template}/>}
-        </div>
-
-      </div>
-    )
-  }
-}
-
-
-class FirmwareCard extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  componentDidMount() {
-    ImageActions.fetchImages.defer();
-  }
-  render() {
-    return (
-      <AltContainer store={ImageStore}>
-        <FirmwareCardImpl template={this.props.template} />
-      </AltContainer>
-    )
-  }
-}
-
-
-class ImageArea extends Component {
-  constructor(props){
-    super(props);
-    this.filteredList = [];
-    this.state = {
-      active_image_id: 1
-    }
-    this.activeImage = this.activeImage.bind(this);
-    this.getTemplateWithImages = this.getTemplateWithImages.bind(this);
-  }
-
-  getTemplateWithImages(tmplts)
-  {
-    return tmplts;
-  }
-
-  componentDidMount(){
-  }
-
-  activeImage(image_id) {
-    console.log("changing active_image_id",image_id);
-    this.setState({ active_image_id: image_id });
-  }
-
-  render(){
-
-    console.log("this.props.templates", this.props.templates);
-    // it happens when TemplateStore is loading
-    console.log("this.props.loading", this.props.loading);
-    if (this.props.loading == undefined || this.props.loading) {
-      return (<Loading />);
-    }
-
-    this.filteredList = this.getTemplateWithImages(this.props.templates);
-    // let selectedImage = this.filteredList[0];
-    console.log("filteredList", this.filteredList);
-    return(
-      <div className="row bg-light-gray">
-        <div className="col s12 data-frame p0">
-            {this.filteredList.length == 0 ? (
-              <span className="no-device-configured">
-                No image available. 
-                  </span>
-            ) : (
-                <div className="col s12 lst-wrapper extra-padding">
-                  {this.filteredList.map((temp) => (
-                  <FirmwareCard template={temp} key={temp.id} selectImage={this.activeImage.bind(this)}/>
-                  ))}
-                </div>
-              )}
-        </div>
-        {/* <div className="col s4 template-frame">
-          <ImageInfo image={selectedImage} />
-        </div> */}
-
-      </div>
-
-    )
-  }
-}
-
-class FirmwareUpdate extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { showFilter: false };
-    this.toggleSearchBar = this.toggleSearchBar.bind(this);
-  }
-
-  componentDidMount() {
-    console.log("componentDidMount");
-    // ImageActions.fetchImages.defer();
-    TemplateActions.fetchTemplates.defer();
-  }
-  
-  toggleSearchBar() {
-    const last = this.state.showFilter;
-    this.setState({ showFilter: !last });
-  }
-
-//   toggleDisplay() {
-//     const last = this.state.displayList;
-//     this.setState({ displayList: !last });
-//   }
-
-  render() {
-    const detail =
-      "detail" in this.props.location.query
-        ? this.props.location.query.detail
-        : null;
-
-    return <ReactCSSTransitionGroup transitionName="first" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={500} transitionLeaveTimeout={500}>
-        <NewPageHeader title="Firmware management" subtitle="" icon="firmware">
-          {/* <Filter onChange={this.filterChange} /> */}
-          {/*<Link to="/device/new" title="Create a new device" className="btn-item btn-floating waves-effect waves-light cyan darken-2">
-            <i className="fa fa-plus"/>
-          </Link> */}
-           <div className="pt10">
-            {/* <div className="searchBtn" title="Show search bar" onClick={this.toggleSearchBar.bind(this)}>
-              <i className="fa fa-search" />
-            </div> */}
-            {/* <DojotBtnLink linkto="/device/new" label="New Image" alt="Create a new image" icon="fa fa-plus" /> */}
-          </div>
-        </NewPageHeader>
-        <AltContainer store={TemplateStore}>
-          <ImageArea showSearchBox={this.state.showFilter}  />
-        </AltContainer>
-      </ReactCSSTransitionGroup>;
-  }
-}
-
-export { FirmwareUpdate, ImageCard, NewImageCard };
+export { ImageCard, NewImageCard };

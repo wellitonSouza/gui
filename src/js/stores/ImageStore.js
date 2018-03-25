@@ -10,7 +10,8 @@ class ImageStore {
 
         this.bindListeners({
             handleUpdateImageList: ImageActions.UPDATE_IMAGES,
-            handleFetchImageList: ImageActions.FETCH_IMAGES,
+            fetchSingle: ImageActions.FETCH_SINGLE,
+            // handleFetchImageList: ImageActions.FETCH_IMAGES,
 
             handleTriggerInsertion:ImageActions.TRIGGER_INSERT,
             handleInsertImage:ImageActions.INSERT_IMAGE,
@@ -23,7 +24,6 @@ class ImageStore {
 
             handleFailure: ImageActions.IMAGES_FAILED,
 
-            fetchSingle: ImageActions.FETCH_SINGLE,
         });
     }
 

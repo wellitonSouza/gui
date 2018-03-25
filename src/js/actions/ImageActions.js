@@ -31,19 +31,19 @@ class ImageActions {
       return raw_data;
   }
 
-  fetchImages() {
-    return (dispatch) => {
-      dispatch();
+  // fetchImages() {
+  //   return (dispatch) => {
+  //     dispatch();
 
-      imageManager.getImages().then((imageList) => {
-        console.log("imageManager.getImages()",imageList);
-        this.updateImages(imageList);
-      })
-      .catch((error) => {
-        this.imagesFailed(error);
-      });
-    }
-  }
+  //     imageManager.getImages().then((imageList) => {
+  //       console.log("imageManager.getImages()",imageList);
+  //       this.updateImages(imageList);
+  //     })
+  //     .catch((error) => {
+  //       this.imagesFailed(error);
+  //     });
+  //   }
+  // }
 
 
   triggerUpdate(image, cb) {

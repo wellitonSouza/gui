@@ -620,7 +620,6 @@ class ListItem extends Component {
 
         console.log("this.state.template.id", this.state.template.id);
         ImageActions.fetchSingle.defer(this.state.template.id);
-        // ImageActions.fetchImages.defer();
         this.setState(state);
     }
 

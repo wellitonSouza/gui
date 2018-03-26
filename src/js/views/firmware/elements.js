@@ -119,16 +119,14 @@ class NewImageCard extends Component {
   }
 
 
-  componentDidMount() {
-    // FirmwareActions.set(null);
-  }
-
   save(e) {
     e.preventDefault();
+    if (this.state.fw_version == "")
+    {      
+      Materialize.toast('Missing Firmware version.', 4000);
+      return;  
+    }
 
-    console.log("save");
-    // let image = ImageStore.getState().new_image;
-    // console.log('image', image);
     let img = { 
       label: this.props.template.label,
       fw_version: this.state.fw_version,
@@ -148,13 +146,7 @@ class NewImageCard extends Component {
 
   handleChange(event) {
     event.preventDefault();
-    // const f = event.target.name;
-    // const v = event.target.value;
-    // this.fw_version = event.target.value;
-    // FirmwareActions.update({ f: f, v: v });
     this.setState({ fw_version: event.target.value });
-
-    console.log("chacdnign")
   }
 
   render() {
@@ -295,8 +287,8 @@ class ImageCard extends Component {
             <i className="fa fa-trash" />
           </div>
 
-          <div className="star-icon " onClick={this.clickStar}>
-            <i className={"fa " + (this.state.starred ? "fa-star" : "fa-star-o")} />
+          <div className="star-icon  " title={(this.state.starred ? "" : "Update default version")} onClick={this.clickStar}>
+            <i className={"fa " + (this.state.starred ? "  fa-thumb-tack pin-icon" : "fa-download")} />
           </div>
 
           <div className="attr-row">

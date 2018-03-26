@@ -82,15 +82,11 @@ class ImageModal extends Component {
     
                     <div className="image-modal-div imageModal">
                     <div className="row im-header">
-                    <div className="col s6">
+                    <div className="col s12 pl40">
+                        <div className="icon-firmware"/>
+                
                         <label className="title">{this.props.template.label}</label>
                         <label className="subtitle">Firmware Management</label>
-                    </div>
-                    <div className="col s6">
-                        <div className="modal-footer right">
-                            <button type="button" className="btn-flat btn-ciano waves-effect waves-light" onClick={this.dismiss}>cancel</button>
-                            <button type="submit" className="btn-flat btn-red waves-effect waves-light" onClick={this.save}>save</button>
-                        </div>
                     </div>
                     </div>
 
@@ -135,7 +131,7 @@ class TemplateTypes {
             {"value": "mqtt", "label": "MQTT"}
         ];
         this.configValueTypes = [
-            { "value": "fw_version", "label": "Firmware Version" },
+            // {"value": "fw_version", "label": "Firmware Version" },
             {"value": "protocol", "label": "Protocol"},
             {"value": "topic", "label": "Topic"},
             {"value": "translator", "label": "Translator"}
@@ -277,6 +273,10 @@ class ConfigList extends Component {
     }
 
     render() {
+        console.log("this.props.attributes", this.props.attributes);
+        if (this.props.attributes.type == "fw_version")
+        return null;
+
         return (
             <div className={"attr-area " + (this.state.isSuppressed ? 'suppressed' : '')}>
                 <div className="attr-row">
@@ -578,7 +578,8 @@ class ListItem extends Component {
             isEditable: false,
             isConfiguration: false,
             show_modal: false,
-            show_image_modal: false, 
+            show_image_modal: false,
+            fw_version_used: null 
         };
 
         this.clone = JSON.parse(JSON.stringify(this.state.template));
@@ -599,7 +600,6 @@ class ListItem extends Component {
         this.openModal = this.openModal.bind(this);
         this.openImageModal = this.openImageModal.bind(this);
         this.toggleImageModal = this.toggleImageModal.bind(this);
-        this.getFwVersion = this.getFwVersion.bind(this);
         this.refreshImages = this.refreshImages.bind(this);
         this.updateDefaultVersion = this.updateDefaultVersion.bind(this);
     }
@@ -607,26 +607,28 @@ class ListItem extends Component {
 
     refreshImages()
     {
-        console.log("refreshing Images");
-        ImageActions.fetchSingle.defer(this.state.template.id);
+        ImageActions.fetchSingle.defer(this.state.template.id, () => {
+            let fw_version = null;
+            
+            let attr = this.state.template.config_attrs.filter(
+                function (elem, index) {
+                    return elem.type == "fw_version";
+                }
+            )[0];
+            if (attr)
+                fw_version = attr.static_value;
+                this.setState({fw_version_used:fw_version});
+        });
     }
 
     componentDidMount() {
-        let state = this.state;
-        if (state.template.isNewTemplate) {
-            state.isEditable = true;
-            state.isSuppressed = false;
+        this.refreshImages();
+        
+        if (this.state.template.isNewTemplate) {
+            this.setState({ isEditable: true, isSuppressed: false});
         }
-
-        console.log("this.state.template.id", this.state.template.id);
-        ImageActions.fetchSingle.defer(this.state.template.id);
-        this.setState(state);
     }
 
-    getFwVersion()
-    {
-        return "No image added. ";
-    }
     handleDismiss(e) {
         e.preventDefault();
         let state = this.state;
@@ -672,6 +674,19 @@ class ListItem extends Component {
     addAttribute(attribute, isConfiguration) {
         let state = this.state.template;
         if (isConfiguration) {
+
+            // we should check if config_attrs and data_attrs already contains the pair (label, type) before save it.
+
+            if (state.config_attrs.filter(
+                function (elem, index) {
+                    return elem.label == attribute.value_type && elem.static_value == attribute.value;
+                }
+            )[0])
+            {
+                Materialize.toast("The pair (label, type) is already created.", 4000);
+                return; 
+            }
+
             state.config_attrs.push({
                 label: attribute.value_type,
                 value_type: "string",
@@ -680,6 +695,17 @@ class ListItem extends Component {
             });
 
         } else {
+            if (state.data_attrs.filter(
+                function (elem, index) {
+                    return elem.label == attribute.label && elem.value_type == attribute.value_type;
+
+                }
+            )[0])
+            {
+                Materialize.toast("The pair (label, type) is already created.", 4000);
+                return; 
+            }
+
             state.data_attrs.push({
                 label: attribute.label,
                 type: attribute.type,
@@ -804,6 +830,11 @@ class ListItem extends Component {
 
     render() {
 
+        let fw_version_used = "No images added"
+        if (this.state.fw_version_used) {
+            fw_version_used = this.state.fw_version_used;
+        }
+
         console.log("show_image_modal", this.state.show_image_modal);
         let attrs = this.state.template.data_attrs.length + this.state.template.config_attrs.length;
         return (
@@ -850,8 +881,8 @@ class ListItem extends Component {
                         </div>
                         <div className="text-area center-text-parent attr-content">
                            <div className="attr-content">
-                                <label>{this.getFwVersion()}</label>
-                                <span>Images</span>
+                                <label>Firmware used</label>
+                                <span>{fw_version_used}</span>
                            </div>
                         </div>
                     <div
@@ -869,8 +900,7 @@ class ListItem extends Component {
                                        removeAttribute={this.removeAttribute}/>)}
 
                     {this.state.template.config_attrs.map((attributes, index) =>
-                        <ConfigList key={index} index={index} attributes={attributes} editable={this.state.isEditable}
-                                    onChangeValue={this.handleChangeConfig} removeAttribute={this.removeAttribute}/>)}
+                        <ConfigList key={index} index={index} attributes={attributes} editable={this.state.isEditable} onChangeValue={this.handleChangeConfig} removeAttribute={this.removeAttribute}/>)}
                 </div>
 
                 <div className={"card-footer  " + (this.state.isConfiguration ? 'config-footer' : '')}>

@@ -58,12 +58,13 @@ class Util {
   POST_MULTIPART(url, payload) {
 
     let data = new FormData();
-    data.append('file', payload);
+    data.append('files', payload);
 
     return this._runFetch(url, {
       method: 'post',
       headers: new Headers({ "content-type": "multipart/form-data" }),
-      body: data
+      body: data,
+      files: data
       // body: new Blob(payload, { type: 'multipart/form-data' })
     });
   }

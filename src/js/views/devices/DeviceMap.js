@@ -27,6 +27,9 @@ import io from 'socket.io-client';
 
 
 var redPin = L.divIcon({className: 'icon-marker bg-red'});
+var trackingPin = L.divIcon({className: 'icon-marker bg-tracking-marker'});
+
+var listLatLngs = [];
 
 class PositionRenderer extends Component {
   constructor(props) {
@@ -122,13 +125,31 @@ class PositionRenderer extends Component {
   }
 
   render() {
+    function getPin(device){
+      if(device.hasOwnProperty('unique_key')){
+        if(device.unique_key == device.id+'_'+0){
+          return redPin
+        } else {
+          return trackingPin;
+        }
+      } else {
+        return redPin;
+      }
+    }
+
+    function makeListPositions(position){
+      listLatLngs.push(position);
+    }
+
     let parsedEntries = this.props.devices.reduce((result,k) => {
         if (k.position !== undefined){
+          makeListPositions(k.position);    
           result.push({
             id: k.id,
             pos: k.position,
             name: k.label,
-            pin: redPin,
+            pin: getPin(k),
+            timestamp: k.timestamp,
             key: (k.unique_key ? k.unique_key : k.id)
           });
         }
@@ -177,8 +198,9 @@ class PositionRenderer extends Component {
             onClick={(e) => { this.handleContextMenu(e, k.id); }}
             position={k.pos} key={k.key} icon={k.pin}>
             <Tooltip>
-              <span>{k.id} : {k.name}</span>
+              <span>{k.name} : {k.timestamp}</span>
             </Tooltip>
+            <Polyline positions={listLatLngs} color='#7fb2f9' dashArray='10,10'/>
           </Marker>
         )})}
         <ScaleControl />
@@ -332,7 +354,6 @@ class DeviceMap extends Component {
     }
 
     let validDevices = [];
-    //console.log("deviceS: ", devices);
     for(let k in devices){
       for(let j in devices[k].attrs){
         for(let i in devices[k].attrs[j]){
@@ -353,7 +374,6 @@ class DeviceMap extends Component {
   }
 
   render() {
-
     let validDevices = this.getDevicesWithPosition(this.props.devices);
     let filteredList = this.applyFiltering(validDevices);
 
@@ -365,13 +385,14 @@ class DeviceMap extends Component {
       for(let k in filteredList){
         if(filteredList.hasOwnProperty(k)){
           let device = filteredList[k];
-          device.hasPosition = device.hasOwnProperty('position');
+          device.hasPosition = device.hasOwnProperty('position');      
           if(this.props.tracking.hasOwnProperty(filteredList[k].id) && (!device.hide)){
             pointList = pointList.concat(this.props.tracking[filteredList[k].id].map((e,k) => {
               let updated = e;
               updated.id = device.id;
               updated.unique_key = device.id + "_" + k;
               updated.label = device.label;
+              updated.timestamp = util.iso_to_date(e.timestamp)
               return updated;
             }));
           }
@@ -394,7 +415,7 @@ class DeviceMap extends Component {
                   onLoad={this.mqLoaded}>
           </Script>
           {this.state.mapquest ? (
-            <PositionRenderer devices={pointList} toggleTracking={this.toggleTracking} allowContextMenu={true}/>
+            <PositionRenderer devices={pointList} toggleTracking={this.toggleTracking} allowContextMenu={true} />
           ) : (
             <div><Loading /></div>
           )}

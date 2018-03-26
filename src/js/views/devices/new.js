@@ -409,7 +409,7 @@ class DeviceForm extends Component {
     }
     FormActions.update({f:"templates", v:template_list});
 
-    console.log("Object to go: ",JSON.parse(JSON.stringify(DeviceFormStore.getState().device)));
+    console.log("Object to be saved: ",JSON.parse(JSON.stringify(DeviceFormStore.getState().device)));
 
     // Now, saves the device;
     const ongoingOps = DeviceStore.getState().loading;

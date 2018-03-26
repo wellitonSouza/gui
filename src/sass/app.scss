@@ -304,6 +304,16 @@ body {
     margin-top: 5px;
 }
 
+.pr
+{
+  position:relative;
+}
+
+
+.w100{
+  width:100%;
+}
+
 #toast-container {
   margin: auto !important;
   top: auto !important;
@@ -339,4 +349,5 @@ body {
 @import 'template';
 @import 'recoverypassword';
 @import 'modal';
+@import 'firmware';
 @import 'alarms';

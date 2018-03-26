@@ -215,6 +215,14 @@ class StaticAttributes extends Component {
     let properties = this.props.attrs.filter(item => {
       return String(item.type) == "meta";
     });
+
+    for (let index in properties) {
+      if (properties[index].label === "protocol") {
+        properties[index].static_value = properties[index].static_value.toUpperCase();
+        properties[index].value = properties[index].value.toUpperCase();
+      }
+    }
+
     return <div className="attr-box specific-attr">
         {/* Configurations */}
         {properties.length > 0 && <div className="col s12">

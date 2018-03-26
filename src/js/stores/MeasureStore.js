@@ -7,6 +7,7 @@ import util from '../comms/util';
 class MeasureStore {
   constructor() {
     //this.devices = {};
+    this.data = {}
     this.tracking = {};
     this.error = null;
 
@@ -14,7 +15,7 @@ class MeasureStore {
       handleAppendMeasures: MeasureActions.APPEND_MEASURES,
       handleUpdateMeasures: MeasureActions.UPDATE_MEASURES,
       handleFailure: MeasureActions.MEASURES_FAILED,
-      handleUpdatePosition: MeasureActions.UPDATE_POSITION,
+      //handleUpdatePosition: MeasureActions.UPDATE_POSITION,
 
       handleTrackingFetch: TrackingActions.FETCH,
       handleTrackingSet: TrackingActions.SET,
@@ -35,58 +36,48 @@ class MeasureStore {
     }
   }
 
-  handleUpdatePosition(data){
-    function parserPosition(position){
-      let parsedPosition = position.split(", ");
-      if(parsedPosition.length > 1){
-        return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
-      }
-    }
-    if(data !== undefined){
-      this.data.position = parserPosition(data);
-    }
-
-  }
-
   handleUpdateMeasures(measureData) {
-    if (this.data == undefined)
-      this.data = measureData;
-    else if (this.data.device == measureData.device) {
-      for (let k in measureData.data) {
-        if (measureData.data.hasOwnProperty(k)) {
-          this.data.data[k] = measureData.data[k];
-        }
-      }
-    } else {
-      this.data = measureData;
+    if(measureData !== null || measureData !== undefined){
+      this.data[measureData.id] = measureData;
     }
-    // if (! ('device' in measureData)) { console.error("Missing device id"); }
-    // if (! ('attr' in measureData)) { console.error("Missing attr id"); }
-    // if (! ('data' in measureData)) { console.error("Missing device data"); }
-    //
-    // if (measureData.device in this.devices) {
-    //   this.devices[measureData.device][measureData.attr.name].loading = false;
-    //   this.devices[measureData.device][measureData.attr.name].data = measureData.data;
-    // } else {
-    //   this.error = "Device not found"
-    //   console.error('failed to find device in current measures');
-    // }
   }
 
+  handleAppendMeasures(measureData){
+    function parserPosition(position){
+      if (position.toString().indexOf(",") > -1) {
+        let parsedPosition = position.split(",");
+        if(parsedPosition.length > 1){
+          return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
+        } 
+      } else {
+        return undefined;
+      }
+    }
 
-  handleAppendMeasures(measureData) {
-    if (this.data.device == measureData.device_id) {
-      for (let k in measureData) {
-        if (measureData.hasOwnProperty(k)) {
-          if (this.data.data.hasOwnProperty(k) == false) {
-            this.data.data[k] = [NaN]; // dummy entry - will always be removed
+    let now = new Date();
+    for(let id in this.data){
+      if(this.data[id].id == measureData.metadata.deviceid){
+        for(let i in this.data[id].attrs){
+          for(let j in this.data[id].attrs[i]){
+            for(let label in measureData.attrs){
+              if(this.data[id].attrs[i][j].label == label){
+                let attrValue = {"device_id": this.data[id].id, "ts": now.toISOString(), "value":measureData.attrs[label], "attr": label };
+                if(this.data[id].attrs[i][j].value_type == "geo:point"){
+                  this.data[id].position = parserPosition(measureData.attrs[label]);
+                } else{
+                  // attr is not geo
+                  if(this.data[id]['_'+label] !== undefined){              
+                    this.data[id]['_'+label] = this.data[id]['_'+label].concat(attrValue);
+                    if(this.data[id]['_'+label].length > 10){
+                      this.data[id]['_'+label].shift();
+                    }
+                  }
+                }
+              }
+            }
           }
-          this.data.data[k].unshift(measureData[k]);
-          this.data.data[k].splice(this.data.data[k].length - 1, 1)
         }
       }
-    } else {
-      this.data = measureData;
     }
   }
 
@@ -94,7 +85,7 @@ class MeasureStore {
      if (! ('device' in measureData)) { console.error("Missing device id"); }
      if (! ('attr' in measureData)) { console.error("Missing attr id"); }
 
-     if (! (measureData.device in this.devices)) {
+     if (! (measureData.device in this.devices)) {measureData;
        this.devices[measureData.device] = {}
      }
 

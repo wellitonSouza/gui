@@ -99,17 +99,18 @@ class Devices extends Component {
       })
       .catch((error) => {console.log("Failed!", error);
     });
-
-
+    
     function init(token){
       var socket = socketio(target, {query: "token=" + token, transports: ['websocket']});
 
       socket.on('all', function(data){
-        let label = Object.keys(data.attrs);
-        MeasureActions.updatePosition.defer(data.attrs[label[0]]);
+        MeasureActions.appendMeasures(data);
       });
     }
+  }
 
+  componentWillUnmount(){
+    location.reload(true);
   }
 
   filterChange(newFilter) {}
@@ -128,43 +129,44 @@ class Devices extends Component {
     this.setState({ displayList: !last });
   }
 
-  render() {
-    const detail =
-      "detail" in this.props.location.query
-        ? this.props.location.query.detail
-        : null;
-    const displayToggle = (
-      <ToggleWidget
-        toggleState={this.state.displayList}
-        toggle={this.toggleDisplay}
-        setState={this.setDisplay}
-      />
-    );
+    render() {
+        const detail =
+            "detail" in this.props.location.query
+                ? this.props.location.query.detail
+                : null;
+        const displayToggle = (
+            <ToggleWidget
+                toggleState={this.state.displayList}
+                toggle={this.toggleDisplay}
+                setState={this.setDisplay}
+            />
+        );
 
-    return <ReactCSSTransitionGroup transitionName="first" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={500} transitionLeaveTimeout={500}>
-        <NewPageHeader title="Devices" subtitle="" icon="device">
-          {/* <Filter onChange={this.filterChange} /> */}
-          {/*<Link to="/device/new" title="Create a new device" className="btn-item btn-floating waves-effect waves-light cyan darken-2">
+        return <ReactCSSTransitionGroup transitionName="first" transitionAppear={true} transitionAppearTimeout={100}
+                                        transitionEnterTimeout={100} transitionLeaveTimeout={100}>
+            <NewPageHeader title="Devices" subtitle="" icon="device">
+                {/* <Filter onChange={this.filterChange} /> */}
+                {/*<Link to="/device/new" title="Create a new device" className="btn-item btn-floating waves-effect waves-light cyan darken-2">
             <i className="fa fa-plus"/>
           </Link> */}
 
-          <div className="pt10">
-            <div className="searchBtn" title="Show search bar" onClick={this.toggleSearchBar.bind(this)}>
-              <i className="fa fa-search" />
-            </div>
-            {displayToggle}
-            <DojotBtnLink linkto="/device/new" label="New Device" alt="Create a new device" icon="fa fa-plus" />
-          </div>
-        </NewPageHeader>
-        <AltContainer store={DeviceStore}>
-          {this.state.displayList ? (
-            <DeviceCard deviceid={detail} toggle={displayToggle} showSearchBox={this.state.showFilter} />
-          ) : (
-            <MapWrapper deviceid={detail} toggle={displayToggle} showSearchBox={this.state.showFilter}/>
-          )}
-        </AltContainer>
-      </ReactCSSTransitionGroup>;
-  }
+                <div className="pt10">
+                    <div className="searchBtn" title="Show search bar" onClick={this.toggleSearchBar.bind(this)}>
+                        <i className="fa fa-search"/>
+                    </div>
+                    {displayToggle}
+                    <DojotBtnLink linkto="/device/new" label="New Device" alt="Create a new device" icon="fa fa-plus"/>
+                </div>
+            </NewPageHeader>
+            <AltContainer store={DeviceStore}>
+                {this.state.displayList ? (
+                    <DeviceCard deviceid={detail} toggle={displayToggle} showSearchBox={this.state.showFilter}/>
+                ) : (
+                    <MapWrapper deviceid={detail} toggle={displayToggle} showSearchBox={this.state.showFilter}/>
+                )}
+            </AltContainer>
+        </ReactCSSTransitionGroup>;
+    }
 }
 
 export { Devices };

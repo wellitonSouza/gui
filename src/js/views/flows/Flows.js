@@ -13,47 +13,136 @@ import util from "../../comms/util/util";
 
 function SummaryItem(props) {
   return (
-    <div className={"lst-entry-wrapper z-depth-2 col s12"}>
-      <div className="lst-entry-title col s12">
-
-        <div className="app-icon img">
-          <i className="material-icons mi-device-hub shadow" />
-        </div>
-
-        <div className="user-label truncate">{props.flow.name}</div>
-        <div className="label">flow name</div>
-        <span className={"badge " + status}>{status}</span>
+      <div className={"card-size lst-entry-wrapper z-depth-2 fullHeight"}>
+          <div className="lst-entry-title col s12">
+              <img className="title-icon" src={"images/white-chip.png"}/>
+              <div className="title-text">
+                  <span className="text"> {props.flow.name} </span>
+              </div>
+          </div>
+          <div className="attr-list">
+              <div className={"attr-area light-background"}>
+                  <div className="attr-row">
+                      <div className="icon">
+                          <img src={"images/tag.png"}/>
+                      </div>
+                      <div className={"attr-content"}>
+                          <input type="text" value={props.flow.flow.length - 1} disabled={true}/>
+                          <span>Nodes</span>
+                      </div>
+                      <div className="center-text-parent material-btn right-side">
+                      </div>
+                  </div>
+                  <div className="attr-row">
+                      <div className="icon">
+                          <img src={"images/update.png"}/>
+                      </div>
+                      <div className={"attr-content"}>
+                          <input type="text" value={util.printTime(props.flow.updated / 1000)} disabled={true}/>
+                          <span>Last update</span>
+                      </div>
+                      <div className="center-text-parent material-btn right-side">
+                      </div>
+                  </div>
+              </div>
+          </div>
       </div>
-
-      <div className="lst-entry-body col s12">
-        <div className="col s3 metric">
-          <div className="metric-value">{props.flow.flow.length - 1}</div>
-          <div className="metric-label">Nodes</div>
-        </div>
-        <div className="col s9 metric last">
-          <div className="metric-value">{util.printTime(props.flow.updated / 1000)}</div>
-          <div className="metric-label">Last update</div>
-        </div>
-      </div>
-    </div>
   )
 }
 
 class ListRender extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {filter: "", loaded: false };
+
+    this.filteredList = [];
+
+    this.applyFiltering = this.applyFiltering.bind(this);
+    this.filterListByName = this.filterListByName.bind(this);
+    this.clearInputField = this.clearInputField.bind(this);
+  }
+
+  componentDidUpdate() {
+    if ((!this.state.loaded) && (this.props.flows !== undefined) && (Object.keys(this.props.flows).length)) {
+        this.convertFlowList();
+        this.setState({loaded: true});
+    }
+  }
+
+  filterListByName (event){
+    event.preventDefault();
+    // if (event.target.value === "") {
+      // DeviceActions.fetchDevices.defer();
+      // the flicker is being caused by this so let's try remove it
+    // }
+    this.setState({filter: event.target.value});
+  }
+
+  convertFlowList() {
+    if (this.state.filter != "") {
+      var updatedList = this.filteredList.filter(function(flow) {
+        return flow.name.includes(event.target.value);
+      });
+      this.filteredList = updatedList;
+    } else {
+      this.filteredList = [];
+      for (let k in this.props.flows) {
+        if (this.props.flows.hasOwnProperty(k)){
+          this.filteredList.push(this.props.flows[k]);
+        }
+      }
+    }
+  }
+
+  applyFiltering(list){
+    return Object.values(list);
+  }
+
+  clearInputField(){
+    this.state.filter = "";
   }
 
   render () {
-    const flowList = this.props.flows;
-    if (Object.keys(flowList).length > 0) {
+    this.filteredList = this.applyFiltering(this.props.flows);
+
+    this.convertFlowList();
+
+    let header = null;
+    if (this.props.showSearchBox){
+      header = <div className={"row z-depth-2 flowsSubHeader " + (this.props.showSearchBox ? "show-dy" : "hide-dy")} id="inner-header">
+          <div className="col s3 m3 main-title">
+            Showing {this.filteredList.length} flow(s)
+          </div>
+          <div className="col s1 m1 header-info hide-on-small-only">
+            {/* <div className="title"># Devices</div> */}
+            {/* <div className="subtitle"> */}
+            {/* Showing {this.filteredList.length} device(s) */}
+            {/* </div> */}
+          </div>
+          <div className="col s4 m4">
+            <label htmlFor="fld_flow_name">Flow Name</label>
+            <input id="fld_flow_name" type="text" name="Flow Name" className="form-control form-control-lg" placeholder="Search" value={this.state.filter} onChange={this.filterListByName} />
+          </div>
+        </div>;
+    } else{
+      this.filteredList = this.applyFiltering(this.props.flows);
+      this.clearInputField();
+    }
+
+
+    if (this.filteredList.length > 0) {
       return (
         <div className="row">
-          <div className="col s12  lst-wrapper">
-            { Object.keys(flowList).map((flowid) =>
-              <Link to={"/flows/id/" + flowid} key={flowid} >
-                <div className="lst-entry col s12 m6 l4">
-                  <SummaryItem flow={flowList[flowid]} />
+          <ReactCSSTransitionGroup transitionName="flowsSubHeader" transitionAppear={true} transitionAppearTimeout={100}
+                                        transitionEnterTimeout={100} transitionLeaveTimeout={100}>
+            {header}
+          </ReactCSSTransitionGroup>
+          <div className="col s12 lst-wrapper scroll-bar">
+            { this.filteredList.map((flow, id) =>            
+              <Link to={"/flows/id/" + flow.id} key={flow.id} >           
+                <div className="s12 m6 l4 mt20">
+                  <SummaryItem flow={flow} key={flow.id} />
                 </div>
               </Link>
             )}
@@ -63,6 +152,10 @@ class ListRender extends Component {
     } else {
       return  (
         <div className="row full-height relative">
+          <ReactCSSTransitionGroup transitionName="flowsSubHeader" transitionAppear={true} transitionAppearTimeout={100}
+                                        transitionEnterTimeout={100} transitionLeaveTimeout={100}>
+            {header}
+          </ReactCSSTransitionGroup>
           <div className="background-info valign-wrapper full-height">
             <span className="horizontal-center">No configured flows</span>
           </div>
@@ -144,7 +237,9 @@ class FlowList extends Component {
 
     return (
       <div className="col m10 s12 offset-m1 full-height relative" >
-
+        <ReactCSSTransitionGroup transitionName="flowsSubHeader">
+          {this.props.showSearchBox ? header: null}
+        </ReactCSSTransitionGroup>
         <ListRender flows={filteredList}
                     detail={this.state.detail}
                     detailedTemplate={this.detailedTemplate}
@@ -163,26 +258,40 @@ class Flows extends Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {showFilter: false};
+
+    this.toggleSearchBar = this.toggleSearchBar.bind(this);
   }
 
   componentDidMount() {
     FlowActions.fetch.defer();
   }
 
+  toggleSearchBar() {
+    const last = this.state.showFilter;
+    this.setState({ showFilter: !last });
+  }
+
   render() {
     return (
       <ReactCSSTransitionGroup
           transitionName="first"
-          transitionAppear={true} transitionAppearTimeout={500}
-          transitionEnterTimeout={500} transitionLeaveTimeout={500} >
+          transitionAppear={true} transitionAppearTimeout={100}
+          transitionEnterTimeout={100} transitionLeaveTimeout={100} >
         <NewPageHeader title="data flows" subtitle="" icon="flow">
-          <Link to="/flows/new" className="new-btn-flat red waves-effect waves-light " title="Create a new data flow">
-            New Flow <i className="fa fa-plus"/>
-          </Link>
+          <div className="pt10">
+            <div className="searchBtn" title="Show search bar" onClick={this.toggleSearchBar.bind(this)}>
+              <i className="fa fa-search"/>
+            </div>
+            <Link to="/flows/new" className="new-btn-flat red waves-effect waves-light " title="Create a new data flow">
+              New Flow <i className="fa fa-plus"/>
+            </Link>
+          </div>
         </NewPageHeader>
 
         <AltContainer store={FlowStore}>
-          <ListRender />
+          <ListRender showSearchBox={this.state.showFilter}/>
         </AltContainer>
       </ReactCSSTransitionGroup>
     );

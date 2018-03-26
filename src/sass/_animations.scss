@@ -12,6 +12,14 @@
   }
 }
 
+@keyframes expand {
+  from {right: -350px;}
+  to {right: 0;}
+}
+@keyframes suppress {
+  from {right: 0;}
+  to {right: -350px;}
+}
 
 .first-enter {
   opacity: 0.01;
@@ -19,7 +27,7 @@
 
 .first-enter.first-enter-active {
   opacity: 1;
-  transition: opacity 500ms ease-in;
+  transition: opacity 100ms ease-in;
 }
 
 .first-leave {
@@ -28,7 +36,7 @@
 
 .first-leave.first-leave-active {
   opacity: 0.001;
-  transition: opacity 500ms ease-in;
+  transition: opacity 100ms ease-in;
 }
 
 
@@ -38,7 +46,7 @@
 
 .first-appear.first-appear-active {
   opacity: 1 !important;
-  transition: opacity 0.5s ease-in;
+  transition: opacity 0.1s ease-in;
 }
 
 .resize-enter {
@@ -52,4 +60,40 @@
 
 .expand {
   transition: all .4s ease 0s;
+}
+
+.sidebar-enter {
+  -webkit-animation-name: expand;
+  -moz-animation-name: expand;
+  -o-animation-name: expand;
+  animation-name: expand;
+  animation-duration: 500ms;
+  opacity: 0;
+}
+.sidebar-enter.sidebar-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in-out;
+
+}
+
+.sidebar-leave {
+  -webkit-animation-name: suppress;
+  -moz-animation-name: suppress;
+  -o-animation-name: suppress;
+  animation-name: suppress;
+  opacity: 1;
+}
+
+.sidebar-leave.sidebar-leave-active {
+  animation-duration: 500ms;
+  opacity: 0;
+  transition: opacity 350ms ease-in-out;
+}
+
+.sidebar-appear {
+
+}
+
+.sidebar-appear.sidebar-appear-active {
+
 }

@@ -119,6 +119,9 @@ class Util {
   }
 
     async _status(response) {
+    if (response.status === 500)
+        return Promise.reject(response);
+
     let body = await response.json();
     response.message = body.message;
         if (response.status >= 200 && response.status < 300) {
@@ -162,6 +165,10 @@ class Util {
 
   iso_to_date(timestamp) {
     return moment(timestamp).format('D/MM/YYYY HH:mm:ss');
+  }
+
+  iso_to_date_hour(timestamp){
+    return moment(timestamp).format('D/MM HH:mm');
   }
 
 

@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-
+import { Link, browserHistory } from 'react-router'
 import AltContainer from 'alt-container';
-
 import MenuActions from '../../actions/MenuActions';
 import MenuStore from '../../stores/MenuStore';
 import LoginStore from '../../stores/LoginStore';
@@ -86,6 +83,7 @@ class RightSideBar extends Component {
   logout(event) {
     event.preventDefault();
     LoginActions.logout();
+    browserHistory.push('/');
   }
 
   dismiss(event) {
@@ -216,7 +214,7 @@ class LeftSidebar extends Component {
       ]},
       { image: 'template', target: "/template/list", iconClass: "fa fa-cubes", label: "Templates ", desc: "Template management"},
       { image: 'graph', target: "/flows", iconClass: "material-icons mi-device-hub", label: "data flows", desc: "Processing flows to be executed"},
-      /*{ image: 'bell', target: "/alarm", iconClass: "fa fa-bell-o", label: "alarms", desc: "System events and alarms"},*/
+      { image: 'bell', target: "/alarm", iconClass: "fa fa-bell-o", label: "alarms", desc: "System events and alarms"},
       { image: 'auth', target: "/auth", iconClass: "fa fa-unlock-alt", label: "auth", desc: "User and permissions management", children: [
         { target: "/auth/user", iconClass: "", label: "users", title: "Users list"},
         { target: "/auth/permissions", iconClass: "", label: "permissions", title: "Permissions list"}
@@ -307,7 +305,8 @@ class Full extends Component {
       <span>
 
         <AltContainer store={LoginStore}>
-          {(this.state.user_sidebar) ? (
+
+      {(this.state.user_sidebar) ? (
             <RightSideBar toggleSidebar={this.toggleUserSidebar} />
           ): ( <div></div> )}
           <Navbar toggleSidebar={this.toggleUserSidebar} open={this.state.user_sidebar}/>

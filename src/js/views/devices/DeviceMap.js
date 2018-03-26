@@ -27,10 +27,9 @@ import io from 'socket.io-client';
 
 
 var redPin = L.divIcon({className: 'icon-marker bg-red'});
-var selectedPin = L.icon({
-  iconUrl: 'images/mapMarker.png',
-  iconSize: [40, 40]
-});
+var trackingPin = L.divIcon({className: 'icon-marker bg-tracking-marker'});
+
+var listLatLngs = [];
 
 class PositionRenderer extends Component {
   constructor(props) {
@@ -41,12 +40,13 @@ class PositionRenderer extends Component {
       isTerrain: true,
       selectedPin: true,
       center: (this.props.center ? this.props.center : [-21.277057, -47.9590129]),
-      zoom: (this.props.zoom ? this.props.zoom :7.2)
+      zoom: (this.props.zoom ? this.props.zoom : 2)
     }
 
     this.setTiles = this.setTiles.bind(this);
     this.handleTracking = this.handleTracking.bind(this);
     this.handleContextMenu = this.handleContextMenu.bind(this);
+    this.handleCenter = this.handleCenter.bind(this);
   }
 
   componentDidMount() {
@@ -116,22 +116,40 @@ class PositionRenderer extends Component {
     this.setState({isTerrain: isMap});
   }
 
+  handleCenter(){
+    if(this.props.center){
+      this.setState({center: this.props.center})
+    } else {
+      this.setState({center: [-21.277057, -47.9590129]})
+    }
+  }
+
   render() {
     function getPin(device){
-      if(!device.select == true){
-        return redPin;
+      if(device.hasOwnProperty('unique_key')){
+        if(device.unique_key == device.id+'_'+0){
+          return redPin
+        } else {
+          return trackingPin;
+        }
       } else {
-        return selectedPin;
+        return redPin;
       }
+    }
+
+    function makeListPositions(position){
+      listLatLngs.push(position);
     }
 
     let parsedEntries = this.props.devices.reduce((result,k) => {
         if (k.position !== undefined){
+          makeListPositions(k.position);    
           result.push({
             id: k.id,
             pos: k.position,
             name: k.label,
             pin: getPin(k),
+            timestamp: k.timestamp,
             key: (k.unique_key ? k.unique_key : k.id)
           });
         }
@@ -163,7 +181,7 @@ class PositionRenderer extends Component {
     //const attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> and Mapbox contributors';
 
     return (
-      <Map center={this.state.center}
+      <Map center={this.props.center ? this.props.center : this.state.center}
            zoom={this.state.zoom}
            ref={m => {this.leafletMap = m;}}>
 
@@ -180,8 +198,9 @@ class PositionRenderer extends Component {
             onClick={(e) => { this.handleContextMenu(e, k.id); }}
             position={k.pos} key={k.key} icon={k.pin}>
             <Tooltip>
-              <span>{k.id} : {k.name}</span>
+              <span>{k.name} : {k.timestamp}</span>
             </Tooltip>
+            <Polyline positions={listLatLngs} color='#7fb2f9' dashArray='10,10'/>
           </Marker>
         )})}
         <ScaleControl />
@@ -335,7 +354,6 @@ class DeviceMap extends Component {
     }
 
     let validDevices = [];
-    //console.log("deviceS: ", devices);
     for(let k in devices){
       for(let j in devices[k].attrs){
         for(let i in devices[k].attrs[j]){
@@ -356,7 +374,6 @@ class DeviceMap extends Component {
   }
 
   render() {
-
     let validDevices = this.getDevicesWithPosition(this.props.devices);
     let filteredList = this.applyFiltering(validDevices);
 
@@ -368,13 +385,14 @@ class DeviceMap extends Component {
       for(let k in filteredList){
         if(filteredList.hasOwnProperty(k)){
           let device = filteredList[k];
-          device.hasPosition = device.hasOwnProperty('position');
+          device.hasPosition = device.hasOwnProperty('position');      
           if(this.props.tracking.hasOwnProperty(filteredList[k].id) && (!device.hide)){
             pointList = pointList.concat(this.props.tracking[filteredList[k].id].map((e,k) => {
               let updated = e;
               updated.id = device.id;
               updated.unique_key = device.id + "_" + k;
               updated.label = device.label;
+              updated.timestamp = util.iso_to_date(e.timestamp)
               return updated;
             }));
           }
@@ -397,7 +415,7 @@ class DeviceMap extends Component {
                   onLoad={this.mqLoaded}>
           </Script>
           {this.state.mapquest ? (
-            <PositionRenderer devices={pointList} toggleTracking={this.toggleTracking} allowContextMenu={true}/>
+            <PositionRenderer devices={pointList} toggleTracking={this.toggleTracking} allowContextMenu={true} />
           ) : (
             <div><Loading /></div>
           )}

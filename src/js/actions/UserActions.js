@@ -1,15 +1,6 @@
 import userManager from '../comms/users/UserManager';
-
-var alt = require('../alt');
-
-// TODO remove this
-function fakeFetch() {
-  return new Promise(function(resolve, reject) {
-    setTimeout(function() {
-      resolve();
-    }, 250);
-  });
-}
+import Materialize from "materialize-css";
+let alt = require('../alt');
 
 class UserActions {
 
@@ -30,6 +21,7 @@ class UserActions {
           // @bug: backend won't return full public record of the created user, so merge the
           //       server-side data (id) with the known record of the user.
           let updatedUser = JSON.parse(JSON.stringify(newUser));
+          console.log("aasdasd", response);
           updatedUser['id'] = response.user.id;
           updatedUser['passwd'] = '';
           this.insertUser(updatedUser);
@@ -38,20 +30,20 @@ class UserActions {
           }
         })
         .catch((error) => {
-          this.usersFailed("Failed to add User to list");
-          error.data.json()
-            .then((data) => {
-              if (error_cb) {
-                error_cb(data);
-              }
-            })
+          this.usersFailed(error);
+          // error.data.json()
+            // .then((data) => {
+            //   if (error_cb) {
+            //     error_cb(data);
+            //   }
+            // })
         })
     }
   }
 
   fetchUsers() {
     return (dispatch) => {
-      dispatch()
+      dispatch();
       userManager.getUsers()
         .then((userList) => {
           this.updateUsers(userList.users);
@@ -64,11 +56,11 @@ class UserActions {
 
   triggerUpdate(user, cb, error_cb) {
     return (dispatch) => {
-      dispatch()
+      dispatch();
       // special case (for now): allow edits to not repeat the password
-      if (user.passwd.trim().length == 0) {
-        delete user.passwd;
-      }
+      // if (user.passwd.trim().length === 0) {
+      //   delete user.passwd;
+      // }
 
       userManager.setUser(user)
         .then((response) => {
@@ -78,20 +70,20 @@ class UserActions {
           }
         })
         .catch((error) => {
-          this.usersFailed("Failed to update given user");
-          error.data.json()
-            .then((data) => {
-              if (error_cb) {
-                error_cb(data);
-              }
-            })
+          this.usersFailed(error);
+          // error.data.json()
+          //   .then((data) => {
+          //     if (error_cb) {
+          //       error_cb(data);
+          //     }
+          //   })
         })
     }
   }
 
   triggerRemoval(user, cb) {
     return (dispatch) => {
-      dispatch()
+      dispatch();
       userManager.deleteUser(user.id)
         .then((response) => {
           this.removeSingle(user.id);
@@ -100,8 +92,7 @@ class UserActions {
           }
         })
         .catch((error) => {
-          const msg = "Failed to remove given user";
-          this.usersFailed(msg);
+          this.usersFailed(error);
         })
     }
   }
@@ -115,8 +106,10 @@ class UserActions {
   }
 
   usersFailed(error) {
-    return error;
+      Materialize.toast(error.message, 4000);
+      return error;
   }
 }
 
-alt.createActions(UserActions, exports);
+let _user = alt.createActions(UserActions, exports);
+export default _user;

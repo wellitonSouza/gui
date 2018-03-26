@@ -16,15 +16,16 @@ import util from "../../comms/util/util";
 
 import DeviceMeta from '../../stores/DeviceMeta';
 import { Loading } from "../../components/Loading";
-import { Attr } from "../../components/HistoryElements"; 
+import { Attr } from "../../components/HistoryElements";
 import { Line } from 'react-chartjs-2';
 import { PositionRenderer } from './DeviceMap.js'
 import { MapWrapper } from './Devices.js'
 import { DojotBtnRedCircle } from "../../components/DojotButton";
 import MaterialSelect from "../../components/MaterialSelect";
 
-import io from 'socket.io-client';
+import Script from 'react-load-script';
 
+import io from 'socket.io-client';
 
 class DeviceHeader extends Component {
   constructor(props) {
@@ -57,17 +58,14 @@ class Attribute extends Component {
   }
 
   componentDidMount(){
-     console.log("componentDidMount",this.props);
     //  MeasureActions.fetchMeasure(this.props.device, this.props.device.id, this.props.device.templates, this.props.attr.id, 250);
   }
 
   toogleExpand(state) {
-    console.log("state", state);
     this.setState({opened: state});
   }
 
   render() {
-    console.log("attrs", this.props.attr,this.props.expand);
 
     return <div className={"attributeBox " + (this.state.opened ? "expanded" : "compressed")}>
         <div className="header">
@@ -91,7 +89,7 @@ class Configurations extends Component {
   }
   render() {
     return <div>
-        <GenericList img="images/gear-dark.png" attrs={this.props.attrs} box_title="Configurations" />
+        <GenericList img="images/gear-dark.png" attrs={this.props.attrs} box_title="Configurations" device={this.props.device}/>
       </div>;
   }
 }
@@ -99,10 +97,17 @@ class Configurations extends Component {
 class StaticAttributes extends Component {
   constructor(props) {
     super(props);
+
+    this.openStaticMap = this.openStaticMap.bind(this);
   }
+
+  openStaticMap(state){
+    this.props.openStaticMap(state);
+  }
+
   render() {
     return <div>
-        <GenericList img="images/tag.png" attrs={this.props.attrs} box_title="Static Attributes" />
+        <GenericList img="images/tag.png" attrs={this.props.attrs} box_title="Static Attributes" device={this.props.device} openStaticMap={this.openStaticMap}/>
       </div>;
   }
 }
@@ -110,9 +115,41 @@ class StaticAttributes extends Component {
 class GenericList extends Component {
   constructor(props) {
     super(props);
+    this.state = {openStaticMap: true, visible_static_map: false}
+
+    this.openMap = this.openMap.bind(this);
+    this.verifyIsGeo = this.verifyIsGeo.bind(this);
+  }
+
+  openMap(visible){
+    const device = this.props.device;
+    for(let k in device.attrs){
+      for(let j in device.attrs[k]){
+        if(device.attrs[k][j].value_type == "geo:point"){
+          if(device.attrs[k][j].static_value !== ""){
+            this.setState({
+              openStaticMap: !this.state.openStaticMap,
+              visible_static_map: !this.state.visible_static_map
+            });
+            this.props.openStaticMap(this.state.openStaticMap);
+          }
+        }
+      }
+    }
+  }
+
+  verifyIsGeo(attrs){
+    for(let k in attrs){
+      if(attrs[k].value_type == 'geo:point' || attrs[k].value_type == 'geo'){
+        attrs[k].isGeo = true;
+      } else {
+        attrs[k].isGeo = false;
+      }
+    }
   }
 
   render() {
+    this.verifyIsGeo(this.props.attrs);
     return <div className="row stt-attributes">
         <div className="col s12 header">
           <div className="icon">
@@ -127,10 +164,16 @@ class GenericList extends Component {
                 <div className="name-value">{attr.label}</div>
                 <div className="value-label">Name</div>
               </div>
-              <div className="col s8">
+              <div className="col s8" >
                   <div className="value-value">{attr.static_value}</div>
                   <div className="value-label">{attr.value_type}</div>
               </div>
+              {attr.isGeo ?
+                <div className="star" onClick={this.openMap}>
+                    <i className={"fa " + (this.state.visible_static_map ? "fa-star" : "fa-star-o")} />
+                </div> :
+                null
+              }
                 {/* <div className="col s4">
                 <div className="template-value">Template</div>
                 <div className="template-label">Template</div>
@@ -190,16 +233,21 @@ class DyAttributeArea extends Component {
         lista[index].visible = false;
     }
 
-     return <div className="" >
-         <div className="second-col">
-           {this.state.selected_attributes.map(at => (
-            <Attribute key={at.id} device={this.props.device} attr={at} />
-           ))}
-         </div>
-         <div className="third-col">
-           <DynamicAttributeList device={this.props.device} attrs={lista} change_attr={this.toggleAttribute} />
-         </div>
-       </div>;
+    return <div className="content-row" >
+      <div className="second-col">
+        {this.state.selected_attributes.length == 0 ? 
+          (<div className="second-col-label center-align">To see the data select an static or dynamic attribute</div>) 
+          : null 
+        }
+        {this.state.selected_attributes.map(at => (
+          <Attribute key={at.id} device={this.props.device} attr={at} />
+        ))}
+        {this.props.openStaticMap ? <PositionStaticWrapper device={this.props.device} /> : null}
+      </div>
+      <div className="third-col">
+        <DynamicAttributeList device={this.props.device} attrs={lista} change_attr={this.toggleAttribute} />
+      </div>
+    </div>
   }
 }
 
@@ -210,14 +258,28 @@ class DynamicAttributeList extends Component {
     this.clickAttr = this.clickAttr.bind(this);
   }
 
+  componentWillMount(){
+    const device = this.props.device;
+    for (let i in device.attrs) {
+      for (let j in device.attrs[i]) {
+        if(device.attrs[i][j].type !== "meta"){
+          if(device.attrs[i][j].type == "dynamic"){
+            if(device.attrs[i][j].value_type == "geo:point"){
+                MeasureActions.fetchPosition.defer(device, device.id, device.attrs[i][j].label);
+            }
+          }
+          MeasureActions.fetchMeasure.defer(device, device.id, device.attrs[i][j].label, 10);
+        }
+      }
+    }
+  }
+
   clickAttr(attr)
   {
-      console.log("clickAttr");
       this.props.change_attr(attr);
   }
 
   render() {
-    console.log("attrs -> ", this.props.attrs);
 
     return <div className=" dy_attributes">
         <div className="col s12 header">
@@ -231,13 +293,13 @@ class DynamicAttributeList extends Component {
         </div>
         <div className="col s12 body">
           {this.props.attrs.map(attr => (
-            <div key={attr.label} className="line">
+            <div key={attr.label} className="line" onClick={this.clickAttr.bind(this, attr)}>
               <div className="col offset-s2 s8">
                 <div className="label">{attr.label}</div>
                 {/* <div className="value-label">{attr.value_type}</div> */}
               </div>
               <div className="col s2">
-                <div className="star" onClick={this.clickAttr.bind(this, attr)}>
+                <div className="star" >
                     <i className={"fa " + (attr.visible ? "fa-star" : "fa-star-o")} />
                 </div>
               </div>
@@ -370,7 +432,7 @@ class AttrHistory extends Component {
         </div> */}
         <div className="contents no-padding">
           <AltContainer store={MeasureStore}>
-            <Attr device={this.props.device} type={this.props.type} attr={this.props.attr}/>
+            <Attr device={this.props.device} type={this.props.type} attr={this.props.attr} />
           </AltContainer>
         </div>
       </div>
@@ -598,20 +660,25 @@ function StatusDisplay(props) {
 // }
 
 
-class PositionWrapper extends Component {
+class PositionStaticWrapper extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      opened: false, 
+      opened: false,
       hasPosition: false,
-      pos: []
+      pos: [],
+      mapquest: false
     };
     this.getDevicesWithPosition = this.getDevicesWithPosition.bind(this);
     this.toogleExpand = this.toogleExpand.bind(this);
+    this.mqLoaded = this.mqLoaded.bind(this);
+  }
+
+  mqLoaded(){
+    this.setState({mapquest: true});
   }
 
   toogleExpand(state) {
-    console.log("state", state);
     this.setState({opened: state});
   }
 
@@ -623,15 +690,15 @@ class PositionWrapper extends Component {
     }
 
     let validDevices = [];
-      for(let j in device.attrs){
-        for(let i in device.attrs[j]){
-          if(device.attrs[j][i].type == "static"){
-            if(device.attrs[j][i].value_type == "geo:point"){
-              device.position = parserPosition(device.attrs[j][i].static_value);
-            }
-          }
-        }
-      }
+       for(let j in device.attrs){
+         for(let i in device.attrs[j]){
+           if(device.attrs[j][i].type == "static"){
+             if(device.attrs[j][i].value_type == "geo:point"){
+               device.position = parserPosition(device.attrs[j][i].static_value);
+             }
+           }
+         }
+       }
 
       device.select = true;
       if(device.position !== null && device.position !== undefined){
@@ -641,7 +708,6 @@ class PositionWrapper extends Component {
   }
 
   render() {
-
     function NoData() {
         return (
           <div className="valign-wrapper full-height background-info">
@@ -649,23 +715,30 @@ class PositionWrapper extends Component {
           </div>
         )
     }
- 
-    console.log("Position Renderer ", this.props.device);
+
     if (this.props.device === undefined)
     {
       return (<NoData />);
     }
 
     let validDevices = this.getDevicesWithPosition(this.props.device);
-    console.log("validDevices", validDevices);
     if (validDevices.length == 0) {
       return <NoData />;
     } else {
-      return <div className={"PositionRendererDiv " + (this.state.opened ? "expanded" : "compressed")}> 
-          <div className="floating-icon">
+      return <div className={"PositionRendererDiv " + (this.state.opened ? "expanded" : "compressed")}>
+          {/*<div className="floating-icon">
             {!this.state.opened ? <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand" /> : <i onClick={this.toogleExpand.bind(this, false)} className="fa fa-compress" />}
+          </div>*/}
+          <div>
+            <Script url="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=zvpeonXbjGkoRqVMtyQYCGVn4JQG8rd9"
+                    onLoad={this.mqLoaded}>
+            </Script>
           </div>
-          <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} />
+          {this.state.mapquest ?(
+            <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} />
+          ) : (
+            <Loading/>
+          )}
         </div>
     }
   }
@@ -688,10 +761,16 @@ class PositionWrapper extends Component {
 class DeviceDetail extends Component {
   constructor(props) {
     super(props);
+    this.state={openStaticMap: false}
+
+    this.openStaticMap = this.openStaticMap.bind(this);
+  }
+
+  openStaticMap(state){
+    this.setState({openStaticMap:state})
   }
 
   render() {
-     console.log("device : ",this.props.device);
      let attr_list = [];
      let dal = [];
      let config_list = [];
@@ -707,19 +786,26 @@ class DeviceDetail extends Component {
          }));
       config_list = config_list.concat(tmp.filter(i => {
            return String(i.type) == "meta";
-         }));     
+         }));
      };
+
+     for (let index in config_list) {
+        if (config_list[index].label === "protocol") {
+          config_list[index].static_value = config_list[index].static_value.toUpperCase();
+        }
+     }
+
      return <div className="row detail-body">
-         <div className="first-col full-height">
-           <div className="col s12 device-map-box">
-             <AltContainer store={DeviceStore}>
-               <PositionWrapper device={this.props.device} />
-             </AltContainer>
-           </div>
+         <div className="first-col">
+         {/*<div className="col s12 device-map-box">
+           <AltContainer store={MeasureStore}>
+             <PositionWrapper device={this.props.device} />
+           </AltContainer>
+         </div>*/}
            <Configurations device={this.props.device} attrs={config_list} />
-           <StaticAttributes device={this.props.device} attrs={attr_list} />
+           <StaticAttributes device={this.props.device} attrs={attr_list} openStaticMap={this.openStaticMap}/>
          </div>
-        <DyAttributeArea device={this.props.device} attrs={dal}/>
+        <DyAttributeArea device={this.props.device} attrs={dal} openStaticMap={this.state.openStaticMap}/>
        </div>;
 
        // <div className="row detail-body">
@@ -770,24 +856,15 @@ class ViewDeviceImpl extends Component {
     this.remove = this.remove.bind(this);
   }
 
-  componentDidMount(){
+  componentWillMount(){
     const device = this.props.devices[this.props.device_id];
     if (device == undefined)
       return; //not ready
 
     for (let i in device.attrs) {
       for (let j in device.attrs[i]) {
-        if (device.attrs[i][j].value_type == "geo") {
-          MeasureActions.fetchPosition.defer(device, device.id, device.templates, device.attrs[i][j].label);
-        }
-      }
-    }
-
-    let devices = this.props.devices;
-    for(let k in devices){
-      for(let j in devices[k].attrs){
-        for(let i in devices[k].attrs[j]){
-          MeasureActions.fetchMeasure.defer(devices[k], devices[k].id, devices[k].templates, devices[k].attrs[j][i].label, 10);
+        if(device.attrs[i][j].type !== "meta"){
+          MeasureActions.fetchMeasure.defer(device, device.id, device.attrs[i][j].label, 10);
         }
       }
     }
@@ -797,7 +874,8 @@ class ViewDeviceImpl extends Component {
     // This should be on DeviceUserActions -
     // this is not good, but will have to make do because of z-index on the action header
     e.preventDefault();
-      DeviceActions.triggerRemoval({id: this.props.devices[this.props.device_id].id}, (device) => {
+    //console.log("Id: ", id);
+      DeviceActions.triggerRemoval({id: this.props.device_id}, (device) => {
       hashHistory.push('/device/list');
       Materialize.toast('Device removed', 4000);
     });
@@ -829,7 +907,7 @@ class ViewDeviceImpl extends Component {
           <RemoveDialog callback={this.remove} target="confirmDiag" />
         </NewPageHeader>
         <DeviceHeader device={device}>
-        </DeviceHeader> 
+        </DeviceHeader>
         <DeviceDetail deviceid={device.id} device={device}/>
       </div>
     )
@@ -846,30 +924,56 @@ class ViewDevice extends Component {
       DeviceActions.fetchSingle.defer(this.props.params.device);
   }
 
-  componentDidMount() {
-    const options = { transports: ["websocket"] };
-    this.io = io(window.location.host, options);
-    this.io.on(this.props.params.device, function(data) {
-      MeasureActions.appendMeasures(data);
-
-      const fields = ["ts", "temperature", "sinr"];
-      let device_data = { device_id: data.device_id };
-      device_data.position = [data.lat.value, data.lng.value];
-      fields.map(field => {
-        if (data.hasOwnProperty(field)) {
-          if (field === "ts") {
-            device_data[field] = util.timestamp_to_date(Date.now());
-          } else {
-            device_data[field] = data[field].value;
-          }
-        }
+  componentDidMount(){
+      // Realtime
+      var socketio = require('socket.io-client');
+  
+      const target = 'http://' + window.location.host;
+      const token_url = target + "/stream/socketio";
+  
+      const url = token_url;
+      const config = {}
+  
+      util._runFetch(url, config)
+        .then((reply) => {
+          init(reply.token);
+        })
+        .catch((error) => {console.log("Failed!", error);
       });
-      MeasureActions.updatePosition(device_data);
-    });
+      
+      function init(token){
+        var socket = socketio(target, {query: "token=" + token, transports: ['websocket']});
+  
+        socket.on('all', function(data){
+          MeasureActions.appendMeasures(data);
+        });
+      }
   }
 
-  componentWillUnmount() {
-    this.io.close();
+  componentDidUpdate() {
+    // const options = { transports: ["websocket"] };
+    // this.io = io(window.location.host, options);
+    // this.io.on(this.props.params.device, function(data) {
+    //   MeasureActions.appendMeasures(data);
+    //
+    //   const fields = ["ts", "temperature", "sinr"];
+    //   let device_data = { device_id: data.device_id };
+    //   device_data.position = [data.lat.value, data.lng.value];
+    //   fields.map(field => {
+    //     if (data.hasOwnProperty(field)) {
+    //       if (field === "ts") {
+    //         device_data[field] = util.timestamp_to_date(Date.now());
+    //       } else {
+    //         device_data[field] = data[field].value;
+    //       }
+    //     }
+    //   });
+    //   MeasureActions.updatePosition(device_data);
+    // });
+  }
+
+  componentWillUnmount(){
+    location.reload(true);
   }
 
   render() {

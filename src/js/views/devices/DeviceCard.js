@@ -68,6 +68,8 @@ class DeviceCard extends Component {
     super(props);
     this.filterListByName = this.filterListByName.bind(this);
     this.filterListByTemplate = this.filterListByTemplate.bind(this);
+    this.applyFiltering = this.applyFiltering.bind(this);
+    this.clearInputField = this.clearInputField.bind(this);
 
     this.filteredList = [];
     this.templates = [];
@@ -140,7 +142,16 @@ class DeviceCard extends Component {
     for (let i = 0; i < this.templates.length; i++) {
         items.push(<option value={this.templates[i].id}>{this.templates[i].label}</option>);
     }
+
     return items;
+  }
+
+  applyFiltering(list){
+    return Object.values(list)
+  }
+
+  clearInputField(){
+    this.state.filter = "";
   }
 
   render() {
@@ -148,6 +159,7 @@ class DeviceCard extends Component {
       return (<Loading />);
     }
 
+  this.filteredList = this.applyFiltering(this.props.devices);
   this.convertDeviceList();
 
   this.convertTemplateList();
@@ -155,7 +167,7 @@ class DeviceCard extends Component {
   const device_icon  = (<img src='images/icons/chip.png' />);
   
    let header = null;
-   if (this.props.showSearchBox)
+   if (this.props.showSearchBox){
     header = <div className={"row z-depth-2 devicesSubHeader " + (this.props.showSearchBox ? "show-dy" : "hide-dy")} id="inner-header">
          <div className="col s3 m3 main-title">
            Showing {this.filteredList.length} device(s)
@@ -176,7 +188,10 @@ class DeviceCard extends Component {
            </MaterialSelect>
          </div>
        </div>;
-
+   } else {
+    this.filteredList = this.applyFiltering(this.props.devices);
+    this.clearInputField();
+   }
    
       return <div>
           <ReactCSSTransitionGroup transitionName="devicesSubHeader">
@@ -186,9 +201,11 @@ class DeviceCard extends Component {
             <div className="deviceMapCanvas col m12 s12 relative">
               <div className="row">
                 {this.filteredList.length == 0 ? (
-                  <span className="no-device-configured">
-                    No configured devices
-                  </span>
+                  <div className="background-info valign-wrapper full-height">
+                <span className="horizontal-center">
+                   No configured devices
+                </span>
+              </div>
                 ) : (
                   <div className="col s12  lst-wrapper extra-padding">
                     {this.filteredList.map((device, idx) => (

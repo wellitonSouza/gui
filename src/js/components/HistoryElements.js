@@ -1,4 +1,11 @@
 import React, { Component } from 'react';
+import util from "../comms/util/util";
+import { Line } from 'react-chartjs-2';
+import { PositionRenderer } from '../views/devices/DeviceMap';
+import Script from 'react-load-script';
+import { Loading } from './Loading.js';
+import MeasureStore from '../stores/MeasureStore';
+
 
 class Graph extends Component{
   constructor(props) {
@@ -7,7 +14,6 @@ class Graph extends Component{
 
   render() {
 
-    console.log("Graph Render", this.props);
     let labels = [];
     let values = [];
 
@@ -28,9 +34,9 @@ class Graph extends Component{
       return undefined;
     }
 
-    this.props.data.value.map((i) => {
-      labels.push(util.iso_to_date(i.ts));
-      values.push(i.trim());
+    this.props.data[this.props.device.id]['_'+this.props.attr].map((i) => {
+      labels.push(util.iso_to_date_hour(i.ts));
+      values.push(i.value);
     })
 
     if (values.length === 0) {
@@ -81,11 +87,16 @@ class Graph extends Component{
       maintainAspectRatio: false,
       legend: { display: false },
       scales: {
-        xAxes: [{ display: false }]
+        xAxes: [{ ticks:{
+          fontSize: 9,
+          fontColor: '#000000',
+          fontWeight: 'bold'
+          }
+        }],
       },
       layout: {
-        padding: { left: 10, right: 10 }
-      }
+        padding: { left: 10}
+      },
     };
 
     return (
@@ -96,23 +107,23 @@ class Graph extends Component{
 
 
 function HistoryList(props) {
+  console.log("props: ", props);
   const empty = (
     <div className="full-height background-info valign-wrapper no-data-av">
       <div className="center full-width">No data available</div>
     </div>
   );
 
+
   // handle values
   let value = []
-  for(let k in props.device.value){
-     value[k] = props.device.value[k];
+  for(let k in props.data[props.device.id]['_'+props.attr]){
+     value[k] = props.data[props.device.id]['_'+props.attr][k];
   }
 
-
-  if (value){
-    let data = value;
-    let trimmedList = data.filter((i) => {
-      return i.trim().length > 0
+  if (value.length > 0){
+    let trimmedList = value.filter((i) => {
+      return i.value.length > 0
     })
 
     trimmedList.reverse();
@@ -123,7 +134,7 @@ function HistoryList(props) {
           <div className="full-height full-width scrollable history-list">
             {trimmedList.map((i,k) => {
               return (<div className={"row " + (k % 2 ? "alt-row" : "")} key={i.ts}>
-                <div className="col s7 value">{i}</div>
+                <div className="col s7 value">{i.value}</div>
                 <div className="col s5 label">{util.iso_to_date(i.ts)}</div>
               </div>
             )})}
@@ -131,10 +142,98 @@ function HistoryList(props) {
         </div>
       )
     }
+  } else {
+    return (
+      <div className="valign-wrapper full-height background-info">
+        <div className="full-width center">No data <br />available</div>
+      </div>
+    )
   }
-  return empty;
 }
 
+class PositionWrapper extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      opened: false,
+      hasPosition: false,
+      pos: [],
+      mapquest: false
+    };
+    this.getDevicesWithPosition = this.getDevicesWithPosition.bind(this);
+    this.toogleExpand = this.toogleExpand.bind(this);
+    this.mqLoaded = this.mqLoaded.bind(this);
+  }
+
+  mqLoaded(){
+    this.setState({mapquest: true});
+  }
+
+  toogleExpand(state) {
+    this.setState({opened: state});
+  }
+
+
+  getDevicesWithPosition(device){
+    function parserPosition(position){
+      let parsedPosition = position.split(",");
+      return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
+    }
+
+    let validDevices = [];
+    let length = device['_'+this.props.attr].length;
+       for(let j in device.attrs){
+         for(let i in device.attrs[j]){
+           if(device.attrs[j][i].type == "static"){
+             if(device.attrs[j][i].value_type == "geo:point"){
+               device.position = parserPosition(device.attrs[j][i].static_value);
+             } 
+           }
+         }
+       }
+
+      device.select = true;
+      if(device.position !== null && device.position !== undefined){
+        validDevices.push(device);
+      }
+    return validDevices;
+  }
+
+  render() {
+    function NoData() {
+        return (
+          <div className="valign-wrapper full-height background-info">
+            <div className="full-width center">No position <br />available</div>
+          </div>
+        )
+    }
+
+    if (this.props.device === undefined)
+    {
+      return (<NoData />);
+    }
+
+    let validDevices = this.getDevicesWithPosition(this.props.data[this.props.device.id]);
+    if (validDevices.length == 0) {
+      return <NoData />;
+    } else {
+      return(
+        <div className={"PositionRendererDiv " + (this.state.opened ? "expanded" : "compressed")}>
+          <div>
+            <Script url="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=zvpeonXbjGkoRqVMtyQYCGVn4JQG8rd9"
+                    onLoad={this.mqLoaded}>
+            </Script>
+          </div>
+          {this.state.mapquest ? (
+            <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14}/>
+          ): (
+            <Loading />
+          )}
+        </div>
+      )
+    }
+  }
+}
 
 function Attr(props) {
   const known = {
@@ -142,11 +241,12 @@ function Attr(props) {
     'float': Graph,
     'string': HistoryList,
     'geo': HistoryList,
-    'default': HistoryList
+    'default': HistoryList,
+    'boolean': HistoryList,
+    'geo:point': PositionWrapper
   };
 
   const Renderer = props.type in known ? known[props.type] : known['default'];
-  console.log("Attr!!! ",props);
   function NoData() {
       return (
         <div className="mt60px full-height background-info">
@@ -163,20 +263,20 @@ function Attr(props) {
       )
   }
 
-  if (props.data === undefined) {
+  if (props.data[props.device.id] === undefined) {
     return <NoData />;
   }
-  
-    if (props.data.value.length == 0) {
+
+  let label = props.attr;
+  if (props.data[props.device.id]['_'+props.attr] == undefined) {
       return <NoDataAv />;
-    }
-  
+  }
+
 
   return (
     <Renderer {...props} />
   )
-  
+
 }
 
 export { Attr };
-

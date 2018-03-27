@@ -15,7 +15,7 @@ import AltContainer from 'alt-container';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Link } from 'react-router'
 import { Line } from 'react-chartjs-2';
-import { Map, Marker, Popup, TileLayer, Tooltip, ScaleControl, Polyline } from 'react-leaflet';
+import { Map, Marker, Popup, TileLayer, Tooltip, ScaleControl, Polyline, Path } from 'react-leaflet';
 import Script from 'react-load-script';
 
 import ReactResizeDetector from 'react-resize-detector';
@@ -127,29 +127,21 @@ class PositionRenderer extends Component {
   render() {
     function getPin(device){
       if(device.hasOwnProperty('unique_key')){
-        if(device.unique_key == device.id+'_'+0){
-          return redPin
-        } else {
-          return trackingPin;
-        }
+        return trackingPin;
       } else {
         return redPin;
       }
     }
 
-    function makeListPositions(position){
-      listLatLngs.push(position);
-    }
-
     let parsedEntries = this.props.devices.reduce((result,k) => {
         if (k.position !== undefined){
-          makeListPositions(k.position);    
           result.push({
             id: k.id,
             pos: k.position,
             name: k.label,
             pin: getPin(k),
             timestamp: k.timestamp,
+            tracking: k.tracking,
             key: (k.unique_key ? k.unique_key : k.id)
           });
         }
@@ -180,6 +172,15 @@ class PositionRenderer extends Component {
     //)
     //const attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> and Mapbox contributors';
 
+    //Get list of positions for each device
+    for(let k in this.props.listPositions){
+      listLatLngs[k] = []
+      for(let j in this.props.listPositions[k]){
+        listLatLngs[k].push(this.props.listPositions[k][j].position)
+      }
+    }
+
+    //console.log("Props: ", this.props);
     return (
       <Map center={this.props.center ? this.props.center : this.state.center}
            zoom={this.state.zoom}
@@ -200,7 +201,9 @@ class PositionRenderer extends Component {
             <Tooltip>
               <span>{k.name} : {k.timestamp}</span>
             </Tooltip>
-            <Polyline positions={listLatLngs} color='#7fb2f9' dashArray='10,10'/>
+            {listLatLngs[k.id] && k.tracking ? (
+              <Polyline positions={listLatLngs[k.id]} color='#7fb2f9' dashArray='10,10' repeatMode={false}/>
+            ): null}
           </Marker>
         )})}
         <ScaleControl />
@@ -322,11 +325,13 @@ class DeviceMap extends Component {
         for(let j in this.props.devices[device_id].attrs[k]){
           if(this.props.devices[device_id].attrs[k][j].value_type == "geo:point"){
             TrackingActions.fetch(device_id, this.props.devices[device_id].attrs[k][j].label);
+            this.props.devices[device_id].tracking = true;
           }
         }
       }
     } else{
       TrackingActions.dismiss(device_id);
+      this.props.devices[device_id].tracking = false;
     }
   }
 
@@ -392,7 +397,7 @@ class DeviceMap extends Component {
               updated.id = device.id;
               updated.unique_key = device.id + "_" + k;
               updated.label = device.label;
-              updated.timestamp = util.iso_to_date(e.timestamp)
+              updated.timestamp = e.timestamp;
               return updated;
             }));
           }
@@ -415,7 +420,7 @@ class DeviceMap extends Component {
                   onLoad={this.mqLoaded}>
           </Script>
           {this.state.mapquest ? (
-            <PositionRenderer devices={pointList} toggleTracking={this.toggleTracking} allowContextMenu={true} />
+            <PositionRenderer devices={pointList} toggleTracking={this.toggleTracking} allowContextMenu={true} listPositions={this.props.tracking}/>
           ) : (
             <div><Loading /></div>
           )}

@@ -20,8 +20,6 @@ function SummaryItem(props) {
         attrs += props.device.attrs[attribute].length;
     }
 
-    console.log("props.device", props.device);
-
     return (
     
       <Link to={"/device/id/" + props.device.id + "/detail"}>

@@ -36,7 +36,7 @@ class TrackingActions {
             let data = {device_id:device_id};
             if(reply[k].value !== null && reply[k].value !== undefined){
               data.position = parserPosition(reply[k].value);
-              data.timestamp = reply[k].ts;
+              data.timestamp = util.iso_to_date(reply[k].ts);
             }
             history.data.push(data);
           }

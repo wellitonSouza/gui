@@ -74,6 +74,7 @@ class MeasureActions {
           let position = null;
           if(reply[0].value !== "nan"){
             position = parserPosition(reply[0].value);
+            device.timestamp = util.iso_to_date(reply[0].ts);
           }
           device.position = position;
           this.updateMeasures(device);

@@ -15,7 +15,7 @@ import AltContainer from 'alt-container';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Link } from 'react-router'
 import { Line } from 'react-chartjs-2';
-import { Map, Marker, Popup, TileLayer, Tooltip, ScaleControl, Polyline, Path } from 'react-leaflet';
+import { Map, Marker, Popup, TileLayer, Tooltip, ScaleControl, Polyline } from 'react-leaflet';
 import Script from 'react-load-script';
 
 import ReactResizeDetector from 'react-resize-detector';

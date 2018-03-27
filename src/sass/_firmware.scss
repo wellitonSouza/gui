@@ -181,12 +181,22 @@
             top:10px;
         }
 
+        .pin-icon
+        {
+            color: #000000;
+            background: #ffd200;
+            // box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.25);
+            border-radius: 50%;
+            width: 22px;
+            padding: 4px 3px 3px 6px;
+        }
+
         .star-icon
         {
 
             cursor: pointer;
             position: absolute;
-            left: 20px;
+            left: 14px;
             color: gray;
             top:10px;
         }
@@ -243,7 +253,7 @@
     transition: all 300ms ease;
 
     .im-header{
-        padding: 36px 53px 0px 55px;
+        padding: 25px 53px 0px 55px;
         margin-bottom: 0px;
         
         .title{
@@ -296,7 +306,7 @@
     overflow: auto;
     transition: max-height 450ms ease;
     width: 90%;
-    height: 200px;
+    height: 203px;
     margin: 1% 5%;
     background: white !important;
 
@@ -325,6 +335,16 @@
     animation-name: opa-hei-315px;
     animation-duration: 1s;
 
+    .icon-firmware
+    {
+    left: 40px;
+    top: 40px;
+    width: 36px;
+    height: 31px;
+    background: url(/images/icons/firmware.png);
+    background-size: cover;
+    position: absolute;
+    }
 }
 
 /* animations for ReactCSSTransitionGroup */
@@ -363,7 +383,8 @@
 
 .bg-gradient-ciano-blue
 {
-    background: linear-gradient(90.48deg, #28807E 3.7%, #54A7D6 92.73%);
+    background: linear-gradient(90.48deg, #28807E 3.7%, #2c3e50 92.73%);
+    // background: linear-gradient(90.48deg, #28807E 3.7%, #54A7D6 92.73%);
 }
 
 .img-line-on-template

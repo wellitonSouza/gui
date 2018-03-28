@@ -422,7 +422,11 @@ class DeviceMap extends Component {
           {this.state.mapquest ? (
             <PositionRenderer devices={pointList} toggleTracking={this.toggleTracking} allowContextMenu={true} listPositions={this.props.tracking}/>
           ) : (
-            <div><Loading /></div>
+            <div className="row full-height relative">
+              <div className="background-info valign-wrapper full-height">
+                  <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center"/>
+               </div>
+            </div>
           )}
           <Sidebar devices={validDevices} hideAll={this.hideAll} showAll={this.showAll} selectedDevice={this.selectedDevice} toggleDisplay={this.toggleDisplay} />
         </div>

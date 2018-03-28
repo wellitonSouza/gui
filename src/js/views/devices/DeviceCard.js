@@ -54,7 +54,7 @@ function SummaryItem(props) {
                           <div className="center-text-parent material-btn right-side">
                           </div>
                       </div>
-                      <div className="status"></div>
+                      <div className={props.device.status}></div>
                   </div>
               </div>
           </div>

@@ -21,8 +21,7 @@ class UserActions {
           // @bug: backend won't return full public record of the created user, so merge the
           //       server-side data (id) with the known record of the user.
           let updatedUser = JSON.parse(JSON.stringify(newUser));
-          console.log("aasdasd", response);
-          updatedUser['id'] = response.user.id;
+          updatedUser['id'] = response[0].user.id;
           updatedUser['passwd'] = '';
           this.insertUser(updatedUser);
           if(cb){

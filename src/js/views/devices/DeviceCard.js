@@ -54,6 +54,7 @@ function SummaryItem(props) {
                           <div className="center-text-parent material-btn right-side">
                           </div>
                       </div>
+                      <div className="status"></div>
                   </div>
               </div>
           </div>
@@ -191,7 +192,7 @@ class DeviceCard extends Component {
     this.clearInputField();
    }
    
-      return <div>
+      return <div className="full-height relative">
           <ReactCSSTransitionGroup transitionName="devicesSubHeader">
             {header}
           </ReactCSSTransitionGroup>
@@ -200,10 +201,10 @@ class DeviceCard extends Component {
               <div className="row">
                 {this.filteredList.length == 0 ? (
                   <div className="background-info valign-wrapper full-height">
-                <span className="horizontal-center">
-                   No configured devices
-                </span>
-              </div>
+                    <span className="horizontal-center">
+                      No configured devices
+                    </span>
+                  </div>
                 ) : (
                   <div className="col s12  lst-wrapper extra-padding">
                     {this.filteredList.map((device, idx) => (

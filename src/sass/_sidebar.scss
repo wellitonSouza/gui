@@ -118,6 +118,8 @@
     .icon-graph
     {
       background: url(/images/icons/graph.png);
+      height: 24px;
+      width: 26px;
     }
 
     &:hover .icon-graph
@@ -133,6 +135,18 @@
     &:hover .icon-settings
     {
       background: url(/images/icons/settings-wt.png);
+    }
+
+     .icon-user
+    {
+      width: 26px;
+      height: 23px;
+      background: url(/images/icons/user.png);
+    }
+
+    &:hover .icon-user
+    {
+      background: url(/images/icons/user-wt.png);
     }
 
     .icon-auth

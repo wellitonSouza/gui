@@ -845,7 +845,7 @@ class ListItem extends Component {
                 </AltContainer>
             ) : null }
             
-            <div className={"card-size lst-entry-wrapper z-depth-2 " + (this.state.isSuppressed ? 'suppressed' : 'fullHeight')}
+            <div className={"template card-size lst-entry-wrapper z-depth-2 " + (this.state.isSuppressed ? 'suppressed' : 'full-height')}
                 id={this.props.id}>
                 {this.state.show_modal ?(
                   <RemoveModal name={"template"} remove={this.deleteTemplate} openModal={this.openModal} />
@@ -853,7 +853,7 @@ class ListItem extends Component {
                   <div></div>
                 )}
                 <div className="lst-entry-title bg-gradient-ciano-blue col s12">
-                    <img className="title-icon" src={"images/model-icon.png"}/>
+                    <img className="title-icon template" src={"images/big-icons/template.png"}/>
                     <div className="title-text">
                         <textarea maxLength="40" placeholder={"Template Name"} readOnly={!this.state.isEditable}
                                   value={this.state.template.label} name={"label"} onChange={this.handleAttribute}/>

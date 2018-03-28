@@ -25,7 +25,7 @@ function SummaryItem(props) {
       <Link to={"/device/id/" + props.device.id + "/detail"}>
           <div className={"card-size lst-entry-wrapper z-depth-2 fullHeight"}>
               <div className="lst-entry-title col s12">
-                  <img className="title-icon" src={"images/white-chip.png"}/>
+                  <img className="title-icon" src={"images/icons/chip-wt.png"}/>
                   <div className="title-text">
                       <span className="text"> {props.device.label} </span>
                   </div>

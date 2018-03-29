@@ -128,6 +128,10 @@ class DeviceHandlerStore {
         return;
       }
 
+      if (attr_list[k].hasOwnProperty('value')) {
+        attr_list[k].static_value = attr_list[k].value;
+        delete attr_list[k].value;
+      }
       this.device.attrs.push(JSON.parse(JSON.stringify(attr_list[k])));
     }
    console.log("All attributes were set.", this.device);
@@ -479,15 +483,12 @@ class DeviceForm extends Component {
       .filter((i) => { return (String(i.type) == "static")|| (String(i.type) == "meta") })
       .map((attr) => {
         // check if there is a current static value in device store
-        if (attr.id)
-        {
+        if (attr.id) {
           if (this.props.device.attrNames[attr.id])
             attr.value = this.props.device.attrNames[attr.id];
           else
             attr.value = attr.static_value;
-        }
-        else
-        {
+        } else {
           attr.id = util.sid();
           attr.value = attr.static_value;
         }

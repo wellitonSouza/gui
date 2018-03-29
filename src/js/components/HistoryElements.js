@@ -123,7 +123,11 @@ function HistoryList(props) {
 
   if (value.length > 0){
     let trimmedList = value.filter((i) => {
-      return i.value.length > 0
+      if (i.value.length != undefined) {
+        return i.value.length > 0
+      } else {
+        return i.value
+      }      
     })
 
     trimmedList.reverse();

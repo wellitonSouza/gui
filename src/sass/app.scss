@@ -274,6 +274,13 @@ body {
   padding-bottom: 20px !important;
 }
 
+.pl40px, .pl40
+{
+  padding-left: 40px !important;
+}
+
+
+
 .pull-right
 {
   margin: 0px !important;
@@ -302,6 +309,16 @@ body {
 .mt5, .mt5px
 {
     margin-top: 5px;
+}
+
+.pr
+{
+  position:relative;
+}
+
+
+.w100{
+  width:100%;
 }
 
 #toast-container {
@@ -339,4 +356,5 @@ body {
 @import 'template';
 @import 'recoverypassword';
 @import 'modal';
+@import 'firmware';
 @import 'alarms';

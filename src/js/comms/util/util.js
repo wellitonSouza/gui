@@ -2,6 +2,9 @@ import LoginActions from '../../actions/LoginActions';
 import moment from 'moment'
 import 'babel-polyfill'
 
+const sha1 = require('sha1');
+
+
 function FetchError(data, message) {
   this.name = "FetchError";
   this.message = message || "Call failed";
@@ -13,6 +16,11 @@ FetchError.prototype = Object.create(Error.prototype);
 FetchError.prototype.constructor = FetchError;
 
 class Util {
+
+
+  getSHA1(data) {
+    return sha1(data);
+  }
 
   getToken() {
     return window.localStorage.getItem("jwt");
@@ -44,6 +52,20 @@ class Util {
       method: 'post',
       headers: new Headers({"content-type": "application/json"}),
       body: new Blob([JSON.stringify(payload)], {type : 'application/json'})
+    });
+  }
+  
+  POST_MULTIPART(url, payload) {
+    console.log("POST_MULTIPART", payload);
+    let data = new FormData();
+    data.append('sha1', payload.sha1);
+    data.append('image', payload.binary);
+
+    return this._runFetch(url, {
+      method: 'post',
+      // headers: new Headers({ "Content-Type": "multipart/form-data" }),
+      body: data
+      // body: new Blob(payload, { type: 'multipart/form-data' })
     });
   }
 
@@ -87,6 +109,7 @@ class Util {
       }
     }
     return new Promise(function(resolve, reject) {
+      console.log("authConfig", authConfig);
       fetch(url, authConfig)
         .then(local._status)
         // .then(local._json)

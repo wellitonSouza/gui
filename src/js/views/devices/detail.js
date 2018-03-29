@@ -928,26 +928,34 @@ class ViewDevice extends Component {
       // Realtime
       var socketio = require('socket.io-client');
 
-      const target = 'http://' + window.location.host;
+      const target = `${window.location.protocol}//${window.location.host}`;
       const token_url = target + "/stream/socketio";
-
-      const url = token_url;
       const config = {}
 
-      util._runFetch(url, config)
-        .then((reply) => {
-          init(reply.token);
-        })
-        .catch((error) => {console.log("Failed!", error);
-      });
+      function getWsToken() {
+        util._runFetch(token_url, config)
+          .then((reply) => {
+            init(reply.token);
+          })
+          .catch((error) => {console.log("Failed!", error);
+        });
+      }
 
       function init(token){
-        var socket = socketio(target, {query: "token=" + token, transports: ['websocket']});
+        var socket = socketio(target, { query: "token=" + token, transports: ['polling'] });
 
         socket.on('all', function(data){
           MeasureActions.appendMeasures(data);
         });
+
+        socket.on('error', (data) => {
+          console.log("socket error", data);
+          socket.close();
+          getWsToken();
+        })
       }
+
+      getWsToken();
   }
 
   componentDidUpdate() {
@@ -973,7 +981,7 @@ class ViewDevice extends Component {
   }
 
   componentWillUnmount(){
-    // location.reload(true);
+    //location.reload(true);
   }
 
   render() {

@@ -7,28 +7,8 @@ console.log("ImageActions");
 
 class ImageActions {
 
-  // updateImages(raw_data) {
-  //   let templates = {};
-  //   let list = [];
-  //   for (let index in raw_data)
-  //   {
-  //     let img = raw_data[index];
-  //     if (templates[img.label] == undefined)
-  //       templates[img.label] = { 'template_id': img.label, 'images':[]};
-  
-  //     if (img.sha1)
-  //       img.has_image = true;
-  //     else
-  //       img.has_image = false;
-  //     templates[img.label].images.push(img);
-  //   }
-  //   console.log("updateImages",raw_data);
-  //   return templates;
-  // }
-
-    updateImages(raw_data) {
-      console.log("updateImages",raw_data);
-      return raw_data;
+  updateImages(images) {
+      return images;
   }
 
   // fetchImages() {
@@ -63,8 +43,8 @@ class ImageActions {
     }
   }
 
-  updateSingle(image) {
-    return image;
+  updateSingle(image_id) {
+    return image_id;
   }
 
   fetchSingle(label, callback) {
@@ -74,6 +54,7 @@ class ImageActions {
       imageManager.getImages(label)
         .then((images) => {
           this.updateImages(images);
+          console.log("this.updateImages:", label, images);
           if (callback) {
             callback(images);
           }
@@ -108,6 +89,33 @@ class ImageActions {
     }
   }
 
+  triggerRemovalBinary(image_id, cb) {
+    return (dispatch) => {
+      dispatch();
+      imageManager.deleteBinary(image_id)
+        .then((response) => {
+          console.log("response", response);
+          if (response.result == "ok")
+          {
+            this.removeSingleBinary(image_id);
+            if (cb) {
+              cb(response);
+            }
+          }
+          else
+          {
+            this.imagesFailed("Failed to remove given image");
+          }
+        })
+        .catch((error) => {
+          this.imagesFailed("Failed to remove given image");
+        })
+    }
+  }
+
+  removeSingleBinary(id) {
+    return id;
+  }
 
   triggerRemoval(image, cb) {
     return (dispatch) => {

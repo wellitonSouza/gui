@@ -6,7 +6,8 @@ class ImageManager {
   }
 
   getImages(label) {
-    return util.GET(this.baseUrl + '/fw-image/image/?label='+label);
+    console.log("imageManager:getImages: ",label);
+    return util.GET(this.baseUrl + '/fw-image/image?label='+label);
   }
 
 
@@ -23,7 +24,9 @@ class ImageManager {
     return util.POST_MULTIPART(this.baseUrl + "/fw-image/image/" + image.image_id + "/binary", image);
   }
 
-
+  deleteBinary(id) {
+    return util.DELETE(this.baseUrl + "/fw-image/image/" + id + "/binary");
+  }
   deleteImage(id) {
     return util.DELETE(this.baseUrl + "/fw-image/image/" + id);
   }

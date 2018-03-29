@@ -22,18 +22,18 @@ class ImageStore {
             handleTriggerRemoval:ImageActions.TRIGGER_REMOVAL,
             handleRemoveSingle:ImageActions.REMOVE_SINGLE,
 
+
+            handleTriggerRemovalBinary: ImageActions.TRIGGER_REMOVAL_BINARY,
+            handleRemoveSingleBinary: ImageActions.REMOVE_SINGLE_BINARY,
+
+
             handleFailure: ImageActions.IMAGES_FAILED,
 
         });
     }
 
-    handleUpdateSingle(image) {
-        let newimage = JSON.parse(JSON.stringify(image));
-        newimage.loading = false;
-
-        // this.images saves the image on store;
-        this.images[image.id] = newimage;
-
+    handleUpdateSingle(image_id) {
+        this.images[image_id].has_image = true;
         this.loading = false;
     }
 
@@ -43,14 +43,28 @@ class ImageStore {
         this.loading = true;
     }
 
+    // *********
+
+    handleTriggerRemovalBinary(image) {
+        this.error = null;
+        this.loading = true;
+    }
+
+    handleRemoveSingleBinary(id) {
+        if (this.images.hasOwnProperty(id)) {
+            this.images[id].has_image = false;
+        }
+        this.loading = false;
+    }
+
+    // *********
+
     handleTriggerRemoval(image) {
-        // trigger handler for removeSingle
         this.error = null;
         this.loading = true;
     }
 
     handleRemoveSingle(id) {
-        console.log("handleRemoveSingle",id);
         if (this.images.hasOwnProperty(id)) {
             delete this.images[id];
         }
@@ -75,7 +89,9 @@ class ImageStore {
         this.images = {};
         for (let idx = 0; idx < images.length; idx++) {
             this.images[images[idx].id] = JSON.parse(JSON.stringify(images[idx]))
+            this.images[images[idx].id].has_image = this.images[images[idx].id].confirmed;
         }
+        console.log("handleUpdateImageList", this.images);
         // this.images = images;
         this.error = null;
         this.loading = false;

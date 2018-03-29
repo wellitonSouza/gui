@@ -852,7 +852,7 @@ class ListItem extends Component {
                 ) : (
                   <div></div>
                 )}
-                <div className="lst-entry-title bg-gradient-ciano-blue col s12">
+                <div className="lst-entry-title bg-gradient-green col s12">
                     <img className="title-icon" src={"images/model-icon.png"}/>
                     <div className="title-text">
                         <textarea maxLength="40" placeholder={"Template Name"} readOnly={!this.state.isEditable}

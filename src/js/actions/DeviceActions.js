@@ -94,6 +94,10 @@ class DeviceActions {
     return device;
   }
 
+  updateStatus(device) {
+    return device;
+  }
+
   triggerRemoval(device, cb) {
     return (dispatch) => {
       dispatch();

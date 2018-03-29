@@ -105,6 +105,7 @@ class Devices extends Component {
 
       socket.on('all', function(data){
         MeasureActions.appendMeasures(data);
+        DeviceActions.updateStatus(data);
       });
     }
   }

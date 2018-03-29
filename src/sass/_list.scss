@@ -834,6 +834,21 @@ $action-area-width: 200px;
   transition: max-height 450ms ease;
   border-radius: 4px;
 
+  .offline {
+    background-color: #f85252;
+    height: 5px;
+  }
+
+  .online {
+    background-color: forestgreen;
+    height: 5px;
+  }
+
+  .disabled {
+    background-color: #8F8F8F;
+    height: 5px;
+  }
+
   .attr-list {
     max-height: 225px;
     width: 100%;
@@ -889,7 +904,7 @@ $action-area-width: 200px;
     transition: max-height 200ms ease-in-out;
     max-height: 160px;
     background: #e7e7e7;
-    padding: 3px 0;
+    padding: 0px 0;
     .add-row {
       height: 74px;
       width: 100%;

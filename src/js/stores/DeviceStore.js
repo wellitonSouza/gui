@@ -27,6 +27,8 @@ class DeviceStore {
       fetchSingle: DeviceActions.FETCH_SINGLE,
 
       fetchDevicesByTemplate: DeviceActions.FETCH_DEVICES_BY_TEMPLATE,
+
+      handleUpdateStatus: DeviceActions.UPDATE_STATUS,
     });
   }
 
@@ -62,6 +64,15 @@ class DeviceStore {
 
     this.loading = false;
   }
+
+  handleUpdateStatus(device) {
+   if (device.attrs.status != undefined) {
+    this.devices[device.metadata.deviceid].status = device.attrs.status;
+   } else {
+    this.devices[device.metadata.deviceid].status = "disabled";
+   }   
+  }
+
 
   handleTriggerUpdate(device) {
     // trigger handler for updateSingle
@@ -109,6 +120,9 @@ class DeviceStore {
       if (devices[idx].tags === undefined) {
         devices[idx].tags = [];
       }
+
+      devices[idx].status = "disabled";
+
       this.devices[devices[idx].id] = JSON.parse(JSON.stringify(devices[idx]))
     }
 

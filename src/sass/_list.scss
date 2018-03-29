@@ -860,8 +860,12 @@ $action-area-width: 200px;
     height: 100%;
     width: 75px;
     float: left;
-    padding: 10px;
+    padding: 17px;
     user-select: none;
+
+    &.template{
+      padding: 12px;
+    }
   }
 
   .title-text {

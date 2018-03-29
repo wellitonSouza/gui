@@ -7,9 +7,9 @@ import TemplateStore from '../../stores/TemplateStore';
 import TemplateActions from '../../actions/TemplateActions';
 import util from "../../comms/util/util";
 import {NewPageHeader} from "../../containers/full/PageHeader";
-import { hashHistory } from 'react-router';
+import {hashHistory} from 'react-router';
 
-import { GenericModal, RemoveModal } from "../../components/Modal";
+import {GenericModal, RemoveModal} from "../../components/Modal";
 import Toggle from 'material-ui/Toggle';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
@@ -35,15 +35,19 @@ class TemplateTypes {
             {"value": "translator", "label": "Translator"}
         ];
     }
+
     getValueTypes() {
         return this.availableValueTypes;
     }
+
     getTypes() {
         return this.availableTypes;
     }
+
     getConfigValueTypes() {
         return this.configValueTypes;
     }
+
     getConfigTypes() {
         return this.configTypes;
     }
@@ -112,9 +116,10 @@ class AttributeList extends Component {
 
                         <span>Type</span>
                     </div>
-                    <div className={(this.props.editable ? '' : 'none') + " center-text-parent material-btn right-side raised-btn"}
-                         title={"Remove Attribute"}
-                         onClick={this.removeAttribute.bind(this, this.props.index)}>
+                    <div
+                        className={(this.props.editable ? '' : 'none') + " center-text-parent material-btn right-side raised-btn"}
+                        title={"Remove Attribute"}
+                        onClick={this.removeAttribute.bind(this, this.props.index)}>
                         <i className={"fa fa-trash center-text-child icon-remove"}/>
                     </div>
                 </div>
@@ -213,9 +218,10 @@ class ConfigList extends Component {
                         </select>
                         <span>{'Meta Value'}</span>
                     </div>
-                    <div className={(this.props.editable ? '' : 'none') + " center-text-parent material-btn right-side raised-btn"}
-                         title={"Remove Attribute"}
-                         onClick={this.removeAttribute.bind(this, this.props.index)}>
+                    <div
+                        className={(this.props.editable ? '' : 'none') + " center-text-parent material-btn right-side raised-btn"}
+                        title={"Remove Attribute"}
+                        onClick={this.removeAttribute.bind(this, this.props.index)}>
                         <i className={"fa fa-trash center-text-child icon-remove"}/>
                     </div>
                 </div>
@@ -261,7 +267,7 @@ class NewAttribute extends Component {
         state.isSuppressed = !state.isSuppressed;
         state.isConfiguration = property;
 
-        property === true ?  state.newAttr.type = 'meta': state.newAttr.type = 'dynamic';
+        property === true ? state.newAttr.type = 'meta' : state.newAttr.type = 'dynamic';
         this.setState(state);
         this.handleChangeStatus(property);
     }
@@ -286,7 +292,7 @@ class NewAttribute extends Component {
         }
 
         ret = util.isTypeValid(attribute.value, attribute.value_type, attribute.type);
-        if (!ret.result){
+        if (!ret.result) {
             Materialize.toast(ret.error, 4000);
             return;
         }
@@ -415,51 +421,55 @@ class NewAttribute extends Component {
 }
 
 class RemoveDialog extends Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.dismiss = this.dismiss.bind(this);
-    this.remove = this.remove.bind(this);
-  }
+        this.dismiss = this.dismiss.bind(this);
+        this.remove = this.remove.bind(this);
+    }
 
-  componentDidMount() {
-    // materialize jquery makes me sad
-    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
-    $(modalElement).ready(function() {
-      $('.modal').modal();
-    })
-  }
+    componentDidMount() {
+        // materialize jquery makes me sad
+        let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+        $(modalElement).ready(function () {
+            $('.modal').modal();
+        })
+    }
 
-  dismiss(event) {
-    event.preventDefault();
-    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
-    $(modalElement).modal('close');
-  }
+    dismiss(event) {
+        event.preventDefault();
+        let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+        $(modalElement).modal('close');
+    }
 
-  remove(event) {
-    event.preventDefault();
-    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
-    this.props.callback(event);
-    $(modalElement).modal('close');
-  }
+    remove(event) {
+        event.preventDefault();
+        let modalElement = ReactDOM.findDOMNode(this.refs.modal);
+        this.props.callback(event);
+        $(modalElement).modal('close');
+    }
 
-  render() {
-    return (
-      <div className="modal" id={this.props.target} ref="modal">
-        <div className="modal-content full">
-          <div className="row center background-info">
-            <div><i className="fa fa-exclamation-triangle fa-4x" /></div>
-            <div>You are about to remove this template.</div>
-            <div>Are you sure?</div>
-          </div>
-        </div>
-        <div className="modal-footer right">
-            <button type="button" className="btn-flat btn-ciano waves-effect waves-light" onClick={this.dismiss}>cancel</button>
-            <button type="submit" className="btn-flat btn-red waves-effect waves-light" onClick={this.remove}>remove</button>
-        </div>
-      </div>
-    )
-  }
+    render() {
+        return (
+            <div className="modal" id={this.props.target} ref="modal">
+                <div className="modal-content full">
+                    <div className="row center background-info">
+                        <div><i className="fa fa-exclamation-triangle fa-4x"/></div>
+                        <div>You are about to remove this template.</div>
+                        <div>Are you sure?</div>
+                    </div>
+                </div>
+                <div className="modal-footer right">
+                    <button type="button" className="btn-flat btn-ciano waves-effect waves-light"
+                            onClick={this.dismiss}>cancel
+                    </button>
+                    <button type="submit" className="btn-flat btn-red waves-effect waves-light"
+                            onClick={this.remove}>remove
+                    </button>
+                </div>
+            </div>
+        )
+    }
 }
 
 class ListItem extends Component {
@@ -517,28 +527,28 @@ class ListItem extends Component {
         }
 
         for (let i = 0; i < this.state.template.config_attrs.length; i++) {
-          if (this.state.template.config_attrs[i].label === "") {
-              Materialize.toast("Missing type.", 4000);
-              return;
-          }
+            if (this.state.template.config_attrs[i].label === "") {
+                Materialize.toast("Missing type.", 4000);
+                return;
+            }
         }
 
         let template = this.state.template;
         template.has_icon = this.props.template.has_icon;
         this.state.template.attrs = [];
         this.state.template.attrs.push.apply(this.state.template.attrs, this.state.template.data_attrs);
-        this.state.template.attrs.push.apply(this.state.template.attrs ,this.state.template.config_attrs);
+        this.state.template.attrs.push.apply(this.state.template.attrs, this.state.template.config_attrs);
 
         TemplateActions.triggerUpdate(this.state.template, (template) => {
-          Materialize.toast('Template updated', 4000);
+            Materialize.toast('Template updated', 4000);
         });
     }
 
     deleteTemplate(e) {
         e.preventDefault();
-          TemplateActions.triggerRemoval(this.state.template.id, (template) => {
-          hashHistory.push('/template/list');
-          Materialize.toast('Template removed', 4000);
+        TemplateActions.triggerRemoval(this.state.template.id, (template) => {
+            hashHistory.push('/template/list');
+            Materialize.toast('Template removed', 4000);
         });
     }
 
@@ -623,7 +633,7 @@ class ListItem extends Component {
             return;
         }
         this.state.template.attrs.push.apply(this.state.template.attrs, this.state.template.data_attrs);
-        this.state.template.attrs.push.apply(this.state.template.attrs ,this.state.template.config_attrs);
+        this.state.template.attrs.push.apply(this.state.template.attrs, this.state.template.config_attrs);
         TemplateActions.addTemplate(this.state.template);
         TemplateActions.fetchTemplates.defer();
     }
@@ -633,12 +643,12 @@ class ListItem extends Component {
         TemplateActions.fetchTemplates.defer();
     }
 
-    handleModal(){
-     this.setState({show_modal: true});
+    handleModal() {
+        this.setState({show_modal: true});
     }
 
-    openModal(status){
-     this.setState({show_modal: status});
+    openModal(status) {
+        this.setState({show_modal: status});
     }
 
 
@@ -648,10 +658,10 @@ class ListItem extends Component {
             <div
                 className={"card-size lst-entry-wrapper z-depth-2 " + (this.state.isSuppressed ? 'suppressed' : 'fullHeight')}
                 id={this.props.id}>
-                {this.state.show_modal ?(
-                  <RemoveModal name={"template"} remove={this.deleteTemplate} openModal={this.openModal} />
+                {this.state.show_modal ? (
+                    <RemoveModal name={"template"} remove={this.deleteTemplate} openModal={this.openModal}/>
                 ) : (
-                  <div></div>
+                    <div></div>
                 )}
                 <div className="lst-entry-title col s12">
                     <img className="title-icon" src={"images/model-icon.png"}/>
@@ -694,11 +704,13 @@ class ListItem extends Component {
                              title="Edit Attributes" onClick={this.editCard}>
                             <span className="text center-text-child">edit</span>
                         </div>
-                        <div className={"material-btn center-text-parent raised-btn " + (this.state.isEditable ? 'none' : '')}
+                        <div
+                            className={"material-btn center-text-parent raised-btn " + (this.state.isEditable ? 'none' : '')}
                             title="Remove template" onClick={this.handleModal}>
                             <span className="text center-text-child">remove</span>
                         </div>
-                        <div className={(this.state.isEditable ? (this.state.template.isNewTemplate ? 'none' : '') : 'none')}>
+                        <div
+                            className={(this.state.isEditable ? (this.state.template.isNewTemplate ? 'none' : '') : 'none')}>
                             <div className={"material-btn center-text-parent "}
                                  title="Edit Attributes" onClick={this.updateTemplate}>
                                 <span className="text center-text-child">save</span>
@@ -709,7 +721,8 @@ class ListItem extends Component {
                                 <span className="text center-text-child">discard</span>
                             </div>
                         </div>
-                        <div className={(this.state.isEditable ? (this.state.template.isNewTemplate ? '' : 'none') : 'none')}>
+                        <div
+                            className={(this.state.isEditable ? (this.state.template.isNewTemplate ? '' : 'none') : 'none')}>
                             <div
                                 className={"material-btn center-text-parent "}
                                 title="Edit Attributes" onClick={this.addTemplate}>
@@ -752,9 +765,9 @@ class TemplateList extends Component {
         this.clearInputField = this.clearInputField.bind(this);
     }
 
-    filterListByName (event){
-      event.preventDefault();
-      this.setState({filter: event.target.value});
+    filterListByName(event) {
+        event.preventDefault();
+        this.setState({filter: event.target.value});
     }
 
     detailedTemplate(id) {
@@ -807,24 +820,24 @@ class TemplateList extends Component {
     }
 
     convertTemplateList() {
-      if (this.state.filter != "") {
-        var updatedList = this.filteredList.filter(function(template) {
-          return template.label.includes(event.target.value);
-        });
-        this.filteredList = updatedList;
-      } else {
-        this.filteredList = [];
-        for (let k in this.props.templates) {
-          if (this.props.templates.hasOwnProperty(k)){
-            this.filteredList.push(this.props.templates[k]);
-          }
+        if (this.state.filter != "") {
+            var updatedList = this.filteredList.filter(function (template) {
+                return template.label.includes(event.target.value);
+            });
+            this.filteredList = updatedList;
+        } else {
+            this.filteredList = [];
+            for (let k in this.props.templates) {
+                if (this.props.templates.hasOwnProperty(k)) {
+                    this.filteredList.push(this.props.templates[k]);
+                }
+            }
         }
-      }
     }
 
-    clearInputField(){
+    clearInputField() {
         this.state.filter = "";
-      }
+    }
 
     render() {
         this.filteredList = this.applyFiltering(this.props.templates);
@@ -846,7 +859,7 @@ class TemplateList extends Component {
             let newTemplate;
 
             for (let i = 0; i < this.filteredList.length; i++) {
-                if(this.filteredList[i].isNewTemplate != undefined) {
+                if (this.filteredList[i].isNewTemplate != undefined) {
                     if (this.filteredList[i].isNewTemplate) {
                         existsNewDevice = true;
                         newTemplate = this.filteredList[i];
@@ -867,47 +880,56 @@ class TemplateList extends Component {
         }
 
         let header = null;
-        if (this.props.showSearchBox){
-            header = <div className={"row z-depth-2 templatesSubHeader " + (this.props.showSearchBox ? "show-dy" : "hide-dy")} id="inner-header">
-            <div className="col s3 m3 main-title">
-              Showing {this.filteredList.length} template(s)
-            </div>
-            <div className="col s1 m1 header-info hide-on-small-only">
-            </div>
-            <div className="col s4 m4">
-              <label htmlFor="fld_template_name">Template Name</label>
-              <input id="fld_template_name" type="text" name="Template Name" className="form-control form-control-lg" placeholder="Search" value={this.state.filter} onChange={this.filterListByName} />
-            </div>
-          </div>;
+        if (this.props.showSearchBox) {
+            header = <div
+                className={"row z-depth-2 templatesSubHeader " + (this.props.showSearchBox ? "show-dy" : "hide-dy")}
+                id="inner-header">
+                <div className="col s3 m3 main-title">
+                    Showing {this.filteredList.length} template(s)
+                </div>
+                <div className="col s1 m1 header-info hide-on-small-only">
+                </div>
+                <div className="col s4 m4">
+                    <label htmlFor="fld_template_name">Template Name</label>
+                    <input id="fld_template_name" type="text" name="Template Name"
+                           className="form-control form-control-lg" placeholder="Search" value={this.state.filter}
+                           onChange={this.filterListByName}/>
+                </div>
+            </div>;
         } else {
             this.filteredList = this.applyFiltering(this.props.templates);
             this.clearInputField();
         }
 
         return <div className="full-height relative">
-        <ReactCSSTransitionGroup transitionName="templatesSubHeader">
-          {header}
-        </ReactCSSTransitionGroup>
+            <ReactCSSTransitionGroup transitionName="templatesSubHeader"
+                                     transitionLeave={true}
+                                     transitionAppear={true}
+                                     transitionAppearTimeout={300}
+                                     transitionEnterTimeout={300}
+                                     transitionLeaveTimeout={300}>
+                {header}
+            </ReactCSSTransitionGroup>
             {this.filteredList.length > 0 ? <div className="col s12 lst-wrapper">
                 {this.filteredList.map(template => (
-                  <ListItem
-                    template={template}
-                    key={template.id}
-                    detail={this.state.detail}
-                    detailedTemplate={this.detailedTemplate}
-                    edit={this.state.edit}
-                    editTemplate={this.editTemplate}
-                    updateTemplate={this.updateTemplate}
-                    deleteTemplate={this.deleteTemplate}
-                    confirmTarget="confirmDiag"
-                  />
+                    <ListItem
+                        template={template}
+                        key={template.id}
+                        detail={this.state.detail}
+                        detailedTemplate={this.detailedTemplate}
+                        edit={this.state.edit}
+                        editTemplate={this.editTemplate}
+                        updateTemplate={this.updateTemplate}
+                        deleteTemplate={this.deleteTemplate}
+                        confirmTarget="confirmDiag"
+                    />
                 ))}
-              </div> : <div className="background-info valign-wrapper full-height">
+            </div> : <div className="background-info valign-wrapper full-height">
                 <span className="horizontal-center">
                    No configured templates
                 </span>
-              </div>}
-          </div>;
+            </div>}
+        </div>;
     }
 }
 
@@ -919,12 +941,12 @@ class Templates extends Component {
         this.addTemplate = this.addTemplate.bind(this);
         this.toggleSearchBar = this.toggleSearchBar.bind(this);
 
-        this.state = { showFilter: false };
+        this.state = {showFilter: false};
     }
 
     toggleSearchBar() {
         const last = this.state.showFilter;
-        this.setState({ showFilter: !last });
+        this.setState({showFilter: !last});
     }
 
     addTemplate() {
@@ -954,10 +976,10 @@ class Templates extends Component {
                 <NewPageHeader title="Templates" subtitle="Templates" icon='template'>
                     <div className="pt10">
                         <div className="searchBtn" title="Show search bar" onClick={this.toggleSearchBar.bind(this)}>
-                          <i className="fa fa-search" />
+                            <i className="fa fa-search"/>
                         </div>
                         <div onClick={this.addTemplate} className="new-btn-flat red waves-effect waves-light"
-                              title="Create a new template">
+                             title="Create a new template">
                             New Template<i className="fa fa-plus"/>
                         </div>
                     </div>

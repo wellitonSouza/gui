@@ -99,7 +99,7 @@ class Devices extends Component {
       })
       .catch((error) => {console.log("Failed!", error);
     });
-    
+
     function init(token){
       var socket = socketio(target, {query: "token=" + token, transports: ['websocket']});
 
@@ -110,7 +110,7 @@ class Devices extends Component {
   }
 
   componentWillUnmount(){
-    location.reload(true);
+    // location.reload(true);
   }
 
   filterChange(newFilter) {}

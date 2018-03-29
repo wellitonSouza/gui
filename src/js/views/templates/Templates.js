@@ -3,8 +3,16 @@ import ReactDOM from 'react-dom';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AltContainer from 'alt-container';
 import Materialize from 'materialize-css';
+
 import TemplateStore from '../../stores/TemplateStore';
 import TemplateActions from '../../actions/TemplateActions';
+
+import ImageStore from '../../stores/ImageStore';
+import ImageActions from '../../actions/ImageActions';
+
+import { ImageCard, NewImageCard } from "../firmware/elements";
+
+
 import util from "../../comms/util/util";
 import {NewPageHeader} from "../../containers/full/PageHeader";
 import { hashHistory } from 'react-router';
@@ -12,6 +20,99 @@ import { hashHistory } from 'react-router';
 import { GenericModal, RemoveModal } from "../../components/Modal";
 import Toggle from 'material-ui/Toggle';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
+
+// this component is pretty similar to FirmwareCardImpl
+
+class ImageModal extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            creating: false
+        };
+
+        this.images = [];
+        this.dismiss = this.dismiss.bind(this);
+        // this.toggleModal = this.toggleModal.bind(this);
+        this.createNewImage = this.createNewImage.bind(this);
+        this.setNewImage = this.setNewImage.bind(this);
+    }
+
+    createNewImage() {
+        this.setState({ creating: true });
+    }
+
+    setNewImage(value) {
+        this.setState({ creating: value });
+    }
+
+    dismiss()
+    {
+        console.log("dismiss");
+        this.props.toggleModal();
+    }
+
+
+    // toggleModal() {
+    //     this.props.toggleModal();
+    // }
+
+    render() {
+        console.log("Rendering Image Modal", this.props.images);
+    
+        let images = [];
+        for (let img in this.props.images)
+            images.push(this.props.images[img]);
+        
+        let default_version = this.props.template.config_attrs.filter(
+            function (elem, index) {
+                return elem.type === "fw_version";
+            }
+        )[0];
+        if (default_version)
+            default_version = default_version.static_value;
+        console.log("default fw_version: ", default_version);
+
+        return (
+
+            <div className="image-modal-canvas">
+                <div className="full-background" onClick={this.dismiss}> </div>
+                <ReactCSSTransitionGroup transitionName="imageModal">
+    
+                    <div className="image-modal-div imageModal">
+                    <div className="row im-header">
+                    <div className="col s12 pl40">
+                        <div className="icon-firmware"/>
+                
+                        <label className="title">{this.props.template.label}</label>
+                        <label className="subtitle">Firmware Management</label>
+                    </div>
+                    </div>
+
+                    <div className="col s12">
+                        <div className="card-size card-size-clear">
+                            <div className="attr-area">
+                                {images.map((img, idx) => (
+                                        <ImageCard updateDefaultVersion={this.props.updateDefaultVersion} template_id={this.props.template.id} image={img} key={idx} default_version={default_version}/>
+                                ))}
+                                {this.state.creating === false && <div className="image-card image-card-attributes">
+                                    <div onClick={this.createNewImage} className="lst-blockquote col s12">
+                                        <span className="new-image-text"> Create a new Image</span>
+                                    </div>
+                                </div >}
+                                    {this.state.creating === true && <NewImageCard refreshImages={this.props.refreshImages} setNewImage={this.setNewImage} template={this.props.template} />}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </ReactCSSTransitionGroup>
+
+            </div>
+        )
+    }
+}
+
 
 class TemplateTypes {
     constructor() {
@@ -30,6 +131,7 @@ class TemplateTypes {
             {"value": "mqtt", "label": "MQTT"}
         ];
         this.configValueTypes = [
+            // {"value": "fw_version", "label": "Firmware Version" },
             {"value": "protocol", "label": "Protocol"},
             {"value": "topic", "label": "Topic"},
             {"value": "translator", "label": "Translator"}
@@ -171,6 +273,10 @@ class ConfigList extends Component {
     }
 
     render() {
+        console.log("this.props.attributes", this.props.attributes);
+        if (this.props.attributes.type == "fw_version")
+        return null;
+
         return (
             <div className={"attr-area " + (this.state.isSuppressed ? 'suppressed' : '')}>
                 <div className="attr-row">
@@ -471,7 +577,9 @@ class ListItem extends Component {
             isSuppressed: true,
             isEditable: false,
             isConfiguration: false,
-            show_modal: false
+            show_modal: false,
+            show_image_modal: false,
+            fw_version_used: null 
         };
 
         this.clone = JSON.parse(JSON.stringify(this.state.template));
@@ -490,15 +598,35 @@ class ListItem extends Component {
         this.discardUnsavedTemplate = this.discardUnsavedTemplate.bind(this);
         this.handleModal = this.handleModal.bind(this);
         this.openModal = this.openModal.bind(this);
+        this.openImageModal = this.openImageModal.bind(this);
+        this.toggleImageModal = this.toggleImageModal.bind(this);
+        this.refreshImages = this.refreshImages.bind(this);
+        this.updateDefaultVersion = this.updateDefaultVersion.bind(this);
+    }
+    
+
+    refreshImages()
+    {
+        ImageActions.fetchSingle.defer(this.state.template.label, () => {
+            let fw_version = null;
+            
+            let attr = this.state.template.config_attrs.filter(
+                function (elem, index) {
+                    return elem.type == "fw_version";
+                }
+            )[0];
+            if (attr)
+                fw_version = attr.static_value;
+                this.setState({fw_version_used:fw_version});
+        });
     }
 
     componentDidMount() {
-        let state = this.state;
-        if (state.template.isNewTemplate) {
-            state.isEditable = true;
-            state.isSuppressed = false;
+        this.refreshImages();
+        
+        if (this.state.template.isNewTemplate) {
+            this.setState({ isEditable: true, isSuppressed: false});
         }
-        this.setState(state);
     }
 
     handleDismiss(e) {
@@ -509,7 +637,8 @@ class ListItem extends Component {
     }
 
     updateTemplate(e) {
-        e.preventDefault();
+        if (e != undefined)
+            e.preventDefault();
         let ret = util.isNameValid(this.state.template.label);
         if (!ret.result && !this.state.isConfiguration) {
             Materialize.toast(ret.error, 4000);
@@ -545,6 +674,19 @@ class ListItem extends Component {
     addAttribute(attribute, isConfiguration) {
         let state = this.state.template;
         if (isConfiguration) {
+
+            // we should check if config_attrs and data_attrs already contains the pair (label, type) before save it.
+
+            if (state.config_attrs.filter(
+                function (elem, index) {
+                    return elem.label == attribute.value_type && elem.static_value == attribute.value;
+                }
+            )[0])
+            {
+                Materialize.toast("The pair (label, type) is already created.", 4000);
+                return; 
+            }
+
             state.config_attrs.push({
                 label: attribute.value_type,
                 value_type: "string",
@@ -553,6 +695,17 @@ class ListItem extends Component {
             });
 
         } else {
+            if (state.data_attrs.filter(
+                function (elem, index) {
+                    return elem.label == attribute.label && elem.value_type == attribute.value_type;
+
+                }
+            )[0])
+            {
+                Materialize.toast("The pair (label, type) is already created.", 4000);
+                return; 
+            }
+
             state.data_attrs.push({
                 label: attribute.label,
                 type: attribute.type,
@@ -641,20 +794,66 @@ class ListItem extends Component {
      this.setState({show_modal: status});
     }
 
+    openImageModal(){
+        this.setState({show_image_modal:true});
+    }
+
+    toggleImageModal(){
+        console.log("toggle_image_modal");
+        this.setState({ show_image_modal: !this.state.show_image_modal });    
+    }
+
+    updateDefaultVersion(img)
+    {
+        console.log("update Star", img);
+        // 1. remove previous default version
+        let tmplt = this.state.template;
+        tmplt.config_attrs = tmplt.config_attrs.filter(
+            function( elem, index ) {
+                return elem.type != "fw_version";
+            }
+        );
+
+        // 2. add a new version
+        tmplt.config_attrs.push({
+            label: "fw_version",
+            value_type: "string",
+            type: "fw_version",
+            static_value: img
+        });
+        // 3. update state and after save the template
+        this.setState(
+            { template: tmplt },
+            () => this.updateTemplate()
+        );
+    }
 
     render() {
+
+        let fw_version_used = "No images added"
+        if (this.state.fw_version_used) {
+            fw_version_used = this.state.fw_version_used;
+        }
+
+        console.log("show_image_modal", this.state.show_image_modal);
         let attrs = this.state.template.data_attrs.length + this.state.template.config_attrs.length;
         return (
-            <div
-                className={"card-size lst-entry-wrapper z-depth-2 " + (this.state.isSuppressed ? 'suppressed' : 'fullHeight')}
+            <div>
+            {this.state.show_image_modal ? (
+                <AltContainer store={ImageStore}>
+                        <ImageModal updateDefaultVersion={this.updateDefaultVersion} template={this.state.template} refreshImages={this.refreshImages} toggleModal={this.toggleImageModal} />
+                </AltContainer>
+            ) : null }
+            
+            <div className={"template card-size lst-entry-wrapper z-depth-2 " + (this.state.isSuppressed ? 'suppressed' : 'full-height')}
                 id={this.props.id}>
                 {this.state.show_modal ?(
                   <RemoveModal name={"template"} remove={this.deleteTemplate} openModal={this.openModal} />
                 ) : (
                   <div></div>
                 )}
-                <div className="lst-entry-title col s12">
-                    <img className="title-icon" src={"images/model-icon.png"}/>
+                <div className="lst-entry-title bg-gradient-ciano-blue col s12">
+                    <img className="title-icon template" src={"images/big-icons/template.png"}/>
                     <div className="title-text">
                         <textarea maxLength="40" placeholder={"Template Name"} readOnly={!this.state.isEditable}
                                   value={this.state.template.label} name={"label"} onChange={this.handleAttribute}/>
@@ -673,6 +872,26 @@ class ListItem extends Component {
                         <i className="fa fa-angle-down center-text-child text"/>
                     </div>
                 </div>
+                
+            {(!this.state.template.isNewTemplate && 
+                <div className="lst-entry-body img-line-on-template">
+                        <div className="attr-row icon-area center-text-parent">
+                            <div className="icon">
+                            </div>
+                        </div>
+                        <div className="text-area center-text-parent attr-content">
+                           <div className="attr-content">
+                                <label>Firmware used</label>
+                                <span>{fw_version_used}</span>
+                           </div>
+                        </div>
+                    <div
+                        className={"center-text-parent material-btn expand-btn right-side "}
+                        onClick={this.openImageModal}>
+                        <i className="fa fa-pencil center-text-child text" />
+                    </div>
+                        </div>)}
+
                 <div className={"attr-list"} id={"style-3"}>
                     {this.state.template.data_attrs.map((attributes, index) =>
                         <AttributeList key={index} index={index} attributes={attributes}
@@ -681,8 +900,7 @@ class ListItem extends Component {
                                        removeAttribute={this.removeAttribute}/>)}
 
                     {this.state.template.config_attrs.map((attributes, index) =>
-                        <ConfigList key={index} index={index} attributes={attributes} editable={this.state.isEditable}
-                                    onChangeValue={this.handleChangeConfig} removeAttribute={this.removeAttribute}/>)}
+                        <ConfigList key={index} index={index} attributes={attributes} editable={this.state.isEditable} onChangeValue={this.handleChangeConfig} removeAttribute={this.removeAttribute}/>)}
                 </div>
 
                 <div className={"card-footer  " + (this.state.isConfiguration ? 'config-footer' : '')}>
@@ -700,23 +918,23 @@ class ListItem extends Component {
                         </div>
                         <div className={(this.state.isEditable ? (this.state.template.isNewTemplate ? 'none' : '') : 'none')}>
                             <div className={"material-btn center-text-parent "}
-                                 title="Edit Attributes" onClick={this.updateTemplate}>
+                                 title="Save" onClick={this.updateTemplate}>
                                 <span className="text center-text-child">save</span>
                             </div>
 
                             <div className={"material-btn center-text-parent "}
-                                 title="Edit Attributes" onClick={this.handleDismiss}>
+                                 title="Discard" onClick={this.handleDismiss}>
                                 <span className="text center-text-child">discard</span>
                             </div>
                         </div>
                         <div className={(this.state.isEditable ? (this.state.template.isNewTemplate ? '' : 'none') : 'none')}>
                             <div
                                 className={"material-btn center-text-parent "}
-                                title="Edit Attributes" onClick={this.addTemplate}>
+                                title="Create" onClick={this.addTemplate}>
                                 <span className="text center-text-child">create</span>
                             </div>
                             <div className={"material-btn center-text-parent "}
-                                 title="Edit Attributes" onClick={this.discardUnsavedTemplate}>
+                                    title="Discard" onClick={this.discardUnsavedTemplate}>
                                 <span className="text center-text-child">discard</span>
                             </div>
                         </div>
@@ -727,6 +945,7 @@ class ListItem extends Component {
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         )
     }
@@ -790,12 +1009,13 @@ class TemplateList extends Component {
         return list;
     }
 
+    // @TO_CHECK but every call to the function below don't pass any parameter
     updateTemplate(template) {
         this.props.updateTemplate(template);
 
-        let state = this.state;
-        state.edit = undefined;
-        this.setState(state);
+        // let state = this.state;
+        // state.edit = undefined;
+        this.setState({edit:undefined});
     }
 
     deleteTemplate(id) {
@@ -888,7 +1108,7 @@ class TemplateList extends Component {
         <ReactCSSTransitionGroup transitionName="templatesSubHeader">
           {header}
         </ReactCSSTransitionGroup>
-            {this.filteredList.length > 0 ? <div className="col s12 lst-wrapper">
+            {this.filteredList.length > 0 ? <div className="col s12 lst-wrapper w100">
                 {this.filteredList.map(template => (
                   <ListItem
                     template={template}

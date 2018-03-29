@@ -64,6 +64,10 @@ class MeasureStore {
                 let attrValue = {"device_id": this.data[id].id, "ts": now.toISOString(), "value":measureData.attrs[label], "attr": label };
                 if(this.data[id].attrs[i][j].value_type == "geo:point"){
                   this.data[id].position = parserPosition(measureData.attrs[label]);
+                  if(this.tracking[measureData.metadata.deviceid] !== undefined && this.tracking[measureData.metadata.deviceid] !== null){
+                    let trackingStructure = {"device_id": measureData.metadata.deviceid, "position":parserPosition(measureData.attrs[label]), "timestamp":util.iso_to_date(now)}
+                    this.tracking[measureData.metadata.deviceid] = this.tracking[measureData.metadata.deviceid].concat(trackingStructure);
+                  }
                 } else{
                   // attr is not geo
                   if(this.data[id]['_'+label] !== undefined){              

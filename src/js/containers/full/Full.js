@@ -194,7 +194,7 @@ function SidebarItem(props) {
   }
 }
 
-class Sidebar extends Component {
+class LeftSidebar extends Component {
 
   constructor(props) {
     super(props);
@@ -215,7 +215,7 @@ class Sidebar extends Component {
       { image: 'template', target: "/template/list", iconClass: "fa fa-cubes", label: "Templates ", desc: "Template management"},
       { image: 'graph', target: "/flows", iconClass: "material-icons mi-device-hub", label: "data flows", desc: "Processing flows to be executed"},
       { image: 'bell', target: "/alarm", iconClass: "fa fa-bell-o", label: "alarms", desc: "System events and alarms"},
-      { image: 'auth', target: "/auth", iconClass: "fa fa-unlock-alt", label: "auth", desc: "User and permissions management", children: [
+      { image: 'user', target: "/auth", iconClass: "fa fa-unlock-alt", label: "auth", desc: "User and permissions management", children: [
         { target: "/auth/user", iconClass: "", label: "users", title: "Users list"},
         { target: "/auth/permissions", iconClass: "", label: "permissions", title: "Permissions list"}
       ]}/*,
@@ -260,7 +260,7 @@ class Sidebar extends Component {
 function Content(props) {
   return (
     <div className={"app-body full-height " + (props.leftSideBar.open ? " open" : " closed") }>
-      <Sidebar open={props.leftSideBar.open} router={props.router}/>
+      <LeftSidebar open={props.leftSideBar.open} router={props.router}/>
       <div className="content expand relative">
         {props.children}
       </div>
@@ -305,7 +305,8 @@ class Full extends Component {
       <span>
 
         <AltContainer store={LoginStore}>
-          {(this.state.user_sidebar) ? (
+
+      {(this.state.user_sidebar) ? (
             <RightSideBar toggleSidebar={this.toggleUserSidebar} />
           ): ( <div></div> )}
           <Navbar toggleSidebar={this.toggleUserSidebar} open={this.state.user_sidebar}/>

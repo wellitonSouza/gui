@@ -235,9 +235,9 @@ class DyAttributeArea extends Component {
 
     return <div className="content-row" >
       <div className="second-col">
-        {this.state.selected_attributes.length == 0 ? 
-          (<div className="second-col-label center-align">To see the data select an static or dynamic attribute</div>) 
-          : null 
+        {this.state.selected_attributes.length == 0 ?
+          (<div className="second-col-label center-align">To see the data select an static or dynamic attribute</div>)
+          : null
         }
         {this.state.selected_attributes.map(at => (
           <Attribute key={at.id} device={this.props.device} attr={at} />
@@ -927,27 +927,35 @@ class ViewDevice extends Component {
   componentDidMount(){
       // Realtime
       var socketio = require('socket.io-client');
-  
-      const target = 'http://' + window.location.host;
+
+      const target = `${window.location.protocol}//${window.location.host}`;
       const token_url = target + "/stream/socketio";
-  
-      const url = token_url;
       const config = {}
-  
-      util._runFetch(url, config)
-        .then((reply) => {
-          init(reply.token);
-        })
-        .catch((error) => {console.log("Failed!", error);
-      });
-      
+
+      function getWsToken() {
+        util._runFetch(token_url, config)
+          .then((reply) => {
+            init(reply.token);
+          })
+          .catch((error) => {console.log("Failed!", error);
+        });
+      }
+
       function init(token){
-        var socket = socketio(target, {query: "token=" + token, transports: ['websocket']});
-  
+        var socket = socketio(target, { query: "token=" + token, transports: ['polling'] });
+
         socket.on('all', function(data){
           MeasureActions.appendMeasures(data);
         });
+
+        socket.on('error', (data) => {
+          console.log("socket error", data);
+          socket.close();
+          getWsToken();
+        })
       }
+
+      getWsToken();
   }
 
   componentDidUpdate() {

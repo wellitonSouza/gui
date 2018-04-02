@@ -51,26 +51,17 @@ class UploadDialog extends Component {
       return;
     }
 
-    let sha1 = util.getSHA1(this.state.files[0]);
-    // "label": "FW_Example",
-    // "fw_version": "1.0.0",
-    // "sha1": "cf23df2207d99a74fbe169e3eba035e633b65d94"
+    // let sha1 = util.getSHA1(this.state.files[0]);
+    // template_id: this.props.template,
     let img_binary = {
-      // template_id: this.props.template,
       image_id: this.props.image.id,
-      // fw_version: this.props.image.fw_version,
-      // has_image: true, 
-      binary: this.state.files[0],
-      sha1: sha1};
+      binary: this.state.files[0]};
       ImageActions.triggerUpdate(img_binary, () => {
           Materialize.toast('Image added', 4000);
           this.props.closeModal();
       })
   }
     
-  componentDidMount() {
-  }
-
   render() {
 
     return (
@@ -79,7 +70,7 @@ class UploadDialog extends Component {
         <div className="modal">
           <div className="modal-content full">
             <div className="background-info">
-              <div>Click below to upload a file.</div>
+              <div>Click below to upload a .hex file</div>
               <section>
                 <div className="dropzone">
                   <Dropzone multiple={false} onDrop={this.onDrop.bind(this)}>
@@ -216,6 +207,7 @@ class ImageCard extends Component {
   }
 
   closeUploadModal() {
+    console.log("closeUploadModal");
     this.setState({ modal_opened: false });
   }
 
@@ -225,31 +217,30 @@ class ImageCard extends Component {
 
 
   clickStar() {
-    console.log("clickStar");
-    // this.props.changeState(0);
     this.props.updateDefaultVersion(this.props.image.fw_version);
-    // this.setState({ starred: !this.state.starred });
   }
 
 
   removeBinary(){
-    let img_binary = {
-      template_id: this.props.template_id,
-      image_id: this.props.image.id,
-      fw_version: this.props.image.fw_version,
-      has_image: false, 
-      binary: "",
-      sha1: ""
-    };
-    console.log("removeBinary", img_binary);
-    ImageActions.triggerUpdate(img_binary, () => {
+    // let img_binary = {
+    //   template_id: this.props.template_id,
+    //   image_id: this.props.image.id,
+    //   fw_version: this.props.image.fw_version,
+    //   has_image: false, 
+    //   binary: "",
+    //   sha1: ""
+    // };
+    // console.log("removeBinary", img_binary);
+    ImageActions.triggerRemovalBinary(this.props.image.id, () => {
       Materialize.toast('Image updated', 4000);
     })
     // this.props.changeState(0);
   }
 
   componentDidMount() {
-    if (this.props.image.fw_version == this.props.default_version )
+    console.log("this.props.image.fw_version", this.props.image.fw_version);
+    console.log("this.props.default_version", this.props.default_version);
+    if (this.props.image.fw_version == this.props.default_version && this.props.default_version)
       this.setState({ starred: true });
   }
 
@@ -261,8 +252,8 @@ class ImageCard extends Component {
     let binaryInfo = null;
   if (this.props.image.has_image)
     binaryInfo = <div className="attr-content black-attr-row">
-      <label title={"SHA1: "+this.props.image.sha1} >{this.props.image.sha1}</label>
-      <span>Binary file</span>
+      <label>Image added.</label>
+      <span> Binary file</span>
       <div onClick={this.removeBinary} className="searchBtn" title="Remove Binary file">
         <i className="fa fa-trash" />
       </div>

@@ -109,7 +109,6 @@ class Util {
       }
     }
     return new Promise(function(resolve, reject) {
-      console.log("authConfig", authConfig);
       fetch(url, authConfig)
         .then(local._status)
         // .then(local._json)

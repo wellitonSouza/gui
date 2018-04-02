@@ -59,7 +59,7 @@ class ImageModal extends Component {
     // }
 
     render() {
-        console.log("Rendering Image Modal", this.props.images);
+        console.log("Rendering Image Modal", this.props);
     
         let images = [];
         for (let img in this.props.images)
@@ -607,9 +607,19 @@ class ListItem extends Component {
 
     refreshImages()
     {
-        ImageActions.fetchSingle.defer(this.state.template.label, () => {
+        console.log("this.state.template.label", this.state.template.label);
+           ImageActions.fetchSingle.defer(this.state.template.label, () => {
+        });
+    }
+
+    componentDidMount() {
+        
+        if (this.state.template.isNewTemplate) {
+            this.setState({ isEditable: true, isSuppressed: false});
+        }
+        else
+        {
             let fw_version = null;
-            
             let attr = this.state.template.config_attrs.filter(
                 function (elem, index) {
                     return elem.type == "fw_version";
@@ -617,15 +627,7 @@ class ListItem extends Component {
             )[0];
             if (attr)
                 fw_version = attr.static_value;
-                this.setState({fw_version_used:fw_version});
-        });
-    }
-
-    componentDidMount() {
-        this.refreshImages();
-        
-        if (this.state.template.isNewTemplate) {
-            this.setState({ isEditable: true, isSuppressed: false});
+            this.setState({ fw_version_used: fw_version });
         }
     }
 
@@ -795,6 +797,7 @@ class ListItem extends Component {
     }
 
     openImageModal(){
+        this.refreshImages();
         this.setState({show_image_modal:true});
     }
 
@@ -830,12 +833,11 @@ class ListItem extends Component {
 
     render() {
 
-        let fw_version_used = "No images added"
+        let fw_version_used = "No default image"
         if (this.state.fw_version_used) {
             fw_version_used = this.state.fw_version_used;
         }
 
-        console.log("show_image_modal", this.state.show_image_modal);
         let attrs = this.state.template.data_attrs.length + this.state.template.config_attrs.length;
         return (
             <div>
@@ -852,7 +854,7 @@ class ListItem extends Component {
                 ) : (
                   <div></div>
                 )}
-                <div className="lst-entry-title bg-gradient-ciano-blue col s12">
+                    <div className="lst-entry-title bg-gradient-ciano-blue col s12">
                     <img className="title-icon template" src={"images/big-icons/template.png"}/>
                     <div className="title-text">
                         <textarea maxLength="40" placeholder={"Template Name"} readOnly={!this.state.isEditable}

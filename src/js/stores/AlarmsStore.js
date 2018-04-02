@@ -27,10 +27,7 @@ class AlarmStore {
             Critical: 0
         };
         for (let alarm in alarmList.alarms) {
-            meta.Warning = alarmList.alarms[alarm].severity.toLowerCase() === 'warning' ? meta.Warning + 1 : meta.Warning;
-            meta.Minor = alarmList.alarms[alarm].severity.toLowerCase() === 'minor' ? meta.Minor + 1 : meta.Minor;
-            meta.Major = alarmList.alarms[alarm].severity.toLowerCase() === 'major' ? meta.Major + 1 : meta.Major;
-            meta.Critical = alarmList.alarms[alarm].severity.toLowerCase() === 'critical' ? meta.Critical + 1 : meta.Critical;
+            meta[alarmList.alarms[alarm].severity] += 1;
         }
         return meta;
 

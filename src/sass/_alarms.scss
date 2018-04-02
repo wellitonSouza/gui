@@ -72,7 +72,7 @@
   .error-type {
     float: left;
     height: 100%;
-    min-width: 250px;
+    min-width: 230px;
     padding: 14px 0;
     flex-grow: 1;
     .domain-error {
@@ -88,9 +88,9 @@
   .error-module {
     float: left;
     height: 100%;
-    min-width: 150px;
+    min-width: 240px;
     padding: 14px 0;
-    flex-grow: 2;
+    flex-grow: 1;
     .module {
       width: 100%;
       float: left;
@@ -111,7 +111,7 @@
     height: 100%;
     min-width: 180px;
     padding: 14px 0;
-    flex-grow: 2;
+    flex-grow: 1;
     .time {
       width: 100%;
       float: left;

@@ -1,3 +1,25 @@
+.history-list
+{
+  .value{
+    font-size: 14px;
+    font-weight: 500;
+    padding-left: 10px !important;
+    text-transform: capitalize;
+    font-family: 'Roboto';
+    padding-top: 2px !important;
+  }
+
+  .label
+  {
+    font-family: 'Roboto';
+    line-height: 23px;
+    font-size: 10px;
+    color: #404040;
+    text-transform: uppercase;
+    padding-right: 10px !important;
+  }
+}
+
 .no-data-av
 {
   position: absolute;
@@ -54,10 +76,12 @@
 
 .graphLarge {
   position: relative;
+  height: 200px;
+  padding-top:5px;
+  padding-right:5px;
 
-  .contents{
-    height: 209px;
-    overflow: hidden;
+  canvas{
+    height:195px;
   }
 }
 
@@ -1519,10 +1543,12 @@ h1, h2, p {
 
     label{
       position: relative;
-      left: 40%;
+      left: 20%;
       color: #4F4F4F;
       font-weight: bold;
       font-size: 0.9em;
+      text-transform: capitalize;
+
     }
 
     i{

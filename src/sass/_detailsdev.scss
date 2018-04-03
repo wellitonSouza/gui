@@ -78,7 +78,7 @@
   position: relative;
   height: 200px;
   padding-top:5px;
-  padding-right:5px;
+  //padding-right:5px;
 
   canvas{
     height:195px;
@@ -1523,7 +1523,7 @@ h1, h2, p {
   -webkit-animation-duration: 0.5s; /* Safari 4.0 - 8.0 */
   animation-name: opa-hei;
   animation-duration: 0.5s;
-  overflow-y: auto;
+  overflow: hidden;
 
   .header
   {
@@ -1543,7 +1543,7 @@ h1, h2, p {
 
     label{
       position: relative;
-      left: 20%;
+      left: 45%;
       color: #4F4F4F;
       font-weight: bold;
       font-size: 0.9em;

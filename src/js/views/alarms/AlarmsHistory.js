@@ -92,12 +92,12 @@ function AlarmRow(props) {
                 <div id={'alarm-error-domain'} className={'domain-error ' + (type)}>
                     {props.domain}
                 </div>
-                <div id={'alarm-error-reason'} className={'error-description'}>
+                <div id={'alarm-error-reason'} className={'error-description'} title={props.additionalData.reason}>
                     {props.additionalData.reason}
                 </div>
             </div>
             <div id={'alarm-error-module'} className={'error-module'}>
-                <div id={'alarm-error-module-name'} className={'module'}>
+                <div id={'alarm-error-module-name'} className={'module'} title={props.primarySubject.module_name}>
                     {props.primarySubject.module_name}
                 </div>
                 <div id={'alarm-error-module-service'} className={'service'}>

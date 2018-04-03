@@ -253,7 +253,7 @@ class StaticAttributes extends Component {
             </div>
           </div>}
           {/* Static Attributes */}
-        {statics.length > 0 && <div className="col s6">
+        {statics.length > 0 && <div className="col s12">
             <div className="col s12">
               <div className="attr-title">Static Attributes</div>
             </div>

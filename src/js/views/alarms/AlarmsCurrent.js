@@ -97,7 +97,7 @@ function AlarmRow(props) {
                 </div>
             </div>
             <div id={'alarm-error-module'} className={'error-module'}>
-                <div id={'alarm-error-module-name'} className={'module'}>
+                <div id={'alarm-error-module-name'} className={'module'} title={props.primarySubject.module_name}>
                     {props.primarySubject.module_name}
                 </div>
                 <div id={'alarm-error-module-service'} className={'service'}>
@@ -165,8 +165,6 @@ class AlarmsCurrent extends Component {
     }
 
 
-
-
     render() {
         if (AlarmStore.getState().loading) {
             return (<Loading/>);
@@ -183,4 +181,4 @@ class AlarmsCurrent extends Component {
     }
 }
 
-export { AlarmsCurrent };
+export {AlarmsCurrent};

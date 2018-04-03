@@ -68,9 +68,7 @@ class DeviceStore {
   handleUpdateStatus(device) {
    if (device.attrs.status != undefined) {
     this.devices[device.metadata.deviceid].status = device.attrs.status;
-   } else {
-    this.devices[device.metadata.deviceid].status = "disabled";
-   }   
+   }  
   }
 
 

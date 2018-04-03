@@ -943,7 +943,7 @@ class ViewDevice extends Component {
 
       function init(token){
         var socket = socketio(target, { query: "token=" + token, transports: ['polling'] });
-
+        console.log("socket on", data);
         socket.on('all', function(data){
           MeasureActions.appendMeasures(data);
         });

@@ -18,7 +18,7 @@ class AlarmsManager {
     }
 
     getHistoryWithoutNamespace() {
-        return util.GET(this.baseUrl + "/history");
+        return util.GET(this.baseUrl + "/history/all");
     }
 
     getHistoryWithNamespace(namespace) {

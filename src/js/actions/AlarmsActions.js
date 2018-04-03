@@ -36,7 +36,7 @@ class AlarmsActions {
             dispatch();
             alarmsManager.getHistoryWithoutNamespace()
                 .then((alarmList) => {
-                    this.insertHistoryAlarms(alarmList.alarms);
+                    this.insertHistoryAlarms(alarmList);
                 })
                 .catch((error) => {
                     this.alarmsFailed(error);

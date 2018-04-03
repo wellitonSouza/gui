@@ -54,7 +54,7 @@ class Util {
       body: new Blob([JSON.stringify(payload)], {type : 'application/json'})
     });
   }
-  
+
   POST_MULTIPART(url, payload) {
     console.log("POST_MULTIPART", payload);
     let data = new FormData();
@@ -109,7 +109,6 @@ class Util {
       }
     }
     return new Promise(function(resolve, reject) {
-      console.log("authConfig", authConfig);
       fetch(url, authConfig)
         .then(local._status)
         // .then(local._json)
@@ -162,15 +161,15 @@ class Util {
 
   // to get formatted date
   timestamp_to_date(timestamp) {
-      return moment(timestamp).format('MMM, D, YYYY HH:mm:ss');
+      return moment(timestamp).format('MMM, DD, YYYY HH:mm:ss');
   }
 
   iso_to_date(timestamp) {
-    return moment(timestamp).format('D/MM/YYYY HH:mm:ss');
+    return moment(timestamp).format('DD/MM/YYYY HH:mm:ss');
   }
 
   iso_to_date_hour(timestamp){
-    return moment(timestamp).format('D/MM HH:mm');
+    return moment(timestamp).format('DD/MM HH:mm');
   }
 
 

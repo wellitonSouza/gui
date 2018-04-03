@@ -120,7 +120,7 @@ class Devices extends Component {
   }
 
   componentWillUnmount(){
-    location.reload(true);
+    // location.reload(true);
   }
 
   filterChange(newFilter) {}

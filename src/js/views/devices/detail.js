@@ -981,7 +981,7 @@ class ViewDevice extends Component {
   }
 
   componentWillUnmount(){
-    location.reload(true);
+    //location.reload(true);
   }
 
   render() {

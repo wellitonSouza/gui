@@ -21,7 +21,7 @@ function SummaryItem(props) {
     }
 
     return (
-    
+
       <Link to={"/device/id/" + props.device.id + "/detail"}>
           <div className={"card-size lst-entry-wrapper z-depth-2 fullHeight"}>
               <div className="lst-entry-title col s12">
@@ -164,7 +164,7 @@ class DeviceCard extends Component {
   this.convertTemplateList();
 
   const device_icon  = (<img src='images/icons/chip.png' />);
-  
+
    let header = null;
    if (this.props.showSearchBox){
     header = <div className={"row z-depth-2 devicesSubHeader " + (this.props.showSearchBox ? "show-dy" : "hide-dy")} id="inner-header">
@@ -191,9 +191,14 @@ class DeviceCard extends Component {
     this.filteredList = this.applyFiltering(this.props.devices);
     this.clearInputField();
    }
-   
+
       return <div className="full-height relative">
-          <ReactCSSTransitionGroup transitionName="devicesSubHeader">
+          <ReactCSSTransitionGroup transitionName="devicesSubHeader"
+                                   transitionLeave={true}
+                                   transitionAppear={true}
+                                   transitionAppearTimeout={300}
+                                   transitionEnterTimeout={300}
+                                   transitionLeaveTimeout={300}>
             {header}
           </ReactCSSTransitionGroup>
           <div className="flex-wrapper bg-light-gray">

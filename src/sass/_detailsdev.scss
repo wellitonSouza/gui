@@ -54,6 +54,11 @@
 
 .graphLarge {
   position: relative;
+
+  .contents{
+    height: 209px;
+    overflow: hidden;
+  }
 }
 
 // .300-height

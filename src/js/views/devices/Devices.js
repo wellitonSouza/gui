@@ -92,10 +92,9 @@ class Devices extends Component {
 
     const target = `${window.location.protocol}//${window.location.host}`;
     const token_url = target + "/stream/socketio";
-    const config = {}
 
     function getWsToken() {
-      util._runFetch(token_url, config)
+      util._runFetch(token_url)
         .then((reply) => {
           init(reply.token);
         })

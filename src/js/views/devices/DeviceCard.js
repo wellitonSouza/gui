@@ -121,9 +121,11 @@ class DeviceCard extends Component {
 
   convertDeviceList() {
     if (this.state.filter != "") {
-      var updatedList = this.filteredList.filter(function(device) {
-        return device.label.includes(event.target.value);
-      });
+      if(event.target.value != undefined){
+        var updatedList = this.filteredList.filter(function(device) {
+          return device.label.includes(event.target.value);
+        });
+      }
       this.filteredList = updatedList;
     } else {
       this.filteredList = [];

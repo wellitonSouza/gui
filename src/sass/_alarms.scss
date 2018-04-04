@@ -73,8 +73,9 @@
     float: left;
     height: 100%;
     min-width: 230px;
+    width: 50%;
     padding: 14px 0;
-    flex-grow: 1;
+
     .domain-error {
       font-size: 18px;
       font-weight: 400;
@@ -83,19 +84,25 @@
       color: #828282;
       font-size: 12px;
       font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
   .error-module {
     float: left;
     height: 100%;
-    min-width: 240px;
+    min-width: 190px;
+    width: 20%;
     padding: 14px 0;
-    flex-grow: 1;
     .module {
       width: 100%;
       float: left;
       text-align: right;
       color: #4F4F4F;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .service {
       float: right;
@@ -110,8 +117,8 @@
     float: left;
     height: 100%;
     min-width: 180px;
+    width: 25%;
     padding: 14px 0;
-    flex-grow: 1;
     .time {
       width: 100%;
       float: left;
@@ -133,7 +140,7 @@
 .content-area {
   float: left;
   width: calc(100% - 240px);
-  height: calc(100% - 60px);
+  height: calc(100% - 55px);
   position: relative;
   z-index: 99;
 }
@@ -168,10 +175,25 @@
   }
 }
 
+.error-type {
+  .critical {
+    color: #FF0053 !important;
+  }
+  .major {
+    color: #F2994A !important;
+  }
+  .minor {
+    color: #4BA0C4 !important;
+  }
+  .warning {
+    color: #F2C94C !important;
+  }
+}
+
 .side-menu {
   float: left;
   width: 240px;
-  height: calc(100% - 60px);
+  height: calc(100% - 55px);
   position: relative;
   z-index: 99;
   background: #F5F6FA;
@@ -241,7 +263,7 @@
 .alarms-tabs-area {
   float: left;
   width: 100%;
-  height: 60px;
+  height: 55px;
   position: relative;
   z-index: 100;
   background: linear-gradient(270.95deg, #F8F8F8 29.89%, #FFFFFF 96.84%);
@@ -264,17 +286,23 @@
       display: table-cell;
       vertical-align: middle;
       text-align: center;
-      font-size: 15px;
-      font-weight: 500;
+      font-size: 14px;
+      font-weight: 600;
       font-family: "Open Sans", "Roboto", sans-serif;
     }
   }
   .selected {
     border-bottom: 3px solid #EB5757;
     border-top: none;
+    background: #F4F4F4;
     &:hover {
-      background: #ffffff;
-      color: #555555 !important;
+      //background: #ffffff;
+      //color: #555555 !important;
     }
   }
+}
+.full-content-space {
+  float: left;
+  height: 100%;
+  width: 100%;
 }

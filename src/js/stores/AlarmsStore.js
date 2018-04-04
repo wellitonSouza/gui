@@ -51,7 +51,8 @@ class AlarmStore {
     }
 
     handleInsertHistoryAlarms(historyAlarms) {
-        this.historyAlarms.push(historyAlarms);
+        this.historyAlarms = historyAlarms.alarms;
+        this.metaData = this.countMetaAttributes(historyAlarms);
         this.error = null;
         this.loading = false;
     }

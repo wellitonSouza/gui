@@ -809,15 +809,16 @@ $action-area-width: 200px;
   to {top: -5px;}
 }
 
-@keyframes normal {
+@keyframes back-to-normal {
   from {top: -5px;}
   to {top: 0;}
 }
 
 .card-hover {
   position: relative;
-  transition: 250ms linear !important;
+  transition: 250ms !important;
   z-index: 100;
+  animation: back-to-normal 250ms;
   &:hover {
     box-shadow: 0 6px 15px 0 rgba(0, 0, 0, 0.3) !important;
     top: -5px;

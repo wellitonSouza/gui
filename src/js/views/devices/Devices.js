@@ -70,6 +70,9 @@ class MapWrapper extends Component {
   }
 }
 
+// TODO: this is an awful quick hack - this should be better scoped.
+var device_list_socket = null;
+
 class Devices extends Component {
   constructor(props) {
     super(props);
@@ -102,14 +105,14 @@ class Devices extends Component {
     }
 
     function init(token){
-      var socket = socketio(target, { query: "token=" + token, transports: ['polling'] });
+      device_list_socket = socketio(target, { query: "token=" + token, transports: ['polling'] });
 
-      socket.on('all', function(data){
+      device_list_socket.on('all', function(data){
         MeasureActions.appendMeasures(data);
         DeviceActions.updateStatus(data);
       });
 
-      socket.on('error', (data) => {
+      device_list_socket.on('error', (data) => {
         console.log("socket error", data);
         socket.close();
         getWsToken();
@@ -120,7 +123,7 @@ class Devices extends Component {
   }
 
   componentWillUnmount(){
-    // location.reload(true);
+    device_list_socket.close();
   }
 
   filterChange(newFilter) {}

@@ -788,7 +788,9 @@ class ListItem extends Component {
 
     discardUnsavedTemplate(e) {
         e.preventDefault();
-        TemplateActions.fetchTemplates.defer();
+        TemplateActions.removeSingle("new_template");
+        // TemplateActions.fetchTemplates.defer();
+        this.props.enableNewTemplate();
     }
 
     handleModal(){

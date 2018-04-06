@@ -779,13 +779,18 @@ class ListItem extends Component {
         }
         this.state.template.attrs.push.apply(this.state.template.attrs, this.state.template.data_attrs);
         this.state.template.attrs.push.apply(this.state.template.attrs ,this.state.template.config_attrs);
-        TemplateActions.addTemplate(this.state.template);
-        TemplateActions.fetchTemplates.defer();
+        TemplateActions.addTemplate(this.state.template, (template) => {
+            Materialize.toast('Template created', 4000);
+            TemplateActions.removeSingle("new_template");
+            this.props.enableNewTemplate();
+        })
     }
 
     discardUnsavedTemplate(e) {
         e.preventDefault();
-        TemplateActions.fetchTemplates.defer();
+        TemplateActions.removeSingle("new_template");
+        // TemplateActions.fetchTemplates.defer();
+        this.props.enableNewTemplate();
     }
 
     handleModal(){
@@ -1121,6 +1126,7 @@ class TemplateList extends Component {
                     editTemplate={this.editTemplate}
                     updateTemplate={this.updateTemplate}
                     deleteTemplate={this.deleteTemplate}
+                    enableNewTemplate={this.props.enableNewTemplate}
                     confirmTarget="confirmDiag"
                   />
                 ))}
@@ -1140,8 +1146,10 @@ class Templates extends Component {
 
         this.addTemplate = this.addTemplate.bind(this);
         this.toggleSearchBar = this.toggleSearchBar.bind(this);
-
-        this.state = { showFilter: false };
+        this.enableNewTemplate = this.enableNewTemplate.bind(this);
+        this.state = { showFilter: false,
+            has_new_template: false
+        };
     }
 
     toggleSearchBar() {
@@ -1150,8 +1158,11 @@ class Templates extends Component {
     }
 
     addTemplate() {
+        if (this.state.has_new_template)
+            return;
         let template =
             {
+                "id":"new_template",
                 "label": "",
                 "data_attrs": [],
                 "config_attrs": [],
@@ -1159,6 +1170,12 @@ class Templates extends Component {
                 "isNewTemplate": true
             };
         TemplateActions.insertTemplate(template);
+       this.setState({'has_new_template': true});
+    }
+
+    enableNewTemplate()
+    {   
+        this.setState({ 'has_new_template': false });
     }
 
     componentDidMount() {
@@ -1185,7 +1202,7 @@ class Templates extends Component {
                     </div>
                 </NewPageHeader>
                 <AltContainer store={TemplateStore}>
-                    <TemplateList showSearchBox={this.state.showFilter}/>
+                    <TemplateList enableNewTemplate={this.enableNewTemplate} showSearchBox={this.state.showFilter}/>
                 </AltContainer>
             </ReactCSSTransitionGroup>
         );

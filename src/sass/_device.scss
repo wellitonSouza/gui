@@ -129,6 +129,7 @@
 .template-frame {
   background: #f6f7fb;
   height: 100vh;
+  overflow: auto;
 
   .header {
     font-family: "Roboto", sans-serif;

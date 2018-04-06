@@ -1,22 +1,37 @@
 import alt from '../alt'
-import AlarmsActions from '../actions/AlarmsActions'
+import alarmsActions from '../actions/AlarmsActions'
 
 class AlarmStore {
     constructor() {
         this.currentAlarms = [];
         this.historyAlarms = [];
-        this.loading = false;
+        this.metaData = [];
+        this.loading = true;
         this.error = null;
 
         this.bindListeners({
-            handleFetchCurrentAlarmsList: AlarmsActions.FETCH_CURRENT_ALARMS,
-            handleFetchAlarmsHistoryList: AlarmsActions.FETCH_ALARMS_HISTORY,
-            handleInsertCurrentAlarms: AlarmsActions.INSERT_CURRENT_ALARMS,
-            handleInsertHistoryAlarms: AlarmsActions.INSERT_HISTORY_ALARMS,
-            handleFailure: AlarmsActions.ALARMS_FAILED
+            handleFetchCurrentAlarmsList: alarmsActions.insertCurrentAlarms,
+            handleFetchAlarmsHistoryList: alarmsActions.fetchAlarmsHistory,
+            handleInsertCurrentAlarms: alarmsActions.insertCurrentAlarms,
+            handleInsertHistoryAlarms: alarmsActions.insertHistoryAlarms,
+            handleFailure: alarmsActions.alarmsFailed,
+            handleLoad: alarmsActions.alarmsLoad
         });
     }
 
+    countMetaAttributes(alarmList) {
+        let meta = {
+            Warning: 0,
+            Minor: 0,
+            Major: 0,
+            Critical: 0
+        };
+        for (let alarm in alarmList.alarms) {
+            meta[alarmList.alarms[alarm].severity] += 1;
+        }
+        return meta;
+
+    }
 
     handleFetchCurrentAlarmsList() {
         this.currentAlarms = [];
@@ -29,15 +44,21 @@ class AlarmStore {
     }
 
     handleInsertCurrentAlarms(allAlarms) {
-        this.currentAlarms = allAlarms;
+        this.currentAlarms = allAlarms.alarms;
+        this.metaData = this.countMetaAttributes(allAlarms);
         this.error = null;
         this.loading = false;
     }
 
     handleInsertHistoryAlarms(historyAlarms) {
-        this.historyAlarms.push(historyAlarms);
+        this.historyAlarms = historyAlarms.alarms;
+        this.metaData = this.countMetaAttributes(historyAlarms);
         this.error = null;
         this.loading = false;
+    }
+
+    handleLoad() {
+        this.loading = true;
     }
 
     handleFailure(error) {

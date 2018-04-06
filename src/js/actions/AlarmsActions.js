@@ -5,6 +5,10 @@ import alt from "../alt"
 
 class AlarmsActions {
 
+    alarmsLoad() {
+        return true;
+    }
+
     insertCurrentAlarms(currentList) {
         return currentList;
     }
@@ -19,7 +23,7 @@ class AlarmsActions {
             dispatch();
             alarmsManager.getAllCurrentAlarms()
                 .then((alarmList) => {
-                    return this.insertCurrentAlarms(alarmList.alarms);
+                    this.insertCurrentAlarms(alarmList);
                 })
                 .catch((error) => {
                     this.alarmsFailed(error);
@@ -32,7 +36,7 @@ class AlarmsActions {
             dispatch();
             alarmsManager.getHistoryWithoutNamespace()
                 .then((alarmList) => {
-                    return this.insertHistoryAlarms(alarmList.alarms);
+                    this.insertHistoryAlarms(alarmList);
                 })
                 .catch((error) => {
                     this.alarmsFailed(error);

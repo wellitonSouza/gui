@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 
 function Loading(props) {
   return (
-    <div className="background-info valign-wrapper full-height">
+    <div className="background-info valign-wrapper full-height full-width">
       <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center"/>
     </div>
   )

@@ -60,11 +60,11 @@ class ImageModal extends Component {
 
     render() {
         console.log("Rendering Image Modal", this.props);
-    
+
         let images = [];
         for (let img in this.props.images)
             images.push(this.props.images[img]);
-        
+
         let default_version = this.props.template.config_attrs.filter(
             function (elem, index) {
                 return elem.type === "fw_version";
@@ -79,12 +79,12 @@ class ImageModal extends Component {
             <div className="image-modal-canvas">
                 <div className="full-background" onClick={this.dismiss}> </div>
                 <ReactCSSTransitionGroup transitionName="imageModal">
-    
+
                     <div className="image-modal-div imageModal">
                     <div className="row im-header">
                     <div className="col s12 pl40">
                         <div className="icon-firmware"/>
-                
+
                         <label className="title">{this.props.template.label}</label>
                         <label className="subtitle">Firmware Management</label>
                     </div>
@@ -603,7 +603,7 @@ class ListItem extends Component {
         this.refreshImages = this.refreshImages.bind(this);
         this.updateDefaultVersion = this.updateDefaultVersion.bind(this);
     }
-    
+
 
     refreshImages()
     {
@@ -686,7 +686,7 @@ class ListItem extends Component {
             )[0])
             {
                 Materialize.toast("The pair (label, type) is already created.", 4000);
-                return; 
+                return;
             }
 
             state.config_attrs.push({
@@ -705,7 +705,7 @@ class ListItem extends Component {
             )[0])
             {
                 Materialize.toast("The pair (label, type) is already created.", 4000);
-                return; 
+                return;
             }
 
             state.data_attrs.push({
@@ -808,7 +808,7 @@ class ListItem extends Component {
 
     toggleImageModal(){
         console.log("toggle_image_modal");
-        this.setState({ show_image_modal: !this.state.show_image_modal });    
+        this.setState({ show_image_modal: !this.state.show_image_modal });
     }
 
     updateDefaultVersion(img)
@@ -851,7 +851,7 @@ class ListItem extends Component {
                         <ImageModal updateDefaultVersion={this.updateDefaultVersion} template={this.state.template} refreshImages={this.refreshImages} toggleModal={this.toggleImageModal} />
                 </AltContainer>
             ) : null }
-            
+
             <div className={"template card-size lst-entry-wrapper z-depth-2 " + (this.state.isSuppressed ? 'suppressed' : 'full-height')}
                 id={this.props.id}>
                 {this.state.show_modal ?(
@@ -879,8 +879,8 @@ class ListItem extends Component {
                         <i className="fa fa-angle-down center-text-child text"/>
                     </div>
                 </div>
-                
-            {(!this.state.template.isNewTemplate && 
+
+            {(!this.state.template.isNewTemplate &&
                 <div className="lst-entry-body img-line-on-template">
                         <div className="attr-row icon-area center-text-parent">
                             <div className="icon">

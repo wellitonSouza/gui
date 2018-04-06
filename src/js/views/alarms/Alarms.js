@@ -4,64 +4,52 @@ import {NewPageHeader} from "../../containers/full/PageHeader";
 import AlarmStore from '../../stores/AlarmsStore'
 import AlarmAction from '../../actions/AlarmsActions'
 import AltContainer from 'alt-container';
-import util from '../../comms/util/util'
+import {AlarmsCurrent} from './AlarmsCurrent';
+import {AlarmsHistory} from './AlarmsHistory';
 
 
 class AlarmsPage extends Component {
+
     constructor(props) {
         super(props);
+        this.state = {
+            tab: 'current'
+        };
+        this.handleChangeTab = this.handleChangeTab.bind(this);
+    }
+
+    handleChangeTab(status) {
+        let tmpState = this.state;
+        tmpState.tab = status;
+        this.setState(tmpState);
+
+        status === 'current' ? AlarmAction.fetchCurrentAlarms.defer() : AlarmAction.fetchAlarmsHistory.defer();
+
     }
 
     render() {
-        // console.log(this.props);
         return (
             <div id={'alarm-main-area'} className={'total-area'}>
-
-                <div id={'alarm-list-header'} className={'alarm-header'}>
-                    <div>Showing&nbsp; <span>{this.props.currentAlarms.length}</span> &nbsp;Alarms</div>
-                </div>
-
-                <div id={'alarm-list-area'} className={'list-area'}>
-                    {this.props.currentAlarms.map((list) =>
-                        <AlarmRow {...list}/>
-                    )}
-                </div>
+                <AlarmTabs changeTab={this.handleChangeTab} {...this.state}/>
+                {this.state.tab === 'current' ?
+                    <AlarmsCurrent  {...this.props}/> :
+                    <AlarmsHistory  {...this.props}/>
+                }
             </div>
         )
     }
 }
 
-function AlarmRow(props) {
-    let type = props.severity.toLowerCase();
-    console.log(props);
+function AlarmTabs(props) {
     return (
-        <div className={'alarm-row'}>
-            <div title={props.severity} id={'alarm-severity-icon'} className={'severity-icon'}>
-                <img src={'images/alarm/' + (type) +'.png'}/>
+        <div id={'tabs-area'} className={'alarms-tabs-area'}>
+            <div id={'tab-current'} className={'tab-area ' + (props.tab === 'current' ? 'selected' : '')}
+                 onClick={props.changeTab.bind(this, 'current')}>
+                <div id={'current-tab'} className={'text-area'}>Current</div>
             </div>
-            <div id={'alarm-error-type'} className={'error-type'}>
-                <div id={''} className={'domain-error ' + (type)}>
-                    {props.domain}
-                </div>
-                <div id={''} className={'error-description'}>
-                    {props.additionalData.reason}
-                </div>
-            </div>
-            <div id={'alarm-error-module'} className={'error-module'}>
-                <div id={''} className={'module'}>
-                    {props.primarySubject.module_name}
-                </div>
-                <div id={''} className={'service'}>
-                    Service
-                </div>
-            </div>
-            <div id={'alarm-error-time'} className={'error-time'}>
-                <div id={''} className={'time'}>
-                    {util.iso_to_date(props.appearance)}
-                </div>
-                <div id={''} className={'appearance'}>
-                    Appearance Time
-                </div>
+            <div id={'tab-current'} className={'tab-area ' + (props.tab === 'history' ? 'selected' : '')}
+                 onClick={props.changeTab.bind(this, 'history')}>
+                <div id={'history-tab'} className={'text-area'}>History</div>
             </div>
         </div>
     )
@@ -74,9 +62,8 @@ class Alarms extends Component {
         super(props);
     }
 
-    componentDidMount() {
+    componentWillMount() {
         AlarmAction.fetchCurrentAlarms.defer();
-        // console.log(AlarmStore)
     }
 
     render() {
@@ -90,7 +77,7 @@ class Alarms extends Component {
                 <NewPageHeader title="Alarms" subtitle="Alarms" icon='alarm'>
                 </NewPageHeader>
                 <AltContainer store={AlarmStore}>
-                    <AlarmsPage {...this.state} />
+                    <AlarmsPage/>
                 </AltContainer>
             </ReactCSSTransitionGroup>
         );

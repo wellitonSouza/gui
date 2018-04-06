@@ -57,7 +57,7 @@ class DeviceStore {
     if (newDevice.static_attrs === undefined) {
       newDevice.static_attrs = [];
     }
-    // newDevice._status = this.parseStatus(device);
+
     newDevice.loading = false;
 
     this.devices[device.id] = newDevice;
@@ -66,11 +66,9 @@ class DeviceStore {
   }
 
   handleUpdateStatus(device) {
-   if (device.attrs.status != undefined) {
-    this.devices[device.metadata.deviceid].status = device.attrs.status;
-   } else {
-    this.devices[device.metadata.deviceid].status = "disabled";
-   }   
+   if (device.metadata.status != undefined) {
+    this.devices[device.metadata.deviceid].status = device.metadata.status;
+   }
   }
 
 
@@ -121,7 +119,9 @@ class DeviceStore {
         devices[idx].tags = [];
       }
 
-      devices[idx].status = "disabled";
+      if (devices[idx].status === undefined){
+        devices[idx].status = "disabled";
+      }
 
       this.devices[devices[idx].id] = JSON.parse(JSON.stringify(devices[idx]))
     }

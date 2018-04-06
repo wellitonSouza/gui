@@ -134,13 +134,16 @@ class ListRender extends Component {
     if (this.filteredList.length > 0) {
       return (
         <div className="row">
-          <ReactCSSTransitionGroup transitionName="flowsSubHeader" transitionAppear={true} transitionAppearTimeout={100}
-                                        transitionEnterTimeout={100} transitionLeaveTimeout={100}>
+          <ReactCSSTransitionGroup transitionName="flowsSubHeader"
+                                   transitionAppear={true}
+                                   transitionAppearTimeout={300}
+                                   transitionEnterTimeout={300}
+                                   transitionLeaveTimeout={300}>
             {header}
           </ReactCSSTransitionGroup>
           <div className="col s12 lst-wrapper scroll-bar">
-            { this.filteredList.map((flow, id) =>            
-              <Link to={"/flows/id/" + flow.id} key={flow.id} >           
+            { this.filteredList.map((flow, id) =>
+              <Link to={"/flows/id/" + flow.id} key={flow.id} >
                 <div className="s12 m6 l4 mt20">
                   <SummaryItem flow={flow} key={flow.id} />
                 </div>
@@ -152,8 +155,11 @@ class ListRender extends Component {
     } else {
       return  (
         <div className="row full-height relative">
-          <ReactCSSTransitionGroup transitionName="flowsSubHeader" transitionAppear={true} transitionAppearTimeout={100}
-                                        transitionEnterTimeout={100} transitionLeaveTimeout={100}>
+          <ReactCSSTransitionGroup transitionName="flowsSubHeader"
+                                   transitionAppear={true}
+                                   transitionAppearTimeout={300}
+                                   transitionEnterTimeout={300}
+                                   transitionLeaveTimeout={300}>
             {header}
           </ReactCSSTransitionGroup>
           <div className="background-info valign-wrapper full-height">

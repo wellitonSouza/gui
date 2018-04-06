@@ -23,7 +23,7 @@ function SummaryItem(props) {
     return (
 
       <Link to={"/device/id/" + props.device.id + "/detail"}>
-          <div className={"card-size lst-entry-wrapper z-depth-2 fullHeight"}>
+        <div className={"card-size card-hover lst-entry-wrapper z-depth-2 fullHeight"}>
               <div className="lst-entry-title col s12">
                   <img className="title-icon" src={"images/icons/chip-wt.png"}/>
                   <div className="title-text">
@@ -203,9 +203,6 @@ class DeviceCard extends Component {
                                    transitionLeaveTimeout={300}>
             {header}
           </ReactCSSTransitionGroup>
-          <div className="flex-wrapper bg-light-gray">
-            <div className="deviceMapCanvas col m12 s12 relative">
-              <div className="row">
                 {this.filteredList.length == 0 ? (
                   <div className="background-info valign-wrapper full-height">
                     <span className="horizontal-center">
@@ -219,9 +216,6 @@ class DeviceCard extends Component {
                     ))}
                   </div>
                 )}
-              </div>
-            </div>
-          </div>
         </div>;
   }
 }

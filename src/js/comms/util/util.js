@@ -92,7 +92,7 @@ class Util {
   _runFetch(url, config) {
     let local = this;
 
-    var authConfig = config;
+    var authConfig = config || {};
     authConfig.credentials = 'include';
     if (this.getToken()) {
       if (authConfig) {

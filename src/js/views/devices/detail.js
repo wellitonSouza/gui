@@ -914,6 +914,8 @@ class ViewDeviceImpl extends Component {
   }
 }
 
+// TODO: this is an awful quick hack - this should be better scoped.
+var device_detail_socket = null;
 
 class ViewDevice extends Component {
   constructor(props) {
@@ -930,10 +932,9 @@ class ViewDevice extends Component {
 
       const target = `${window.location.protocol}//${window.location.host}`;
       const token_url = target + "/stream/socketio";
-      const config = {}
 
       function getWsToken() {
-        util._runFetch(token_url, config)
+        util._runFetch(token_url)
           .then((reply) => {
             init(reply.token);
           })
@@ -942,15 +943,15 @@ class ViewDevice extends Component {
       }
 
       function init(token){
-        var socket = socketio(target, { query: "token=" + token, transports: ['polling'] });
+        device_detail_socket = socketio(target, { query: "token=" + token, transports: ['polling'] });
 
-        socket.on('all', function(data){
+        device_detail_socket.on('all', function(data){
           MeasureActions.appendMeasures(data);
         });
 
-        socket.on('error', (data) => {
+        device_detail_socket.on('error', (data) => {
           console.log("socket error", data);
-          socket.close();
+          device_detail_socket.close();
           getWsToken();
         })
       }
@@ -981,7 +982,7 @@ class ViewDevice extends Component {
   }
 
   componentWillUnmount(){
-    //location.reload(true);
+    device_detail_socket.close();
   }
 
   render() {

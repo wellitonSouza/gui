@@ -150,7 +150,6 @@ class GenericList extends Component {
 
   render() {
     this.verifyIsGeo(this.props.attrs);
-    console.log("sadsad",this.props.box_title);
     return <div className="row stt-attributes">
         <div className="col s12 header">
           <div className="icon">

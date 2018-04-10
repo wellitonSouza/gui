@@ -150,6 +150,7 @@ class GenericList extends Component {
 
   render() {
     this.verifyIsGeo(this.props.attrs);
+    console.log("sadsad",this.props.box_title);
     return <div className="row stt-attributes">
         <div className="col s12 header">
           <div className="icon">
@@ -158,13 +159,25 @@ class GenericList extends Component {
           <label>{this.props.box_title}</label>
         </div>
         <div className="col s12 body">
+          {this.props.box_title == "Configurations" ? (
+            <div key="id" className="line">
+              <div className="col s5">
+                <div className="name-value">device id</div>
+                <div className="value-label">Name</div>
+              </div>
+              <div className="col s7" >
+                <div className="value-value">{this.props.device.id}</div>
+                <div className="value-label">STRING</div>
+              </div>
+            </div>
+          ):("")}
           {this.props.attrs.map(attr => (
             <div key={attr.label} className="line">
-              <div className="col s4">
+              <div className="col s5">
                 <div className="name-value">{attr.label}</div>
                 <div className="value-label">Name</div>
               </div>
-              <div className="col s8" >
+              <div className="col s7" >
                   <div className="value-value">{attr.static_value}</div>
                   <div className="value-label">{attr.value_type}</div>
               </div>

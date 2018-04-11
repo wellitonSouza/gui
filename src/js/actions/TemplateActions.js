@@ -31,11 +31,14 @@ class TemplateActions {
     }
   }
 
-  fetchTemplates() {
+  fetchTemplates(params = null, cb) {
     return (dispatch) => {
-      templateManager.getTemplates()
+      templateManager.getTemplates(params)
         .then((templateList) => {
           this.updateTemplates(templateList.templates);
+          if (cb) {
+            cb(templateList.templates);
+          }
         })
         .catch((error) => {
           this.templatesFailed(error);

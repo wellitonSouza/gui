@@ -1078,20 +1078,30 @@ class TemplateList extends Component {
     }
 }
 
-class TemplateFilterOperations {
+class TemplateFilterOperations extends Component {
 
-    // constructor() {
-    //     // super(props);
-    //     this.whenUpdate = this.whenUpdate.bind(this);
-    // }
+    constructor(props) {
 
-    static whenUpdate(filterConfig) {
-        console.log('filterConfig ', filterConfig);
-        // TemplateActions.fetchTemplates((data, (tempalte) => {
-        //     // FormActions.set(device);
-        //     Materialize.toast('Templates updated by filtering', 4000);
-        //     // hashHistory.push('/device/list')
-        // }));
+        super(props);
+        this.state = {
+            _filter_data : {},
+            _pagination_data : {}
+        }
+        this.whenUpdate = this.whenUpdate.bind(this);
+    }
+
+    whenUpdate(filterConfig) {
+        console.log("this._filter_data", this.state._filter_data, filterConfig);
+        if (this.state._filter_data == {})
+            this.state._filter_data = filterConfig;
+        console.log("this._filter_data", this.state._filter_data);
+        console.log("this._pagination_data", this._pagination_data);
+        TemplateActions.fetchTemplates(this.state._filter_data, (template) => {
+            // FormActions.set(device);
+            Materialize.toast('Templates updated', 4000);
+            // hashHistory.push('/device/list')
+        });
+        // this.setState({ '_filter_data': filterConfig });
     }
 }
 
@@ -1107,6 +1117,9 @@ class Templates extends Component {
         this.state = { showFilter: false,
             has_new_template: false
         };
+
+        this.opex = new TemplateFilterOperations();
+        console.log("this.opex", this.opex);
     }
 
     toggleSearchBar() {
@@ -1164,7 +1177,7 @@ class Templates extends Component {
                     </div>
                 </NewPageHeader>
                 <AltContainer store={TemplateStore}>
-                    <Filter showPainel={this.state.showFilter} ops={TemplateFilterOperations}/>
+                    <Filter showPainel={this.state.showFilter} ops={this.opex}/>
                     <TemplateList enableNewTemplate={this.enableNewTemplate}/>
                 </AltContainer>
             </ReactCSSTransitionGroup>

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { DojotBtnCircle, DojotButton } from "../../components/DojotButton";
+
 
 class Filter extends Component {
 
@@ -13,27 +15,32 @@ class Filter extends Component {
       query: {}
     };
 
-    this.search = this.search.bind(this);
+    this.filterByAlias = this.filterByAlias.bind(this);
     this.updateQuery = this.updateQuery.bind(this);
+    this.doSearch = this.doSearch.bind(this);
   }
 
   updateQuery(element) {
     console.log("Update query...");
     let qy = this.state.query;
     qy[element.label] = element.value;
-
+    if (element.value.trim() == "")
+      delete qy[element.label];
     this.setState({ query: qy});
   }
 
-  search(){
+  doSearch(){
     console.log("Searching ... ");
     if (this.props.updateCallback)
       this.props.updateCallback();
-  }
+
+      this.props.ops.whenUpdate(this.state.query);
+    }
   
   filterByAlias(e) {
     e.preventDefault();
-    this.updateQuery({ 'alias': e.target.value});
+    // console.log("this.state.query",this.state.query);
+    this.updateQuery({ 'label': 'alias','value':e.target.value});
   }
 
   componentDidMount() {
@@ -44,8 +51,7 @@ class Filter extends Component {
     console.info("Rendering Filter");
     console.info("Props and States ",this.props,this.state);
     console.log("this.props.showPainel", this.props.showPainel);
-    console.log("this.props.ops.whenUpdate", this.props.ops);
-    this.props.ops.whenUpdate(this.state.query);
+    // console.log("this.props.ops.whenUpdate", this.props.ops);
 
     this.metaData = {'alias':'template'};
  
@@ -63,8 +69,11 @@ class Filter extends Component {
           <div className="col s1 m1 header-info">
           </div>
           <div className="col s4 m4">
-            <label htmlFor="fld_name">Alias</label>
-            <input id="fld_name" type="text" name="Alias" className="form-control form-control-lg" placeholder="Search" value={this.state.query.alias} onChange={this.filterByAlias} />
+            {/* <label htmlFor="fld_name">Alias</label> */}
+            <input id="fld_name" type="text" name="Alias" className="form-control form-control-lg" placeholder="Alias" value={this.state.query.alias} onChange={this.filterByAlias} />
+        </div>
+          <div className="col s1 m1">
+            <DojotBtnCircle click={this.doSearch} icon={'fa fa-search'} />
           </div>
         </div>
        </ReactCSSTransitionGroup>

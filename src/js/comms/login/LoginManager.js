@@ -12,6 +12,10 @@ class LoginManager {
   setNewPassword(token) {
       return util.POST(this.baseUrl + '/auth/password/resetlink?link=' + token.token, token);
   }
+
+  resetPassword(username){
+    return util.POST(this.baseUrl + '/auth/password/reset/' + username);
+  }
 }
 
 let loginManager = new LoginManager();

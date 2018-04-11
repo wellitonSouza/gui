@@ -1,32 +1,105 @@
 import React, { Component } from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class Filter extends Component {
+
   constructor(props) {
     super(props);
+    this.state = {
+      hasData: false,
+      hasPainel: true,
+      order: 'asc',
+      nElements: 0,
+      query: {}
+    };
 
-    this.state = { filter: "" };
-    this.handleChange = this.handleChange.bind(this);
+    this.search = this.search.bind(this);
+    this.updateQuery = this.updateQuery.bind(this);
   }
 
-  handleChange(event) {
-    this.setState({ filter: event.target.value });
-    this.props.onChange(event.target.value);
+  updateQuery(element) {
+    console.log("Update query...");
+    let qy = this.state.query;
+    qy[element.label] = element.value;
+
+    this.setState({ query: qy});
   }
 
+  search(){
+    console.log("Searching ... ");
+    if (this.props.updateCallback)
+      this.props.updateCallback();
+  }
+  
+  filterByAlias(e) {
+    e.preventDefault();
+    this.updateQuery({ 'alias': e.target.value});
+  }
+
+  componentDidMount() {
+    this.setState({ hasPainel: this.props.showSearchBox });
+  }
+  
   render() {
+    console.info("Rendering Filter");
+    console.info("Props and States ",this.props,this.state);
+    console.log("this.props.showPainel", this.props.showPainel);
+    console.log("this.props.ops.whenUpdate", this.props.ops);
+    this.props.ops.whenUpdate(this.state.query);
+
+    this.metaData = {'alias':'template'};
+ 
+    // if (this.props.showPainel) {
+    //   return null;
+    // }
+
     return (
-      <div className="filter-wrapper relative-size">
-        <form role="form">
-          {/* filter selection  */}
-          <div className="input-field">
-            {/* <i className="prefix fa fa-search"></i>*/}
-            <label htmlFor="deviceFiltering">Filter</label>
-            <input id="deviceFiltering" type="text" onChange={this.handleChange} />
+      <ReactCSSTransitionGroup transitionName="templatesSubHeader">
+      <div className={"row z-depth-2 templatesSubHeader show-dy"} id="inner-header">
+        {/* // <div className={"row z-depth-2 templatesSubHeader " + (this.state.hasPainel ? "show-dy" : "hide-dy")} id="inner-header"> */}
+          <div className="col s3 m3 main-title">
+            Showing {this.state.nElements}  {this.metaData.alias}(s)
+              </div>
+          <div className="col s1 m1 header-info">
           </div>
-        </form>
-      </div>
-    )
+          <div className="col s4 m4">
+            <label htmlFor="fld_name">Alias</label>
+            <input id="fld_name" type="text" name="Alias" className="form-control form-control-lg" placeholder="Search" value={this.state.query.alias} onChange={this.filterByAlias} />
+          </div>
+        </div>
+       </ReactCSSTransitionGroup>
+
+      )
   }
 }
+
+// class Filter extends Component {
+//   constructor(props) {
+//     super(props);
+
+//     this.state = { filter: "" };
+//     this.handleChange = this.handleChange.bind(this);
+//   }
+
+//   handleChange(event) {
+//     this.setState({ filter: event.target.value });
+//     this.props.onChange(event.target.value);
+//   }
+
+//   render() {
+//     return (
+//       <div className="filter-wrapper relative-size">
+//         <form role="form">
+//           {/* filter selection  */}
+//           <div className="input-field">
+//             {/* <i className="prefix fa fa-search"></i>*/}
+//             <label htmlFor="deviceFiltering">Filter</label>
+//             <input id="deviceFiltering" type="text" onChange={this.handleChange} />
+//           </div>
+//         </form>
+//       </div>
+//     )
+//   }
+// }
 
 export default Filter;

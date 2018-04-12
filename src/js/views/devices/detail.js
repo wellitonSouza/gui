@@ -236,7 +236,7 @@ class DyAttributeArea extends Component {
     return <div className="content-row" >
       <div className="second-col">
         {this.state.selected_attributes.length == 0 ?
-          (<div className="second-col-label center-align">To see the data select an static or dynamic attribute</div>)
+          (<div className="second-col-label center-align">Select a dynamic attribute to be displayed.</div>)
           : null
         }
         {this.state.selected_attributes.map(at => (

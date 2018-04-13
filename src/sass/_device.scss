@@ -1,7 +1,7 @@
 .icon-marker {
   padding: 3px;
   margin: 0 auto;
-  border: 1px solid #FFFFFF;
+  border: 2px solid #FFFFFF;
   width: 20px !important;
   height: 20px !important;
   // box-shadow: 0 0 7px 6px lightgray;
@@ -10,6 +10,30 @@
 
 .bg-red{
   background: #D23F3F;
+}
+.bg-true-black {
+  background: #000;
+}
+.bg-black{
+  background: #2c3e50;
+}
+.bg-orange{
+  background: #F89406;
+}
+.bg-light-blue{
+  background: #6BB9F0;
+}
+.bg-blue{
+  background: #19B5FE;
+}
+.bg-greyish-blue{
+  background: #4B77BE;
+}
+.bg-dark-blue{
+  background: #3A539B;
+}
+.bg-medium-gray {
+  background: #949494;
 }
 
 .bg-tracking-marker{
@@ -295,30 +319,44 @@
     to {opacity: 1;height:90px;}
 }
 
+@keyframes to-show {
+  from {height: 0;}
+  to {height: 90px;}
+}
+@keyframes to-hide {
+  from {height: 90px;}
+  to {height: 0;}
+}
+
 /* animations for ReactCSSTransitionGroup */
-/* begin */ 
+/* begin */
 .devicesSubHeader-enter {
-  opacity: 0.2; height:0px;
+  animation-name: to-show;
+  animation-duration: 500ms;
+  opacity: 0.5;
 }
 
 .devicesSubHeader-enter.devicesSubHeader-enter-active {
-  opacity: 1; height: 98px;
+  opacity: 1;
+  transition: 500ms ease-in-out;
 }
 
 .devicesSubHeader-leave {
-  opacity: 0.8; height: 98px;
+  animation-name: to-hide;
+  opacity: 1;
 }
 
 .devicesSubHeader-leave.devicesSubHeader-leave-active {
-  padding-top: 0px;
-  opacity: 0.2; height:0px;
+  animation-duration: 500ms;
+  opacity: 0.5;
+  transition: 350ms ease-in-out;
 }
-/* end */ 
+/* end */
 
 
 .show-dy{
   visibility:visible;
-  
+
 }
 
 .hide-dy
@@ -327,20 +365,17 @@
 }
 
 .devicesSubHeader {
-    background-color: #fff;
-    color: #2c3e50;
-    // height: 90px;
-    margin: 0;
-    z-index: 1000;
-    overflow: hidden;
-    width: 100%;
-    position: relative;
-  //  -webkit-animation-name: opa-hei-90px; /* Safari 4.0 - 8.0 */
-    // -webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
-    // animation-name: opa-hei-90px;
-    // animation-duration: 1s;
-    transition: all 500ms ease;
-    padding-top: 10px;
+  color: #2c3e50;
+  height: 55px;
+  margin: 0;
+  z-index: 1000;
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+  transition: all 500ms ease;
+  padding: 8px 0;
+  background: linear-gradient(270.95deg, #F8F8F8 29.89%, #FFFFFF 96.84%);
+  border-top: solid 1px rgba(0, 0, 0, 0.05);
 
   .main-title {
     font-family: "Raleway", sans-serif;
@@ -686,4 +721,25 @@
       }
     }
   }
+}
+
+.full-device-area{
+  height: 100%;
+  width: 100%;
+  float: left;
+  overflow: hidden;
+  position: relative;
+  z-index: 9991;
+}
+
+.h90 {
+  height: 90px !important;
+}
+
+.device-card-area {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  float: left;
+  overflow-y: auto;
 }

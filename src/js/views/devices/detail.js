@@ -1,31 +1,22 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-
 import { NewPageHeader } from "../../containers/full/PageHeader";
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import { Link, hashHistory } from 'react-router'
-
-import alt from '../../alt';
+import {  hashHistory } from 'react-router'
 import AltContainer from 'alt-container';
 import MeasureStore from '../../stores/MeasureStore';
 import MeasureActions from '../../actions/MeasureActions';
 import DeviceActions from '../../actions/DeviceActions';
 import DeviceStore from '../../stores/DeviceStore';
-import deviceManager from '../../comms/devices/DeviceManager';
 import util from "../../comms/util/util";
-
 import DeviceMeta from '../../stores/DeviceMeta';
 import { Loading } from "../../components/Loading";
 import { Attr } from "../../components/HistoryElements";
-import { Line } from 'react-chartjs-2';
 import { PositionRenderer } from './DeviceMap.js'
 import { MapWrapper } from './Devices.js'
 import { DojotBtnRedCircle } from "../../components/DojotButton";
-import MaterialSelect from "../../components/MaterialSelect";
-
 import Script from 'react-load-script';
 
-import io from 'socket.io-client';
 
 class DeviceHeader extends Component {
   constructor(props) {
@@ -38,10 +29,6 @@ class DeviceHeader extends Component {
           <label className="col s12 device-label"> {this.props.device.label}</label>
           <div className="col s12 device-label-name">Name</div>
         </div>
-        {/* <div className="col s8 m8 infos">
-          <div className="title">Created at</div>
-          <div className="value">{this.props.device.created}</div>
-        </div> */}
       </div>;
   }
 }
@@ -125,7 +112,7 @@ class GenericList extends Component {
     const device = this.props.device;
     for(let k in device.attrs){
       for(let j in device.attrs[k]){
-        if(device.attrs[k][j].value_type == "geo:point"){
+        if(device.attrs[k][j].value_type === "geo:point"){
           if(device.attrs[k][j].static_value !== ""){
             this.setState({
               openStaticMap: !this.state.openStaticMap,
@@ -140,7 +127,7 @@ class GenericList extends Component {
 
   verifyIsGeo(attrs){
     for(let k in attrs){
-      if(attrs[k].value_type == 'geo:point' || attrs[k].value_type == 'geo'){
+      if(attrs[k].value_type === 'geo:point' || attrs[k].value_type === 'geo'){
         attrs[k].isGeo = true;
       } else {
         attrs[k].isGeo = false;
@@ -186,10 +173,6 @@ class GenericList extends Component {
                 </div> :
                 null
               }
-                {/* <div className="col s4">
-                <div className="template-value">Template</div>
-                <div className="template-label">Template</div>
-              </div> */}
              </div>
           ))}
         </div>
@@ -213,7 +196,7 @@ class DyAttributeArea extends Component {
     if (current_attrs[attr.id])
     {
       sa = sa.filter(i => {
-        return i.id != attr.id;
+        return i.id !== attr.id;
       });
       delete current_attrs[attr.id];
     }
@@ -230,11 +213,6 @@ class DyAttributeArea extends Component {
       });
   }
 
-    // onChange(attrs) {
-  //   MeasureActions.fetchMeasure.defer(this.props.deviceid,this.props.device.templates, attrs, 1);
-  //   this.setState({ selected_attrs: attrs });
-  // }
-
   render() {
     let lista = this.props.attrs;
     for (let index in lista)
@@ -247,7 +225,7 @@ class DyAttributeArea extends Component {
 
     return <div className="content-row" >
       <div className="second-col">
-        {this.state.selected_attributes.length == 0 ?
+        {this.state.selected_attributes.length === 0 ?
           (<div className="second-col-label center-align">Select a dynamic attribute to be displayed.</div>)
           : null
         }
@@ -275,12 +253,12 @@ class DynamicAttributeList extends Component {
     for (let i in device.attrs) {
       for (let j in device.attrs[i]) {
         if(device.attrs[i][j].type !== "meta"){
-          if(device.attrs[i][j].type == "dynamic"){
-            if(device.attrs[i][j].value_type == "geo:point"){
+          if(device.attrs[i][j].type === "dynamic"){
+            if(device.attrs[i][j].value_type === "geo:point"){
                 MeasureActions.fetchPosition.defer(device, device.id, device.attrs[i][j].label);
             }
           }
-          MeasureActions.fetchMeasure.defer(device, device.id, device.attrs[i][j].label, 10);
+          MeasureActions.fetchMeasure.defer(device, device.attrs[i][j].label, 10);
         }
       }
     }
@@ -381,7 +359,6 @@ class DeviceUserActions extends Component {
   removeDevice(event) {
       event.preventDefault();
       $("#" + this.props.confirmTarget).modal("open");
-    // };
   }
 
 
@@ -409,25 +386,6 @@ class DeviceUserActions extends Component {
 }
 
 
-// class AttributeSelector extends Component {
-//   render() {
-//     const outerClass = this.props.active ? " active" : "";
-//     return (
-//       <div className={"col s12 p0 attr-line" + outerClass}>
-//         <a className="waves-effect waves-light"
-//            onClick={() => {this.props.onClick(this.props.label)}} >
-//           <span className="attr-name">{this.props.label}</span>
-//           {this.props.currentValue ? (
-//             <span>Last received value: {this.props.currentValue}</span>
-//           ) : (
-//             <span>No data available to display</span>
-//           )}
-//         </a>
-//       </div>
-//     )
-//   }
-// }
-
 class AttrHistory extends Component {
   constructor(props){
     super(props);
@@ -436,12 +394,6 @@ class AttrHistory extends Component {
   render() {
     return (
       <div className="graphLarge">
-        {/* <div className="refresh-btn-history"
-                onClick={() => {
-                  MeasureActions.fetchMeasure(this.props.device, [this.props.attr], 250);
-                }} >
-            <i className="fa fa-refresh" />
-        </div> */}
         <div className="contents no-padding">
           <AltContainer store={MeasureStore}>
             <Attr device={this.props.device} type={this.props.type} attr={this.props.attr} />
@@ -451,101 +403,6 @@ class AttrHistory extends Component {
     );
   }
 }
-
-// class AttrHistoryWrapper extends Component {
-//   constructor(props) {
-//     super(props);
-//   }
-
-//   componentDidMount() {
-//     // this.setState({ selected: attr_id });
-//     MeasureActions.fetchMeasure(
-//       this.props.device,
-//       this.props.device.id,
-//       this.props.device.templates,
-//       this.props.attr.id,
-//       250
-//     );
-//   }
-
-//   render() {
-//     // let device = this.props.device;
-//     // let attr = [];
-
-//     // if (this.state.selected !== null) {
-//     //   attr = device.attrs[device.templates].filter(k => {
-//     //     return k.label.toUpperCase() == this.state.selected.toUpperCase();
-//     //   });
-//     // }
-
-//     // let timeRange = undefined;
-
-//     /*
-//     * Maybe it's better to talk about time range. Think about the best way to show this value
-//     * or even if it's necessary to show this value.
-//     */
-//     console.log("this.props.data.attrs", this.props.data.attrs);
-//     // if (attr[0]) {
-//     //   for (let k in this.props.data.attrs[device.templates]) {
-//     //     if (
-//     //       this.props.data.attrs[device.templates][k].label ==
-//     //       this.state.selected
-//     //     ) {
-//     //       if (this.props.data.value.length !== 0) {
-//     //         let length = this.props.data.value.length;
-//     //         const from = util.iso_to_date(
-//     //           this.props.data.value[length - 1]["ts"]
-//     //         );
-//     //         timeRange = "Data from " + from;
-//     //         //const to = util.iso_to_date(this.props.data.value['ts']);
-//     //       }
-//     //     }
-//     //   }
-//     // }
-
-//     return (
-//       <div className="col s12 p0 full-height">
-//         {/* <div className="col s5 card-box">
-//           <div className="detail-box-header">Attributes</div>
-//           <div className="col s12 attr-box-body">
-//             {this.props.attrs.map(attr => {
-//               let data = undefined;
-//               let active =
-//                 this.state.selected &&
-//                 attr.toUpperCase() === this.state.selected.toUpperCase();
-//               if (this.props.data && this.props.data.hasOwnProperty("value")) {
-//                 if (this.props.data.value.length > 0) {
-//                   data = this.props.data.value[
-//                     this.props.data.value.length - 1
-//                   ];
-//                 }
-//               }
-//               return (
-//                 <AttributeSelector
-//                   label={attr}
-//                   key={attr}
-//                   currentValue={data}
-//                   active={active}
-//                   onClick={this.changeAttribute}
-//                 />
-//               );
-//             })}
-//           </div>
-//         </div> */}
-//         {/* <div className="col s12 legend">{timeRange}</div> */}
-//         <div className="col s7 graph-box">
-//           {attr[0] !== undefined ? (
-//               <AttrHistory
-//                 device={this.props.device}
-//                 type={attr[0].value_type}
-//                 attr={attr[0].label}
-//               />
-//           ) : null}
-//         </div>
-//       </div>
-//     );
-//   }
-// }
 
 
 function getAttrsLength(attrs){
@@ -580,98 +437,6 @@ function StatusDisplay(props) {
   )
 }
 
-// class AttrSelector extends Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {attributes: [], new_attr: ""};
-//     this.handleSelectedAttribute = this.handleSelectedAttribute.bind(this);
-//     this.handleAddAttribute = this.handleAddAttribute.bind(this);
-//     this.handleClear = this.handleClear.bind(this);
-//     this.getAttrList = this.getAttrList.bind(this);
-//   }
-
-//   componentWillMount(){
-//     let attrs = [];
-//     console.log("this.props.device", this.props.device);
-//     for (let index in this.props.device.attrs) {
-//       attrs = attrs.concat(this.props.device.attrs[index]);
-//     }
-//      this.setState({ attributes: attrs });
-//     console.log("Attr list", attrs);
-//   }
-
-//   handleSelectedAttribute(event) {
-//     event.preventDefault();
-//     this.setState({new_attr: event.target.value});
-//   }
-
-//   handleAddAttribute(event) {
-//     event.preventDefault();
-//     this.setState({new_attr: ""});
-//     if (this.state.new_attr === ""){ return; }
-//     if (this.props.selected.includes(this.state.new_attr)) { return; }
-
-//     const attrList = this.props.selected.concat([this.state.new_attr]);
-//     this.props.onChange(attrList);
-//   }
-
-//   handleClear(event) {
-//     event.preventDefault();
-//     this.props.onChange([]);
-//   }
-
-//   getAttrList(attributes) {
-//     let attrList = [];
-//     for (let templateID in attributes) {
-//       for (let attributeID in attributes[templateID]) {
-//         attrList.push(attributes[templateID][attributeID]);
-//       }
-//     }
-//     return attrList;
-//   }
-
-//   render() {
-
-//     console.log("Checking props ",this.props);
-//     return (
-//       <div className="col 12 attribute-box">
-//         <div className="col 12 attribute-header">All Attributes</div>
-//         <span className="highlight">
-//           Showing <b> {this.props.selected.length} </b>
-//           of <b> {this.state.attributes.length} </b> attributes
-//         </span>
-//         <div className="col s12 p16">
-//           <div className="input-field col s12">
-//             <MaterialSelect id="attributes-select" style="color: #D23F3F;" name="attribute"
-//                             value={this.state.new_attr}
-//                             onChange={this.handleSelectedAttribute}>
-//               <option value="">Select attribute to display</option>
-//                 {this.getAttrList(this.props.attrs).map((attr) => (
-//                     <option value={attr.label} key={attr.id}>{attr.label}</option>
-//                 ))}
-
-//             </MaterialSelect>
-//           </div>
-//           <div className="col s12 actions-buttons">
-//             <div className="col s6 button ta-center">
-//               <a className="waves-effect waves-light btn btn-light" id="btn-clear" tabIndex="-1"
-//                  title="Clear" onClick={this.handleClear}>
-//                 Clear
-//               </a>
-//             </div>
-//             <div className="col s6 button ta-center" type="submit" onClick={this.handleAddAttribute}>
-//               <a className="waves-effect waves-light btn red lighten-1" id="btn-add" tabIndex="-1" title="Add">
-//                 <i className="clickable fa fa-plus"/>
-//               </a>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     )
-//   }
-// }
-
-
 class PositionStaticWrapper extends Component {
   constructor(props) {
     super(props);
@@ -704,8 +469,8 @@ class PositionStaticWrapper extends Component {
     let validDevices = [];
        for(let j in device.attrs){
          for(let i in device.attrs[j]){
-           if(device.attrs[j][i].type == "static"){
-             if(device.attrs[j][i].value_type == "geo:point"){
+           if(device.attrs[j][i].type === "static"){
+             if(device.attrs[j][i].value_type === "geo:point"){
                device.position = parserPosition(device.attrs[j][i].static_value);
              }
            }
@@ -734,13 +499,10 @@ class PositionStaticWrapper extends Component {
     }
 
     let validDevices = this.getDevicesWithPosition(this.props.device);
-    if (validDevices.length == 0) {
+    if (validDevices.length === 0) {
       return <NoData />;
     } else {
       return <div className={"PositionRendererDiv " + (this.state.opened ? "expanded" : "compressed")}>
-          {/*<div className="floating-icon">
-            {!this.state.opened ? <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand" /> : <i onClick={this.toogleExpand.bind(this, false)} className="fa fa-compress" />}
-          </div>*/}
           <div>
             <Script url="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=zvpeonXbjGkoRqVMtyQYCGVn4JQG8rd9"
                     onLoad={this.mqLoaded}>
@@ -755,20 +517,6 @@ class PositionStaticWrapper extends Component {
     }
   }
 }
-
-// // TODO do this properly, using props.children
-// function HeaderWrapper(props) {
-//   const device = props.device;
-
-//   let location = "";
-//   if (device.position !== undefined && device.position !== null) {
-//      location = "Lat: "+device.position[0].toFixed(4)+", Lng: "+device.position[1].toFixed(4);
-//   }
-
-//   return (
-//     <StatusDisplay location={location} device={device} />
-//   )
-// }
 
 class DeviceDetail extends Component {
   constructor(props) {
@@ -790,16 +538,16 @@ class DeviceDetail extends Component {
      {
        let tmp = this.props.device.attrs[index];
        attr_list = attr_list.concat(tmp.filter(i => {
-         return String(i.type) == "static";
+         return String(i.type) === "static";
        }));
        dal = dal.concat(tmp.filter(i => {
            i.visible = false;
-           return String(i.type) == "dynamic";
+           return String(i.type) === "dynamic";
          }));
       config_list = config_list.concat(tmp.filter(i => {
-           return String(i.type) == "meta";
+           return String(i.type) === "meta";
          }));
-     };
+     }
 
      for (let index in config_list) {
         if (config_list[index].label === "protocol") {
@@ -809,56 +557,13 @@ class DeviceDetail extends Component {
 
      return <div className="row detail-body">
          <div className="first-col">
-         {/*<div className="col s12 device-map-box">
-           <AltContainer store={MeasureStore}>
-             <PositionWrapper device={this.props.device} />
-           </AltContainer>
-         </div>*/}
            <Configurations device={this.props.device} attrs={config_list} />
            <StaticAttributes device={this.props.device} attrs={attr_list} openStaticMap={this.openStaticMap}/>
          </div>
         <DyAttributeArea device={this.props.device} attrs={dal} openStaticMap={this.state.openStaticMap}/>
        </div>;
-
-       // <div className="row detail-body">
-       //   <div className="col s3 detail-box full-height">
-       //     <div className="detail-box-header">General</div>
-       //       <HeaderWrapper device={device} />
-       //     <AttrSelector device = {device}
-       //                   attrs={device.attrs}
-       //                   selected={this.state.selected_attributes}
-       //                   onChange={this.onChange} />
-       //   </div>
-       //   <div className="col s9 device-map full-height">
-       //     <div className="col s12 device-map-box">
-       //       <AltContainer store={DeviceStore} >
-       //         <PositionWrapper device={device}/>
-       //       </AltContainer>
-       //     </div>
-       //     <div className="col s12 p0 data-box full-height">
-       //       <AltContainer store={MeasureStore} inject={{device: device}}>
-       //         <AttributeBox attrs={this.state.selected_attributes}/>
-       //       </AltContainer>
-       //     </div>
-       //   </div>
-       //  </div> */}
   }
 }
-
-// function ConnectivityStatus(props) {
-//   const status = props.devices[props.device_id]['_status'];
-//   if (status === "online") {
-//     return (
-//       <span className='status-on-off clr-green'><i className="fa fa-info-circle" />Online</span>
-//     )
-//   }
-
-//   return (
-//     <span className='status-on-off clr-red'><i className="fa fa-info-circle" />Offline</span>
-//   )
-// }
-
-
 
 
 class ViewDeviceImpl extends Component {
@@ -870,13 +575,13 @@ class ViewDeviceImpl extends Component {
 
   componentWillMount(){
     const device = this.props.devices[this.props.device_id];
-    if (device == undefined)
+    if (device === undefined)
       return; //not ready
 
     for (let i in device.attrs) {
       for (let j in device.attrs[i]) {
         if(device.attrs[i][j].type !== "meta"){
-          MeasureActions.fetchMeasure.defer(device, device.id, device.attrs[i][j].label, 10);
+          MeasureActions.fetchMeasure.defer(device, device.attrs[i][j].label, 10);
         }
       }
     }
@@ -927,7 +632,7 @@ class ViewDeviceImpl extends Component {
 }
 
 // TODO: this is an awful quick hack - this should be better scoped.
-var device_detail_socket = null;
+let device_detail_socket = null;
 
 class ViewDevice extends Component {
   constructor(props) {
@@ -971,28 +676,6 @@ class ViewDevice extends Component {
       getWsToken();
   }
 
-  componentDidUpdate() {
-    // const options = { transports: ["websocket"] };
-    // this.io = io(window.location.host, options);
-    // this.io.on(this.props.params.device, function(data) {
-    //   MeasureActions.appendMeasures(data);
-    //
-    //   const fields = ["ts", "temperature", "sinr"];
-    //   let device_data = { device_id: data.device_id };
-    //   device_data.position = [data.lat.value, data.lng.value];
-    //   fields.map(field => {
-    //     if (data.hasOwnProperty(field)) {
-    //       if (field === "ts") {
-    //         device_data[field] = util.timestamp_to_date(Date.now());
-    //       } else {
-    //         device_data[field] = data[field].value;
-    //       }
-    //     }
-    //   });
-    //   MeasureActions.updatePosition(device_data);
-    // });
-  }
-
   componentWillUnmount(){
     device_detail_socket.close();
   }
@@ -1005,8 +688,7 @@ class ViewDevice extends Component {
           transitionAppear={true}
           transitionAppearTimeout={500}
           transitionEnterTimeout={500}
-          transitionLeaveTimeout={500}
-        >
+          transitionLeaveTimeout={500} >
           <AltContainer store={DeviceStore}>
             <ViewDeviceImpl device_id={this.props.params.device} />
           </AltContainer>

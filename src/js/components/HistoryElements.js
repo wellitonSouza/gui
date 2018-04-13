@@ -4,7 +4,6 @@ import { Line } from 'react-chartjs-2';
 import { PositionRenderer } from '../views/devices/DeviceMap';
 import Script from 'react-load-script';
 import { Loading } from './Loading.js';
-import MeasureStore from '../stores/MeasureStore';
 
 
 class Graph extends Component{

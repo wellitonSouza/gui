@@ -74,7 +74,7 @@ class Attribute extends Component {
         </div>
 
         {/* <AttributeBox attrs={this.state.selected_attributes} /> */}
-        <div className="body">
+        <div className="details-card-content">
           <AttrHistory device={this.props.device} type={this.props.attr.value_type} attr={this.props.attr.label} />
         </div>
       </div>;

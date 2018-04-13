@@ -1,25 +1,3 @@
-.history-list
-{
-  .value{
-    font-size: 14px;
-    font-weight: 500;
-    padding-left: 10px !important;
-    text-transform: capitalize;
-    font-family: 'Roboto';
-    padding-top: 2px !important;
-  }
-
-  .label
-  {
-    font-family: 'Roboto';
-    line-height: 23px;
-    font-size: 10px;
-    color: #404040;
-    text-transform: uppercase;
-    padding-right: 10px !important;
-  }
-}
-
 .no-data-av
 {
   position: absolute;
@@ -76,12 +54,16 @@
 
 .graphLarge {
   position: relative;
-  height: 200px;
-  padding-top:5px;
-  //padding-right:5px;
-
+  height: 100%;
+  width: 100%;
+  .contents {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    float: left;
+  }
   canvas{
-    height:195px;
+    padding: 6px 0 3px 0;
   }
 }
 
@@ -1164,9 +1146,6 @@ h1, h2, p {
   .devicesSubHeader {
     background: #f1f1f1;
     box-shadow: 0 7px 13px rgba(0, 0, 0, 0.25);
-    /* padding: 0; */
-    /* padding-top: 10px; */
-    /* padding-bottom: 62px; */
     font-family: 'Roboto', 'Droid Sans', sans-serif;
     font-style: normal;
     font-weight: bold;
@@ -1175,7 +1154,6 @@ h1, h2, p {
     color: #666;
     margin: 0;
     z-index: 1050;
-    /* overflow: hidden; */
     position: relative;
     width: 100%;
     height: 65px;
@@ -1228,24 +1206,23 @@ h1, h2, p {
 .device-details-header
 {
   height: 60px !important;
-  padding-left: 111px !important;
-  padding-top: 15px !important;
-  text-transform: capitalize;
+  padding-left: 99px !important;
+  padding-top: 13px !important;
   box-shadow: 0px -2px 8px rgba(189, 189, 189, 0.5);
 
   .device-label{
-      font-family: 'Cuprum';
-      line-height: 25px;
+      font-family: 'Roboto', "Cuprum", sans-serif;
+      line-height: 24px;
       font-size: 24px;
       color: #828282;
   }
 
   .device-label-name
   {
-       font-family: 'Roboto';
+       font-family: 'Roboto', sans-serif;;
       line-height: 11px;
       font-size: 12px;
-      padding-top:5px;
+      padding-top:3px;
       letter-spacing: 0.05em;
       color: #EB5757;
   }
@@ -1254,7 +1231,7 @@ h1, h2, p {
   .infos
   {
       .title{
-          font-family: 'Roboto';
+          font-family: 'Roboto', sans-serif;;
           line-height: 11px;
           font-size: 12px;
           padding-top:5px;
@@ -1263,7 +1240,7 @@ h1, h2, p {
         }
       .value
       {
-          font-family: 'Roboto';
+          font-family: 'Roboto', sans-serif;;
           line-height: 17px;
           font-size: 18px;
           text-align: right;
@@ -1278,10 +1255,10 @@ h1, h2, p {
   height:100vh;
   float: right;
   box-shadow: 0px 2px 8px rgba(130, 130, 130, 0.5);
-   -webkit-animation-name: opa-width-250; /* Safari 4.0 - 8.0 */
-  -webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
-  animation-name: opa-width-250;
-  animation-duration: 1s;
+  // -webkit-animation-name: opa-width-250; /* Safari 4.0 - 8.0 */
+  //-webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
+  //animation-name: opa-width-250;
+  //animation-duration: 1s;
   overflow-y: auto;
 }
 
@@ -1304,10 +1281,10 @@ h1, h2, p {
   background:#F6F6F6;
   float: left;
   box-shadow: 0px -2px 8px rgba(189, 189, 189, 0.5);
-  -webkit-animation-name: opa-width-250; /* Safari 4.0 - 8.0 */
-  -webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
-  animation-name: opa-width-250;
-  animation-duration: 1s;
+  //-webkit-animation-name: opa-width-250; /* Safari 4.0 - 8.0 */
+  //-webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
+  //animation-name: opa-width-250;
+  //animation-duration: 1s;
   overflow-y: auto;
   height:100%;
 }
@@ -1514,8 +1491,7 @@ h1, h2, p {
   height:250px;
   opacity: 1;
   background: #FFFFFF;
-  box-shadow: 0px 2px 8px rgba(189, 189, 189, 0.5);
-  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(189, 189, 189, 0.5);
   margin: 15px;
   transition: ease 350ms;
 
@@ -1527,11 +1503,14 @@ h1, h2, p {
 
   .header
   {
-    border-radius: 5px 5px 0px 0px;
     color: #4F4F4F;
-    background: #FCFCFC;
-    padding: 11px 19px 7px 30px;
-
+    background: #FBFBFB;
+    padding: 10px 0;
+    float: left;
+    width: 100%;
+    height: 40px;
+    border-bottom: solid 1px rgba(0, 0, 0, 0.05);
+    position: relative;
     .label
     {
       font-family: "Open Sans";
@@ -1542,30 +1521,41 @@ h1, h2, p {
     }
 
     label{
-      position: relative;
-      left: 45%;
       color: #4F4F4F;
       font-weight: bold;
-      font-size: 0.9em;
-      text-transform: capitalize;
-
+      font-size: 14px;
+      display: table-cell;
+      vertical-align: middle;
+      text-align: center;
+      float: left;
+      width: 100%;
     }
 
     i{
-      cursor:pointer;
-      float:right;
+      cursor: pointer;
+      float: right;
+      position: absolute;
+      margin: 12px 15px;
+      top: 0;
+      right: 0;
     }
+  }
+
+  .details-card-content {
+    float: left;
+    height: calc(100% - 40px);
+    width: 100%;
   }
 }
 
 
 .PositionRendererDiv
 {
-    height: 219px;
+    height: 100%;
     width:100%;
-    display: flex;
-    position:relative;
-    flex-flow: column;
+    //display: flex;
+    //position:relative;
+    //flex-flow: column;
     // height: calc(100%);
 }
 

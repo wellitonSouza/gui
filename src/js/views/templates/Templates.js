@@ -59,7 +59,7 @@ class ImageModal extends Component {
     // }
 
     render() {
-        console.log("Rendering Image Modal", this.props);
+        // console.log("Rendering Image Modal", this.props);
 
         let images = [];
         for (let img in this.props.images)
@@ -72,7 +72,7 @@ class ImageModal extends Component {
         )[0];
         if (default_version)
             default_version = default_version.static_value;
-        console.log("default fw_version: ", default_version);
+        // console.log("default fw_version: ", default_version);
 
         return (
 
@@ -273,7 +273,7 @@ class ConfigList extends Component {
     }
 
     render() {
-        console.log("this.props.attributes", this.props.attributes);
+        // console.log("this.props.attributes", this.props.attributes);
         if (this.props.attributes.type == "fw_version")
         return null;
 
@@ -607,13 +607,13 @@ class ListItem extends Component {
 
     refreshImages()
     {
-        console.log("this.state.template.label", this.state.template.label);
+        // console.log("this.state.template.label", this.state.template.label);
            ImageActions.fetchSingle.defer(this.state.template.label, () => {
         });
     }
 
     componentDidMount() {
-        
+
         if (this.state.template.isNewTemplate) {
             this.setState({ isEditable: true, isSuppressed: false});
         }
@@ -807,13 +807,13 @@ class ListItem extends Component {
     }
 
     toggleImageModal(){
-        console.log("toggle_image_modal");
+        // console.log("toggle_image_modal");
         this.setState({ show_image_modal: !this.state.show_image_modal });
     }
 
     updateDefaultVersion(img)
     {
-        console.log("update Star", img);
+        // console.log("update Star", img);
         // 1. remove previous default version
         let tmplt = this.state.template;
         tmplt.config_attrs = tmplt.config_attrs.filter(
@@ -1174,7 +1174,7 @@ class Templates extends Component {
     }
 
     enableNewTemplate()
-    {   
+    {
         this.setState({ 'has_new_template': false });
     }
 
@@ -1195,7 +1195,7 @@ class Templates extends Component {
                         <div className="searchBtn" title="Show search bar" onClick={this.toggleSearchBar.bind(this)}>
                           <i className="fa fa-search" />
                         </div>
-                        <div onClick={this.addTemplate} className="new-btn-flat red waves-effect waves-light"
+                        <div onClick={this.addTemplate} className="new-btn-flat red "
                               title="Create a new template">
                             New Template<i className="fa fa-plus"/>
                         </div>

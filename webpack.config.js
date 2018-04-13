@@ -1,5 +1,6 @@
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
+var webpack = require('webpack');
 var path = require('path');
 
 function getEntrySources(sources) {
@@ -97,5 +98,12 @@ module.exports = {
 
       { from: 'src/img', to: 'images' }
     ]),
+
+      new webpack.DefinePlugin({
+          'process.env' : {
+            MAP_HAS_OVERLAY_ENV: "false",
+            MAP_OVERLAY_JSON_ENV: "{path:\"images/Layers/Combined.png\",corner1:{lat:-20.90974,lng:-48.83651},corner2:{lat:-21.80963,lng:-47.11802},}",
+          }
+      }),
   ]
 };

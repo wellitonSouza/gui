@@ -11,11 +11,10 @@ class MeasureActions {
     return data;
   }
 
-  fetchMeasure(device, device_id, attrs, history_length) {
-    console.log("MeasureActions, fetchMeasure", device, device_id, attrs, history_length);
+  fetchMeasure(device, attrs, history_length) {
     function getUrl() {
       if (history_length === undefined) { history_length = 1; }
-      let url = '/history/device/' + device_id + '/history?lastN=' + history_length + '&attr=' + attrs;
+      let url = '/history/device/' + device.id + '/history?lastN=' + history_length + '&attr=' + attrs;
       return url;
     }
 

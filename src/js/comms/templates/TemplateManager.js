@@ -9,8 +9,6 @@ class TemplateManager {
   {
     return util.GET(this.baseUrl + "/template?limit=10&sortDsc="+field);
   }
-
-  // page_size=20&page_num=1&
   
   getTemplates(params) {
     let qs = Object.keys(params).map(key => key + '=' + params[key]).join('&')

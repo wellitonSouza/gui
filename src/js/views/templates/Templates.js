@@ -12,7 +12,7 @@ import ImageActions from '../../actions/ImageActions';
 
 import { ImageCard, NewImageCard } from "../firmware/elements";
 
-import Filter from '../utils/Filter';
+import { Filter, Pagination } from '../utils/Manipulation';
 import util from "../../comms/util/util";
 
 import { NewPageHeader } from "../../containers/full/PageHeader";
@@ -1078,48 +1078,53 @@ class TemplateList extends Component {
     }
 }
 
-class TemplateFilterOperations extends Component {
 
-    constructor(props) {
 
-        super(props);
-        this.state = {
-            _filter_data : {},
-            _pagination_data : {}
-        }
-        this.whenUpdate = this.whenUpdate.bind(this);
+class TemplateOperations {
+
+    constructor() {
+        this.filterParams = {};
+
+        this.paginationParams = {  
+            page_size: 6,
+            page_num: 1
+        }; // default parameters
+    }
+    
+    whenUpdatePagination(config) {
+        for (let key in config)
+            this.paginationParams[key] = config[key];
+        this._fetch();
     }
 
-    whenUpdate(filterConfig) {
-        console.log("this._filter_data", this.state._filter_data, filterConfig);
-        if (this.state._filter_data == {})
-            this.state._filter_data = filterConfig;
-        console.log("this._filter_data", this.state._filter_data);
-        console.log("this._pagination_data", this._pagination_data);
-        TemplateActions.fetchTemplates(this.state._filter_data, (template) => {
-            // FormActions.set(device);
-            Materialize.toast('Templates updated', 4000);
-            // hashHistory.push('/device/list')
-        });
-        // this.setState({ '_filter_data': filterConfig });
+    whenUpdateFilter(config)
+    {
+        this.filterParams = config;
+        this._fetch();
+    }
+    
+    _fetch() {
+        let res = Object.assign({},this.paginationParams, this.filterParams);
+        console.log("fetching: ", res);
+        TemplateActions.fetchTemplates(res);
     }
 }
 
+let opex = new TemplateOperations();
+console.log("opex", opex);
 
 class Templates extends Component {
-
+    
     constructor(props) {
         super(props);
-
+        
         this.addTemplate = this.addTemplate.bind(this);
         this.toggleSearchBar = this.toggleSearchBar.bind(this);
         this.enableNewTemplate = this.enableNewTemplate.bind(this);
         this.state = { showFilter: false,
+            showPagination: false,
             has_new_template: false
         };
-
-        this.opex = new TemplateFilterOperations();
-        console.log("this.opex", this.opex);
     }
 
     toggleSearchBar() {
@@ -1149,15 +1154,13 @@ class Templates extends Component {
     }
 
     componentDidMount() {
-        TemplateActions.fetchTemplates.defer();
+        opex._fetch();
     }
 
     render() {
 
-        let filter_icon = <div className="searchBtn" title="Show search bar" onClick={this.toggleSearchBar.bind(this)}>
-            <i className="fa fa-search" />
-        </div>
-        // console.log("TemplateFilterOperations", TemplateFilterOperations.whenUpdate('atata'));
+        this.metaData = { 'alias': 'template' };
+
         return (
             <ReactCSSTransitionGroup
                 transitionName="first"
@@ -1165,19 +1168,12 @@ class Templates extends Component {
                 transitionAppearTimeout={100}
                 transitionEnterTimeout={100}
                 transitionLeaveTimeout={100}>
-                <NewPageHeader title="Templates" subtitle="Templates" icon='template'>
-                    <div className="pt10">
-                        <div className="searchBtn" title="Show search bar" onClick={this.toggleSearchBar.bind(this)}>
-                          <i className="fa fa-search" />
-                        </div>
-                        <div onClick={this.addTemplate} className="new-btn-flat red "
-                              title="Create a new template">
-                            New Template<i className="fa fa-plus"/>
-                        </div>
-                    </div>
-                </NewPageHeader>
                 <AltContainer store={TemplateStore}>
-                    <Filter showPainel={this.state.showFilter} ops={this.opex}/>
+                    <NewPageHeader title="Templates" subtitle="Templates" icon='template'>
+                        <Pagination showPainel={this.state.showPagination} ops={opex} />
+                        <OperationsHeader addTemplate={this.addTemplate} toggleSearchBar={this.toggleSearchBar.bind(this)} /> 
+                    </NewPageHeader>
+                    <Filter showPainel={this.state.showFilter} metaData={this.metaData} ops={opex}/>
                     <TemplateList enableNewTemplate={this.enableNewTemplate}/>
                 </AltContainer>
             </ReactCSSTransitionGroup>
@@ -1185,7 +1181,17 @@ class Templates extends Component {
     }
 }
 
- 
-
+function OperationsHeader(props) {
+    return (
+        <div className="col s5 pull-right pt10">
+            <div className="searchBtn" title="Show search bar" onClick={props.toggleSearchBar}>
+                <i className="fa fa-search" />
+            </div>
+            <div onClick={props.addTemplate} className="new-btn-flat red waves-effect waves-light" title="Create a new template">
+                New Template<i className="fa fa-plus" />
+            </div>
+        </div>
+    )
+}
 
 export {Templates as TemplateList};

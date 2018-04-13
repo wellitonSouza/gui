@@ -34,10 +34,10 @@ class TemplateActions {
   fetchTemplates(params = null, cb) {
     return (dispatch) => {
       templateManager.getTemplates(params)
-        .then((templateList) => {
-          this.updateTemplates(templateList.templates);
+        .then((result) => {
+          this.updateTemplates(result);
           if (cb) {
-            cb(templateList.templates);
+            cb(result);
           }
         })
         .catch((error) => {

@@ -5,6 +5,11 @@
   }
 }
 
+@keyframes opa-hei-76px {
+    from {opacity: 0.2;height:10px;}
+    to {opacity: 1;height:76px;}
+}
+
 @keyframes opa-hei-90px {
     from {opacity: 0.2;height:10px;}
     to {opacity: 1;height:90px;}
@@ -32,13 +37,16 @@
 
 
 .show-dy{
-  visibility:visible;
-
+  display: block;
+  // visibility:visible;
+  animation-name:  opa-hei-76px;
+  animation-duration: 1s;
 }
 
 .hide-dy
 {
-  visibility: hidden;
+  display: none;
+  // visibility: hidden;
 }
 
 .templatesSubHeader {

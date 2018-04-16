@@ -55,7 +55,7 @@ class Filter extends Component {
       nElements: 0,
       query: {}
     };
-    this.filterByAlias = this.filterByAlias.bind(this);
+    this.filterByLabel = this.filterByLabel.bind(this);
     this.updateQuery = this.updateQuery.bind(this);
     this.doSearch = this.doSearch.bind(this);
   }
@@ -73,9 +73,9 @@ class Filter extends Component {
     this.props.ops.whenUpdateFilter(this.state.query);
   }
   
-  filterByAlias(e) {
+  filterByLabel(e) {
     e.preventDefault();
-    this.updateQuery({ 'label': 'alias', 'value':e.target.value});
+    this.updateQuery({ 'label': 'label', 'value':e.target.value});
   }
 
   componentDidMount() {
@@ -90,26 +90,22 @@ class Filter extends Component {
     // if (this.props.showPainel) {
     //   return null;
     // }
+    let Fields = this.props.fields;
 
-    return (
-      // <ReactCSSTransitionGroup transitionName="templatesSubHeader">
+    return ( 
       <div className={"row z-depth-2 templatesSubHeader " + (this.props.showPainel ? "show-dy" : "hide-dy")} id="inner-header">
-          <div className="col s3 m3 main-title">
-            Filtering {this.props.metaData.alias}(s)
-            {/* Showing {this.state.nElements}  {this.metaData.alias}(s) */}
-              </div>
-          <div className="col s1 m1 header-info">
-          </div>
-          <div className="col s4 m4">
-            {/* <label htmlFor="fld_name">Alias</label> */}
-            <input id="fld_name" type="text" name="Alias" className="form-control form-control-lg" placeholder="Alias" value={this.state.query.alias} onChange={this.filterByAlias} />
+        <div className="col s3 m3 main-title">
+          Filtering {this.props.metaData.alias}(s)
+          {/* Showing {this.state.nElements}  {this.metaData.alias}(s) */}
         </div>
-          <div className="col s1 m1 pt10">
-            <DojotBtnCircle click={this.doSearch} icon={'fa fa-search'} />
-          </div>
+        <div className="col s1 m1 header-info" />
+        <div className="col s6 m6">
+          <Fields value={this.state.query.label} onChange={this.filterByLabel} />
         </div>
-      //  </ReactCSSTransitionGroup>
-
+        <div className="col s1 m1 pt10">
+          <DojotBtnCircle click={this.doSearch} icon={"fa fa-search"} />
+        </div>
+      </div>
       )
   }
 }

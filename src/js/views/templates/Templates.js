@@ -1155,29 +1155,23 @@ class Templates extends Component {
 
     componentDidMount() {
         opex._fetch();
+        this.setState({ 'has_new_template': false });
     }
 
     render() {
 
         this.metaData = { 'alias': 'template' };
-
-        return (
-            <ReactCSSTransitionGroup
-                transitionName="first"
-                transitionAppear={true}
-                transitionAppearTimeout={100}
-                transitionEnterTimeout={100}
-                transitionLeaveTimeout={100}>
-                <AltContainer store={TemplateStore}>
-                    <NewPageHeader title="Templates" subtitle="Templates" icon='template'>
-                        <Pagination showPainel={this.state.showPagination} ops={opex} />
-                        <OperationsHeader addTemplate={this.addTemplate} toggleSearchBar={this.toggleSearchBar.bind(this)} /> 
-                    </NewPageHeader>
-                    <Filter showPainel={this.state.showFilter} metaData={this.metaData} ops={opex}/>
-                    <TemplateList enableNewTemplate={this.enableNewTemplate}/>
-                </AltContainer>
-            </ReactCSSTransitionGroup>
-        );
+    
+        return <ReactCSSTransitionGroup transitionName="first" transitionAppear={true} transitionAppearTimeout={100} transitionEnterTimeout={100} transitionLeaveTimeout={100}>
+            <AltContainer store={TemplateStore}>
+              <NewPageHeader title="Templates" subtitle="Templates" icon="template">
+                <Pagination showPainel={this.state.showPagination} ops={opex} />
+                <OperationsHeader addTemplate={this.addTemplate} toggleSearchBar={this.toggleSearchBar.bind(this)} />
+              </NewPageHeader>
+              <Filter showPainel={this.state.showFilter} metaData={this.metaData} ops={opex} fields={FilterFields} />
+              <TemplateList enableNewTemplate={this.enableNewTemplate} />
+            </AltContainer>
+          </ReactCSSTransitionGroup>;
     }
 }
 
@@ -1193,5 +1187,13 @@ function OperationsHeader(props) {
         </div>
     )
 }
+
+function FilterFields(props) {
+    return (
+    <div className="col s12 m12">
+      <input id="fld_name" type="text" name="Label" className="form-control form-control-lg" placeholder="Label" value={props.value} onChange={props.onChange} />
+    </div> );
+}
+
 
 export {Templates as TemplateList};

@@ -74,13 +74,15 @@
   font-weight: bold;
   transition: all .2s ease-out;
   -webkit-transition: all .2s ease-out;
+  position: relative;
+  float: right;
+  cursor: pointer;
+  user-select: none;
 
   &:hover {
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2) !important;
-    // background: linear-gradient(269.31deg, #F2994A 9.21%, #FF7800 84.23%);
     background: $white !important;
     color: $almost-black;
-    border: 1px solid $gray;
   }
 
   i {

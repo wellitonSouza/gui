@@ -27,6 +27,22 @@ import Script from 'react-load-script';
 
 import io from 'socket.io-client';
 
+
+class Tooltip extends Component{
+  constructor(props) {
+      super(props); 
+  }
+
+  render(){
+    console.log("TooltipValue: ", this.props.tooltipValue)
+      return(
+          <div className="div-tooltip">
+              <span>{this.props.tooltipValue}</span>
+          </div>
+      )
+  }
+}
+
 class DeviceHeader extends Component {
   constructor(props) {
     super(props);
@@ -115,10 +131,15 @@ class StaticAttributes extends Component {
 class GenericList extends Component {
   constructor(props) {
     super(props);
-    this.state = {openStaticMap: true, visible_static_map: false}
+    this.state = {openStaticMap: true, visible_static_map: false, truncate: false}
 
     this.openMap = this.openMap.bind(this);
     this.verifyIsGeo = this.verifyIsGeo.bind(this);
+    this.limitSizeField = this.limitSizeField.bind(this);
+  }
+
+  componentWillMount(){
+    this.limitSizeField(this.props.attrs);
   }
 
   openMap(visible){
@@ -148,6 +169,21 @@ class GenericList extends Component {
     }
   }
 
+  limitSizeField(attrs){
+    console.log("Attrs: ", attrs);
+    attrs.map(attr => {
+      if(attr.type == "meta"){
+        if(attr.static_value.length > 20){
+          this.setState({truncate: true});
+        }
+      } else {
+        if(attr.label.length > 20 || attr.value_type > 20){
+          this.setState({truncate: true});
+        }
+      }
+    })
+  }
+
   render() {
     this.verifyIsGeo(this.props.attrs);
     return <div className="row stt-attributes">
@@ -159,14 +195,17 @@ class GenericList extends Component {
         </div>
         <div className="col s12 body">
           {this.props.attrs.map(attr => (
-            <div key={attr.label} className="line">
-              <div className="col s4">
+            <div key={attr.label} className="line col s12">
+              {/*<div className="col s4">
                 <div className="name-value">{attr.label}</div>
                 <div className="value-label">Name</div>
-              </div>
-              <div className="col s8" >
-                  <div className="value-value">{attr.static_value}</div>
-                  <div className="value-label">{attr.value_type}</div>
+              </div>*/}
+              <div className="col s12" >
+                <div className={this.state.truncate ? "name-value col s10 truncate": "name-value col s10"} title={attr.label}>{attr.label}</div>
+                <div className={this.state.truncate ? "value-value col s10 truncate": "value-value col s10"} title={attr.static_value}>{attr.static_value}</div>
+                <div className="value-label col s2" title={attr.value_type} >{attr.value_type}</div>
+                  {/*<div className="name-value col s12">{attr.label}</div>
+                  <div className="value-label">Name</div>*/}
               </div>
               {attr.isGeo ?
                 <div className="star" onClick={this.openMap}>
@@ -224,6 +263,7 @@ class DyAttributeArea extends Component {
   // }
 
   render() {
+    console.log("Props: ", this.props);
     let lista = this.props.attrs;
     for (let index in lista)
     {
@@ -235,14 +275,14 @@ class DyAttributeArea extends Component {
 
     return <div className="content-row" >
       <div className="second-col">
-        {this.state.selected_attributes.length == 0 ?
+        {this.state.selected_attributes.length == 0 && this.props.openStaticMap == false ?
           (<div className="second-col-label center-align">To see the data select an static or dynamic attribute</div>)
           : null
         }
+        {this.props.openStaticMap ? <PositionStaticWrapper device={this.props.device} /> : null}
         {this.state.selected_attributes.map(at => (
           <Attribute key={at.id} device={this.props.device} attr={at} />
         ))}
-        {this.props.openStaticMap ? <PositionStaticWrapper device={this.props.device} /> : null}
       </div>
       <div className="third-col">
         <DynamicAttributeList device={this.props.device} attrs={lista} change_attr={this.toggleAttribute} />
@@ -255,7 +295,9 @@ class DyAttributeArea extends Component {
 class DynamicAttributeList extends Component {
   constructor(props) {
     super(props);
+    this.state = {truncate: false};
     this.clickAttr = this.clickAttr.bind(this);
+    this.limitSizeField = this.limitSizeField.bind(this);
   }
 
   componentWillMount(){
@@ -272,11 +314,21 @@ class DynamicAttributeList extends Component {
         }
       }
     }
+
+    this.limitSizeField(this.props.attrs);
   }
 
   clickAttr(attr)
   {
       this.props.change_attr(attr);
+  }
+
+  limitSizeField(dyAttrs){
+    dyAttrs.map((dyAttr) => {
+      if(dyAttr.label.length > 20){
+        this.setState({truncate: true});
+      }
+    });
   }
 
   render() {
@@ -295,7 +347,7 @@ class DynamicAttributeList extends Component {
           {this.props.attrs.map(attr => (
             <div key={attr.label} className="line" onClick={this.clickAttr.bind(this, attr)}>
               <div className="col offset-s2 s8">
-                <div className="label">{attr.label}</div>
+                <div className={this.state.truncate ? "label truncate" : "label"} title={attr.label}>{attr.label}</div>
                 {/* <div className="value-label">{attr.value_type}</div> */}
               </div>
               <div className="col s2">

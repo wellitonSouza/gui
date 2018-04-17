@@ -834,6 +834,7 @@ $action-area-width: 200px;
   overflow: hidden;
   transition: max-height 450ms ease;
   border-radius: 4px;
+  text-overflow: ellipsis;
 
   .offline {
     background-color: #f85252;
@@ -873,8 +874,10 @@ $action-area-width: 200px;
     height: 100%;
     width: calc(100% - 75px);
     float: left;
-    display: table;
+    display: inline;
     font-size: 18px;
+    padding-top: 25px;
+
     textarea {
       float: left;
       resize: none;
@@ -882,12 +885,6 @@ $action-area-width: 200px;
       vertical-align: middle;
       height: 62px;
       margin: 6.5px 0;
-    }
-
-    .text {
-      display: table-cell;
-      vertical-align: middle;
-      padding-right: 10px;
     }
   }
 

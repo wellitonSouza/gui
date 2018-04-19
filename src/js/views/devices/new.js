@@ -627,13 +627,13 @@ class TemplateFrame extends Component {
             </div>
             <div className="col s12 body">
               {this.props.templates.map((temp) =>
-                <div key={temp.id} className="card template-card">
+                <div key={temp.id} className="card template-card" title={temp.label}>
                 { this.props.state == 0 ? (
                   <div>
                       <div onClick={this.removeTemplate.bind(this,temp)} className="remove-layer">
                         <i className="fa fa-remove"> </i>
                       </div>
-                      <div className="template-name space-p-r">{temp.label}</div>
+                      <div className="template-name truncate space-p-r">{temp.label}</div>
                   </div>
                 ) : (
                   null
@@ -648,7 +648,7 @@ class TemplateFrame extends Component {
                     <div onClick={this.toggleTemplate.bind(this,temp)} className="empty-layer">
                     </div>
                   ) }
-                  <div className="template-name">{temp.label}</div>
+                  <div className="template-name truncate">{temp.label}</div>
                 </div>
               ) : (
                 null

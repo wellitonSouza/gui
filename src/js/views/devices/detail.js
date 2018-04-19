@@ -266,7 +266,7 @@ class DyAttributeArea extends Component {
     return <div className="content-row" >
       <div className="second-col">
         {this.state.selected_attributes.length == 0 && this.props.openStaticMap == false ?
-          (<div className="second-col-label center-align">To see the data select an static or dynamic attribute</div>)
+          (<div className="second-col-label center-align">Select an attribute to be displayed.</div>)
           : null
         }
         {this.props.openStaticMap ? <PositionStaticWrapper device={this.props.device} /> : null}

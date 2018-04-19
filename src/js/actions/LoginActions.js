@@ -38,6 +38,13 @@ class LoginActions {
         }
     }
 
+    resetPassword(username){
+        return (dispatch) => {
+            dispatch();
+            loginManager.resetPassword(username);
+        }
+    }
+
     loginSuccess(token) {
         return token;
     }

@@ -4,7 +4,6 @@ import { Line } from 'react-chartjs-2';
 import { PositionRenderer } from '../views/devices/DeviceMap';
 import Script from 'react-load-script';
 import { Loading } from './Loading.js';
-import MeasureStore from '../stores/MeasureStore';
 
 
 class Graph extends Component{
@@ -127,7 +126,7 @@ function HistoryList(props) {
         return i.value.length > 0
       } else {
         return i.value
-      }      
+      }
     })
 
     trimmedList.reverse();
@@ -135,11 +134,11 @@ function HistoryList(props) {
     if (trimmedList.length > 0) {
       return (
         <div className="relative full-height" >
-          <div className="full-height full-width scrollable history-list">
+          <div className="full-height full-width history-list">
             {trimmedList.map((i,k) => {
-              return (<div className={"row " + (k % 2 ? "alt-row" : "")} key={i.ts}>
-                <div className="col s7 value">{i.value}</div>
-                <div className="col s5 label">{util.iso_to_date(i.ts)}</div>
+              return (<div className={"history-row " + (k % 2 ? "alt-row" : "")} key={i.ts}>
+                <div className="value">{i.value}</div>
+                <div className="label">{util.iso_to_date(i.ts)}</div>
               </div>
             )})}
           </div>
@@ -191,7 +190,7 @@ class PositionWrapper extends Component {
            if(device.attrs[j][i].type == "static"){
              if(device.attrs[j][i].value_type == "geo:point"){
                device.position = parserPosition(device.attrs[j][i].static_value);
-             } 
+             }
            }
          }
        }

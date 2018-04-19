@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
 import detail from '../views/devices/detail';
+import LoginActions from '../actions/LoginActions';
 
 
 class ConfirmModal extends Component {
@@ -59,6 +60,82 @@ class RemoveModal extends Component {
   }
 }
 
+class RecoveryPasswordModal extends Component {
+  constructor(props){
+    super(props);
+
+    this.state = {
+      username: '',
+      modalSentEmail: false
+    }
+
+    this.dismiss = this.dismiss.bind(this);
+    this.recoveryPassword = this.recoveryPassword.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  dismiss(){
+    this.props.openPasswordModal(false);
+  }
+
+  handleChange(event){
+    this.setState({username: event.target.value});
+  }
+
+  recoveryPassword(){
+    LoginActions.resetPassword(this.state.username);
+    this.setState({modalSentEmail: true});
+  }
+
+  render(){
+    if(this.state.modalSentEmail){
+      return (
+        <div className="row">
+          <div className="sent-email-message">
+            <div className="col s12 sent-email-message-title">
+              <div className="col s10">Sent Email</div>
+              <div className="col s2 modal-close-icon" onClick={this.dismiss}><i className="material-icons">close</i></div>
+            </div>
+            <div className="col s12 sent-email-message-body">
+              We sent you an email with the instructions and the link for you to change the password 
+              (remember to check your spam box). If you do not receive the email, repeat the process.
+            </div>
+          </div>
+          <div className="modal-background" onClick={this.dismiss}></div>
+        </div>
+      ) 
+    } else {
+      return(
+        <div className="row">
+          <div className="recovery-password-modal">
+            <div className="row">
+              <div className="recovery-password-title">[&nbsp;&nbsp;Forgot your password?&nbsp;&nbsp;]</div>
+            </div>
+            <div className="row">
+              <div className="recovery-password-body">
+                <div className = "recovery-password-message">
+                  Enter the username associated with your dojot account.
+                </div>
+                <div className="input-field-username col s12 m6">
+                  <input name="username" type="text" value={this.state.username} onChange={this.handleChange}/>
+                </div>           
+              </div>
+            </div>
+            <div className="row">
+              <div className="col s12 m1 offset-m7">
+                <button type="submit" className="waves-effect waves-dark red btn-flat" onClick={this.recoveryPassword}>
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="modal-background" onClick={this.dismiss}></div>
+        </div>
+      )
+    }    
+  }
+}
+
 class GenericModal extends Component {
   constructor(props) {
     super(props);
@@ -106,4 +183,4 @@ class GenericModal extends Component {
   }
 }
 
-export { GenericModal, RemoveModal, ConfirmModal };
+export { GenericModal, RemoveModal, RecoveryPasswordModal };

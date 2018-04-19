@@ -31,8 +31,8 @@ class Recovery extends Component {
     validate() {
         let errorMsg = this.state.invalid;
 
-        if (this.state.password.trim().length < 6) {
-            errorMsg.password = "Password must be at least 6 characters";
+        if (this.state.password.trim().length < 8) {
+            errorMsg.password = "Password must be at least 8 characters";
             this.setState({invalid: errorMsg});
             return false;
         } else {

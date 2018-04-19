@@ -7,6 +7,8 @@ import AltContainer from 'alt-container';
 import LoginActions from '../../actions/LoginActions';
 import LoginStore from '../../stores/LoginStore';
 
+import { RecoveryPasswordModal } from "../../components/Modal";
+
 class Content extends Component {
   constructor(props) {
     super(props);
@@ -17,12 +19,15 @@ class Content extends Component {
         passwd: ""
       },
       invalid: {},
-      error: ""
+      error: "",
+      show_password_modal: false
     }
 
     this.login = this.login.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.validate = this.validate.bind(this);
+    this.openPasswordModal = this.openPasswordModal.bind(this);
+    this.handlePasswordModal = this.handlePasswordModal.bind(this);
   }
 
   componentDidMount() {
@@ -65,6 +70,14 @@ class Content extends Component {
     this.setState({
       login: state
     });
+  }
+
+  openPasswordModal(status){
+    this.setState({show_password_modal: status});
+  }
+
+  handlePasswordModal(){
+    this.setState({show_password_modal: true});
   }
 
   render() {
@@ -131,6 +144,11 @@ class Content extends Component {
                     </div>
                 </div>
                 <div className="row">
+                  <div className="forget-password col s12 m6 offset-m3">
+                    <label onClick={this.handlePasswordModal}>Forgot Password?</label>
+                  </div>
+                </div>
+                <div className="row">
                   <div className="col s12 m1 offset-m7">
                       { this.props.loading ? (
                         <button type="submit" className="waves-effect waves-dark red btn-flat">
@@ -156,6 +174,11 @@ class Content extends Component {
             </div>
           </div>
         </div>
+        {this.state.show_password_modal ? (
+          <RecoveryPasswordModal openPasswordModal={this.openPasswordModal}/>
+        ):(
+          <div></div>
+        )}
       </div>
     )
   }

@@ -1,24 +1,15 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import deviceManager from '../../comms/devices/DeviceManager';
 import DeviceStore from '../../stores/DeviceStore';
 import MeasureStore from '../../stores/MeasureStore';
 import DeviceActions from '../../actions/DeviceActions';
-
 import MeasureActions from '../../actions/MeasureActions';
-
-import { PageHeader } from "../../containers/full/PageHeader";
 import { NewPageHeader } from "../../containers/full/PageHeader";
 import AltContainer from 'alt-container';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import { Link } from 'react-router'
 import { DojotBtnLink } from "../../components/DojotButton";
-import {DeviceMap, PositionRenderer} from './DeviceMap';
+import {DeviceMap} from './DeviceMap';
 import {DeviceCard} from './DeviceCard';
-
 import util from '../../comms/util';
-
-import LoginStore from '../../stores/LoginStore';
 
 // UI elements
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -48,12 +39,12 @@ class MapWrapper extends Component {
 
   componentDidMount(){
     let devices = this.props.devices;
-    for(let k in devices){
-      for(let j in devices[k].attrs){
-        for(let i in devices[k].attrs[j]){
-          if(devices[k].attrs[j][i].type == "dynamic"){
-            if(devices[k].attrs[j][i].value_type == "geo:point"){
-                MeasureActions.fetchPosition.defer(devices[k], devices[k].id, devices[k].attrs[j][i].label);
+    for(let deviceID in devices){
+      for(let templateID in devices[deviceID].attrs){
+        for(let attrID in devices[deviceID].attrs[templateID]){
+          if(devices[deviceID].attrs[templateID][attrID].type === "dynamic"){
+            if(devices[deviceID].attrs[templateID][attrID].value_type === "geo:point"){
+                MeasureActions.fetchPosition.defer(devices[deviceID], devices[deviceID].id, devices[deviceID].attrs[templateID][attrID].label);
             }
           }
         }
@@ -88,7 +79,7 @@ class Devices extends Component {
     DeviceActions.fetchDevices.defer();
 
     // Realtime
-    var socketio = require('socket.io-client');
+    let socketio = require('socket.io-client');
 
     const target = `${window.location.protocol}//${window.location.host}`;
     const token_url = target + "/stream/socketio";
@@ -153,15 +144,8 @@ class Devices extends Component {
                 setState={this.setDisplay}
             />
         );
-
-        return <ReactCSSTransitionGroup transitionName="first" transitionAppear={true} transitionAppearTimeout={100}
-                                        transitionEnterTimeout={100} transitionLeaveTimeout={100}>
+        return <div className={'full-device-area'}>
             <NewPageHeader title="Devices" subtitle="" icon="device">
-                {/* <Filter onChange={this.filterChange} /> */}
-                {/*<Link to="/device/new" title="Create a new device" className="btn-item btn-floating waves-effect waves-light cyan darken-2">
-            <i className="fa fa-plus"/>
-          </Link> */}
-
                 <div className="pt10">
                     <div className="searchBtn" title="Show search bar" onClick={this.toggleSearchBar.bind(this)}>
                         <i className="fa fa-search"/>
@@ -177,7 +161,7 @@ class Devices extends Component {
                     <MapWrapper deviceid={detail} toggle={displayToggle} showSearchBox={this.state.showFilter}/>
                 )}
             </AltContainer>
-        </ReactCSSTransitionGroup>;
+        </div>;
     }
 }
 

@@ -17,7 +17,7 @@ function SummaryItem(props) {
           <div className="lst-entry-title col s12">
         <img className="title-icon" src={"images/icons/graph-wt.png"}/>
               <div className="title-text">
-                  <span className="text"> {props.flow.name} </span>
+                  <span className="text" title={props.flow.name}> {props.flow.name} </span>
               </div>
           </div>
           <div className="attr-list">

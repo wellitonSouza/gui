@@ -26,8 +26,8 @@ function SummaryItem(props) {
         <div className={"card-size card-hover lst-entry-wrapper z-depth-2 fullHeight"}>
               <div className="lst-entry-title col s12">
                   <img className="title-icon" src={"images/icons/chip-wt.png"}/>
-                  <div className="title-text">
-                      <span className="text"> {props.device.label} </span>
+                  <div className="title-text truncate">
+                      <span className="text" title={props.device.label}> {props.device.label} </span>
                   </div>
               </div>
               <div className="attr-list">

@@ -191,7 +191,7 @@ class AttributeList extends Component {
                         <img src={"images/tag.png"}/>
                     </div>
                     <div className={"attr-content"}>
-                        <input type="text" value={this.props.attributes.label} disabled={!this.props.editable}
+                        <input maxLength="25" type="text" value={this.props.attributes.label} disabled={!this.props.editable}
                                name={"label"} onChange={this.handleChange}/>
                         <span>Name</span>
                     </div>
@@ -224,7 +224,7 @@ class AttributeList extends Component {
                 <div className="attr-row">
                     <div className="icon"/>
                     <div className={"attr-content"}>
-                        <input type="text" value={this.props.attributes.static_value} disabled={!this.props.editable}
+                        <input maxLength="25" type="text" value={this.props.attributes.static_value} disabled={!this.props.editable}
                                name={"static_value"} onChange={this.handleChange}/>
                         <select id="select_attribute_type" className="card-select mini-card-select"
                                 name={"type"}
@@ -304,7 +304,7 @@ class ConfigList extends Component {
                 <div className="attr-row">
                     <div className="icon"/>
                     <div className={"attr-content"}>
-                        <input className={(this.props.attributes.label === "protocol" ? 'none' : '')} type="text"
+                        <input maxLength="25" className={(this.props.attributes.label === "protocol" ? 'none' : '')} type="text"
                                name={"static_value"} value={this.props.attributes.static_value}
                                disabled={!this.props.editable} onChange={this.handleChange}/>
                         <select id="select_attribute_type"
@@ -862,9 +862,9 @@ class ListItem extends Component {
                 )}
                     <div className="lst-entry-title bg-gradient-ciano-blue col s12">
                     <img className="title-icon template" src={"images/big-icons/template.png"}/>
-                    <div className="title-text">
+                    <div className="template-title-text ">
                         <textarea maxLength="40" placeholder={"Template Name"} readOnly={!this.state.isEditable}
-                                  value={this.state.template.label} name={"label"} onChange={this.handleAttribute}/>
+                            value={this.state.template.label} name={"label"} onChange={this.handleAttribute}/>
                     </div>
                 </div>
                 <div className="lst-entry-body">

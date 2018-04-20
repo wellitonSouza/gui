@@ -12,6 +12,8 @@ import util from '../../comms/util/util';
 
 import MaterialInput from "../../components/MaterialInput";
 
+import { DojotBtnRedCircle } from "../../components/DojotButton";
+
 class FlowCanvas extends Component {
   constructor(props) {
     super(props);
@@ -281,7 +283,8 @@ class NameForm extends Component {
                      onChange={(e) => {
                        e.preventDefault();
                        FlowActions.setName(e.target.value)
-                     }} >
+                     }}
+                     maxLength={45} >
         Flow name
       </MaterialInput>
     )
@@ -311,23 +314,23 @@ class EditFlow extends Component {
             <AltContainer store={FlowStore}>
               <NameForm />
             </AltContainer>
-            <div className="col">
-              <a className="waves-effect waves-light btn-flat btn-ciano"
-                  onClick={() => { handleSave(this.props.params.flowid); }} >
-                save
-              </a>
-            </div>
+              <DojotBtnRedCircle
+                icon=" fa fa-save"
+                tooltip="Save Flow"
+                click={() => { handleSave(this.props.params.flowid); }}
+              />            
             {(this.props.params.flowid) && (
-              <div className="col">
-                <a className="waves-effect waves-light btn-flat btn-red" tabIndex="-1" title="Remove flow"
-                   onClick={(e) => {e.preventDefault(); $('#confirmDiag').modal('open');}}>
-                  remove
-                </a>
-              </div>
+              <DojotBtnRedCircle
+                icon=" fa fa-trash"
+                tooltip="Remove device"
+                click={(e) => {e.preventDefault(); $('#confirmDiag').modal('open');}}
+              />
             )}
-            <div className="col">
-              <Link to="/flows" className="waves-effect waves-light btn-flat btn-ciano">Dismiss</Link>
-            </div>
+              <DojotBtnRedCircle
+                to={"/flows"}
+                icon="fa fa-arrow-left"
+                tooltip="Return to Flow list"
+              />
           </div>
         </NewPageHeader>
         <AltContainer store={FlowStore}>

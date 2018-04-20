@@ -156,28 +156,28 @@ class SideBar extends Component {
                         <input id="userName46465" value={this.state.user.username} name="username"
                                disabled={this.props.edit}
                                onChange={this.handleChange} style={{fontSize: '16px'}}
-                               className={"validate" + (this.state.isInvalid.username ? ' invalid' : '')}/>
+                               className={"validate" + (this.state.isInvalid.username ? ' invalid' : '')} maxLength="40" />
                         <label htmlFor="userName" data-error="Please use only letters (a-z) and numbers (0-9)"
                                className="active">User Name</label>
                     </div>
                     <div id={'auth-usr'} className="input-field">
                         <input id="name" value={this.state.user.name} name="name" onChange={this.handleChange}
                                style={{fontSize: '16px'}}
-                               className={"validate" + (this.state.isInvalid.name ? ' invalid' : '')}/>
+                               className={"validate" + (this.state.isInvalid.name ? ' invalid' : '')} maxLength="40" />
                         <label htmlFor="name" data-error="Invalid name" className="active">Name</label>
                     </div>
                     <div id={'auth-email'} className="input-field">
 
                         <input id="email" value={this.state.user.email} name="email" onChange={this.handleChange}
                                style={{fontSize: '16px'}}
-                               className={"validate" + (this.state.isInvalid.email ? ' invalid' : '')}/>
+                               className={"validate" + (this.state.isInvalid.email ? ' invalid' : '')} maxLength="40" />
                         <label htmlFor="email" data-error="Please enter a valid email address."
                                className="active">Email</label>
                     </div>
                     <div id={'auth-confirm'} className="input-field">
                         <input id="confirm-email" value={this.state.user.confirmEmail} name="confirmEmail"
                                onChange={this.handleChange} style={{fontSize: '16px'}}
-                               className={"validate" + (this.state.isInvalid.confirmEmail ? ' invalid' : '')}/>
+                               className={"validate" + (this.state.isInvalid.confirmEmail ? ' invalid' : '')} maxLength="40"/>
                         <label htmlFor="confirm-email" data-error="Email address mismatch" className="active">Confirm
                             Email</label>
                     </div>
@@ -234,7 +234,7 @@ function SummaryItem(props) {
         <div className={"card-size card-hover lst-entry-wrapper z-depth-2 fullHeight"}>
             <div className="lst-entry-title col s12">
                 <img className="title-icon" src={"images/generic-user-icon.png"}/>
-                <div className="title-text truncate">
+                <div className="title-text" title={props.user.name}>
                     <span className="text"> {props.user.name} </span>
                 </div>
             </div>
@@ -244,8 +244,8 @@ function SummaryItem(props) {
                         <div className="icon">
                             <img src={"images/usr-icon.png"}/>
                         </div>
-                        <div className={"attr-content"}>
-                            <input type="text" value={props.user.username} disabled={true}/>
+                        <div className={"user-card attr-content"} title={props.user.username}>
+                            <input className="truncate" type="text" value={props.user.username} disabled={true}/>
                             <span>User Name</span>
                         </div>
                     </div>
@@ -253,8 +253,8 @@ function SummaryItem(props) {
                         <div className="icon">
                             <img src={"images/email-icon.png"}/>
                         </div>
-                        <div className={"attr-content"}>
-                            <input type="text" value={props.user.email} disabled={true}/>
+                        <div className={"user-card attr-content"} title={props.user.email}>
+                            <input className="truncate" type="text" value={props.user.email} disabled={true}/>
                             <span>Email</span>
                         </div>
                     </div>
@@ -262,8 +262,8 @@ function SummaryItem(props) {
                         <div className="icon">
                             <img src={"images/profile-icon.png"}/>
                         </div>
-                        <div className={"attr-content"}>
-                            <input type="text" value={props.user.profile === 'admin' ? 'Administrator' : 'User'}
+                        <div className={"user-card attr-content"}>
+                            <input className="truncate" type="text" value={props.user.profile === 'admin' ? 'Administrator' : 'User'}
                                    disabled={true}/>
                             <span>Profile</span>
                         </div>

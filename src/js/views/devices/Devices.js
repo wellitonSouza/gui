@@ -8,7 +8,7 @@ import AltContainer from 'alt-container';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { DojotBtnLink } from "../../components/DojotButton";
 import {DeviceMap} from './DeviceMap';
-import {DeviceCard} from './DeviceCard';
+import {DeviceCardList} from './DeviceCard';
 import util from '../../comms/util';
 
 // UI elements
@@ -61,8 +61,38 @@ class MapWrapper extends Component {
   }
 }
 
+
+class DeviceOperations {
+  constructor() {
+    this.filterParams = {};
+
+    this.paginationParams = {
+      page_size: 6,
+      page_num: 1
+    }; // default parameters
+  }
+
+  whenUpdatePagination(config) {
+    for (let key in config) this.paginationParams[key] = config[key];
+    this._fetch();
+  }
+
+  whenUpdateFilter(config) {
+    this.filterParams = config;
+    this._fetch();
+  }
+
+  _fetch() {
+    let res = Object.assign({}, this.paginationParams, this.filterParams);
+    console.log("fetching: ", res);
+    DeviceActions.fetchDevices(res);
+  }
+}
+
+
 // TODO: this is an awful quick hack - this should be better scoped.
 var device_list_socket = null;
+let dev_opex = new DeviceOperations();
 
 class Devices extends Component {
   constructor(props) {
@@ -70,13 +100,15 @@ class Devices extends Component {
     this.state = { displayList: true, showFilter: false };
 
     this.toggleSearchBar = this.toggleSearchBar.bind(this);
-    this.filterChange = this.filterChange.bind(this);
     this.toggleDisplay = this.toggleDisplay.bind(this);
     this.setDisplay = this.setDisplay.bind(this);
+    this.opex2 = 'testing';
   }
 
   componentDidMount() {
-    DeviceActions.fetchDevices.defer();
+    // DeviceActions.fetchDevices.defer();
+    opex._fetch();
+    console.log("this.opex2",this.opex2);
 
     // Realtime
     let socketio = require('socket.io-client');
@@ -98,6 +130,7 @@ class Devices extends Component {
       device_list_socket = socketio(target, { query: "token=" + token, transports: ['polling'] });
 
       device_list_socket.on('all', function(data){
+        console.log("received socket information:", data);
         MeasureActions.appendMeasures(data);
         DeviceActions.updateStatus(data);
       });
@@ -116,11 +149,9 @@ class Devices extends Component {
     device_list_socket.close();
   }
 
-  filterChange(newFilter) {}
 
   toggleSearchBar() {
-    const last = this.state.showFilter;
-    this.setState({ showFilter: !last });
+    this.setState({ showFilter: !this.state.showFilter });
   }
 
   setDisplay(state) {
@@ -144,25 +175,38 @@ class Devices extends Component {
                 setState={this.setDisplay}
             />
         );
-        return <div className={'full-device-area'}>
-            <NewPageHeader title="Devices" subtitle="" icon="device">
-                <div className="pt10">
-                    <div className="searchBtn" title="Show search bar" onClick={this.toggleSearchBar.bind(this)}>
-                        <i className="fa fa-search"/>
-                    </div>
-                    {displayToggle}
-                    <DojotBtnLink linkto="/device/new" label="New Device" alt="Create a new device" icon="fa fa-plus"/>
-                </div>
-            </NewPageHeader>
+        return (
+        <div className={"full-device-area"}>
             <AltContainer store={DeviceStore}>
-                {this.state.displayList ? (
-                    <DeviceCard deviceid={detail} toggle={displayToggle} showSearchBox={this.state.showFilter}/>
-                ) : (
-                    <MapWrapper deviceid={detail} toggle={displayToggle} showSearchBox={this.state.showFilter}/>
-                )}
+              <NewPageHeader title="Devices" subtitle="" icon="device">
+                <Pagination showPainel={this.state.showPagination} ops={dev_opex} />
+                <OperationsHeader displayToggle={displayToggle} toggleSearchBar={this.toggleSearchBar.bind(this)} />
+              </NewPageHeader>
+              {this.state.displayList ? <DeviceCardList deviceid={detail} toggle={displayToggle} dev_opex={dev_opex} showSearchBox={this.state.showFilter} /> : <MapWrapper deviceid={detail} toggle={displayToggle} showSearchBox={this.state.showFilter} dev_opex={dev_opex} />}
             </AltContainer>
-        </div>;
+          </div>
+        )
     }
+}
+
+function OperationsHeader(props) {
+  return (
+    <div className="col s5 pull-right pt10">
+      <div
+        className="searchBtn"
+        title="Show search bar"
+        onClick={props.toggleSearchBar}>
+        <i className="fa fa-search" />
+      </div>
+      {props.displayToggle}
+      <DojotBtnLink
+        linkto="/device/new"
+        label="New Device"
+        alt="Create a new device"
+        icon="fa fa-plus"
+      />
+    </div>
+  )
 }
 
 export { Devices };

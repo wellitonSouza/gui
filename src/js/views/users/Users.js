@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import Materialize from 'materialize-css';
 import AltContainer from 'alt-container';
 import {NewPageHeader} from "../../containers/full/PageHeader";
-import SimpleFilter from "../utils/Manipulation";
+import {SimpleFilter} from "../utils/Manipulation";
 import MaterialSelect from '../../components/MaterialSelect';
 import AutheticationFailed from "../../components/AuthenticationFailed";
 import LoginStore from "../../stores/LoginStore";

@@ -159,6 +159,8 @@ class AttributeList extends Component {
         super(props);
         this.state = {
             isSuppressed: true,
+            fieldSizeDyAttrStatus: false,
+            fieldSizeStaticAttrStatus: false
         };
 
         this.suppress = this.suppress.bind(this);
@@ -166,6 +168,18 @@ class AttributeList extends Component {
         this.removeAttribute = this.removeAttribute.bind(this);
         this.availableValueTypes = attrType.getValueTypes();
         this.availableTypes = attrType.getTypes();
+    }
+
+    componentWillMount(){
+        console.log(this.props.attributes.label, ": ", this.props.attributes.label.length);
+        if(this.props.attributes.label.length > 18){
+           this.setState({fieldSizeDyAttrStatus: true});
+        }
+
+        console.log(this.props.attributes.static_value, ": ", this.props.attributes.static_value.length);
+        if(this.props.attributes.static_value.length > 18){
+            this.setState({fieldSizeStaticAttrStatus: true});
+        }
     }
 
     suppress() {
@@ -190,8 +204,8 @@ class AttributeList extends Component {
                         <img src={"images/tag.png"}/>
                     </div>
                     <div className={"attr-content"}>
-                        <input maxLength="25" type="text" value={this.props.attributes.label} disabled={!this.props.editable}
-                               name={"label"} onChange={this.handleChange}/>
+                        <input className={this.state.fieldSizeDyAttrStatus ? "truncate": ""} type="text" value={this.props.attributes.label} disabled={!this.props.editable}
+                               name={"label"} onChange={this.handleChange} maxLength="25" title={this.props.attributes.label}/>
                         <span>Name</span>
                     </div>
                     <div className="center-text-parent material-btn right-side" onClick={this.suppress}>
@@ -223,8 +237,8 @@ class AttributeList extends Component {
                 <div className="attr-row">
                     <div className="icon"/>
                     <div className={"attr-content"}>
-                        <input maxLength="25" type="text" value={this.props.attributes.static_value} disabled={!this.props.editable}
-                               name={"static_value"} onChange={this.handleChange}/>
+                        <input className={this.state.fieldSizeStaticAttrStatus ? "truncate": ""} type="text" value={this.props.attributes.static_value} disabled={!this.props.editable}
+                               name={"static_value"} onChange={this.handleChange} maxLength="25" title={this.props.attributes.static_value}/>
                         <select id="select_attribute_type" className="card-select mini-card-select"
                                 name={"type"}
                                 value={this.props.attributes.type}
@@ -248,6 +262,7 @@ class ConfigList extends Component {
         super(props);
         this.state = {
             isSuppressed: true,
+            configFieldSizeStatus: false
         };
 
         this.suppress = this.suppress.bind(this);
@@ -256,6 +271,12 @@ class ConfigList extends Component {
         this.availableValueTypes = attrType.getConfigValueTypes();
         this.availableTypes = attrType.getConfigTypes();
 
+    }
+
+    componentWillMount(){
+        if(this.props.attributes.static_value.length > 18){
+            this.setState({configFieldSizeStatus: true});
+        }
     }
 
     suppress() {
@@ -303,9 +324,9 @@ class ConfigList extends Component {
                 <div className="attr-row">
                     <div className="icon"/>
                     <div className={"attr-content"}>
-                        <input maxLength="25" className={(this.props.attributes.label === "protocol" ? 'none' : '')} type="text"
+                        <input className={(this.props.attributes.label === "protocol" ? 'none' : '') || (this.state.configFieldSizeStatus ? "truncate": "")}type="text"
                                name={"static_value"} value={this.props.attributes.static_value}
-                               disabled={!this.props.editable} onChange={this.handleChange}/>
+                               disabled={!this.props.editable} onChange={this.handleChange} title={this.props.attributes.static_value} maxLength="25"/>
                         <select id="select_attribute_type"
                                 className={(this.props.attributes.label === "protocol" ? '' : 'none') + " card-select"}
                                 name={"static_value"}
@@ -448,7 +469,7 @@ class NewAttribute extends Component {
                         </div>
 
                         <div className={"attr-content "}>
-                            <input type="text" value={this.state.newAttr.label} onChange={this.handleChange}
+                            <input type="text" value={this.state.newAttr.label} maxLength="22" onChange={this.handleChange}
                                    name={"label"}/>
                             <span>Name</span>
                         </div>
@@ -476,7 +497,7 @@ class NewAttribute extends Component {
                         <div className="icon"/>
                         <div className={"attr-content"}>
                             <input className={(this.state.newAttr.value_type === "protocol" ? 'none' : '')} type="text"
-                                   value={this.state.newAttr.value} onChange={this.handleChange}
+                                   value={this.state.newAttr.value} maxLength="22" onChange={this.handleChange}
                                    name={"value"}/>
 
                             <select id="select_attribute_type"
@@ -579,7 +600,7 @@ class ListItem extends Component {
             isConfiguration: false,
             show_modal: false,
             show_image_modal: false,
-            fw_version_used: null
+            fw_version_used: null,
         };
 
         this.clone = JSON.parse(JSON.stringify(this.state.template));
@@ -837,7 +858,6 @@ class ListItem extends Component {
     }
 
     render() {
-
         let fw_version_used = "No default image"
         if (this.state.fw_version_used) {
             fw_version_used = this.state.fw_version_used;
@@ -859,11 +879,11 @@ class ListItem extends Component {
                 ) : (
                   <div></div>
                 )}
-                    <div className="lst-entry-title bg-gradient-ciano-blue col s12">
+                <div className="lst-entry-title bg-gradient-ciano-blue col s12">
                     <img className="title-icon template" src={"images/big-icons/template.png"}/>
-                    <div className="template-title-text ">
-                        <textarea maxLength="40" placeholder={"Template Name"} readOnly={!this.state.isEditable}
-                            value={this.state.template.label} name={"label"} onChange={this.handleAttribute}/>
+                    <div className="title-text">
+                       <input className="template-title-text truncate" placeholder={"Template Name"} readOnly={!this.state.isEditable}
+                            value={this.state.template.label} name={"label"} title={this.state.template.label} maxLength={45} onChange={this.handleAttribute}/>
                     </div>
                 </div>
                 <div className="lst-entry-body">

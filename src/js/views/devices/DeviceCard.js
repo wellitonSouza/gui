@@ -12,6 +12,8 @@ import MaterialInput from "../../components/MaterialInput";
 import Materialize from "materialize-css";
 import MaterialSelect from "../../components/MaterialSelect";
 
+import { Filter, Pagination } from '../utils/Manipulation';
+
 function SummaryItem(props) {
 
     let attrs = 0;
@@ -63,50 +65,44 @@ function SummaryItem(props) {
 
 
 class DeviceCardList extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-        loaded: false,
-        }
-        this.convertTemplateList = this.convertTemplateList.bind(this);
-        this.filteredList = [];
+  constructor(props) {
+    super(props);
+    this.state = {
+      loaded: false
+    };
+    this.convertDeviceList = this.convertDeviceList.bind(this);
+    this.filteredList = [];
+  }
+
+  convertDeviceList() {
+    this.filteredList = [];
+    for (let k in this.props.devices) {
+      this.filteredList.push(this.props.devices[k]);
+    }
+  }
+
+  render() {
+    if (this.props.loading) {
+      return <Loading />;
     }
 
-    convertTemplateList() {
-        this.filteredList = [];
-        for (let k in this.props.devices) {
-            this.filteredList.push(this.props.devices[k]);
-        }
-    }
+    this.convertDeviceList();
 
+    this.metaData = { alias: "device" };
 
-      render() {
-        if (this.props.loading) {
-            return (<Loading />);
-        }
-
-        this.convertDeviceList();
-
-        this.metaData = { 'alias': 'device' };
-        
-        return (
-        <div className="device-card-area">
-            <Filter showPainel={this.props.showFilter} metaData={this.metaData} ops={this.props.dev_opex} fields={DevFilterFields} />
-            {this.filteredList.length === 0 ? (
-                <div className="background-info valign-wrapper full-height">
-                <span className="horizontal-center">
-                    No configured devices
-                </span>
-                </div>
-            ) : (
-                <div className="col s12  lst-wrapper extra-padding">
-                    {this.filteredList.map((device) => (
-                        <SummaryItem device={device} key={device.id}/>
-                    ))}
-                </div>
-            )}
-        </div>)
-    }
+    return <div className="device-card-area">
+        <Filter showPainel={this.props.showFilter} metaData={this.metaData} ops={this.props.dev_opex} fields={DevFilterFields} />
+        {this.filteredList.length === 0 ? <div className="background-info valign-wrapper full-height">
+            <span className="horizontal-center mt30">
+              No configured devices
+            </span>
+          </div> : <div className="col s12  lst-wrapper extra-padding">
+            {this.filteredList.map(device => (
+              <SummaryItem device={device} key={device.id} />
+            ))}
+          </div>}
+      </div>;
+  }
 }
 
 
@@ -130,7 +126,7 @@ class DevFilterFields extends Component {
 
   createSelectTemplates() {
     let items = [];
-    items.push(<option value="">Select Template</option>);
+    items.push(<option key="select_template" value="">Select Template</option>);
     for (let i = 0; i < this.templates.length; i++) {
       items.push(
         <option key={this.templates[i].id} value={this.templates[i].id}>
@@ -146,24 +142,28 @@ class DevFilterFields extends Component {
   }
 
   render() {
-    console.log("this.props", this.props);
+    console.log("DevFilterFields",this.props);
     if (this.templates.length == 0)
         this.convertTemplateList();
-    
+        
     this.opts = this.createSelectTemplates();
-    return (
-    <div className="col s12 m12">
+    return <div className="col s12 m12">
+        <div className="col s5 m5">
+          <div className="dev_field_filter">
+            <label htmlFor="fld_device_name">Device Name</label>
+            <input id="fld_device_name" type="text" className="form-control form-control-lg margin-top-mi7px" placeholder="Device Name" value={this.props.fields.label} name="label" onChange={this.props.onChange} />
+          </div>
+        </div>
+        <div className="col s1 m1" />
+
         <div className="col s6 m6">
-          <label htmlFor="fld_device_name">Device Name</label>
-          <input id="fld_device_name" type="text" name="Device Name" className="form-control form-control-lg" placeholder="Search" value={this.props.fields.name} name="name" onChange={this.props.onChange} />
+          <div className="dev_field_filter">
+            <MaterialSelect id="flr_templates" name="templates" label="Templates" value={this.props.fields.templates} onChange={this.props.onChange}>
+              {this.opts}
+            </MaterialSelect>
+          </div>
         </div>
-        <div className="col s6 m6 mt5">
-          <MaterialSelect id="flr_templates" name="Templates" label="Templates" value={props.filterIdTemplate} onChange={props.filterListByTemplate}>
-            {this.opts}
-          </MaterialSelect>
-        </div>
-  </div>
-  )
+      </div>;
   }
 }
 

@@ -4,6 +4,8 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AltContainer from 'alt-container';
 import Materialize from 'materialize-css';
 
+
+import { Loading } from "../../components/Loading";
 import TemplateStore from '../../stores/TemplateStore';
 import TemplateActions from '../../actions/TemplateActions';
 
@@ -1180,6 +1182,7 @@ class Templates extends Component {
         this.metaData = { 'alias': 'template' };
     
         return <ReactCSSTransitionGroup transitionName="first" transitionAppear={true} transitionAppearTimeout={100} transitionEnterTimeout={100} transitionLeaveTimeout={100}>
+        <div className={"full-device-area"}>
             <AltContainer store={TemplateStore}>
               <NewPageHeader title="Templates" subtitle="Templates" icon="template">
                 <Pagination ops={opex} />
@@ -1188,6 +1191,7 @@ class Templates extends Component {
               <Filter showPainel={this.state.showFilter} metaData={this.metaData} ops={opex} fields={FilterFields} />
               <TemplateList enableNewTemplate={this.enableNewTemplate} />
             </AltContainer>
+        </div>
           </ReactCSSTransitionGroup>;
     }
 }
@@ -1207,7 +1211,7 @@ function OperationsHeader(props) {
 
 function FilterFields(props) {
     return <div className="col s12 m12">
-        <input id="fld_name" type="text" name="Label" className="form-control form-control-lg" placeholder="Label" name="label" value={props.fields.label} onChange={props.onChange} />
+        <input id="fld_name" type="text" className="form-control form-control-lg" placeholder="Label" name="label" value={props.fields.label} onChange={props.onChange} />
       </div>;
 }
 

@@ -49,7 +49,6 @@ class Filter extends Component {
     super(props);
     this.state = {
       hasData: false,
-      hasPainel: true,
       order: 'asc',
       nElements: 0,
       query: {}
@@ -61,6 +60,7 @@ class Filter extends Component {
 
   updateQuery(element) {
     // console.log("Update query...");
+    // console.log(element);
     let qy = this.state.query;
     qy[element.label] = element.value;
     if (element.value.trim() == "")
@@ -80,13 +80,15 @@ class Filter extends Component {
   }
 
   componentDidMount() {
-    this.setState({ hasPainel: this.props.showSearchBox });
+    // maybe we should use this code to set the current query
+    // let qry = this.props.ops.getUsedQuery();
+    // if (JSON.stringify(qry) != "{}") { //please, fixes this code
+    //   this.setState({ query: qry });
+    // }
   }
   
   render() {
-    // console.info("Rendering Filter");
-    // console.info("Props and States ",this.props,this.state);
-    console.log("this.props.showPainel", this.props.showPainel);
+    console.log("Rendering Filter Painel: this.props.showPainel", this.props.showPainel);
  
     // if (this.props.showPainel) {
     //   return null;

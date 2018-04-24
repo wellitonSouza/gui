@@ -10,6 +10,8 @@ import { DojotBtnLink } from "../../components/DojotButton";
 import {DeviceMap} from './DeviceMap';
 import {DeviceCardList} from './DeviceCard';
 import util from '../../comms/util';
+import { Filter, Pagination } from "../utils/Manipulation";
+
 
 // UI elements
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -53,11 +55,9 @@ class MapWrapper extends Component {
   }
 
   render(){
-    return(
-      <AltContainer store={MeasureStore}>
-        <DeviceMap devices={this.props.devices}/>
-      </AltContainer>
-    )
+    return <AltContainer store={MeasureStore}>
+        <DeviceMap devices={this.props.devices} showFilter={this.props.showFilter} dev_opex={this.props.dev_opex} />
+      </AltContainer>;
   }
 }
 
@@ -77,22 +77,42 @@ class DeviceOperations {
     this._fetch();
   }
 
+  setDefaultFilter()
+  {
+    this.paginationParams = { page_size: 6, page_num: 1 }; // default parameters
+  }
+
+  setFilterToMap() {
+    this.paginationParams = {
+      page_size: 50,
+      page_num: 1
+    };
+    this.filterParams = {};
+  }
+
   whenUpdateFilter(config) {
     this.filterParams = config;
     this._fetch();
   }
 
-  _fetch() {
-    let res = Object.assign({}, this.paginationParams, this.filterParams);
-    console.log("fetching: ", res);
-    DeviceActions.fetchDevices(res);
+  _fetch(cb = null) {
+    if (this.filterParams.templates) {
+      let tmpl_id = this.filterParams.templates;
+      let res = Object.assign({}, this.paginationParams, this.filterParams);
+      delete res.templates;
+      console.log("fetching: ", res, "template used: ", tmpl_id);
+      DeviceActions.fetchDevicesByTemplate(tmpl_id, res, cb);
+    } else {
+      let res = Object.assign({}, this.paginationParams, this.filterParams);
+      console.log("fetching: ", res, "all templates ");
+      DeviceActions.fetchDevices(res, cb);
+    }
   }
 }
 
 
 // TODO: this is an awful quick hack - this should be better scoped.
 var device_list_socket = null;
-let dev_opex = new DeviceOperations();
 
 class Devices extends Component {
   constructor(props) {
@@ -102,21 +122,20 @@ class Devices extends Component {
     this.toggleSearchBar = this.toggleSearchBar.bind(this);
     this.toggleDisplay = this.toggleDisplay.bind(this);
     this.setDisplay = this.setDisplay.bind(this);
-    this.opex2 = 'testing';
+    this.dev_opex = new DeviceOperations();
   }
 
   componentDidMount() {
     // DeviceActions.fetchDevices.defer();
-    opex._fetch();
-    console.log("this.opex2",this.opex2);
-
+    console.log("devices: componentDidMount");
+    this.dev_opex._fetch();
     // Realtime
     let socketio = require('socket.io-client');
 
     const target = `${window.location.protocol}//${window.location.host}`;
     const token_url = target + "/stream/socketio";
 
-    function getWsToken() {
+    function _getWsToken() {
       util._runFetch(token_url)
         .then((reply) => {
           init(reply.token);
@@ -138,11 +157,11 @@ class Devices extends Component {
       device_list_socket.on('error', (data) => {
         console.log("socket error", data);
         socket.close();
-        getWsToken();
+        _getWsToken();
       })
     }
 
-    getWsToken();
+    _getWsToken();
   }
 
   componentWillUnmount(){
@@ -159,8 +178,17 @@ class Devices extends Component {
   }
 
   toggleDisplay() {
-    const last = this.state.displayList;
-    this.setState({ displayList: !last });
+    let newDisplay = !this.state.displayList;
+    console.log(" toggleDisplay",newDisplay);
+    // reload devices for maps
+    if (!newDisplay) 
+      this.dev_opex.setFilterToMap();
+    else
+      this.dev_opex.setDefaultFilter();
+
+      this.dev_opex._fetch(() => {
+         this.setState({ displayList: newDisplay });
+    });
   }
 
     render() {
@@ -175,17 +203,16 @@ class Devices extends Component {
                 setState={this.setDisplay}
             />
         );
-        return (
-        <div className={"full-device-area"}>
+        return <div className="full-device-area">
             <AltContainer store={DeviceStore}>
               <NewPageHeader title="Devices" subtitle="" icon="device">
-                <Pagination showPainel={this.state.showPagination} ops={dev_opex} />
+                <Pagination ops={this.dev_opex} />
                 <OperationsHeader displayToggle={displayToggle} toggleSearchBar={this.toggleSearchBar.bind(this)} />
               </NewPageHeader>
-              {this.state.displayList ? <DeviceCardList deviceid={detail} toggle={displayToggle} dev_opex={dev_opex} showSearchBox={this.state.showFilter} /> : <MapWrapper deviceid={detail} toggle={displayToggle} showSearchBox={this.state.showFilter} dev_opex={dev_opex} />}
+              {this.state.displayList ? <DeviceCardList deviceid={detail} toggle={displayToggle} dev_opex={this.dev_opex} showFilter={this.state.showFilter} /> : 
+              <MapWrapper deviceid={detail} toggle={displayToggle} showFilter={this.state.showFilter} dev_opex={this.dev_opex} />}
             </AltContainer>
-          </div>
-        )
+          </div>;
     }
 }
 

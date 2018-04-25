@@ -1214,9 +1214,9 @@ class Templates extends Component {
                 transitionLeaveTimeout={100}>
                 <NewPageHeader title="Templates" subtitle="Templates" icon='template'>
                     <div className="pt10">
-                        <div className="searchBtn" title="Show search bar" onClick={this.toggleSearchBar.bind(this)}>
+                        {/* <div className="searchBtn" title="Show search bar" onClick={this.toggleSearchBar.bind(this)}>
                           <i className="fa fa-search" />
-                        </div>
+                        </div> */}
                         <div onClick={this.addTemplate} className="new-btn-flat red "
                               title="Create a new template">
                             New Template<i className="fa fa-plus"/>

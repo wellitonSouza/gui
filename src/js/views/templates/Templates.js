@@ -176,9 +176,11 @@ class AttributeList extends Component {
            this.setState({fieldSizeDyAttrStatus: true});
         }
 
-        console.log(this.props.attributes.static_value, ": ", this.props.attributes.static_value.length);
-        if(this.props.attributes.static_value.length > 18){
-            this.setState({fieldSizeStaticAttrStatus: true});
+        if (this.props.attributes.hasOwnProperty('static_value')) {
+            console.log(this.props.attributes.static_value, ": ", this.props.attributes.static_value.length);
+            if(this.props.attributes.static_value.length > 18){
+                this.setState({fieldSizeStaticAttrStatus: true});
+            }
         }
     }
 

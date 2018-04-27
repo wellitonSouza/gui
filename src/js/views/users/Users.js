@@ -194,15 +194,15 @@ class SideBar extends Component {
                      </div>
                     <div id={'edit-footer'} className={'action-footer' + (this.props.edit ? '' : ' hide')}>
                         <div id={'auth-save'} className={"material-btn center-text-parent center-middle-flex"}
-                             title="Edit Attributes" onClick={this.handleSave}>
+                             title="Save Changes" onClick={this.handleSave}>
                             <span className="text center-text-child">save</span>
                         </div>
                         <div id={'auth-cancel'} className={"material-btn center-text-parent center-middle-flex"}
-                             title="Edit Attributes" onClick={this.hideSideBar}>
+                             title="Discard Changes" onClick={this.hideSideBar}>
                             <span className="text center-text-child">cancel</span>
                         </div>
                         <div id={'auth-delete'} className={"material-btn center-text-parent center-middle-flex"}
-                             title="Edit Attributes" onClick={this.handleDelete}>
+                             title="Delete User" onClick={this.handleDelete}>
                             <span className="text center-text-child">delete</span>
                         </div>
                     </div>

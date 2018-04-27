@@ -55,9 +55,9 @@ class Navbar extends Component {
                 {this.state.page} {this.state.page_icon}
             </div>
             <div className="status-item user-area">
-                <div className="user-pic">
+                {/*<div className="user-pic">
                   <img src={this.gravatar} />
-                </div>
+                </div>*/}
                 <div className="user-name">{(this.props.user.name ? this.props.user.name : this.props.user.username)}</div>
                 <div className="clickable" onClick={this.handleClick} title="Login details">
                 {this.props.open === false &&  <i className="fa fa-caret-down line-normal center-caret" />}
@@ -104,9 +104,9 @@ class RightSideBar extends Component {
     return (
       <div className="">
         <div className="rightsidebarchild logout-page">
-          <div className="col s12 m12 logout-page-photo">
+          {/*<div className="col s12 m12 logout-page-photo">
             <img src={gravatar} />
-          </div>
+          </div>*/}
           <div className="col s12 m12">
             <div className="logout-page-subtitle">You are logged in!</div>
           </div>

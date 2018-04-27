@@ -21,7 +21,7 @@ import Script from 'react-load-script';
 
 class Tooltip extends Component{
   constructor(props) {
-      super(props); 
+      super(props);
   }
 
   render(){
@@ -157,14 +157,18 @@ class GenericList extends Component {
   }
 
   limitSizeField(attrs){
-    console.log("Attrs: ", attrs);
     attrs.map(attr => {
       if(attr.type == "meta"){
+        // values of configurations
         if(attr.static_value.length > 20){
           this.setState({truncate: true});
         }
       } else {
         if(attr.label.length > 20 || attr.value_type > 20){
+          this.setState({truncate: true});
+        }
+        // Values of static attributes
+        if(attr.static_value.length > 20){
           this.setState({truncate: true});
         }
       }
@@ -182,7 +186,7 @@ class GenericList extends Component {
         </div>
         <div className="col s12 body">
           {this.props.box_title == "Configurations" ? (
-            <div key="id" className="line">
+            <div key="id" className="line col s12">
               <div className="col s5">
                 <div className="name-value">device id</div>
                 <div className="value-label">Name</div>

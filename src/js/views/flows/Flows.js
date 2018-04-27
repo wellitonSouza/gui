@@ -16,7 +16,7 @@ function SummaryItem(props) {
     <div className={"card-size card-hover lst-entry-wrapper z-depth-2 fullHeight"}>
           <div className="lst-entry-title col s12">
         <img className="title-icon" src={"images/icons/graph-wt.png"}/>
-              <div className="title-text">
+              <div className="title-text truncate">
                   <span className="text" title={props.flow.name}> {props.flow.name} </span>
               </div>
           </div>
@@ -109,26 +109,26 @@ class ListRender extends Component {
     this.convertFlowList();
 
     let header = null;
-    if (this.props.showSearchBox){
-      header = <div className={"row z-depth-2 flowsSubHeader " + (this.props.showSearchBox ? "show-dy" : "hide-dy")} id="inner-header">
-          <div className="col s3 m3 main-title">
-            Showing {this.filteredList.length} flow(s)
-          </div>
-          <div className="col s1 m1 header-info hide-on-small-only">
-            {/* <div className="title"># Devices</div> */}
-            {/* <div className="subtitle"> */}
-            {/* Showing {this.filteredList.length} device(s) */}
-            {/* </div> */}
-          </div>
-          <div className="col s4 m4">
-            <label htmlFor="fld_flow_name">Flow Name</label>
-            <input id="fld_flow_name" type="text" name="Flow Name" className="form-control form-control-lg" placeholder="Search" value={this.state.filter} onChange={this.filterListByName} />
-          </div>
-        </div>;
-    } else{
-      this.filteredList = this.applyFiltering(this.props.flows);
-      this.clearInputField();
-    }
+    // if (this.props.showSearchBox){
+    //   header = <div className={"row z-depth-2 flowsSubHeader " + (this.props.showSearchBox ? "show-dy" : "hide-dy")} id="inner-header">
+    //       <div className="col s3 m3 main-title">
+    //         Showing {this.filteredList.length} flow(s)
+    //       </div>
+    //       <div className="col s1 m1 header-info hide-on-small-only">
+    //         {/* <div className="title"># Devices</div> */}
+    //         {/* <div className="subtitle"> */}
+    //         {/* Showing {this.filteredList.length} device(s) */}
+    //         {/* </div> */}
+    //       </div>
+    //       <div className="col s4 m4">
+    //         <label htmlFor="fld_flow_name">Flow Name</label>
+    //         <input id="fld_flow_name" type="text" name="Flow Name" className="form-control form-control-lg" placeholder="Search" value={this.state.filter} onChange={this.filterListByName} />
+    //       </div>
+    //     </div>;
+    // } else{
+    //   this.filteredList = this.applyFiltering(this.props.flows);
+    //   this.clearInputField();
+    // }
 
 
     if (this.filteredList.length > 0) {
@@ -287,9 +287,6 @@ class Flows extends Component {
           transitionEnterTimeout={100} transitionLeaveTimeout={100} >
         <NewPageHeader title="data flows" subtitle="" icon="flow">
           <div className="pt10">
-            <div className="searchBtn" title="Show search bar" onClick={this.toggleSearchBar.bind(this)}>
-              <i className="fa fa-search"/>
-            </div>
             <Link to="/flows/new" className="new-btn-flat red waves-effect waves-light " title="Create a new data flow">
               New Flow <i className="fa fa-plus"/>
             </Link>

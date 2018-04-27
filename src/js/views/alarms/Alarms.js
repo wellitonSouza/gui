@@ -6,6 +6,7 @@ import AlarmAction from '../../actions/AlarmsActions'
 import AltContainer from 'alt-container';
 import {AlarmsCurrent} from './AlarmsCurrent';
 import {AlarmsHistory} from './AlarmsHistory';
+import AutheticationFailed from "../../components/AuthenticationFailed";
 
 
 class AlarmsPage extends Component {
@@ -67,20 +68,28 @@ class Alarms extends Component {
     }
 
     render() {
-        return (
-            <ReactCSSTransitionGroup
-                transitionName="first"
-                transitionAppear={true}
-                transitionAppearTimeout={100}
-                transitionEnterTimeout={100}
-                transitionLeaveTimeout={100}>
-                <NewPageHeader title="Alarms" subtitle="Alarms" icon='alarm'>
-                </NewPageHeader>
-                <AltContainer store={AlarmStore}>
-                    <AlarmsPage/>
-                </AltContainer>
-            </ReactCSSTransitionGroup>
-        );
+        if (LoginStore.getState().user.profile === "admin") {
+            return (
+                <ReactCSSTransitionGroup
+                    transitionName="first"
+                    transitionAppear={true}
+                    transitionAppearTimeout={100}
+                    transitionEnterTimeout={100}
+                    transitionLeaveTimeout={100}>
+                    <NewPageHeader title="Alarms" subtitle="Alarms" icon='alarm'>
+                    </NewPageHeader>
+                    <AltContainer store={AlarmStore}>
+                        <AlarmsPage />
+                    </AltContainer>
+                </ReactCSSTransitionGroup>
+            );
+        } else {
+            return (
+                <span id="userMain" className="flex-wrapper">
+                    <AutheticationFailed />
+                </span>
+            );
+        }
     }
 }
 

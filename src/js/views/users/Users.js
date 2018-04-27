@@ -149,6 +149,7 @@ class SideBar extends Component {
                     <div id={'auth-title'} className={'title' + (this.props.edit ? ' hide' : '')}>
                         <span id={'title-text'} className={'title-text'}>New User</span>
                     </div>
+                    <div className="fixed-height">
                     <div id={'auth-icon'} className={'user-icon'}>
                         <img src={'images/generic-user-icon.png'}/>
                     </div>
@@ -190,6 +191,7 @@ class SideBar extends Component {
                             <option value="user" id={'user-option'}>User</option>
                         </MaterialSelect>
                     </div>
+                     </div>
                     <div id={'edit-footer'} className={'action-footer' + (this.props.edit ? '' : ' hide')}>
                         <div id={'auth-save'} className={"material-btn center-text-parent center-middle-flex"}
                              title="Edit Attributes" onClick={this.handleSave}>

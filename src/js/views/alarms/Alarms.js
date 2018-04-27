@@ -6,6 +6,7 @@ import AlarmAction from '../../actions/AlarmsActions'
 import AltContainer from 'alt-container';
 import {AlarmsCurrent} from './AlarmsCurrent';
 import {AlarmsHistory} from './AlarmsHistory';
+import LoginStore from "../../stores/LoginStore";
 import AutheticationFailed from "../../components/AuthenticationFailed";
 
 

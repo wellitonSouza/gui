@@ -5,6 +5,7 @@ var TrackingActions = require('../actions/TrackingActions');
 class DeviceStore {
   constructor() {
     this.devices = {};
+    this.deviceList = [];
     this.tracking = {};
     this.error = null;
     this.loading = false;
@@ -124,6 +125,7 @@ class DeviceStore {
       }
 
       this.devices[devices[idx].id] = JSON.parse(JSON.stringify(devices[idx]))
+      this.deviceList[idx] = this.devices[devices[idx].id]
     }
 
     this.error = null;

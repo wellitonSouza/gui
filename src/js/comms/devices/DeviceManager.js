@@ -6,7 +6,7 @@ class DeviceManager {
   }
 
   getDevices() {
-    return util.GET(this.baseUrl + '/device?page_size=1000');
+    return util.GET(this.baseUrl + '/device?page_size=1000&sortBy=label');
   }
 
   // @TODO probably here isn't a good place to handle stats

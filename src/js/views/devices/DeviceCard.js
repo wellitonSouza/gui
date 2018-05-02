@@ -186,7 +186,7 @@ class DeviceCard extends Component {
             </div>
         </div>);
    } else {
-    this.filteredList = this.applyFiltering(this.props.devices);
+    this.filteredList = this.props.deviceList;
     this.clearInputField();
    }
       return (

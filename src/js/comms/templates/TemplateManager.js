@@ -5,14 +5,13 @@ class TemplateManager {
     this.baseUrl = ""
   }
 
-  getLastTemplates(field)
-  {
+  getLastTemplates(field) {
     return util.GET(this.baseUrl + "/template?limit=10&sortDsc="+field);
   }
 
   // @TO_CHECK are these names below correct?
   getTemplates() {
-    return util.GET(this.baseUrl + '/template');
+    return util.GET(this.baseUrl + '/template?limit=1000&sortBy=label');
   }
 
   getTemplate(id) {

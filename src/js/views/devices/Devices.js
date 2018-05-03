@@ -104,7 +104,7 @@ class Devices extends Component {
 
       device_list_socket.on('error', (data) => {
         console.log("socket error", data);
-        socket.close();
+        device_list_socket.close();
         getWsToken();
       })
     }

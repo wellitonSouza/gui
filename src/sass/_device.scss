@@ -1,3 +1,13 @@
+.margin-top-mi7px
+{
+    margin-top: -7px !important;
+}
+
+.dev_field_filter{
+    position: absolute;
+    top: 5px;
+}
+
 .icon-marker {
   padding: 3px;
   margin: 0 auto;
@@ -730,6 +740,17 @@
   overflow: hidden;
   position: relative;
   z-index: 9991;
+
+  &>div
+  {
+  height: 100%;
+  width: 100%;
+  float: left;
+  overflow: hidden;
+  position: relative;
+  z-index: 9991;
+    
+  }
 }
 
 .h90 {

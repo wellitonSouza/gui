@@ -105,7 +105,10 @@ class DeviceStore {
     this.loading = true;
   }
 
-  handleUpdateDeviceList(devices) {
+  handleUpdateDeviceList(res) {
+    console.log("handleUpdateDeviceList",res);
+    this.pagination = res.pagination;
+    let devices = res.devices;
     this.devices = {};
     for (let idx = 0; idx < devices.length; idx++) {
       //devices[idx]._status = this.parseStatus(devices[idx]);

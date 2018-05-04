@@ -4,6 +4,8 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AltContainer from 'alt-container';
 import Materialize from 'materialize-css';
 
+
+import { Loading } from "../../components/Loading";
 import TemplateStore from '../../stores/TemplateStore';
 import TemplateActions from '../../actions/TemplateActions';
 
@@ -1036,18 +1038,17 @@ class TemplateList extends Component {
     }
 
     render() {
-        this.convertTemplateList();
-
+        
         if (this.props.loading) {
             return (
                 <div className="row full-height relative">
-                    <div className="background-info valign-wrapper full-height">
-                        <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center"/>
-                    </div>
+                    <Loading />
                 </div>
             )
         }
 
+        this.convertTemplateList();
+        
         if (this.filteredList.length > 0) {
             let existsNewDevice = false;
             let newTemplate;
@@ -1131,20 +1132,18 @@ class TemplateOperations {
 }
 
 let opex = new TemplateOperations();
-console.log("opex", opex);
 
 class Templates extends Component {
     
     constructor(props) {
         super(props);
+        this.state = { showFilter: false,
+        has_new_template: false
+        };
         
         this.addTemplate = this.addTemplate.bind(this);
         this.toggleSearchBar = this.toggleSearchBar.bind(this);
         this.enableNewTemplate = this.enableNewTemplate.bind(this);
-        this.state = { showFilter: false,
-            showPagination: false,
-            has_new_template: false
-        };
     }
 
     toggleSearchBar() {
@@ -1183,14 +1182,16 @@ class Templates extends Component {
         this.metaData = { 'alias': 'template' };
     
         return <ReactCSSTransitionGroup transitionName="first" transitionAppear={true} transitionAppearTimeout={100} transitionEnterTimeout={100} transitionLeaveTimeout={100}>
+        <div className={"full-device-area"}>
             <AltContainer store={TemplateStore}>
               <NewPageHeader title="Templates" subtitle="Templates" icon="template">
-                <Pagination showPainel={this.state.showPagination} ops={opex} />
+                <Pagination ops={opex} />
                 <OperationsHeader addTemplate={this.addTemplate} toggleSearchBar={this.toggleSearchBar.bind(this)} />
               </NewPageHeader>
               <Filter showPainel={this.state.showFilter} metaData={this.metaData} ops={opex} fields={FilterFields} />
               <TemplateList enableNewTemplate={this.enableNewTemplate} />
             </AltContainer>
+        </div>
           </ReactCSSTransitionGroup>;
     }
 }
@@ -1209,10 +1210,9 @@ function OperationsHeader(props) {
 }
 
 function FilterFields(props) {
-    return (
-    <div className="col s12 m12">
-      <input id="fld_name" type="text" name="Label" className="form-control form-control-lg" placeholder="Label" value={props.value} onChange={props.onChange} />
-    </div> );
+    return <div className="col s12 m12">
+        <input id="fld_name" type="text" className="form-control form-control-lg" placeholder="Label" name="label" value={props.fields.label} onChange={props.onChange} />
+      </div>;
 }
 
 

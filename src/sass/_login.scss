@@ -218,57 +218,6 @@
   }
 }
 
-.logout-page {
-    padding-top: 25px !important;
-}
-
-@media screen and (max-width: 800px){
-  .logout-page {
-    padding-top: 10% !important;
-  }
-}
-
-.logout-page .logout-page-subtitle {
-  font-size: 130%;
-  font-family: "Raleway", sans-serif;
-  font-weight: bold;
-  color: #fff;
-  padding-left: 17%;
-  margin-bottom: 5%;
-}
-
-.logout-page .logout-page-info {
-  font-size: 150%;
-  font-family: "Raleway", sans-serif;
-  color: #fff;
-  text-align: left;
-  width: $right-sidebar-width - $right-sidebar-margin;
-}
-
-.logout-page .logout-page-label {
-  font-size: 80%;
-  font-family: "Raleway", sans-serif;
-  color: #fff;
-  line-height: 80%;
-  padding-left: 5px;
-}
-
-.logout-page .logout-page-buttons {
-  margin-top: 13%;
-  padding-left: 3%;
-}
-
-.logout-page .logout-page-buttons a {
-  font-size: 100%;
-}
-
-.logout-page .logout-page-photo {
-  padding-left: 35%;
-  margin-bottom: 5%;
-}
-
-
-
 @media only screen and (max-width: 1150px) {
 
   .right-side .slogan

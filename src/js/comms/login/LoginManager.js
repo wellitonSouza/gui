@@ -16,6 +16,10 @@ class LoginManager {
   resetPassword(username){
     return util.POST(this.baseUrl + '/auth/password/reset/' + username);
   }
+
+  updatePassword(data){
+    return util.POST(this.baseUrl + '/auth/password/update/');
+  }
 }
 
 let loginManager = new LoginManager();

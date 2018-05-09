@@ -38,6 +38,20 @@ class LoginActions {
         }
     }
 
+    updatePassword(data){
+        return (dispatch) => {
+            dispatch();
+            loginManager.updatePassword(data)
+                .then((reply) => {
+                    console.log("REPLY: ", reply);
+                    console.log("Password updated");
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        }
+    }
+
     resetPassword(username){
         return (dispatch) => {
             dispatch();

@@ -136,6 +136,129 @@ class RecoveryPasswordModal extends Component {
   }
 }
 
+class ChangePasswordModal extends Component {
+  constructor(props){
+    super(props);
+
+    this.state = {
+      password: "",
+      confirmPassword: "",
+      invalid: {confirm: "", password: ""},     
+    }
+
+    this.dismiss = this.dismiss.bind(this);
+    this.password = this.password.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.validate = this.validate.bind(this);
+  }
+
+  dismiss(){
+    this.props.openChangePasswordModal(false);
+  }
+
+  componentWillMount(){
+    this.setState({username: this.props.username});
+  }
+
+  validate() {
+    let errorMsg = this.state.invalid;
+
+    if (this.state.password.trim().length < 6) {
+        errorMsg.password = "Password must be at least 6 characters";
+        this.setState({invalid: errorMsg});
+        return false;
+    } else {
+        delete errorMsg.password;
+        this.setState({invalid: errorMsg});
+    }
+    if (this.state.confirmPassword !== this.state.password) {
+        errorMsg.confirm = "Password mismatch";
+        this.setState({invalid: errorMsg});
+        return false;
+    } else {
+        delete errorMsg.confirm;
+        this.setState({invalid: errorMsg});
+    }
+    return true;
+  }
+
+  password(e) {
+    e.preventDefault();
+    let errorMsg = this.state.invalid
+
+    if (this.validate()){
+        let password = {"passwd": this.state.password, "token": this.state.token};
+        //LoginActions.setPassword(password); It's not LoginActions.setPassword
+        LoginActions.updatePassword(this.state.password);
+        this.dismiss();
+    } else {
+      errorMsg.confirm = "Password mismatch";
+      this.setState({invalid: errorMsg});
+    }
+  }
+
+  handleChange(event) {
+    const target = event.target;
+    let state = this.state;
+    state[target.name] = target.value;
+    this.setState(state);
+    this.validate();
+  }
+
+  render(){
+    const state = this.state;
+    
+    function getClass(field) {
+      if (state.invalid.hasOwnProperty(field)) {
+          return "react-validate invalid";
+      } else {
+          return "react-validate";
+      }
+    }
+    return(
+      <div className="row">
+        <div className="confirm-password-modal">
+          <div className="row">
+            <div className="confirm-password-title">[&nbsp;&nbsp;Change Password&nbsp;&nbsp;]</div>
+          </div>
+          <form onSubmit={this.password}>
+            <div className="row">
+              <div className="confirm-password-body"> 
+                <div className="input-field col s12 m12">
+                  <input id="fld_newPassword" type="password"
+                          name="password" className={getClass('password')}
+                          onChange={this.handleChange}
+                          minLength={6}
+                          value={this.state.password}/>
+                  <label htmlFor="fld_newPassword" data-success=""
+                          data-error={this.state.invalid.password}>Password</label>
+                </div>
+                <div className="input-field col s12 m12"> 
+                  <input id="fld_confirmPassword" type="password"
+                            name="confirmPassword" className={getClass('confirm')}
+                            onChange={this.handleChange}
+                            minLength={6}
+                            value={this.state.confirm}/>
+                  <label htmlFor="fld_confirmPassword" data-success=""
+                            data-error={this.state.invalid.confirm}>Confirm your password</label>                 
+                </div>
+              </div>              
+            </div>
+            <div className="row">
+              <div className="col s12 m1 offset-m7">
+                <button type="submit" className="waves-effect waves-dark red btn-flat" >
+                  Save
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div className="rightsidebar" onClick={this.dismiss}></div>
+      </div>
+    )
+  }
+}
+
 class GenericModal extends Component {
   constructor(props) {
     super(props);
@@ -183,4 +306,4 @@ class GenericModal extends Component {
   }
 }
 
-export { GenericModal, RemoveModal, RecoveryPasswordModal };
+export { GenericModal, RemoveModal, RecoveryPasswordModal, ChangePasswordModal };

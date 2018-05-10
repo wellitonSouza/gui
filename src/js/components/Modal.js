@@ -163,23 +163,23 @@ class ChangePasswordModal extends Component {
   }
 
   validate() {
-    let errorMsg = this.state.invalid;
+    let errorMessage = this.state.invalid;
 
     if (this.state.password.trim().length < 6) {
-        errorMsg.password = "Password must be at least 6 characters";
-        this.setState({invalid: errorMsg});
+        errorMessage.password = "Password must be at least 6 characters";
+        this.setState({invalid: errorMessage});
         return false;
     } else {
-        delete errorMsg.password;
-        this.setState({invalid: errorMsg});
+        delete errorMessage.password;
+        this.setState({invalid: errorMessage});
     }
     if (this.state.confirmPassword !== this.state.password) {
-        errorMsg.confirm = "Password mismatch";
-        this.setState({invalid: errorMsg});
+        errorMessage.confirm = "Password mismatch";
+        this.setState({invalid: errorMessage});
         return false;
     } else {
-        delete errorMsg.confirm;
-        this.setState({invalid: errorMsg});
+        delete errorMessage.confirm;
+        this.setState({invalid: errorMessage});
     }
     return true;
   }
@@ -200,9 +200,9 @@ class ChangePasswordModal extends Component {
   }
 
   handleChange(event) {
-    const target = event.target;
+    const inputValue = event.target;
     let state = this.state;
-    state[target.name] = target.value;
+    state[inputValue.name] = inputValue.value;
     this.setState(state);
     this.validate();
   }

@@ -201,9 +201,9 @@ class ChangePasswordModal extends Component {
 
   handleChange(event) {
     const inputValue = event.target;
-    let state = this.state;
-    state[inputValue.name] = inputValue.value;
-    this.setState(state);
+    let stateValue = this.state;
+    stateValue[inputValue.name] = inputValue.value;
+    this.setState(stateValue);
     this.validate();
   }
 

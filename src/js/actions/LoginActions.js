@@ -42,12 +42,11 @@ class LoginActions {
         return (dispatch) => {
             dispatch();
             loginManager.updatePassword(data)
-                .then((reply) => {
-                    console.log("REPLY: ", reply);
-                    console.log("Password updated");
+                .then(() => {
+                    Materialize.toast('Password updated', 4000);
                 })
                 .catch((error) => {
-                    console.log(error);
+                    Materialize.toast(error, 4000);
                 })
         }
     }

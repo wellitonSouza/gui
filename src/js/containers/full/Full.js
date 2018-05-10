@@ -105,8 +105,6 @@ class RightSideBar extends Component {
   }
 
   render() {
-    console.log("this,props",this.props);
-
     if (this.props.user == undefined) {
       console.error('no active user session');
       return null;
@@ -152,11 +150,11 @@ class RightSideBar extends Component {
           
           <div className="logout-page-buttons">
             {/* <a className="waves-effect waves-light btn-flat btn-ciano" onClick={this.dismiss}>dismiss</a> */}
-            <div className="btn-logout" onClick={this.logout}>logout</div>
+            <div className="btn-logout" onClick={this.logout}>Logout</div>
           </div>
         </div>
         {this.state.open_change_password_modal ? (
-          <ChangePasswordModal openChangePasswordModal={this.openChangePasswordModal} username={this.props.user.username} />
+          <ChangePasswordModal openChangePasswordModal={this.openChangePasswordModal} toggleSidebar={this.props.toggleSidebar}/>
         ):(
           <div></div>
         )}
@@ -319,7 +317,6 @@ class Full extends Component {
 
   toggleUserSidebar()
   {
-    console.log("toggleUserSidebar");
     this.setState({ user_sidebar: !this.state.user_sidebar});
   }
 

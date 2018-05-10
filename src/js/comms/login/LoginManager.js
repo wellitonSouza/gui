@@ -18,7 +18,7 @@ class LoginManager {
   }
 
   updatePassword(data){
-    return util.POST(this.baseUrl + '/auth/password/update/');
+    return util.POST(this.baseUrl + '/auth/password/update/', data);
   }
 }
 

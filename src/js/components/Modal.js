@@ -143,6 +143,7 @@ class ChangePasswordModal extends Component {
     this.state = {
       password: "",
       confirmPassword: "",
+      oldPassword: "",
       invalid: {confirm: "", password: ""},     
     }
 
@@ -154,6 +155,7 @@ class ChangePasswordModal extends Component {
 
   dismiss(){
     this.props.openChangePasswordModal(false);
+    this.props.toggleSidebar();
   }
 
   componentWillMount(){
@@ -188,8 +190,8 @@ class ChangePasswordModal extends Component {
 
     if (this.validate()){
         let password = {"passwd": this.state.password, "token": this.state.token};
-        //LoginActions.setPassword(password); It's not LoginActions.setPassword
-        LoginActions.updatePassword(this.state.password);
+        let passwordData = {"oldpasswd":this.state.oldPassword, "newpasswd": this.state.password};
+        LoginActions.updatePassword(passwordData);
         this.dismiss();
     } else {
       errorMsg.confirm = "Password mismatch";
@@ -224,6 +226,14 @@ class ChangePasswordModal extends Component {
           <form onSubmit={this.password}>
             <div className="row">
               <div className="confirm-password-body"> 
+                <div className="input-field col s12 m12">
+                  <input id="fld_oldPassword" type="password"
+                          name="oldPassword"
+                          onChange={this.handleChange}
+                          value={this.state.oldPassword} />
+                  <label htmlFor="fld_oldPassword" data-success=""
+                          data-error={this.state.invalid.password}>Old password</label>                          
+                </div>
                 <div className="input-field col s12 m12">
                   <input id="fld_newPassword" type="password"
                           name="password" className={getClass('password')}

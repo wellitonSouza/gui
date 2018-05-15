@@ -472,7 +472,7 @@ class NewAttribute extends Component {
                         </div>
 
                         <div className={"attr-content "}>
-                            <input type="text" value={this.state.newAttr.label} maxLength="22" onChange={this.handleChange}
+                            <input type="text" value={this.state.newAttr.label} maxLength="25" onChange={this.handleChange}
                                    name={"label"}/>
                             <span>Name</span>
                         </div>
@@ -500,7 +500,7 @@ class NewAttribute extends Component {
                         <div className="icon"/>
                         <div className={"attr-content"}>
                             <input className={(this.state.newAttr.value_type === "protocol" ? 'none' : '')} type="text"
-                                   value={this.state.newAttr.value} maxLength="22" onChange={this.handleChange}
+                                   value={this.state.newAttr.value} maxLength="25" onChange={this.handleChange}
                                    name={"value"}/>
 
                             <select id="select_attribute_type"

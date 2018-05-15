@@ -287,7 +287,7 @@ class ImageCard extends Component {
               {/* <i className="fa fa-hdd" /> */}
             </div>
             <div className={"attr-content"}>
-              <label>{this.props.image.fw_version}</label>
+              <label className="truncate" title={this.props.image.fw_version}>{this.props.image.fw_version}</label>
               <span>Firmware Version</span>
             </div>
           </div>

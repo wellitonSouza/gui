@@ -106,6 +106,7 @@ class PositionRenderer extends Component {
     }
 
     render() {
+        console.log("PropsPositionRenderer: ", this.props);
         function getPin(device) {
             if (device.hasOwnProperty('unique_key')) {
                 return trackingPin;
@@ -183,7 +184,7 @@ class PositionRenderer extends Component {
                             <Tooltip>
                                 <span>{k.name} : {k.timestamp}</span>
                             </Tooltip>
-                            {listLatLngs[k.id] && k.tracking ? (
+                            {listLatLngs[k.id] && k.tracking && this.props.showPolyline ? (
                                 <Polyline positions={listLatLngs[k.id]} color='#7fb2f9' dashArray='10,10'
                                           repeatMode={false}/>
                             ) : null}
@@ -422,7 +423,7 @@ class DeviceMap extends Component {
                     </Script>
                     {this.state.mapquest ? (
                         <PositionRenderer devices={pointList} toggleTracking={this.toggleTracking}
-                                          allowContextMenu={true} listPositions={this.props.tracking}/>
+                                          allowContextMenu={true} listPositions={this.props.tracking} showPolyline={true}/>
                     ) : (
                         <div className="row full-height relative">
                             <div className="background-info valign-wrapper full-height">

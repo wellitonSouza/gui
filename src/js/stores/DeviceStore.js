@@ -67,7 +67,7 @@ class DeviceStore {
   }
 
   handleUpdateStatus(device) {
-   if (device.metadata.status != undefined) {
+   if ((device.metadata.status != undefined) && (this.devices[device.metadata.deviceid])) {
     this.devices[device.metadata.deviceid].status = device.metadata.status;
    }
   }

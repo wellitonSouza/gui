@@ -38,6 +38,19 @@ class LoginActions {
         }
     }
 
+    updatePassword(data){
+        return (dispatch) => {
+            dispatch();
+            loginManager.updatePassword(data)
+                .then(() => {
+                    Materialize.toast('Password updated', 4000);
+                })
+                .catch((error) => {
+                    Materialize.toast(error, 4000);
+                })
+        }
+    }
+
     resetPassword(username){
         return (dispatch) => {
             dispatch();

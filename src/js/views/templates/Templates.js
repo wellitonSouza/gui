@@ -88,7 +88,7 @@ class ImageModal extends Component {
                     <div className="col s12 pl40">
                         <div className="icon-firmware"/>
 
-                        <label className="title">{this.props.template.label}</label>
+                        <label className="title truncate" title={this.props.template.label}>{this.props.template.label}</label>
                         <label className="subtitle">Firmware Management</label>
                     </div>
                     </div>

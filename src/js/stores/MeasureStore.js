@@ -75,7 +75,8 @@ class MeasureStore {
                                         "position": parserPosition(measureData.attrs[label]),
                                         "timestamp": util.iso_to_date(now)
                                     };
-                                    this.tracking[measureData.metadata.deviceid] = this.tracking[measureData.metadata.deviceid].concat(trackingStructure);
+                                    console.log(this.tracking);
+                                    this.tracking[measureData.metadata.deviceid].unshift(trackingStructure);
                                 }
                             } else {
                                 // attr is not geo

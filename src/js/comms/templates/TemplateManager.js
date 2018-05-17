@@ -5,8 +5,7 @@ class TemplateManager {
     this.baseUrl = ""
   }
 
-  getLastTemplates(field)
-  {
+  getLastTemplates(field) {
     return util.GET(this.baseUrl + "/template?limit=10&sortDsc="+field);
   }
   

@@ -179,9 +179,11 @@ class AttributeList extends Component {
            this.setState({fieldSizeDyAttrStatus: true});
         }
 
-        console.log(this.props.attributes.static_value, ": ", this.props.attributes.static_value.length);
-        if(this.props.attributes.static_value.length > 18){
-            this.setState({fieldSizeStaticAttrStatus: true});
+        if (this.props.attributes.hasOwnProperty('static_value')) {
+            console.log(this.props.attributes.static_value, ": ", this.props.attributes.static_value.length);
+            if(this.props.attributes.static_value.length > 18){
+                this.setState({fieldSizeStaticAttrStatus: true});
+            }
         }
     }
 
@@ -200,6 +202,7 @@ class AttributeList extends Component {
     }
 
     render() {
+        const staticValue = this.props.attributes.static_value || "";
         return (
             <div className={"attr-area " + (this.state.isSuppressed ? 'suppressed' : '')}>
                 <div className="attr-row">
@@ -240,8 +243,8 @@ class AttributeList extends Component {
                 <div className="attr-row">
                     <div className="icon"/>
                     <div className={"attr-content"}>
-                        <input className={this.state.fieldSizeStaticAttrStatus ? "truncate": ""} type="text" value={this.props.attributes.static_value} disabled={!this.props.editable}
-                               name={"static_value"} onChange={this.handleChange} maxLength="25" title={this.props.attributes.static_value}/>
+                        <input className={this.state.fieldSizeStaticAttrStatus ? "truncate": ""} type="text" value={staticValue} disabled={!this.props.editable}
+                               name={"static_value"} onChange={this.handleChange} maxLength="25" title={staticValue}/>
                         <select id="select_attribute_type" className="card-select mini-card-select"
                                 name={"type"}
                                 value={this.props.attributes.type}
@@ -277,8 +280,10 @@ class ConfigList extends Component {
     }
 
     componentWillMount(){
-        if(this.props.attributes.static_value.length > 18){
-            this.setState({configFieldSizeStatus: true});
+        if (this.props.attributes.hasOwnProperty('static_value')) {
+            if(this.props.attributes.static_value.length > 18){
+                this.setState({configFieldSizeStatus: true});
+            }
         }
     }
 
@@ -298,8 +303,11 @@ class ConfigList extends Component {
 
     render() {
         // console.log("this.props.attributes", this.props.attributes);
-        if (this.props.attributes.type == "fw_version")
-        return null;
+        if (this.props.attributes.type == "fw_version"){
+            return null;
+        }
+
+        const staticValue = this.props.attributes.static_value || '';
 
         return (
             <div className={"attr-area " + (this.state.isSuppressed ? 'suppressed' : '')}>
@@ -328,12 +336,12 @@ class ConfigList extends Component {
                     <div className="icon"/>
                     <div className={"attr-content"}>
                         <input className={(this.props.attributes.label === "protocol" ? 'none' : '') || (this.state.configFieldSizeStatus ? "truncate": "")}type="text"
-                               name={"static_value"} value={this.props.attributes.static_value}
-                               disabled={!this.props.editable} onChange={this.handleChange} title={this.props.attributes.static_value} maxLength="25"/>
+                               name={"static_value"} value={staticValue}
+                               disabled={!this.props.editable} onChange={this.handleChange} title={staticValue} maxLength="25"/>
                         <select id="select_attribute_type"
                                 className={(this.props.attributes.label === "protocol" ? '' : 'none') + " card-select"}
                                 name={"static_value"}
-                                value={this.props.attributes.static_value}
+                                value={staticValue}
                                 disabled={!this.props.editable}
                                 onChange={this.handleChange}>
                             <option value="">Select type</option>
@@ -1185,7 +1193,7 @@ class Templates extends Component {
         <div className={"full-device-area"}>
             <AltContainer store={TemplateStore}>
               <NewPageHeader title="Templates" subtitle="Templates" icon="template">
-                <Pagination ops={opex} />
+                <Pagination show_pagination={true} ops={opex} />
                 <OperationsHeader addTemplate={this.addTemplate} toggleSearchBar={this.toggleSearchBar.bind(this)} />
               </NewPageHeader>
               <Filter showPainel={this.state.showFilter} metaData={this.metaData} ops={opex} fields={FilterFields} />

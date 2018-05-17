@@ -137,7 +137,7 @@ function HistoryList(props) {
           <div className="full-height full-width history-list">
             {trimmedList.map((i,k) => {
               return (<div className={"history-row " + (k % 2 ? "alt-row" : "")} key={i.ts}>
-                <div className="value">{i.value}</div>
+                <div className="value">{i.value.toString()}</div>
                 <div className="label">{util.iso_to_date(i.ts)}</div>
               </div>
             )})}

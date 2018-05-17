@@ -149,6 +149,7 @@ class SideBar extends Component {
                     <div id={'auth-title'} className={'title' + (this.props.edit ? ' hide' : '')}>
                         <span id={'title-text'} className={'title-text'}>New User</span>
                     </div>
+                    <div className="fixed-height">
                     <div id={'auth-icon'} className={'user-icon'}>
                         <img src={'images/generic-user-icon.png'}/>
                     </div>
@@ -190,17 +191,18 @@ class SideBar extends Component {
                             <option value="user" id={'user-option'}>User</option>
                         </MaterialSelect>
                     </div>
+                     </div>
                     <div id={'edit-footer'} className={'action-footer' + (this.props.edit ? '' : ' hide')}>
                         <div id={'auth-save'} className={"material-btn center-text-parent center-middle-flex"}
-                             title="Edit Attributes" onClick={this.handleSave}>
+                             title="Save Changes" onClick={this.handleSave}>
                             <span className="text center-text-child">save</span>
                         </div>
                         <div id={'auth-cancel'} className={"material-btn center-text-parent center-middle-flex"}
-                             title="Edit Attributes" onClick={this.hideSideBar}>
+                             title="Discard Changes" onClick={this.hideSideBar}>
                             <span className="text center-text-child">cancel</span>
                         </div>
                         <div id={'auth-delete'} className={"material-btn center-text-parent center-middle-flex"}
-                             title="Edit Attributes" onClick={this.handleDelete}>
+                             title="Delete User" onClick={this.handleDelete}>
                             <span className="text center-text-child">delete</span>
                         </div>
                     </div>
@@ -234,7 +236,7 @@ function SummaryItem(props) {
         <div className={"card-size card-hover lst-entry-wrapper z-depth-2 fullHeight"}>
             <div className="lst-entry-title col s12">
                 <img className="title-icon" src={"images/generic-user-icon.png"}/>
-                <div className="title-text" title={props.user.name}>
+                <div className="title-text truncate" title={props.user.name}>
                     <span className="text"> {props.user.name} </span>
                 </div>
             </div>
@@ -503,7 +505,7 @@ class Users extends Component {
                 <span id="userMain">
                     <NewPageHeader title="Auth" subtitle="Users" icon='user'>
                     <div className={'pt10'}>
-                            <SimpleFilter onChange={this.filterChange}/>
+                        {/*<Filter onChange={this.filterChange}/>*/}
                         <div onClick={this.newUser} className="new-btn-flat red waves-effect waves-light"
                              title="Create a new user">
                             New User<i className="fa fa-plus"/>

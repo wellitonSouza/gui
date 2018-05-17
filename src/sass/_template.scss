@@ -82,7 +82,8 @@
 }
 
 .template-title-text{
-  padding-top: 10px !important;
+  position: relative;
+  bottom: 10px;
   font-size: 1em !important;
   border-bottom: none !important;
 }
@@ -97,6 +98,6 @@
 
 .bg-gradient-green
 {
-    background: linear-gradient(to right, #28807E, #16A085);    
+    background: linear-gradient(to right, #28807E, #16A085);
     // background: linear-gradient(90.48deg, #28807E 3.7%, #54A7D6 92.73%);
 }

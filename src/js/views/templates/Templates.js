@@ -1193,7 +1193,7 @@ class Templates extends Component {
         <div className={"full-device-area"}>
             <AltContainer store={TemplateStore}>
               <NewPageHeader title="Templates" subtitle="Templates" icon="template">
-                <Pagination ops={opex} />
+                <Pagination show_pagination={true} ops={opex} />
                 <OperationsHeader addTemplate={this.addTemplate} toggleSearchBar={this.toggleSearchBar.bind(this)} />
               </NewPageHeader>
               <Filter showPainel={this.state.showFilter} metaData={this.metaData} ops={opex} fields={FilterFields} />

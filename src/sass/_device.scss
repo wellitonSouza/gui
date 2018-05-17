@@ -490,7 +490,7 @@
 
 .device-painel-body {
   overflow: auto;
-  height: calc(100% - 35px);
+  height: 100%;
 }
 .list-of-devices {
   float: left;
@@ -523,7 +523,8 @@
     width: 100%;
     float: left;
     font-weight: bold;
-
+    padding-bottom: 10px; 
+    
     .title {
       font-family: "Roboto", sans-serif;
       color: #a2a2a2;
@@ -532,6 +533,8 @@
     .subtitle {
       font-family: "Roboto", sans-serif;
       color: #a2a2a2;
+      font-weight: 400;
+      font-size: 13px;
     }
 
     .device-list-actions {
@@ -555,6 +558,7 @@
 
   .deviceCanvas {
     width: 100% !important;
+    height: calc(100% - 40px) !important;
 
     .background-info {
       float: left;
@@ -574,11 +578,26 @@
     .row {
       margin: 0;
       .lst-entry-title {
-        padding: 0 10px;
+        // padding: 0 10px;
+        padding-top: 10px;
+        padding-left: 20px;
         height: 60px;
-        transition: linear 100ms;
+        transition: all linear 200ms;
         border-bottom: 1px solid #e2e2e2;
-        cursor: pointer;
+        // cursor: pointer;
+
+        /*
+        .operations{
+            padding: 12px 70px 12px 40px;
+            cursor: default;
+            color: #2c3e50;
+            text-transform: uppercase;
+            font-weight: 500;
+            font-family: Ubuntu, sans-serif;
+            font-size: 11px;
+        }
+        */
+        
         .img {
           width: 58px;
           padding: 10px;
@@ -587,13 +606,13 @@
             width: 100%;
           }
         }
+
         .waves-effect {
           overflow: visible !important;
           width: 90%;
         }
         &:hover {
           background-color: rgba(0, 0, 0, 0.1);
-          transition: linear 100ms;
         }
         .user-label {
           text-transform: uppercase;

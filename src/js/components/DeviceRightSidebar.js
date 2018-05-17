@@ -2,34 +2,37 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import ReactResizeDetector from 'react-resize-detector';
+import { Link } from 'react-router'
 
 class ListItem extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state = {
-      selectedDevice: null,
-    }
-    this.selectedDevice = this.selectedDevice.bind(this);
+    this.toggleDevice = this.toggleDevice.bind(this);
   }
 
-  selectedDevice(event){
-    this.props.selectedDevice(this.props.devices.id)
+  toggleDevice() {
+    this.props.toggleVisibility(this.props.device.id);
   }
 
-  render(){
-    const name = this.props.devices.label;
-    const protocol = this.props.devices.protocol;
+  render() {
+    const name = this.props.device.label;
+    const protocol = this.props.device.protocol;
 
-    return(
-      <div className="lst-entry-title col s12" id={this.props.devices.id} title="See details" onClick={this.selectedDevice}>
-        <div className="img col s3" id="img-chip">
-          <img src="images/chip.png" />
+    return <div className="lst-entry-title col s12">
+        <div className="user-label truncate col s7">{name}</div>
+        <div className="col s5 options">
+          {this.props.is_showing ? <div className="searchBtn operations" onClick={this.toggleDevice} title="Hide Device">
+              <i className="fa fa-eye" />
+            </div> : <div className="searchBtn operations" onClick={this.toggleDevice} title="Show Device">
+              <i className="fa fa-eye-slash" />
+            </div>}
+            <Link to={"/device/id/" + this.props.device.id + "/detail"} title="View details">
+          <div className="searchBtn operations" title="View device information">
+              <i className="fa fa-info-circle" />
+          </div>
+            </Link>
         </div>
-        <div className="user-label truncate col s6">{name}</div>
-        <div className="col s3 img" id="device-view">
-        </div>
-      </div>
-    )
+      </div>;
   }
 }
 
@@ -37,40 +40,33 @@ class ListItem extends Component {
 class ListRender extends Component {
   constructor(props){
     super(props);
-
-    this.applyFiltering = this.applyFiltering.bind(this);
+    // this.applyFiltering = this.applyFiltering.bind(this);
   }
 
-  applyFiltering(devices) {
-    let list = [];
-    for (let k in devices) {
-      list.push(devices[k]);
-    }
-
-    // TODO ordering should be defined by the user
-    list.sort((a,b) => {
-      if (a.updated > b.updated) {
-        return 1;
-      } else {
-        return -1;
-      }
-    })
-
-    return list;
-  }
+  // applyFiltering(devices) {
+  //   let list = [];
+  //   for (let k in devices) {
+  //     list.push(devices[k]);
+  //   }
+  //   return list;
+  // }
 
   render(){
 
-    const deviceList = this.applyFiltering(this.props.devices);
+    // const deviceList = this.applyFiltering(this.props.devices);
+    const deviceList = this.props.devices;
 
     if (deviceList.length > 0) {
-      return (
-        <div className="row">
-        { deviceList.map((device, idx) =>
-        <ListItem devices={device} key={device.id} selectedDevice={this.props.selectedDevice}/>
-      )}
-        </div>
-      )
+      return <div className="row">
+          {deviceList.map((device, idx) => (
+            <ListItem
+              toggleVisibility={this.props.toggleVisibility}
+              device={device}
+              is_showing={this.props.displayMap[device.id]}
+              key={device.id}
+            />
+          ))}
+        </div>;
     } else {
       return  (
         <div className="background-info valign-wrapper full-height">
@@ -85,9 +81,6 @@ class ListRender extends Component {
 class List extends Component {
   constructor(props){
     super(props);
-    this.state = {
-      selectedDevice: false
-    };
     this.hideDevices = this.hideDevices.bind(this);
     this.showDevices = this.showDevices.bind(this);
   }
@@ -102,29 +95,29 @@ class List extends Component {
 
   render(){
 
-    return(
-      <div className="list-of-devices">
+    return <div className="list-of-devices">
         <div className="row device-list">
-          <div className="col s12 main-title center-align">Devices</div>
-            <div className="col s12 info-header">
-              <div className="col s1 subtitle"></div>
-              <div className="col s5 title">Devices</div>
-              <div className="col s6 device-list-actions">
-                <div className="col s6 action-hide">
-                  <a className="waves-effect waves-light" onClick={this.hideDevices}>HIDE ALL</a>
-                </div>
-                <div className="col s6 action-show">
-                  <a className="waves-effect waves-light" onClick={this.showDevices}>SHOW ALL</a>
-                </div>
+          <div className="col s12 info-header">
+            <div className="col s1 " />
+            <div className="col s5 subtitle">DEVICES</div>
+            <div className="col s6 device-list-actions">
+              <div className="col s6 action-hide">
+                <a className="waves-effect waves-light" onClick={this.hideDevices}>
+                  HIDE ALL
+                </a>
+              </div>
+              <div className="col s6 action-show">
+                <a className="waves-effect waves-light" onClick={this.showDevices}>
+                  SHOW ALL
+                </a>
               </div>
             </div>
-            <div className="deviceCanvas">
-              <ListRender devices={this.props.devices} selectedDevice={this.props.selectedDevice}/>
-            </div>
+          </div>
+          <div className="deviceCanvas">
+          <ListRender toggleVisibility={this.props.toggleVisibility} devices={this.props.devices} displayMap={this.props.displayMap} />
+          </div>
         </div>
-      </div>
-
-    )
+      </div>;
   }
 }
 
@@ -147,25 +140,18 @@ class Sidebar extends Component {
   render(){
     const btnSideBarClass = "fa fa-chevron-" + (this.state.sideBarOpened ? "right" : "left");
 
-    return(
-      <div className="col m12">
-        <div className={"col m12 div-btn-side-painel " + (this.state.sideBarOpened ? 'push-left' : 'no-left')} >
-          <button type="button" className='btn btn-circle sideBarToggle' onClick={this.toggleSideBar}>
-            <i className={btnSideBarClass} aria-hidden="true"></i>
+    return <div className="col m12">
+        <div className={"col m12 div-btn-side-painel " + (this.state.sideBarOpened ? "push-left" : "no-left")}>
+          <button type="button" className="btn btn-circle sideBarToggle" onClick={this.toggleSideBar}>
+            <i className={btnSideBarClass} aria-hidden="true" />
           </button>
         </div>
-        { this.state.sideBarOpened ? (
-          <div className="col device-painel full-height">
+        {this.state.sideBarOpened ? <div className="col device-painel full-height">
             <div className="col device-painel-body relative">
-              <List devices={this.props.devices} hideAll={this.props.hideAll} showAll={this.props.showAll}
-                            selectedDevice={this.props.selectedDevice}/>
+               <List toggleVisibility={this.props.toggleVisibility} devices={this.props.devices} hideAll={this.props.hideAll} showAll={this.props.showAll} displayMap={this.props.displayMap}  />
             </div>
-          </div>
-        ) : (
-          null
-        )}
-      </div>
-    )
+          </div> : null}
+      </div>;
   }
 }
 

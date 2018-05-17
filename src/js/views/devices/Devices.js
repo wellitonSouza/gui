@@ -84,7 +84,7 @@ class DeviceOperations {
 
   setFilterToMap() {
     this.paginationParams = {
-      page_size: 50,
+      page_size: 100,
       page_num: 1
     };
     this.filterParams = {};
@@ -203,10 +203,12 @@ class Devices extends Component {
                 setState={this.setDisplay}
             />
         );
+
+        let show_pagination = this.state.displayList; 
         return <div className="full-device-area">
             <AltContainer store={DeviceStore}>
               <NewPageHeader title="Devices" subtitle="" icon="device">
-                <Pagination ops={this.dev_opex} />
+              <Pagination show_pagination={show_pagination} ops={this.dev_opex} />
                 <OperationsHeader displayToggle={displayToggle} toggleSearchBar={this.toggleSearchBar.bind(this)} />
               </NewPageHeader>
               {this.state.displayList ? <DeviceCardList deviceid={detail} toggle={displayToggle} dev_opex={this.dev_opex} showFilter={this.state.showFilter} /> : 

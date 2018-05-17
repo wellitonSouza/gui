@@ -128,11 +128,9 @@ class DevFilterFields extends Component {
     let items = [];
     items.push(<option key="select_template" value="">Select Template</option>);
     for (let i = 0; i < this.templates.length; i++) {
-      items.push(
-        <option key={this.templates[i].id} value={this.templates[i].id}>
+      items.push(<option key={this.templates[i].id} value={this.templates[i].id}>
           {this.templates[i].label}
-        </option>
-      );
+        </option>);
     }
     return items;
   }
@@ -157,7 +155,7 @@ class DevFilterFields extends Component {
         <div className="col s1 m1" />
 
         <div className="col s6 m6">
-          <div className="dev_field_filter">
+          <div className="col s12">
             <MaterialSelect id="flr_templates" name="templates" label="Templates" value={this.props.fields.templates} onChange={this.props.onChange}>
               {this.opts}
             </MaterialSelect>

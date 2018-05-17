@@ -18,8 +18,9 @@ class Pagination extends Component {
   render() {
     // console.info("Rendering Filter");
     // console.info("Props and States ",this.props,this.state);
-    if (!this.props.pagination)
-      return <div className='col s7 p0'></div>;
+    console.log("rend Pagination: pagination", this.props);
+    if (!this.props.pagination || !this.props.show_pagination)
+       return <div className="col s7 p0" />;
 
     let pageCount = this.props.pagination.total;
     let currentPage = this.props.pagination.page - 1; 

@@ -1206,7 +1206,7 @@ class Templates extends Component {
 
 function OperationsHeader(props) {
     return (
-        <div className="col s5 pull-right pt10">
+        <div className="col s6 pull-right pt10">
             <div className="searchBtn" title="Show search bar" onClick={props.toggleSearchBar}>
                 <i className="fa fa-search" />
             </div>

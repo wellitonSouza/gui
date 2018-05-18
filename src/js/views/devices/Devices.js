@@ -208,7 +208,7 @@ class Devices extends Component {
         return <div className="full-device-area">
             <AltContainer store={DeviceStore}>
               <NewPageHeader title="Devices" subtitle="" icon="device">
-              <Pagination show_pagination={show_pagination} ops={this.dev_opex} />
+                <Pagination show_pagination={show_pagination} ops={this.dev_opex} />
                 <OperationsHeader displayToggle={displayToggle} toggleSearchBar={this.toggleSearchBar.bind(this)} />
               </NewPageHeader>
               {this.state.displayList ? <DeviceCardList deviceid={detail} toggle={displayToggle} dev_opex={this.dev_opex} showFilter={this.state.showFilter} /> : 
@@ -220,7 +220,7 @@ class Devices extends Component {
 
 function OperationsHeader(props) {
   return (
-    <div className="col s5 pull-right pt10">
+    <div className="col s6 pull-right pt10">
       <div
         className="searchBtn"
         title="Show search bar"
@@ -233,6 +233,7 @@ function OperationsHeader(props) {
         label="New Device"
         alt="Create a new device"
         icon="fa fa-plus"
+        className="w130px"
       />
     </div>
   )

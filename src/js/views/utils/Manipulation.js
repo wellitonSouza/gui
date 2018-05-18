@@ -20,13 +20,13 @@ class Pagination extends Component {
     // console.info("Props and States ",this.props,this.state);
     console.log("rend Pagination: pagination", this.props);
     if (!this.props.pagination || !this.props.show_pagination)
-       return <div className="col s7 p0" />;
+       return <div className="col s6 p0" />;
 
     let pageCount = this.props.pagination.total;
     let currentPage = this.props.pagination.page - 1; 
 
     return (
-      <div className='col s7 p0'>
+      <div className='col s6 p0'>
         <ReactPaginate previousLabel={"previous"}
           nextLabel={"next"}
           pageCount={pageCount}

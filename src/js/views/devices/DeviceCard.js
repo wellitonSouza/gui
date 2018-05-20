@@ -12,7 +12,7 @@ import MaterialInput from "../../components/MaterialInput";
 import Materialize from "materialize-css";
 import MaterialSelect from "../../components/MaterialSelect";
 
-import { Filter, Pagination } from '../utils/Manipulation';
+import { Filter, Pagination } from "../utils/Manipulation";
 
 function SummaryItem(props) {
 
@@ -94,7 +94,7 @@ class DeviceCardList extends Component {
         <Filter showPainel={this.props.showFilter} metaData={this.metaData} ops={this.props.dev_opex} fields={DevFilterFields} />
         {this.filteredList.length === 0 ? <div className="background-info valign-wrapper full-height">
             <span className="horizontal-center mt30">
-              No configured devices
+              No devices to be shown
             </span>
           </div> : <div className="col s12  lst-wrapper extra-padding">
             {this.filteredList.map(device => (

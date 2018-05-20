@@ -9,18 +9,34 @@
   float: left;
   width: 100%;
 
-  .page-actions
+  .second-bar
   {
-    top: 50px;
+    padding: 0 .75rem;
+    display: block;
+    height: 62px;
+    z-index: 9992;
+    margin-top: -62px;
     position: fixed;
     z-index: 9992;
-    right: 0;
-    overflow: auto;
-    width: 800px;
-    height: 65px;
-    padding-right: 25px;
-    text-align: right;
+    width: calc(100% - 300px);
+    padding-left: 110px;
     overflow: hidden;
+  }
+ 
+  .page-actions
+  {
+
+    .filter-information{
+      line-height: 23px;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      margin-top: 20px;
+      color: #eb5757;
+      font-family: "Raleway", sans-serif;
+      padding-left: 4em;
+      font-weight: 600;
+      margin-left: -35px;
+    }
 
     .pt10 {
       margin: 7px 0 !important;

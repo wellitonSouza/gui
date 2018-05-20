@@ -3,6 +3,57 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { DojotBtnCircle, DojotButton } from "../../components/DojotButton";
 import ReactPaginate from 'react-paginate';
 
+class GenericOperations {
+
+  constructor() {
+    console.log("GenericOperations loaded.");
+  }
+
+  setDefaultPaginationParams() {
+    console.log("setDefaultPaginationParams");
+    this.paginationParams = {
+      page_size: 6,
+      page_num: 1
+    };
+  }
+
+  hasFilter() {
+    if (JSON.stringify(this.filterParams) != "{}") {
+      //Look for a better code
+      return true;
+    }
+    return false;
+  }
+
+  getCurrentQuery() {
+    return this.filterParams;
+  }
+
+}
+
+class FilterLabel extends Component{
+
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    if (this.props.ops.hasFilter())
+    return(
+      <div className = 'col s2 p0 filter-information' >
+        {this.props.text}
+      </div>  
+      )
+      else
+      return (
+        <div className='col s2 p0' >
+        </div>  
+      )
+    }
+
+}
+
+
 class Pagination extends Component {
 
   constructor(props) {
@@ -16,17 +67,16 @@ class Pagination extends Component {
   }
 
   render() {
-    // console.info("Rendering Filter");
-    // console.info("Props and States ",this.props,this.state);
-    console.log("rend Pagination: pagination", this.props);
-    if (!this.props.pagination || !this.props.show_pagination)
-       return <div className="col s6 p0" />;
+    console.log("Render Pagination Component ", this.props);
+
+    if (!this.props.pagination || !this.props.show_pagination || !this.props.pagination.total)
+      return <div className="col s5 p0" ></div>;
 
     let pageCount = this.props.pagination.total;
     let currentPage = this.props.pagination.page - 1; 
 
     return (
-      <div className='col s6 p0'>
+      <div className='col s5 p0'>
         <ReactPaginate previousLabel={"previous"}
           nextLabel={"next"}
           pageCount={pageCount}
@@ -81,15 +131,16 @@ class Filter extends Component {
   }
 
   componentDidMount() {
-    // maybe we should use this code to set the current query
-    // let qry = this.props.ops.getUsedQuery();
-    // if (JSON.stringify(qry) != "{}") { //please, fixes this code
-    //   this.setState({ query: qry });
-    // }
+    if (this.props.ops.hasFilter())
+    {
+      let qry = this.props.ops.getCurrentQuery();
+      console.log("Getting current query: ", qry);
+      this.setState({ query: qry });
+    }
   }
   
   render() {
-    console.log("Rendering Filter Painel: this.props.showPainel", this.props.showPainel);
+    console.log("Render Filter Component ", this.props);
  
     // if (this.props.showPainel) {
     //   return null;
@@ -144,4 +195,4 @@ class SimpleFilter extends Component {
 }
 
 // export default Filter;
-export { SimpleFilter, Filter, Pagination };
+export { SimpleFilter, Filter, Pagination, FilterLabel, GenericOperations };

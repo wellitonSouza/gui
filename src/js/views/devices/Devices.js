@@ -10,7 +10,7 @@ import { DojotBtnLink } from "../../components/DojotButton";
 import {DeviceMap} from './DeviceMap';
 import {DeviceCardList} from './DeviceCard';
 import util from '../../comms/util';
-import { Filter, Pagination } from "../utils/Manipulation";
+import { Filter, Pagination, FilterLabel, GenericOperations } from "../utils/Manipulation";
 
 
 // UI elements
@@ -62,16 +62,14 @@ class MapWrapper extends Component {
 }
 
 
-class DeviceOperations {
+class DeviceOperations extends GenericOperations {
   constructor() {
+    super();
     this.filterParams = {};
-
-    this.paginationParams = {
-      page_size: 6,
-      page_num: 1
-    }; // default parameters
+    this.paginationParams = {};
+    this.setDefaultPaginationParams();
   }
-
+  
   whenUpdatePagination(config) {
     for (let key in config) this.paginationParams[key] = config[key];
     this._fetch();
@@ -79,7 +77,7 @@ class DeviceOperations {
 
   setDefaultFilter()
   {
-    this.paginationParams = { page_size: 6, page_num: 1 }; // default parameters
+    this.setDefaultPaginationParams();
   }
 
   setFilterToMap() {
@@ -91,6 +89,7 @@ class DeviceOperations {
   }
 
   whenUpdateFilter(config) {
+    this.setDefaultPaginationParams();
     this.filterParams = config;
     this._fetch();
   }
@@ -191,7 +190,10 @@ class Devices extends Component {
     });
   }
 
+  
     render() {
+        console.log("Loading Devices Component.");
+
         const detail =
             "detail" in this.props.location.query
                 ? this.props.location.query.detail
@@ -208,11 +210,11 @@ class Devices extends Component {
         return <div className="full-device-area">
             <AltContainer store={DeviceStore}>
               <NewPageHeader title="Devices" subtitle="" icon="device">
+                <FilterLabel ops={this.dev_opex} text="Filtering Devices" />
                 <Pagination show_pagination={show_pagination} ops={this.dev_opex} />
                 <OperationsHeader displayToggle={displayToggle} toggleSearchBar={this.toggleSearchBar.bind(this)} />
               </NewPageHeader>
-              {this.state.displayList ? <DeviceCardList deviceid={detail} toggle={displayToggle} dev_opex={this.dev_opex} showFilter={this.state.showFilter} /> : 
-              <MapWrapper deviceid={detail} toggle={displayToggle} showFilter={this.state.showFilter} dev_opex={this.dev_opex} />}
+              {this.state.displayList ? <DeviceCardList deviceid={detail} toggle={displayToggle} dev_opex={this.dev_opex} showFilter={this.state.showFilter} /> : <MapWrapper deviceid={detail} toggle={displayToggle} showFilter={this.state.showFilter} dev_opex={this.dev_opex} />}
             </AltContainer>
           </div>;
     }
@@ -220,7 +222,7 @@ class Devices extends Component {
 
 function OperationsHeader(props) {
   return (
-    <div className="col s6 pull-right pt10">
+    <div className="col s5 pull-right pt10">
       <div
         className="searchBtn"
         title="Show search bar"

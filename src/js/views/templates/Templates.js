@@ -14,7 +14,7 @@ import ImageActions from '../../actions/ImageActions';
 
 import { ImageCard, NewImageCard } from "../firmware/elements";
 
-import { Filter, Pagination } from '../utils/Manipulation';
+import { Filter, Pagination, FilterLabel, GenericOperations } from "../utils/Manipulation";
 import util from "../../comms/util/util";
 
 import { NewPageHeader } from "../../containers/full/PageHeader";
@@ -174,13 +174,13 @@ class AttributeList extends Component {
     }
 
     componentWillMount(){
-        console.log(this.props.attributes.label, ": ", this.props.attributes.label.length);
+        // console.log(this.props.attributes.label, ": ", this.props.attributes.label.length);
         if(this.props.attributes.label.length > 18){
            this.setState({fieldSizeDyAttrStatus: true});
         }
 
         if (this.props.attributes.hasOwnProperty('static_value')) {
-            console.log(this.props.attributes.static_value, ": ", this.props.attributes.static_value.length);
+            // console.log(this.props.attributes.static_value, ": ", this.props.attributes.static_value.length);
             if(this.props.attributes.static_value.length > 18){
                 this.setState({fieldSizeStaticAttrStatus: true});
             }
@@ -1082,7 +1082,7 @@ class TemplateList extends Component {
             }
         }
 
-        return <div className="full-height relative">
+        return <div className="full-height relative overflow-auto">
             {this.filteredList.length > 0 ? <div className="col s12 lst-wrapper w100">
                 {this.filteredList.map(template => (
                   <ListItem
@@ -1100,7 +1100,7 @@ class TemplateList extends Component {
                 ))}
               </div> : <div className="background-info valign-wrapper full-height">
                 <span className="horizontal-center">
-                   No configured templates
+                  No templates to be shown
                 </span>
               </div>}
           </div>;
@@ -1108,18 +1108,16 @@ class TemplateList extends Component {
 }
 
 
-
-class TemplateOperations {
+class TemplateOperations extends GenericOperations {
 
     constructor() {
+        super();
         this.filterParams = {};
-
-        this.paginationParams = {  
-            page_size: 6,
-            page_num: 1
-        }; // default parameters
+        this.paginationParams = {};
+        this.setDefaultPaginationParams();
     }
-    
+
+
     whenUpdatePagination(config) {
         for (let key in config)
             this.paginationParams[key] = config[key];
@@ -1128,6 +1126,8 @@ class TemplateOperations {
 
     whenUpdateFilter(config)
     {
+        // set default parameters
+        this.setDefaultPaginationParams();
         this.filterParams = config;
         this._fetch();
     }
@@ -1139,16 +1139,16 @@ class TemplateOperations {
     }
 }
 
-let opex = new TemplateOperations();
 
 class Templates extends Component {
     
     constructor(props) {
         super(props);
         this.state = { showFilter: false,
-        has_new_template: false
+            has_new_template: false
         };
         
+        this.temp_opex = new TemplateOperations();
         this.addTemplate = this.addTemplate.bind(this);
         this.toggleSearchBar = this.toggleSearchBar.bind(this);
         this.enableNewTemplate = this.enableNewTemplate.bind(this);
@@ -1181,7 +1181,7 @@ class Templates extends Component {
     }
 
     componentDidMount() {
-        opex._fetch();
+        this.temp_opex._fetch();
         this.setState({ 'has_new_template': false });
     }
 
@@ -1193,10 +1193,11 @@ class Templates extends Component {
         <div className={"full-device-area"}>
             <AltContainer store={TemplateStore}>
               <NewPageHeader title="Templates" subtitle="Templates" icon="template">
-                <Pagination show_pagination={true} ops={opex} />
+                <FilterLabel ops={this.temp_opex} text="Filtering Templates" />
+                <Pagination show_pagination={true} ops={this.temp_opex} />
                 <OperationsHeader addTemplate={this.addTemplate} toggleSearchBar={this.toggleSearchBar.bind(this)} />
               </NewPageHeader>
-              <Filter showPainel={this.state.showFilter} metaData={this.metaData} ops={opex} fields={FilterFields} />
+                    <Filter showPainel={this.state.showFilter} metaData={this.metaData} ops={this.temp_opex} fields={FilterFields} />
               <TemplateList enableNewTemplate={this.enableNewTemplate} />
             </AltContainer>
         </div>
@@ -1206,7 +1207,7 @@ class Templates extends Component {
 
 function OperationsHeader(props) {
     return (
-        <div className="col s6 pull-right pt10">
+        <div className="col s5 pull-right pt10">
             <div className="searchBtn" title="Show search bar" onClick={props.toggleSearchBar}>
                 <i className="fa fa-search" />
             </div>

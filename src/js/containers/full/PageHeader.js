@@ -1,55 +1,55 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router'
 
-class SubMenu extends Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    let children = {};
-      // children['device'] = [
-      //   { target: "/device/list", iconClass: "", label: "device", title: "Devices list", siblings: ['/device/id', '/device/new']},
-      //   { target: "/template/list", iconClass: "", label: "template", title: "Templates list", siblings: ['/template/id', '/template/new']},
-      //   { target: "/alarm?q=device", iconClass: "", label: "alarm", title: "Alarms list"}
-      // ];
-      children['auth'] = [
-        { target: "/auth/user", iconClass: "", label: "users", title: "Users list"},
-        { target: "/auth/permissions", iconClass: "", label: "permissions", title: "Permissions list"}
-      ];
-      children['deploy'] = [
-        { target: "/deploy/plugins", iconClass: "", label: "plugins", title: "Plugins list"},
-        { target: "/deploy/applications", iconClass: "", label: "applications", title: "Applications list"},
-        { target: "/alarm?q=deploy", iconClass: "", label: "alarm", title: "Alarms list"},
-      ];
+// class SubMenu extends Component {
+//   constructor(props) {
+//     super(props);
+//   }
+//   render() {
+//     let children = {};
+//       // children['device'] = [
+//       //   { target: "/device/list", iconClass: "", label: "device", title: "Devices list", siblings: ['/device/id', '/device/new']},
+//       //   { target: "/template/list", iconClass: "", label: "template", title: "Templates list", siblings: ['/template/id', '/template/new']},
+//       //   { target: "/alarm?q=device", iconClass: "", label: "alarm", title: "Alarms list"}
+//       // ];
+//       children['auth'] = [
+//         { target: "/auth/user", iconClass: "", label: "users", title: "Users list"},
+//         { target: "/auth/permissions", iconClass: "", label: "permissions", title: "Permissions list"}
+//       ];
+//       children['deploy'] = [
+//         { target: "/deploy/plugins", iconClass: "", label: "plugins", title: "Plugins list"},
+//         { target: "/deploy/applications", iconClass: "", label: "applications", title: "Applications list"},
+//         { target: "/alarm?q=deploy", iconClass: "", label: "alarm", title: "Alarms list"},
+//       ];
 
-       if (children[this.props.page]) {
-        return (
-            <ul className="sub-nav">
-            { children[this.props.page].map((item) => <SubMenuItem item={item}  key={item.label}  /> )}
-            </ul>
-        )
-      }
-      else
-      return null;
-  }
-}
+//        if (children[this.props.page]) {
+//         return (
+//             <ul className="sub-nav">
+//             { children[this.props.page].map((item) => <SubMenuItem item={item}  key={item.label}  /> )}
+//             </ul>
+//         )
+//       }
+//       else
+//       return null;
+//   }
+// }
 
 
-function SubMenuItem(props) {
-  // let isActive = props.router.location.pathname === props.item.target;
-  // isActive  = true;
-  // const entryClass = "nav-link" + (isActive ? " active" : "");
-    return (
-      <li className="nav-item">
-        <Link to={props.item.target} className="sub-menu-item" tabIndex="-1">
-          <div className="icon">
-            <div className={"icon-"+props.item.iconClass+" icon-prop"}></div>
-          </div>
-          <div className="title">{props.item.title}</div>
-        </Link>
-      </li>
-    )
-}
+// function SubMenuItem(props) {
+//   // let isActive = props.router.location.pathname === props.item.target;
+//   // isActive  = true;
+//   // const entryClass = "nav-link" + (isActive ? " active" : "");
+//     return (
+//       <li className="nav-item">
+//         <Link to={props.item.target} className="sub-menu-item" tabIndex="-1">
+//           <div className="icon">
+//             <div className={"icon-"+props.item.iconClass+" icon-prop"}></div>
+//           </div>
+//           <div className="title">{props.item.title}</div>
+//         </Link>
+//       </li>
+//     )
+// }
 
 
 
@@ -60,28 +60,24 @@ function NewPageHeader(props) {
   var childrenWithProps = React.Children.map(props.children, child =>
     React.cloneElement(child, { ...props }));
   
-  return (
-    <div className="header-box">
+  return <div className="header-box">
       <div className="title-box">
         <div className="icon">
-        {props.icon != "" &&
-          (
-            <img src={"images/header/"+props.icon+"-icon.png"} />)
-          }
+          {props.icon != "" && (
+            <img src={"images/header/" + props.icon + "-icon.png"} />
+          )}
         </div>
         <div className="title">{props.title}</div>
       </div>
-      <div className="col m12">
-        <div className="sub-menu">
+      <div className="row col m12 second-bar">
+        {/* <div className="sub-menu">
           <SubMenu page={props.icon} />
-        </div>
-        <div className="row page-actions">
+        </div> */}
+        <div className="page-actions col s12 pull-right text-right">
           {childrenWithProps}
         </div>
       </div>
-    </div>
-
-  )
+    </div>;
 }
 
 function PageHeader(props) {

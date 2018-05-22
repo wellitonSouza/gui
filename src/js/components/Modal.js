@@ -165,8 +165,8 @@ class ChangePasswordModal extends Component {
   validate() {
     let errorMessage = this.state.invalid;
 
-    if (this.state.password.trim().length < 6) {
-        errorMessage.password = "Password must be at least 6 characters";
+    if (this.state.password.trim().length < 8) {
+        errorMessage.password = "Password must be at least 8 characters";
         this.setState({invalid: errorMessage});
         return false;
     } else {
@@ -238,7 +238,7 @@ class ChangePasswordModal extends Component {
                   <input id="fld_newPassword" type="password"
                           name="password" className={getClass('password')}
                           onChange={this.handleChange}
-                          minLength={6}
+                          minLength={8}
                           value={this.state.password}/>
                   <label htmlFor="fld_newPassword" data-success=""
                           data-error={this.state.invalid.password}>Password</label>
@@ -247,7 +247,7 @@ class ChangePasswordModal extends Component {
                   <input id="fld_confirmPassword" type="password"
                             name="confirmPassword" className={getClass('confirm')}
                             onChange={this.handleChange}
-                            minLength={6}
+                            minLength={8}
                             value={this.state.confirm}/>
                   <label htmlFor="fld_confirmPassword" data-success=""
                             data-error={this.state.invalid.confirm}>Confirm your password</label>                 

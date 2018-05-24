@@ -105,11 +105,11 @@ class DeviceOperations extends GenericOperations {
       let res = Object.assign({}, this.paginationParams, this.filterParams);
       delete res.templates;
       console.log("fetching: ", res, "template used: ", tmpl_id);
-      DeviceActions.fetchDevicesByTemplate(tmpl_id, res, cb);
+      DeviceActions.fetchDevicesByTemplate.defer(tmpl_id, res, cb);
     } else {
       let res = Object.assign({}, this.paginationParams, this.filterParams);
       console.log("fetching: ", res, "all templates ");
-      DeviceActions.fetchDevices(res, cb);
+      DeviceActions.fetchDevices.defer(res, cb);
     }
   }
 }

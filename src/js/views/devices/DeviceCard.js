@@ -94,8 +94,11 @@ class DeviceCardList extends Component {
         <Filter showPainel={this.props.showFilter} metaData={this.metaData} ops={this.props.dev_opex} fields={DevFilterFields} />
         {this.filteredList.length === 0 ? <div className="background-info valign-wrapper full-height">
             <span className="horizontal-center mt30">
-              No devices to be shown
-            </span>
+          {this.props.dev_opex.hasFilter() ?
+             <b>No devices to be shown</b>
+            : <b>No configured devices</b>
+          }
+             </span>
           </div> : <div className="col s12  lst-wrapper extra-padding">
             {this.filteredList.map(device => (
               <SummaryItem device={device} key={device.id} />

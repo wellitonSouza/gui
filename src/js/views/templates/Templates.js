@@ -1109,7 +1109,10 @@ class TemplateList extends Component {
                 ))}
               </div> : <div className="background-info valign-wrapper full-height">
                 <span className="horizontal-center">
-                  No templates to be shown
+                        {this.props.temp_opex.hasFilter() ?
+                        <b>No templates to be shown</b>
+                        : <b>No configured templates</b>
+                    }
                 </span>
               </div>}
           </div>;
@@ -1207,7 +1210,7 @@ class Templates extends Component {
                 <OperationsHeader addTemplate={this.addTemplate} toggleSearchBar={this.toggleSearchBar.bind(this)} />
               </NewPageHeader>
                     <Filter showPainel={this.state.showFilter} metaData={this.metaData} ops={this.temp_opex} fields={FilterFields} />
-              <TemplateList enableNewTemplate={this.enableNewTemplate} />
+                    <TemplateList temp_opex={this.temp_opex} enableNewTemplate={this.enableNewTemplate} />
             </AltContainer>
         </div>
           </ReactCSSTransitionGroup>;

@@ -19,8 +19,13 @@ import Toggle from 'material-ui/Toggle';
 
 
 function ToggleWidget(props) {
+
+  function checkAndToggle(currentState) {
+    if (props.toggleState == currentState) props.toggle();
+  }
+
   return <div className="box-sh">
-      <div className="toggle-icon" onClick={props.setState.bind(this,false)}>
+    <div className="toggle-icon" onClick={checkAndToggle.bind(this, true)}>
         <img src="images/icons/pin.png" />
       </div>
       <div className="toggle-map">
@@ -28,7 +33,7 @@ function ToggleWidget(props) {
           <Toggle label="" defaultToggled={props.toggleState} onToggle={props.toggle} />
         </MuiThemeProvider>
       </div>
-      <div className="toggle-icon" onClick={props.setState.bind(this,true)}>
+    <div className="toggle-icon" onClick={checkAndToggle.bind(this, false)}>
         <i className="fa fa-th-large" aria-hidden="true" />
       </div>
     </div>;
@@ -100,11 +105,11 @@ class DeviceOperations extends GenericOperations {
       let res = Object.assign({}, this.paginationParams, this.filterParams);
       delete res.templates;
       console.log("fetching: ", res, "template used: ", tmpl_id);
-      DeviceActions.fetchDevicesByTemplate(tmpl_id, res, cb);
+      DeviceActions.fetchDevicesByTemplate.defer(tmpl_id, res, cb);
     } else {
       let res = Object.assign({}, this.paginationParams, this.filterParams);
       console.log("fetching: ", res, "all templates ");
-      DeviceActions.fetchDevices(res, cb);
+      DeviceActions.fetchDevices.defer(res, cb);
     }
   }
 }

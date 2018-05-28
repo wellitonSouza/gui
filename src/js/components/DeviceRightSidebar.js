@@ -99,7 +99,7 @@ class List extends Component {
         <div className="row device-list">
           <div className="col s12 info-header">
             <div className="col s1 " />
-            <div className="col s5 subtitle">DEVICES</div>
+            <div className="col s5 subtitle">{this.props.deviceInfo}</div>
             <div className="col s6 device-list-actions">
               <div className="col s6 action-hide">
                 <a className="waves-effect waves-light" onClick={this.hideDevices}>
@@ -114,7 +114,7 @@ class List extends Component {
             </div>
           </div>
           <div className="deviceCanvas">
-          <ListRender toggleVisibility={this.props.toggleVisibility} devices={this.props.devices} displayMap={this.props.displayMap} />
+            <ListRender toggleVisibility={this.props.toggleVisibility} devices={this.props.devices} displayMap={this.props.displayMap} />
           </div>
         </div>
       </div>;
@@ -148,7 +148,7 @@ class Sidebar extends Component {
         </div>
         {this.state.sideBarOpened ? <div className="col device-painel full-height">
             <div className="col device-painel-body relative">
-               <List toggleVisibility={this.props.toggleVisibility} devices={this.props.devices} hideAll={this.props.hideAll} showAll={this.props.showAll} displayMap={this.props.displayMap}  />
+              <List deviceInfo={this.props.deviceInfo} toggleVisibility={this.props.toggleVisibility} devices={this.props.devices} hideAll={this.props.hideAll} showAll={this.props.showAll} displayMap={this.props.displayMap} />
             </div>
           </div> : null}
       </div>;

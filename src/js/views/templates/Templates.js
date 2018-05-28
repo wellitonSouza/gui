@@ -1124,7 +1124,7 @@ class TemplateOperations extends GenericOperations {
 
     constructor() {
         super();
-        this.filterParams = {};
+        this.filterParams = { "sortBy": "label" };
         this.paginationParams = {};
         this.setDefaultPaginationParams();
     }

@@ -70,7 +70,7 @@ class MapWrapper extends Component {
 class DeviceOperations extends GenericOperations {
   constructor() {
     super();
-    this.filterParams = {};
+    this.filterParams = { "sortBy": "label" };
     this.paginationParams = {};
     this.setDefaultPaginationParams();
   }

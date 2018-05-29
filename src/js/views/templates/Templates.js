@@ -176,13 +176,11 @@ class AttributeList extends Component {
     }
 
     componentWillMount(){
-        // console.log(this.props.attributes.label, ": ", this.props.attributes.label.length);
         if(this.props.attributes.label.length > 18){
            this.setState({fieldSizeDyAttrStatus: true});
         }
 
         if (this.props.attributes.hasOwnProperty('static_value')) {
-            // console.log(this.props.attributes.static_value, ": ", this.props.attributes.static_value.length);
             if(this.props.attributes.static_value.length > 18){
                 this.setState({fieldSizeStaticAttrStatus: true});
             }
@@ -641,6 +639,7 @@ class ListItem extends Component {
         this.refreshImages = this.refreshImages.bind(this);
         this.updateDefaultVersion = this.updateDefaultVersion.bind(this);
         this.removeAttributeId = this.removeAttributeId.bind(this);
+        //this.getDataAttrs = this.getDataAttrs.bind(this);
     }
 
 
@@ -652,7 +651,6 @@ class ListItem extends Component {
     }
 
     componentDidMount() {
-
         if (this.state.template.isNewTemplate) {
             this.setState({ isEditable: true, isSuppressed: false});
         }
@@ -668,6 +666,19 @@ class ListItem extends Component {
                 fw_version = attr.static_value;
             this.setState({ fw_version_used: fw_version });
         }
+    }
+
+    componentWillMount(){
+        let template = this.state.template;
+        console.log("template: ", template);
+        for(let k in template.config_attrs){
+            console.log(k, template.config_attrs[k])
+            if(template.config_attrs[k].type == 'actuator'){
+                template.data_attrs.push(template.config_attrs[k]);
+                template.config_attrs.splice(k, 1);
+            }
+        }
+        this.setState({template: template});
     }
 
     handleDismiss(e) {
@@ -884,7 +895,13 @@ class ListItem extends Component {
         );
     }
 
+    // getDataAttrs(template){
+    //     console.log("t: ", template);
+    // }
+
     render() {
+        // let data_attrs = this.props.template.attrs;
+        // this.getDataAttrs(this.state.template);
         let fw_version_used = "No default image"
         if (this.state.fw_version_used) {
             fw_version_used = this.state.fw_version_used;
@@ -892,7 +909,6 @@ class ListItem extends Component {
 
         let attrs = this.state.template.data_attrs.length + this.state.template.config_attrs.length;
 
-        console.log("state: ", this.state);
         return (
             <div className={"mg20px "+ (this.state.template.isNewTemplate ? 'flex-order-1' : 'flex-order-2')}>
             {this.state.show_image_modal ? (

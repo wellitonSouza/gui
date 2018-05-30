@@ -194,13 +194,15 @@ class GenericList extends Component {
         <div className="col s12 body">
           {this.props.box_title == "Configurations" ? (
             <div key="id" className="line col s12">
-              <div className="col s5">
-                <div className="name-value">device id</div>
-                <div className="value-label">Name</div>
-              </div>
-              <div className="col s7" >
-                <div className="value-value">{this.props.device.id}</div>
-                <div className="value-label">STRING</div>
+              <div className="col s12">
+                <div className="col s5">
+                  <div className="name-value">device id</div>
+                  <div className="value-label">Name</div>
+                </div>
+                <div className="col s7" >
+                  <div className="value-value">{this.props.device.id}</div>
+                  <div className="value-label">STRING</div>
+                </div>              
               </div>
             </div>
           ):("")}
@@ -317,6 +319,7 @@ class ActuatorsArea extends Component {
   render() {
     return <div className=" dy_attributes">
         <div className="col s12 header">
+          <div className="col s2"></div>
           <label className="col s8">Actuators</label>
         </div>
         <div className="col s12 body">
@@ -332,9 +335,6 @@ class ActuatorsArea extends Component {
       </div>;
   }
 }
-
-
-
 
 class DynamicAttributeList extends Component {
   constructor(props) {

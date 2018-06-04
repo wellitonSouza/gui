@@ -910,7 +910,7 @@ class ListItem extends Component {
         let attrs = this.state.template.data_attrs.length + this.state.template.config_attrs.length;
 
         return (
-            <div className={"mg20px "+ (this.state.template.isNewTemplate ? 'flex-order-1' : 'flex-order-2')}>
+            <div className={"mg20px fl "+ (this.state.template.isNewTemplate ? 'flex-order-1' : 'flex-order-2')}>
             {this.state.show_image_modal ? (
                 <AltContainer store={ImageStore}>
                         <ImageModal updateDefaultVersion={this.updateDefaultVersion} template={this.state.template} refreshImages={this.refreshImages} toggleModal={this.toggleImageModal} />

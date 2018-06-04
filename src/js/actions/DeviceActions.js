@@ -112,9 +112,9 @@ class DeviceActions {
   triggerRemoval(device, cb) {
     return dispatch => {
       dispatch();
-      deviceManager
-        .deleteDevice(device.id)
-        .then(response => {
+      deviceManager.deleteDevice(device.id)
+        .then((response) => {
+          this.removeSingle(device.id);
           if (cb) {
             cb(response);
           }

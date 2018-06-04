@@ -18,8 +18,7 @@ class GenericOperations {
   }
 
   hasFilter() {
-    if (JSON.stringify(this.filterParams) != "{}") {
-      //Look for a better code
+    if (Object.keys(this.filterParams).length > 1) { //sortBy attribute
       return true;
     }
     return false;

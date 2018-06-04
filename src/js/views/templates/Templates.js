@@ -670,9 +670,7 @@ class ListItem extends Component {
 
     componentWillMount(){
         let template = this.state.template;
-        console.log("template: ", template);
         for(let k in template.config_attrs){
-            console.log(k, template.config_attrs[k])
             if(template.config_attrs[k].type == 'actuator'){
                 template.data_attrs.push(template.config_attrs[k]);
                 template.config_attrs.splice(k, 1);
@@ -1245,9 +1243,9 @@ class Templates extends Component {
 function OperationsHeader(props) {
     return (
         <div className="col s5 pull-right pt10">
-            <div className="searchBtn" title="Show search bar" onClick={props.toggleSearchBar}>
+            {/* <div className="searchBtn" title="Show search bar" onClick={props.toggleSearchBar}>
                 <i className="fa fa-search" />
-            </div>
+            </div> */}
             <div onClick={props.addTemplate} className="new-btn-flat red waves-effect waves-light" title="Create a new template">
                 New Template<i className="fa fa-plus" />
             </div>

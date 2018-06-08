@@ -18,7 +18,7 @@ import Dropzone from 'react-dropzone'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import MaterialInput from "../../components/MaterialInput";
-import Materialize from "materialize-css";
+import toaster from "../../comms/util/materialize";
 
 class UploadDialog extends Component {
   constructor(props) {
@@ -47,7 +47,7 @@ class UploadDialog extends Component {
 
     if (this.state.files.length == 0)
     {
-      Materialize.toast('No image added', 4000);
+      toaster.success('No image added.');
       return;
     }
 
@@ -61,7 +61,7 @@ class UploadDialog extends Component {
       binary: this.state.files[0],
       sha1: sha1};
       ImageActions.triggerUpdate(img_binary, () => {
-          Materialize.toast('Image added', 4000);
+          toaster.success('Image added.');
           this.props.closeModal();
       })
   }
@@ -133,7 +133,7 @@ class NewImageCard extends Component {
     };
     console.log("image",img);
     ImageActions.triggerInsert(img, (img) => {
-      Materialize.toast('Image created', 4000);
+      toaster.success('Image created.');
     });
     this.props.setNewImage(false);
   }
@@ -246,7 +246,7 @@ class ImageCard extends Component {
     };
     console.log("removeBinary", img_binary);
     ImageActions.triggerUpdate(img_binary, () => {
-      Materialize.toast('Image updated', 4000);
+      toaster.success('Image updated.');
     })
     // this.props.changeState(0);
   }

@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import Materialize from 'materialize-css';
 import AltContainer from 'alt-container';
 import {NewPageHeader} from "../../containers/full/PageHeader";
 import {SimpleFilter} from "../utils/Manipulation";
@@ -9,6 +8,7 @@ import AutheticationFailed from "../../components/AuthenticationFailed";
 import LoginStore from "../../stores/LoginStore";
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import UserActions from '../../actions/UserActions';
+import toaster from "../../comms/util/materialize";
 
 let UserStore = require('../../stores/UserStore');
 
@@ -56,7 +56,7 @@ class SideBar extends Component {
 
     checkValidation() {
         if (this.state.user.profile === "") {
-            Materialize.toast("Select a profile", 4000);
+            toaster.warning("Select a profile");
             return false;
         }
         return !(this.state.isInvalid.confirmEmail ||
@@ -82,10 +82,10 @@ class SideBar extends Component {
         console.log(this.checkValidation());
         if (this.checkValidation()) {
             UserActions.triggerUpdate(tmp, () => {
-                Materialize.toast("User updated", 4000);
+                toaster.success("User updated.");
                 this.hideSideBar();
             }, () => {
-                Materialize.toast("Failed to update user", 4000);
+                toaster.error("Failed to update user.");
             });
 
         }
@@ -96,10 +96,10 @@ class SideBar extends Component {
             let temp = this.state.user;
             temp.email = String(temp.email).toLowerCase();
             UserActions.addUser(temp, () => {
-                Materialize.toast('User created', 4000);
+                toaster.success('User created.');
                 this.hideSideBar();
             }, () => {
-                Materialize.toast("Failed to create user", 4000);
+                toaster.success("Failed to create user.");
             })
         }
     }
@@ -112,7 +112,7 @@ class SideBar extends Component {
         event.preventDefault();
         this.hideSideBar();
         UserActions.triggerRemoval(this.state.user, () => {
-            Materialize.toast('User removed', 4000);
+            toaster.success('User removed', 4000);
         });
 
     }

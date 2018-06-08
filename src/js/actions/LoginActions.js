@@ -1,6 +1,6 @@
 import loginManager from '../comms/login/LoginManager';
-import Materialize from "materialize-css";
 import {browserHistory} from "react-router";
+import toaster from "../comms/util/materialize";
 
 let alt = require('../alt');
 
@@ -43,10 +43,10 @@ class LoginActions {
             dispatch();
             loginManager.updatePassword(data)
                 .then(() => {
-                    Materialize.toast('Password updated', 4000);
+                    toaster.success('Password updated');
                 })
                 .catch((error) => {
-                    Materialize.toast(error, 4000);
+                    toaster.error(error);
                 })
         }
     }
@@ -68,7 +68,7 @@ class LoginActions {
             return "No connection to server."
         }
 
-        Materialize.toast(error.message, 4000);
+        toaster.error(error.message);
         const data = error.data;
         if ((data.status === 401) || (data.status === 403)) {
             return "Authentication failed.";
@@ -77,7 +77,6 @@ class LoginActions {
         } else {
             return "No connection to server."
         }
-        return error;
     }
 }
 

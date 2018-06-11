@@ -141,84 +141,94 @@ class SideBar extends Component {
     render() {
         let sideBar;
         if (this.props.visible) {
-            sideBar =
-                <div id={"sidebar"} className={'sidebar-auth' + (this.props.visible ? ' visible' : '')}>
-                    <div id={'auth-title'} className={'title' + (this.props.edit ? ' ' : ' hide')}>
-                        <span id={'title-text'} className={'title-text'}>Edit User</span>
-                    </div>
-                    <div id={'auth-title'} className={'title' + (this.props.edit ? ' hide' : '')}>
-                        <span id={'title-text'} className={'title-text'}>New User</span>
-                    </div>
-                    <div className="fixed-height">
-                    <div id={'auth-icon'} className={'user-icon'}>
-                        <img src={'images/generic-user-icon.png'}/>
-                    </div>
-                    <div id={'auth-name'} className="input-field icon-space">
-                        <input id="userName46465" value={this.state.user.username} name="username"
-                               disabled={this.props.edit}
-                               onChange={this.handleChange} style={{fontSize: '16px'}}
-                               className={"validate" + (this.state.isInvalid.username ? ' invalid' : '')} maxLength="40" />
-                        <label htmlFor="userName" data-error="Please use only letters (a-z) and numbers (0-9)"
-                               className="active">User Name</label>
-                    </div>
-                    <div id={'auth-usr'} className="input-field">
-                        <input id="name" value={this.state.user.name} name="name" onChange={this.handleChange}
-                               style={{fontSize: '16px'}}
-                               className={"validate" + (this.state.isInvalid.name ? ' invalid' : '')} maxLength="40" />
-                        <label htmlFor="name" data-error="Invalid name" className="active">Name</label>
-                    </div>
-                    <div id={'auth-email'} className="input-field">
-
-                        <input id="email" value={this.state.user.email} name="email" onChange={this.handleChange}
-                               style={{fontSize: '16px'}}
-                               className={"validate" + (this.state.isInvalid.email ? ' invalid' : '')} maxLength="40" />
-                        <label htmlFor="email" data-error="Please enter a valid email address."
-                               className="active">Email</label>
-                    </div>
-                    <div id={'auth-confirm'} className="input-field">
-                        <input id="confirm-email" value={this.state.user.confirmEmail} name="confirmEmail"
-                               onChange={this.handleChange} style={{fontSize: '16px'}}
-                               className={"validate" + (this.state.isInvalid.confirmEmail ? ' invalid' : '')} maxLength="40"/>
-                        <label htmlFor="confirm-email" data-error="Email address mismatch" className="active">Confirm
-                            Email</label>
-                    </div>
-                    <div id={'auth-select-role'} className="input-field">
-                        <MaterialSelect id="flr_profiles" name="profile" label="Profile"
-                                        value={this.state.user.profile}
-                                        onChange={this.handleChange}>
-                            <option value="" disabled>Choose your option</option>
-                            <option value="admin" id={'adm-option'}>Administrator</option>
-                            <option value="user" id={'user-option'}>User</option>
-                        </MaterialSelect>
-                    </div>
-                     </div>
-                    <div id={'edit-footer'} className={'action-footer' + (this.props.edit ? '' : ' hide')}>
-                        <div id={'auth-save'} className={"material-btn center-text-parent center-middle-flex"}
-                             title="Save Changes" onClick={this.handleSave}>
-                            <span className="text center-text-child">save</span>
-                        </div>
-                        <div id={'auth-cancel'} className={"material-btn center-text-parent center-middle-flex"}
-                             title="Discard Changes" onClick={this.hideSideBar}>
-                            <span className="text center-text-child">cancel</span>
-                        </div>
-                        <div id={'auth-delete'} className={"material-btn center-text-parent center-middle-flex"}
-                             title="Delete User" onClick={this.handleDelete}>
-                            <span className="text center-text-child">delete</span>
-                        </div>
-                    </div>
-
-                    <div id={'create-footer'} className={'action-footer' + (this.props.edit ? ' hide' : '')}>
-                        <div id={'auth-save'} className={"material-btn center-text-parent center-middle-flex"}
-                             title="Create a new user" onClick={this.handleCreate}>
-                            <span className="text center-text-child">create</span>
-                        </div>
-                        <div id={'auth-cancel'} className={"material-btn center-text-parent center-middle-flex"}
-                             title="Discard changes" onClick={this.hideSideBar}>
-                            <span className="text center-text-child">discard</span>
-                        </div>
-
-                    </div>
+            sideBar = <div id={"sidebar"} className={"sidebar-auth" + (this.props.visible ? " visible" : "")}>
+                <div id={"auth-title"} className={"title" + (this.props.edit ? " " : " hide")}>
+                  <span id={"title-text"} className={"title-text"}>
+                    Edit User
+                  </span>
                 </div>
+                <div id={"auth-title"} className={"title" + (this.props.edit ? " hide" : "")}>
+                  <span id={"title-text"} className={"title-text"}>
+                    New User
+                  </span>
+                </div>
+                <div className="fixed-height">
+                  <div id={"auth-icon"} className={"user-icon"}>
+                    <img src={"images/generic-user-icon.png"} />
+                  </div>
+                  <div id={"auth-name"} className="input-field icon-space">
+                    <input id="userName46465" value={this.state.user.username} name="username" disabled={this.props.edit} onChange={this.handleChange} style={{ fontSize: "16px" }} className={"validate" + (this.state.isInvalid.username ? " invalid" : "")} maxLength="40" />
+                    <label htmlFor="userName" data-error="Please use only letters (a-z) and numbers (0-9)" className="active">
+                      User Name
+                    </label>
+                  </div>
+                  <div id={"auth-usr"} className="input-field">
+                    <input id="name" value={this.state.user.name} name="name" onChange={this.handleChange} style={{ fontSize: "16px" }} className={"validate" + (this.state.isInvalid.name ? " invalid" : "")} maxLength="40" />
+                    <label htmlFor="name" data-error="Invalid name" className="active">
+                      Name
+                    </label>
+                  </div>
+                  <div id={"auth-email"} className="input-field">
+                    <input id="email" value={this.state.user.email} name="email" onChange={this.handleChange} style={{ fontSize: "16px" }} className={"validate" + (this.state.isInvalid.email ? " invalid" : "")} maxLength="40" />
+                    <label htmlFor="email" data-error="Please enter a valid email address." className="active">
+                      Email
+                    </label>
+                  </div>
+                  <div id={"auth-confirm"} className="input-field">
+                    <input id="confirm-email" value={this.state.user.confirmEmail} name="confirmEmail" onChange={this.handleChange} style={{ fontSize: "16px" }} className={"validate" + (this.state.isInvalid.confirmEmail ? " invalid" : "")} maxLength="40" />
+                    <label htmlFor="confirm-email" data-error="Email address mismatch" className="active">
+                      Confirm Email
+                    </label>
+                  </div>
+                  <div>
+                    <label htmlFor="profile">Profile</label>
+                  </div>
+
+                  <div id={"auth-select-role"} className="input-field">
+                    <MaterialSelect id="flr_profiles" name="profile" value={this.state.user.profile} onChange={this.handleChange}>
+                      <option value="" disabled>
+                        Choose your option
+                      </option>
+                      <option value="admin" id={"adm-option"}>
+                        Administrator
+                      </option>
+                      <option value="user" id={"user-option"}>
+                        User
+                      </option>
+                    </MaterialSelect>
+                  </div>
+                </div>
+                <div id={"edit-footer"} className={"action-footer" + (this.props.edit ? "" : " hide")}>
+                  <div id={"auth-save"} className={"material-btn center-text-parent center-middle-flex"} title="Save Changes" onClick={this.handleSave}>
+                    <span className="text center-text-child">
+                      save
+                    </span>
+                  </div>
+                  <div id={"auth-cancel"} className={"material-btn center-text-parent center-middle-flex"} title="Discard Changes" onClick={this.hideSideBar}>
+                    <span className="text center-text-child">
+                      cancel
+                    </span>
+                  </div>
+                  <div id={"auth-delete"} className={"material-btn center-text-parent center-middle-flex"} title="Delete User" onClick={this.handleDelete}>
+                    <span className="text center-text-child">
+                      delete
+                    </span>
+                  </div>
+                </div>
+
+                <div id={"create-footer"} className={"action-footer" + (this.props.edit ? " hide" : "")}>
+                  <div id={"auth-save"} className={"material-btn center-text-parent center-middle-flex"} title="Create a new user" onClick={this.handleCreate}>
+                    <span className="text center-text-child">
+                      create
+                    </span>
+                  </div>
+                  <div id={"auth-cancel"} className={"material-btn center-text-parent center-middle-flex"} title="Discard changes" onClick={this.hideSideBar}>
+                    <span className="text center-text-child">
+                      discard
+                    </span>
+                  </div>
+                </div>
+              </div>;
         }
         return (
             <ReactCSSTransitionGroup

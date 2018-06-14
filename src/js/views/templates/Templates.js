@@ -1132,8 +1132,8 @@ class TemplateList extends Component {
               </div> : <div className="background-info valign-wrapper full-height">
                 <span className="horizontal-center">
                         {this.props.temp_opex.hasFilter() ?
-                        <b>No templates to be shown</b>
-                        : <b>No configured templates</b>
+                            <b className='noBold'>No templates to be shown</b>
+                            : <b className='noBold'>No configured templates</b>
                     }
                 </span>
               </div>}

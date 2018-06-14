@@ -1,6 +1,5 @@
 var alt = require('../alt');
 var DeviceActions = require('../actions/DeviceActions');
-var TrackingActions = require('../actions/TrackingActions');
 
 class DeviceStore {
   constructor() {

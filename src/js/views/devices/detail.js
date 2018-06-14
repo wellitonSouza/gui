@@ -16,6 +16,7 @@ import { PositionRenderer } from './DeviceMap.js'
 import { MapWrapper } from './Devices.js'
 import { DojotBtnRedCircle } from "../../components/DojotButton";
 import Script from 'react-load-script';
+import toaster from "../../comms/util/materialize";
 
 
 
@@ -713,7 +714,7 @@ class ViewDeviceImpl extends Component {
     //console.log("Id: ", id);
       DeviceActions.triggerRemoval({id: this.props.device_id}, (response) => {
       hashHistory.push('/device/list');
-      Materialize.toast('Device removed', 4000);
+      toaster.success('Device removed.');
     });
   }
 

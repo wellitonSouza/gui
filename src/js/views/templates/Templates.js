@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AltContainer from 'alt-container';
-import Materialize from 'materialize-css';
-
+import toaster from "../../comms/util/materialize";
 
 import { Loading } from "../../components/Loading";
 import TemplateStore from '../../stores/TemplateStore';
@@ -422,13 +421,13 @@ class NewAttribute extends Component {
     addAttribute(attribute) {
         let ret = util.isNameValid(attribute.label);
         if (!ret.result && !this.state.isConfiguration) {
-            Materialize.toast(ret.error, 4000);
+            toaster.error(ret.error);
             return;
         }
 
         ret = util.isTypeValid(attribute.value, attribute.value_type, attribute.type, this.state.isActuator);
         if (!ret.result){
-            Materialize.toast(ret.error, 4000);
+            toaster.error(ret.error);
             return;
         }
 
@@ -691,13 +690,13 @@ class ListItem extends Component {
             e.preventDefault();
         let ret = util.isNameValid(this.state.template.label);
         if (!ret.result && !this.state.isConfiguration) {
-            Materialize.toast(ret.error, 4000);
+            toaster.error(ret.error);
             return;
         }
 
         for (let i = 0; i < this.state.template.config_attrs.length; i++) {
           if (this.state.template.config_attrs[i].label === "") {
-              Materialize.toast("Missing type.", 4000);
+              toaster.error("Missing type.");
               return;
           }
         }
@@ -711,7 +710,7 @@ class ListItem extends Component {
         this.removeAttributeId(this.state.template);
 
         TemplateActions.triggerUpdate(this.state.template, (template) => {
-          Materialize.toast('Template updated', 4000);
+          toaster.success('Template updated');
         });
     }
 
@@ -725,7 +724,7 @@ class ListItem extends Component {
         e.preventDefault();
           TemplateActions.triggerRemoval(this.state.template.id, (template) => {
           hashHistory.push('/template/list');
-          Materialize.toast('Template removed', 4000);
+          toaster.success('Template removed');
         });
     }
 
@@ -740,7 +739,7 @@ class ListItem extends Component {
                 }
             )[0])
             {
-                Materialize.toast("The pair (label, type) is already created.", 4000);
+                toaster.warning("The pair (label, type) is already created.");
                 return;
             }
 
@@ -759,7 +758,7 @@ class ListItem extends Component {
                 }
             )[0])
             {
-                Materialize.toast("The pair (label, type) is already created.", 4000);
+                toaster.warning("The pair (label, type) is already created.");
                 return;
             }
 
@@ -829,7 +828,7 @@ class ListItem extends Component {
         e.preventDefault();
         let ret = util.isNameValid(this.state.template.label);
         if (!ret.result && !this.state.isConfiguration) {
-            Materialize.toast(ret.error, 4000);
+            toaster.error(ret.error);
             return;
         }
 
@@ -837,7 +836,7 @@ class ListItem extends Component {
         this.state.template.attrs.push.apply(this.state.template.attrs ,this.state.template.config_attrs);
 
         TemplateActions.addTemplate(this.state.template, (template) => {
-            Materialize.toast('Template created', 4000);
+            toaster.success('Template created.');
             TemplateActions.removeSingle("new_template");
             this.props.enableNewTemplate();
         })

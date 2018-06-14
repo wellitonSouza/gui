@@ -120,8 +120,12 @@ class Util {
   }
 
     async _status(response) {
+      
     if (response.status === 500)
         return Promise.reject(response);
+
+    if (response.status === 404)
+       return Promise.reject(new FetchError(response, "API not found."));
 
     let body = await response.json();
     response.message = body.message;
@@ -131,6 +135,7 @@ class Util {
             if ((response.status === 401) || (response.status === 403)) {
                 LoginActions.logout();
             }
+
             // return Promise.reject(new FetchError(response, response.statusText ));
             return Promise.reject(response);
         }

@@ -420,6 +420,7 @@ class NewAttribute extends Component {
     }
 
     addAttribute(attribute) {
+
         let ret = util.isNameValid(attribute.label);
         if (!ret.result && !this.state.isConfiguration) {
             Materialize.toast(ret.error, 4000);
@@ -835,7 +836,6 @@ class ListItem extends Component {
 
         this.state.template.attrs.push.apply(this.state.template.attrs, this.state.template.data_attrs);
         this.state.template.attrs.push.apply(this.state.template.attrs ,this.state.template.config_attrs);
-
         TemplateActions.addTemplate(this.state.template, (template) => {
             Materialize.toast('Template created', 4000);
             TemplateActions.removeSingle("new_template");

@@ -25,7 +25,7 @@ class TemplateActions {
           }
         })
         .catch((error) => {
-          this.templatesFailed("Failed to add template to list");
+          this.templatesFailed(error);
         })
 
     }

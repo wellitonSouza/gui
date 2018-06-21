@@ -711,9 +711,6 @@ class ListItem extends Component {
         this.state.template.attrs.push.apply(this.state.template.attrs ,this.state.template.config_attrs);
 
         this.removeAttributeId(this.state.template);
-
-        let state = this.state.template;
-
         // Validation of template attributes
         for(let k in this.state.template.attrs){
             // Validation of config attributes

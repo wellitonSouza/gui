@@ -1,5 +1,5 @@
 import deviceManager from '../comms/devices/DeviceManager';
-import Materialize from 'materialize-css';
+import toaster from "../comms/util/materialize";
 
 var alt = require('../alt');
 
@@ -130,7 +130,7 @@ class DeviceActions {
   }
 
   devicesFailed(error) {
-    Materialize.toast(error.message, 4000);
+    toaster.error(error.message);
     return error;
   }
 }

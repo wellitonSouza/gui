@@ -14,6 +14,8 @@ import MaterialInput from "../../components/MaterialInput";
 
 import { DojotBtnRedCircle } from "../../components/DojotButton";
 
+import toaster from "../../comms/util/materialize";
+
 class FlowCanvas extends Component {
   constructor(props) {
     super(props);
@@ -212,11 +214,11 @@ function handleSave(flowid) {
   flow.flow = RED.nodes.createCompleteNodeSet();
   if (flowid) {
     FlowActions.triggerUpdate(flowid, flow, function (flow) {
-      Materialize.toast('Flow updated', 4000);
+      toaster.success('Flow updated');
     });
   } else {
     FlowActions.triggerCreate(flow, function(flow){
-      Materialize.toast('Flow created', 4000);
+      toaster.success('Flow created');
       hashHistory.push('/flows/id/' + flow.id);
     });
   }
@@ -241,7 +243,7 @@ class RemoveDialog extends Component {
     FlowActions.triggerRemove(this.props.id, () => {
       let modalElement = ReactDOM.findDOMNode(this.refs.modal);
       $(modalElement).modal('close');
-      Materialize.toast('Flow removed', 4000);
+      toaster.success('Flow removed');
       hashHistory.push('/flows');
     })
   }

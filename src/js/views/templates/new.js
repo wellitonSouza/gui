@@ -14,6 +14,7 @@ import TemplateStore from '../../stores/TemplateStore';
 import TagForm from '../../components/TagForm';
 import util from "../../comms/util/util";
 import Materialize from 'materialize-css';
+import toaster from "../../comms/util/materialize";
 
 class FActions {
   set(args) { return args; }
@@ -428,14 +429,14 @@ class NewTemplate extends Component {
       TemplateActions.addTemplate(template, (template) => {
         FormActions.set(template);
         hashHistory.push('/template/id/' + template.id + '/edit')
-        Materialize.toast('Template created', 4000);
+        toaster.success("Template created.");
       });
     }
     if (this.props.params.template) {
       title = "Edit template";
       ops = function(template) {
         TemplateActions.triggerUpdate(template, () => {
-          Materialize.toast('Template updated', 4000);
+          toaster.success("Template updated.");
         });
       }
     }

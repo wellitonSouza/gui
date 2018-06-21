@@ -1,0 +1,33 @@
+
+#toast-container {
+  margin: auto !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: 0%;
+  left:17%;
+}
+
+.toast{
+    font-family: "Raleway", sans-serif;
+    font-weight: 600;
+}
+
+.toast-success{
+    background-color:#006d1d !important;
+    color:white;
+}
+
+.toast-error{
+    background-color: #ee6e73 !important;
+    color:white;
+}
+
+.toast-critical{
+    background-color: #b70505 !important;
+    color:white;
+}
+
+.toast-warning{
+    background-color: #ffe213 !important;
+    color: black;
+}

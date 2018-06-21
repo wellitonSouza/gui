@@ -196,7 +196,6 @@ class Util {
   }
 
   isTypeValid(value, type, dynamic){
-    console.log("dynamic: ", dynamic);
     let ret = {result: true, error: ""};
     if (dynamic === 'dynamic' && value.length === 0) return ret;
     if(dynamic === 'actuator' && value.length === 0) return ret;
@@ -268,6 +267,16 @@ class Util {
     //   return result;
     // }
     return ret;
+  }
+
+  isDeviceTimeoutValid(device_timeout){
+    let ret = {result: true, error: ""};
+    const re = /^[+-]?\d+$/;
+    ret.result = re.test(device_timeout);
+    if (ret.result === false) {
+        ret.error = 'Invalid device timeout value. This is not a integer';
+    }
+    return ret;  
   }
 
 

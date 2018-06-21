@@ -431,6 +431,13 @@ class NewAttribute extends Component {
             return;
         }
 
+        // type of attribute can't be empty
+        if(attribute.value_type == ""){
+            toaster.error("You can't leave type empty");
+            return;
+        }
+
+
         this.props.addAttribute(attribute, this.state.isConfiguration, this.state.isActuator);
         this.suppress();
     }
@@ -686,19 +693,15 @@ class ListItem extends Component {
     }
 
     updateTemplate(e) {
+
         if (e != undefined)
             e.preventDefault();
+
+        // Verify template name
         let ret = util.isNameValid(this.state.template.label);
         if (!ret.result && !this.state.isConfiguration) {
             toaster.error(ret.error);
             return;
-        }
-
-        for (let i = 0; i < this.state.template.config_attrs.length; i++) {
-          if (this.state.template.config_attrs[i].label === "") {
-              toaster.error("Missing type.");
-              return;
-          }
         }
 
         let template = this.state.template;
@@ -708,6 +711,56 @@ class ListItem extends Component {
         this.state.template.attrs.push.apply(this.state.template.attrs ,this.state.template.config_attrs);
 
         this.removeAttributeId(this.state.template);
+
+        let state = this.state.template;
+
+        // Validation of template attributes
+        for(let k in this.state.template.attrs){
+            // Validation of config attributes
+            if(this.state.template.attrs[k].type == "meta"){
+                if(this.state.template.attrs[k].label == ""){
+                    toaster.error("You can't leave configuration attribute type empty");
+                    return;                   
+                }
+
+                if(this.state.template.attrs[k].static_value == ""){
+                    toaster.error("You can't leave configuration attribute value empty");
+                    return;                      
+                }
+
+                // Validation of device_timeout
+                if(this.state.template.attrs[k].label == "device_timeout"){
+                    ret = util.isDeviceTimeoutValid(this.state.template.attrs[k].static_value);
+                    if(!ret.result){
+                        toaster.error(ret.error);
+                        return;
+                    }
+                }
+            } else {
+                // Validation of data attributes
+                if(this.state.template.attrs[k].label == ""){
+                    toaster.error("You can't leave attribute name empty");
+                    return;
+                }
+                if(this.state.template.attrs[k].type == "static"){
+                    ret = util.isTypeValid(this.state.template.attrs[k].static_value, this.state.template.attrs[k].value_type, this.state.template.attrs[k].type)
+                    if(!ret.result){
+                        toaster.error(ret.error);
+                        return;                        
+                    }
+                }
+            }
+            
+            // Verify if name is already exist
+            for(let j in this.state.template.attrs){
+                if(k!=j){
+                    if(this.state.template.attrs[k].label == this.state.template.attrs[j].label){
+                        toaster.error("Name is already exist");
+                        return;
+                    }
+                }
+            }
+        }
 
         TemplateActions.triggerUpdate(this.state.template, (template) => {
           toaster.success('Template updated');

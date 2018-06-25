@@ -269,6 +269,16 @@ class Util {
     return ret;
   }
 
+  isDeviceTimeoutValid(device_timeout){
+    let ret = {result: true, error: ""};
+    const re = /^[+-]?\d+$/;
+    ret.result = re.test(device_timeout);
+    if (ret.result === false) {
+        ret.error = 'Invalid device timeout value. This is not a integer';
+    }
+    return ret;  
+  }
+
 
 }
 

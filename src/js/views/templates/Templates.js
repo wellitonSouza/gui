@@ -431,6 +431,11 @@ class NewAttribute extends Component {
             return;
         }
 
+        if(attribute.value_type == ""){
+            toaster.error("Missing value type");
+            return;
+        }
+
         this.props.addAttribute(attribute, this.state.isConfiguration, this.state.isActuator);
         this.suppress();
     }

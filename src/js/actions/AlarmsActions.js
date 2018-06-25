@@ -1,5 +1,5 @@
 import alarmsManager from '../comms/alarms/AlarmsManager';
-import Materialize from "materialize-css";
+import toaster from "../comms/util/materialize";
 import alt from "../alt"
 
 
@@ -45,7 +45,7 @@ class AlarmsActions {
     }
 
     alarmsFailed(error) {
-        Materialize.toast(error.message, 4000);
+        toaster.error(error.message);
         return error;
     }
 }

@@ -82,6 +82,7 @@ class DeviceOperations extends GenericOperations {
 
   setDefaultFilter()
   {
+    this.filterParams = { "sortBy": "label" };
     this.setDefaultPaginationParams();
   }
 

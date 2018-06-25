@@ -16,6 +16,7 @@ import { PositionRenderer } from './DeviceMap.js'
 import { MapWrapper } from './Devices.js'
 import { DojotBtnRedCircle } from "../../components/DojotButton";
 import Script from 'react-load-script';
+import toaster from "../../comms/util/materialize";
 
 
 
@@ -41,8 +42,8 @@ class DeviceHeader extends Component {
 
   render() {
     return <div className="row devicesSubHeader p0 device-details-header">
-        <div className="col s4 m4">
-          <label className="col s12 device-label"> {this.props.device.label}</label>
+        <div className="col s8 m8">
+          <label className="col s12 device-label truncate" title={this.props.device.label}> {this.props.device.label}</label>
           <div className="col s12 device-label-name">Name</div>
         </div>
       </div>;
@@ -713,7 +714,7 @@ class ViewDeviceImpl extends Component {
     //console.log("Id: ", id);
       DeviceActions.triggerRemoval({id: this.props.device_id}, (response) => {
       hashHistory.push('/device/list');
-      Materialize.toast('Device removed', 4000);
+      toaster.success('Device removed.');
     });
   }
 

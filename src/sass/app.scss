@@ -350,17 +350,6 @@ body {
   overflow:auto;
 }
 
-#toast-container {
-  margin: auto !important;
-  top: auto !important;
-  right: auto !important;
-  bottom: 0%;
-  left:17%;
-}
-
-.toast{
-    background-color: #ee6e73 !important;
-}
 
 .modal {
   z-index: 9999 !important;
@@ -398,6 +387,12 @@ order: 1;
   margin:0px !important;
 }
 
+
+.noBold
+{
+  font-weight: 400;
+}
+
 @import 'inputs';
 @import 'shadow';
 @import 'list';
@@ -420,3 +415,4 @@ order: 1;
 @import 'firmware';
 @import 'alarms';
 @import 'pagination';
+@import 'toaster';

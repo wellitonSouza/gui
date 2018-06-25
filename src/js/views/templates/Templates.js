@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AltContainer from 'alt-container';
-import Materialize from 'materialize-css';
-
+import toaster from "../../comms/util/materialize";
 
 import { Loading } from "../../components/Loading";
 import TemplateStore from '../../stores/TemplateStore';
@@ -423,13 +422,18 @@ class NewAttribute extends Component {
 
         let ret = util.isNameValid(attribute.label);
         if (!ret.result && !this.state.isConfiguration) {
-            Materialize.toast(ret.error, 4000);
+            toaster.error(ret.error);
             return;
         }
 
         ret = util.isTypeValid(attribute.value, attribute.value_type, attribute.type, this.state.isActuator);
         if (!ret.result){
-            Materialize.toast(ret.error, 4000);
+            toaster.error(ret.error);
+            return;
+        }
+
+        if(attribute.value_type == ""){
+            toaster.error("Missing value type");
             return;
         }
 
@@ -513,7 +517,7 @@ class NewAttribute extends Component {
                             {this.state.isActuator ? null :
                             (
                                 <input className={(this.state.newAttr.value_type === "protocol" ? 'none' : '')} type="text"
-                                value={this.state.newAttr.value} maxLength="22" onChange={this.handleChange}
+                                value={this.state.newAttr.value} maxLength="25" onChange={this.handleChange}
                                 name={"value"}/>  
                             )}
 
@@ -692,13 +696,13 @@ class ListItem extends Component {
             e.preventDefault();
         let ret = util.isNameValid(this.state.template.label);
         if (!ret.result && !this.state.isConfiguration) {
-            Materialize.toast(ret.error, 4000);
+            toaster.error(ret.error);
             return;
         }
 
         for (let i = 0; i < this.state.template.config_attrs.length; i++) {
           if (this.state.template.config_attrs[i].label === "") {
-              Materialize.toast("Missing type.", 4000);
+              toaster.error("Missing type.");
               return;
           }
         }
@@ -712,7 +716,7 @@ class ListItem extends Component {
         this.removeAttributeId(this.state.template);
 
         TemplateActions.triggerUpdate(this.state.template, (template) => {
-          Materialize.toast('Template updated', 4000);
+          toaster.success('Template updated');
         });
     }
 
@@ -726,7 +730,7 @@ class ListItem extends Component {
         e.preventDefault();
           TemplateActions.triggerRemoval(this.state.template.id, (template) => {
           hashHistory.push('/template/list');
-          Materialize.toast('Template removed', 4000);
+          toaster.success('Template removed');
         });
     }
 
@@ -737,11 +741,11 @@ class ListItem extends Component {
 
             if (state.config_attrs.filter(
                 function (elem, index) {
-                    return elem.label == attribute.value_type && elem.static_value == attribute.value;
+                    return elem.label == attribute.value_type;
                 }
             )[0])
             {
-                Materialize.toast("The pair (label, type) is already created.", 4000);
+                toaster.warning("The label " + attribute.value_type + " is already created.");
                 return;
             }
 
@@ -755,12 +759,12 @@ class ListItem extends Component {
         } else {
             if (state.data_attrs.filter(
                 function (elem, index) {
-                    return elem.label == attribute.label && elem.value_type == attribute.value_type;
+                    return elem.label == attribute.label;
 
                 }
             )[0])
             {
-                Materialize.toast("The pair (label, type) is already created.", 4000);
+                toaster.warning("The label " + attribute.label + " is already created.");
                 return;
             }
 
@@ -830,14 +834,14 @@ class ListItem extends Component {
         e.preventDefault();
         let ret = util.isNameValid(this.state.template.label);
         if (!ret.result && !this.state.isConfiguration) {
-            Materialize.toast(ret.error, 4000);
+            toaster.error(ret.error);
             return;
         }
 
         this.state.template.attrs.push.apply(this.state.template.attrs, this.state.template.data_attrs);
         this.state.template.attrs.push.apply(this.state.template.attrs ,this.state.template.config_attrs);
         TemplateActions.addTemplate(this.state.template, (template) => {
-            Materialize.toast('Template created', 4000);
+            toaster.success('Template created.');
             TemplateActions.removeSingle("new_template");
             this.props.enableNewTemplate();
         })
@@ -1133,8 +1137,8 @@ class TemplateList extends Component {
               </div> : <div className="background-info valign-wrapper full-height">
                 <span className="horizontal-center">
                         {this.props.temp_opex.hasFilter() ?
-                        <b>No templates to be shown</b>
-                        : <b>No configured templates</b>
+                            <b className='noBold'>No templates to be shown</b>
+                            : <b className='noBold'>No configured templates</b>
                     }
                 </span>
               </div>}

@@ -18,7 +18,7 @@ import TemplateActions from '../../actions/TemplateActions';
 
 import MaterialSelect from "../../components/MaterialSelect";
 import MaterialInput from "../../components/MaterialInput";
-import Materialize from "materialize-css";
+import toaster from "../../comms/util/materialize";
 
 
 /*
@@ -464,8 +464,9 @@ class DeviceForm extends Component {
 
     let to_be_checked = DeviceFormStore.getState().device;
     let ret = util.isNameValid(to_be_checked.label);
+    console.log("entrou aqui", ret);
     if (!ret.result) {
-      Materialize.toast(ret.error, 4000);
+      toaster.error(ret.error);
       return;
     }
 
@@ -697,7 +698,10 @@ class TemplateFrame extends Component {
               ) : (
                 <div>
                   <DojotBtnCircle click={this.setRemovalMode} icon={'fa fa-chevron-left'} tooltip='Remove templates'/>
-                  <DojotBtnCircle click={this.showSearchBox} icon={'fa fa-search'} />
+                  {/* 
+                    // This feature is not working yet
+                    <DojotBtnCircle click={this.showSearchBox} icon={'fa fa-search'} /> 
+                  */}
                 </div>
               )}
               </div>
@@ -771,7 +775,7 @@ class NewDevice extends Component {
     let ops = function(device) {
       DeviceActions.addDevice(device, (device) => {
         // FormActions.set(device);
-        Materialize.toast('Device created', 4000);
+        toaster.success('Device created');
         hashHistory.push('/device/list')
       });
     }
@@ -779,7 +783,7 @@ class NewDevice extends Component {
       title = "Edit device";
       ops = function(device) {
         DeviceActions.triggerUpdate(device, () => {
-          Materialize.toast('Device updated', 4000);
+          toaster.success('Device updated');
         });
       }
     }

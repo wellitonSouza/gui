@@ -516,7 +516,7 @@ class NewAttribute extends Component {
                             {this.state.isActuator ? null :
                             (
                                 <input className={(this.state.newAttr.value_type === "protocol" ? 'none' : '')} type="text"
-                                value={this.state.newAttr.value} maxLength="22" onChange={this.handleChange}
+                                value={this.state.newAttr.value} maxLength="25" onChange={this.handleChange}
                                 name={"value"}/>  
                             )}
 

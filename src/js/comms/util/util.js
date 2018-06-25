@@ -82,7 +82,7 @@ class Util {
   }
 
   printTime(ts) {
-    let date = new Date(null);
+    let date = new Date();
     date.setSeconds(Math.floor(ts));
 
     const options = { hour12: false };

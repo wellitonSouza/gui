@@ -730,6 +730,7 @@ class ListItem extends Component {
           TemplateActions.triggerRemoval(this.state.template.id, (template) => {
           hashHistory.push('/template/list');
           toaster.success('Template removed');
+          this.props.temp_opex._fetch();
         });
     }
 
@@ -1132,6 +1133,7 @@ class TemplateList extends Component {
                     deleteTemplate={this.deleteTemplate}
                     enableNewTemplate={this.props.enableNewTemplate}
                     confirmTarget="confirmDiag"
+                    temp_opex={this.props.temp_opex}
                   />
                 ))}
               </div> : <div className="background-info valign-wrapper full-height">

@@ -740,11 +740,11 @@ class ListItem extends Component {
 
             if (state.config_attrs.filter(
                 function (elem, index) {
-                    return elem.label == attribute.value_type && elem.static_value == attribute.value;
+                    return elem.label == attribute.value_type;
                 }
             )[0])
             {
-                toaster.warning("The pair (label, type) is already created.");
+                toaster.warning("The label " + attribute.value_type + " is already created.");
                 return;
             }
 
@@ -758,12 +758,12 @@ class ListItem extends Component {
         } else {
             if (state.data_attrs.filter(
                 function (elem, index) {
-                    return elem.label == attribute.label && elem.value_type == attribute.value_type;
+                    return elem.label == attribute.label;
 
                 }
             )[0])
             {
-                toaster.warning("The pair (label, type) is already created.");
+                toaster.warning("The label " + attribute.label + " is already created.");
                 return;
             }
 

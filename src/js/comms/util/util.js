@@ -82,7 +82,7 @@ class Util {
   }
 
   printTime(ts) {
-    let date = new Date(null);
+    let date = new Date();
     date.setSeconds(Math.floor(ts));
 
     const options = { hour12: false };
@@ -196,9 +196,16 @@ class Util {
   }
 
   isTypeValid(value, type, dynamic){
+
     let ret = {result: true, error: ""};
-    if (dynamic === 'dynamic' && value.length === 0) return ret;
     if(dynamic === 'actuator' && value.length === 0) return ret;
+
+    if (type.trim().length == 0) {
+      ret.result = false;
+      ret.error = "You must set a type.";
+      return ret;
+    } 
+    if (dynamic === "dynamic" && value.length === 0) return ret;
 
     const validator = {
       'string': function (value) {
@@ -254,13 +261,12 @@ class Util {
           return ret;
       }
     };
-
+    
     if (validator.hasOwnProperty(type)) {
-      const result = validator[type](value);
-      // if (result) { ErrorActions.setField('value', ''); }
-      return result;
+        const result = validator[type](value);
+        return result;
     }
-    //
+
     // if (validator.hasOwnProperty(this.props.newAttr.type)) {
     //   const result = validator[this.props.newAttr.type](value)
     //   if (result) { ErrorActions.setField('value', ''); }

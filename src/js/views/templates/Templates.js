@@ -419,6 +419,7 @@ class NewAttribute extends Component {
     }
 
     addAttribute(attribute) {
+
         let ret = util.isNameValid(attribute.label);
         if (!ret.result && !this.state.isConfiguration) {
             toaster.error(ret.error);
@@ -884,7 +885,6 @@ class ListItem extends Component {
 
         this.state.template.attrs.push.apply(this.state.template.attrs, this.state.template.data_attrs);
         this.state.template.attrs.push.apply(this.state.template.attrs ,this.state.template.config_attrs);
-
         TemplateActions.addTemplate(this.state.template, (template) => {
             toaster.success('Template created.');
             TemplateActions.removeSingle("new_template");

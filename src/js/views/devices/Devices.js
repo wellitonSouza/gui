@@ -101,17 +101,14 @@ class DeviceOperations extends GenericOperations {
   }
 
   _fetch(cb = null) {
+    let res = Object.assign({}, this.paginationParams, this.filterParams);
     if (this.filterParams.templates) {
-      let tmpl_id = this.filterParams.templates;
-      let res = Object.assign({}, this.paginationParams, this.filterParams);
       delete res.templates;
-      console.log("fetching: ", res, "template used: ", tmpl_id);
-      DeviceActions.fetchDevicesByTemplate.defer(tmpl_id, res, cb);
-    } else {
-      let res = Object.assign({}, this.paginationParams, this.filterParams);
+      res.template = this.filterParams.templates;
+    }
       console.log("fetching: ", res, "all templates ");
       DeviceActions.fetchDevices.defer(res, cb);
-    }
+    // }
   }
 }
 
@@ -229,12 +226,12 @@ class Devices extends Component {
 function OperationsHeader(props) {
   return (
     <div className="col s5 pull-right pt10">
-      {/* <div
+      <div
         className="searchBtn"
         title="Show search bar"
         onClick={props.toggleSearchBar}>
         <i className="fa fa-search" />
-      </div> */}
+      </div>
       {props.displayToggle}
       <DojotBtnLink
         linkto="/device/new"

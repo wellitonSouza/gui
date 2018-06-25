@@ -698,7 +698,10 @@ class TemplateFrame extends Component {
               ) : (
                 <div>
                   <DojotBtnCircle click={this.setRemovalMode} icon={'fa fa-chevron-left'} tooltip='Remove templates'/>
-                  <DojotBtnCircle click={this.showSearchBox} icon={'fa fa-search'} />
+                  {/* 
+                    // This feature is not working yet
+                    <DojotBtnCircle click={this.showSearchBox} icon={'fa fa-search'} /> 
+                  */}
                 </div>
               )}
               </div>

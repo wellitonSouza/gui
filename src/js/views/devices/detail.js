@@ -569,7 +569,7 @@ class PositionStaticWrapper extends Component {
 
   getDevicesWithPosition(device){
     function parserPosition(position){
-      let parsedPosition = position.split(", ");
+      let parsedPosition = position.split(",");
       return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
     }
 

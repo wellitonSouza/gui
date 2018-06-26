@@ -373,7 +373,7 @@ class DeviceMap extends Component {
 
     getDevicesWithPosition(devices) {
         function parserPosition(position) {
-            let parsedPosition = position.split(", ");
+            let parsedPosition = position.split(",");
             return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
         }
 
@@ -423,6 +423,7 @@ class DeviceMap extends Component {
                 pointList.push(device);
          }
 
+        console.log("pointList: ", pointList);
         return <div className="fix-map-bug">
             <div className="flex-wrapper">
               <div className="deviceMapCanvas deviceMapCanvas-map col m12 s12 relative">

@@ -11,7 +11,7 @@ import DeviceStore from '../../stores/DeviceStore';
 import util from "../../comms/util/util";
 import DeviceMeta from '../../stores/DeviceMeta';
 import { Loading } from "../../components/Loading";
-import { Attr } from "../../components/HistoryElements";
+import { Attr, HandleGeoElements } from "../../components/HistoryElements";
 import { PositionRenderer } from './DeviceMap.js'
 import { MapWrapper } from './Devices.js'
 import { DojotBtnRedCircle } from "../../components/DojotButton";
@@ -78,7 +78,8 @@ class Attribute extends Component {
       if (width < 1168 )
       opened = true;
 
-    return <div className={"attributeBox " + (opened ? "expanded" : "compressed")}>
+      if(this.props.attr.value_type !== 'geo:point'){
+        return <div className={"attributeBox " + (opened ? "expanded" : "compressed")}>
         <div className="header">
           <label>{this.props.attr.label}</label>
           {!opened ? <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand" /> : <i onClick={this.toogleExpand.bind(this, false)} className="fa fa-compress" />}
@@ -89,6 +90,11 @@ class Attribute extends Component {
           <AttrHistory device={this.props.device} type={this.props.attr.value_type} attr={this.props.attr.label} />
         </div>
       </div>;
+      } else {
+        return <div className="details-card-content">
+          <AttrHistory device={this.props.device} type={this.props.attr.value_type} attr={this.props.attr.label} />
+        </div>
+      }
   }
 }
 
@@ -295,7 +301,7 @@ class DyAttributeArea extends Component {
           (<div className="second-col-label center-align">Select an attribute to be displayed.</div>)
           : null
         }
-        {this.props.openStaticMap ? <PositionStaticWrapper device={this.props.device} label={this.state.static_geo_attr_label} /> : null}
+        {this.props.openStaticMap ? <HandleGeoElements device={this.props.device} label={this.state.static_geo_attr_label} isStatic={true} /> : null}
         {this.state.selected_attributes.map(at => (
           <Attribute key={at.id} device={this.props.device} attr={at} />
         ))}
@@ -501,11 +507,9 @@ class AttrHistory extends Component {
   render() {
     return (
       <div className="graphLarge">
-        <div className="contents no-padding">
-          <AltContainer store={MeasureStore}>
-            <Attr device={this.props.device} type={this.props.type} attr={this.props.attr} />
-          </AltContainer>
-        </div>
+        <AltContainer store={MeasureStore}>
+          <Attr device={this.props.device} type={this.props.type} attr={this.props.attr} label={this.props.attr} />
+        </AltContainer>
       </div>
     );
   }
@@ -542,94 +546,6 @@ function StatusDisplay(props) {
       </div>
     </div>
   )
-}
-
-class PositionStaticWrapper extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      opened: false,
-      hasPosition: false,
-      pos: [],
-      mapquest: false,
-      staticGeoAttrLabel: ""
-    };
-    this.getDevicesWithPosition = this.getDevicesWithPosition.bind(this);
-    this.toogleExpand = this.toogleExpand.bind(this);
-    this.mqLoaded = this.mqLoaded.bind(this);
-  }
-
-  mqLoaded(){
-    this.setState({mapquest: true});
-  }
-
-  toogleExpand(state) {
-    this.setState({opened: state});
-  }
-
-  getDevicesWithPosition(device){
-    function parserPosition(position){
-      let parsedPosition = position.split(",");
-      return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
-    }
-
-    let validDevices = [];
-       for(let j in device.attrs){
-         for(let i in device.attrs[j]){
-           if(device.attrs[j][i].type === "static"){
-             if(device.attrs[j][i].value_type === "geo:point"){
-               device.position = parserPosition(device.attrs[j][i].static_value);
-               //this.setState({staticGeoAttrLabel: device.attrs[j][i].label});
-             }
-           }
-         }
-       }
-
-      device.select = true;
-      if(device.position !== null && device.position !== undefined){
-        validDevices.push(device);
-      }
-    return validDevices;
-  }
-
-  render() {
-    function NoData() {
-        return (
-          <div className="valign-wrapper full-height background-info">
-            <div className="full-width center">No position <br />available</div>
-          </div>
-        )
-    }
-
-    if (this.props.device === undefined)
-    {
-      return (<NoData />);
-    }
-
-    let validDevices = this.getDevicesWithPosition(this.props.device);
-    if (validDevices.length === 0) {
-      return <NoData />;
-    } else {
-      return <div className={"attributeBox " + (this.state.opened ? "expanded" : "compressed")}>
-          <div className="header">
-            <label>{this.props.label}</label>
-            {!this.state.opened ? <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand" /> : <i onClick={this.toogleExpand.bind(this, false)} className="fa fa-compress" />}
-          </div>
-          <div className="details-card-content">
-            <div>
-              <Script url="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=zvpeonXbjGkoRqVMtyQYCGVn4JQG8rd9"
-                      onLoad={this.mqLoaded}>
-              </Script>
-            </div>
-            {this.state.mapquest ?(
-              <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} />
-            ) : (
-              <Loading/>
-            )}
-          </div>
-        </div>
-    }
-  }
 }
 
 class DeviceDetail extends Component {

@@ -423,7 +423,6 @@ class DeviceMap extends Component {
                 pointList.push(device);
          }
 
-        console.log("pointList: ", pointList);
         return <div className="fix-map-bug">
             <div className="flex-wrapper">
               <div className="deviceMapCanvas deviceMapCanvas-map col m12 s12 relative">

@@ -106,13 +106,6 @@ class Graph extends Component{
 
 
 function HistoryList(props) {
-  const empty = (
-    <div className="full-height background-info valign-wrapper no-data-av">
-      <div className="center full-width">No data available</div>
-    </div>
-  );
-
-
   // handle values
   let value = []
   for(let k in props.data[props.device.id]['_'+props.attr]){

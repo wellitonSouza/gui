@@ -12,10 +12,8 @@ import util from "../../comms/util/util";
 import DeviceMeta from '../../stores/DeviceMeta';
 import { Loading } from "../../components/Loading";
 import { Attr, HandleGeoElements } from "../../components/HistoryElements";
-import { PositionRenderer } from './DeviceMap.js'
 import { MapWrapper } from './Devices.js'
 import { DojotBtnRedCircle } from "../../components/DojotButton";
-import Script from 'react-load-script';
 import toaster from "../../comms/util/materialize";
 
 

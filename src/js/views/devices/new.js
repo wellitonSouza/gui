@@ -589,9 +589,9 @@ class DeviceForm extends Component {
                     <DeviceHeader name={this.props.device.device.label} onChange={this.handleChange} />
                   </div>
                   <div className="col s3 p0 mt30px text-right">
-                    <DojotBtnClassic is_secondary={false} onClick={this.save} label="Save" title="Save" />
+                    <DojotBtnClassic is_secondary={false} onClick={this.save} label="Save" title="Save" to={this.props.edition ? "/device/id/"+this.props.deviceid+"/detail" : "/device/list"}/>
                     <div className="col s12 p0 mt10px ">
-                      <DojotBtnClassic is_secondary={true} to="/device/list" label="Discard" title="Discard" />
+                      <DojotBtnClassic is_secondary={true} to={this.props.edition ? "/device/id/"+this.props.deviceid+"/detail" : "/device/list"} label="Discard" title="Discard" />
                   </div>
 
                   </div>

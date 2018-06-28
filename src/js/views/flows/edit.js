@@ -324,7 +324,7 @@ class EditFlow extends Component {
             {(this.props.params.flowid) && (
               <DojotBtnRedCircle
                 icon=" fa fa-trash"
-                tooltip="Remove device"
+                tooltip="Remove flow"
                 click={(e) => {e.preventDefault(); $('#confirmDiag').modal('open');}}
               />
             )}

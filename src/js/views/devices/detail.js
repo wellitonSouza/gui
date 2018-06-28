@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { NewPageHeader } from "../../containers/full/PageHeader";
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import {  hashHistory } from 'react-router'
 import AltContainer from 'alt-container';
 import MeasureStore from '../../stores/MeasureStore';
@@ -195,12 +194,12 @@ class GenericList extends Component {
         <div className="col s12 body">
           {this.props.box_title == "Configurations" ? (
             <div key="id" className="line col s12">
-              <div className="col s12">
+              <div className="col s12 pr0">
                 <div className="col s5">
                   <div className="name-value">device id</div>
                   <div className="value-label">Name</div>
                 </div>
-                <div className="col s7" >
+                <div className="col s7 p0 text-right" >
                   <div className="value-value">{this.props.device.id}</div>
                   <div className="value-label">STRING</div>
                 </div>              
@@ -383,10 +382,10 @@ class DynamicAttributeList extends Component {
           <div className="col s2 filter-icon">
             {/* <i className="fa fa-filter" /> */}
           </div>
-          <label className="col s8">Dynamic Attributes</label>
-          <div className="col s2 search-icon">
+          <label className="col s10">Dynamic attributes</label>
+          {/* <div className="col s2 search-icon">
             <i className="fa fa-search" />
-          </div>
+          </div> */}
         </div>
         <div className="col s12 body">
           {this.props.attrs.map(attr => (
@@ -803,16 +802,9 @@ class ViewDevice extends Component {
   render() {
     return (
       <div className="full-width full-height">
-        <ReactCSSTransitionGroup
-          transitionName="first"
-          transitionAppear={true}
-          transitionAppearTimeout={500}
-          transitionEnterTimeout={500}
-          transitionLeaveTimeout={500} >
           <AltContainer store={DeviceStore}>
             <ViewDeviceImpl device_id={this.props.params.device} />
           </AltContainer>
-        </ReactCSSTransitionGroup>
       </div>
     );
   }

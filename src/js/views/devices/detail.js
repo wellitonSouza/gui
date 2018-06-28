@@ -219,12 +219,9 @@ class GenericList extends Component {
                   {/*<div className="name-value col s12">{attr.label}</div>
                   <div className="value-label">Name</div>*/}
               </div>
-              {attr.isGeo ?
-                <div className="star" >
-                    <i className={"fa " + (this.state.visible_static_map ? "fa-star" : "fa-star-o")} />
-                </div> :
-                null
-              }
+              <div className="star" >
+                  <i className={"fa " + (this.state.visible_static_map ? "fa-star" : "fa-star-o")} />
+              </div>
              </div>
             ):(
               <div key={attr.label} className="line col s12">

@@ -76,23 +76,17 @@ class Attribute extends Component {
       if (width < 1168 )
       opened = true;
 
-      if(this.props.attr.value_type !== 'geo:point'){
-        return <div className={"attributeBox " + (opened ? "expanded" : "compressed")}>
-        <div className="header">
-          <label>{this.props.attr.label}</label>
-          {!opened ? <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand" /> : <i onClick={this.toogleExpand.bind(this, false)} className="fa fa-compress" />}
-        </div>
+      return <div className={"attributeBox " + (opened ? "expanded" : "compressed")}>
+      <div className="header">
+        <label>{this.props.attr.label}</label>
+        {!opened ? <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand" /> : <i onClick={this.toogleExpand.bind(this, false)} className="fa fa-compress" />}
+      </div>
 
-        {/* <AttributeBox attrs={this.state.selected_attributes} /> */}
-        <div className="details-card-content">
-          <AttrHistory device={this.props.device} type={this.props.attr.value_type} attr={this.props.attr.label} />
-        </div>
-      </div>;
-      } else {
-        return <div className="details-card-content">
-          <AttrHistory device={this.props.device} type={this.props.attr.value_type} attr={this.props.attr.label} />
-        </div>
-      }
+      {/* <AttributeBox attrs={this.state.selected_attributes} /> */}
+      <div className="details-card-content">
+        <AttrHistory device={this.props.device} type={this.props.attr.value_type} attr={this.props.attr.label} />
+      </div>
+    </div>;
   }
 }
 
@@ -212,7 +206,8 @@ class GenericList extends Component {
             </div>
           ):("")}
           {this.props.attrs.map(attr => (
-            <div key={attr.label} className="line col s12">
+            attr.isGeo ? (
+              <div key={attr.label} className="line col s12" id="static-geo-attribute" onClick={this.openMap} >
               {/*<div className="col s4">
                 <div className="name-value">{attr.label}</div>
                 <div className="value-label">Name</div>
@@ -225,12 +220,27 @@ class GenericList extends Component {
                   <div className="value-label">Name</div>*/}
               </div>
               {attr.isGeo ?
-                <div className="star" onClick={this.openMap}>
+                <div className="star" >
                     <i className={"fa " + (this.state.visible_static_map ? "fa-star" : "fa-star-o")} />
                 </div> :
                 null
               }
              </div>
+            ):(
+              <div key={attr.label} className="line col s12">
+              {/*<div className="col s4">
+                <div className="name-value">{attr.label}</div>
+                <div className="value-label">Name</div>
+              </div>*/}
+              <div className="col s12" >
+                <div className={this.state.truncate ? "name-value col s10 truncate": "name-value col s10"} title={attr.label}>{attr.label}</div>
+                <div className={this.state.truncate ? "value-value col s10 truncate": "value-value col s10"} title={attr.static_value}>{attr.static_value}</div>
+                <div className="value-label col s2" title={attr.value_type} >{attr.value_type}</div>
+                  {/*<div className="name-value col s12">{attr.label}</div>
+                  <div className="value-label">Name</div>*/}
+              </div>
+             </div>              
+            )
           ))}
         </div>
       </div>;
@@ -506,7 +516,7 @@ class AttrHistory extends Component {
     return (
       <div className="graphLarge">
         <AltContainer store={MeasureStore}>
-          <Attr device={this.props.device} type={this.props.type} attr={this.props.attr} label={this.props.attr} />
+          <Attr device={this.props.device} type={this.props.type} attr={this.props.attr} label={this.props.attr} isStatic={false}/>
         </AltContainer>
       </div>
     );

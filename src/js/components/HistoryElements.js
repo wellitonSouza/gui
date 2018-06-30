@@ -106,14 +106,6 @@ class Graph extends Component{
 
 
 function HistoryList(props) {
-  console.log("props: ", props);
-  const empty = (
-    <div className="full-height background-info valign-wrapper no-data-av">
-      <div className="center full-width">No data available</div>
-    </div>
-  );
-
-
   // handle values
   let value = []
   for(let k in props.data[props.device.id]['_'+props.attr]){
@@ -154,8 +146,8 @@ function HistoryList(props) {
   }
 }
 
-class PositionWrapper extends Component {
-  constructor(props) {
+class HandleGeoElements extends Component{
+  constructor(props){
     super(props);
     this.state = {
       opened: false,
@@ -163,78 +155,107 @@ class PositionWrapper extends Component {
       pos: [],
       mapquest: false
     };
-    this.getDevicesWithPosition = this.getDevicesWithPosition.bind(this);
+
+    this.handleDevicePosition = this.handleDevicePosition.bind(this);
     this.toogleExpand = this.toogleExpand.bind(this);
     this.mqLoaded = this.mqLoaded.bind(this);
   }
 
-  mqLoaded(){
-    this.setState({mapquest: true});
-  }
-
-  toogleExpand(state) {
-    this.setState({opened: state});
-  }
-
-
-  getDevicesWithPosition(device){
-    function parserPosition(position){
-      let parsedPosition = position.split(",");
-      return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
+    mqLoaded(){
+      this.setState({mapquest: true});
     }
-
-    let validDevices = [];
-    let length = device['_'+this.props.attr].length;
-       for(let j in device.attrs){
-         for(let i in device.attrs[j]){
-           if(device.attrs[j][i].type == "static"){
-             if(device.attrs[j][i].value_type == "geo:point"){
-               device.position = parserPosition(device.attrs[j][i].static_value);
-             }
-           }
-         }
-       }
-
-      device.select = true;
-      if(device.position !== null && device.position !== undefined){
-        validDevices.push(device);
+  
+    toogleExpand(state) {
+      this.setState({opened: state});
+    }
+  
+    handleDevicePosition(device){
+      function parserPosition(position){
+        let parsedPosition = position.split(",");
+        return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
       }
-    return validDevices;
+
+      let validDevices = [];
+        for(let j in device.attrs){
+          for(let i in device.attrs[j]){
+            if(device.attrs[j][i].type === "static"){
+              if(device.attrs[j][i].value_type === "geo:point"){
+                device.position = parserPosition(device.attrs[j][i].static_value);
+              }
+            }
+          }
+        }
+  
+        device.select = true;
+        if(device.position !== null && device.position !== undefined){
+          validDevices.push(device);
+        }
+      return validDevices;
   }
 
-  render() {
+  render(){
     function NoData() {
-        return (
-          <div className="valign-wrapper full-height background-info">
-            <div className="full-width center">No position <br />available</div>
-          </div>
-        )
+      return (
+        <div className="valign-wrapper full-height background-info">
+          <div className="full-width center">No position <br />available</div>
+        </div>
+      )
     }
 
     if (this.props.device === undefined)
     {
       return (<NoData />);
     }
+    
+    let validDevices = null;
+    if(this.props.isStatic){
+      //static attribute
+      validDevices = this.handleDevicePosition(this.props.device);
+    } else {
+      //dynamic attribute
+      validDevices = this.handleDevicePosition(this.props.data[this.props.device.id]);
+    }
 
-    let validDevices = this.getDevicesWithPosition(this.props.data[this.props.device.id]);
     if (validDevices.length == 0) {
       return <NoData />;
     } else {
-      return(
-        <div className={"PositionRendererDiv " + (this.state.opened ? "expanded" : "compressed")}>
-          <div>
-            <Script url="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=zvpeonXbjGkoRqVMtyQYCGVn4JQG8rd9"
-                    onLoad={this.mqLoaded}>
-            </Script>
+      if(this.props.isStatic){
+        return(
+          <div className={"attributeBox " + (this.state.opened ? "expanded" : "compressed")}>
+            <div className="header">
+              <label>{this.props.label}</label>
+              {!this.state.opened ? <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand" /> : <i onClick={this.toogleExpand.bind(this, false)} className="fa fa-compress" />}
+            </div>
+            <div>
+              <Script url="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=zvpeonXbjGkoRqVMtyQYCGVn4JQG8rd9"
+                      onLoad={this.mqLoaded}>
+              </Script>
+            </div>
+            {this.state.mapquest ? (
+              <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false}/>
+            ): (
+              <Loading />
+            )}
           </div>
-          {this.state.mapquest ? (
-            <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false}/>
-          ): (
-            <Loading />
-          )}
-        </div>
-      )
+        )
+      } else {
+        return(
+          <span>
+            <div>
+              <Script url="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=zvpeonXbjGkoRqVMtyQYCGVn4JQG8rd9"
+                      onLoad={this.mqLoaded}>
+              </Script>
+            </div>
+            {this.state.mapquest ? (
+              <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false}/>
+            ): (
+              <Loading />
+            )}
+          </span>          
+        )
+      }
     }
+
   }
 }
 
@@ -246,7 +267,7 @@ function Attr(props) {
     'geo': HistoryList,
     'default': HistoryList,
     'boolean': HistoryList,
-    'geo:point': PositionWrapper
+    'geo:point': HandleGeoElements
   };
 
   const Renderer = props.type in known ? known[props.type] : known['default'];
@@ -282,4 +303,4 @@ function Attr(props) {
 
 }
 
-export { Attr };
+export { Attr, HandleGeoElements };

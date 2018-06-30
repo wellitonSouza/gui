@@ -206,7 +206,7 @@ class SideBar extends Component {
                   </div>
                   <div id={"auth-cancel"} className={"material-btn center-text-parent center-middle-flex"} title="Discard Changes" onClick={this.hideSideBar}>
                     <span className="text center-text-child">
-                      cancel
+                      Discard
                     </span>
                   </div>
                   <div id={"auth-delete"} className={"material-btn center-text-parent center-middle-flex"} title="Delete User" onClick={this.handleDelete}>

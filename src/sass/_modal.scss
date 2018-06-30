@@ -95,36 +95,40 @@
   z-index: 10002 !important;
   width: 500px;
   height: 300px;
-  background-color: #fff;
-  box-shadow: 0 8px 10px -5px rgba(0, 0, 0, 0.5);
-
+  background-color:#f9f9f9;
+  -webkit-box-shadow: 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12), 0 5px 5px -3px rgba(0,0,0,.3);
+  box-shadow: 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12), 0 5px 5px -3px rgba(0,0,0,.3);
+  overflow-y: auto;
+  border-radius: 2px;
+  
   .confirm-modal-head{
-    height: 75%;
+    height: 240px;
     padding: 50px;
+    font-family: Cuprum,sans-serif;
+    color: #9e9e9e;
+
 
     i{
       font-size: 6em;
-      color: #D23F3F;
-      padding-top: 10px;
+      color: #756464;
+      padding-top: 25px;
+
     }
     .message{
       .message-title{
+        padding-top:10px;
         font-size: 2em;
         color: #4F4F4F;
         text-transform: capitalize;
       }
 
       .message-subtitle{
-        font-size: 1.140em;
+        text-align: left;
+        padding-top:10px;
+        font-size: 1.340em;
         color: #828282;
       }
     }
-  }
-
-  .confirm-modal-footer{
-    height: 25%;
-    padding-right: 150px;
-    padding-left: 100px;
   }
 
   #btn-dismiss{

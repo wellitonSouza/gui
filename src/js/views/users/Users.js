@@ -9,236 +9,362 @@ import LoginStore from "../../stores/LoginStore";
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import UserActions from '../../actions/UserActions';
 import toaster from "../../comms/util/materialize";
+import { RemoveModal } from "../../components/Modal";
 
 let UserStore = require('../../stores/UserStore');
 
 class SideBar extends Component {
-    constructor() {
-        super();
-        this.state = {
-            user: {},
-            confirmEmail: '',
-            isInvalid: {
-                username: false,
-                name: false,
-                email: false,
-                confirmEmail: false
-            }
-        };
+  constructor() {
+    super();
+    this.state = {
+      user: {},
+      show_modal: false,
+      confirmEmail: "",
+      isInvalid: {
+        username: false,
+        name: false,
+        email: false,
+        confirmEmail: false
+      }
+    };
 
-        this.handleChange = this.handleChange.bind(this);
-        this.handleCreate = this.handleCreate.bind(this);
-        this.handleSave = this.handleSave.bind(this);
-        this.handleDelete = this.handleDelete.bind(this);
-        this.checkValidation = this.checkValidation.bind(this);
-        this.hideSideBar = this.hideSideBar.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleCreate = this.handleCreate.bind(this);
+    this.handleSave = this.handleSave.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.checkValidation = this.checkValidation.bind(this);
+    this.hideSideBar = this.hideSideBar.bind(this);
+    this.setModal = this.setModal.bind(this);
+    this.removeUser = this.removeUser.bind(this);
+}
+
+  componentDidMount() {
+    if (LoginStore.getState().user.profile === "admin") {
+      UserActions.fetchUsers.defer();
     }
+  }
 
-    componentDidMount() {
-        if (LoginStore.getState().user.profile === "admin") {
-            UserActions.fetchUsers.defer();
+  componentWillReceiveProps(next) {
+    let context = this.state;
+    context.user = JSON.parse(JSON.stringify(next.user));
+    if (context.user !== "") context.user.confirmEmail = context.user.email;
+    context.isInvalid = {
+      username: false,
+      name: false,
+      email: false,
+      confirmEmail: false
+    };
+    this.setState(context);
+  }
+
+  checkValidation() {
+    if (this.state.user.profile === "") {
+      toaster.warning("Select a profile");
+      return false;
+    }
+    return !(
+      this.state.isInvalid.confirmEmail ||
+      this.state.isInvalid.email ||
+      this.state.isInvalid.name ||
+      this.state.isInvalid.username
+    );
+  }
+
+  handleChange(event) {
+    const target = event.target;
+    let state = this.state;
+    state.user[target.name] = target.value;
+    this.setState(state);
+    this.filedValidation(state.user, target.name);
+  }
+
+  handleSave() {
+    let tmp = JSON.parse(JSON.stringify(this.state.user));
+    delete tmp.created_by;
+    delete tmp.created_date;
+    delete tmp.passwd;
+    delete tmp.password;
+    console.log(this.checkValidation());
+    if (this.checkValidation()) {
+      UserActions.triggerUpdate(
+        tmp,
+        () => {
+          toaster.success("User updated.");
+          this.hideSideBar();
+        },
+        () => {
+          toaster.error("Failed to update user.");
         }
+      );
     }
+  }
 
-    componentWillReceiveProps(next) {
-        let context = this.state;
-        context.user = JSON.parse(JSON.stringify(next.user));
-        if (context.user !== '')
-            (context.user.confirmEmail = context.user.email);
-        context.isInvalid = {
-            username: false,
-            name: false,
-            email: false,
-            confirmEmail: false
-        };
-        this.setState(context);
-    }
-
-    checkValidation() {
-        if (this.state.user.profile === "") {
-            toaster.warning("Select a profile");
-            return false;
+  handleCreate() {
+    if (this.checkValidation()) {
+      let temp = this.state.user;
+      temp.email = String(temp.email).toLowerCase();
+      UserActions.addUser(
+        temp,
+        () => {
+          toaster.success("User created.");
+          this.hideSideBar();
+        },
+        () => {
+          toaster.success("Failed to create user.");
         }
-        return !(this.state.isInvalid.confirmEmail ||
-            this.state.isInvalid.email ||
-            this.state.isInvalid.name ||
-            this.state.isInvalid.username)
+      );
+    }
+  }
+
+  hideSideBar() {
+    this.props.hide();
+  }
+
+  handleDelete() {
+      this.setState({ show_modal: true });
+  }
+
+  setModal(status) {
+    this.setState({ show_modal: status });
+  }
+
+  removeUser() {
+      UserActions.triggerRemoval(this.state.user, () => {
+          this.hideSideBar();
+          toaster.success("User removed", 4000);
+          this.setState({ show_modal: false });
+      });
     }
 
-    handleChange(event) {
-        const target = event.target;
-        let state = this.state;
-        state.user[target.name] = target.value;
-        this.setState(state);
-        this.filedValidation(state.user, target.name);
+  filedValidation(user, field) {
+    let regex;
+    let tmpState = JSON.parse(JSON.stringify(this.state));
+    if (field === "name") {
+      regex = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
+      tmpState.isInvalid.name = !regex.test(user[field]);
+      this.setState(tmpState);
+    } else if (field === "username") {
+      regex = /^([a-z0-9_])+$/;
+      tmpState.isInvalid.username = !regex.test(user[field]);
+      this.setState(tmpState);
+    } else if (field === "email" || field === "confirmEmail") {
+      regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      if (field === "email")
+        tmpState.isInvalid.email = !regex.test(
+          String(user[field]).toLocaleLowerCase()
+        );
+      tmpState.isInvalid.confirmEmail = !(
+        user["email"] === user["confirmEmail"]
+      );
+      this.setState(tmpState);
     }
+  }
 
-    handleSave() {
-        let tmp = JSON.parse(JSON.stringify(this.state.user));
-        delete tmp.created_by;
-        delete tmp.created_date;
-        delete tmp.passwd;
-        delete tmp.password;
-        console.log(this.checkValidation());
-        if (this.checkValidation()) {
-            UserActions.triggerUpdate(tmp, () => {
-                toaster.success("User updated.");
-                this.hideSideBar();
-            }, () => {
-                toaster.error("Failed to update user.");
-            });
+  render() {
+    let sideBar;
+    if (this.props.visible) {
+      sideBar = (
+        <div id={"sidebar"} className={"sidebar-auth visible"}>
+          <div
+            id={"auth-title"}
+            className={"title" + (this.props.edit ? " " : " hide")}
+          >
+            <span id={"title-text"} className={"title-text"}>
+              Edit User
+            </span>
+          </div>
+          <div
+            id={"auth-title"}
+            className={"title" + (this.props.edit ? " hide" : "")}
+          >
+            <span id={"title-text"} className={"title-text"}>
+              New User
+            </span>
+          </div>
+          <div className="fixed-height">
+            <div id={"auth-icon"} className={"user-icon"}>
+              <img src={"images/generic-user-icon.png"} />
+            </div>
+            <div id={"auth-name"} className="input-field icon-space">
+              <input
+                id="userName46465"
+                value={this.state.user.username}
+                name="username"
+                disabled={this.props.edit}
+                onChange={this.handleChange}
+                style={{ fontSize: "16px" }}
+                className={
+                  "validate" + (this.state.isInvalid.username ? " invalid" : "")
+                }
+                maxLength="40"
+              />
+              <label
+                htmlFor="userName"
+                data-error="Please use only letters (a-z) and numbers (0-9)"
+                className="active"
+              >
+                User Name
+              </label>
+            </div>
+            <div id={"auth-usr"} className="input-field">
+              <input
+                id="name"
+                value={this.state.user.name}
+                name="name"
+                onChange={this.handleChange}
+                style={{ fontSize: "16px" }}
+                className={
+                  "validate" + (this.state.isInvalid.name ? " invalid" : "")
+                }
+                maxLength="40"
+              />
+              <label
+                htmlFor="name"
+                data-error="Invalid name"
+                className="active"
+              >
+                Name
+              </label>
+            </div>
+            <div id={"auth-email"} className="input-field">
+              <input
+                id="email"
+                value={this.state.user.email}
+                name="email"
+                onChange={this.handleChange}
+                style={{ fontSize: "16px" }}
+                className={
+                  "validate" + (this.state.isInvalid.email ? " invalid" : "")
+                }
+                maxLength="40"
+              />
+              <label
+                htmlFor="email"
+                data-error="Please enter a valid email address."
+                className="active"
+              >
+                Email
+              </label>
+            </div>
+            <div id={"auth-confirm"} className="input-field">
+              <input
+                id="confirm-email"
+                value={this.state.user.confirmEmail}
+                name="confirmEmail"
+                onChange={this.handleChange}
+                style={{ fontSize: "16px" }}
+                className={
+                  "validate" +
+                  (this.state.isInvalid.confirmEmail ? " invalid" : "")
+                }
+                maxLength="40"
+              />
+              <label
+                htmlFor="confirm-email"
+                data-error="Email address mismatch"
+                className="active"
+              >
+                Confirm Email
+              </label>
+            </div>
+            <div>
+              <label htmlFor="profile">Profile</label>
+            </div>
 
-        }
+            <div id={"auth-select-role"} className="input-field">
+              <MaterialSelect
+                id="flr_profiles"
+                name="profile"
+                value={this.state.user.profile}
+                onChange={this.handleChange}
+              >
+                <option value="" disabled>
+                  Choose your option
+                </option>
+                <option value="admin" id={"adm-option"}>
+                  Administrator
+                </option>
+                <option value="user" id={"user-option"}>
+                  User
+                </option>
+              </MaterialSelect>
+            </div>
+          </div>
+          <div
+            id={"edit-footer"}
+            className={"action-footer" + (this.props.edit ? "" : " hide")}
+          >
+            <div
+              id={"auth-save"}
+              className={"material-btn center-text-parent center-middle-flex"}
+              title="Save Changes"
+              onClick={this.handleSave}
+            >
+              <span className="text center-text-child">save</span>
+            </div>
+            <div
+              id={"auth-cancel"}
+              className={"material-btn center-text-parent center-middle-flex"}
+              title="Discard Changes"
+              onClick={this.hideSideBar}
+            >
+              <span className="text center-text-child">cancel</span>
+            </div>
+            <div
+              id={"auth-delete"}
+              className={"material-btn center-text-parent center-middle-flex"}
+              title="Delete User"
+              onClick={this.handleDelete}
+            >
+              <span className="text center-text-child">delete</span>
+            </div>
+          </div>
+
+          <div
+            id={"create-footer"}
+            className={"action-footer" + (this.props.edit ? " hide" : "")}
+          >
+            <div
+              id={"auth-save"}
+              className={"material-btn center-text-parent center-middle-flex"}
+              title="Create a new user"
+              onClick={this.handleCreate}
+            >
+              <span className="text center-text-child">create</span>
+            </div>
+            <div
+              id={"auth-cancel"}
+              className={"material-btn center-text-parent center-middle-flex"}
+              title="Discard changes"
+              onClick={this.hideSideBar}
+            >
+              <span className="text center-text-child">discard</span>
+            </div>
+          </div>
+        </div>
+      );
     }
-
-    handleCreate() {
-        if (this.checkValidation()) {
-            let temp = this.state.user;
-            temp.email = String(temp.email).toLowerCase();
-            UserActions.addUser(temp, () => {
-                toaster.success('User created.');
-                this.hideSideBar();
-            }, () => {
-                toaster.success("Failed to create user.");
-            })
-        }
-    }
-
-    hideSideBar() {
-        this.props.hide();
-    }
-
-    handleDelete(event) {
-        event.preventDefault();
-        this.hideSideBar();
-        UserActions.triggerRemoval(this.state.user, () => {
-            toaster.success('User removed', 4000);
-        });
-
-    }
-
-
-    filedValidation(user, field) {
-        let regex;
-        let tmpState = JSON.parse(JSON.stringify(this.state));
-        if (field === 'name') {
-            regex = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
-            tmpState.isInvalid.name = !regex.test(user[field]);
-            this.setState(tmpState);
-        } else if (field === 'username') {
-            regex = /^([a-z0-9_])+$/;
-            tmpState.isInvalid.username = !regex.test(user[field]);
-            this.setState(tmpState);
-        } else if (field === 'email' || field === 'confirmEmail') {
-            regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            if (field === 'email') tmpState.isInvalid.email = !regex.test(String(user[field]).toLocaleLowerCase());
-            tmpState.isInvalid.confirmEmail = !(user['email'] === user['confirmEmail']);
-            this.setState(tmpState);
-        } else {
-        }
-    }
-
-    render() {
-        let sideBar;
-        if (this.props.visible) {
-            sideBar = <div id={"sidebar"} className={"sidebar-auth" + (this.props.visible ? " visible" : "")}>
-                <div id={"auth-title"} className={"title" + (this.props.edit ? " " : " hide")}>
-                  <span id={"title-text"} className={"title-text"}>
-                    Edit User
-                  </span>
-                </div>
-                <div id={"auth-title"} className={"title" + (this.props.edit ? " hide" : "")}>
-                  <span id={"title-text"} className={"title-text"}>
-                    New User
-                  </span>
-                </div>
-                <div className="fixed-height">
-                  <div id={"auth-icon"} className={"user-icon"}>
-                    <img src={"images/generic-user-icon.png"} />
-                  </div>
-                  <div id={"auth-name"} className="input-field icon-space">
-                    <input id="userName46465" value={this.state.user.username} name="username" disabled={this.props.edit} onChange={this.handleChange} style={{ fontSize: "16px" }} className={"validate" + (this.state.isInvalid.username ? " invalid" : "")} maxLength="40" />
-                    <label htmlFor="userName" data-error="Please use only letters (a-z) and numbers (0-9)" className="active">
-                      User Name
-                    </label>
-                  </div>
-                  <div id={"auth-usr"} className="input-field">
-                    <input id="name" value={this.state.user.name} name="name" onChange={this.handleChange} style={{ fontSize: "16px" }} className={"validate" + (this.state.isInvalid.name ? " invalid" : "")} maxLength="40" />
-                    <label htmlFor="name" data-error="Invalid name" className="active">
-                      Name
-                    </label>
-                  </div>
-                  <div id={"auth-email"} className="input-field">
-                    <input id="email" value={this.state.user.email} name="email" onChange={this.handleChange} style={{ fontSize: "16px" }} className={"validate" + (this.state.isInvalid.email ? " invalid" : "")} maxLength="40" />
-                    <label htmlFor="email" data-error="Please enter a valid email address." className="active">
-                      Email
-                    </label>
-                  </div>
-                  <div id={"auth-confirm"} className="input-field">
-                    <input id="confirm-email" value={this.state.user.confirmEmail} name="confirmEmail" onChange={this.handleChange} style={{ fontSize: "16px" }} className={"validate" + (this.state.isInvalid.confirmEmail ? " invalid" : "")} maxLength="40" />
-                    <label htmlFor="confirm-email" data-error="Email address mismatch" className="active">
-                      Confirm Email
-                    </label>
-                  </div>
-                  <div>
-                    <label htmlFor="profile">Profile</label>
-                  </div>
-
-                  <div id={"auth-select-role"} className="input-field">
-                    <MaterialSelect id="flr_profiles" name="profile" value={this.state.user.profile} onChange={this.handleChange}>
-                      <option value="" disabled>
-                        Choose your option
-                      </option>
-                      <option value="admin" id={"adm-option"}>
-                        Administrator
-                      </option>
-                      <option value="user" id={"user-option"}>
-                        User
-                      </option>
-                    </MaterialSelect>
-                  </div>
-                </div>
-                <div id={"edit-footer"} className={"action-footer" + (this.props.edit ? "" : " hide")}>
-                  <div id={"auth-save"} className={"material-btn center-text-parent center-middle-flex"} title="Save Changes" onClick={this.handleSave}>
-                    <span className="text center-text-child">
-                      save
-                    </span>
-                  </div>
-                  <div id={"auth-cancel"} className={"material-btn center-text-parent center-middle-flex"} title="Discard Changes" onClick={this.hideSideBar}>
-                    <span className="text center-text-child">
-                      Discard
-                    </span>
-                  </div>
-                  <div id={"auth-delete"} className={"material-btn center-text-parent center-middle-flex"} title="Delete User" onClick={this.handleDelete}>
-                    <span className="text center-text-child">
-                      delete
-                    </span>
-                  </div>
-                </div>
-
-                <div id={"create-footer"} className={"action-footer" + (this.props.edit ? " hide" : "")}>
-                  <div id={"auth-save"} className={"material-btn center-text-parent center-middle-flex"} title="Create a new user" onClick={this.handleCreate}>
-                    <span className="text center-text-child">
-                      create
-                    </span>
-                  </div>
-                  <div id={"auth-cancel"} className={"material-btn center-text-parent center-middle-flex"} title="Discard changes" onClick={this.hideSideBar}>
-                    <span className="text center-text-child">
-                      discard
-                    </span>
-                  </div>
-                </div>
-              </div>;
-        }
-        return (
-            <ReactCSSTransitionGroup
-                transitionName="sidebar"
-                transitionAppear={true} transitionAppearTimeout={500}
-                transitionEnterTimeout={500} transitionLeaveTimeout={500}>
-                {sideBar}
-            </ReactCSSTransitionGroup>
-        )
-    }
+    return (
+      <ReactCSSTransitionGroup
+        transitionName="sidebar"
+        transitionAppear={true}
+        transitionAppearTimeout={500}
+        transitionEnterTimeout={500}
+        transitionLeaveTimeout={500}
+      >
+        {sideBar}
+        {this.state.show_modal ? (
+          <RemoveModal
+            name={"user"}
+            remove={this.removeUser}
+            openModal={this.setModal}
+          />
+        ) : (
+          <div />
+        )}
+      </ReactCSSTransitionGroup>
+    );
+  }
 }
 
 function SummaryItem(props) {

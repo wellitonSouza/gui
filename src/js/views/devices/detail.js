@@ -12,9 +12,10 @@ import DeviceMeta from '../../stores/DeviceMeta';
 import { Loading } from "../../components/Loading";
 import { Attr, HandleGeoElements } from "../../components/HistoryElements";
 import { MapWrapper } from './Devices.js'
-import { DojotBtnRedCircle } from "../../components/DojotButton";
+import Script from 'react-load-script';
 import toaster from "../../comms/util/materialize";
-
+import { DojotBtnRedCircle } from "../../components/DojotButton";
+import { RemoveModal } from "../../components/Modal";
 
 
 class Tooltip extends Component{
@@ -419,54 +420,6 @@ class DynamicAttributeList extends Component {
 
 
 
-class RemoveDialog extends Component {
-  constructor(props) {
-    super(props);
-
-    this.dismiss = this.dismiss.bind(this);
-    this.remove = this.remove.bind(this);
-  }
-
-  componentDidMount() {
-    // materialize jquery makes me sad
-    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
-    $(modalElement).ready(function() {
-      $('.modal').modal();
-    })
-  }
-
-  dismiss(event) {
-    event.preventDefault();
-    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
-    $(modalElement).modal('close');
-  }
-
-  remove(event) {
-    event.preventDefault();
-    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
-    this.props.callback(event);
-    $(modalElement).modal('close');
-  }
-
-  render() {
-    return (
-      <div className="modal" id={this.props.target} ref="modal">
-        <div className="modal-content full">
-          <div className="row center background-info">
-            <div><i className="fa fa-exclamation-triangle fa-4x" /></div>
-            <div>You are about to remove this device.</div>
-            <div>Are you sure?</div>
-          </div>
-        </div>
-        <div className="modal-footer right">
-            <button type="button" className="btn-flat btn-ciano waves-effect waves-light" onClick={this.dismiss}>cancel</button>
-            <button type="submit" className="btn-flat btn-red waves-effect waves-light" onClick={this.remove}>remove</button>
-        </div>
-      </div>
-    )
-  }
-}
-
 class DeviceUserActions extends Component {
   constructor(props) {
     super(props);
@@ -474,10 +427,8 @@ class DeviceUserActions extends Component {
   }
 
   removeDevice(event) {
-      event.preventDefault();
-      $("#" + this.props.confirmTarget).modal("open");
+    this.props.setModal(true);
   }
-
 
   render() {
     return (
@@ -609,7 +560,10 @@ class DeviceDetail extends Component {
 class ViewDeviceImpl extends Component {
   constructor(props) {
     super(props);
-
+    this.state = {
+      show_modal: false
+    }
+    this.setModal = this.setModal.bind(this);
     this.remove = this.remove.bind(this);
   }
 
@@ -638,6 +592,11 @@ class ViewDeviceImpl extends Component {
     });
   }
 
+  setModal(status) {
+    this.setState({ show_modal: status });
+  }
+
+
   render() {
     let title = "View device";
 
@@ -655,19 +614,16 @@ class ViewDeviceImpl extends Component {
       return (<Loading />);
     }
 
-     return (
-      <div className="full-height bg-light-gray">
-      <NewPageHeader title="Devices" subtitle="device manager" icon="device">
-          <div className="box-sh">
-            <DeviceUserActions devices={this.props.devices} deviceid={device.id} confirmTarget="confirmDiag"/>
-          </div>
-          <RemoveDialog callback={this.remove} target="confirmDiag" />
-        </NewPageHeader>
-        <DeviceHeader device={device}>
-        </DeviceHeader>
-        <DeviceDetail deviceid={device.id} device={device}/>
-      </div>
-    )
+     return <div className="full-height bg-light-gray">
+         <NewPageHeader title="Devices" subtitle="device manager" icon="device">
+           <div className="box-sh">
+             <DeviceUserActions devices={this.props.devices} deviceid={device.id}  setModal={this.setModal} />
+           </div>
+         </NewPageHeader>
+         <DeviceHeader device={device} />
+         <DeviceDetail deviceid={device.id} device={device} />
+          {this.state.show_modal ? <RemoveModal name={"device"} remove={this.remove} openModal={this.setModal} /> : <div />}
+       </div>;
   }
 }
 

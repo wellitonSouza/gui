@@ -19,7 +19,7 @@ import util from "../../comms/util/util";
 import { NewPageHeader } from "../../containers/full/PageHeader";
 import { hashHistory } from 'react-router';
 
-import { GenericModal, RemoveModal } from "../../components/Modal";
+import { RemoveModal } from "../../components/Modal";
 import Toggle from 'material-ui/Toggle';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 

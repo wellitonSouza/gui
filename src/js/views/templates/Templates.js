@@ -1303,7 +1303,7 @@ function OperationsHeader(props) {
             {/* <div className="searchBtn" title="Show search bar" onClick={props.toggleSearchBar}>
                 <i className="fa fa-search" />
             </div> */}
-            <div onClick={props.addTemplate} className="new-btn-flat red waves-effect waves-light" title="Create a new template">
+            <div onClick={props.addTemplate} className="new-btn-flat red" title="Create a new template">
                 New Template<i className="fa fa-plus" />
             </div>
         </div>

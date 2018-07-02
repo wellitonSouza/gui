@@ -534,7 +534,7 @@ class Users extends Component {
 
 function OperationsHeader(props) {
     return <div className="col s12 pull-right pt10">
-        <div onClick={props.newUser} className="new-btn-flat red waves-effect waves-light" title="Create a new user">
+        <div onClick={props.newUser} className="new-btn-flat red" title="Create a new user">
           New User<i className="fa fa-plus" />
         </div>
       </div>;

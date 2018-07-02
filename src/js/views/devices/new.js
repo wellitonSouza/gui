@@ -783,7 +783,6 @@ class NewDevice extends Component {
           toaster.success('Device updated');
           hashHistory.push('/device/list');
         });
-        window
       }
     }
 

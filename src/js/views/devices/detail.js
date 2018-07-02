@@ -13,7 +13,6 @@ import DeviceMeta from '../../stores/DeviceMeta';
 import { Loading } from "../../components/Loading";
 import { Attr } from "../../components/HistoryElements";
 import { PositionRenderer } from './DeviceMap.js'
-import { MapWrapper } from './Devices.js'
 import { DojotBtnRedCircle } from "../../components/DojotButton";
 import Script from 'react-load-script';
 import toaster from "../../comms/util/materialize";
@@ -520,30 +519,6 @@ function getAttrsLength(attrs){
   return length;
 }
 
-function StatusDisplay(props) {
-  const numAttributes = getAttrsLength(props.device.attrs);
-  return (
-    <div className="detail-box-body">
-      <div className="metric">
-          <span className="label">Attributes</span>
-          <span className="value">{numAttributes}</span>
-      </div>
-      <div className="metric">
-          <span className="label">Last update</span>
-          <span className="value">{util.iso_to_date(props.device.ts)}</span>
-      </div>
-      <div className="metric">
-          <span className="label">Location</span>
-          <span className="value">{props.location}</span>
-      </div>
-      <div className="metric">
-          <span className="label">Protocol</span>
-          <span className="value">{props.device.protocol ? props.device.protocol : "MQTT"}</span>
-      </div>
-    </div>
-  )
-}
-
 class PositionStaticWrapper extends Component {
   constructor(props) {
     super(props);
@@ -719,11 +694,7 @@ class ViewDeviceImpl extends Component {
   }
 
   render() {
-    let title = "View device";
-
     let device = undefined;
-    let teste = DeviceMeta.getState();
-
 
     if (this.props.devices !== undefined){
       if (this.props.devices.hasOwnProperty(this.props.device_id)) {

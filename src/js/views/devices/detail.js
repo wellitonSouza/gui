@@ -9,7 +9,6 @@ import MeasureActions from '../../actions/MeasureActions';
 import DeviceActions from '../../actions/DeviceActions';
 import DeviceStore from '../../stores/DeviceStore';
 import util from "../../comms/util/util";
-import DeviceMeta from '../../stores/DeviceMeta';
 import { Loading } from "../../components/Loading";
 import { Attr } from "../../components/HistoryElements";
 import { PositionRenderer } from './DeviceMap.js'
@@ -508,15 +507,6 @@ class AttrHistory extends Component {
       </div>
     );
   }
-}
-
-
-function getAttrsLength(attrs){
-  let length = 0;
-  for(let k in attrs){
-    length = length + attrs[k].length;
-  }
-  return length;
 }
 
 class PositionStaticWrapper extends Component {

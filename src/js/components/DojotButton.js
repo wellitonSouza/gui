@@ -78,7 +78,7 @@ class DojotBtnRedCircle extends Component {
     }
 
     return (
-      <button type="button" className='btn waves-effect waves-light new-btn-circle btn-red' onClick={this.props.click}>
+      <button type="button" className='btn waves-effect waves-light new-btn-circle btn-red' onClick={this.props.click} title={this.props.tooltip}>
         <i className={this.props.icon} aria-hidden="true"></i>
       </button>
     )

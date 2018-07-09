@@ -403,7 +403,7 @@ class DynamicAttributeList extends Component {
             <div key={attr.label} className="line" onClick={this.clickAttr.bind(this, attr)}>
               <div className="col offset-s2 s8">
                 <div className={this.state.truncate ? "label truncate" : "label"} title={attr.label}>{attr.label}</div>
-                {/* <div className="value-label">{attr.value_type}</div> */}
+                <div className="value-label">{attr.value_type}</div>
               </div>
               <div className="col s2">
                 <div className="star" >

@@ -1,3 +1,10 @@
+#user_label, #pass_label
+{
+  &.active
+  {
+    color:red;
+  }
+}
 
 .login-area-left-side {
   background-color: $gray;
@@ -24,6 +31,20 @@
     background-position: left;
   }
 
+  .error-msgs-login
+    {
+      font-family: 'Open Sans', sans-serif;
+      font-style: italic;
+      font-weight: bold;
+      line-height: normal;
+      text-align: right;
+      font-size: 10px;
+      position: absolute;
+      left: 10px;
+      bottom: 0px;
+      color: red;
+    }
+
     .forget-password
     {
       font-family: 'Open Sans', sans-serif;
@@ -32,10 +53,21 @@
       line-height: normal;
       text-align: right;
       font-size: 10px;
+      
 
       label{
         cursor: pointer;
       }
+    }
+
+    .visible
+    {
+      display: inline;
+    }
+
+    .not-visible
+    {
+      display: none;
     }
 
     .login-page-title {

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { DojotBtnCircle, DojotButton } from "../../components/DojotButton";
 import ReactPaginate from 'react-paginate';
+import MaterialSelect from '../../components/MaterialSelect';
 
 class GenericOperations {
 
@@ -9,8 +10,11 @@ class GenericOperations {
     console.log("GenericOperations loaded.");
   }
 
+  setDefaultPageNumber() {
+    this.paginationParams.page_num = 1;
+  }
+
   setDefaultPaginationParams() {
-    console.log("setDefaultPaginationParams");
     this.paginationParams = {
       page_size: 6,
       page_num: 1
@@ -38,11 +42,9 @@ class FilterLabel extends Component{
 
   render() {
     if (this.props.ops.hasFilter())
-    return(
-      <div className = 'col s2 p0 filter-information' >
-        {this.props.text}
-      </div>  
-      )
+    return <div className="col s2 p0 filter-information">
+       <i className="fa fa-info-circle " /> Filtering 
+      </div>;
       else
       return (
         <div className='col s2 p0' >
@@ -57,12 +59,27 @@ class Pagination extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      page_size: 6,
+      page_num: 1
+    }
     this.handlePageClick = this.handlePageClick.bind(this);
+    this.changeNelements = this.changeNelements.bind(this);
   }
 
   handlePageClick(data) {
-    let pag = { page_num: data.selected + 1};
-    this.props.ops.whenUpdatePagination(pag);
+    let state = this.state;
+    state.page_num = data.selected + 1;
+    this.setState(state);
+    this.props.ops.whenUpdatePagination(state);
+  }
+
+  changeNelements(event) {
+    let state = this.state;
+    state.page_size = event.target.value;
+    state.page_num = 1; // we need restart to the first page 
+    this.setState(state);
+    this.props.ops.whenUpdatePagination(state);
   }
 
   render() {
@@ -75,19 +92,31 @@ class Pagination extends Component {
     let currentPage = this.props.pagination.page - 1; 
 
     return (
-      <div className='col s5 p0'>
-        <ReactPaginate previousLabel={"previous"}
-          nextLabel={"next"}
-          pageCount={pageCount}
-          marginPagesDisplayed={1}
-          pageRangeDisplayed={4}
-          forcePage={currentPage}
-          onPageChange={this.handlePageClick}
-          containerClassName={"pagination"}
-          subContainerClassName={"pages pagination"}
-          activeClassName={"active"} />
+      <div >
+        <div className='col s5 p0'>
+          <div className='elements_page_div'>
+            <MaterialSelect label="# per page" value={this.state.elements_page} onChange={this.changeNelements}>
+              <option key="six" value="6">6</option>
+              <option key="twelve" value="12">12</option>
+              <option key="eighteen" value="18">18</option>
+            </MaterialSelect>
+          </div>
+          <div className='pagination_div'>
+            <ReactPaginate previousLabel={"previous"}
+              nextLabel={"next"}
+              pageCount={pageCount}
+              marginPagesDisplayed={1}
+              pageRangeDisplayed={4}
+              forcePage={currentPage}
+              onPageChange={this.handlePageClick}
+              containerClassName={"pagination"}
+              subContainerClassName={"pages pagination"}
+              activeClassName={"active"} />
+          </div>
+        </div>
+
       </div>
-      )
+)
   }
 }
 
@@ -101,7 +130,7 @@ class Filter extends Component {
       hasData: false,
       order: 'asc',
       nElements: 0,
-      query: {}
+      query: { "sortBy": "label" }
     };
     this.handleChange = this.handleChange.bind(this);
     this.updateQuery = this.updateQuery.bind(this);
@@ -139,7 +168,7 @@ class Filter extends Component {
   }
   
   render() {
-    console.log("Render Filter Component ", this.props);
+    console.log("Render Filter Component ", this.props, this.state);
  
     // if (this.props.showPainel) {
     //   return null;

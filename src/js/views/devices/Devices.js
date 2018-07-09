@@ -95,7 +95,7 @@ class DeviceOperations extends GenericOperations {
   }
 
   whenUpdateFilter(config) {
-    this.setDefaultPaginationParams();
+    this.setDefaultPageNumber();
     this.filterParams = config;
     this._fetch();
   }

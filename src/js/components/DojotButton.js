@@ -49,13 +49,13 @@ class DojotButton extends Component {
 
     if (this.props.linkto)
       return (
-        <Link to={this.props.linkto} title={this.props.alt} className={"waves-effect waves-light btn-flat " + color}>
+        <Link to={this.props.linkto} title={this.props.alt} className={"btn-flat " + color}>
           {this.props.label}
         </Link>
       )
 
     else
-      return <button type="button" title={this.props.alt} onClick={this.props.click} className={"waves-effect waves-dark btn-flat " + color}>
+      return <button type="button" title={this.props.alt} onClick={this.props.click} className={"btn-flat " + color}>
         {this.props.label}
       </button>;
   }
@@ -71,14 +71,14 @@ class DojotBtnRedCircle extends Component {
     // using Link
     if (this.props.to !== undefined)
     {
-      return <Link to={this.props.to} className="btn waves-effect waves-light new-btn-circle btn-red" tabIndex="-1" title={this.props.tooltip}>
+      return <Link to={this.props.to} className="btn new-btn-circle btn-red" tabIndex="-1" title={this.props.tooltip}>
           <i className={"clickable " + this.props.icon} aria-hidden="true" />
         </Link>;
 
     }
 
     return (
-      <button type="button" className='btn waves-effect waves-light new-btn-circle btn-red' onClick={this.props.click} title={this.props.tooltip}>
+      <button type="button" className='btn new-btn-circle btn-red' onClick={this.props.click} title={this.props.tooltip}>
         <i className={this.props.icon} aria-hidden="true"></i>
       </button>
     )
@@ -93,7 +93,7 @@ class DojotBtnCircle extends Component {
 
   render() {
     return (
-      <button type="button" className='btn waves-effect waves-light new-btn-circle' onClick={this.props.click}>
+      <button type="button" className='btn new-btn-circle' onClick={this.props.click}>
         <i className={this.props.icon} aria-hidden="true"></i>
       </button>
     )

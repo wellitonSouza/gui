@@ -20,6 +20,8 @@ import MaterialSelect from "../../components/MaterialSelect";
 import MaterialInput from "../../components/MaterialInput";
 import toaster from "../../comms/util/materialize";
 
+import { DojotBtnRedCircle } from "../../components/DojotButton";
+
 
 /*
  Below begins the React Flux's hell
@@ -787,21 +789,31 @@ class NewDevice extends Component {
         });
       }
     }
-
-    return (
-      <div className="full-width full-height">
-        <ReactCSSTransitionGroup
-          transitionName="first"
-          transitionAppear={true} transitionAppearTimeout={500}
-          transitionEntattrTypeerTimeout={500} transitionLeaveTimeout={500} >
+    console.log("this.props,", this.props);
+    return <div className="full-width full-height">
+        <ReactCSSTransitionGroup transitionName="first" transitionAppear={true} transitionAppearTimeout={500} transitionEntattrTypeerTimeout={500} transitionLeaveTimeout={500}>
           <NewPageHeader title="Devices" subtitle="device manager" icon="device">
+            <div className="box-sh">
+            {this.props.params.device ? (
+                <DojotBtnRedCircle
+                  to={"/device/id/" + this.props.params.device + "/detail"}
+                  icon="fa fa-arrow-left"
+                  tooltip="Return to device details"
+                />
+              ) : (
+                <DojotBtnRedCircle
+                  to={"/device/list"}
+                  icon="fa fa-arrow-left"
+                  tooltip="Return to device list"
+                />
+              )}
+            </div>
           </NewPageHeader>
-          <AltContainer stores={{device: DeviceFormStore, templates: TemplateStore}} >
-           <DeviceForm deviceid={this.props.params.device} edition={edition} operator={ops} />
+          <AltContainer stores={{ device: DeviceFormStore, templates: TemplateStore }}>
+            <DeviceForm deviceid={this.props.params.device} edition={edition} operator={ops} />
           </AltContainer>
         </ReactCSSTransitionGroup>
-      </div>
-    )
+      </div>;
   }
 }
 

@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-
+import {
+  DojotBtnRedCircle,
+  DojotBtnClassic
+} from "../components/DojotButton";
 import detail from '../views/devices/detail';
 import LoginActions from '../actions/LoginActions';
 
@@ -18,15 +21,15 @@ class ConfirmModal extends Component {
   }
 
   confirm(event){
-    //TODO - make this button work
-    console.log("TODO - Makes this operation work");
+    event.preventDefault();
+    this.props.confirm(event);
   }
 
   render(){
     let title = "Confirm Operation";
     let message = "Are you confirm this operation";
     return(
-        <GenericModal title={title} first_message={message} btnLabel={"Confirm"} openModal={this.openModal}/>
+        <GenericModal title={title} first_message={message} btnLabel={"Confirm"} openModal={this.openModal} click={this.confirm}/>
     )
   }
 }
@@ -50,12 +53,12 @@ class RemoveModal extends Component {
   }
 
   render(){
+
+    let op_type = {'label':'Remove'};
     let title = "Remove " + this.props.name;
-    let first_message = "Are you sure you want remove this";
-    let second_message = this.props.name;
+    let first_message = "You are about to remove this " + this.props.name+". Are you sure?";
     return(
-      <GenericModal title={title} first_message={first_message} second_message={second_message}
-                            openModal={this.openModal} remove={this.remove} btnLabel={"Remove"}/>
+      <GenericModal title={title} first_message={first_message} openModal={this.openModal} click={this.remove} op_type={op_type} btnLabel={"Remove"}/>
     )
   }
 }
@@ -274,21 +277,16 @@ class GenericModal extends Component {
     super(props);
 
     this.dismiss = this.dismiss.bind(this);
-    this.remove = this.remove.bind(this);
-    this.confirm = this.confirm.bind(this);
+    this.primary_click = this.primary_click.bind(this);
   }
 
   dismiss(){
     this.props.openModal(false);
   }
 
-  remove(event){
+  primary_click(event){
     event.preventDefault();
-    this.props.remove(event);
-  }
-
-  confirm(event){
-    //TODO - Make this operation work
+    this.props.click(event);
   }
 
   render(){
@@ -296,18 +294,17 @@ class GenericModal extends Component {
       <div className="">
         <div className="row confirm-modal">
           <div className="confirm-modal-head">
-            <div className="col s3 img-alert">
+            <div className="col s4 img-alert">
               <div><i className="fa fa-exclamation-triangle fa-4x" /></div>
             </div>
-            <div className="col s9 message">
+            <div className="col s8 message">
               <div className="message-title left">{this.props.title}</div>
               <div className="message-subtitle left">{this.props.first_message}</div>
-              <div className="message-subtitle left">{this.props.second_message}?</div>
             </div>
           </div>
-          <div className="confirm-modal-footer">
-            <div  className="col s6"><a className="waves-effect waves-light btn btn-light" id="btn-dismiss" tabIndex="-1" title="Cancel" onClick={this.dismiss}>Cancel</a></div>
-            <div className="col s6"><a className="waves-effect waves-light btn" id="btn-action" tabIndex="-1" title="Remove" onClick={this.remove}>{this.props.btnLabel}</a></div>
+          <div className="col s12 text-right">
+            <DojotBtnClassic is_secondary={true} onClick={this.dismiss} label="Cancel" title="Cancel" />
+            <DojotBtnClassic is_secondary={false} onClick={this.primary_click} label={this.props.op_type.label} title={this.props.op_type.label} />
           </div>
         </div>
         <div className="modal-background" onClick={this.dismiss}></div>

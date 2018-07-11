@@ -57,9 +57,7 @@ class Content extends Component {
     e.preventDefault();
     this.try_login = true;
     const results = this.validate(this.state.login.username, this.state.login.passwd);
-    console.log("results", Object.keys(results.invalid).length);
     if (Object.keys(results.invalid).length == 0) {
-      console.log("LLOOFIN", this.state.login);
       LoginActions.authenticate(JSON.parse(JSON.stringify(this.state.login)));
     }
     this.setState(results);
@@ -70,7 +68,6 @@ class Content extends Component {
     let state = this.state.login;
     state[target.name] = target.value;
     const results = this.validate(state.username, state.passwd);
-    console.log("results", results);
     results.login = state;
     this.setState(results);
   }
@@ -97,12 +94,10 @@ class Content extends Component {
     // }
 
     function checkUsername() {
-      console.log("checkUsername", state.invalid.hasOwnProperty("username"));
       return state.invalid.hasOwnProperty("username") && try_login;
     }
 
     function checkPasswd() {
-      console.log("checkPasswd", state.invalid.hasOwnProperty("passwd"));
       return state.invalid.hasOwnProperty("passwd") && try_login;
     }
 

@@ -1091,9 +1091,6 @@ class TemplateList extends Component {
     }
 
     detailedTemplate(id) {
-        if (this.state.detail && this.state.edit) {
-        }
-
         let temp = this.state;
         temp.detail = id;
         this.setState(temp);

@@ -8,7 +8,6 @@ import MeasureActions from '../../actions/MeasureActions';
 import DeviceActions from '../../actions/DeviceActions';
 import DeviceStore from '../../stores/DeviceStore';
 import util from "../../comms/util/util";
-import DeviceMeta from '../../stores/DeviceMeta';
 import { Loading } from "../../components/Loading";
 import { Attr, HandleGeoElements } from "../../components/HistoryElements";
 import { MapWrapper } from './Devices.js'
@@ -470,7 +469,6 @@ class AttrHistory extends Component {
   }
 }
 
-
 function getAttrsLength(attrs){
   let length = 0;
   for(let k in attrs){
@@ -597,11 +595,7 @@ class ViewDeviceImpl extends Component {
 
 
   render() {
-    let title = "View device";
-
     let device = undefined;
-    let teste = DeviceMeta.getState();
-
 
     if (this.props.devices !== undefined){
       if (this.props.devices.hasOwnProperty(this.props.device_id)) {

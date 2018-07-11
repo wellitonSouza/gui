@@ -291,7 +291,6 @@ function Attr(props) {
     return <NoData />;
   }
 
-  let label = props.attr;
   if (props.data[props.device.id]['_'+props.attr] == undefined) {
       return <NoDataAv />;
   }

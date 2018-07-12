@@ -36,7 +36,8 @@ class SideBar extends Component {
     this.hideSideBar = this.hideSideBar.bind(this);
     this.setModal = this.setModal.bind(this);
     this.removeUser = this.removeUser.bind(this);
-}
+    this.fieldValidation = this.fieldValidation.bind(this);
+  }
 
   componentDidMount() {
     if (LoginStore.getState().user.profile === "admin") {
@@ -58,24 +59,37 @@ class SideBar extends Component {
   }
 
   checkValidation() {
-    if (this.state.user.profile === "") {
-      toaster.warning("Select a profile");
+    if (this.checkName(this.state.user.name)) {
+      toaster.warning("Invalid name.");
       return false;
     }
-    return !(
-      this.state.isInvalid.confirmEmail ||
-      this.state.isInvalid.email ||
-      this.state.isInvalid.name ||
-      this.state.isInvalid.username
-    );
+    if (this.checkEmail(this.state.user.email)) {
+      toaster.warning("Invalid email.");
+      return false;
+    }
+
+    if (this.checkUsername(this.state.user.username)) {
+      toaster.warning("Invalid username.");
+      return false;
+    }
+
+    if (this.checkConfirmEmail(this.state.user.email,this.state.user.confirmEmail)) {
+      toaster.warning("Email address mismatch.");
+      return false;
+    }
+
+    if (this.state.user.profile === "") {
+      toaster.warning("Missing profile.");
+      return false;
+    }
+    return true;
   }
 
   handleChange(event) {
     const target = event.target;
-    let state = this.state;
-    state.user[target.name] = target.value;
-    this.setState(state);
-    this.filedValidation(state.user, target.name);
+    let user = this.state.user;
+    user[target.name] = target.value;
+    this.fieldValidation(user, target.name);
   }
 
   handleSave() {
@@ -84,7 +98,6 @@ class SideBar extends Component {
     delete tmp.created_date;
     delete tmp.passwd;
     delete tmp.password;
-    console.log(this.checkValidation());
     if (this.checkValidation()) {
       UserActions.triggerUpdate(
         tmp,
@@ -103,6 +116,7 @@ class SideBar extends Component {
     if (this.checkValidation()) {
       let temp = this.state.user;
       temp.email = String(temp.email).toLowerCase();
+      console.log("User to be created: ", temp);
       UserActions.addUser(
         temp,
         () => {
@@ -121,7 +135,7 @@ class SideBar extends Component {
   }
 
   handleDelete() {
-      this.setState({ show_modal: true });
+    this.setState({ show_modal: true });
   }
 
   setModal(status) {
@@ -129,35 +143,46 @@ class SideBar extends Component {
   }
 
   removeUser() {
-      UserActions.triggerRemoval(this.state.user, () => {
-          this.hideSideBar();
-          toaster.success("User removed", 4000);
-          this.setState({ show_modal: false });
-      });
-    }
+    UserActions.triggerRemoval(this.state.user, () => {
+      this.hideSideBar();
+      toaster.success("User removed", 4000);
+      this.setState({ show_modal: false });
+    });
+  }
 
-  filedValidation(user, field) {
-    let regex;
+  checkName(name) {
+    let regex = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
+    return !regex.test(name);
+  }
+
+  checkUsername(username) {
+    let regex = /^([a-z0-9_])+$/;
+    return !regex.test(username);
+  }
+
+  checkEmail(email) {
+    let regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return !regex.test(String(email).toLocaleLowerCase());
+  }
+
+  checkConfirmEmail(email, confirmEmail) {
+    return !(email === confirmEmail);
+  }
+
+  fieldValidation(user, field) {
     let tmpState = JSON.parse(JSON.stringify(this.state));
+    tmpState.user = user;
+
     if (field === "name") {
-      regex = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
-      tmpState.isInvalid.name = !regex.test(user[field]);
-      this.setState(tmpState);
+      tmpState.isInvalid.name = this.checkName(user[field]);
     } else if (field === "username") {
-      regex = /^([a-z0-9_])+$/;
-      tmpState.isInvalid.username = !regex.test(user[field]);
-      this.setState(tmpState);
+      tmpState.isInvalid.username = this.checkUsername(user[field]);
     } else if (field === "email" || field === "confirmEmail") {
-      regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       if (field === "email")
-        tmpState.isInvalid.email = !regex.test(
-          String(user[field]).toLocaleLowerCase()
-        );
-      tmpState.isInvalid.confirmEmail = !(
-        user["email"] === user["confirmEmail"]
-      );
-      this.setState(tmpState);
+        tmpState.isInvalid.email = this.checkEmail(String(user[field]));
+      tmpState.isInvalid.confirmEmail = this.checkConfirmEmail(user["email"], user["confirmEmail"]);
     }
+    this.setState(tmpState);
   }
 
   render() {

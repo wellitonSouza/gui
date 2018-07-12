@@ -1216,7 +1216,7 @@ class TemplateOperations extends GenericOperations {
     whenUpdateFilter(config)
     {
         // set default parameters
-        this.setDefaultPaginationParams();
+        this.setDefaultPageNumber();
         this.filterParams = config;
         this._fetch();
     }
@@ -1297,9 +1297,9 @@ class Templates extends Component {
 function OperationsHeader(props) {
     return (
         <div className="col s5 pull-right pt10">
-            {/* <div className="searchBtn" title="Show search bar" onClick={props.toggleSearchBar}>
+             <div className="searchBtn" title="Show search bar" onClick={props.toggleSearchBar}>
                 <i className="fa fa-search" />
-            </div> */}
+            </div>
             <div onClick={props.addTemplate} className="new-btn-flat red" title="Create a new template">
                 New Template<i className="fa fa-plus" />
             </div>

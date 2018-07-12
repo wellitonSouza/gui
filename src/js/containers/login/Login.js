@@ -129,14 +129,15 @@ class Content extends Component {
                   </div>
                 </div>
               </div>
-              {this.props.error && <div className="row">
-                  <div className="col s12 m4 offset-m2">
+              { this.props.error && (
+                <div className="row">
+                  <div className="col s12 m8 offset-m2">
                     <div className="login-page-error">
                       {getError()}
                       <i className="material-icons prefix">info_outline</i>
                     </div>
                   </div>
-                </div>}
+              </div>)}
               <form onSubmit={this.login}>
                 <div className="row">
                   <div className="input-field col s12 m6 offset-m2">

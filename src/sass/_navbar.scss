@@ -27,15 +27,16 @@
   {
 
     .filter-information{
-        margin-top: 20px;
-        color: #e63333;
-        font-family: "Raleway", sans-serif;
-        padding-left: 4em;
-        font-size: 11px;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-        font-weight: 700;
-        text-align: left;
+      margin-top: 3px;
+      color: #e63333;
+      font-family: "Raleway", sans-serif;
+      padding-left: 4em;
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-weight: 700;
+      text-align: left;
+      position: absolute;
     }
 
     .pt10 {
@@ -132,8 +133,11 @@ nav.outer-header {
     }
 
     .user-name{
-          font-size: 13px;
-          color: $dark-gray;
+        color: $dark-gray;
+        font-size: 13px;
+        letter-spacing: 0.03em;
+        font-weight: 500;
+        font-family: 'Raleway';
     }
 }
 

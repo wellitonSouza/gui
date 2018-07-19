@@ -59,7 +59,7 @@ class Navbar extends Component {
                 {/*<div className="user-pic">
                   <img src={this.gravatar} />
                 </div>*/}
-                <div className="user-name">{(this.props.user.name ? this.props.user.name : this.props.user.username)}</div>
+              <div className="user-name clickable" onClick={this.handleClick}>{(this.props.user.name ? this.props.user.name : this.props.user.username)}</div>
                 <div className="clickable" onClick={this.handleClick} title="Login details">
                 {this.props.open === false &&  <i className="fa fa-caret-down line-normal center-caret" />}
                 {this.props.open === true && <i className="fa fa-caret-up line-normal center-caret" />}

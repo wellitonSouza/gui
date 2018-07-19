@@ -467,7 +467,8 @@
 
 .rightsidebarchild {
   position: fixed;
-  left: 88%;
+  right: 22px;
+  overflow: hidden;
   top: 36px;
   z-index: 10000;
   width: 180px;

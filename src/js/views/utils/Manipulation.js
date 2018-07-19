@@ -46,10 +46,7 @@ class FilterLabel extends Component{
        <i className="fa fa-info-circle " /> Filtering 
       </div>;
       else
-      return (
-        <div className='col s2 p0' >
-        </div>  
-      )
+      return <div className="col s2 p0 filter-information" />;
     }
 
 }
@@ -86,37 +83,35 @@ class Pagination extends Component {
     console.log("Render Pagination Component ", this.props);
 
     if (!this.props.pagination || !this.props.show_pagination || !this.props.pagination.total)
-      return <div className="col s5 p0" ></div>;
+      return <div className="col s7 p0" ></div>;
 
     let pageCount = this.props.pagination.total;
     let currentPage = this.props.pagination.page - 1; 
 
-    return (
-      <div >
-        <div className='col s5 p0'>
-          <div className='elements_page_div'>
+    return <div className="col s7 p0">
+          <div className="pagination_div">
+            <ReactPaginate previousLabel={"previous"} nextLabel={"next"} pageCount={pageCount} marginPagesDisplayed={1} pageRangeDisplayed={3} forcePage={currentPage} onPageChange={this.handlePageClick} containerClassName={"pagination"} subContainerClassName={"pages pagination"} activeClassName={"active"} />
+          </div>
+          <div className="elements_page_div">
             <MaterialSelect label="# per page" value={this.state.elements_page} onChange={this.changeNelements}>
-              <option key="six" value="6">6</option>
-              <option key="twelve" value="12">12</option>
-              <option key="eighteen" value="18">18</option>
+              <option key="six" value="6">
+                6
+              </option>
+              <option key="twelve" value="12">
+                12
+              </option>
+              <option key="eighteen" value="18">
+                18
+              </option>
+              <option key="thirtysix" value="36">
+                36
+              </option>
+              <option key="sixtyfour" value="64">
+                64
+              </option>
             </MaterialSelect>
-          </div>
-          <div className='pagination_div'>
-            <ReactPaginate previousLabel={"previous"}
-              nextLabel={"next"}
-              pageCount={pageCount}
-              marginPagesDisplayed={1}
-              pageRangeDisplayed={4}
-              forcePage={currentPage}
-              onPageChange={this.handlePageClick}
-              containerClassName={"pagination"}
-              subContainerClassName={"pages pagination"}
-              activeClassName={"active"} />
-          </div>
-        </div>
-
-      </div>
-)
+       </div>
+      </div>;
   }
 }
 

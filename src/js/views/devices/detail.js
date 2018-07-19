@@ -657,8 +657,9 @@ class ViewDevice extends Component {
 
         device_detail_socket.on('error', (data) => {
           console.log("socket error", data);
-          device_detail_socket.close();
-          getWsToken();
+          if (device_detail_socket)
+            device_detail_socket.close();
+          // getWsToken();
         })
       }
 
@@ -666,7 +667,8 @@ class ViewDevice extends Component {
   }
 
   componentWillUnmount(){
-    device_detail_socket.close();
+    if (device_detail_socket)
+      device_detail_socket.close();
   }
 
   render() {

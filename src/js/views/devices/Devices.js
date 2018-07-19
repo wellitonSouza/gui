@@ -158,8 +158,9 @@ class Devices extends Component {
 
       device_list_socket.on('error', (data) => {
         console.log("socket error", data);
-        device_list_socket.close();
-        getWsToken();
+        if (device_list_socket !== null)
+          device_list_socket.close();
+        // getWsToken();
       })
     }
 
@@ -167,7 +168,8 @@ class Devices extends Component {
   }
 
   componentWillUnmount(){
-    device_list_socket.close();
+    if (device_list_socket !== null)
+      device_list_socket.close();
   }
 
 

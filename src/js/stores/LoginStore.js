@@ -4,7 +4,7 @@ import Util from '../comms/util/util';
 
 class LoginStore {
   constructor() {
-
+    this.authenticated = false;
     const token = Util.getToken();
     if (token) {
       this.set(token);

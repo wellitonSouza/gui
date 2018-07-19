@@ -93,7 +93,7 @@ class Pagination extends Component {
             <ReactPaginate previousLabel={"previous"} nextLabel={"next"} pageCount={pageCount} marginPagesDisplayed={1} pageRangeDisplayed={3} forcePage={currentPage} onPageChange={this.handlePageClick} containerClassName={"pagination"} subContainerClassName={"pages pagination"} activeClassName={"active"} />
           </div>
           <div className="elements_page_div">
-            <MaterialSelect label="# per page" value={this.state.elements_page} onChange={this.changeNelements}>
+            <MaterialSelect new_style={true} label="# per page" value={this.state.elements_page} onChange={this.changeNelements}>
               <option key="six" value="6">
                 6
               </option>

@@ -187,9 +187,7 @@ class AttributeList extends Component {
     }
 
     suppress() {
-        let state = this.state;
-        state.isSuppressed = !state.isSuppressed;
-        this.setState(state, false);
+        this.setState({ isSuppressed: !this.state.isSuppressed});
     }
 
     handleChange(event) {
@@ -398,7 +396,7 @@ class NewAttribute extends Component {
         let state = this.state;
         state.isSuppressed = !state.isSuppressed;
         state.isConfiguration = property;
-
+        state.newAttr = { "value_type": "", "value": "", "label": ""};
         property === true ?  state.newAttr.type = 'meta': state.newAttr.type = 'dynamic';
         this.setState(state);
         this.handleChangeStatus(property);
@@ -797,7 +795,7 @@ class ListItem extends Component {
                 }
             )[0])
             {
-                toaster.warning("The label " + attribute.value_type + " is already created.");
+                toaster.warning("The label '" + attribute.value_type + "' is already created.");
                 return;
             }
 

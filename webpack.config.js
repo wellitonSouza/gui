@@ -87,15 +87,17 @@ module.exports = {
       { from: "src/js/polyfills/localStorage.js", to: "js/localStorage.js" },
       { from: "node_modules/leaflet/dist/leaflet.css", to: "leaflet.css" },
       { from: "node_modules/leaflet/dist/images", to: "images" },
+      { from: 'node_modules/ace-builds/src-min', to: 'js/ace' },
       {
         from: "node_modules/materialize-css/dist/js/materialize.min.js",
         to: "js/materialize.js"
       },
-      { from: "node_modules/jquery/dist/jquery.min.js", to: "js/jquery.js" },
+      { from: "node_modules/jquery/dist/jquery.js", to: "js/jquery.js" },
       {
         from: "node_modules/jquery-i18next/jquery-i18next.min.js",
         to: "js/jquery-i18next.min.js"
       },
+      { from: 'node_modules/jquery-ui-dist/jquery-ui.min.js', to: 'js/jquery.ui.js' },
       {
         from: "node_modules/i18next-xhr-backend/i18nextXHRBackend.min.js",
         to: "js/i18nextXHRBackend.min.js"

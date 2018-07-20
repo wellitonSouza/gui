@@ -229,6 +229,10 @@ accepts@~1.3.4, accepts@~1.3.5:
     mime-types "~2.1.18"
     negotiator "0.6.1"
 
+ace-builds@^1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/ace-builds/-/ace-builds-1.3.3.tgz#c9746028d1485e5d7595fb2e825e665bd6648970"
+
 acorn-dynamic-import@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/acorn-dynamic-import/-/acorn-dynamic-import-3.0.0.tgz#901ceee4c7faaef7e07ad2a47e890675da50a278"
@@ -3608,9 +3612,9 @@ i18next-xhr-backend@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/i18next-xhr-backend/-/i18next-xhr-backend-1.5.1.tgz#50282610780c6a696d880dfa7f4ac1d01e8c3ad5"
 
-i18next@^11.3.6:
-  version "11.3.6"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-11.3.6.tgz#a8e5aff413f5440b3526ebb38e1b7dc605f50faf"
+i18next@10.5.0:
+  version "10.5.0"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-10.5.0.tgz#a2a90e67774fa85b8ff9cd0063e697e482440de7"
 
 iconv-lite@0.4.19:
   version "0.4.19"
@@ -4070,7 +4074,15 @@ jquery-i18next@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/jquery-i18next/-/jquery-i18next-1.2.1.tgz#3e4ac5e46632fac21640529f1aa7b68e54f227e8"
 
-"jquery@^3.0.0 || ^2.1.4", jquery@^3.3.1:
+jquery-ui-dist@1.12.1:
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/jquery-ui-dist/-/jquery-ui-dist-1.12.1.tgz#5c0815d3cc6f90ff5faaf5b268a6e23b4ca904fa"
+
+jquery@3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.2.1.tgz#5c4d9de652af6cd0a770154a631bba12b015c787"
+
+"jquery@^3.0.0 || ^2.1.4":
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
 

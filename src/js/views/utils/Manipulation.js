@@ -176,7 +176,7 @@ class Filter extends Component {
           Filtering {this.props.metaData.alias}(s)
           {/* Showing {this.state.nElements}  {this.metaData.alias}(s) */}
         </div>
-        <div className="col s1 m1 header-info" />
+        {/* <div className="col s1 m1 header-info" /> */}
         <div className="col s6 m6">
           <Fields fields={this.state.query} onChange={this.handleChange} />
         </div>

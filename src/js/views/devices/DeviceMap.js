@@ -7,7 +7,6 @@ import Script from 'react-load-script';
 import ReactResizeDetector from 'react-resize-detector';
 import Sidebar from '../../components/DeviceRightSidebar';
 import config from '../../config'
-''
 import DivIcon from 'react-leaflet-div-icon';
 
 let trackingPin = <DivIcon className='icon-marker bg-tracking-marker'></DivIcon>

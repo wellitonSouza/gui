@@ -894,6 +894,7 @@ class ListItem extends Component {
             toaster.success('Template created.');
             TemplateActions.removeSingle("new_template");
             this.props.enableNewTemplate();
+            this.props.temp_opex._fetch();
         })
     }
 

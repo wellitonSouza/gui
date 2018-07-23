@@ -76,8 +76,8 @@ class DeviceCardList extends Component {
 
   convertDeviceList() {
     this.filteredList = [];
-    for (let k in this.props.devices) {
-      this.filteredList.push(this.props.devices[k]);
+    for (let k in this.props.deviceList) {
+      this.filteredList.push(this.props.deviceList[k]);
     }
   }
 

@@ -3,8 +3,8 @@ var DeviceActions = require('../actions/DeviceActions');
 
 class DeviceStore {
   constructor() {
-    this.devices = {};
-    this.deviceList = [];
+    this.devices = {};  // map to devices using Id 
+    this.deviceList = []; // ordered by server
     this.tracking = {};
     this.error = null;
     this.loading = false;

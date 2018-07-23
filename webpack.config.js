@@ -1,4 +1,3 @@
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var webpack = require('webpack');
 var path = require('path');
@@ -92,7 +91,7 @@ module.exports = {
         from: "node_modules/materialize-css/dist/js/materialize.min.js",
         to: "js/materialize.js"
       },
-      { from: "node_modules/jquery/dist/jquery.js", to: "js/jquery.js" },
+      { from: "node_modules/jquery/dist/jquery.min.js", to: "js/jquery.js" },
       {
         from: "node_modules/jquery-i18next/jquery-i18next.min.js",
         to: "js/jquery-i18next.min.js"

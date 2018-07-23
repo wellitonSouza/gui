@@ -2,9 +2,9 @@ sudo: false
 language: node_js
 node_js: 9
 script:
-  - npm run build
+  - yarn run build
 install:
-  - npm install
+  - yarn install
 services:
   - docker
 after_success:

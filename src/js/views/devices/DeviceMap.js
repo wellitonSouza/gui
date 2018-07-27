@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import TrackingActions from '../../actions/TrackingActions';
 import {Link} from 'react-router'
 import {Map, Marker, ImageOverlay, TileLayer, Tooltip, ScaleControl, Polyline} from 'react-leaflet';
-import L from 'leaflet'
+import L from "leaflet";
+// import * as L from "leaflet";
 import Script from 'react-load-script';
 import ReactResizeDetector from 'react-resize-detector';
 import Sidebar from '../../components/DeviceRightSidebar';

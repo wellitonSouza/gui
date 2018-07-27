@@ -52,8 +52,7 @@
 }
 
 .dev_field_filter{
-    position: absolute;
-    top: 5px;
+    margin-top: -5px;
 }
 
 .icon-marker {
@@ -803,16 +802,18 @@
 
 .full-device-area{
     height: 100%;
-    width: 100%;
+    width: calc(100% - 250px);
     z-index: 9991;
     display: inline-block;
-    overflow: hidden;
+    overflow: auto;
     position: fixed;
     top: 117px;
     margin: 0;
+    padding-bottom: 120px;
 
     &>div
     {
+      width: 100%;
       height: 100%;
       float: left;
     }

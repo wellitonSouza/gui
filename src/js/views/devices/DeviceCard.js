@@ -12,7 +12,7 @@ import MaterialInput from "../../components/MaterialInput";
 import Materialize from "materialize-css";
 import MaterialSelect from "../../components/MaterialSelect";
 
-import { Filter, Pagination } from "../utils/Manipulation";
+import { Filter } from "../utils/Manipulation";
 
 function SummaryItem(props) {
 
@@ -21,7 +21,7 @@ function SummaryItem(props) {
     for(let attribute in props.device.attrs) {
         attrs += props.device.attrs[attribute].length;
     }
-
+  console.log("props.device.label: ", props.device.label);
     return (
 
       <Link to={"/device/id/" + props.device.id + "/detail"}>
@@ -155,7 +155,7 @@ class DevFilterFields extends Component {
             <input id="fld_device_name" type="text" className="form-control form-control-lg margin-top-mi7px" placeholder="Device Name" value={this.props.fields.label} name="label" onChange={this.props.onChange} />
           </div>
         </div>
-        <div className="col s1 m1" />
+        <div className="col s1 m1">&nbsp;</div>
 
         <div className="col s6 m6">
           <div className="col s12">

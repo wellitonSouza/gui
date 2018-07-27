@@ -802,23 +802,20 @@
 }
 
 .full-device-area{
-  height: 100%;
-  width: 100%;
-  float: left;
-  overflow: hidden;
-  position: relative;
-  z-index: 9991;
+    height: 100%;
+    width: 100%;
+    z-index: 9991;
+    display: inline-block;
+    overflow: hidden;
+    position: fixed;
+    top: 117px;
+    margin: 0;
 
-  &>div
-  {
-  height: 100%;
-  width: 100%;
-  float: left;
-  overflow: hidden;
-  position: relative;
-  z-index: 9991;
-    
-  }
+    &>div
+    {
+      height: 100%;
+      float: left;
+    }
 }
 
 .h90 {
@@ -826,9 +823,9 @@
 }
 
 .device-card-area {
-  height: 100%;
-  width: 100%;
-  position: relative;
-  float: left;
-  overflow-y: auto;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    float: left;
+    overflow: scroll;
 }

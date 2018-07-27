@@ -93,7 +93,7 @@ class Pagination extends Component {
             <ReactPaginate previousLabel={"previous"} nextLabel={"next"} pageCount={pageCount} marginPagesDisplayed={1} pageRangeDisplayed={3} forcePage={currentPage} onPageChange={this.handlePageClick} containerClassName={"pagination"} subContainerClassName={"pages pagination"} activeClassName={"active"} />
           </div>
           <div className="elements_page_div">
-            <MaterialSelect label="# per page" value={this.state.elements_page} onChange={this.changeNelements}>
+            <MaterialSelect new_style={true} label="# per page" value={this.state.elements_page} onChange={this.changeNelements}>
               <option key="six" value="6">
                 6
               </option>
@@ -176,7 +176,7 @@ class Filter extends Component {
           Filtering {this.props.metaData.alias}(s)
           {/* Showing {this.state.nElements}  {this.metaData.alias}(s) */}
         </div>
-        <div className="col s1 m1 header-info" />
+        {/* <div className="col s1 m1 header-info" /> */}
         <div className="col s6 m6">
           <Fields fields={this.state.query} onChange={this.handleChange} />
         </div>

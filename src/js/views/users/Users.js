@@ -10,8 +10,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import UserActions from '../../actions/UserActions';
 import toaster from "../../comms/util/materialize";
 import { RemoveModal } from "../../components/Modal";
-
-let UserStore = require('../../stores/UserStore');
+import UserStore from "../../stores/UserStore";
 
 class SideBar extends Component {
   constructor() {
@@ -40,7 +39,7 @@ class SideBar extends Component {
   }
 
   componentDidMount() {
-    if (LoginStore.getState().user.profile === "admin") {
+    if (this.props.user.profile === "admin") {
       UserActions.fetchUsers.defer();
     }
   }
@@ -563,7 +562,9 @@ class UserList extends Component {
     render() {
         return (
             <div className="fill">
-                <SideBar {...this.state} hide={this.hideSideBar} visible={this.props.visible}/>
+                <AltContainer store={LoginStore}>
+                  <SideBar {...this.state} hide={this.hideSideBar} visible={this.props.visible}/>
+                </AltContainer>
                 <RemoveDialog callback={this.deleteUser} target="confirmDiag"/>
                 <div id="user-wrapper" className="col s12  lst-wrapper extra-padding scroll-bar">
                     {this.props.values.map((user) =>
@@ -625,7 +626,7 @@ function UserFilter(props) {
     )
 }
 
-class Users extends Component {
+class UsersContent extends Component {
     constructor() {
         super();
         this.state = {filter: '', createUser: false, visible: false};
@@ -655,13 +656,14 @@ class Users extends Component {
     }
 
     componentDidMount() {
-        if (LoginStore.getState().user.profile === "admin") {
+        if (this.props.user.profile === "admin") {
             UserActions.fetchUsers.defer();
         }
     }
 
     render() {
-        if (LoginStore.getState().user.profile === "admin") {
+      console.log("entrou até aqui. ");
+        if (this.props.user.profile === "admin") {
             return (
                 <span id="userMain">
                     <NewPageHeader title="Auth" subtitle="Users" icon='user'>
@@ -680,6 +682,22 @@ class Users extends Component {
             );
         }
     }
+}
+
+
+
+class Users extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+        <AltContainer store={LoginStore}>
+        <UsersContent></UsersContent>
+        </AltContainer>
+    );
+  }
 }
 
 

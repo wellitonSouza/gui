@@ -2,28 +2,40 @@ import util from '../util';
 
 class DeviceManager {
   constructor() {
-    this.baseUrl = ""
+    this.baseUrl = "";
   }
 
-  getDevices() {
-    return util.GET(this.baseUrl + '/device?page_size=1000');
+  getDevices(params) {
+    if (params) {
+      let qs = Object.keys(params)
+        .map(key => key + "=" + params[key])
+        .join("&");
+      return util.GET(this.baseUrl + "/device?" + qs);
+    } else return util.GET(this.baseUrl + "/device?page_size=1000");
   }
 
   // @TODO probably here isn't a good place to handle stats
   getStats() {
-    return util.GET(this.baseUrl + '/metric/admin/metrics/');
+    return util.GET(this.baseUrl + "/metric/admin/metrics/");
   }
 
   getLastDevices(field) {
-    return util.GET(this.baseUrl + "/device?limit=10&sortDsc="+field);
+    return util.GET(this.baseUrl + "/device?limit=10&sortDsc=" + field);
   }
 
   getDevice(id) {
     return util.GET(this.baseUrl + "/device/" + id);
   }
 
-  getDeviceByTemplateId(templateId) {
-    return util.GET(this.baseUrl + "/device/template/" + templateId);
+  getDeviceByTemplateId(templateId, params) {
+    if (params) {
+      let qs = Object.keys(params)
+        .map(key => key + "=" + params[key])
+        .join("&");
+      return util.GET(this.baseUrl + "/device/template/" + templateId + "?" + qs);
+    }
+    else
+      return util.GET(this.baseUrl + "/device/template/" + templateId);
   }
 
   setDevice(detail) {

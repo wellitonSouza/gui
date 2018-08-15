@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AltContainer from 'alt-container';
-import Materialize from 'materialize-css';
+import toaster from "../../comms/util/materialize";
 
+import { Loading } from "../../components/Loading";
 import TemplateStore from '../../stores/TemplateStore';
 import TemplateActions from '../../actions/TemplateActions';
 
@@ -12,12 +13,13 @@ import ImageActions from '../../actions/ImageActions';
 
 import { ImageCard, NewImageCard } from "../firmware/elements";
 
-
+import { Filter, Pagination, FilterLabel, GenericOperations } from "../utils/Manipulation";
 import util from "../../comms/util/util";
-import {NewPageHeader} from "../../containers/full/PageHeader";
+
+import { NewPageHeader } from "../../containers/full/PageHeader";
 import { hashHistory } from 'react-router';
 
-import { GenericModal, RemoveModal } from "../../components/Modal";
+import { RemoveModal } from "../../components/Modal";
 import Toggle from 'material-ui/Toggle';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
@@ -85,7 +87,7 @@ class ImageModal extends Component {
                     <div className="col s12 pl40">
                         <div className="icon-firmware"/>
 
-                        <label className="title">{this.props.template.label}</label>
+                        <label className="title truncate" title={this.props.template.label}>{this.props.template.label}</label>
                         <label className="subtitle">Firmware Management</label>
                     </div>
                     </div>
@@ -125,7 +127,8 @@ class TemplateTypes {
         ];
         this.availableTypes = [
             {"value": "dynamic", "label": "Dynamic Value"},
-            {"value": "static", "label": "Static Value"}
+            {"value": "static", "label": "Static Value"},
+            {"value": "actuator", "label": "Actuator"}
         ];
         this.configTypes = [
             {"value": "mqtt", "label": "MQTT"}
@@ -134,7 +137,8 @@ class TemplateTypes {
             // {"value": "fw_version", "label": "Firmware Version" },
             {"value": "protocol", "label": "Protocol"},
             {"value": "topic", "label": "Topic"},
-            {"value": "translator", "label": "Translator"}
+            {"value": "translator", "label": "Translator"},
+            {"value": "device_timeout", "label": "Device Timeout"}
         ];
     }
     getValueTypes() {
@@ -159,6 +163,8 @@ class AttributeList extends Component {
         super(props);
         this.state = {
             isSuppressed: true,
+            fieldSizeDyAttrStatus: false,
+            fieldSizeStaticAttrStatus: false
         };
 
         this.suppress = this.suppress.bind(this);
@@ -168,10 +174,20 @@ class AttributeList extends Component {
         this.availableTypes = attrType.getTypes();
     }
 
+    componentWillMount(){
+        if(this.props.attributes.label.length > 18){
+           this.setState({fieldSizeDyAttrStatus: true});
+        }
+
+        if (this.props.attributes.hasOwnProperty('static_value')) {
+            if(this.props.attributes.static_value.length > 18){
+                this.setState({fieldSizeStaticAttrStatus: true});
+            }
+        }
+    }
+
     suppress() {
-        let state = this.state;
-        state.isSuppressed = !state.isSuppressed;
-        this.setState(state, false);
+        this.setState({ isSuppressed: !this.state.isSuppressed});
     }
 
     handleChange(event) {
@@ -183,6 +199,7 @@ class AttributeList extends Component {
     }
 
     render() {
+        const staticValue = this.props.attributes.static_value || "";
         return (
             <div className={"attr-area " + (this.state.isSuppressed ? 'suppressed' : '')}>
                 <div className="attr-row">
@@ -190,8 +207,8 @@ class AttributeList extends Component {
                         <img src={"images/tag.png"}/>
                     </div>
                     <div className={"attr-content"}>
-                        <input type="text" value={this.props.attributes.label} disabled={!this.props.editable}
-                               name={"label"} onChange={this.handleChange}/>
+                        <input className={this.state.fieldSizeDyAttrStatus ? "truncate": ""} type="text" value={this.props.attributes.label} disabled={!this.props.editable}
+                               name={"label"} onChange={this.handleChange} maxLength="25" title={this.props.attributes.label}/>
                         <span>Name</span>
                     </div>
                     <div className="center-text-parent material-btn right-side" onClick={this.suppress}>
@@ -223,8 +240,8 @@ class AttributeList extends Component {
                 <div className="attr-row">
                     <div className="icon"/>
                     <div className={"attr-content"}>
-                        <input type="text" value={this.props.attributes.static_value} disabled={!this.props.editable}
-                               name={"static_value"} onChange={this.handleChange}/>
+                        <input className={this.state.fieldSizeStaticAttrStatus ? "truncate": ""} type="text" value={staticValue} disabled={!this.props.editable}
+                               name={"static_value"} onChange={this.handleChange} maxLength="25" title={staticValue}/>
                         <select id="select_attribute_type" className="card-select mini-card-select"
                                 name={"type"}
                                 value={this.props.attributes.type}
@@ -248,6 +265,7 @@ class ConfigList extends Component {
         super(props);
         this.state = {
             isSuppressed: true,
+            configFieldSizeStatus: false
         };
 
         this.suppress = this.suppress.bind(this);
@@ -256,6 +274,14 @@ class ConfigList extends Component {
         this.availableValueTypes = attrType.getConfigValueTypes();
         this.availableTypes = attrType.getConfigTypes();
 
+    }
+
+    componentWillMount(){
+        if (this.props.attributes.hasOwnProperty('static_value')) {
+            if(this.props.attributes.static_value.length > 18){
+                this.setState({configFieldSizeStatus: true});
+            }
+        }
     }
 
     suppress() {
@@ -274,8 +300,11 @@ class ConfigList extends Component {
 
     render() {
         // console.log("this.props.attributes", this.props.attributes);
-        if (this.props.attributes.type == "fw_version")
-        return null;
+        if (this.props.attributes.type == "fw_version"){
+            return null;
+        }
+
+        const staticValue = this.props.attributes.static_value || '';
 
         return (
             <div className={"attr-area " + (this.state.isSuppressed ? 'suppressed' : '')}>
@@ -303,13 +332,13 @@ class ConfigList extends Component {
                 <div className="attr-row">
                     <div className="icon"/>
                     <div className={"attr-content"}>
-                        <input className={(this.props.attributes.label === "protocol" ? 'none' : '')} type="text"
-                               name={"static_value"} value={this.props.attributes.static_value}
-                               disabled={!this.props.editable} onChange={this.handleChange}/>
+                        <input className={(this.props.attributes.label === "protocol" ? 'none' : '') || (this.state.configFieldSizeStatus ? "truncate": "")}type="text"
+                               name={"static_value"} value={staticValue}
+                               disabled={!this.props.editable} onChange={this.handleChange} title={staticValue} maxLength="25"/>
                         <select id="select_attribute_type"
                                 className={(this.props.attributes.label === "protocol" ? '' : 'none') + " card-select"}
                                 name={"static_value"}
-                                value={this.props.attributes.static_value}
+                                value={staticValue}
                                 disabled={!this.props.editable}
                                 onChange={this.handleChange}>
                             <option value="">Select type</option>
@@ -342,7 +371,8 @@ class NewAttribute extends Component {
                 "value_type": "",
                 "value": "",
                 "label": ""
-            }
+            },
+            isActuator:false
         };
 
         this.suppress = this.suppress.bind(this);
@@ -366,7 +396,7 @@ class NewAttribute extends Component {
         let state = this.state;
         state.isSuppressed = !state.isSuppressed;
         state.isConfiguration = property;
-
+        state.newAttr = { "value_type": "", "value": "", "label": ""};
         property === true ?  state.newAttr.type = 'meta': state.newAttr.type = 'dynamic';
         this.setState(state);
         this.handleChangeStatus(property);
@@ -376,29 +406,37 @@ class NewAttribute extends Component {
         const target = event.target;
         let state = this.state;
         state.newAttr[target.name] = target.value;
+        if(target.value == "actuator"){
+            state.isActuator = true;
+        } else {
+            if(target.value == "dynamic" || target.value == "static"){
+                state.isActuator = false;
+            }
+        }
         this.setState(state);
     }
 
     addAttribute(attribute) {
+
         let ret = util.isNameValid(attribute.label);
         if (!ret.result && !this.state.isConfiguration) {
-            Materialize.toast(ret.error, 4000);
+            toaster.error(ret.error);
             return;
         }
 
-        if (attribute.value_type === "") {
-            Materialize.toast("Missing type.", 4000);
-            return;
-        }
-
-        ret = util.isTypeValid(attribute.value, attribute.value_type, attribute.type);
+        ret = util.isTypeValid(attribute.value, attribute.value_type, attribute.type, this.state.isActuator);
         if (!ret.result){
-            Materialize.toast(ret.error, 4000);
+            toaster.error(ret.error);
             return;
         }
 
+        // type of attribute can't be empty
+        if(attribute.value_type == ""){
+            toaster.error("You can't leave type empty");
+            return;
+        }
 
-        this.props.addAttribute(attribute, this.state.isConfiguration);
+        this.props.addAttribute(attribute, this.state.isConfiguration, this.state.isActuator);
         this.suppress();
     }
 
@@ -415,7 +453,6 @@ class NewAttribute extends Component {
     }
 
     render() {
-
         return (
             <div className={"new-attr-area attr-area " + (this.state.isSuppressed ? 'suppressed-shadow' : '')}>
 
@@ -448,11 +485,12 @@ class NewAttribute extends Component {
                         </div>
 
                         <div className={"attr-content "}>
-                            <input type="text" value={this.state.newAttr.label} onChange={this.handleChange}
+                            <input type="text" value={this.state.newAttr.label} maxLength="25" onChange={this.handleChange}
                                    name={"label"}/>
                             <span>Name</span>
                         </div>
                     </div>
+
                     <div className="attr-row">
                         <div className="icon">
                             <img className={(this.state.isConfiguration ? '' : 'none')} src={"images/add-gear.png"}/>
@@ -470,14 +508,17 @@ class NewAttribute extends Component {
                                 ))}
                             </select>
                             <span>Type</span>
-                        </div>
+                        </div>                              
                     </div>
                     <div className="attr-row">
                         <div className="icon"/>
                         <div className={"attr-content"}>
-                            <input className={(this.state.newAttr.value_type === "protocol" ? 'none' : '')} type="text"
-                                   value={this.state.newAttr.value} onChange={this.handleChange}
-                                   name={"value"}/>
+                            {this.state.isActuator ? null :
+                            (
+                                <input className={(this.state.newAttr.value_type === "protocol" ? 'none' : '')} type="text"
+                                value={this.state.newAttr.value} maxLength="25" onChange={this.handleChange}
+                                name={"value"}/>  
+                            )}
 
                             <select id="select_attribute_type"
                                     className={(this.state.isConfiguration ? (this.state.newAttr.value_type === 'protocol' ? '' : 'none') : 'none') + " card-select dark-background"}
@@ -489,6 +530,7 @@ class NewAttribute extends Component {
                                     <option value={opt.value} key={opt.label}>{opt.label}</option>
                                 )}
                             </select>
+                            
                             <span className={(this.state.isConfiguration ? '' : 'none')}>Value</span>
 
                             <select id="select_attribute_type"
@@ -502,9 +544,7 @@ class NewAttribute extends Component {
                                 )}
                             </select>
                         </div>
-                    </div>
-
-
+                    </div>                     
                     <div className="material-btn center-text-parent" title="Add a new Attribute"
                          onClick={this.addAttribute.bind(this, this.state.newAttr)}>
                         <span className="text center-text-child light-text">add</span>
@@ -579,7 +619,7 @@ class ListItem extends Component {
             isConfiguration: false,
             show_modal: false,
             show_image_modal: false,
-            fw_version_used: null
+            fw_version_used: null,
         };
 
         this.clone = JSON.parse(JSON.stringify(this.state.template));
@@ -602,6 +642,8 @@ class ListItem extends Component {
         this.toggleImageModal = this.toggleImageModal.bind(this);
         this.refreshImages = this.refreshImages.bind(this);
         this.updateDefaultVersion = this.updateDefaultVersion.bind(this);
+        this.removeAttributeId = this.removeAttributeId.bind(this);
+        //this.getDataAttrs = this.getDataAttrs.bind(this);
     }
 
 
@@ -613,7 +655,6 @@ class ListItem extends Component {
     }
 
     componentDidMount() {
-
         if (this.state.template.isNewTemplate) {
             this.setState({ isEditable: true, isSuppressed: false});
         }
@@ -631,6 +672,17 @@ class ListItem extends Component {
         }
     }
 
+    componentWillMount(){
+        let template = this.state.template;
+        for(let k in template.config_attrs){
+            if(template.config_attrs[k].type == 'actuator'){
+                template.data_attrs.push(template.config_attrs[k]);
+                template.config_attrs.splice(k, 1);
+            }
+        }
+        this.setState({template: template});
+    }
+
     handleDismiss(e) {
         e.preventDefault();
         let state = this.state;
@@ -639,19 +691,15 @@ class ListItem extends Component {
     }
 
     updateTemplate(e) {
+
         if (e != undefined)
             e.preventDefault();
+
+        // Verify template name
         let ret = util.isNameValid(this.state.template.label);
         if (!ret.result && !this.state.isConfiguration) {
-            Materialize.toast(ret.error, 4000);
+            toaster.error(ret.error);
             return;
-        }
-
-        for (let i = 0; i < this.state.template.config_attrs.length; i++) {
-          if (this.state.template.config_attrs[i].label === "") {
-              Materialize.toast("Missing type.", 4000);
-              return;
-          }
         }
 
         let template = this.state.template;
@@ -660,32 +708,94 @@ class ListItem extends Component {
         this.state.template.attrs.push.apply(this.state.template.attrs, this.state.template.data_attrs);
         this.state.template.attrs.push.apply(this.state.template.attrs ,this.state.template.config_attrs);
 
+        this.removeAttributeId(this.state.template);
+        // Validation of template attributes
+        for(let k in this.state.template.attrs){
+            console.log("attrs: ", this.state.template.attrs);
+            // Validation of config attributes
+            if(this.state.template.attrs[k].type == "meta"){
+                if(this.state.template.attrs[k].label == ""){
+                    toaster.error("You can't leave configuration attribute type empty");
+                    return;                   
+                }
+
+                if(this.state.template.attrs[k].static_value == ""){
+                    toaster.error("You can't leave configuration attribute value empty");
+                    return;                      
+                }
+
+                // Validation of device_timeout
+                if(this.state.template.attrs[k].label == "device_timeout"){
+                    ret = util.isDeviceTimeoutValid(this.state.template.attrs[k].static_value);
+                    if(!ret.result){
+                        toaster.error(ret.error);
+                        return;
+                    }
+                }
+            } else {
+                // Validation of data attributes
+                if(this.state.template.attrs[k].label == ""){
+                    toaster.error("You can't leave attribute name empty");
+                    return;
+                }
+
+                if(this.state.template.attrs[k].value_type == ""){
+                    toaster.error("You can't leave attribute value type empty");
+                    return;
+                }
+
+                if(this.state.template.attrs[k].type == "static"){
+                    ret = util.isTypeValid(this.state.template.attrs[k].static_value, this.state.template.attrs[k].value_type, this.state.template.attrs[k].type)
+                    if(!ret.result){
+                        toaster.error(ret.error);
+                        return;                        
+                    }
+                }
+            }
+            
+            // Verify if name is already exist
+            for(let j in this.state.template.attrs){
+                if(k!=j){
+                    if(this.state.template.attrs[k].label == this.state.template.attrs[j].label){
+                        toaster.error("Name already exists");
+                        return;
+                    }
+                }
+            }
+        }
+
         TemplateActions.triggerUpdate(this.state.template, (template) => {
-          Materialize.toast('Template updated', 4000);
+          toaster.success('Template updated');
         });
+    }
+
+    removeAttributeId(template){
+        for(let index in template.attrs){
+            delete template.attrs[index].id;
+        }
     }
 
     deleteTemplate(e) {
         e.preventDefault();
           TemplateActions.triggerRemoval(this.state.template.id, (template) => {
           hashHistory.push('/template/list');
-          Materialize.toast('Template removed', 4000);
+          toaster.success('Template removed');
+          this.props.temp_opex._fetch();
         });
     }
 
     addAttribute(attribute, isConfiguration) {
         let state = this.state.template;
         if (isConfiguration) {
-
             // we should check if config_attrs and data_attrs already contains the pair (label, type) before save it.
 
             if (state.config_attrs.filter(
                 function (elem, index) {
-                    return elem.label == attribute.value_type && elem.static_value == attribute.value;
+                    return elem.label == attribute.value_type;
                 }
             )[0])
             {
-                Materialize.toast("The pair (label, type) is already created.", 4000);
+                toaster.warning("The label '" + attribute.value_type + "' is already created.");
                 return;
             }
 
@@ -699,12 +809,12 @@ class ListItem extends Component {
         } else {
             if (state.data_attrs.filter(
                 function (elem, index) {
-                    return elem.label == attribute.label && elem.value_type == attribute.value_type;
+                    return elem.label == attribute.label;
 
                 }
             )[0])
             {
-                Materialize.toast("The pair (label, type) is already created.", 4000);
+                toaster.warning("The label " + attribute.label + " is already created.");
                 return;
             }
 
@@ -774,15 +884,17 @@ class ListItem extends Component {
         e.preventDefault();
         let ret = util.isNameValid(this.state.template.label);
         if (!ret.result && !this.state.isConfiguration) {
-            Materialize.toast(ret.error, 4000);
+            toaster.error(ret.error);
             return;
         }
+
         this.state.template.attrs.push.apply(this.state.template.attrs, this.state.template.data_attrs);
         this.state.template.attrs.push.apply(this.state.template.attrs ,this.state.template.config_attrs);
         TemplateActions.addTemplate(this.state.template, (template) => {
-            Materialize.toast('Template created', 4000);
+            toaster.success('Template created.');
             TemplateActions.removeSingle("new_template");
             this.props.enableNewTemplate();
+            this.props.temp_opex._fetch();
         })
     }
 
@@ -836,34 +948,40 @@ class ListItem extends Component {
         );
     }
 
-    render() {
+    // getDataAttrs(template){
+    //     console.log("t: ", template);
+    // }
 
+    render() {
+        // let data_attrs = this.props.template.attrs;
+        // this.getDataAttrs(this.state.template);
         let fw_version_used = "No default image"
         if (this.state.fw_version_used) {
             fw_version_used = this.state.fw_version_used;
         }
 
         let attrs = this.state.template.data_attrs.length + this.state.template.config_attrs.length;
+
         return (
-            <div>
+            <div className={"mg20px fl "+ (this.state.template.isNewTemplate ? 'flex-order-1' : 'flex-order-2')}>
             {this.state.show_image_modal ? (
                 <AltContainer store={ImageStore}>
                         <ImageModal updateDefaultVersion={this.updateDefaultVersion} template={this.state.template} refreshImages={this.refreshImages} toggleModal={this.toggleImageModal} />
                 </AltContainer>
             ) : null }
 
-            <div className={"template card-size lst-entry-wrapper z-depth-2 " + (this.state.isSuppressed ? 'suppressed' : 'full-height')}
+                <div className={"template card-size lst-entry-wrapper z-depth-2 mg0px height-auto " + (this.state.isSuppressed ? 'suppressed' : 'full-height')}
                 id={this.props.id}>
                 {this.state.show_modal ?(
                   <RemoveModal name={"template"} remove={this.deleteTemplate} openModal={this.openModal} />
                 ) : (
                   <div></div>
                 )}
-                    <div className="lst-entry-title bg-gradient-ciano-blue col s12">
+                <div className="lst-entry-title bg-gradient-ciano-blue col s12">
                     <img className="title-icon template" src={"images/big-icons/template.png"}/>
                     <div className="title-text">
-                        <textarea maxLength="40" placeholder={"Template Name"} readOnly={!this.state.isEditable}
-                                  value={this.state.template.label} name={"label"} onChange={this.handleAttribute}/>
+                       <input className="template-title-text truncate" placeholder={"Template Name"} readOnly={!this.state.isEditable}
+                            value={this.state.template.label} name={"label"} title={this.state.template.label} maxLength={45} onChange={this.handleAttribute}/>
                     </div>
                 </div>
                 <div className="lst-entry-body">
@@ -962,35 +1080,19 @@ class TemplateList extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            filter: ''
-        };
-
+        this.state = {};
         this.filteredList = [];
 
-        this.handleSearchChange = this.handleSearchChange.bind(this);
-        this.applyFiltering = this.applyFiltering.bind(this);
         this.detailedTemplate = this.detailedTemplate.bind(this);
         this.editTemplate = this.editTemplate.bind(this);
         this.updateTemplate = this.updateTemplate.bind(this);
         this.deleteTemplate = this.deleteTemplate.bind(this);
-        this.filterListByName = this.filterListByName.bind(this);
-        this.clearInputField = this.clearInputField.bind(this);
-    }
-
-    filterListByName (event){
-      event.preventDefault();
-      this.setState({filter: event.target.value});
     }
 
     detailedTemplate(id) {
-        if (this.state.detail && this.state.edit) {
-        }
-
         let temp = this.state;
         temp.detail = id;
         this.setState(temp);
-        return true;
     }
 
     editTemplate(id) {
@@ -1004,19 +1106,7 @@ class TemplateList extends Component {
         return false;
     }
 
-    handleSearchChange(event) {
-        const filter = event.target.value;
-        let state = this.state;
-        state.filter = filter;
-        state.detail = undefined;
-        this.setState(state);
-    }
-
-    applyFiltering(list) {
-        return list;
-    }
-
-    // @TO_CHECK but every call to the function below don't pass any parameter
+    // @TO_CHECK I guess that every call to the function below aren't passing any parameter
     updateTemplate(template) {
         this.props.updateTemplate(template);
 
@@ -1027,47 +1117,30 @@ class TemplateList extends Component {
 
     deleteTemplate(id) {
         this.props.deleteTemplate(id);
-
         let state = this.state;
         state.edit = undefined;
         this.setState(state);
     }
 
     convertTemplateList() {
-      if (this.state.filter != "") {
-        var updatedList = this.filteredList.filter(function(template) {
-          return template.label.includes(event.target.value);
-        });
-        this.filteredList = updatedList;
-      } else {
         this.filteredList = [];
         for (let k in this.props.templates) {
-          if (this.props.templates.hasOwnProperty(k)){
             this.filteredList.push(this.props.templates[k]);
-          }
         }
-      }
     }
 
-    clearInputField(){
-        this.state.filter = "";
-      }
-
     render() {
-        this.filteredList = this.applyFiltering(this.props.templates);
-
-        this.convertTemplateList();
-
+        
         if (this.props.loading) {
             return (
                 <div className="row full-height relative">
-                    <div className="background-info valign-wrapper full-height">
-                        <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center"/>
-                    </div>
+                    <Loading />
                 </div>
             )
         }
 
+        this.convertTemplateList();
+        
         if (this.filteredList.length > 0) {
             let existsNewDevice = false;
             let newTemplate;
@@ -1093,28 +1166,7 @@ class TemplateList extends Component {
             }
         }
 
-        let header = null;
-        if (this.props.showSearchBox){
-            header = <div className={"row z-depth-2 templatesSubHeader " + (this.props.showSearchBox ? "show-dy" : "hide-dy")} id="inner-header">
-            <div className="col s3 m3 main-title">
-              Showing {this.filteredList.length} template(s)
-            </div>
-            <div className="col s1 m1 header-info hide-on-small-only">
-            </div>
-            <div className="col s4 m4">
-              <label htmlFor="fld_template_name">Template Name</label>
-              <input id="fld_template_name" type="text" name="Template Name" className="form-control form-control-lg" placeholder="Search" value={this.state.filter} onChange={this.filterListByName} />
-            </div>
-          </div>;
-        } else {
-            this.filteredList = this.applyFiltering(this.props.templates);
-            this.clearInputField();
-        }
-
-        return <div className="full-height relative">
-        <ReactCSSTransitionGroup transitionName="templatesSubHeader">
-          {header}
-        </ReactCSSTransitionGroup>
+        return <div className="full-height relative overflow-auto">
             {this.filteredList.length > 0 ? <div className="col s12 lst-wrapper w100">
                 {this.filteredList.map(template => (
                   <ListItem
@@ -1128,28 +1180,66 @@ class TemplateList extends Component {
                     deleteTemplate={this.deleteTemplate}
                     enableNewTemplate={this.props.enableNewTemplate}
                     confirmTarget="confirmDiag"
+                    temp_opex={this.props.temp_opex}
                   />
                 ))}
               </div> : <div className="background-info valign-wrapper full-height">
                 <span className="horizontal-center">
-                   No configured templates
+                        {this.props.temp_opex.hasFilter() ?
+                            <b className='noBold'>No templates to be shown</b>
+                            : <b className='noBold'>No configured templates</b>
+                    }
                 </span>
               </div>}
           </div>;
     }
 }
 
-class Templates extends Component {
 
+class TemplateOperations extends GenericOperations {
+
+    constructor() {
+        super();
+        this.filterParams = { "sortBy": "label" };
+        this.paginationParams = {};
+        this.setDefaultPaginationParams();
+    }
+
+
+    whenUpdatePagination(config) {
+        for (let key in config)
+            this.paginationParams[key] = config[key];
+        this._fetch();
+    }
+
+    whenUpdateFilter(config)
+    {
+        // set default parameters
+        this.setDefaultPageNumber();
+        this.filterParams = config;
+        this._fetch();
+    }
+    
+    _fetch() {
+        let res = Object.assign({},this.paginationParams, this.filterParams);
+        console.log("fetching: ", res);
+        TemplateActions.fetchTemplates(res);
+    }
+}
+
+
+class Templates extends Component {
+    
     constructor(props) {
         super(props);
-
-        this.addTemplate = this.addTemplate.bind(this);
-        this.toggleSearchBar = this.toggleSearchBar.bind(this);
-        this.enableNewTemplate = this.enableNewTemplate.bind(this);
         this.state = { showFilter: false,
             has_new_template: false
         };
+        
+        this.temp_opex = new TemplateOperations();
+        this.addTemplate = this.addTemplate.bind(this);
+        this.toggleSearchBar = this.toggleSearchBar.bind(this);
+        this.enableNewTemplate = this.enableNewTemplate.bind(this);
     }
 
     toggleSearchBar() {
@@ -1179,34 +1269,48 @@ class Templates extends Component {
     }
 
     componentDidMount() {
-        TemplateActions.fetchTemplates.defer();
+        this.temp_opex._fetch();
+        this.setState({ 'has_new_template': false });
     }
 
     render() {
-        return (
-            <ReactCSSTransitionGroup
-                transitionName="first"
-                transitionAppear={true}
-                transitionAppearTimeout={100}
-                transitionEnterTimeout={100}
-                transitionLeaveTimeout={100}>
-                <NewPageHeader title="Templates" subtitle="Templates" icon='template'>
-                    <div className="pt10">
-                        <div className="searchBtn" title="Show search bar" onClick={this.toggleSearchBar.bind(this)}>
-                          <i className="fa fa-search" />
-                        </div>
-                        <div onClick={this.addTemplate} className="new-btn-flat red "
-                              title="Create a new template">
-                            New Template<i className="fa fa-plus"/>
-                        </div>
-                    </div>
-                </NewPageHeader>
-                <AltContainer store={TemplateStore}>
-                    <TemplateList enableNewTemplate={this.enableNewTemplate} showSearchBox={this.state.showFilter}/>
-                </AltContainer>
-            </ReactCSSTransitionGroup>
-        );
+
+        this.metaData = { 'alias': 'template' };
+    
+        return <ReactCSSTransitionGroup transitionName="first" transitionAppear={true} transitionAppearTimeout={100} transitionEnterTimeout={100} transitionLeaveTimeout={100}>
+        <div className={"full-device-area"}>
+            <AltContainer store={TemplateStore}>
+              <NewPageHeader title="Templates" subtitle="Templates" icon="template">
+                <FilterLabel ops={this.temp_opex} text="Filtering Templates" />
+                <Pagination show_pagination={true} ops={this.temp_opex} />
+                <OperationsHeader addTemplate={this.addTemplate} toggleSearchBar={this.toggleSearchBar.bind(this)} />
+              </NewPageHeader>
+                    <Filter showPainel={this.state.showFilter} metaData={this.metaData} ops={this.temp_opex} fields={FilterFields} />
+                    <TemplateList temp_opex={this.temp_opex} enableNewTemplate={this.enableNewTemplate} />
+            </AltContainer>
+        </div>
+          </ReactCSSTransitionGroup>;
     }
 }
+
+function OperationsHeader(props) {
+    return (
+        <div className="col s5 pull-right pt10">
+             <div className="searchBtn" title="Show search bar" onClick={props.toggleSearchBar}>
+                <i className="fa fa-search" />
+            </div>
+            <div onClick={props.addTemplate} className="new-btn-flat red" title="Create a new template">
+                New Template<i className="fa fa-plus" />
+            </div>
+        </div>
+    )
+}
+
+function FilterFields(props) {
+    return <div className="col s12 m12">
+        <input id="fld_name" type="text" className="form-control form-control-lg" placeholder="Label" name="label" value={props.fields.label} onChange={props.onChange} />
+      </div>;
+}
+
 
 export {Templates as TemplateList};

@@ -5,6 +5,7 @@ import MenuActions from '../../actions/MenuActions';
 import MenuStore from '../../stores/MenuStore';
 import LoginStore from '../../stores/LoginStore';
 import LoginActions from '../../actions/LoginActions';
+import { ChangePasswordModal } from "../../components/Modal";
 
 class Navbar extends Component {
   // TODO: header widgets should be received as children to this (Navbar) node
@@ -55,10 +56,10 @@ class Navbar extends Component {
                 {this.state.page} {this.state.page_icon}
             </div>
             <div className="status-item user-area">
-                <div className="user-pic">
+                {/*<div className="user-pic">
                   <img src={this.gravatar} />
-                </div>
-                <div className="user-name">{(this.props.user.name ? this.props.user.name : this.props.user.username)}</div>
+                </div>*/}
+              <div className="user-name clickable" onClick={this.handleClick}>{(this.props.user.name ? this.props.user.name : this.props.user.username)}</div>
                 <div className="clickable" onClick={this.handleClick} title="Login details">
                 {this.props.open === false &&  <i className="fa fa-caret-down line-normal center-caret" />}
                 {this.props.open === true && <i className="fa fa-caret-up line-normal center-caret" />}
@@ -76,8 +77,12 @@ class RightSideBar extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {open_change_password_modal: false}
+
     this.logout = this.logout.bind(this);
     this.dismiss = this.dismiss.bind(this);
+    this.openChangePasswordModal = this.openChangePasswordModal.bind(this);
+    this.handleChangePasswordModal = this.handleChangePasswordModal.bind(this);
   }
 
   logout(event) {
@@ -91,9 +96,15 @@ class RightSideBar extends Component {
     this.props.toggleSidebar();
   }
 
-  render() {
-    console.log("this,props",this.props);
+  openChangePasswordModal(status){
+    this.setState({open_change_password_modal: status});
+  }
 
+  handleChangePasswordModal(){
+    this.setState({open_change_password_modal: true});
+  }
+
+  render() {
     if (this.props.user == undefined) {
       console.error('no active user session');
       return null;
@@ -101,46 +112,67 @@ class RightSideBar extends Component {
 
     let gravatar = "https://www.gravatar.com/avatar/" + btoa(this.props.user.username) + "?d=identicon";
 
-    return (
-      <div className="">
-        <div className="rightsidebarchild logout-page">
-          <div className="col s12 m12 logout-page-photo">
+    return <div className="">
+        <div className="rightsidebarchild">
+          {/* <div className="col s12 m12 logout-page-photo">
             <img src={gravatar} />
-          </div>
-          <div className="col s12 m12">
-            <div className="logout-page-subtitle">You are logged in!</div>
-          </div>
-
-          <div className="col s12 m12">
-            <div className="logout-page-info truncate">{this.props.user.username}</div>
-          </div>
-
-          <div className="col s12 m12">
-            <div className="logout-page-label"> Username</div>
-          </div>
-
-          {(this.props.user.email != undefined) && (
-            <div>
+          </div> */}
+          <div className="logout-page-header">
             <div className="col s12 m12">
-              <div className="logout-page-info truncate">{this.props.user.email}</div>
+              <div className="logout-page-subtitle">Logged as</div>
             </div>
 
             <div className="col s12 m12">
-              <div className="logout-page-label"> E-mail</div>
+              <div className="logout-page-info col s12 truncate">
+                {this.props.user.username}
+              </div>
             </div>
-            </div>
-          )}
 
-          <div className="row logout-page-buttons">
-            <a className="waves-effect waves-light btn-flat btn-ciano" onClick={this.dismiss}>dismiss</a>
-            <button type="button" className="waves-effect waves-light btn-flat btn-ciano" onClick={this.logout}>logout</button>
+            {this.props.user.email != undefined && <div>
+                <div className="col s12 m12">
+                  <div className="logout-page-subtitle"> E-mail</div>
+                </div>
+
+                <div className="col s12 m12">
+                  <div className="logout-page-info truncate">
+                    {this.props.user.email}
+                  </div>
+                </div>
+              </div>}
+             <div>
+              <div className="col s12 m12">
+                <div className="logout-page-subtitle">Tenant</div>
+              </div>
+
+              <div className="col s12 m12">
+                <div className="logout-page-info truncate">
+                {this.props.user.service}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="horizontal-line" />
+
+          <div className="logout-page-settings">
+            <div className="logout-page-changePassword col s12 m12" onClick={this.handleChangePasswordModal}>
+              Change Password
+            </div>
+          </div>
+
+          <div className="horizontal-line" />
+
+          <div className="logout-page-buttons">
+            {/* <a className="waves-effect waves-light btn-flat btn-ciano" onClick={this.dismiss}>dismiss</a> */}
+            <div className="btn-logout" onClick={this.logout}>
+              Logout
+            </div>
           </div>
         </div>
-      <div className="rightsidebar" onClick={this.dismiss}>
-      </div>
-      </div >
-
-)
+        {this.state.open_change_password_modal ? <ChangePasswordModal openChangePasswordModal={this.openChangePasswordModal} toggleSidebar={this.props.toggleSidebar} /> : <div />}
+        {/* <div className="rightsidebar" onClick={this.dismiss}>
+        </div> */}
+      </div>;
   }
 }
 
@@ -296,7 +328,6 @@ class Full extends Component {
 
   toggleUserSidebar()
   {
-    console.log("toggleUserSidebar");
     this.setState({ user_sidebar: !this.state.user_sidebar});
   }
 

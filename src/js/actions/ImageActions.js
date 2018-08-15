@@ -1,5 +1,5 @@
 import imageManager from '../comms/ImageManager';
-import Materialize from 'materialize-css';
+import toaster from "../comms/util/materialize";
 
 var alt = require('../alt');
 
@@ -54,7 +54,6 @@ class ImageActions {
       imageManager.getImages(label)
         .then((images) => {
           this.updateImages(images);
-          console.log("this.updateImages:", label, images);
           if (callback) {
             callback(images);
           }
@@ -146,7 +145,7 @@ class ImageActions {
   }
 
   imagesFailed(error) {
-    Materialize.toast(error.message, 4000);
+    toaster.error(error.message);
     return error;
   }
 }

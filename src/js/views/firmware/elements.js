@@ -18,7 +18,7 @@ import Dropzone from 'react-dropzone'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import MaterialInput from "../../components/MaterialInput";
-import Materialize from "materialize-css";
+import toaster from "../../comms/util/materialize";
 
 class UploadDialog extends Component {
   constructor(props) {
@@ -47,7 +47,7 @@ class UploadDialog extends Component {
 
     if (this.state.files.length == 0)
     {
-      Materialize.toast('No image added', 4000);
+      toaster.warning("No image added.");
       return;
     }
 
@@ -57,7 +57,7 @@ class UploadDialog extends Component {
       image_id: this.props.image.id,
       binary: this.state.files[0]};
       ImageActions.triggerUpdate(img_binary, () => {
-          Materialize.toast('Image added', 4000);
+         toaster.success('Image added.');
           this.props.closeModal();
       })
   }
@@ -114,7 +114,7 @@ class NewImageCard extends Component {
     e.preventDefault();
     if (this.state.fw_version == "")
     {      
-      Materialize.toast('Missing Firmware version.', 4000);
+      toaster.warning('Missing Firmware version.');
       return;  
     }
 
@@ -123,9 +123,8 @@ class NewImageCard extends Component {
       fw_version: this.state.fw_version,
       sha1: ""
     };
-    console.log("image", img);
     ImageActions.triggerInsert(img, (img) => {
-      Materialize.toast('Image created', 4000);
+      toaster.success('Image created.');
       this.props.refreshImages();
     });
     this.props.setNewImage(false);
@@ -202,7 +201,7 @@ class ImageCard extends Component {
   {
     e.preventDefault();
     ImageActions.triggerRemoval(this.props.image, () => {
-      Materialize.toast('Image Removed', 4000);
+      toaster.error('Image removed.');
     })
   }
 
@@ -232,7 +231,7 @@ class ImageCard extends Component {
     // };
     // console.log("removeBinary", img_binary);
     ImageActions.triggerRemovalBinary(this.props.image.id, () => {
-      Materialize.toast('Image updated', 4000);
+      toaster.success('Image updated.');
     })
     // this.props.changeState(0);
   }
@@ -287,7 +286,7 @@ class ImageCard extends Component {
               {/* <i className="fa fa-hdd" /> */}
             </div>
             <div className={"attr-content"}>
-              <label>{this.props.image.fw_version}</label>
+              <label className="truncate" title={this.props.image.fw_version}>{this.props.image.fw_version}</label>
               <span>Firmware Version</span>
             </div>
           </div>

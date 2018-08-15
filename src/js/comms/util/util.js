@@ -82,7 +82,7 @@ class Util {
   }
 
   printTime(ts) {
-    let date = new Date(null);
+    let date = new Date();
     date.setSeconds(Math.floor(ts));
 
     const options = { hour12: false };
@@ -120,8 +120,12 @@ class Util {
   }
 
     async _status(response) {
+      
     if (response.status === 500)
         return Promise.reject(response);
+
+    if (response.status === 404)
+       return Promise.reject(new FetchError(response, "API not found."));
 
     let body = await response.json();
     response.message = body.message;
@@ -131,6 +135,7 @@ class Util {
             if ((response.status === 401) || (response.status === 403)) {
                 LoginActions.logout();
             }
+
             // return Promise.reject(new FetchError(response, response.statusText ));
             return Promise.reject(response);
         }
@@ -191,8 +196,17 @@ class Util {
   }
 
   isTypeValid(value, type, dynamic){
+
     let ret = {result: true, error: ""};
-    if (dynamic === 'dynamic' && value.length === 0) return ret;
+    if(dynamic === 'actuator' && value.length === 0) return ret;
+
+    if (type.trim().length == 0) {
+      ret.result = false;
+      ret.error = "You must set a type.";
+      return ret;
+    } 
+    if (dynamic === "dynamic" && value.length === 0) return ret;
+
     const validator = {
       'string': function (value) {
         ret.result = value.trim().length > 0;
@@ -247,19 +261,28 @@ class Util {
           return ret;
       }
     };
-
+    
     if (validator.hasOwnProperty(type)) {
-      const result = validator[type](value);
-      // if (result) { ErrorActions.setField('value', ''); }
-      return result;
+        const result = validator[type](value);
+        return result;
     }
-    //
+
     // if (validator.hasOwnProperty(this.props.newAttr.type)) {
     //   const result = validator[this.props.newAttr.type](value)
     //   if (result) { ErrorActions.setField('value', ''); }
     //   return result;
     // }
     return ret;
+  }
+
+  isDeviceTimeoutValid(device_timeout){
+    let ret = {result: true, error: ""};
+    const re = /^[+-]?\d+$/;
+    ret.result = re.test(device_timeout);
+    if (ret.result === false) {
+        ret.error = 'Invalid device timeout value. This is not a integer';
+    }
+    return ret;  
   }
 
 

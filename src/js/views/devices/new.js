@@ -11,14 +11,16 @@ import deviceManager from '../../comms/devices/DeviceManager';
 import DeviceStore from '../../stores/DeviceStore';
 import TagForm from '../../components/TagForm';
 import util from "../../comms/util/util";
-import { DojotBtnCircle, DojotButton } from "../../components/DojotButton";
+import { DojotBtnCircle, DojotBtnClassic, DojotBtnLink } from "../../components/DojotButton";
 
 import TemplateStore from '../../stores/TemplateStore';
 import TemplateActions from '../../actions/TemplateActions';
 
 import MaterialSelect from "../../components/MaterialSelect";
 import MaterialInput from "../../components/MaterialInput";
-import Materialize from "materialize-css";
+import toaster from "../../comms/util/materialize";
+
+import { DojotBtnRedCircle } from "../../components/DojotButton";
 
 
 /*
@@ -154,7 +156,14 @@ class DeviceHandlerStore {
   // }
 
   // addAttr() {
-  //   // check for duplicate names. Do check loadAttrs() for further details.
+  //  
+  
+  
+  
+  
+  
+  
+  // check for duplicate names. Do check loadAttrs() for further details.
   //   // if (this.attrNames.hasOwnProperty(this.newAttr.name)) {
   //   //   this.errorAttr({
   //   //     field: 'name',
@@ -207,6 +216,7 @@ class StaticAttributes extends Component {
 
   render() {
 
+
     if (!this.props.attrs.length) {
       return (
         <div> </div>
@@ -245,6 +255,7 @@ class StaticAttributes extends Component {
                       value={attr.value}
                       name={attr.label}
                       onChange={this.handleChange}
+                      maxLength={40}
                     />
                   </div>
                   <div className="attr-type fix-value ">Value</div>
@@ -269,6 +280,7 @@ class StaticAttributes extends Component {
                       value={attr.value}
                       name={attr.label}
                       onChange={this.handleChange}
+                      maxLength={40}
                     />
                   </div>
                   <div className="attr-type fix-value ">Value</div>
@@ -298,7 +310,7 @@ class DeviceHeader extends Component {
         <div className="col s9 pt20px">
           <div>
             <div className="input-field large col s12 ">
-              <MaterialInput id="fld_label" value={this.props.name} name="label" onChange={this.props.onChange}> Name </MaterialInput>
+              <MaterialInput id="fld_label" value={this.props.name} name="label" onChange={this.props.onChange} maxLength={40}> Name </MaterialInput>
             </div>
           </div>
         </div>
@@ -315,8 +327,8 @@ class AttrBox extends Component {
   }
 
   render() {
-
     let attr_list = this.props.attrs.filter((attr) => { return attr.type == 'dynamic'});
+
     console.log("attr_list", attr_list);
     return <div >
         {attr_list.length > 0 ? <div className="col s12">
@@ -333,6 +345,33 @@ class AttrBox extends Component {
             })}
           </div> : null }
       </div>;
+  }
+}
+
+class AttrActuatorBox extends Component {
+  constructor(props) {
+    super(props);
+  }
+  
+  render(){
+    let attr_actuators_list = this.props.attrs.filter((attr) => { return attr.type == 'actuator'});
+    return(
+      <div>
+        {attr_actuators_list.length > 0 ? <div className="col s12">
+            {// <div className="icon">
+            //   <img src={"images/tag.png"} />
+            // </div>
+            attr_actuators_list.map((attr, index) => {
+              return <div key={index} className="col s4">
+                  <div className="bg-gray">
+                    <div className="attr-name">{attr.label}</div>
+                    <div className="attr-type">{attr.value_type}</div>
+                  </div>
+                </div>;
+            })}
+          </div> : null }
+      </div>
+    )
   }
 }
 
@@ -357,6 +396,7 @@ class DeviceForm extends Component {
     this.save = this.save.bind(this);
 
     this.getStaticAttributes = this.getStaticAttributes.bind(this);
+    this.handleStaticsAttributes = this.handleStaticsAttributes.bind(this);
     this.removeStaticAttributes = this.removeStaticAttributes.bind(this);
   }
 
@@ -368,6 +408,7 @@ class DeviceForm extends Component {
   componentDidUpdate() {
     // if is edition mode, we should wait for templates and iterate over them updating the selected templates
     let templates = this.props.templates.templates;
+    let device = this.props.device.device
     if (
       !this.state.loaded &&
       templates != undefined &&
@@ -383,7 +424,7 @@ class DeviceForm extends Component {
           if (templates[k].id == this.props.device.usedTemplates[tmp_id]) {
             templates[k].active = true;
             list.push(JSON.parse(JSON.stringify(templates[k])));
-            currentAttrs = currentAttrs.concat(this.getStaticAttributes(templates[k]));
+            currentAttrs = currentAttrs.concat(this.handleStaticsAttributes(templates[k], device));
             break;
           }
         }
@@ -392,13 +433,40 @@ class DeviceForm extends Component {
     }
   }
 
+  handleStaticsAttributes(template, device){
+    function getAttributesFromDevice(deviceAttrs){
+      let configAttrs = []
+      for(let tmp in deviceAttrs){
+        for(let index in deviceAttrs[tmp]){
+          if(deviceAttrs[tmp][index].type == "static" || deviceAttrs[tmp][index].type == "meta"){
+            configAttrs = configAttrs.concat(deviceAttrs[tmp][index]);
+          }
+        }
+      }
+      return configAttrs;
+    }
+    let listAttrs = [];
+    listAttrs = listAttrs.concat(getAttributesFromDevice(device.attrs)); // Handle config attributes from device
+
+    if(this.props.edition){
+      let list = listAttrs.map((attr) => {
+        attr.value = attr.static_value;
+        return attr;
+      });
+      return list;
+    } else {
+      return this.getStaticAttributes(template);
+    }
+
+  }
+
   save(e) {
     e.preventDefault();
 
     let to_be_checked = DeviceFormStore.getState().device;
     let ret = util.isNameValid(to_be_checked.label);
     if (!ret.result) {
-      Materialize.toast(ret.error, 4000);
+      toaster.error(ret.error);
       return;
     }
 
@@ -419,7 +487,7 @@ class DeviceForm extends Component {
     const ongoingOps = DeviceStore.getState().loading;
     if (ongoingOps == false) {
       console.log("ongoingOps");
-      this.props.operator(JSON.parse(JSON.stringify(DeviceFormStore.getState().device)));
+      this.props.operator(JSON.parse(JSON.stringify(DeviceFormStore.getState().device)), this.props.deviceid);
     }
   }
 
@@ -499,7 +567,6 @@ class DeviceForm extends Component {
   }
 
   render() {
-
     // preparing template list to be used
     let templates = this.props.templates.templates;
     for(let k in templates){
@@ -516,7 +583,18 @@ class DeviceForm extends Component {
         <div className="col s7 data-frame">
           <div className="col s12">
             {this.state.selectedTemplates.length > 0 ? <div className="react-bug-escape">
-                <DeviceHeader name={this.props.device.device.label} onChange={this.handleChange} />
+                <div className="col s12 p0">
+                  <div className="col s9 p0">
+                    <DeviceHeader name={this.props.device.device.label} onChange={this.handleChange} />
+                  </div>
+                  <div className="col s3 p0 mt30px text-right">
+                    <DojotBtnClassic is_secondary={false} onClick={this.save} label="Save" title="Save" />
+                    <div className="col s12 p0 mt10px ">
+                      <DojotBtnClassic is_secondary={true} to={this.props.edition ? "/device/id/"+this.props.deviceid+"/detail" : "/device/list"} label="Discard" title="Discard" />
+                  </div>
+
+                  </div>
+                </div>
                 <StaticAttributes attrs={this.state.staticAttrs} onChange={this.handleChangeAttr} />
                 <div className="attr-box">
                   <div className="col s12">
@@ -526,18 +604,18 @@ class DeviceForm extends Component {
                     <AttrBox key={tplt.id} {...tplt} />
                   ))}
                 </div>
+                <div className="attr-box">
+                  <div className="col s12">
+                    <div className="attr-title">Actuators</div>
+                  </div>
+                  {this.state.selectedTemplates.map(tplt => (
+                    <AttrActuatorBox key={tplt.id} {...tplt} />
+                  ))}
+                </div>
               </div> : <div className="padding10 background-info pb160px">
                 Select a template to start
               </div>}
           </div>
-          {this.state.selectedTemplates.length > 0 && <div className="col s12 footer text-right">
-              <a className="waves-effect waves-light btn-flat btn-ciano" onClick={this.save} tabIndex="-1">
-                Save
-              </a>
-              <Link to="/device/list" className="waves-effect waves-light btn-flat btn-ciano" tabIndex="-1">
-                Discard
-              </Link>
-            </div>}
         </div>
 
         <div className="col s5 p0">
@@ -547,6 +625,7 @@ class DeviceForm extends Component {
               toggleTemplate={this.toggleTemplate}
               templates={this.state.selectedTemplates}
               state={this.state.templateState}
+              numberOfTemplates={this.props.templates.templates.length}
             />
           ) : (
             <TemplateFrame
@@ -554,6 +633,7 @@ class DeviceForm extends Component {
               toggleTemplate={this.toggleTemplate}
               templates={templates}
               state={this.state.templateState}
+              numberOfTemplates={this.props.templates.templates.length}
             />
           )}
         </div>
@@ -601,59 +681,71 @@ class TemplateFrame extends Component {
 
   render() {
     // const hasValue = (this.props.templates && this.props.templates.length > 0);
-    return (
-      <div className="col s12 template-frame">
-        <div className="col s12 header">
-        { this.props.state == 0 ? (
-          <label className="col s6 text-left" >Selected Templates </label>
-        ) : (
-            <label className="col s6 text-left" >All Templates </label>
-            )}
-
-          <div className="col s6 text-right" >
-          { this.props.state == 0 ? (
-            <DojotBtnCircle click={this.setAditionMode} icon={'fa fa-plus'} tooltip='Add templates' />
-          ) : (
-            <div>
-              <DojotBtnCircle click={this.setRemovalMode} icon={'fa fa-chevron-left'} tooltip='Remove templates'/>
-              <DojotBtnCircle click={this.showSearchBox} icon={'fa fa-search'} />
+    if(this.props.numberOfTemplates > 0){
+      return (
+          <div className="col s12 template-frame">
+            <div className="col s12 header">
+            { this.props.state == 0 ? (
+              <label className="col s6 text-left" >Selected Templates </label>
+            ) : (
+                <label className="col s6 text-left" >All Templates </label>
+                )}
+    
+              <div className="col s6 text-right" >
+              { this.props.state == 0 ? (
+                <DojotBtnCircle click={this.setAditionMode} icon={'fa fa-plus'} tooltip='Add templates' />
+              ) : (
+                <div>
+                  <DojotBtnCircle click={this.setRemovalMode} icon={'fa fa-chevron-left'} tooltip='Remove templates'/>
+                  {/* 
+                    // This feature is not working yet
+                    <DojotBtnCircle click={this.showSearchBox} icon={'fa fa-search'} /> 
+                  */}
+                </div>
+              )}
+              </div>
+            </div>
+            <div className="col s12 body">
+              {this.props.templates.map((temp) =>
+                <div key={temp.id} className="card template-card" title={temp.label}>
+                { this.props.state == 0 ? (
+                  <div>
+                      <div onClick={this.removeTemplate.bind(this,temp)} className="remove-layer">
+                        <i className="fa fa-remove"> </i>
+                      </div>
+                      <div className="template-name truncate space-p-r">{temp.label}</div>
+                  </div>
+                ) : (
+                  null
+                )}
+    
+                { this.props.state == 1 ? (
+                  <div>
+                  { temp.active ? (
+                  <div onClick={this.toggleTemplate.bind(this,temp)} className="active-layer">
+                    <i className="fa fa-check"> </i>
+                  </div> ) : (
+                    <div onClick={this.toggleTemplate.bind(this,temp)} className="empty-layer">
+                    </div>
+                  ) }
+                  <div className="template-name truncate">{temp.label}</div>
+                </div>
+              ) : (
+                null
+              )}
             </div>
           )}
-           </div>
+          </div>
         </div>
-        <div className="col s12 body">
-          {this.props.templates.map((temp) =>
-            <div key={temp.id} className="card template-card">
-            { this.props.state == 0 ? (
-              <div>
-                  <div onClick={this.removeTemplate.bind(this,temp)} className="remove-layer">
-                    <i className="fa fa-remove"> </i>
-                  </div>
-                  <div className="template-name space-p-r">{temp.label}</div>
-              </div>
-            ) : (
-              null
-            )}
+      )
+    } else {
+      return (
+        <div className="col s12 template-frame">
+          <div className="padding10 background-info pb160px">Create a template first</div>
+        </div>
+      )
+    }
 
-            { this.props.state == 1 ? (
-              <div>
-              { temp.active ? (
-              <div onClick={this.toggleTemplate.bind(this,temp)} className="active-layer">
-                <i className="fa fa-check"> </i>
-              </div> ) : (
-                <div onClick={this.toggleTemplate.bind(this,temp)} className="empty-layer">
-                </div>
-              ) }
-              <div className="template-name">{temp.label}</div>
-            </div>
-          ) : (
-             null
-           )}
-        </div>
-      )}
-      </div>
-    </div>
-  )
 }
 
 }
@@ -682,7 +774,7 @@ class NewDevice extends Component {
     let ops = function(device) {
       DeviceActions.addDevice(device, (device) => {
         // FormActions.set(device);
-        Materialize.toast('Device created', 4000);
+        toaster.success('Device created');
         hashHistory.push('/device/list')
       });
     }
@@ -690,25 +782,36 @@ class NewDevice extends Component {
       title = "Edit device";
       ops = function(device) {
         DeviceActions.triggerUpdate(device, () => {
-          Materialize.toast('Device updated', 4000);
+          toaster.success('Device updated');
+          hashHistory.push('/device/list');
         });
       }
     }
-
-    return (
-      <div className="full-width full-height">
-        <ReactCSSTransitionGroup
-          transitionName="first"
-          transitionAppear={true} transitionAppearTimeout={500}
-          transitionEntattrTypeerTimeout={500} transitionLeaveTimeout={500} >
+    console.log("this.props,", this.props);
+    return <div className="full-width full-height">
+        <ReactCSSTransitionGroup transitionName="first" transitionAppear={true} transitionAppearTimeout={500} transitionEntattrTypeerTimeout={500} transitionLeaveTimeout={500}>
           <NewPageHeader title="Devices" subtitle="device manager" icon="device">
+            <div className="box-sh">
+            {this.props.params.device ? (
+                <DojotBtnRedCircle
+                  to={"/device/id/" + this.props.params.device + "/detail"}
+                  icon="fa fa-arrow-left"
+                  tooltip="Return to device details"
+                />
+              ) : (
+                <DojotBtnRedCircle
+                  to={"/device/list"}
+                  icon="fa fa-arrow-left"
+                  tooltip="Return to device list"
+                />
+              )}
+            </div>
           </NewPageHeader>
-          <AltContainer stores={{device: DeviceFormStore, templates: TemplateStore}} >
-           <DeviceForm deviceid={this.props.params.device} edition={edition} operator={ops} />
+          <AltContainer stores={{ device: DeviceFormStore, templates: TemplateStore }}>
+            <DeviceForm deviceid={this.props.params.device} edition={edition} operator={ops} />
           </AltContainer>
         </ReactCSSTransitionGroup>
-      </div>
-    )
+      </div>;
   }
 }
 

@@ -262,6 +262,16 @@ body {
   overflow-y: visible;
 }
 
+.top-minus-3
+{
+  top:-3px;
+}
+
+.pr0px, .pr0
+{
+  padding-right: 10px !important;
+}
+
 .pt10px, .pt10
 {
   padding-top: 10px !important;
@@ -304,6 +314,18 @@ body {
     margin-top: 3px;
 }
 
+.mt10px, .mt10
+{
+    margin-top: 10px;
+}
+
+
+.mt30px, .mt30
+{
+    margin-top: 30px;
+}
+
+
 
 .mt60px, .mt60
 {
@@ -325,20 +347,56 @@ body {
   width:100%;
 }
 
-#toast-container {
-  margin: auto !important;
-  top: auto !important;
-  right: auto !important;
-  bottom: 0%;
-  left:17%;
+.w130px{
+    width: 130px;
 }
 
-.toast{
-    background-color: #ee6e73 !important;
+.overflow-auto
+{
+  overflow:auto;
 }
+
 
 .modal {
   z-index: 9999 !important;
+}
+
+
+.display-flex
+{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.flex-order-2{
+order: 2;
+}
+
+.flex-order-1{
+order: 1;
+}
+
+.height-auto
+{
+  height: auto !important;
+}
+
+.fl{
+  float:left;
+}
+
+.mg20px{
+  margin: 20px;
+}
+.mg0px
+{
+  margin:0px !important;
+}
+
+
+.noBold
+{
+  font-weight: 400;
 }
 
 @import 'inputs';
@@ -362,3 +420,5 @@ body {
 @import 'modal';
 @import 'firmware';
 @import 'alarms';
+@import 'pagination';
+@import 'toaster';

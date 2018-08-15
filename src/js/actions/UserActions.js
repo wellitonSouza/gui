@@ -1,5 +1,5 @@
 import userManager from '../comms/users/UserManager';
-import Materialize from "materialize-css";
+import toaster from "../comms/util/materialize";
 let alt = require('../alt');
 
 class UserActions {
@@ -105,7 +105,7 @@ class UserActions {
   }
 
   usersFailed(error) {
-      Materialize.toast(error.message, 4000);
+    toaster.error(error.message);
       return error;
   }
 }

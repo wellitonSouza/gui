@@ -12,6 +12,8 @@ import MaterialInput from "../../components/MaterialInput";
 import Materialize from "materialize-css";
 import MaterialSelect from "../../components/MaterialSelect";
 
+import { Filter } from "../utils/Manipulation";
+
 function SummaryItem(props) {
 
     let attrs = 0;
@@ -19,15 +21,15 @@ function SummaryItem(props) {
     for(let attribute in props.device.attrs) {
         attrs += props.device.attrs[attribute].length;
     }
-
+  console.log("props.device.label: ", props.device.label);
     return (
 
       <Link to={"/device/id/" + props.device.id + "/detail"}>
         <div className={"card-size card-hover lst-entry-wrapper z-depth-2 fullHeight"}>
               <div className="lst-entry-title col s12">
                   <img className="title-icon" src={"images/icons/chip-wt.png"}/>
-                  <div className="title-text">
-                      <span className="text"> {props.device.label} </span>
+                  <div className="title-text truncate">
+                      <span className="text" title={props.device.label}> {props.device.label} </span>
                   </div>
               </div>
               <div className="attr-list">
@@ -62,158 +64,109 @@ function SummaryItem(props) {
   )}
 
 
-class DeviceCard extends Component {
+class DeviceCardList extends Component {
   constructor(props) {
     super(props);
-    this.filterListByName = this.filterListByName.bind(this);
-    this.filterListByTemplate = this.filterListByTemplate.bind(this);
-    this.applyFiltering = this.applyFiltering.bind(this);
-    this.clearInputField = this.clearInputField.bind(this);
-
-    this.filteredList = [];
-    this.templates = [];
-
     this.state = {
-      loaded: false,
-      filter: "",
-      filterIdTemplate: 0
+      loaded: false
+    };
+    this.convertDeviceList = this.convertDeviceList.bind(this);
+    this.filteredList = [];
+  }
+
+  convertDeviceList() {
+    this.filteredList = [];
+    for (let k in this.props.deviceList) {
+      this.filteredList.push(this.props.deviceList[k]);
     }
+  }
+
+  render() {
+    if (this.props.loading) {
+      return <Loading />;
+    }
+
+    this.convertDeviceList();
+
+    this.metaData = { alias: "device" };
+
+    return <div className="device-card-area">
+        <Filter showPainel={this.props.showFilter} metaData={this.metaData} ops={this.props.dev_opex} fields={DevFilterFields} />
+        {this.filteredList.length === 0 ? <div className="background-info valign-wrapper full-height">
+            <span className="horizontal-center">
+          {this.props.dev_opex.hasFilter() ?
+             <b className='noBold'>No devices to be shown</b>
+            : <b className='noBold'>No configured devices</b>
+          }
+             </span>
+          </div> : <div className="col s12  lst-wrapper extra-padding">
+            {this.filteredList.map(device => (
+              <SummaryItem device={device} key={device.id} />
+            ))}
+          </div>}
+      </div>;
+  }
+}
+
+
+class DevFilterFields extends Component {
+  constructor(props) {
+    super(props);
+
+    this.convertTemplateList = this.convertTemplateList.bind(this);
+    this.createSelectTemplates = this.createSelectTemplates.bind(this);
+    this.templates = [];
+}
+
+  convertTemplateList() {
+    this.templates = [];
+    for (let k in TemplateStore.state.templates) {
+      if (TemplateStore.state.templates.hasOwnProperty(k)) {
+        this.templates.push(TemplateStore.state.templates[k]);
+      }
+    }
+  }
+
+  createSelectTemplates() {
+    let items = [];
+    items.push(<option key="select_template" value="">Select Template</option>);
+    for (let i = 0; i < this.templates.length; i++) {
+      items.push(<option key={this.templates[i].id} value={this.templates[i].id}>
+          {this.templates[i].label}
+        </option>);
+    }
+    return items;
   }
 
   componentDidMount() {
     TemplateActions.fetchTemplates.defer();
   }
 
-  componentDidUpdate() {
-    if ((!this.state.loaded) && (this.props.devices !== undefined) && (Object.keys(this.props.devices).length)) {
-        this.convertDeviceList();
-        this.setState({loaded: true});
-    }
-  }
-
-  filterListByTemplate (event) {
-    if (event.target.value === "") {
-      DeviceActions.fetchDevices.defer();
-      this.setState({filterIdTemplate: ""});
-    } else {
-      DeviceActions.fetchDevicesByTemplate.defer(event.target.value);
-      this.setState({filterIdTemplate: event.target.value});
-    }
-  }
-
-  filterListByName (event){
-    event.preventDefault();
-    // if (event.target.value === "") {
-      // DeviceActions.fetchDevices.defer();
-      // the flicker is being caused by this so let's try remove it
-    // }
-    this.setState({filter: event.target.value});
-  }
-
-  convertTemplateList() {
-    this.templates = [];
-    for (let k in TemplateStore.state.templates) {
-      if (TemplateStore.state.templates.hasOwnProperty(k)){
-        this.templates.push(TemplateStore.state.templates[k]);
-      }
-    }
-  }
-
-    convertDeviceList() {
-        if (this.state.filter !== "") {
-            if (event.target.value !== undefined) {
-                this.filteredList = this.filteredList.filter(function (device) {
-                    return device.label.includes(event.target.value);
-                });
-            }
-        } else {
-            this.filteredList = [];
-            for (let k in this.props.devices) {
-                if (this.props.devices.hasOwnProperty(k)) {
-                    this.filteredList.push(this.props.devices[k]);
-                }
-            }
-        }
-    }
-
-  createSelectTemplates() {
-    let items = [];
-    items.push(<option value="">Select Template</option>);
-    for (let i = 0; i < this.templates.length; i++) {
-        items.push(<option key={this.templates[i].id} value={this.templates[i].id}>{this.templates[i].label}</option>);
-    }
-
-    return items;
-  }
-
-  applyFiltering(list){
-    return Object.values(list)
-  }
-
-  clearInputField(){
-    this.state.filter = "";
-  }
-
   render() {
-    if (this.props.loading) {
-      return (<Loading />);
-    }
+    console.log("DevFilterFields",this.props);
+    if (this.templates.length == 0)
+        this.convertTemplateList();
+        
+    this.opts = this.createSelectTemplates();
+    return <div className="col s12 m12">
+        <div className="col s5 m5">
+          <div className="dev_field_filter">
+            <label htmlFor="fld_device_name">Device Name</label>
+            <input id="fld_device_name" type="text" className="form-control form-control-lg margin-top-mi7px" placeholder="Device Name" value={this.props.fields.label} name="label" onChange={this.props.onChange} />
+          </div>
+        </div>
+        <div className="col s1 m1">&nbsp;</div>
 
-  this.filteredList = this.applyFiltering(this.props.devices);
-  this.convertDeviceList();
-  this.convertTemplateList();
-
-   let header = null;
-   if (this.props.showSearchBox){
-    header = (
-        <div className={"row z-depth-2 devicesSubHeader h90 " + (this.props.showSearchBox ? "show-dy" : "hide-dy")}
-             id="inner-header">
-            <div className="col s3 m3 main-title">
-                Showing {this.filteredList.length} device(s)
-            </div>
-            <div className="col s1 m1 header-info hide-on-small-only">
-            </div>
-            <div className="col s4 m4">
-                <label htmlFor="fld_device_name">Device Name</label>
-                <input id="fld_device_name" type="text" name="Device Name" className="form-control form-control-lg"
-                       placeholder="Search" value={this.state.filter} onChange={this.filterListByName}/>
-            </div>
-            <div className="col s4 m4 mt5">
-                <MaterialSelect id="flr_templates" name="Templates" label="Templates"
-                                value={this.state.filterIdTemplate} onChange={this.filterListByTemplate}>
-                    {this.createSelectTemplates()}
-                </MaterialSelect>
-            </div>
-        </div>);
-   } else {
-    this.filteredList = this.applyFiltering(this.props.devices);
-    this.clearInputField();
-   }
-      return (
-          <div className="device-card-area">
-              <ReactCSSTransitionGroup transitionName="devicesSubHeader"
-                                       transitionLeave={true}
-                                       transitionAppear={true}
-                                       transitionAppearTimeout={300}
-                                       transitionEnterTimeout={300}
-                                       transitionLeaveTimeout={300}>
-                  {header}
-              </ReactCSSTransitionGroup>
-              {this.filteredList.length === 0 ? (
-                  <div className="background-info valign-wrapper full-height">
-                    <span className="horizontal-center">
-                      No configured devices
-                    </span>
-                  </div>
-              ) : (
-                  <div className="col s12  lst-wrapper extra-padding">
-                      {this.filteredList.map((device) => (
-                          <SummaryItem device={device} key={device.id}/>
-                      ))}
-                  </div>
-              )}
-          </div>);
+        <div className="col s6 m6">
+          <div className="col s12">
+            <MaterialSelect id="flr_templates" name="templates" label="Templates" value={this.props.fields.templates} onChange={this.props.onChange}>
+              {this.opts}
+            </MaterialSelect>
+          </div>
+        </div>
+      </div>;
   }
 }
 
-export { DeviceCard };
+
+export { DeviceCardList };

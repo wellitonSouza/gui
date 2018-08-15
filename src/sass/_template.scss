@@ -5,44 +5,44 @@
   }
 }
 
-@keyframes opa-hei-90px {
+@keyframes opa-hei-76px {
     from {opacity: 0.2;height:10px;}
-    to {opacity: 1;height:90px;}
+    to {opacity: 1;height:76px;}
 }
 
-/* animations for ReactCSSTransitionGroup */
-/* begin */
-.templatesSubHeader-enter {
-  opacity: 0.2; height:0px;
-}
+.template-title-text{
+  height: 100%;
+  width: calc(100% - 75px);
+  float: left;
+  display: inline;
+  font-size: 18px;
 
-.templatesSubHeader-enter.templatesSubHeader-enter-active {
-  opacity: 1; height: 98px;
+  textarea {
+    float: left;
+    resize: none;
+    border: none;
+    vertical-align: middle;
+    height: 62px;
+    margin: 6.5px 0;
+  }
 }
-
-.templatesSubHeader-leave {
-  opacity: 0.8; height: 98px;
-}
-
-.templatesSubHeader-leave.templatesSubHeader-leave-active {
-  padding-top: 0px;
-  opacity: 0.2; height:0px;
-}
-/* end */
 
 
 .show-dy{
-  visibility:visible;
-
+  display: block;
+  // visibility:visible;
+  height: 76px;
+  animation-name:  opa-hei-76px;
+  animation-duration: 1s;
 }
 
 .hide-dy
 {
-  visibility: hidden;
+  display: none;
+  // visibility: hidden;
 }
 
 .templatesSubHeader {
-    background-color: #fff;
     color: #2c3e50;
     margin: 0;
     z-index: 1000;
@@ -51,6 +51,8 @@
     position: relative;
     transition: all 500ms ease;
     padding-top: 10px;
+    background: linear-gradient(270.95deg,#F8F8F8 29.89%,#fff 96.84%);
+    border-top: solid 1px rgba(0,0,0,.05);
 
   .main-title {
     font-family: "Raleway", sans-serif;
@@ -79,6 +81,13 @@
   }
 }
 
+.template-title-text{
+  position: relative;
+  bottom: 10px;
+  font-size: 1em !important;
+  border-bottom: none !important;
+}
+
 @media screen and (max-width: 600px) {
   .templatesSubHeader {
     .main-title {
@@ -89,6 +98,6 @@
 
 .bg-gradient-green
 {
-    background: linear-gradient(to right, #28807E, #16A085);    
+    background: linear-gradient(to right, #28807E, #16A085);
     // background: linear-gradient(90.48deg, #28807E 3.7%, #54A7D6 92.73%);
 }

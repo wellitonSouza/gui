@@ -1,5 +1,5 @@
 import templateManager from '../comms/templates/TemplateManager';
-import Materialize from 'materialize-css';
+import toaster from "../comms/util/materialize";
 
 var alt = require('../alt');
 
@@ -25,17 +25,20 @@ class TemplateActions {
           }
         })
         .catch((error) => {
-          this.templatesFailed("Failed to add template to list");
+          this.templatesFailed(error);
         })
 
     }
   }
 
-  fetchTemplates() {
+  fetchTemplates(params = null, cb) {
     return (dispatch) => {
-      templateManager.getTemplates()
-        .then((templateList) => {
-          this.updateTemplates(templateList.templates);
+      templateManager.getTemplates(params)
+        .then((result) => {
+          this.updateTemplates(result);
+          if (cb) {
+            cb(result);
+          }
         })
         .catch((error) => {
           this.templatesFailed(error);
@@ -104,7 +107,7 @@ class TemplateActions {
   }
 
   templatesFailed(error) {
-      Materialize.toast(error.message, 4000);
+    toaster.error(error.message);
     return error;
   }
 }

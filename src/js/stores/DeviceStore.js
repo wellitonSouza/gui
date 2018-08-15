@@ -1,10 +1,10 @@
 var alt = require('../alt');
 var DeviceActions = require('../actions/DeviceActions');
-var TrackingActions = require('../actions/TrackingActions');
 
 class DeviceStore {
   constructor() {
-    this.devices = {};
+    this.devices = {};  // map to devices using Id 
+    this.deviceList = []; // ordered by server
     this.tracking = {};
     this.error = null;
     this.loading = false;
@@ -66,7 +66,7 @@ class DeviceStore {
   }
 
   handleUpdateStatus(device) {
-   if (device.metadata.status != undefined) {
+   if ((device.metadata.status != undefined) && (this.devices[device.metadata.deviceid])) {
     this.devices[device.metadata.deviceid].status = device.metadata.status;
    }
   }
@@ -87,8 +87,10 @@ class DeviceStore {
   handleRemoveSingle(id) {
     if (this.devices.hasOwnProperty(id)) {
       delete this.devices[id];
+      this.deviceList = this.deviceList.filter(function(device) {
+        return device.id != id;
+      });
     }
-
     this.loading = false;
   }
 
@@ -105,7 +107,10 @@ class DeviceStore {
     this.loading = true;
   }
 
-  handleUpdateDeviceList(devices) {
+  handleUpdateDeviceList(res) {
+    console.log("handleUpdateDeviceList",res);
+    this.pagination = res.pagination;
+    let devices = res.devices;
     this.devices = {};
     for (let idx = 0; idx < devices.length; idx++) {
       //devices[idx]._status = this.parseStatus(devices[idx]);
@@ -124,6 +129,7 @@ class DeviceStore {
       }
 
       this.devices[devices[idx].id] = JSON.parse(JSON.stringify(devices[idx]))
+      this.deviceList[idx] = this.devices[devices[idx].id]
     }
 
     this.error = null;
@@ -137,7 +143,7 @@ class DeviceStore {
 
   fetchDevicesByTemplate() {
     this.devices = {};
-    this.loading = false;
+    this.loading = true;
   }
 
   fetchSingle(deviceid) {

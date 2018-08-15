@@ -1,52 +1,61 @@
 import deviceManager from '../comms/devices/DeviceManager';
-import Materialize from 'materialize-css';
+import toaster from "../comms/util/materialize";
 
 var alt = require('../alt');
 
 class DeviceActions {
-
-  fetchDevices() {
-    return (dispatch) => {
+  fetchDevices(params = null, cb) {
+    return dispatch => {
       dispatch();
-
-      deviceManager.getDevices().then((devicesList) => {
-        this.updateDevices(devicesList.devices);
-      })
-      .catch((error) => {
-        this.devicesFailed(error);
-      });
-    }
+      deviceManager
+        .getDevices(params)
+        .then(result => {
+          this.updateDevices(result);
+          if (cb) {
+            cb(result);
+          }
+        })
+        .catch(error => {
+          this.devicesFailed(error);
+        });
+    };
   }
 
   fetchSingle(deviceid, cb) {
-    return (dispatch) => {
+    return dispatch => {
       dispatch();
 
-      deviceManager.getDevice(deviceid)
-        .then((device) => {
+      deviceManager
+        .getDevice(deviceid)
+        .then(device => {
           this.updateSingle(device);
           if (cb) {
             cb(device);
           }
         })
-        .catch((error) => {
+        .catch(error => {
           console.error("Failed to fetch single device", error);
           this.devicesFailed(error);
-        })
-    }
+        });
+    };
   }
 
-  fetchDevicesByTemplate(templateId) {
-    return (dispatch) => {
+  fetchDevicesByTemplate(templateId, params = null, cb) {
+    return dispatch => {
       dispatch();
 
-      deviceManager.getDeviceByTemplateId(templateId).then((devicesList) => {
-        this.updateDevices(devicesList.devices);
-      })
-      .catch((error) => {
-        this.devicesFailed(error);
-      });
-    }
+      deviceManager
+        .getDeviceByTemplateId(templateId,params)
+        .then(result => {
+          this.updateDevices(result);
+          if (cb) {
+            cb(result);
+          }
+        })
+        .catch(error => {
+          this.devicesFailed(error);
+        });
+    };
   }
 
   updateDevices(list) {
@@ -59,35 +68,37 @@ class DeviceActions {
 
   addDevice(device, cb) {
     const newDevice = device;
-    return (dispatch) => {
+    return dispatch => {
       dispatch();
-      deviceManager.addDevice(newDevice)
-        .then((response) => {
+      deviceManager
+        .addDevice(newDevice)
+        .then(response => {
           this.insertDevice(response.devices[0]);
           if (cb) {
             cb(response.devices[0]);
           }
         })
-        .catch((error) => {
+        .catch(error => {
           this.devicesFailed(error);
-        })
-    }
+        });
+    };
   }
 
   triggerUpdate(device, cb) {
-    return (dispatch) => {
+    return dispatch => {
       dispatch();
-      deviceManager.setDevice(device)
-        .then((response) => {
+      deviceManager
+        .setDevice(device)
+        .then(response => {
           this.updateSingle(device);
           if (cb) {
             cb(device);
           }
         })
-        .catch((error) => {
+        .catch(error => {
           this.devicesFailed(error);
-        })
-    }
+        });
+    };
   }
 
   updateSingle(device) {
@@ -99,18 +110,19 @@ class DeviceActions {
   }
 
   triggerRemoval(device, cb) {
-    return (dispatch) => {
+    return dispatch => {
       dispatch();
       deviceManager.deleteDevice(device.id)
         .then((response) => {
+          this.removeSingle(device.id);
           if (cb) {
             cb(response);
           }
         })
-        .catch((error) => {
+        .catch(error => {
           this.devicesFailed("Failed to remove given device");
-        })
-    }
+        });
+    };
   }
 
   removeSingle(device_id) {
@@ -118,7 +130,7 @@ class DeviceActions {
   }
 
   devicesFailed(error) {
-    Materialize.toast(error.message, 4000);
+    toaster.error(error.message);
     return error;
   }
 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Link, hashHistory } from 'react-router'
+import { hashHistory } from 'react-router'
 
 import {NewPageHeader} from "../../containers/full/PageHeader";
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
@@ -9,8 +9,10 @@ import FlowActions from '../../actions/FlowActions';
 import FlowStore from '../../stores/FlowStore';
 import AltContainer from 'alt-container';
 import util from '../../comms/util/util';
-
 import MaterialInput from "../../components/MaterialInput";
+import { DojotBtnRedCircle } from "../../components/DojotButton";
+import toaster from "../../comms/util/materialize";
+import { RemoveModal } from "../../components/Modal";
 
 class FlowCanvas extends Component {
   constructor(props) {
@@ -210,64 +212,16 @@ function handleSave(flowid) {
   flow.flow = RED.nodes.createCompleteNodeSet();
   if (flowid) {
     FlowActions.triggerUpdate(flowid, flow, function (flow) {
-      Materialize.toast('Flow updated', 4000);
+      toaster.success('Flow updated');
     });
   } else {
     FlowActions.triggerCreate(flow, function(flow){
-      Materialize.toast('Flow created', 4000);
+      toaster.success('Flow created');
       hashHistory.push('/flows/id/' + flow.id);
     });
   }
 }
 
-class RemoveDialog extends Component {
-  constructor(props) {
-    super(props);
-
-    this.remove = this.remove.bind(this);
-    this.dismiss = this.dismiss.bind(this);
-  }
-  componentDidMount() {
-    // materialize jquery makes me sad
-    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
-    $(modalElement).ready(function() {
-      $('.modal').modal();
-    })
-  }
-
-  remove() {
-    FlowActions.triggerRemove(this.props.id, () => {
-      let modalElement = ReactDOM.findDOMNode(this.refs.modal);
-      $(modalElement).modal('close');
-      Materialize.toast('Flow removed', 4000);
-      hashHistory.push('/flows');
-    })
-  }
-
-  dismiss(event) {
-    event.preventDefault();
-    let modalElement = ReactDOM.findDOMNode(this.refs.modal);
-    $(modalElement).modal('close');
-  }
-
-  render() {
-    return (
-      <div className="modal" id={this.props.target} ref="modal">
-        <div className="modal-content full">
-          <div className="row center background-info">
-            <div><i className="fa fa-exclamation-triangle fa-4x" /></div>
-            <div>You are about to remove this flow.</div>
-            <div>Are you sure?</div>
-          </div>
-        </div>
-        <div className="modal-footer right">
-            <button type="button" className="btn-flat btn-ciano waves-effect waves-light" onClick={this.dismiss}>cancel</button>
-            <button type="submit" className="btn-flat btn-red waves-effect waves-light" onClick={this.remove}>remove</button>
-        </div>
-      </div>
-    )
-  }
-}
 
 class NameForm extends Component {
   constructor(props) {
@@ -281,7 +235,8 @@ class NameForm extends Component {
                      onChange={(e) => {
                        e.preventDefault();
                        FlowActions.setName(e.target.value)
-                     }} >
+                     }}
+                     maxLength={45} >
         Flow name
       </MaterialInput>
     )
@@ -291,6 +246,28 @@ class NameForm extends Component {
 class EditFlow extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      show_modal: false
+    };
+    this.openRemoveModal = this.openRemoveModal.bind(this);
+    this.setModal = this.setModal.bind(this);
+    this.removeFlow = this.removeFlow.bind(this);
+  }
+
+  removeFlow() {
+    FlowActions.triggerRemove(this.props.params.flowid, () => {
+      toaster.success("Flow removed");
+      hashHistory.push("/flows");
+    });
+    console.log("removeFlow", this.props.params.flowid);
+  }
+
+  openRemoveModal() {
+    this.setState({ show_modal: true });
+  }
+
+  setModal(status) {
+    this.setState({ show_modal: status });
   }
 
   componentDidMount() {
@@ -302,40 +279,24 @@ class EditFlow extends Component {
   }
 
   render() {
-    return (
-      <ReactCSSTransitionGroup transitionName="first"
-          transitionAppear={true} transitionAppearTimeout={500}
-          transitionEnterTimeout={500} transitionLeaveTimeout={500} >
-        <NewPageHeader title="flow manager" subtitle="Flow configuration" icon='flow'>
-          <div className="row valign-wrapper full-width no-margin">
+    return <ReactCSSTransitionGroup transitionName="first" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={500} transitionLeaveTimeout={500}>
+        <NewPageHeader title="flow manager" subtitle="Flow configuration" icon="flow">
+          <div className="row valign-wrapper full-width no-margin top-minus-3">
             <AltContainer store={FlowStore}>
               <NameForm />
             </AltContainer>
-            <div className="col">
-              <a className="waves-effect waves-light btn-flat btn-ciano"
-                  onClick={() => { handleSave(this.props.params.flowid); }} >
-                save
-              </a>
-            </div>
-            {(this.props.params.flowid) && (
-              <div className="col">
-                <a className="waves-effect waves-light btn-flat btn-red" tabIndex="-1" title="Remove flow"
-                   onClick={(e) => {e.preventDefault(); $('#confirmDiag').modal('open');}}>
-                  remove
-                </a>
-              </div>
-            )}
-            <div className="col">
-              <Link to="/flows" className="waves-effect waves-light btn-flat btn-ciano">Dismiss</Link>
-            </div>
+            <DojotBtnRedCircle icon=" fa fa-save" tooltip="Save Flow" click={() => {
+                handleSave(this.props.params.flowid);
+              }} />
+            {this.props.params.flowid && <DojotBtnRedCircle icon="fa fa-trash" tooltip="Remove Flow" click={this.openRemoveModal} />}
+            <DojotBtnRedCircle to={"/flows"} icon="fa fa-arrow-left" tooltip="Return to Flow list" />
           </div>
         </NewPageHeader>
         <AltContainer store={FlowStore}>
-          <FlowCanvas flow={this.props.params.flowid}/>
+          <FlowCanvas flow={this.props.params.flowid} />
         </AltContainer>
-        <RemoveDialog id={this.props.params.flowid} target="confirmDiag"/>
-      </ReactCSSTransitionGroup>
-    );
+        {this.state.show_modal ? <RemoveModal name={"flow"} remove={this.removeFlow} openModal={this.setModal} /> : <div />}
+      </ReactCSSTransitionGroup>;
   }
 }
 

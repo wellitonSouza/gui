@@ -18,3 +18,22 @@
     border-bottom: 2px solid $silver;
   }
 }
+
+.elements_page_div
+{
+  width: 60px;
+  float: left;
+
+  label
+  {
+    text-align: left;
+    left: 0;
+    display: inherit;
+    font-family: 'Roboto';
+    line-height: 23px;
+    font-size: 09px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+}

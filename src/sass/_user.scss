@@ -1,3 +1,11 @@
+.sidebar-auth
+{
+  .fixed-height{
+    height: calc(100% - 49px);
+    overflow: auto;
+  }
+}
+
 .openSans8{
   font-family: 'Open Sans', sans-serif;
   font-size: 9pt;
@@ -343,6 +351,10 @@
   height: 100%;
   overflow: hidden;
   float: left;
+}
+
+.user-card{
+  width: 230px !important;
 }
 
 @keyframes height-opacity-0-to-100 {

@@ -2,13 +2,16 @@ import React, {Component} from 'react';
 import TrackingActions from '../../actions/TrackingActions';
 import {Link} from 'react-router'
 import {Map, Marker, ImageOverlay, TileLayer, Tooltip, ScaleControl, Polyline} from 'react-leaflet';
-import L from 'leaflet'
+import L from "leaflet";
+// import * as L from "leaflet";
 import Script from 'react-load-script';
 import ReactResizeDetector from 'react-resize-detector';
 import Sidebar from '../../components/DeviceRightSidebar';
 import config from '../../config'
+import DivIcon from 'react-leaflet-div-icon';
 
-let trackingPin = L.divIcon({className: 'icon-marker bg-tracking-marker'});
+let trackingPin = <DivIcon className='icon-marker bg-tracking-marker'></DivIcon>
+// let trackingPin = DivIcon({className: 'icon-marker bg-tracking-marker'});
 let listLatLngs = [];
 
 class PositionRenderer extends Component {
@@ -106,6 +109,7 @@ class PositionRenderer extends Component {
     }
 
     render() {
+        console.log("PropsPositionRenderer: ", this.props);
         function getPin(device) {
             if (device.hasOwnProperty('unique_key')) {
                 return trackingPin;
@@ -183,7 +187,7 @@ class PositionRenderer extends Component {
                             <Tooltip>
                                 <span>{k.name} : {k.timestamp}</span>
                             </Tooltip>
-                            {listLatLngs[k.id] && k.tracking ? (
+                            {listLatLngs[k.id] && k.tracking && this.props.showPolyline ? (
                                 <Polyline positions={listLatLngs[k.id]} color='#7fb2f9' dashArray='10,10'
                                           repeatMode={false}/>
                             ) : null}
@@ -241,11 +245,11 @@ class DeviceMap extends Component {
             filter: '',
             displayMap: {},
             selectedDevice: {},
-            templates_id: {},
             listOfDevices: [],
             mapquest: false
         };
 
+        this.validDevices = [];
         this.handleViewChange = this.handleViewChange.bind(this);
         this.applyFiltering = this.applyFiltering.bind(this);
         this.showSelected = this.showSelected.bind(this);
@@ -253,12 +257,22 @@ class DeviceMap extends Component {
         this.getDevicesWithPosition = this.getDevicesWithPosition.bind(this);
 
         this.toggleTracking = this.toggleTracking.bind(this);
+        this.countVisibleDevices = this.countVisibleDevices.bind(this);
 
         this.showAll = this.showAll.bind(this);
         this.hideAll = this.hideAll.bind(this);
-        this.toggleDisplay = this.toggleDisplay.bind(this);
-
+        // this.toggleDisplay = this.toggleDisplay.bind(this);
+        this.toggleVisibility = this.toggleVisibility.bind(this);
         this.mqLoaded = this.mqLoaded.bind(this);
+    }
+
+    countVisibleDevices()
+    {
+        let count = 0; 
+        for (let k in this.validDevices) {
+            if (this.state.displayMap[this.validDevices[k].id]) count++;
+        }
+        return count;
     }
 
     componentDidMount() {
@@ -283,39 +297,47 @@ class DeviceMap extends Component {
         this.setState({selectedDevice: selectedDevice});
     }
 
+    toggleVisibility(device_id)
+    {
+        console.log("toggleVisibility",device_id);
+        let displayMap = this.state.displayMap;
+        displayMap[device_id] = !displayMap[device_id];
+        this.setState({ displayMap: displayMap });
+    }
+
     hideAll() {
         let displayMap = this.state.displayMap;
-        for (let k in this.props.devices) {
-            let device = this.props.devices[k];
-            displayMap[device.id] = false;
+        for (let k in displayMap) {
+            displayMap[k] = false;
         }
         this.setState({displayMap: displayMap});
     }
 
     showAll() {
-        // TODO filter using user queries
-        let displayMap = this.state.displayMap;
+        let displayMap = {};
         for (let k in this.props.devices) {
-            let device = this.props.devices[k];
-            displayMap[device.id] = true;
+            displayMap[this.props.devices[k].id] = true;
         }
         this.setState({displayMap: displayMap});
     }
 
-    applyFiltering(devices) {
+    applyFiltering(devices) 
+    {
         let list = [];
         for (let k in devices) {
-            if (this.state.displayMap[devices[k].id]) {
+            // if (this.state.displayMap[devices[k].id]) {
                 list.push(devices[k]);
-            }
+            // }
         }
-        list.sort((a, b) => {
-            if (a.updated > b.updated) {
-                return 1;
-            } else {
-                return -1;
-            }
-        });
+
+        // if (this.state.displayMap)
+        // {
+        //     let displayMap = {};
+        //     for (let k in devices) {
+        //         displayMap[devices[k].id] = true;
+        //     }
+        //     this.setState({ displayMap: displayMap });
+        // }
         return list;
     }
 
@@ -342,19 +364,19 @@ class DeviceMap extends Component {
         return false;
     }
 
-    toggleDisplay(device) {
-        let displayMap = this.state.displayMap;
-        if (displayMap.hasOwnProperty(device)) {
-            displayMap[device] = !displayMap[device];
-        } else {
-            displayMap[device] = false;
-        }
-        this.setState({displayMap: displayMap});
-    }
+    // toggleDisplay(device) {
+    //     let displayMap = this.state.displayMap;
+    //     if (displayMap.hasOwnProperty(device)) {
+    //         displayMap[device] = !displayMap[device];
+    //     } else {
+    //         displayMap[device] = false;
+    //     }
+    //     this.setState({displayMap: displayMap});
+    // }
 
     getDevicesWithPosition(devices) {
         function parserPosition(position) {
-            let parsedPosition = position.split(", ");
+            let parsedPosition = position.split(",");
             return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
         }
 
@@ -379,62 +401,44 @@ class DeviceMap extends Component {
     }
 
     render() {
-        let validDevices = this.getDevicesWithPosition(this.props.devices);
-        let filteredList = this.applyFiltering(validDevices);
-
+        this.validDevices = this.getDevicesWithPosition(this.props.devices);
+        let filteredList = this.validDevices;
+        // let filteredList = this.applyFiltering(this.validDevices);
+        let nVisibleDevices = this.countVisibleDevices();
         const device_icon = (<img src={'images/icons/chip.png'}/>);
-        const displayDevicesCount = "Showing " + validDevices.length + " device(s)";
+        const displayDevicesCount = "Showing " + nVisibleDevices + " of " + this.validDevices.length + " device(s)";
 
         let pointList = [];
-        if (filteredList !== undefined && filteredList !== null) {
-            for (let k in filteredList) {
-                if (filteredList.hasOwnProperty(k)) {
-                    let device = filteredList[k];
-                    device.hasPosition = device.hasOwnProperty('position');
-                    if (this.props.tracking.hasOwnProperty(filteredList[k].id) && (!device.hide)) {
-                        pointList = pointList.concat(this.props.tracking[filteredList[k].id].map((e, k) => {
-                            let updated = e;
-                            updated.id = device.id;
-                            updated.unique_key = device.id + "_" + k;
-                            updated.label = device.label;
-                            updated.timestamp = e.timestamp;
-                            return updated;
-                        }));
-                    }
-                    pointList.push(device);
-                }
+        for (let k in filteredList) {
+            let device = filteredList[k];
+            device.hasPosition = device.hasOwnProperty('position');
+            if (this.props.tracking.hasOwnProperty(device.id) && this.state.displayMap[device.id]) {
+                pointList = pointList.concat(this.props.tracking[device.id].map((e, k) => {
+                    let updated = e;
+                    updated.id = device.id;
+                    updated.unique_key = device.id + "_" + k;
+                    updated.label = device.label;
+                    updated.timestamp = e.timestamp;
+                    return updated;
+                }));
             }
-        }
+            if (this.state.displayMap[device.id])
+                pointList.push(device);
+         }
 
         return <div className="fix-map-bug">
-            <div className="row z-depth-2 devicesSubHeader" id="inner-header">
-                <div className="col s4 m4 main-title">Map Visualization</div>
-                <div className="col s8 m8 header-info hide-on-small-only">
-                    <div className="subtitle">{displayDevicesCount}</div>
-                    {/*<div className="title"># Devices</div>*/}
-                </div>
-            </div>
             <div className="flex-wrapper">
-                <div className="deviceMapCanvas deviceMapCanvas-map col m12 s12 relative">
-                    <Script
-                        url="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=zvpeonXbjGkoRqVMtyQYCGVn4JQG8rd9"
-                        onLoad={this.mqLoaded}>
-                    </Script>
-                    {this.state.mapquest ? (
-                        <PositionRenderer devices={pointList} toggleTracking={this.toggleTracking}
-                                          allowContextMenu={true} listPositions={this.props.tracking}/>
-                    ) : (
-                        <div className="row full-height relative">
-                            <div className="background-info valign-wrapper full-height">
-                                <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center"/>
-                            </div>
-                        </div>
-                    )}
-                    <Sidebar devices={validDevices} hideAll={this.hideAll} showAll={this.showAll}
-                             selectedDevice={this.selectedDevice} toggleDisplay={this.toggleDisplay}/>
-                </div>
+              <div className="deviceMapCanvas deviceMapCanvas-map col m12 s12 relative">
+                <Script url="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=zvpeonXbjGkoRqVMtyQYCGVn4JQG8rd9" onLoad={this.mqLoaded} />
+                {this.state.mapquest ? <PositionRenderer devices={pointList} toggleTracking={this.toggleTracking} allowContextMenu={true} listPositions={this.props.tracking} showPolyline={true} /> : <div className="row full-height relative">
+                    <div className="background-info valign-wrapper full-height">
+                      <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center" />
+                    </div>
+                  </div>}
+                    <Sidebar deviceInfo={displayDevicesCount} toggleVisibility={this.toggleVisibility} devices={this.validDevices} hideAll={this.hideAll} showAll={this.showAll} displayMap={this.state.displayMap} />
+              </div>
             </div>
-        </div>;
+          </div>;
     }
 }
 

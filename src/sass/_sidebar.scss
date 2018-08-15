@@ -466,19 +466,94 @@
 }
 
 .rightsidebarchild {
-    position: fixed;
-    left: 30%;
-    top: 100px;
-    z-index: 10002;
-    width: 344px;
-    height: 365px;
-    /* margin-top: 50px; */
-    color: #fff;
-    overflow: auto;
-    background-color: #283339;
-    padding: 25px;
-    box-shadow: 0 8px 10px -5px rgba(0, 0, 0, 0.5);
+  position: fixed;
+  right: 22px;
+  overflow: hidden;
+  top: 36px;
+  z-index: 10000;
+  width: 180px;
+  background-color: #ffffff;
+  border: 1px solid rgba(27,31,35,0.15);
+  border-radius: 4px;
+  box-shadow: 0 3px 12px rgba(27,31,35,0.15);
+
+  .logout-page-header{
+    padding: 15px 0 0 15px;
+
+    .logout-page-subtitle {
+      font-size: 100%;
+      font-family: "Raleway", sans-serif;
+      color: #4f4f4f;
+    }
+    
+    .logout-page-info {
+      font-size: 100%;
+      font-family: "Raleway", sans-serif;
+      color: #4f4f4f;
+      text-align: left;
+      width: $right-sidebar-width - $right-sidebar-margin;
+      font-weight: bold;
+    }
+  }
+  .logout-page-settings{
+    cursor: pointer;
+    .logout-page-changePassword{
+      width: 180px;
+      height: 40px;
+      font-size: 100%;
+      font-family: "Raleway", sans-serif;
+      color: #4f4f4f;
+      padding: 10px 0 0 15px;
+    }
+    .logout-page-changePassword:hover{
+      color: #fff;
+      background-color: #4f4f4f;
+      font-weight: bold;
+    }
+  }
+
+  .logout-page-buttons{
+    cursor: pointer;
+    .btn-logout{
+      width: 180px;
+      height: 40px;
+      font-size: 100%;
+      font-family: "Raleway", sans-serif;
+      color: #4f4f4f;
+      padding: 10px 0 0 15px;
+    }
+    .btn-logout:hover{
+      color: #fff;
+      background-color: #4f4f4f;
+      font-weight: bold;
+    }
+  }
 }
+
+.horizontal-line{
+  border-bottom: 1px solid #C2C2C2;
+}
+
+@media screen and (max-width: 800px){
+  .logout-page {
+    padding-top: 10% !important;
+  }
+}
+
+
+// .logout-page .logout-page-buttons {
+//   margin-top: 30%;
+//   padding-left: 3%;
+// }
+
+// .logout-page .logout-page-buttons a {
+//   font-size: 100%;
+// }
+
+// .logout-page .logout-page-photo {
+//   padding-left: 35%;
+//   margin-bottom: 5%;
+// }
 
 @media only screen and (min-width: 601px) {
 

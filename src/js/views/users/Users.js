@@ -1,232 +1,394 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import Materialize from 'materialize-css';
 import AltContainer from 'alt-container';
 import {NewPageHeader} from "../../containers/full/PageHeader";
-import Filter from "../utils/Filter";
+import {SimpleFilter} from "../utils/Manipulation";
 import MaterialSelect from '../../components/MaterialSelect';
 import AutheticationFailed from "../../components/AuthenticationFailed";
 import LoginStore from "../../stores/LoginStore";
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import UserActions from '../../actions/UserActions';
-
-let UserStore = require('../../stores/UserStore');
+import toaster from "../../comms/util/materialize";
+import { RemoveModal } from "../../components/Modal";
+import UserStore from "../../stores/UserStore";
 
 class SideBar extends Component {
-    constructor() {
-        super();
-        this.state = {
-            user: {},
-            confirmEmail: '',
-            isInvalid: {
-                username: false,
-                name: false,
-                email: false,
-                confirmEmail: false
-            }
-        };
+  constructor() {
+    super();
+    this.state = {
+      user: {},
+      show_modal: false,
+      confirmEmail: "",
+      isInvalid: {
+        username: false,
+        name: false,
+        email: false,
+        confirmEmail: false
+      }
+    };
 
-        this.handleChange = this.handleChange.bind(this);
-        this.handleCreate = this.handleCreate.bind(this);
-        this.handleSave = this.handleSave.bind(this);
-        this.handleDelete = this.handleDelete.bind(this);
-        this.checkValidation = this.checkValidation.bind(this);
-        this.hideSideBar = this.hideSideBar.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleCreate = this.handleCreate.bind(this);
+    this.handleSave = this.handleSave.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.checkValidation = this.checkValidation.bind(this);
+    this.hideSideBar = this.hideSideBar.bind(this);
+    this.setModal = this.setModal.bind(this);
+    this.removeUser = this.removeUser.bind(this);
+    this.fieldValidation = this.fieldValidation.bind(this);
+  }
+
+  componentDidMount() {
+    if (this.props.user.profile === "admin") {
+      UserActions.fetchUsers.defer();
+    }
+  }
+
+  componentWillReceiveProps(next) {
+    let context = this.state;
+    context.user = JSON.parse(JSON.stringify(next.user));
+    if (context.user !== "") context.user.confirmEmail = context.user.email;
+    context.isInvalid = {
+      username: false,
+      name: false,
+      email: false,
+      confirmEmail: false
+    };
+    this.setState(context);
+  }
+
+  checkValidation() {
+    if (this.checkName(this.state.user.name)) {
+      toaster.warning("Invalid name.");
+      return false;
+    }
+    if (this.checkEmail(this.state.user.email)) {
+      toaster.warning("Invalid email.");
+      return false;
     }
 
-    componentDidMount() {
-        if (LoginStore.getState().user.profile === "admin") {
-            UserActions.fetchUsers.defer();
+    if (this.checkUsername(this.state.user.username)) {
+      toaster.warning("Invalid username.");
+      return false;
+    }
+
+    if (this.checkConfirmEmail(this.state.user.email,this.state.user.confirmEmail)) {
+      toaster.warning("Email address mismatch.");
+      return false;
+    }
+
+    if (this.state.user.profile === "") {
+      toaster.warning("Missing profile.");
+      return false;
+    }
+    return true;
+  }
+
+  handleChange(event) {
+    const target = event.target;
+    let user = this.state.user;
+    user[target.name] = target.value;
+    this.fieldValidation(user, target.name);
+  }
+
+  handleSave() {
+    let tmp = JSON.parse(JSON.stringify(this.state.user));
+    delete tmp.created_by;
+    delete tmp.created_date;
+    delete tmp.passwd;
+    delete tmp.password;
+    if (this.checkValidation()) {
+      UserActions.triggerUpdate(
+        tmp,
+        () => {
+          toaster.success("User updated.");
+          this.hideSideBar();
+        },
+        () => {
+          toaster.error("Failed to update user.");
         }
+      );
     }
+  }
 
-    componentWillReceiveProps(next) {
-        let context = this.state;
-        context.user = JSON.parse(JSON.stringify(next.user));
-        if (context.user !== '')
-            (context.user.confirmEmail = context.user.email);
-        context.isInvalid = {
-            username: false,
-            name: false,
-            email: false,
-            confirmEmail: false
-        };
-        this.setState(context);
-    }
-
-    checkValidation() {
-        if (this.state.user.profile === "") {
-            Materialize.toast("Select a profile", 4000);
-            return false;
+  handleCreate() {
+    if (this.checkValidation()) {
+      let temp = this.state.user;
+      temp.email = String(temp.email).toLowerCase();
+      console.log("User to be created: ", temp);
+      UserActions.addUser(
+        temp,
+        () => {
+          toaster.success("User created.");
+          this.hideSideBar();
+        },
+        () => {
+          toaster.success("Failed to create user.");
         }
-        return !(this.state.isInvalid.confirmEmail ||
-            this.state.isInvalid.email ||
-            this.state.isInvalid.name ||
-            this.state.isInvalid.username)
+      );
     }
+  }
 
-    handleChange(event) {
-        const target = event.target;
-        let state = this.state;
-        state.user[target.name] = target.value;
-        this.setState(state);
-        this.filedValidation(state.user, target.name);
+  hideSideBar() {
+    this.props.hide();
+  }
+
+  handleDelete() {
+    this.setState({ show_modal: true });
+  }
+
+  setModal(status) {
+    this.setState({ show_modal: status });
+  }
+
+  removeUser() {
+    UserActions.triggerRemoval(this.state.user, () => {
+      this.hideSideBar();
+      toaster.success("User removed", 4000);
+      this.setState({ show_modal: false });
+    });
+  }
+
+  checkName(name) {
+    let regex = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
+    return !regex.test(name);
+  }
+
+  checkUsername(username) {
+    let regex = /^([a-z0-9_])+$/;
+    return !regex.test(username);
+  }
+
+  checkEmail(email) {
+    let regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return !regex.test(String(email).toLocaleLowerCase());
+  }
+
+  checkConfirmEmail(email, confirmEmail) {
+    return !(email === confirmEmail);
+  }
+
+  fieldValidation(user, field) {
+    let tmpState = JSON.parse(JSON.stringify(this.state));
+    tmpState.user = user;
+
+    if (field === "name") {
+      tmpState.isInvalid.name = this.checkName(user[field]);
+    } else if (field === "username") {
+      tmpState.isInvalid.username = this.checkUsername(user[field]);
+    } else if (field === "email" || field === "confirmEmail") {
+      if (field === "email")
+        tmpState.isInvalid.email = this.checkEmail(String(user[field]));
+      tmpState.isInvalid.confirmEmail = this.checkConfirmEmail(user["email"], user["confirmEmail"]);
     }
+    this.setState(tmpState);
+  }
 
-    handleSave() {
-        let tmp = JSON.parse(JSON.stringify(this.state.user));
-        delete tmp.created_by;
-        delete tmp.created_date;
-        delete tmp.passwd;
-        delete tmp.password;
-        console.log(this.checkValidation());
-        if (this.checkValidation()) {
-            UserActions.triggerUpdate(tmp, () => {
-                Materialize.toast("User updated", 4000);
-                this.hideSideBar();
-            }, () => {
-                Materialize.toast("Failed to update user", 4000);
-            });
+  render() {
+    let sideBar;
+    if (this.props.visible) {
+      sideBar = (
+        <div id={"sidebar"} className={"sidebar-auth visible"}>
+          <div
+            id={"auth-title"}
+            className={"title" + (this.props.edit ? " " : " hide")}
+          >
+            <span id={"title-text"} className={"title-text"}>
+              Edit User
+            </span>
+          </div>
+          <div
+            id={"auth-title"}
+            className={"title" + (this.props.edit ? " hide" : "")}
+          >
+            <span id={"title-text"} className={"title-text"}>
+              New User
+            </span>
+          </div>
+          <div className="fixed-height">
+            <div id={"auth-icon"} className={"user-icon"}>
+              <img src={"images/generic-user-icon.png"} />
+            </div>
+            <div id={"auth-name"} className="input-field icon-space">
+              <input
+                id="userName46465"
+                value={this.state.user.username}
+                name="username"
+                disabled={this.props.edit}
+                onChange={this.handleChange}
+                style={{ fontSize: "16px" }}
+                className={
+                  "validate" + (this.state.isInvalid.username ? " invalid" : "")
+                }
+                maxLength="40"
+              />
+              <label
+                htmlFor="userName"
+                data-error="Please use only letters (a-z) and numbers (0-9)"
+                className="active"
+              >
+                User Name
+              </label>
+            </div>
+            <div id={"auth-usr"} className="input-field">
+              <input
+                id="name"
+                value={this.state.user.name}
+                name="name"
+                onChange={this.handleChange}
+                style={{ fontSize: "16px" }}
+                className={
+                  "validate" + (this.state.isInvalid.name ? " invalid" : "")
+                }
+                maxLength="40"
+              />
+              <label
+                htmlFor="name"
+                data-error="Invalid name"
+                className="active"
+              >
+                Name
+              </label>
+            </div>
+            <div id={"auth-email"} className="input-field">
+              <input
+                id="email"
+                value={this.state.user.email}
+                name="email"
+                onChange={this.handleChange}
+                style={{ fontSize: "16px" }}
+                className={
+                  "validate" + (this.state.isInvalid.email ? " invalid" : "")
+                }
+                maxLength="40"
+              />
+              <label
+                htmlFor="email"
+                data-error="Please enter a valid email address."
+                className="active"
+              >
+                Email
+              </label>
+            </div>
+            <div id={"auth-confirm"} className="input-field">
+              <input
+                id="confirm-email"
+                value={this.state.user.confirmEmail}
+                name="confirmEmail"
+                onChange={this.handleChange}
+                style={{ fontSize: "16px" }}
+                className={
+                  "validate" +
+                  (this.state.isInvalid.confirmEmail ? " invalid" : "")
+                }
+                maxLength="40"
+              />
+              <label
+                htmlFor="confirm-email"
+                data-error="Email address mismatch"
+                className="active"
+              >
+                Confirm Email
+              </label>
+            </div>
+            <div>
+              <label htmlFor="profile">Profile</label>
+            </div>
 
-        }
+            <div id={"auth-select-role"} className="input-field">
+              <MaterialSelect
+                id="flr_profiles"
+                name="profile"
+                value={this.state.user.profile}
+                onChange={this.handleChange}
+              >
+                <option value="" disabled>
+                  Choose your option
+                </option>
+                <option value="admin" id={"adm-option"}>
+                  Administrator
+                </option>
+                <option value="user" id={"user-option"}>
+                  User
+                </option>
+              </MaterialSelect>
+            </div>
+          </div>
+          <div
+            id={"edit-footer"}
+            className={"action-footer" + (this.props.edit ? "" : " hide")}
+          >
+            <div
+              id={"auth-save"}
+              className={"material-btn center-text-parent center-middle-flex"}
+              title="Save Changes"
+              onClick={this.handleSave}
+            >
+              <span className="text center-text-child">save</span>
+            </div>
+            <div
+              id={"auth-cancel"}
+              className={"material-btn center-text-parent center-middle-flex"}
+              title="Discard Changes"
+              onClick={this.hideSideBar}
+            >
+              <span className="text center-text-child">cancel</span>
+            </div>
+            <div
+              id={"auth-delete"}
+              className={"material-btn center-text-parent center-middle-flex"}
+              title="Delete User"
+              onClick={this.handleDelete}
+            >
+              <span className="text center-text-child">delete</span>
+            </div>
+          </div>
+
+          <div
+            id={"create-footer"}
+            className={"action-footer" + (this.props.edit ? " hide" : "")}
+          >
+            <div
+              id={"auth-save"}
+              className={"material-btn center-text-parent center-middle-flex"}
+              title="Create a new user"
+              onClick={this.handleCreate}
+            >
+              <span className="text center-text-child">create</span>
+            </div>
+            <div
+              id={"auth-cancel"}
+              className={"material-btn center-text-parent center-middle-flex"}
+              title="Discard changes"
+              onClick={this.hideSideBar}
+            >
+              <span className="text center-text-child">discard</span>
+            </div>
+          </div>
+        </div>
+      );
     }
-
-    handleCreate() {
-        if (this.checkValidation()) {
-            let temp = this.state.user;
-            temp.email = String(temp.email).toLowerCase();
-            UserActions.addUser(temp, () => {
-                Materialize.toast('User created', 4000);
-                this.hideSideBar();
-            }, () => {
-                Materialize.toast("Failed to create user", 4000);
-            })
-        }
-    }
-
-    hideSideBar() {
-        this.props.hide();
-    }
-
-    handleDelete(event) {
-        event.preventDefault();
-        this.hideSideBar();
-        UserActions.triggerRemoval(this.state.user, () => {
-            Materialize.toast('User removed', 4000);
-        });
-
-    }
-
-
-    filedValidation(user, field) {
-        let regex;
-        let tmpState = JSON.parse(JSON.stringify(this.state));
-        if (field === 'name') {
-            regex = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
-            tmpState.isInvalid.name = !regex.test(user[field]);
-            this.setState(tmpState);
-        } else if (field === 'username') {
-            regex = /^([a-z0-9_])+$/;
-            tmpState.isInvalid.username = !regex.test(user[field]);
-            this.setState(tmpState);
-        } else if (field === 'email' || field === 'confirmEmail') {
-            regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            if (field === 'email') tmpState.isInvalid.email = !regex.test(String(user[field]).toLocaleLowerCase());
-            tmpState.isInvalid.confirmEmail = !(user['email'] === user['confirmEmail']);
-            this.setState(tmpState);
-        } else {
-        }
-    }
-
-    render() {
-        let sideBar;
-        if (this.props.visible) {
-            sideBar =
-                <div id={"sidebar"} className={'sidebar-auth' + (this.props.visible ? ' visible' : '')}>
-                    <div id={'auth-title'} className={'title' + (this.props.edit ? ' ' : ' hide')}>
-                        <span id={'title-text'} className={'title-text'}>Edit User</span>
-                    </div>
-                    <div id={'auth-title'} className={'title' + (this.props.edit ? ' hide' : '')}>
-                        <span id={'title-text'} className={'title-text'}>New User</span>
-                    </div>
-                    <div id={'auth-icon'} className={'user-icon'}>
-                        <img src={'images/generic-user-icon.png'}/>
-                    </div>
-                    <div id={'auth-name'} className="input-field icon-space">
-                        <input id="userName46465" value={this.state.user.username} name="username"
-                               disabled={this.props.edit}
-                               onChange={this.handleChange} style={{fontSize: '16px'}}
-                               className={"validate" + (this.state.isInvalid.username ? ' invalid' : '')}/>
-                        <label htmlFor="userName" data-error="Please use only letters (a-z) and numbers (0-9)"
-                               className="active">User Name</label>
-                    </div>
-                    <div id={'auth-usr'} className="input-field">
-                        <input id="name" value={this.state.user.name} name="name" onChange={this.handleChange}
-                               style={{fontSize: '16px'}}
-                               className={"validate" + (this.state.isInvalid.name ? ' invalid' : '')}/>
-                        <label htmlFor="name" data-error="Invalid name" className="active">Name</label>
-                    </div>
-                    <div id={'auth-email'} className="input-field">
-
-                        <input id="email" value={this.state.user.email} name="email" onChange={this.handleChange}
-                               style={{fontSize: '16px'}}
-                               className={"validate" + (this.state.isInvalid.email ? ' invalid' : '')}/>
-                        <label htmlFor="email" data-error="Please enter a valid email address."
-                               className="active">Email</label>
-                    </div>
-                    <div id={'auth-confirm'} className="input-field">
-                        <input id="confirm-email" value={this.state.user.confirmEmail} name="confirmEmail"
-                               onChange={this.handleChange} style={{fontSize: '16px'}}
-                               className={"validate" + (this.state.isInvalid.confirmEmail ? ' invalid' : '')}/>
-                        <label htmlFor="confirm-email" data-error="Email address mismatch" className="active">Confirm
-                            Email</label>
-                    </div>
-                    <div id={'auth-select-role'} className="input-field">
-                        <MaterialSelect id="flr_profiles" name="profile" label="Profile"
-                                        value={this.state.user.profile}
-                                        onChange={this.handleChange}>
-                            <option value="" disabled>Choose your option</option>
-                            <option value="admin" id={'adm-option'}>Administrator</option>
-                            <option value="user" id={'user-option'}>User</option>
-                        </MaterialSelect>
-                    </div>
-                    <div id={'edit-footer'} className={'action-footer' + (this.props.edit ? '' : ' hide')}>
-                        <div id={'auth-save'} className={"material-btn center-text-parent center-middle-flex"}
-                             title="Edit Attributes" onClick={this.handleSave}>
-                            <span className="text center-text-child">save</span>
-                        </div>
-                        <div id={'auth-cancel'} className={"material-btn center-text-parent center-middle-flex"}
-                             title="Edit Attributes" onClick={this.hideSideBar}>
-                            <span className="text center-text-child">cancel</span>
-                        </div>
-                        <div id={'auth-delete'} className={"material-btn center-text-parent center-middle-flex"}
-                             title="Edit Attributes" onClick={this.handleDelete}>
-                            <span className="text center-text-child">delete</span>
-                        </div>
-                    </div>
-
-                    <div id={'create-footer'} className={'action-footer' + (this.props.edit ? ' hide' : '')}>
-                        <div id={'auth-save'} className={"material-btn center-text-parent center-middle-flex"}
-                             title="Create a new user" onClick={this.handleCreate}>
-                            <span className="text center-text-child">create</span>
-                        </div>
-                        <div id={'auth-cancel'} className={"material-btn center-text-parent center-middle-flex"}
-                             title="Discard changes" onClick={this.hideSideBar}>
-                            <span className="text center-text-child">discard</span>
-                        </div>
-
-                    </div>
-                </div>
-        }
-        return (
-            <ReactCSSTransitionGroup
-                transitionName="sidebar"
-                transitionAppear={true} transitionAppearTimeout={500}
-                transitionEnterTimeout={500} transitionLeaveTimeout={500}>
-                {sideBar}
-            </ReactCSSTransitionGroup>
-        )
-    }
+    return (
+      <ReactCSSTransitionGroup
+        transitionName="sidebar"
+        transitionAppear={true}
+        transitionAppearTimeout={500}
+        transitionEnterTimeout={500}
+        transitionLeaveTimeout={500}
+      >
+        {sideBar}
+        {this.state.show_modal ? (
+          <RemoveModal
+            name={"user"}
+            remove={this.removeUser}
+            openModal={this.setModal}
+          />
+        ) : (
+          <div />
+        )}
+      </ReactCSSTransitionGroup>
+    );
+  }
 }
 
 function SummaryItem(props) {
@@ -234,7 +396,7 @@ function SummaryItem(props) {
         <div className={"card-size card-hover lst-entry-wrapper z-depth-2 fullHeight"}>
             <div className="lst-entry-title col s12">
                 <img className="title-icon" src={"images/generic-user-icon.png"}/>
-                <div className="title-text">
+                <div className="title-text truncate" title={props.user.name}>
                     <span className="text"> {props.user.name} </span>
                 </div>
             </div>
@@ -244,8 +406,8 @@ function SummaryItem(props) {
                         <div className="icon">
                             <img src={"images/usr-icon.png"}/>
                         </div>
-                        <div className={"attr-content"}>
-                            <input type="text" value={props.user.username} disabled={true}/>
+                        <div className={"user-card attr-content"} title={props.user.username}>
+                            <input className="truncate" type="text" value={props.user.username} disabled={true}/>
                             <span>User Name</span>
                         </div>
                     </div>
@@ -253,8 +415,8 @@ function SummaryItem(props) {
                         <div className="icon">
                             <img src={"images/email-icon.png"}/>
                         </div>
-                        <div className={"attr-content"}>
-                            <input type="text" value={props.user.email} disabled={true}/>
+                        <div className={"user-card attr-content"} title={props.user.email}>
+                            <input className="truncate" type="text" value={props.user.email} disabled={true}/>
                             <span>Email</span>
                         </div>
                     </div>
@@ -262,8 +424,8 @@ function SummaryItem(props) {
                         <div className="icon">
                             <img src={"images/profile-icon.png"}/>
                         </div>
-                        <div className={"attr-content"}>
-                            <input type="text" value={props.user.profile === 'admin' ? 'Administrator' : 'User'}
+                        <div className={"user-card attr-content"}>
+                            <input className="truncate" type="text" value={props.user.profile === 'admin' ? 'Administrator' : 'User'}
                                    disabled={true}/>
                             <span>Profile</span>
                         </div>
@@ -400,9 +562,11 @@ class UserList extends Component {
     render() {
         return (
             <div className="fill">
-                <SideBar {...this.state} hide={this.hideSideBar} visible={this.props.visible}/>
+                <AltContainer store={LoginStore}>
+                  <SideBar {...this.state} hide={this.hideSideBar} visible={this.props.visible}/>
+                </AltContainer>
                 <RemoveDialog callback={this.deleteUser} target="confirmDiag"/>
-                <div className="col s12  lst-wrapper extra-padding scroll-bar">
+                <div id="user-wrapper" className="col s12  lst-wrapper extra-padding scroll-bar">
                     {this.props.values.map((user) =>
                         <ListItem user={user}
                                   key={user.id}
@@ -462,7 +626,7 @@ function UserFilter(props) {
     )
 }
 
-class Users extends Component {
+class UsersContent extends Component {
     constructor() {
         super();
         this.state = {filter: '', createUser: false, visible: false};
@@ -492,24 +656,19 @@ class Users extends Component {
     }
 
     componentDidMount() {
-        if (LoginStore.getState().user.profile === "admin") {
+        if (this.props.user.profile === "admin") {
             UserActions.fetchUsers.defer();
         }
     }
 
     render() {
-        if (LoginStore.getState().user.profile === "admin") {
+      console.log("entrou até aqui. ");
+        if (this.props.user.profile === "admin") {
             return (
                 <span id="userMain">
                     <NewPageHeader title="Auth" subtitle="Users" icon='user'>
-                    <div className={'pt10'}>
-                        <Filter onChange={this.filterChange}/>
-                        <div onClick={this.newUser} className="new-btn-flat red waves-effect waves-light"
-                             title="Create a new user">
-                            New User<i className="fa fa-plus"/>
-                        </div>
-                    </div>
-                    </NewPageHeader>
+                        <OperationsHeader newUser={this.newUser}/>
+                     </NewPageHeader>
                     <AltContainer store={UserStore}>
                         <UserFilter filter={this.state.filter} {...this.state} visibility={this.visibility}/>
                     </AltContainer>
@@ -523,6 +682,31 @@ class Users extends Component {
             );
         }
     }
+}
+
+
+
+class Users extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+        <AltContainer store={LoginStore}>
+        <UsersContent></UsersContent>
+        </AltContainer>
+    );
+  }
+}
+
+
+function OperationsHeader(props) {
+    return <div className="col s12 pull-right pt10">
+        <div onClick={props.newUser} className="new-btn-flat red" title="Create a new user">
+          New User<i className="fa fa-plus" />
+        </div>
+      </div>;
 }
 
 export default Users;

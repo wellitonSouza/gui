@@ -71,7 +71,7 @@ class Attribute extends Component {
     let width = window.innerWidth
       || document.documentElement.clientWidth
       || document.body.clientWidth;
-    let opened = this.state.opened; 
+    let opened = this.state.opened;
       if (width < 1168 )
       opened = true;
 
@@ -163,19 +163,21 @@ class GenericList extends Component {
 
   limitSizeField(attrs){
     attrs.map(attr => {
-      if(attr.type == "meta"){
-        // values of configurations
-        if(attr.static_value.length > 20){
-          this.setState({truncate: true});
-        }
-      } else {
-        if(attr.label.length > 20 || attr.value_type > 20){
-          this.setState({truncate: true});
-        }
-        // Values of static attributes
-        if(attr.static_value.length > 20){
-          this.setState({truncate: true});
-        }
+      if ( attr.static_value !== undefined) {
+          if (attr.type === "meta") {
+              // values of configurations
+              if (attr.static_value.length > 20) {
+                  this.setState({truncate: true});
+              }
+          } else {
+              if (attr.label.length > 20 || attr.value_type > 20) {
+                  this.setState({truncate: true});
+              }
+              // Values of static attributes
+              if (attr.static_value.length > 20) {
+                  this.setState({truncate: true});
+              }
+          }
       }
     })
   }
@@ -200,7 +202,7 @@ class GenericList extends Component {
                 <div className="col s7 p0 text-right" >
                   <div className="value-value">{this.props.device.id}</div>
                   <div className="value-label">STRING</div>
-                </div>              
+                </div>
               </div>
             </div>
           ):("")}
@@ -235,7 +237,7 @@ class GenericList extends Component {
                   {/*<div className="name-value col s12">{attr.label}</div>
                   <div className="value-label">Name</div>*/}
               </div>
-             </div>              
+             </div>
             )
           ))}
         </div>
@@ -312,10 +314,10 @@ class DyAttributeArea extends Component {
       </div>
       <div className="third-col">
         <div className="row">
-          <DynamicAttributeList device={this.props.device} attrs={lista} change_attr={this.toggleAttribute} />        
+          <DynamicAttributeList device={this.props.device} attrs={lista} change_attr={this.toggleAttribute} />
         </div>
         <div className="row">
-          <ActuatorsArea actuators={this.props.actuators} />        
+          <ActuatorsArea actuators={this.props.actuators} />
         </div>
       </div>
     </div>

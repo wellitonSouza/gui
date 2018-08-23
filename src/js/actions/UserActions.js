@@ -18,6 +18,8 @@ class UserActions {
       dispatch();
       userManager.addUser(newUser)
         .then((response) => {
+          console.log(">>> addUser OK -> response=", response);
+          console.log(">>> addUser OK -> newUser=", newUser);
           // @bug: backend won't return full public record of the created user, so merge the
           //       server-side data (id) with the known record of the user.
           let updatedUser = JSON.parse(JSON.stringify(newUser));
@@ -29,6 +31,11 @@ class UserActions {
           }
         })
         .catch((error) => {
+          console.log(">>> addUser NOK -> error=", error);
+          console.log(">>> addUser NOK -> newUser=", newUser);
+          if(error_cb) {
+            error_cb(newUser);
+          }
           this.usersFailed(error);
           // error.data.json()
             // .then((data) => {

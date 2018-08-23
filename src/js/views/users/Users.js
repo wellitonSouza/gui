@@ -33,18 +33,24 @@ class SideBar extends Component {
     this.handleDelete = this.handleDelete.bind(this);
     this.checkValidation = this.checkValidation.bind(this);
     this.hideSideBar = this.hideSideBar.bind(this);
+    this.formUser = this.formUser.bind(this);
     this.setModal = this.setModal.bind(this);
     this.removeUser = this.removeUser.bind(this);
     this.fieldValidation = this.fieldValidation.bind(this);
   }
 
   componentDidMount() {
+    console.log(">>> componentDidMount -> this.state.user=", this.state.user);
+    console.log(">>> componentDidMount -> this.props.user= ", this.props.user);
     if (this.props.user.profile === "admin") {
       UserActions.fetchUsers.defer();
     }
   }
 
   componentWillReceiveProps(next) {
+    console.log(">>>> SideBar -> componentWillReceiveProps -> nextProps.user= ", next.user);
+    console.log(">>>> SideBar -> componentWillReceiveProps -> this.props.user= ", this.props.user);
+    console.log(">>>> SideBar -> componentWillReceiveProps -> this.state.user= ", this.state.user);
     let context = this.state;
     context.user = JSON.parse(JSON.stringify(next.user));
     if (context.user !== "") context.user.confirmEmail = context.user.email;
@@ -55,6 +61,13 @@ class SideBar extends Component {
       confirmEmail: false
     };
     this.setState(context);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log(">>> componentDidUpdate -> this.props.user=", this.props.user);
+    console.log(">>> componentDidUpdate -> this.state.user=", this.state.user);
+    console.log(">>> componentDidUpdate -> prevProps.user=", prevProps.user);
+    console.log(">>> componentDidUpdate -> prevState.user=", prevState.user);
   }
 
   checkValidation() {
@@ -92,6 +105,7 @@ class SideBar extends Component {
   }
 
   handleSave() {
+    console.log(">>>> SideBar -> handleSave -> this.state.user= ", this.state.user);
     let tmp = JSON.parse(JSON.stringify(this.state.user));
     delete tmp.created_by;
     delete tmp.created_date;
@@ -106,6 +120,7 @@ class SideBar extends Component {
         },
         () => {
           toaster.error("Failed to update user.");
+          console.log(">>>> SideBar -> handleSave -> ERROR: Failed to update user. -> this.state.user= ", this.state.user);
         }
       );
     }
@@ -122,11 +137,17 @@ class SideBar extends Component {
           toaster.success("User created.");
           this.hideSideBar();
         },
-        () => {
+        (user) => {
+          this.formUser(user);
+          console.log(">>> Failed to create user.");
           toaster.success("Failed to create user.");
         }
       );
     }
+  }
+
+  formUser(user) {
+    this.props.formUser(user);
   }
 
   hideSideBar() {
@@ -523,6 +544,7 @@ class UserList extends Component {
         this.editUser = this.editUser.bind(this);
         this.createUser = this.createUser.bind(this);
         this.hideSideBar = this.hideSideBar.bind(this);
+        this.formUser = this.formUser.bind(this);
     }
 
     componentWillReceiveProps(next) {
@@ -531,6 +553,15 @@ class UserList extends Component {
             this.createUser();
         }
     }
+
+    formUser(user) {
+      console.log(">>> UserList -> formUser -> user= ", user);
+      let temp = this.state;
+      temp.create = true;
+      temp.edit = false;
+      temp.user = user;
+      this.setState(temp);
+  }
 
     editUser(user) {
         let temp = this.state;
@@ -562,7 +593,7 @@ class UserList extends Component {
     render() {
         return (
             <div className="fill">
-                <SideBar {...this.state} hide={this.hideSideBar} visible={this.props.visible} />
+                <SideBar {...this.state} hide={this.hideSideBar} visible={this.props.visible} formUser={this.formUser}/>
                 <RemoveDialog callback={this.deleteUser} target="confirmDiag"/>
                 <div id="user-wrapper" className="col s12  lst-wrapper extra-padding scroll-bar">
                     {this.props.values.map((user) =>

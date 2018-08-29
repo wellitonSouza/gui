@@ -24,6 +24,34 @@ class Config {
         if (value <= -1){return blackPin;}
     }
 
+    getLayersData()
+    {
+        return [
+            {
+                'id':1,
+                'MAP_HAS_OVERLAY_ENV': "false",
+                'description':'First map',
+                'overlay_data': {
+                    'path' : "images/layers/combined.png",
+                    'corner1' : 
+                    {'lat':-20.90974,'lng':-48.83651},
+                    'corner2':
+                    {'lat':-21.80963,'lng':-47.11802}}
+            },
+            {
+                'id': 2,
+                'MAP_HAS_OVERLAY_ENV': "false",
+                'description': 'Second map',
+                'overlay_data': {
+                    'path': "images/layers/combined2.png",
+                    'corner1':
+                        { 'lat': -21.91974, 'lng': -49.84651 },
+                    'corner2':
+                        { 'lat': -22.81963, 'lng': -48.12802 }
+                }
+            }  
+        ];
+    }
 }
 
 let config = new Config();

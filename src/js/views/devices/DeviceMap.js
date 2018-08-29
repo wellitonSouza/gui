@@ -19,31 +19,45 @@ class PositionRenderer extends Component {
             selected_device_id: -1,
             isTerrain: true,
             selectedPin: true,
+            layers: [],
+            loadedLayers: false,
             center: (this.props.center ? this.props.center : [-21.277057, -47.9590129]),
             zoom: (this.props.zoom ? this.props.zoom : 2)
         };
 
+        this.toggleLayer = this.toggleLayer.bind(this);
         this.setTiles = this.setTiles.bind(this);
         this.handleTracking = this.handleTracking.bind(this);
         this.handleContextMenu = this.handleContextMenu.bind(this);
         this.handleCenter = this.handleCenter.bind(this);
+        this.layers = []; 
     }
 
     componentDidMount() {
 
-        if (this.leafletMap !== undefined) {
-
+        if (!this.state.loadedLayers) {
+          if (this.leafletMap !== undefined) {
             // console.log('will attempt to add layer', MQ.mapLayer, this.leafletMap);
             // mq = require('..//../external/mq-map.js');
 
             let mapLayer = MQ.mapLayer();
             mapLayer.addTo(this.leafletMap.leafletElement);
 
-            L.control.layers({
-                'Map': mapLayer,
-                'Hybrid': MQ.hybridLayer(),
-                'Satellite': MQ.satelliteLayer()
-            }).addTo(this.leafletMap.leafletElement);
+            L.control
+              .layers({
+                Map: mapLayer,
+                Hybrid: MQ.hybridLayer(),
+                Satellite: MQ.satelliteLayer()
+              })
+              .addTo(this.leafletMap.leafletElement);
+          }
+
+          let layers = config.getLayersData();
+          console.log("I got my layers! ", layers);
+          for (let index in layers) {
+            layers[index].isVisible = false;
+          }
+          this.setState({ loadedLayers: true, layers: layers });
         }
     }
 
@@ -105,6 +119,15 @@ class PositionRenderer extends Component {
         }
     }
 
+    toggleLayer(id) {
+        let layers = this.state.layers;
+        for (let index in layers)
+            if (layers[index].id == id)
+                layers[index].isVisible = !layers[index].isVisible;
+        this.setState({layers:layers});
+    }
+
+
     render() {
         console.log("PropsPositionRenderer: ", this.props);
         function getPin(device) {
@@ -114,7 +137,8 @@ class PositionRenderer extends Component {
                 return config.SinrSignalLevel(device.hasOwnProperty('_sinr') ? device._sinr[0].value : -1);
             }
         }
-
+        
+       
         let parsedEntries = this.props.devices.reduce((result, k) => {
             if (k.position !== undefined) {
                 result.push({
@@ -159,41 +183,42 @@ class PositionRenderer extends Component {
             }
         }
 
-        return (
-            <Map center={this.props.center ? this.props.center : this.state.center}
-                 zoom={this.state.zoom}
-                 ref={m => {
-                     this.leafletMap = m;
-                 }}>
+        
 
-                {process.env.MAP_HAS_OVERLAY_ENV ? <LayerBox/> : ''}
+        return <Map center={this.props.center ? this.props.center : this.state.center} zoom={this.state.zoom} ref={m => {
+              this.leafletMap = m;
+            }}>
+            <div className="col s12 layer-box" >
+                {
+                   (this.state.layers.length) ?
+                        this.state.layers.map(lyr => (
+                    <LayerBox
+                        key={lyr.id}
+                        toggleLayer={this.toggleLayer}
+                        config={lyr}
+                    />
+                )) : null
+            }
+            </div>
+            {contextMenu}
+            <ReactResizeDetector handleWidth onResize={this.resize.bind(this)} />
 
-                {contextMenu}
-                <ReactResizeDetector handleWidth onResize={this.resize.bind(this)}/>
-
-                {parsedEntries.map((k) => {
-                    return (
-                        <Marker
-                            onContextMenu={(e) => {
-                                this.handleContextMenu(e, k.id);
-                            }}
-                            onClick={(e) => {
-                                this.handleContextMenu(e, k.id);
-                            }}
-                            position={k.pos} key={k.key} icon={k.pin}>
-                            <Tooltip>
-                                <span>{k.name} : {k.timestamp}</span>
-                            </Tooltip>
-                            {listLatLngs[k.id] && k.tracking && this.props.showPolyline ? (
-                                <Polyline positions={listLatLngs[k.id]} color='#7fb2f9' dashArray='10,10'
-                                          repeatMode={false}/>
-                            ) : null}
-                        </Marker>
-                    )
-                })}
-                <ScaleControl/>
-            </Map>
-        )
+            {parsedEntries.map(k => {
+              return <Marker onContextMenu={e => {
+                    this.handleContextMenu(e, k.id);
+                  }} onClick={e => {
+                    this.handleContextMenu(e, k.id);
+                  }} position={k.pos} key={k.key} icon={k.pin}>
+                  <Tooltip>
+                    <span>
+                      {k.name} : {k.timestamp}
+                    </span>
+                  </Tooltip>
+                  {listLatLngs[k.id] && k.tracking && this.props.showPolyline ? <Polyline positions={listLatLngs[k.id]} color="#7fb2f9" dashArray="10,10" repeatMode={false} /> : null}
+                </Marker>;
+            })}
+            <ScaleControl />
+          </Map>;
     }
 }
 
@@ -201,35 +226,32 @@ class PositionRenderer extends Component {
 class LayerBox extends Component {
     constructor(props) {
         super(props);
-        this.state = {visible: true};
+        // this.state = {visible: true};
         this.toggleLayer = this.toggleLayer.bind(this);
     }
 
     toggleLayer() {
-        this.setState({visible: !this.state.visible});
+        console.log("layerbox: togglelayer: ", this.props.config.id);
+        this.props.toggleLayer(this.props.config.id);
+        // this.setState({visible: !this.state.visible});
     }
 
     render() {
-
-        let config = process.env.MAP_OVERLAY_JSON_ENV;
-        let corner1 = L.latLng(config.corner1.lat, config.corner1.lng);
-        let corner2 = L.latLng(config.corner2.lat, config.corner2.lng);
+        console.log("LayerBox: render.");
+        let corner1 = L.latLng(this.props.config.overlay_data.corner1.lat, this.props.config.overlay_data.corner1.lng);
+        let corner2 = L.latLng(this.props.config.overlay_data.corner2.lat, this.props.config.overlay_data.corner2.lng);
         const layerMapBounds = L.latLngBounds(corner1, corner2);
+        
         const layerOpacity = 0.3;
-        const imageOverlay = this.state.visible ? (
-            <ImageOverlay
-                opacity={layerOpacity}
-                bounds={layerMapBounds}
-                url={config.path}/>) : null;
+        const imageOverlay = this.props.config.isVisible ? <ImageOverlay opacity={layerOpacity} bounds={layerMapBounds} url={this.props.config.overlay_data.path} /> : null;
+        console.log("imageOverlay", this.props.config);
 
-        return (
-            <div className="col s12">
-                <div className="layer-div" onClick={this.toggleLayer}>
-                    <img src={'images/layers.png'}/>
-                </div>
-                {imageOverlay}
+        return <div className="layer-mr">
+            <div title={this.props.config.description} className={"layer-div "+ (this.props.config.isVisible ? "active-btn":"")} onClick={this.toggleLayer}>
+              <i className={"fa fa-map"} />
             </div>
-        )
+            {imageOverlay}
+          </div>;
     }
 }
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import DeviceStore from '../../stores/DeviceStore';
 import MeasureStore from '../../stores/MeasureStore';
+import ConfigStore from '../../stores/ConfigStore';
 import DeviceActions from '../../actions/DeviceActions';
 import MeasureActions from '../../actions/MeasureActions';
 import { NewPageHeader } from "../../containers/full/PageHeader";
@@ -60,8 +61,8 @@ class MapWrapper extends Component {
   }
 
   render(){
-    return <AltContainer store={MeasureStore}>
-      <DeviceMap devices={this.props.devices} toggle={this.props.displayToggle} showFilter={this.props.showFilter} dev_opex={this.props.dev_opex} />
+    return <AltContainer stores={{Measure: MeasureStore, Config: ConfigStore}}>
+        <DeviceMap devices={this.props.devices} showFilter={this.props.showFilter} dev_opex={this.props.dev_opex} />
       </AltContainer>;
   }
 }
@@ -74,7 +75,7 @@ class DeviceOperations extends GenericOperations {
     this.paginationParams = {};
     this.setDefaultPaginationParams();
   }
-  
+
   whenUpdatePagination(config) {
     for (let key in config) this.paginationParams[key] = config[key];
     this._fetch();
@@ -82,7 +83,6 @@ class DeviceOperations extends GenericOperations {
 
   setDefaultFilter()
   {
-    console.log("setDefaultFilter");
     this.filterParams = { "sortBy": "label" };
     this.setDefaultPaginationParams();
   }
@@ -184,7 +184,7 @@ class Devices extends Component {
     let newDisplay = !this.state.displayList;
     console.log(" toggleDisplay",newDisplay);
     // reload devices for maps
-    if (!newDisplay) 
+    if (!newDisplay)
       this.dev_opex.setFilterToMap();
     else
       this.dev_opex.setDefaultFilter();
@@ -194,7 +194,7 @@ class Devices extends Component {
     });
   }
 
-  
+
     render() {
         console.log("Loading Devices Component.");
 
@@ -210,7 +210,7 @@ class Devices extends Component {
             />
         );
 
-        let show_pagination = this.state.displayList; 
+        let show_pagination = this.state.displayList;
         return <div className="full-device-area">
             <AltContainer store={DeviceStore}>
               <NewPageHeader title="Devices" subtitle="" icon="device">

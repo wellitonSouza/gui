@@ -1,0 +1,32 @@
+import configManager from '../comms/config/ConfigManager';
+import toaster from "../comms/util/materialize";
+import alt from "../alt"
+
+
+class ConfigActions {
+
+    fetchCurrentConfig(bool) {
+        return (dispatch) => {
+            dispatch();
+            configManager.getConfigDate()
+                .then((configList) => {
+                    this.insertCurrentAlarms(configList);
+                })
+                .catch((error) => {
+                    this.alarmsFailed(error);
+                });
+        }
+    }
+
+    insertCurrentAlarms(configList) {
+        return configList;
+    }
+
+    alarmsFailed(error) {
+        toaster.error(error.message);
+        return error;
+    }
+}
+
+let _config = alt.createActions(ConfigActions, exports);
+export default _config;

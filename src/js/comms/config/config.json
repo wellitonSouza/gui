@@ -1,0 +1,81 @@
+{
+  "mapOverlayActive": true,
+  "mapImage": [
+    {
+      "id": "1",
+      "image_path": "images/layers/combined.png",
+      "image_label": "overlay_map_0",
+      "description": "Ribeirão Preto",
+      "mapOpacity": 0.35,
+      "mapCoordinates": {
+        "initial": {
+          "lat": -20.90974,
+          "lng": -48.83651
+        },
+        "final": {
+          "lat": -21.80963,
+          "lng": -47.11802
+        }
+      }
+    },
+    {
+      "id": "2",
+      "image_path": "images/layers/combined2.png",
+      "image_label": "overlay_map_1",
+      "description": "Bauru",
+      "mapOpacity": 0.35,
+      "mapCoordinates": {
+        "initial": {
+          "lat": -21.91974,
+          "lng": -49.84651
+        },
+        "final": {
+          "lat": -22.81963,
+          "lng": -48.12802
+        }
+      }
+    }
+  ],
+  "mapZoom": 11,
+  "mapCenter": [
+    -22.816088,
+    -47.046252
+  ],
+  "tileSelect": "road",
+  "mapColorActive": true,
+  "range": [
+    {
+      "value": -50,
+      "pin": "DarkBlue"
+    },
+    {
+      "value": -60,
+      "pin": "LightBlue"
+    },
+    {
+      "value": -70,
+      "pin": "Yellow"
+    },
+    {
+      "value": -80,
+      "pin": "DarkYellow"
+    },
+    {
+      "value": -90,
+      "pin": "Orange"
+    },
+    {
+      "value": -100,
+      "pin": "Red"
+    },
+    {
+      "value": -110,
+      "pin": "Burgundy"
+    }
+  ],
+  "measureAttribute": "sinr",
+  "itemsPerPage": {
+    "devices": 6,
+    "template": 6
+  }
+}

@@ -33,7 +33,7 @@ class Graph extends Component{
       return undefined;
     }
 
-    this.props.data[this.props.device.id]['_'+this.props.attr].map((i) => {
+    this.props.MeasureStore.data[this.props.device.id]['_'+this.props.attr].map((i) => {
       labels.push(util.iso_to_date_hour(i.ts));
       values.push(i.value);
     })
@@ -108,8 +108,8 @@ class Graph extends Component{
 function HistoryList(props) {
   // handle values
   let value = []
-  for(let k in props.data[props.device.id]['_'+props.attr]){
-     value[k] = props.data[props.device.id]['_'+props.attr][k];
+  for(let k in props.MeasureStore.data[props.device.id]['_'+props.attr]){
+     value[k] = props.MeasureStore.data[props.device.id]['_'+props.attr][k];
   }
 
   if (value.length > 0){
@@ -164,11 +164,11 @@ class HandleGeoElements extends Component{
     mqLoaded(){
       this.setState({mapquest: true});
     }
-  
+
     toogleExpand(state) {
       this.setState({opened: state});
     }
-  
+
     handleDevicePosition(device){
       function parserPosition(position){
         let parsedPosition = position.split(",");
@@ -185,7 +185,7 @@ class HandleGeoElements extends Component{
             }
           }
         }
-  
+
         device.select = true;
         if(device.position !== null && device.position !== undefined){
           validDevices.push(device);
@@ -206,14 +206,14 @@ class HandleGeoElements extends Component{
     {
       return (<NoData />);
     }
-    
+
     let validDevices = null;
     if(this.props.isStatic){
       //static attribute
       validDevices = this.handleDevicePosition(this.props.device);
     } else {
       //dynamic attribute
-      validDevices = this.handleDevicePosition(this.props.data[this.props.device.id]);
+      validDevices = this.handleDevicePosition(this.props.MeasureStore.data[this.props.device.id]);
     }
 
     if (validDevices.length == 0) {
@@ -232,7 +232,7 @@ class HandleGeoElements extends Component{
               </Script>
             </div>
             {this.state.mapquest ? (
-              <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false}/>
+              <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false} config={this.props.Config}/>
             ): (
               <Loading />
             )}
@@ -247,11 +247,11 @@ class HandleGeoElements extends Component{
               </Script>
             </div>
             {this.state.mapquest ? (
-              <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false}/>
+              <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false} config={this.props.Config}/>
             ): (
               <Loading />
             )}
-          </span>          
+          </span>
         )
       }
     }
@@ -287,12 +287,12 @@ function Attr(props) {
       )
   }
 
-  if (props.data[props.device.id] === undefined) {
+  if (props.MeasureStore.data[props.device.id] === undefined) {
     return <NoData />;
   }
 
   let label = props.attr;
-  if (props.data[props.device.id]['_'+props.attr] == undefined) {
+  if (props.MeasureStore.data[props.device.id]['_'+props.attr] === undefined) {
       return <NoDataAv />;
   }
 

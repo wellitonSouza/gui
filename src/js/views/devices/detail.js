@@ -4,6 +4,7 @@ import { NewPageHeader } from "../../containers/full/PageHeader";
 import {  hashHistory } from 'react-router'
 import AltContainer from 'alt-container';
 import MeasureStore from '../../stores/MeasureStore';
+import ConfigStore from '../../stores/ConfigStore';
 import MeasureActions from '../../actions/MeasureActions';
 import DeviceActions from '../../actions/DeviceActions';
 import DeviceStore from '../../stores/DeviceStore';
@@ -72,7 +73,7 @@ class Attribute extends Component {
     let width = window.innerWidth
       || document.documentElement.clientWidth
       || document.body.clientWidth;
-    let opened = this.state.opened; 
+    let opened = this.state.opened;
       if (width < 1168 )
       opened = true;
 
@@ -201,7 +202,7 @@ class GenericList extends Component {
                 <div className="col s7 p0 text-right" >
                   <div className="value-value">{this.props.device.id}</div>
                   <div className="value-label">STRING</div>
-                </div>              
+                </div>
               </div>
             </div>
           ):("")}
@@ -236,7 +237,7 @@ class GenericList extends Component {
                   {/*<div className="name-value col s12">{attr.label}</div>
                   <div className="value-label">Name</div>*/}
               </div>
-             </div>              
+             </div>
             )
           ))}
         </div>
@@ -313,10 +314,10 @@ class DyAttributeArea extends Component {
       </div>
       <div className="third-col">
         <div className="row">
-          <DynamicAttributeList device={this.props.device} attrs={lista} change_attr={this.toggleAttribute} />        
+          <DynamicAttributeList device={this.props.device} attrs={lista} change_attr={this.toggleAttribute} />
         </div>
         <div className="row">
-          <ActuatorsArea actuators={this.props.actuators} />        
+          <ActuatorsArea actuators={this.props.actuators} />
         </div>
       </div>
     </div>
@@ -462,8 +463,8 @@ class AttrHistory extends Component {
   render() {
     return (
       <div className="graphLarge">
-        <AltContainer store={MeasureStore}>
-          <Attr device={this.props.device} type={this.props.type} attr={this.props.attr} label={this.props.attr} isStatic={false}/>
+          <AltContainer stores={{MeasureStore: MeasureStore, Config: ConfigStore}}>
+              <Attr device={this.props.device} type={this.props.type} attr={this.props.attr} label={this.props.attr} isStatic={false}/>
         </AltContainer>
       </div>
     );

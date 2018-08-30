@@ -10,11 +10,11 @@ class GenericOperations {
   }
 
   setDefaultPaginationParams() {
-    console.log("setDefaultPaginationParams");
     this.paginationParams = {
       page_size: 6,
       page_num: 1
     };
+    console.log("setting DefaultPaginationParams ",this);
   }
 
   hasFilter() {

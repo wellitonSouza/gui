@@ -8,6 +8,9 @@ import ReactResizeDetector from 'react-resize-detector';
 import Sidebar from '../../components/DeviceRightSidebar';
 import config from '../../config'
 
+import { Filter } from "../utils/Manipulation";
+
+
 let trackingPin = L.divIcon({className: 'icon-marker bg-tracking-marker'});
 let listLatLngs = [];
 
@@ -340,6 +343,7 @@ class DeviceMap extends Component {
         this.setState({displayMap: displayMap});
     }
 
+
     applyFiltering(devices) 
     {
         let list = [];
@@ -445,8 +449,14 @@ class DeviceMap extends Component {
                 pointList.push(device);
          }
 
+        this.metaData = { alias: "device" };
+        this.props.dev_opex.setFilterToMap();
+
         return <div className="fix-map-bug">
             <div className="flex-wrapper">
+                <div className="map-filter-box"> 
+                    <Filter showPainel={this.props.showFilter} metaData={this.metaData} ops={this.props.dev_opex} fields={DevFilterFields} /> 
+                </div>
               <div className="deviceMapCanvas deviceMapCanvas-map col m12 s12 relative">
                 <Script url="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=zvpeonXbjGkoRqVMtyQYCGVn4JQG8rd9" onLoad={this.mqLoaded} />
                 {this.state.mapquest ? <PositionRenderer devices={pointList} toggleTracking={this.toggleTracking} allowContextMenu={true} listPositions={this.props.tracking} showPolyline={true} /> : <div className="row full-height relative">
@@ -458,6 +468,26 @@ class DeviceMap extends Component {
               </div>
             </div>
           </div>;
+    }
+}
+
+
+class DevFilterFields extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        console.log("DevFilterFields - DeviceMaps", this.props);
+        return <div className="col s12 m12">
+            <div className="col s5 m5">
+                <div className="dev_field_filter">
+                    <label htmlFor="fld_device_name">Device Name</label>
+                    <input id="fld_device_name" type="text" className="form-control form-control-lg margin-top-mi7px" placeholder="Device Name" value={this.props.fields.label} name="label" onChange={this.props.onChange} />
+                </div>
+            </div>
+            <div className="col s1 m1" />
+        </div>;
     }
 }
 

@@ -61,7 +61,7 @@ class MapWrapper extends Component {
 
   render(){
     return <AltContainer store={MeasureStore}>
-        <DeviceMap devices={this.props.devices} showFilter={this.props.showFilter} dev_opex={this.props.dev_opex} />
+      <DeviceMap devices={this.props.devices} toggle={this.props.displayToggle} showFilter={this.props.showFilter} dev_opex={this.props.dev_opex} />
       </AltContainer>;
   }
 }
@@ -82,20 +82,21 @@ class DeviceOperations extends GenericOperations {
 
   setDefaultFilter()
   {
+    console.log("setDefaultFilter");
     this.filterParams = { "sortBy": "label" };
     this.setDefaultPaginationParams();
   }
 
   setFilterToMap() {
     this.paginationParams = {
-      page_size: 100,
+      page_size: 5000,
       page_num: 1
     };
     this.filterParams = {};
   }
 
   whenUpdateFilter(config) {
-    this.setDefaultPaginationParams();
+    // this.setDefaultPaginationParams();
     this.filterParams = config;
     this._fetch();
   }

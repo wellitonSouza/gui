@@ -12,7 +12,7 @@ import MaterialInput from "../../components/MaterialInput";
 import Materialize from "materialize-css";
 import MaterialSelect from "../../components/MaterialSelect";
 
-import { Filter, Pagination } from "../utils/Manipulation";
+import { Filter } from "../utils/Manipulation";
 
 function SummaryItem(props) {
 
@@ -88,8 +88,11 @@ class DeviceCardList extends Component {
 
     this.convertDeviceList();
 
-    this.metaData = { alias: "device" };
+    this.metaData = {
+      alias: "device", 
+    };
 
+    this.props.dev_opex.setDefaultFilter();
     return <div className="device-card-area">
         <Filter showPainel={this.props.showFilter} metaData={this.metaData} ops={this.props.dev_opex} fields={DevFilterFields} />
         {this.filteredList.length === 0 ? <div className="background-info valign-wrapper full-height">

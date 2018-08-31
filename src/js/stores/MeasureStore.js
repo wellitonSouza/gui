@@ -6,8 +6,7 @@ import util from '../comms/util';
 
 class MeasureStore {
     constructor() {
-        //this.devices = {};
-        this.data = {}
+        this.data = {};
         this.tracking = {};
         this.error = null;
 
@@ -75,8 +74,9 @@ class MeasureStore {
                                         "position": parserPosition(measureData.attrs[label]),
                                         "timestamp": util.iso_to_date(now)
                                     };
-                                    console.log(this.tracking);
-                                    this.tracking[measureData.metadata.deviceid].unshift(trackingStructure);
+                                    if (this.tracking[measureData.metadata.deviceid].unshift(trackingStructure) > 5){
+                                        this.tracking[measureData.metadata.deviceid] = this.tracking[measureData.metadata.deviceid].slice(0, 4);
+                                    }
                                 }
                             } else {
                                 // attr is not geo

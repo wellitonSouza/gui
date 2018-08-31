@@ -58,7 +58,7 @@ class PositionRenderer extends Component {
           let layers = this.props.config.mapObj;
           console.log("I got my layers! ", layers);
           for (let index in layers) {
-            layers[index].isVisible = false;
+            layers[index].isVisible = true;
           }
           this.setState({ loadedLayers: true, layers: layers });
         }

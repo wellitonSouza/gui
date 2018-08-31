@@ -3,7 +3,7 @@
   "mapImage": [
     {
       "id": "1",
-      "image_path": "images/layers/combined.png",
+      "image_path": "images/layers/Alem_1_190.png",
       "image_label": "overlay_map_0",
       "description": "Ribeirão Preto",
       "mapOpacity": 0.35,
@@ -20,26 +20,162 @@
     },
     {
       "id": "2",
-      "image_path": "images/layers/combined2.png",
+      "image_path": "images/layers/Alem_2_250.png",
       "image_label": "overlay_map_1",
       "description": "Bauru",
       "mapOpacity": 0.35,
       "mapCoordinates": {
         "initial": {
-          "lat": -21.91974,
-          "lng": -49.84651
+          "lat": -20.90974,
+          "lng": -48.83651
         },
         "final": {
-          "lat": -22.81963,
-          "lng": -48.12802
+          "lat": -21.80963,
+          "lng": -47.11802
+        }
+      }
+    },
+    {
+      "id": "3",
+      "image_path": "images/layers/America_1_110.png",
+      "image_label": "overlay_map_1",
+      "description": "Bauru",
+      "mapOpacity": 0.35,
+      "mapCoordinates": {
+        "initial": {
+          "lat": -20.90974,
+          "lng": -48.83651
+        },
+        "final": {
+          "lat": -21.80963,
+          "lng": -47.11802
+        }
+      }
+    },
+    {
+      "id": "4",
+      "image_path": "images/layers/America_2_290.png",
+      "image_label": "overlay_map_1",
+      "description": "Bauru",
+      "mapOpacity": 0.35,
+      "mapCoordinates": {
+        "initial": {
+          "lat": -20.90974,
+          "lng": -48.83651
+        },
+        "final": {
+          "lat": -21.80963,
+          "lng": -47.11802
+        }
+      }
+    },
+    {
+      "id": "5",
+      "image_path": "images/layers/Barreiro_1_15.png",
+      "image_label": "overlay_map_1",
+      "description": "Bauru",
+      "mapOpacity": 0.35,
+      "mapCoordinates": {
+        "initial": {
+          "lat": -20.90974,
+          "lng": -48.83651
+        },
+        "final": {
+          "lat": -21.80963,
+          "lng": -47.11802
+        }
+      }
+    },
+    {
+      "id": "6",
+      "image_path": "images/layers/Barreiro_2_90.png",
+      "image_label": "overlay_map_1",
+      "description": "Bauru",
+      "mapOpacity": 0.35,
+      "mapCoordinates": {
+        "initial": {
+          "lat": -20.90974,
+          "lng": -48.83651
+        },
+        "final": {
+          "lat": -21.80963,
+          "lng": -47.11802
+        }
+      }
+    },
+    {
+      "id": "7",
+      "image_path": "images/layers/Barreiro_3_255.png",
+      "image_label": "overlay_map_1",
+      "description": "Bauru",
+      "mapOpacity": 0.35,
+      "mapCoordinates": {
+        "initial": {
+          "lat": -20.90974,
+          "lng": -48.83651
+        },
+        "final": {
+          "lat": -21.80963,
+          "lng": -47.11802
+        }
+      }
+    },
+    {
+      "id": "8",
+      "image_path": "images/layers/Ibitirama_1_190.png",
+      "image_label": "overlay_map_1",
+      "description": "Bauru",
+      "mapOpacity": 0.35,
+      "mapCoordinates": {
+        "initial": {
+          "lat": -20.90974,
+          "lng": -48.83651
+        },
+        "final": {
+          "lat": -21.80963,
+          "lng": -47.11802
+        }
+      }
+    },
+    {
+      "id": "9",
+      "image_path": "images/layers/Pilão_1_170.png",
+      "image_label": "overlay_map_1",
+      "description": "Bauru",
+      "mapOpacity": 0.35,
+      "mapCoordinates": {
+        "initial": {
+          "lat": -20.90974,
+          "lng": -48.83651
+        },
+        "final": {
+          "lat": -21.80963,
+          "lng": -47.11802
+        }
+      }
+    },
+    {
+      "id": "10",
+      "image_path": "images/layers/Sta_Lydia.png",
+      "image_label": "overlay_map_1",
+      "description": "Bauru",
+      "mapOpacity": 0.35,
+      "mapCoordinates": {
+        "initial": {
+          "lat": -20.90974,
+          "lng": -48.83651
+        },
+        "final": {
+          "lat": -21.80963,
+          "lng": -47.11802
         }
       }
     }
   ],
   "mapZoom": 11,
   "mapCenter": [
-    -22.816088,
-    -47.046252
+    -21.322263,
+    -48.046234
   ],
   "tileSelect": "road",
   "mapColorActive": true,

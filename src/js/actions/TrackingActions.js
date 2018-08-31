@@ -1,13 +1,11 @@
-import alt from  "../alt";
+import alt from "../alt";
 import util from '../comms/util';
 import LoginStore from '../stores/LoginStore';
 
 class TrackingActions {
-  fetch(device_id, attrName, history_length) {
+  fetch(device_id, attrName, history_length = 1) {
     function getUrl() {
-      if (history_length === undefined) { history_length = 50;}
-      let url = '/history/device/' + device_id + '/history?lastN=' + history_length + '&attr=' + attrName;
-      return url;
+        return '/history/device/' + device_id + '/history?lastN=' + history_length + '&attr=' + attrName;
     }
 
     function parserPosition(position){
@@ -27,7 +25,7 @@ class TrackingActions {
           'fiware-service': service,
           'fiware-servicepath': '/'
         })
-      }
+      };
 
       util._runFetch(getUrl(), config)
         .then((reply) => {

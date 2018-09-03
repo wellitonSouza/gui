@@ -1,8 +1,8 @@
-import React from "react";
-import { render } from "react-dom";
-import App from "./App";
+import React from 'react';
+import { render } from 'react-dom';
+import App from './App';
 
-const root = document.createElement("div");
+const root = document.createElement('div');
 document.body.appendChild(root);
 
-render(<App />, document.getElementById('app')); 
+render(<App />, document.getElementById('app'));

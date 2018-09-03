@@ -1,4 +1,4 @@
-import L from 'leaflet'
+import L from 'leaflet';
 import DivIcon from 'react-leaflet-div-icon';
 
 // @TODO Implement it
@@ -15,7 +15,6 @@ import DivIcon from 'react-leaflet-div-icon';
 
 
 class Config {
-
     SinrSignalLevel(value) {
         return null;
         // if (value === undefined) {return grayPin;}
@@ -27,8 +26,7 @@ class Config {
         // if (value > -1){return redPin;}
         // if (value <= -1){return blackPin;}
     }
-
 }
 
-let config = new Config();
+const config = new Config();
 export default config;

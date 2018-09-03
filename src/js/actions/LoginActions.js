@@ -1,11 +1,10 @@
+import { browserHistory } from 'react-router';
 import loginManager from '../comms/login/LoginManager';
-import {browserHistory} from "react-router";
-import toaster from "../comms/util/materialize";
+import toaster from '../comms/util/materialize';
 
-let alt = require('../alt');
+const alt = require('../alt');
 
 class LoginActions {
-
     authenticate(login) {
         return (dispatch) => {
             dispatch();
@@ -16,8 +15,8 @@ class LoginActions {
                 })
                 .catch((error) => {
                     this.loginFailed(error);
-                })
-        }
+                });
+        };
     }
 
     logout() {
@@ -34,11 +33,11 @@ class LoginActions {
                 })
                 .catch((error) => {
                     this.loginFailed(error);
-                })
-        }
+                });
+        };
     }
 
-    updatePassword(data){
+    updatePassword(data) {
         return (dispatch) => {
             dispatch();
             loginManager.updatePassword(data)
@@ -47,15 +46,15 @@ class LoginActions {
                 })
                 .catch((error) => {
                     toaster.error(error);
-                })
-        }
+                });
+        };
     }
 
-    resetPassword(username){
+    resetPassword(username) {
         return (dispatch) => {
             dispatch();
             loginManager.resetPassword(username);
-        }
+        };
     }
 
     loginSuccess(token) {
@@ -65,20 +64,19 @@ class LoginActions {
     loginFailed(error) {
         // console.error('auth failed', error, error.data);
         if (error instanceof TypeError) {
-            return "No connection to server."
+            return 'No connection to server.';
         }
 
         toaster.error(error.message);
         const data = error.data;
         if ((data.status === 401) || (data.status === 403)) {
-            return "Authentication failed.";
-        } else if (data.status === 500) {
-            return "Internal error. Please try again later."
-        } else {
-            return "No connection to server."
+            return 'Authentication failed.';
+        } if (data.status === 500) {
+            return 'Internal error. Please try again later.';
         }
+        return 'No connection to server.';
     }
 }
 
-let _login = alt.createActions(LoginActions, exports);
+const _login = alt.createActions(LoginActions, exports);
 export default _login;

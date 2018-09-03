@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AltContainer from 'alt-container';
 import LoginActions from '../../actions/LoginActions';
@@ -9,10 +9,10 @@ class Recovery extends Component {
         super(props);
 
         this.state = {
-            password: "",
-            confirmPassword: "",
-            invalid: {confirm: "", password: ""},
-            token: ""
+            password: '',
+            confirmPassword: '',
+            invalid: { confirm: '', password: '' },
+            token: '',
         };
 
         this.password = this.password.bind(this);
@@ -21,32 +21,32 @@ class Recovery extends Component {
     }
 
     componentDidMount() {
-        let test = window.location.hash.split('/');
-        let temp = this.state;
+        const test = window.location.hash.split('/');
+        const temp = this.state;
         temp.token = test[test.length - 1];
         this.setState(temp);
         console.log(temp);
     }
 
     validate() {
-        let errorMsg = this.state.invalid;
+        const errorMsg = this.state.invalid;
 
         if (this.state.password.trim().length < 8) {
-            errorMsg.password = "Password must be at least 8 characters";
-            this.setState({invalid: errorMsg});
+            errorMsg.password = 'Password must be at least 8 characters';
+            this.setState({ invalid: errorMsg });
             return false;
-        } else {
-            delete errorMsg.password;
-            this.setState({invalid: errorMsg});
         }
+        delete errorMsg.password;
+        this.setState({ invalid: errorMsg });
+
         if (this.state.confirmPassword !== this.state.password) {
-            errorMsg.confirm = "Password mismatch";
-            this.setState({invalid: errorMsg});
+            errorMsg.confirm = 'Password mismatch';
+            this.setState({ invalid: errorMsg });
             return false;
-        } else {
-            delete errorMsg.confirm;
-            this.setState({invalid: errorMsg});
         }
+        delete errorMsg.confirm;
+        this.setState({ invalid: errorMsg });
+
         return true;
     }
 
@@ -54,16 +54,16 @@ class Recovery extends Component {
         e.preventDefault();
 
         if (this.validate()) {
-            let password = {"passwd": this.state.password, "token": this.state.token};
+            const password = { passwd: this.state.password, token: this.state.token };
             LoginActions.setPassword(password);
         } else {
-            this.setState({invalid: {}})
+            this.setState({ invalid: {} });
         }
     }
 
     handleChange(event) {
         const target = event.target;
-        let state = this.state;
+        const state = this.state;
         state[target.name] = target.value;
         this.setState(state);
         this.validate();
@@ -76,22 +76,21 @@ class Recovery extends Component {
 
         function getClass(field) {
             if (state.invalid.hasOwnProperty(field)) {
-                return "react-validate invalid";
-            } else {
-                return "react-validate";
+                return 'react-validate invalid';
             }
+            return 'react-validate';
         }
 
         return (
             <div className="row m0">
                 <div className="login col s12 p0 bg-left">
-                    <div className="col  s4 p0 left-side">
-                    </div>
+                    <div className="col  s4 p0 left-side" />
                     <div className="col s8 recovery-password-area-right-side bg-right">
                         <div className="col s7">
                             <div className="row">
                                 <div className="col s12  offset-m1">
-                                    <div className="recovery-password-page-title">[&nbsp;&nbsp; New
+                                    <div className="recovery-password-page-title">
+[&nbsp;&nbsp; New
                                         Password &nbsp;&nbsp;]
                                     </div>
                                 </div>
@@ -104,24 +103,42 @@ class Recovery extends Component {
                             <form onSubmit={this.password}>
                                 <div className="row">
                                     <div className="input-field col s12 m6 offset-m2">
-                                        <input id="fld_password" type="password"
-                                               name="password" className={getClass('password')}
-                                               onChange={this.handleChange}
-                                               minLength={6}
-                                               value={this.state.password}/>
-                                        <label htmlFor="fld_password" data-success=""
-                                               data-error={this.state.invalid.password}>Password</label>
+                                        <input
+                                            id="fld_password"
+                                            type="password"
+                                            name="password"
+                                            className={getClass('password')}
+                                            onChange={this.handleChange}
+                                            minLength={6}
+                                            value={this.state.password}
+                                        />
+                                        <label
+                                            htmlFor="fld_password"
+                                            data-success=""
+                                            data-error={this.state.invalid.password}
+                                        >
+Password
+                                        </label>
                                         <i className="material-icons prefix">lock</i>
                                     </div>
                                     <div className="input-field col s12 m6 offset-m2">
-                                        <input id="fld_confirmPassword" type="password"
-                                               name="confirmPassword" className={getClass('confirm')}
-                                               onChange={this.handleChange}
-                                               minLength={6}
-                                               value={this.state.confirmPassword}/>
-                                        <label htmlFor="fld_confirmPassword" data-success=""
-                                               data-error={this.state.invalid.confirm}>Confirm your
-                                            password</label>
+                                        <input
+                                            id="fld_confirmPassword"
+                                            type="password"
+                                            name="confirmPassword"
+                                            className={getClass('confirm')}
+                                            onChange={this.handleChange}
+                                            minLength={6}
+                                            value={this.state.confirmPassword}
+                                        />
+                                        <label
+                                            htmlFor="fld_confirmPassword"
+                                            data-success=""
+                                            data-error={this.state.invalid.confirm}
+                                        >
+Confirm your
+                                            password
+                                        </label>
                                         <i className="material-icons prefix">lock</i>
                                     </div>
                                 </div>
@@ -136,17 +153,23 @@ class Recovery extends Component {
                         </div>
                         <div className="col s5 right-side">
                             <div className="dojot-logo">
-                                <img src={"images/dojot_white.png"}/>
+                                <img src="images/dojot_white.png" />
                             </div>
                             <div className="slogan">
-                                <b>Do IoT</b><br/>Easy to use<br/>
-                                Fast to develop<br/> Safe to deploy
+                                <b>Do IoT</b>
+                                <br />
+Easy to use
+                                <br />
+                                Fast to develop
+                                <br />
+                                {' '}
+Safe to deploy
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 
@@ -159,12 +182,13 @@ class PasswordRecovery extends Component {
         return (
             <ReactCSSTransitionGroup
                 transitionName="first"
-                transitionAppear={true}
+                transitionAppear
                 transitionAppearTimeout={500}
                 transitionEnterTimeout={500}
-                transitionLeaveTimeout={500}>
+                transitionLeaveTimeout={500}
+            >
                 <AltContainer store={LoginStore}>
-                    <Recovery/>
+                    <Recovery />
                 </AltContainer>
             </ReactCSSTransitionGroup>
         );

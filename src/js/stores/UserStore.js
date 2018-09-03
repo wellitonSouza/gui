@@ -1,7 +1,7 @@
-let alt = require('../alt');
-let UserActions = require('../actions/UserActions');
-
 import util from '../comms/util';
+
+const alt = require('../alt');
+const UserActions = require('../actions/UserActions');
 
 class UserStore {
     constructor() {
@@ -22,7 +22,7 @@ class UserStore {
             handleUpdateSingle: UserActions.UPDATE_SINGLE,
 
             handleTriggerRemoval: UserActions.TRIGGER_REMOVAL,
-            handleRemoveSingle: UserActions.REMOVE_SINGLE
+            handleRemoveSingle: UserActions.REMOVE_SINGLE,
         });
     }
 
@@ -38,8 +38,8 @@ class UserStore {
     handleUpdateSingle(user) {
         for (let i = 0; i < this.users.length; i++) {
             if (this.users[i].id == user.id) {
-                let newUser = JSON.parse(JSON.stringify(user))
-                newUser.password = ""
+                const newUser = JSON.parse(JSON.stringify(user));
+                newUser.password = '';
                 this.users[i] = newUser;
             }
         }
@@ -60,9 +60,7 @@ class UserStore {
 
     handleRemoveSingle(id) {
         this.loading = false;
-        this.users = this.users.filter(function (e) {
-            return e.id != id;
-        })
+        this.users = this.users.filter(e => e.id != id);
     }
 
     handleInsertUser(user) {
@@ -87,5 +85,5 @@ class UserStore {
     }
 }
 
-let _store = alt.createStore(UserStore, 'UserStore');
+const _store = alt.createStore(UserStore, 'UserStore');
 export default _store;

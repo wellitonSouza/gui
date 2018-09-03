@@ -1,16 +1,16 @@
-var alt = require('../alt');
-var DeviceActions = require('../actions/DeviceActions');
+const alt = require('../alt');
+const DeviceActions = require('../actions/DeviceActions');
 
 class DeviceMeta {
-  constructor() {
-    this.devices = {};
+    constructor() {
+        this.devices = {};
 
-    this.bindListeners({
-      handleUpdateDeviceList: DeviceActions.UPDATE_DEVICES,
-    });
-  }
+        this.bindListeners({
+            handleUpdateDeviceList: DeviceActions.UPDATE_DEVICES,
+        });
+    }
 
-/*
+    /*
 *
 * It's necessary discuss about status of a device.
 *
@@ -27,26 +27,26 @@ class DeviceMeta {
   }
 */
 
-  handleUpdateDeviceList(devices) {
-    this.devices = {};
-    for (let idx = 0; idx < devices.length; idx++) {
-      //devices[idx]._status = this.parseStatus(devices[idx]);
-      if (devices[idx].attrs == undefined) {
-        devices[idx].attrs = [];
-      }
-      if (devices[idx].static_attrs == undefined) {
-        devices[idx].static_attrs = [];
-      }
-      if (devices[idx].tags == undefined) {
-        devices[idx].tags = [];
-      }
-      this.devices[devices[idx].id] = JSON.parse(JSON.stringify(devices[idx]))
-    }
+    handleUpdateDeviceList(devices) {
+        this.devices = {};
+        for (let idx = 0; idx < devices.length; idx++) {
+            // devices[idx]._status = this.parseStatus(devices[idx]);
+            if (devices[idx].attrs == undefined) {
+                devices[idx].attrs = [];
+            }
+            if (devices[idx].static_attrs == undefined) {
+                devices[idx].static_attrs = [];
+            }
+            if (devices[idx].tags == undefined) {
+                devices[idx].tags = [];
+            }
+            this.devices[devices[idx].id] = JSON.parse(JSON.stringify(devices[idx]));
+        }
 
-    this.error = null;
-    this.loading = false;
-  }
+        this.error = null;
+        this.loading = false;
+    }
 }
 
-var _store =  alt.createStore(DeviceMeta, 'DeviceMeta');
+const _store = alt.createStore(DeviceMeta, 'DeviceMeta');
 export default _store;

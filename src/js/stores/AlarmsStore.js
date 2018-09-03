@@ -1,5 +1,5 @@
-import alt from '../alt'
-import alarmsActions from '../actions/AlarmsActions'
+import alt from '../alt';
+import alarmsActions from '../actions/AlarmsActions';
 
 class AlarmStore {
     constructor() {
@@ -15,22 +15,21 @@ class AlarmStore {
             handleInsertCurrentAlarms: alarmsActions.insertCurrentAlarms,
             handleInsertHistoryAlarms: alarmsActions.insertHistoryAlarms,
             handleFailure: alarmsActions.alarmsFailed,
-            handleLoad: alarmsActions.alarmsLoad
+            handleLoad: alarmsActions.alarmsLoad,
         });
     }
 
     countMetaAttributes(alarmList) {
-        let meta = {
+        const meta = {
             Warning: 0,
             Minor: 0,
             Major: 0,
-            Critical: 0
+            Critical: 0,
         };
-        for (let alarm in alarmList.alarms) {
+        for (const alarm in alarmList.alarms) {
             meta[alarmList.alarms[alarm].severity] += 1;
         }
         return meta;
-
     }
 
     handleFetchCurrentAlarmsList() {
@@ -67,5 +66,5 @@ class AlarmStore {
     }
 }
 
-let _store = alt.createStore(AlarmStore, 'AlarmStore');
+const _store = alt.createStore(AlarmStore, 'AlarmStore');
 export default _store;

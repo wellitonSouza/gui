@@ -1,9 +1,9 @@
-var alt = require('../alt');
+const alt = require('../alt');
 
 class MenuActions {
-  toggleLeft() {
-    return true;
-  }
+    toggleLeft() {
+        return true;
+    }
 }
 
 alt.createActions(MenuActions, exports);

@@ -10,5 +10,5 @@ export default function notFound(props) {
                 </div>
             </div>
         </div>
-    )
+    );
 }

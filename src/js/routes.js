@@ -9,6 +9,7 @@ import { Alarms } from './views/alarms';
 import Todo from './views/utils/todo';
 import NotFound from './views/utils/404';
 
+import TemplatesRefactor from './views/templatesRefactor'
 export default (
     <Router history={hashHistory}>
         <Route path="/" component={Full}>
@@ -25,6 +26,7 @@ export default (
                 <Route path="template" name="Templates">
                     <IndexRoute component={TemplateList}/>
                     <Route path="list" name="Template list" component={TemplateList}/>
+                    <Route path="refactor" name="Template Refactor" component={TemplatesRefactor}/>
                     <Route path="new" name="" component={NewTemplate}/>
                     <Route path="id/:templateId" name="Template detail" component={TemplateList}/>
                     <Route path="id/:template/edit" name="Template detail" component={NewTemplate}/>

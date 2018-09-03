@@ -1,8 +1,15 @@
 .template{
-  &.full-height
-  {
+  &.full-height {
     max-height: 648px;
   }
+}
+
+.new-template-wrapper{
+  padding-top: 20px;
+}
+
+.pagination-wrapper{
+  padding-top: 10px;
 }
 
 @keyframes opa-hei-76px {

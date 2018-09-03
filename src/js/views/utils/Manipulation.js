@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { DojotBtnCircle, DojotButton } from "../../components/DojotButton";
 import ReactPaginate from 'react-paginate';
 import MaterialSelect from '../../components/MaterialSelect';
@@ -82,8 +81,9 @@ class Pagination extends Component {
   render() {
     console.log("Render Pagination Component ", this.props);
 
-    if (!this.props.pagination || !this.props.show_pagination || !this.props.pagination.total)
+    if (!this.props.pagination || !this.props.show_pagination || !this.props.pagination.total){
       return <div className="col s7 p0" ></div>;
+    }
 
     let pageCount = this.props.pagination.total;
     let currentPage = this.props.pagination.page - 1; 
@@ -115,6 +115,60 @@ class Pagination extends Component {
   }
 }
 
+class NewPagination extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      page_size: 6,
+      page_num: 1
+    }
+    this.handlePageClick = this.handlePageClick.bind(this);
+    this.changeNelements = this.changeNelements.bind(this);
+  }
+
+  handlePageClick(data) {
+    let state = this.state;
+    state.page_num = data.selected + 1;
+    this.setState(state);
+    this.props.ops.whenUpdatePagination(state);
+  }
+
+  changeNelements(event) {
+    let state = this.state;
+    state.page_size = event.target.value;
+    state.page_num = 1; // we need restart to the first page 
+    this.setState(state);
+    this.props.ops.whenUpdatePagination(state);
+  }
+
+  render() {
+
+    if (!this.props.pagination || !this.props.show_pagination || !this.props.pagination.total){
+      return <div className="pagination-wrapper" ></div>;
+    }
+
+    let pageCount = this.props.pagination.total;
+    let currentPage = this.props.pagination.page - 1; 
+
+    return (
+      <div className="pagination-wrapper">
+        <div className="elements_page_div">
+          <MaterialSelect new_style={true} label="# per page" value={this.state.elements_page} onChange={this.changeNelements}>
+            <option key="six" value="6">6</option>
+            <option key="twelve" value="12">12</option>
+            <option key="eighteen" value="18">18</option>
+            <option key="thirtysix" value="36">36</option>
+            <option key="sixtyfour" value="64">64</option>
+          </MaterialSelect>
+        </div>
+        <div className="pagination_div">
+          <ReactPaginate previousLabel={"previous"} nextLabel={"next"} pageCount={pageCount} marginPagesDisplayed={1} pageRangeDisplayed={3} forcePage={currentPage} onPageChange={this.handlePageClick} containerClassName={"pagination"} subContainerClassName={"pages pagination"} activeClassName={"active"} />
+        </div>
+      </div>
+    )
+  }
+}
 
 
 class Filter extends Component {
@@ -218,4 +272,4 @@ class SimpleFilter extends Component {
 }
 
 // export default Filter;
-export { SimpleFilter, Filter, Pagination, FilterLabel, GenericOperations };
+export { SimpleFilter, Filter, Pagination, FilterLabel, GenericOperations, NewPagination};

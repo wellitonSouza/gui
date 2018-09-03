@@ -88,6 +88,16 @@
 
     }
   }
+  .content-header{
+    display: flex;
+    width: 80%;
+    justify-content: space-between;
+    position: fixed;
+    right: 0px;
+    top: 45px;
+    padding-right: 70px;
+    padding-left: 20px;
+  }
 
 
 }

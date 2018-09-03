@@ -1,9 +1,8 @@
 /* The CSS */
-.card-select-2 
-{
+.card-select-2 {
   position:relative;
     
-  select{
+  select {
     z-index:20;
     padding: 0px;
     -webkit-box-shadow: 0 3px 0 #ccc, 0 -1px #fff inset;
@@ -19,9 +18,8 @@
     cursor: pointer;
     top: -14px;
     position: relative;
-    
-    option
-    {
+    height: 40px;
+    option {
       padding:10px;
     }
   }

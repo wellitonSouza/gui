@@ -13,7 +13,6 @@ class Navbar extends Component {
     super(props);
 
     this.state = {
-      // open: false,
       page: '',
       page_icon: false,
     };
@@ -22,18 +21,8 @@ class Navbar extends Component {
     this.gravatar = "https://www.gravatar.com/avatar/" + btoa(this.props.user.username) + "?d=identicon";
   }
 
-  // changePage(page,icon) {
-  //   console.log("new page/icon",page,icon);
-  //   this.setState({page: page, page_icon:icon});
-  // }
-
   handleClick(e) {
     e.preventDefault();
-    // if (this.state.open === true) {
-    //   this.setState({open: false})
-    // } else {
-    //   this.setState({open: true})
-    // }
     this.props.toggleSidebar();
   }
 
@@ -47,23 +36,14 @@ class Navbar extends Component {
       <nav className="nav outer-header">
         <div className="nav-line">
           <div className="nav-status">
-            {/* TODO: add props for badge indicator */}
-            { /*<div className="status-item status-icon">
-              <i className="fa fa-spinner fa-pulse fa-fw"></i>
-            </div> */
-            }
             <div className="status-item status-icon">
                 {this.state.page} {this.state.page_icon}
             </div>
             <div className="status-item user-area">
-                {/*<div className="user-pic">
-                  <img src={this.gravatar} />
-                </div>*/}
               <div className="user-name clickable" onClick={this.handleClick}>{(this.props.user.name ? this.props.user.name : this.props.user.username)}</div>
                 <div className="clickable" onClick={this.handleClick} title="Login details">
                 {this.props.open === false &&  <i className="fa fa-caret-down line-normal center-caret" />}
                 {this.props.open === true && <i className="fa fa-caret-up line-normal center-caret" />}
-
                 </div>
             </div>
           </div>
@@ -114,9 +94,6 @@ class RightSideBar extends Component {
 
     return <div className="">
         <div className="rightsidebarchild">
-          {/* <div className="col s12 m12 logout-page-photo">
-            <img src={gravatar} />
-          </div> */}
           <div className="logout-page-header">
             <div className="col s12 m12">
               <div className="logout-page-subtitle">Logged as</div>
@@ -163,15 +140,12 @@ class RightSideBar extends Component {
           <div className="horizontal-line" />
 
           <div className="logout-page-buttons">
-            {/* <a className="waves-effect waves-light btn-flat btn-ciano" onClick={this.dismiss}>dismiss</a> */}
             <div className="btn-logout" onClick={this.logout}>
               Logout
             </div>
           </div>
         </div>
         {this.state.open_change_password_modal ? <ChangePasswordModal openChangePasswordModal={this.openChangePasswordModal} toggleSidebar={this.props.toggleSidebar} /> : <div />}
-        {/* <div className="rightsidebar" onClick={this.dismiss}>
-        </div> */}
       </div>;
   }
 }
@@ -250,12 +224,7 @@ class LeftSidebar extends Component {
       { image: 'user', target: "/auth", iconClass: "fa fa-unlock-alt", label: "auth", desc: "User and permissions management", children: [
         { target: "/auth/user", iconClass: "", label: "users", title: "Users list"},
         { target: "/auth/permissions", iconClass: "", label: "permissions", title: "Permissions list"}
-      ]}/*,
-      { image: 'settings', target: "/deploy", iconClass: "fa fa-cogs", label: "deploy", desc: "Application and plugin management", children: [
-        { target: "/deploy/plugins", iconClass: "", label: "plugins", title: "Plugins list"},
-        { target: "/deploy/applications", iconClass: "", label: "applications", title: "Applications list"},
-        { target: "/alarm?q=deploy", iconClass: "", label: "alarm", title: "Alarms list"},
-      ]}*/
+      ]}
     ];
 
     return (
@@ -333,19 +302,21 @@ class Full extends Component {
 
   render() {
     return (
-      <span>
-
+      <div>
         <AltContainer store={LoginStore}>
 
-      {(this.state.user_sidebar) ? (
-            <RightSideBar toggleSidebar={this.toggleUserSidebar} />
-          ): ( <div></div> )}
+          {
+            (this.state.user_sidebar) 
+              ?  <RightSideBar toggleSidebar={this.toggleUserSidebar} />
+              :  <div></div> 
+          }
+          
           <Navbar toggleSidebar={this.toggleUserSidebar} open={this.state.user_sidebar}/>
         </AltContainer>
         <AltContainer store={MenuStore}>
           <Content router={this.props.router}>{this.props.children}</Content>
         </AltContainer>
-      </span>
+      </div>
     );
   }
 }

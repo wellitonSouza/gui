@@ -22,6 +22,7 @@ module.exports = {
     filename: "js/[name].js",
     path: path.resolve(__dirname, "dist")
   },
+  devtool: 'inline-source-map',
   devServer: {
     port: 8888,
     host: "0.0.0.0",
@@ -49,8 +50,8 @@ module.exports = {
         test: /\.(css|scss)$/,
         use: [
           { loader: "style-loader" },
-          { loader: "css-loader", options: { sourceMap: false, url: false } },
-          { loader: "sass-loader", options: { sourceMap: false, url: false } }
+          { loader: "css-loader", options: { sourceMap: true, url: false } },
+          { loader: "sass-loader", options: { sourceMap: true, url: false } }
         ]
       },
       {

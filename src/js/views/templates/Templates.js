@@ -96,7 +96,7 @@ class ImageModal extends Component {
                         <div className="card-size card-size-clear">
                             <div className="attr-area">
                                 {images.map((img, idx) => (
-                                        <ImageCard updateDefaultVersion={this.props.updateDefaultVersion} template_id={this.props.template.id} image={img} key={idx} default_version={default_version}/>
+                                        <ImageCard updateDefaultVersion={this.props.updateDefaultVersion} template_id={this.props.template.id} image={img} key={idx} default_version={default_version} />
                                 ))}
                                 {this.state.creating === false && <div className="image-card image-card-attributes">
                                     <div onClick={this.createNewImage} className="lst-blockquote col s12">

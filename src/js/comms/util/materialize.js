@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Materialize from 'materialize-css';
 
 
@@ -19,7 +20,7 @@ class MaterialToast {
     }
 
     custom(options) {
-        console.log('Materialize.toast', options);
+        // console.log('Materialize.toast', options);
         Materialize.toast(options.html, options.displayLength, options.className);
         // , completeCallback
     }

@@ -1,3 +1,4 @@
+/* eslint-disable */
 const alt = require('../alt');
 const DeviceActions = require('../actions/DeviceActions');
 
@@ -106,7 +107,7 @@ class DeviceStore {
     }
 
     handleUpdateDeviceList(res) {
-        console.log('handleUpdateDeviceList', res);
+        // console.log('handleUpdateDeviceList', res);
         this.pagination = res.pagination;
         const devices = res.devices;
         this.devices = {};

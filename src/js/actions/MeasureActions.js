@@ -1,4 +1,4 @@
-import measureManager from '../comms/measures/MeasureManager';
+/* eslint-disable */
 import LoginStore from '../stores/LoginStore';
 import util from '../comms/util';
 

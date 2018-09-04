@@ -1,6 +1,6 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import AltContainer from 'alt-container';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Toggle from 'material-ui/Toggle';
 import DeviceStore from '../../stores/DeviceStore';
@@ -13,7 +13,7 @@ import { DeviceMap } from './DeviceMap';
 import { DeviceCardList } from './DeviceCard';
 import util from '../../comms/util';
 import {
-    Filter, Pagination, FilterLabel, GenericOperations,
+    Pagination, FilterLabel, GenericOperations,
 } from '../utils/Manipulation';
 
 
@@ -110,7 +110,7 @@ class DeviceOperations extends GenericOperations {
             delete res.templates;
             res.template = this.filterParams.templates;
         }
-        console.log('fetching: ', res, 'all templates ');
+        // console.log('fetching: ', res, 'all templates ');
         DeviceActions.fetchDevices.defer(res, cb);
     // }
     }
@@ -133,7 +133,7 @@ class Devices extends Component {
 
     componentDidMount() {
     // DeviceActions.fetchDevices.defer();
-        console.log('devices: componentDidMount');
+        // console.log('devices: componentDidMount');
         this.dev_opex._fetch();
         // Realtime
         const socketio = require('socket.io-client');
@@ -147,7 +147,7 @@ class Devices extends Component {
                     init(reply.token);
                 })
                 .catch((error) => {
-                    console.log('Failed!', error);
+                    // console.log('Failed!', error);
                 });
         }
 
@@ -155,13 +155,13 @@ class Devices extends Component {
             device_list_socket = socketio(target, { query: `token=${token}`, transports: ['polling'] });
 
             device_list_socket.on('all', (data) => {
-                console.log('received socket information:', data);
+                // console.log('received socket information:', data);
                 MeasureActions.appendMeasures(data);
                 DeviceActions.updateStatus(data);
             });
 
             device_list_socket.on('error', (data) => {
-                console.log('socket error', data);
+                // console.log('socket error', data);
                 if (device_list_socket !== null) device_list_socket.close();
                 // getWsToken();
             });
@@ -185,7 +185,7 @@ class Devices extends Component {
 
     toggleDisplay() {
         const newDisplay = !this.state.displayList;
-        console.log(' toggleDisplay', newDisplay);
+        // console.log(' toggleDisplay', newDisplay);
         // reload devices for maps
         if (!newDisplay) this.dev_opex.setFilterToMap();
         else this.dev_opex.setDefaultFilter();
@@ -197,7 +197,7 @@ class Devices extends Component {
 
 
     render() {
-        console.log('Loading Devices Component.');
+        // console.log('Loading Devices Component.');
 
         const detail = 'detail' in this.props.location.query
             ? this.props.location.query.detail

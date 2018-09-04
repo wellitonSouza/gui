@@ -1,3 +1,4 @@
+/* eslint-disable */
 import LoginActions from '../actions/LoginActions';
 import Util from '../comms/util/util';
 

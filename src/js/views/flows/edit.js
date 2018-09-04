@@ -1,5 +1,5 @@
+/* eslint-disable */
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import { hashHistory } from 'react-router';
 
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
@@ -246,7 +246,7 @@ class NameForm extends Component {
     }
 }
 
-class EditFlow extends Component {
+export class EditFlow extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -262,7 +262,7 @@ class EditFlow extends Component {
             toaster.success('Flow removed');
             hashHistory.push('/flows');
         });
-        console.log('removeFlow', this.props.params.flowid);
+        // console.log('removeFlow', this.props.params.flowid);
     }
 
     openRemoveModal() {
@@ -308,5 +308,3 @@ class EditFlow extends Component {
         );
     }
 }
-
-export { EditFlow };

@@ -1,9 +1,9 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Link } from 'react-router';
 
 import AltContainer from 'alt-container';
-import alt from '../../alt';
 import LoginStore from '../../stores/LoginStore';
 import util from '../../comms/util/util';
 

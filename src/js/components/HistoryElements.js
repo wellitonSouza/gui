@@ -1,16 +1,13 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import { Line } from 'react-chartjs-2';
 import Script from 'react-load-script';
 import util from '../comms/util/util';
 import { PositionRenderer } from '../views/devices/DeviceMap';
-import { Loading } from './Loading.js';
+import { Loading } from './Loading';
 
 
 class Graph extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         const labels = [];
         const values = [];

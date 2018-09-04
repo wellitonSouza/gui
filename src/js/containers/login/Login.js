@@ -1,7 +1,6 @@
+/* eslint-disable */
 import React, { Component } from 'react';
-import { Link } from 'react-router';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import ReactDOM from 'react-dom';
 import AltContainer from 'alt-container';
 
 import LoginActions from '../../actions/LoginActions';
@@ -29,10 +28,6 @@ class Content extends Component {
         this.openPasswordModal = this.openPasswordModal.bind(this);
         this.handlePasswordModal = this.handlePasswordModal.bind(this);
         this.try_login = false;
-    }
-
-    componentDidMount() {
-        const callback = this.handleChange.bind(this);
     }
 
     validate(user, passwd) {

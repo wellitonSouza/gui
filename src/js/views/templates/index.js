@@ -1,4 +1,4 @@
-import { TemplateList } from './Templates.js';
-import { NewTemplate } from './new.js';
+import { TemplateList } from './Templates';
+import { NewTemplate } from './new';
 
-module.exports = { TemplateList, NewTemplate };
+export { TemplateList, NewTemplate };

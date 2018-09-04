@@ -1,4 +1,4 @@
-
+/* eslint-disable */
 import deviceManager from '../comms/devices/DeviceManager';
 import templateManager from '../comms/templates/TemplateManager';
 

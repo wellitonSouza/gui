@@ -1,39 +1,9 @@
+/* eslint-disable */
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import {
-    DojotBtnRedCircle,
     DojotBtnClassic,
 } from './DojotButton';
-import detail from '../views/devices/detail';
 import LoginActions from '../actions/LoginActions';
-
-
-class ConfirmModal extends Component {
-    constructor(props) {
-        super(props);
-
-        this.openModal = this.openModal.bind(this);
-        this.confirm = this.confirm.bind(this);
-    }
-
-    openModal(statusModal) {
-        this.props.openModal(statusModal);
-    }
-
-    confirm(event) {
-        event.preventDefault();
-        this.props.confirm(event);
-    }
-
-    render() {
-        const title = 'Confirm Operation';
-        const message = 'Are you confirm this operation';
-        return (
-            <GenericModal title={title} first_message={message} btnLabel="Confirm" openModal={this.openModal} click={this.confirm} />
-        );
-    }
-}
-
 
 class RemoveModal extends Component {
     constructor(props) {

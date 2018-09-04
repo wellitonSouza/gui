@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { browserHistory } from 'react-router';
 import loginManager from '../comms/login/LoginManager';
 import toaster from '../comms/util/materialize';

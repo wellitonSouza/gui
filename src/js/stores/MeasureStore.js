@@ -1,3 +1,4 @@
+/* eslint-disable */
 import util from '../comms/util';
 
 const alt = require('../alt');
@@ -75,7 +76,7 @@ class MeasureStore {
                                         position: parserPosition(measureData.attrs[label]),
                                         timestamp: util.iso_to_date(now),
                                     };
-                                    console.log(this.tracking);
+                                    // console.log(this.tracking);
                                     this.tracking[measureData.metadata.deviceid].unshift(trackingStructure);
                                 }
                             } else {

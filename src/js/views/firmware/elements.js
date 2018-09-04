@@ -1,19 +1,8 @@
+/* eslint-disable */
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import AltContainer from 'alt-container';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import { Link } from 'react-router';
 import Dropzone from 'react-dropzone';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import ImageStore from '../../stores/ImageStore';
 import ImageActions from '../../actions/ImageActions';
-import TemplateStore from '../../stores/TemplateStore';
-import TemplateActions from '../../actions/TemplateActions';
-import { NewPageHeader } from '../../containers/full/PageHeader';
-import { DojotBtnLink } from '../../components/DojotButton';
 import util from '../../comms/util';
-import LoginStore from '../../stores/LoginStore';
-import { Loading } from '../../components/Loading';
 
 // UI elements
 
@@ -43,7 +32,7 @@ class UploadDialog extends Component {
 
     save(event) {
         event.preventDefault();
-        console.log('save', this.state.files);
+        // console.log('save', this.state.files);
 
         if (this.state.files.length == 0) {
             toaster.warning('No image added.');
@@ -216,7 +205,7 @@ class ImageCard extends Component {
     }
 
     closeUploadModal() {
-        console.log('closeUploadModal');
+        // console.log('closeUploadModal');
         this.setState({ modal_opened: false });
     }
 
@@ -247,8 +236,8 @@ class ImageCard extends Component {
     }
 
     componentDidMount() {
-        console.log('this.props.image.fw_version', this.props.image.fw_version);
-        console.log('this.props.default_version', this.props.default_version);
+        // console.log('this.props.image.fw_version', this.props.image.fw_version);
+        // console.log('this.props.default_version', this.props.default_version);
         if (this.props.image.fw_version == this.props.default_version && this.props.default_version) this.setState({ starred: true });
     }
 

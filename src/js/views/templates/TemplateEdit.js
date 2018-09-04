@@ -1,3 +1,4 @@
+/* eslint-disable */
 class ListItem extends Component {
     constructor(props) {
         super(props);

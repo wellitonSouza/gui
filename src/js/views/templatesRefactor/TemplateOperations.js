@@ -1,3 +1,4 @@
+/* eslint-disable */
 import TemplateActions from '../../actions/TemplateActions';
 import { GenericOperations } from '../utils/Manipulation';
 
@@ -11,7 +12,10 @@ class TemplateOperations extends GenericOperations {
 
 
     whenUpdatePagination(config) {
-        for (const key in config) this.paginationParams[key] = config[key];
+        for (const key in config) {
+            this.paginationParams[key] = config[key];
+        }
+                   
         this._fetch();
     }
 

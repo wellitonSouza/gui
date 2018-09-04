@@ -1,7 +1,6 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import AltContainer from 'alt-container';
-import { NewPageHeader } from '../../containers/full/PageHeader';
 import { Loading } from '../../components/Loading';
 import AlarmStore from '../../stores/AlarmsStore';
 import AlarmAction from '../../actions/AlarmsActions';

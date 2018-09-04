@@ -1,7 +1,8 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import {
-    Map, Marker, ImageOverlay, TileLayer, Tooltip, ScaleControl, Polyline,
+    Map, Marker, ImageOverlay, Tooltip, ScaleControl, Polyline,
 } from 'react-leaflet';
 import L from 'leaflet';
 // import * as L from "leaflet";
@@ -104,7 +105,7 @@ class PositionRenderer extends Component {
     }
 
     render() {
-        console.log('PropsPositionRenderer: ', this.props);
+        // console.log('PropsPositionRenderer: ', this.props);
         function getPin(device) {
             if (device.hasOwnProperty('unique_key')) {
                 return trackingPin;
@@ -311,7 +312,7 @@ class DeviceMap extends Component {
     }
 
     toggleVisibility(device_id) {
-        console.log('toggleVisibility', device_id);
+        // console.log('toggleVisibility', device_id);
         const displayMap = this.state.displayMap;
         displayMap[device_id] = !displayMap[device_id];
         this.setState({ displayMap });

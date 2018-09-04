@@ -1,38 +1,29 @@
-import React, { Component } from 'react';
+/* eslint-disable */
+import React from 'react';
 import AltContainer from 'alt-container';
 import { Router, hashHistory } from 'react-router';
 import LoginStore from '../../stores/LoginStore';
-import Login from './Login.js';
 import routes from '../../outsideRoutes';
 
-function GatekeeperRenderer(props) {
-    if (props.authenticated) {
+const GatekeeperRenderer = ({authenticated, children}) => {
+    if (authenticated) {
         return (
             <span>
-                {props.children}
+                {children}
             </span>
         );
     }
     return (
         <Router routes={routes} history={hashHistory} />
-    // <Login />
     );
-}
+};
 
-class Gatekeeper extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return (
-            <AltContainer store={LoginStore}>
-                <GatekeeperRenderer key={localStorage.jwt}>
-                    {this.props.children}
-                </GatekeeperRenderer>
-            </AltContainer>
-        );
-    }
-}
+const Gatekeeper = ({ children }) => (
+    <AltContainer store={LoginStore}>
+        <GatekeeperRenderer key={localStorage.jwt}>
+            {children}
+        </GatekeeperRenderer>
+    </AltContainer>
+);
 
 export default Gatekeeper;

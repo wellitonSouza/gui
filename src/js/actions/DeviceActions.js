@@ -1,3 +1,4 @@
+/* eslint-disable */
 import deviceManager from '../comms/devices/DeviceManager';
 import toaster from '../comms/util/materialize';
 

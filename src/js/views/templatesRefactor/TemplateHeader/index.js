@@ -1,32 +1,36 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-import { NewPagination, FilterLabel } from '../../utils/Manipulation';
+import { NewPagination } from '../../utils/Manipulation';
 import { CustomHeader } from '../../../containers/full/PageHeader';
-import TemplateFilter from './TemplateFilter';
+// import TemplateFilter from './TemplateFilter';
 
-const NewTempĺate = props => (
-    <div className="new-template-wrapper">
-        <div className="searchBtn" title="Show search bar" onClick={props.toggleSearchBar}>
-            <i className="fa fa-search" />
-        </div>
-        <div onClick={props.addTemplate} className="new-btn-flat red" title="Create a new template">
-                New Template
-            <i className="fa fa-plus" />
-        </div>
+
+const TemplateHeader = ({
+    tempOpex, pagination, toggleSearchBar, addTemplate,
+}) => (
+    <div>
+        <CustomHeader title="Templates" subtitle="Templates" icon="template">
+            <NewPagination showPagination ops={tempOpex} pagination={pagination} />
+            <div className="new-template-wrapper">
+                <div className="searchBtn" tabIndex={0} title="Show search bar" onClick={() => toggleSearchBar()} role="button" onKeyPress={toggleSearchBar}>
+                    <i className="fa fa-search" />
+                </div>
+                <div onClick={() => addTemplate()} tabIndex={0} className="new-btn-flat red" role="button" title="Create a new template" onKeyPress={addTemplate}>
+                        New Template
+                    <i className="fa fa-plus" />
+                </div>
+            </div>
+        </CustomHeader>
     </div>
 );
 
-const TemplateHeader = (props) => {
-    console.log('TemplateHeader', props);
-    return (
-        <div>
-            <CustomHeader title="Templates" subtitle="Templates" icon="template">
-                <NewPagination show_pagination ops={props.tempOpex} {...props} />
-                <NewTempĺate {...props} />
-            </CustomHeader>
-
-        </div>
-    );
+TemplateHeader.propTypes = {
+    tempOpex: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+    pagination: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+    toggleSearchBar: PropTypes.func.isRequired,
+    addTemplate: PropTypes.func.isRequired,
 };
+
 
 export default TemplateHeader;

@@ -18,11 +18,9 @@ require('font-awesome/scss/font-awesome.scss');
 require('../sass/app.scss');
 
 const App = () => (
-    <div>
-        <Gatekeeper>
-            <Router routes={routes} history={hashHistory} />
-        </Gatekeeper>
-    </div>
+    <Gatekeeper>
+        <Router routes={routes} history={hashHistory} />
+    </Gatekeeper>
 );
 
 export default hot(module)(App);

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class TemplateFilter extends Component {
     constructor(props) {
@@ -12,37 +13,41 @@ class TemplateFilter extends Component {
         this.doSearch = this.doSearch.bind(this);
     }
 
-    updateQuery(element) {
-        const qy = this.state.query;
-        qy[element.label] = element.value;
-        if (element.value.trim() == '') delete qy[element.label];
-        this.setState({ query: qy });
-    }
-
-    doSearch() {
-        this.props.ops.whenUpdateFilter(this.state.query);
-    }
-
-    handleChange(event) {
-        event.preventDefault();
-        const f = event.target.name;
-        const v = event.target.value;
-        this.updateQuery({ label: f, value: v });
-    }
-
     componentDidMount() {
 
     }
 
-    render() {
-        const Fields = this.props.fields;
+    updateQuery(element) {
+        const { query } = this.state;
+        query[element.label] = element.value;
+        if (element.value.trim() === '') delete query[element.label];
+        this.setState({ query });
+    }
 
+    doSearch() {
+        const { ops } = this.props;
+        const { query } = this.state;
+        ops.whenUpdateFilter(query);
+    }
+
+    handleChange(event) {
+        event.preventDefault();
+        const { name, value } = event.target;
+        this.updateQuery({ label: name, value });
+    }
+
+
+    render() {
         return (
             <div>
-            filterBar
+                filterBar
             </div>
         );
     }
 }
+
+TemplateFilter.propTypes = {
+    ops: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+};
 
 export default TemplateFilter;

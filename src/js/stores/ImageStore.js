@@ -1,3 +1,4 @@
+/* eslint-disable */
 const alt = require('../alt');
 const ImageActions = require('../actions/ImageActions');
 
@@ -84,14 +85,14 @@ class ImageStore {
     }
 
     handleUpdateImageList(images) {
-        console.log('images', images);
+        // console.log('images', images);
         // let images = images;
         this.images = {};
         for (let idx = 0; idx < images.length; idx++) {
             this.images[images[idx].id] = JSON.parse(JSON.stringify(images[idx]));
             this.images[images[idx].id].has_image = this.images[images[idx].id].confirmed;
         }
-        console.log('handleUpdateImageList', this.images);
+        // console.log('handleUpdateImageList', this.images);
         // this.images = images;
         this.error = null;
         this.loading = false;

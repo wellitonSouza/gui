@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Copyright JS Foundation and other contributors, http://js.foundation
  *
@@ -12,224 +13,227 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * */
-const RED = {};
+ **/
+var RED = {};
 
-RED.events = (function () {
-    const handlers = {};
+RED.events = (function() {
+     var handlers = {};
 
-    function on(evt, func) {
-        handlers[evt] = handlers[evt] || [];
-        handlers[evt].push(func);
-    }
-    function off(evt, func) {
-        const handler = handlers[evt];
-        if (handler) {
-            for (let i = 0; i < handler.length; i++) {
-                if (handler[i] === func) {
-                    handler.splice(i, 1);
-                    return;
-                }
-            }
-        }
-    }
-    function emit(evt, arg) {
-        if (handlers[evt]) {
-            for (let i = 0; i < handlers[evt].length; i++) {
-                try {
-                    handlers[evt][i](arg);
-                } catch (err) {
-                    console.log(`RED.events.emit error: [${evt}] ${err.toString()}`);
-                    console.log(err);
-                }
-            }
-        }
-    }
+     function on(evt,func) {
+         handlers[evt] = handlers[evt]||[];
+         handlers[evt].push(func);
+     }
+     function off(evt,func) {
+         var handler = handlers[evt];
+         if (handler) {
+             for (var i=0;i<handler.length;i++) {
+                 if (handler[i] === func) {
+                     handler.splice(i,1);
+                     return;
+                 }
+             }
+         }
+     }
+     function emit(evt,arg) {
+         if (handlers[evt]) {
+             for (var i=0;i<handlers[evt].length;i++) {
+                 try {
+                     handlers[evt][i](arg);
+                 } catch(err) {
+                     console.log("RED.events.emit error: ["+evt+"] "+(err.toString()));
+                     console.log(err);
+                 }
+             }
+
+         }
+     }
+     return {
+         on: on,
+         off: off,
+         emit: emit
+     }
+ })();
+
+RED.i18n = (function() {
     return {
-        on,
-        off,
-        emit,
-    };
-}());
-
-RED.i18n = (function () {
-    return {
-        init(accessToken, done) {
+        init: function(accessToken, done) {
             i18next
-                .use(i18nextXHRBackend)
-                .init({
-                    fallbackLng: 'en',
-                    ns: ['editor', 'node-red', 'jsonata', 'infotips'],
-                    defaultNS: 'editor',
-                    backend: {
-                        loadPath(lngs, ns) {
-                            return `/mashup/locales/${ns}`;
-                        },
-                        withCredentials: true,
-                        customHeaders: { Authorization: accessToken },
-                    },
-                    interpolation: {
-                        prefix: '__',
-                        suffix: '__',
-                    },
-                }, (t) => {
-                    jqueryI18next.init(i18next, $, {
-                        tName: 't', // --> appends $.t = i18next.t
-                        i18nName: 'i18n', // --> appends $.i18n = i18next
-                        handleName: 'i18n', // --> appends $(selector).localize(opts);
-                        selectorAttr: 'data-i18n', // selector for translating elements
-                        targetAttr: 'i18n-target', // data-() attribute to grab target element to translate (if diffrent then itself)
-                        optionsAttr: 'i18n-options', // data-() attribute that contains options, will load/set if useOptionsAttr = true
-                        useOptionsAttr: false, // see optionsAttr
-                        parseDefaultValueFromContent: true, // parses default values from content ele.val or ele.text
-                    });
-                    RED._ = function (key, options) {
-                        return i18next.t(key, options);
-                    };
-
-                    done();
+              .use(i18nextXHRBackend)
+              .init({
+                fallbackLng: 'en',
+                ns: ["editor","node-red","jsonata","infotips"],
+                defaultNS: 'editor',
+                backend: {
+                  loadPath: function(lngs, ns) {
+                    return '/mashup/locales/' + ns;
+                  },
+                  withCredentials: true,
+                  customHeaders: {'Authorization': accessToken},
+                },
+                interpolation: {
+                  prefix: "__",
+                  suffix: "__",
+                }
+              }, function(t) {
+                jqueryI18next.init(i18next, $, {
+                  tName: 't', // --> appends $.t = i18next.t
+                  i18nName: 'i18n', // --> appends $.i18n = i18next
+                  handleName: 'i18n', // --> appends $(selector).localize(opts);
+                  selectorAttr: 'data-i18n', // selector for translating elements
+                  targetAttr: 'i18n-target', // data-() attribute to grab target element to translate (if diffrent then itself)
+                  optionsAttr: 'i18n-options', // data-() attribute that contains options, will load/set if useOptionsAttr = true
+                  useOptionsAttr: false, // see optionsAttr
+                  parseDefaultValueFromContent: true // parses default values from content ele.val or ele.text
                 });
+                RED["_"] = function(key, options) {
+                  return i18next.t(key, options);
+                }
+
+                done();
+              });
         },
-        loadCatalog(namespace, done) {
+        loadCatalog: function(namespace,done) {
             i18next.loadNamespaces(namespace, done);
-        },
-    };
-}());
+        }
+     }
+ })();
 
 RED.settings = (function () {
-    let loadedSettings = {};
 
-    const hasLocalStorage = function () {
-        try {
-            return 'localStorage' in window && window.localStorage !== null;
-        } catch (e) {
-            return false;
-        }
-    };
+     var loadedSettings = {};
 
-    const set = function (key, value) {
-        if (!hasLocalStorage()) {
-            return;
-        }
-        localStorage.setItem(key, JSON.stringify(value));
-    };
+     var hasLocalStorage = function () {
+         try {
+             return 'localStorage' in window && window['localStorage'] !== null;
+         } catch (e) {
+             return false;
+         }
+     };
 
-    /**
+     var set = function (key, value) {
+         if (!hasLocalStorage()) {
+             return;
+         }
+         localStorage.setItem(key, JSON.stringify(value));
+     };
+
+     /**
       * If the key is not set in the localStorage it returns <i>undefined</i>
       * Else return the JSON parsed value
       * @param key
       * @returns {*}
       */
-    const get = function (key) {
-        if (!hasLocalStorage()) {
-            return undefined;
-        }
-        return JSON.parse(localStorage.getItem(key));
-    };
+     var get = function (key) {
+         if (!hasLocalStorage()) {
+             return undefined;
+         }
+         return JSON.parse(localStorage.getItem(key));
+     };
 
-    const remove = function (key) {
-        if (!hasLocalStorage()) {
-            return;
-        }
-        localStorage.removeItem(key);
-    };
+     var remove = function (key) {
+         if (!hasLocalStorage()) {
+             return;
+         }
+         localStorage.removeItem(key);
+     };
 
-    const setProperties = function (data) {
-        for (var prop in loadedSettings) {
-            if (loadedSettings.hasOwnProperty(prop) && RED.settings.hasOwnProperty(prop)) {
-                delete RED.settings[prop];
-            }
-        }
-        for (prop in data) {
-            if (data.hasOwnProperty(prop)) {
-                RED.settings[prop] = data[prop];
-            }
-        }
-        loadedSettings = data;
-    };
+     var setProperties = function(data) {
+         for (var prop in loadedSettings) {
+             if (loadedSettings.hasOwnProperty(prop) && RED.settings.hasOwnProperty(prop)) {
+                 delete RED.settings[prop];
+             }
+         }
+         for (prop in data) {
+             if (data.hasOwnProperty(prop)) {
+                 RED.settings[prop] = data[prop];
+             }
+         }
+         loadedSettings = data;
+     };
 
-    const init = function (done) {
-        const accessTokenMatch = /[?&]access_token=(.*?)(?:$|&)/.exec(window.location.search);
-        if (accessTokenMatch) {
-            const accessToken = accessTokenMatch[1];
-            RED.settings.set('auth-tokens', { access_token: accessToken });
-            window.location.search = '';
-        }
+     var init = function (done) {
+         var accessTokenMatch = /[?&]access_token=(.*?)(?:$|&)/.exec(window.location.search);
+         if (accessTokenMatch) {
+             var accessToken = accessTokenMatch[1];
+             RED.settings.set("auth-tokens",{access_token: accessToken});
+             window.location.search = "";
+         }
 
-        $.ajaxSetup({
-            beforeSend(jqXHR, settings) {
-                // Only attach auth header for requests to relative paths
-                if (!/^\s*(https?:|\/|\.)/.test(settings.url)) {
-                    const auth_tokens = RED.settings.get('auth-tokens');
-                    if (auth_tokens) {
-                        jqXHR.setRequestHeader('Authorization', `Bearer ${auth_tokens.access_token}`);
-                    }
-                    jqXHR.setRequestHeader('Node-RED-API-Version', 'v2');
-                }
-            },
-        });
+         $.ajaxSetup({
+             beforeSend: function(jqXHR,settings) {
+                 // Only attach auth header for requests to relative paths
+                 if (!/^\s*(https?:|\/|\.)/.test(settings.url)) {
+                     var auth_tokens = RED.settings.get("auth-tokens");
+                     if (auth_tokens) {
+                         jqXHR.setRequestHeader("Authorization","Bearer "+auth_tokens.access_token);
+                     }
+                     jqXHR.setRequestHeader("Node-RED-API-Version","v2");
+                 }
+             }
+         });
 
-        load(done);
-    };
+         load(done);
+     }
 
-    var load = function (done) {
-        $.ajax({
-            headers: {
-                Accept: 'application/json',
-            },
-            dataType: 'json',
-            cache: false,
+     var load = function(done) {
+         $.ajax({
+             headers: {
+                 "Accept": "application/json"
+             },
+             dataType: "json",
+             cache: false,
             //  url: 'http://localhost:1880/settings',
-            url: 'mashup/settings',
-            success(data) {
-                setProperties(data);
-                if (!RED.settings.user || RED.settings.user.anonymous) {
-                    RED.settings.remove('auth-tokens');
-                }
-                console.log(`Node-RED: ${data.version}`);
-                done();
-            },
-            error(jqXHR, textStatus, errorThrown) {
-                if (jqXHR.status === 401) {
-                    if (/[?&]access_token=(.*?)(?:$|&)/.test(window.location.search)) {
-                        window.location.search = '';
-                    }
-                    RED.user.login(() => { load(done); });
-                } else {
-                    console.log('Unexpected error:', jqXHR.status, textStatus);
-                }
-            },
-        });
-    };
+             url: 'mashup/settings',
+             success: function (data) {
+                 setProperties(data);
+                 if (!RED.settings.user || RED.settings.user.anonymous) {
+                     RED.settings.remove("auth-tokens");
+                 }
+                 console.log("Node-RED: " + data.version);
+                 done();
+             },
+             error: function(jqXHR,textStatus,errorThrown) {
+                 if (jqXHR.status === 401) {
+                     if (/[?&]access_token=(.*?)(?:$|&)/.test(window.location.search)) {
+                         window.location.search = "";
+                     }
+                     RED.user.login(function() { load(done); });
+                 } else {
+                     console.log("Unexpected error:",jqXHR.status,textStatus);
+                 }
+             }
+         });
+     };
 
-    function theme(property, defaultValue) {
-        if (!RED.settings.editorTheme) {
-            return defaultValue;
-        }
-        const parts = property.split('.');
-        let v = RED.settings.editorTheme;
-        try {
-            for (let i = 0; i < parts.length; i++) {
-                v = v[parts[i]];
-            }
-            if (v === undefined) {
-                return defaultValue;
-            }
-            return v;
-        } catch (err) {
-            return defaultValue;
-        }
-    }
+     function theme(property,defaultValue) {
+         if (!RED.settings.editorTheme) {
+             return defaultValue;
+         }
+         var parts = property.split(".");
+         var v = RED.settings.editorTheme;
+         try {
+             for (var i=0;i<parts.length;i++) {
+                 v = v[parts[i]];
+             }
+             if (v === undefined) {
+                 return defaultValue;
+             }
+             return v;
+         } catch(err) {
+             return defaultValue;
+         }
+     }
 
-    return {
-        init,
-        load,
-        set,
-        get,
-        remove,
-        theme,
-    };
-}());
+     return {
+         init: init,
+         load: load,
+         set: set,
+         get: get,
+         remove: remove,
+         theme: theme
+     }
+ })
+ ();
 
 // RED.user is not needed
 
@@ -238,40 +242,36 @@ RED.settings = (function () {
 // RED.comms is not needed
 
 RED.text = {};
-RED.text.bidi = (function () {
-    let textDir = '';
-    const LRE = '\u202A';
-
-
-    const RLE = '\u202B';
-
-
-    const PDF = '\u202C';
+RED.text.bidi = (function() {
+    var textDir = "";
+    var LRE = "\u202A",
+        RLE = "\u202B",
+        PDF = "\u202C";
 
     function isRTLValue(stringValue) {
-        const length = stringValue.length;
-        for (let i = 0; i < length; i++) {
+        var length = stringValue.length;
+        for (var i=0;i<length;i++) {
             if (isBidiChar(stringValue.charCodeAt(i))) {
                 return true;
             }
-            if (isLatinChar(stringValue.charCodeAt(i))) {
+            else if(isLatinChar(stringValue.charCodeAt(i))) {
                 return false;
             }
-        }
-        return false;
+         }
+         return false;
     }
 
-    function isBidiChar(c) {
-        return (c >= 0x05d0 && c <= 0x05ff)
-               || (c >= 0x0600 && c <= 0x065f)
-               || (c >= 0x066a && c <= 0x06ef)
-               || (c >= 0x06fa && c <= 0x07ff)
-               || (c >= 0xfb1d && c <= 0xfdff)
-               || (c >= 0xfe70 && c <= 0xfefc);
+    function isBidiChar(c)  {
+        return (c >= 0x05d0 && c <= 0x05ff)||
+               (c >= 0x0600 && c <= 0x065f)||
+               (c >= 0x066a && c <= 0x06ef)||
+               (c >= 0x06fa && c <= 0x07ff)||
+               (c >= 0xfb1d && c <= 0xfdff)||
+               (c >= 0xfe70 && c <= 0xfefc);
     }
 
-    function isLatinChar(c) {
-        return (c > 64 && c < 91) || (c > 96 && c < 123);
+    function isLatinChar(c){
+        return (c > 64 && c < 91)||(c > 96 && c < 123)
     }
 
     /**
@@ -279,18 +279,20 @@ RED.text.bidi = (function () {
      * @param value - the string
      */
     function resolveBaseTextDir(value) {
-        if (textDir == 'auto') {
+        if (textDir == "auto") {
             if (isRTLValue(value)) {
-                return 'rtl';
+                return "rtl";
+            } else {
+                return "ltr";
             }
-            return 'ltr';
         }
-
-        return textDir;
+        else {
+            return textDir;
+        }
     }
 
     function onInputChange() {
-        $(this).attr('dir', resolveBaseTextDir($(this).val()));
+        $(this).attr("dir", resolveBaseTextDir($(this).val()));
     }
 
     /**
@@ -299,7 +301,7 @@ RED.text.bidi = (function () {
      * @param input - the input field
      */
     function prepareInput(input) {
-        input.on('keyup', onInputChange).on('paste', onInputChange).on('cut', onInputChange);
+        input.on("keyup",onInputChange).on("paste",onInputChange).on("cut",onInputChange);
         // Set the initial text direction
         onInputChange.call(input);
     }
@@ -311,12 +313,12 @@ RED.text.bidi = (function () {
      */
     function enforceTextDirectionWithUCC(value) {
         if (value) {
-            const dir = resolveBaseTextDir(value);
-            if (dir == 'ltr') {
-                return LRE + value + PDF;
+            var dir = resolveBaseTextDir(value);
+            if (dir == "ltr") {
+               return LRE + value + PDF;
             }
-            if (dir == 'rtl') {
-                return RLE + value + PDF;
+            else if (dir == "rtl") {
+               return RLE + value + PDF;
             }
         }
         return value;
@@ -327,11 +329,11 @@ RED.text.bidi = (function () {
      * workspace or sidebar div
      */
     function enforceTextDirectionOnPage() {
-        $('#workspace').find('span.bidiAware').each(function () {
-            $(this).attr('dir', resolveBaseTextDir($(this).html()));
+        $("#workspace").find('span.bidiAware').each(function() {
+            $(this).attr("dir", resolveBaseTextDir($(this).html()));
         });
-        $('#sidebar').find('span.bidiAware').each(function () {
-            $(this).attr('dir', resolveBaseTextDir($(this).text()));
+        $("#sidebar").find('span.bidiAware').each(function() {
+            $(this).attr("dir", resolveBaseTextDir($(this).text()));
         });
     }
 
@@ -341,33 +343,34 @@ RED.text.bidi = (function () {
      */
     function setTextDirection(dir) {
         textDir = dir;
-        RED.nodes.eachNode((n) => { n.dirty = true; });
+        RED.nodes.eachNode(function(n) { n.dirty = true;});
         RED.view.redraw();
         RED.palette.refresh();
         enforceTextDirectionOnPage();
     }
 
     return {
-        setTextDirection,
-        enforceTextDirectionWithUCC,
-        resolveBaseTextDir,
-        prepareInput,
-    };
-}());
-RED.text.format = (function () {
-    const TextSegment = (function () {
-        const TextSegment = function (obj) {
-            this.content = '';
-            this.actual = '';
-            this.textDirection = '';
-            this.localGui = '';
+        setTextDirection: setTextDirection,
+        enforceTextDirectionWithUCC: enforceTextDirectionWithUCC,
+        resolveBaseTextDir: resolveBaseTextDir,
+        prepareInput: prepareInput
+    }
+})();
+RED.text.format = (function() {
+
+    var TextSegment = (function() {
+        var TextSegment = function (obj) {
+            this.content = "";
+            this.actual = "";
+            this.textDirection = "";
+            this.localGui = "";
             this.isVisible = true;
             this.isSeparator = false;
             this.isParsed = false;
             this.keep = false;
             this.inBounds = false;
             this.inPoints = false;
-            let prop = '';
+            var prop = "";
             for (prop in obj) {
                 if (obj.hasOwnProperty(prop)) {
                     this[prop] = obj[prop];
@@ -375,99 +378,99 @@ RED.text.format = (function () {
             }
         };
         return TextSegment;
-    }());
+    })();
 
-    const tools = (function () {
+    var tools = (function() {
         function initBounds(bounds) {
             if (!bounds) {
                 return false;
             }
-            if (typeof (bounds.start) === 'undefined') {
-                bounds.start = '';
+            if (typeof(bounds.start) === "undefined") {
+                bounds.start = "";
             }
-            if (typeof (bounds.end) === 'undefined') {
-                bounds.end = '';
+            if (typeof(bounds.end) === "undefined") {
+                bounds.end = "";
             }
-            if (typeof (bounds.startAfter) !== 'undefined') {
+            if (typeof(bounds.startAfter) !== "undefined") {
                 bounds.start = bounds.startAfter;
                 bounds.after = true;
             } else {
                 bounds.after = false;
             }
-            if (typeof (bounds.endBefore) !== 'undefined') {
+            if (typeof(bounds.endBefore) !== "undefined") {
                 bounds.end = bounds.endBefore;
                 bounds.before = true;
             } else {
                 bounds.before = false;
             }
-            const startPos = parseInt(bounds.startPos, 10);
+            var startPos = parseInt(bounds.startPos, 10);
             if (!isNaN(startPos)) {
                 bounds.usePos = true;
             } else {
                 bounds.usePos = false;
             }
-            const bLength = parseInt(bounds.length, 10);
+            var bLength = parseInt(bounds.length, 10);
             if (!isNaN(bLength)) {
                 bounds.useLength = true;
             } else {
                 bounds.useLength = false;
             }
-            bounds.loops = typeof (bounds.loops) !== 'undefined' ? !!bounds.loops : true;
+            bounds.loops = typeof(bounds.loops) !== "undefined" ? !!bounds.loops : true;
             return true;
         }
 
         function getBounds(segment, src) {
-            const bounds = {};
-            for (const prop in src) {
+            var bounds = {};
+            for (var prop in src) {
                 if (src.hasOwnProperty(prop)) {
                     bounds[prop] = src[prop];
                 }
             }
-            const content = segment.content;
-            const usePos = bounds.usePos && bounds.startPos < content.length;
+            var content = segment.content;
+            var usePos = bounds.usePos && bounds.startPos < content.length;
             if (usePos) {
-                bounds.start = '';
+                bounds.start = "";
                 bounds.loops = false;
             }
             bounds.bStart = usePos ? bounds.startPos : bounds.start.length > 0 ? content.indexOf(bounds.start) : 0;
-            const useLength = bounds.useLength && bounds.length > 0 && bounds.bStart + bounds.length < content.length;
+            var useLength = bounds.useLength && bounds.length > 0 && bounds.bStart + bounds.length < content.length;
             if (useLength) {
-                bounds.end = '';
+                bounds.end = "";
             }
-            bounds.bEnd = useLength ? bounds.bStart + bounds.length : bounds.end.length > 0
-                ? content.indexOf(bounds.end, bounds.bStart + bounds.start.length) + 1 : content.length;
+            bounds.bEnd = useLength ? bounds.bStart + bounds.length : bounds.end.length > 0 ?
+                    content.indexOf(bounds.end, bounds.bStart + bounds.start.length) + 1 : content.length;
             if (!bounds.after) {
-                bounds.start = '';
+                bounds.start = "";
             }
             if (!bounds.before) {
-                bounds.end = '';
+                bounds.end = "";
             }
             return bounds;
         }
 
         return {
-            handleSubcontents(segments, args, subs, origContent, locale) { // jshint unused: false
-                if (!subs.content || typeof (subs.content) !== 'string' || subs.content.length === 0) {
+            handleSubcontents: function (segments, args, subs, origContent, locale) { // jshint unused: false
+                if (!subs.content || typeof(subs.content) !== "string" || subs.content.length === 0) {
                     return segments;
                 }
-                let sLoops = true;
-                if (typeof (subs.loops) !== 'undefined') {
+                var sLoops = true;
+                if (typeof(subs.loops) !== "undefined") {
                     sLoops = !!subs.loops;
                 }
-                for (let j = 0; true; j++) {
+                for (var j = 0; true; j++) {
                     if (j >= segments.length) {
                         break;
                     }
                     if (segments[j].isParsed || segments.keep || segments[j].isSeparator) {
                         continue;
                     }
-                    const content = segments[j].content;
-                    const start = content.indexOf(subs.content);
+                    var content = segments[j].content;
+                    var start = content.indexOf(subs.content);
                     if (start < 0) {
                         continue;
                     }
                     var end;
-                    let length = 0;
+                    var length = 0;
                     if (subs.continued) {
                         do {
                             length++;
@@ -482,20 +485,20 @@ RED.text.format = (function () {
                         segments.splice(j, 0, new TextSegment({
                             content: content.substring(0, start),
                             localGui: args.dir,
-                            keep: true,
+                            keep: true
                         }));
                         j++;
                     }
                     segments.splice(j, 0, new TextSegment({
                         content: content.substring(start, end),
                         textDirection: subs.subDir,
-                        localGui: args.dir,
+                        localGui: args.dir
                     }));
                     if (end < content.length) {
                         segments.splice(j + 1, 0, new TextSegment({
                             content: content.substring(end, content.length),
                             localGui: args.dir,
-                            keep: true,
+                            keep: true
                         }));
                     }
                     if (!sLoops) {
@@ -504,32 +507,32 @@ RED.text.format = (function () {
                 }
             },
 
-            handleBounds(segments, args, aBounds, origContent, locale) {
+            handleBounds: function (segments, args, aBounds, origContent, locale) {
                 for (var i = 0; i < aBounds.length; i++) {
                     if (!initBounds(aBounds[i])) {
                         continue;
                     }
-                    for (let j = 0; true; j++) {
+                    for (var j = 0; true; j++) {
                         if (j >= segments.length) {
                             break;
                         }
                         if (segments[j].isParsed || segments[j].inBounds || segments.keep || segments[j].isSeparator) {
                             continue;
                         }
-                        const bounds = getBounds(segments[j], aBounds[i]);
-                        const start = bounds.bStart;
-                        const end = bounds.bEnd;
+                        var bounds = getBounds(segments[j], aBounds[i]);
+                        var start = bounds.bStart;
+                        var end = bounds.bEnd;
                         if (start < 0 || end < 0) {
                             continue;
                         }
-                        const content = segments[j].content;
+                        var content = segments[j].content;
 
                         segments.splice(j, 1);
                         if (start > 0) {
                             segments.splice(j, 0, new TextSegment({
                                 content: content.substring(0, start),
                                 localGui: args.dir,
-                                keep: true,
+                                keep: true
                             }));
                             j++;
                         }
@@ -537,7 +540,7 @@ RED.text.format = (function () {
                             segments.splice(j, 0, new TextSegment({
                                 content: bounds.start,
                                 localGui: args.dir,
-                                isSeparator: true,
+                                isSeparator: true
                             }));
                             j++;
                         }
@@ -545,21 +548,21 @@ RED.text.format = (function () {
                             content: content.substring(start + bounds.start.length, end - bounds.end.length),
                             textDirection: bounds.subDir,
                             localGui: args.dir,
-                            inBounds: true,
+                            inBounds: true
                         }));
                         if (bounds.end) {
                             j++;
                             segments.splice(j, 0, new TextSegment({
                                 content: bounds.end,
                                 localGui: args.dir,
-                                isSeparator: true,
+                                isSeparator: true
                             }));
                         }
                         if (end + bounds.end.length < content.length) {
                             segments.splice(j + 1, 0, new TextSegment({
                                 content: content.substring(end + bounds.end.length, content.length),
                                 localGui: args.dir,
-                                keep: true,
+                                keep: true
                             }));
                         }
                         if (!bounds.loops) {
@@ -573,18 +576,18 @@ RED.text.format = (function () {
                 return segments;
             },
 
-            handleCases(segments, args, cases, origContent, locale) {
+            handleCases: function (segments, args, cases, origContent, locale) {
                 if (cases.length === 0) {
                     return segments;
                 }
-                const hArgs = {};
-                for (const prop in args) {
+                var hArgs = {};
+                for (var prop in args) {
                     if (args.hasOwnProperty(prop)) {
                         hArgs[prop] = args[prop];
                     }
                 }
-                for (let i = 0; i < cases.length; i++) {
-                    if (!cases[i].handler || typeof (cases[i].handler.handle) !== 'function') {
+                for (var i =  0; i < cases.length; i++) {
+                    if (!cases[i].handler || typeof(cases[i].handler.handle) !== "function") {
                         cases[i].handler = args.commonHandler;
                     }
                     if (cases[i].args) {
@@ -603,17 +606,17 @@ RED.text.format = (function () {
                 return segments;
             },
 
-            handlePoints(segments, args, points, origContent, locale) { // jshint unused: false
+            handlePoints: function (segments, args, points, origContent, locale) { //jshint unused: false
                 for (var i = 0; i < points.length; i++) {
-                    for (let j = 0; true; j++) {
+                    for (var j = 0; true; j++) {
                         if (j >= segments.length) {
                             break;
                         }
                         if (segments[j].isParsed || segments[j].keep || segments[j].isSeparator) {
                             continue;
                         }
-                        const content = segments[j].content;
-                        const pos = content.indexOf(points[i]);
+                        var content = segments[j].content;
+                        var pos = content.indexOf(points[i]);
                         if (pos >= 0) {
                             segments.splice(j, 1);
                             if (pos > 0) {
@@ -621,21 +624,21 @@ RED.text.format = (function () {
                                     content: content.substring(0, pos),
                                     textDirection: args.subDir,
                                     localGui: args.dir,
-                                    inPoints: true,
+                                    inPoints: true
                                 }));
                                 j++;
                             }
                             segments.splice(j, 0, new TextSegment({
                                 content: points[i],
                                 localGui: args.dir,
-                                isSeparator: true,
+                                isSeparator: true
                             }));
                             if (pos + points[i].length + 1 <= content.length) {
                                 segments.splice(j + 1, 0, new TextSegment({
                                     content: content.substring(pos + points[i].length),
                                     textDirection: args.subDir,
                                     localGui: args.dir,
-                                    inPoints: true,
+                                    inPoints: true
                                 }));
                             }
                         }
@@ -644,36 +647,36 @@ RED.text.format = (function () {
                 for (i = 0; i < segments.length; i++) {
                     if (segments[i].keep) {
                         segments[i].keep = false;
-                    } else if (segments[i].inPoints) {
+                    } else if(segments[i].inPoints){
                         segments[i].isParsed = true;
                         segments[i].inPoints = false;
                     }
                 }
                 return segments;
-            },
+            }
         };
-    }());
+    })();
 
-    const common = (function () {
+    var common = (function() {
         return {
-            handle(content, segments, args, locale) {
-                let cases = [];
+            handle: function (content, segments, args, locale) {
+                var cases = [];
                 if (Array.isArray(args.cases)) {
                     cases = args.cases;
                 }
-                let points = [];
-                if (typeof (args.points) !== 'undefined') {
+                var points = [];
+                if (typeof(args.points) !== "undefined") {
                     if (Array.isArray(args.points)) {
                         points = args.points;
-                    } else if (typeof (args.points) === 'string') {
-                        points = args.points.split('');
+                    } else if (typeof(args.points) === "string") {
+                        points = args.points.split("");
                     }
                 }
-                let subs = {};
-                if (typeof (args.subs) === 'object') {
+                var subs = {};
+                if (typeof(args.subs) === "object") {
                     subs = args.subs;
                 }
-                let aBounds = [];
+                var aBounds = [];
                 if (Array.isArray(args.bounds)) {
                     aBounds = args.bounds;
                 }
@@ -683,131 +686,133 @@ RED.text.format = (function () {
                 tools.handleCases(segments, args, cases, content, locale);
                 tools.handlePoints(segments, args, points, content, locale);
                 return segments;
-            },
+            }
         };
-    }());
+    })();
 
-    const misc = (function () {
-        const isBidiLocale = function (locale) {
-            const lang = !locale ? '' : locale.split('-')[0];
+    var misc = (function() {
+        var isBidiLocale = function (locale) {
+            var lang = !locale ? "" : locale.split("-")[0];
             if (!lang || lang.length < 2) {
                 return false;
             }
-            return ['iw', 'he', 'ar', 'fa', 'ur'].some(bidiLang => bidiLang === lang);
+            return ["iw", "he", "ar", "fa", "ur"].some(function (bidiLang) {
+                return bidiLang === lang;
+            });
         };
-        const LRE = '\u202A';
-        const RLE = '\u202B';
-        const PDF = '\u202C';
-        const LRM = '\u200E';
-        const RLM = '\u200F';
-        const LRO = '\u202D';
-        const RLO = '\u202E';
+        var LRE = "\u202A";
+        var RLE = "\u202B";
+        var PDF = "\u202C";
+        var LRM = "\u200E";
+        var RLM = "\u200F";
+        var LRO = "\u202D";
+        var RLO = "\u202E";
 
         return {
-            LRE,
-            RLE,
-            PDF,
-            LRM,
-            RLM,
-            LRO,
-            RLO,
+            LRE: LRE,
+            RLE: RLE,
+            PDF: PDF,
+            LRM: LRM,
+            RLM: RLM,
+            LRO: LRO,
+            RLO: RLO,
 
-            getLocaleDetails(locale) {
+            getLocaleDetails: function (locale) {
                 if (!locale) {
-                    locale = typeof navigator === 'undefined' ? ''
-                        : (navigator.language
-                        || navigator.userLanguage
-                        || '');
+                    locale = typeof navigator === "undefined" ? "" :
+                        (navigator.language ||
+                        navigator.userLanguage ||
+                        "");
                 }
                 locale = locale.toLowerCase();
                 if (isBidiLocale(locale)) {
-                    const full = locale.split('-');
-                    return { lang: full[0], country: full[1] ? full[1] : '' };
+                    var full = locale.split("-");
+                    return {lang: full[0], country: full[1] ? full[1] : ""};
                 }
-                return { lang: 'not-bidi' };
+                return {lang: "not-bidi"};
             },
 
-            removeUcc(text) {
+            removeUcc: function (text) {
                 if (text) {
-                    return text.replace(/[\u200E\u200F\u202A-\u202E]/g, '');
+                    return text.replace(/[\u200E\u200F\u202A-\u202E]/g, "");
                 }
                 return text;
             },
 
-            removeTags(text) {
+            removeTags: function (text) {
                 if (text) {
-                    return text.replace(/<[^<]*>/g, '');
+                    return text.replace(/<[^<]*>/g, "");
                 }
                 return text;
             },
 
-            getDirection(text, dir, guiDir, checkEnd) {
-                if (dir !== 'auto' && (/^(rtl|ltr)$/i).test(dir)) {
+            getDirection: function (text, dir, guiDir, checkEnd) {
+                if (dir !== "auto" && (/^(rtl|ltr)$/i).test(dir)) {
                     return dir;
                 }
-                guiDir = (/^(rtl|ltr)$/i).test(guiDir) ? guiDir : 'ltr';
-                const txt = !checkEnd ? text : text.split('').reverse().join('');
-                const fdc = /[A-Za-z\u05d0-\u065f\u066a-\u06ef\u06fa-\u07ff\ufb1d-\ufdff\ufe70-\ufefc]/.exec(txt);
-                return fdc ? (fdc[0] <= 'z' ? 'ltr' : 'rtl') : guiDir;
+                guiDir = (/^(rtl|ltr)$/i).test(guiDir) ? guiDir : "ltr";
+                var txt = !checkEnd ? text : text.split("").reverse().join("");
+                var fdc = /[A-Za-z\u05d0-\u065f\u066a-\u06ef\u06fa-\u07ff\ufb1d-\ufdff\ufe70-\ufefc]/.exec(txt);
+                return fdc ? (fdc[0] <= "z" ? "ltr" : "rtl") : guiDir;
             },
 
-            hasArabicChar(text) {
-                const fdc = /[\u0600-\u065f\u066a-\u06ef\u06fa-\u07ff\ufb1d-\ufdff\ufe70-\ufefc]/.exec(text);
+            hasArabicChar: function (text) {
+                var fdc = /[\u0600-\u065f\u066a-\u06ef\u06fa-\u07ff\ufb1d-\ufdff\ufe70-\ufefc]/.exec(text);
                 return !!fdc;
             },
 
-            showMarks(text, guiDir) {
-                let result = '';
-                for (let i = 0; i < text.length; i++) {
-                    const c = `${text.charAt(i)}`;
+            showMarks: function (text, guiDir) {
+                var result = "";
+                for (var i = 0; i < text.length; i++) {
+                    var c = "" + text.charAt(i);
                     switch (c) {
                     case LRM:
-                        result += '<LRM>';
+                        result += "<LRM>";
                         break;
                     case RLM:
-                        result += '<RLM>';
+                        result += "<RLM>";
                         break;
                     case LRE:
-                        result += '<LRE>';
+                        result += "<LRE>";
                         break;
                     case RLE:
-                        result += '<RLE>';
+                        result += "<RLE>";
                         break;
                     case LRO:
-                        result += '<LRO>';
+                        result += "<LRO>";
                         break;
                     case RLO:
-                        result += '<RLO>';
+                        result += "<RLO>";
                         break;
                     case PDF:
-                        result += '<PDF>';
+                        result += "<PDF>";
                         break;
                     default:
                         result += c;
                     }
                 }
-                const mark = typeof (guiDir) === 'undefined' || !((/^(rtl|ltr)$/i).test(guiDir)) ? ''
-                    : guiDir === 'rtl' ? RLO : LRO;
-                return mark + result + (mark === '' ? '' : PDF);
+                var mark = typeof(guiDir) === "undefined" || !((/^(rtl|ltr)$/i).test(guiDir)) ? "" :
+                    guiDir === "rtl" ? RLO : LRO;
+                return mark + result + (mark === "" ? "" : PDF);
             },
 
-            hideMarks(text) {
-                const txt = text.replace(/<LRM>/g, this.LRM).replace(/<RLM>/g, this.RLM).replace(/<LRE>/g, this.LRE);
+            hideMarks: function (text) {
+                var txt = text.replace(/<LRM>/g, this.LRM).replace(/<RLM>/g, this.RLM).replace(/<LRE>/g, this.LRE);
                 return txt.replace(/<RLE>/g, this.RLE).replace(/<LRO>/g, this.LRO).replace(/<RLO>/g, this.RLO).replace(/<PDF>/g, this.PDF);
             },
 
-            showTags(text) {
-                return `<xmp>${text}</xmp>`;
+            showTags: function (text) {
+                return "<xmp>" + text + "</xmp>";
             },
 
-            hideTags(text) {
-                return text.replace(/<xmp>/g, '').replace(/<\/xmp>/g, '');
-            },
+            hideTags: function (text) {
+                return text.replace(/<xmp>/g,"").replace(/<\/xmp>/g,"");
+            }
         };
-    }());
+    })();
 
-    const stext = (function () {
-        const stt = {};
+    var stext = (function() {
+        var stt = {};
 
         // args
         //   handler: main handler (default - dbidi/stt/handlers/common)
@@ -826,9 +831,9 @@ RED.text.format = (function () {
         }
 
         function checkArguments(fArgs, fullCheck) {
-            const args = Array.isArray(fArgs) ? fArgs[0] : fArgs;
+            var args = Array.isArray(fArgs)? fArgs[0] : fArgs;
             if (!args.guiDir) {
-                args.guiDir = 'ltr';
+                args.guiDir = "ltr";
             }
             if (!args.dir) {
                 args.dir = args.guiDir;
@@ -836,7 +841,7 @@ RED.text.format = (function () {
             if (!fullCheck) {
                 return args;
             }
-            if (typeof (args.points) === 'undefined') {
+            if (typeof(args.points) === "undefined") {
                 args.points = [];
             }
             if (!args.cases) {
@@ -851,18 +856,17 @@ RED.text.format = (function () {
 
         function parseStructure(content, fArgs, locale) {
             if (!content || !fArgs) {
-                return new TextSegment({ content: '' });
+                return new TextSegment({content: ""});
             }
-            const args = checkArguments(fArgs, true);
-            const segments = [new TextSegment(
+            var args = checkArguments(fArgs, true);
+            var segments = [new TextSegment(
                 {
-                    content,
+                    content: content,
                     actual: content,
-                    localGui: args.dir,
-                },
-            )];
-            let parse = common.handle;
-            if (args.handler && typeof (args.handler) === 'function') {
+                    localGui: args.dir
+                })];
+            var parse = common.handle;
+            if (args.handler && typeof(args.handler) === "function") {
                 parse = args.handler.handle;
             }
             parse(content, segments, args, locale);
@@ -870,108 +874,117 @@ RED.text.format = (function () {
         }
 
         function displayStructure(segments, fArgs, isHtml) {
-            const args = checkArguments(fArgs, false);
+            var args = checkArguments(fArgs, false);
             if (isHtml) {
                 return getResultWithHtml(segments, args);
             }
-
-            return getResultWithUcc(segments, args);
+            else {
+                return getResultWithUcc(segments, args);
+            }
         }
 
         function getResultWithUcc(segments, args, isHtml) {
-            let result = '';
-            let checkedDir = '';
-            let prevDir = '';
-            let stop = false;
-            for (let i = 0; i < segments.length; i++) {
+            var result = "";
+            var checkedDir = "";
+            var prevDir = "";
+            var stop = false;
+            for (var i = 0; i < segments.length; i++) {
                 if (segments[i].isVisible) {
-                    let dir = segments[i].textDirection;
-                    const lDir = segments[i].localGui;
-                    if (lDir !== '' && prevDir === '') {
-                        result += (lDir === 'rtl' ? misc.RLE : misc.LRE);
-                    } else if (prevDir !== '' && (lDir === '' || lDir !== prevDir || stop)) {
-                        result += misc.PDF + (i == segments.length - 1 && lDir !== '' ? '' : args.dir === 'rtl' ? misc.RLM : misc.LRM);
-                        if (lDir !== '') {
-                            result += (lDir === 'rtl' ? misc.RLE : misc.LRE);
+                    var dir = segments[i].textDirection;
+                    var lDir = segments[i].localGui;
+                    if (lDir !== "" && prevDir === "") {
+                        result += (lDir === "rtl" ? misc.RLE : misc.LRE);
+                    }
+                    else if(prevDir !== "" && (lDir === "" || lDir !== prevDir || stop)) {
+                        result += misc.PDF + (i == segments.length - 1 && lDir !== ""? "" : args.dir === "rtl" ? misc.RLM : misc.LRM);
+                        if (lDir !== "") {
+                            result += (lDir === "rtl" ? misc.RLE : misc.LRE);
                         }
                     }
-                    if (dir === 'auto') {
+                    if (dir === "auto") {
                         dir = misc.getDirection(segments[i].content, dir, args.guiDir);
                     }
                     if ((/^(rtl|ltr)$/i).test(dir)) {
-                        result += (dir === 'rtl' ? misc.RLE : misc.LRE) + segments[i].content + misc.PDF;
+                        result += (dir === "rtl" ? misc.RLE : misc.LRE) + segments[i].content + misc.PDF;
                         checkedDir = dir;
-                    } else {
+                    }
+                    else {
                         result += segments[i].content;
                         checkedDir = misc.getDirection(segments[i].content, dir, args.guiDir, true);
                     }
                     if (i < segments.length - 1) {
-                        const locDir = lDir && segments[i + 1].localGui ? lDir : args.dir;
-                        result += locDir === 'rtl' ? misc.RLM : misc.LRM;
-                    } else if (prevDir !== '') {
+                        var locDir = lDir && segments[i+1].localGui? lDir : args.dir;
+                        result += locDir === "rtl" ? misc.RLM : misc.LRM;
+                    }
+                    else if(prevDir !== "") {
                         result += misc.PDF;
                     }
                     prevDir = lDir;
                     stop = false;
-                } else {
+                }
+                else {
                     stop = true;
                 }
             }
-            const sttDir = args.dir === 'auto' ? misc.getDirection(segments[0].actual, args.dir, args.guiDir) : args.dir;
+            var sttDir = args.dir === "auto" ? misc.getDirection(segments[0].actual, args.dir, args.guiDir) : args.dir;
             if (sttDir !== args.guiDir) {
-                result = (sttDir === 'rtl' ? misc.RLE : misc.LRE) + result + misc.PDF;
+                result = (sttDir === "rtl" ? misc.RLE : misc.LRE) + result + misc.PDF;
             }
             return result;
         }
 
         function getResultWithHtml(segments, args, isHtml) {
-            let result = '';
-            let checkedDir = '';
-            let prevDir = '';
-            for (let i = 0; i < segments.length; i++) {
+            var result = "";
+            var checkedDir = "";
+            var prevDir = "";
+            for (var i = 0; i < segments.length; i++) {
                 if (segments[i].isVisible) {
-                    let dir = segments[i].textDirection;
-                    const lDir = segments[i].localGui;
-                    if (lDir !== '' && prevDir === '') {
-                        result += `<bdi dir='${lDir === 'rtl' ? 'rtl' : 'ltr'}'>`;
-                    } else if (prevDir !== '' && (lDir === '' || lDir !== prevDir || stop)) {
-                        result += `</bdi>${i == segments.length - 1 && lDir !== '' ? '' : `<span style='unicode-bidi: embed; direction: ${args.dir === 'rtl' ? 'rtl' : 'ltr'};'></span>`}`;
-                        if (lDir !== '') {
-                            result += `<bdi dir='${lDir === 'rtl' ? 'rtl' : 'ltr'}'>`;
+                    var dir = segments[i].textDirection;
+                    var lDir = segments[i].localGui;
+                    if (lDir !== "" && prevDir === "") {
+                        result += "<bdi dir='" + (lDir === "rtl" ? "rtl" : "ltr") + "'>";
+                    }
+                    else if(prevDir !== "" && (lDir === "" || lDir !== prevDir || stop)) {
+                        result += "</bdi>" + (i == segments.length - 1 && lDir !== ""? "" : "<span style='unicode-bidi: embed; direction: " + (args.dir === "rtl" ? "rtl" : "ltr") + ";'></span>");
+                        if (lDir !== "") {
+                            result += "<bdi dir='" + (lDir === "rtl" ? "rtl" : "ltr") + "'>";
                         }
                     }
 
-                    if (dir === 'auto') {
+                    if (dir === "auto") {
                         dir = misc.getDirection(segments[i].content, dir, args.guiDir);
                     }
                     if ((/^(rtl|ltr)$/i).test(dir)) {
-                        // result += "<span style='unicode-bidi: embed; direction: " + (dir === "rtl" ? "rtl" : "ltr") + ";'>" + segments[i].content + "</span>";
-                        result += `<bdi dir='${dir === 'rtl' ? 'rtl' : 'ltr'}'>${segments[i].content}</bdi>`;
+                        //result += "<span style='unicode-bidi: embed; direction: " + (dir === "rtl" ? "rtl" : "ltr") + ";'>" + segments[i].content + "</span>";
+                        result += "<bdi dir='" + (dir === "rtl" ? "rtl" : "ltr") + "'>" + segments[i].content + "</bdi>";
                         checkedDir = dir;
-                    } else {
+                    }
+                    else {
                         result += segments[i].content;
                         checkedDir = misc.getDirection(segments[i].content, dir, args.guiDir, true);
                     }
                     if (i < segments.length - 1) {
-                        const locDir = lDir && segments[i + 1].localGui ? lDir : args.dir;
-                        result += `<span style='unicode-bidi: embed; direction: ${locDir === 'rtl' ? 'rtl' : 'ltr'};'></span>`;
-                    } else if (prevDir !== '') {
-                        result += '</bdi>';
+                        var locDir = lDir && segments[i+1].localGui? lDir : args.dir;
+                        result += "<span style='unicode-bidi: embed; direction: " + (locDir === "rtl" ? "rtl" : "ltr") + ";'></span>";
+                    }
+                    else if(prevDir !== "") {
+                        result += "</bdi>";
                     }
                     prevDir = lDir;
                     stop = false;
-                } else {
+                }
+                else {
                     stop = true;
                 }
             }
-            const sttDir = args.dir === 'auto' ? misc.getDirection(segments[0].actual, args.dir, args.guiDir) : args.dir;
+            var sttDir = args.dir === "auto" ? misc.getDirection(segments[0].actual, args.dir, args.guiDir) : args.dir;
             if (sttDir !== args.guiDir) {
-                result = `<bdi dir='${sttDir === 'rtl' ? 'rtl' : 'ltr'}'>${result}</bdi>`;
+                result = "<bdi dir='" + (sttDir === "rtl" ? "rtl" : "ltr") + "'>" + result + "</bdi>";
             }
             return result;
         }
 
-        // TBD ?
+        //TBD ?
         function restore(text, isHtml) {
             return text;
         }
@@ -982,323 +995,353 @@ RED.text.format = (function () {
         stt.restore = restore;
 
         return stt;
-    }());
+    })();
 
-    const breadcrumb = (function () {
+    var breadcrumb = (function() {
         return {
-            format(text, args, isRtl, isHtml, locale, parseOnly) {
-                const fArgs = {
-                    guiDir: isRtl ? 'rtl' : 'ltr',
-                    dir: args.dir ? args.dir : isRtl ? 'rtl' : 'ltr',
-                    subs: {
-                        content: '>',
-                        continued: true,
-                        subDir: isRtl ? 'rtl' : 'ltr',
-                    },
-                    cases: [{
-                        args: {
-                            subs: {
-                                content: '<',
-                                continued: true,
-                                subDir: isRtl ? 'ltr' : 'rtl',
-                            },
+            format: function (text, args, isRtl, isHtml, locale, parseOnly) {
+                var fArgs =
+                {
+                        guiDir: isRtl ? "rtl" : "ltr",
+                        dir: args.dir ? args.dir : isRtl ? "rtl" : "ltr",
+                        subs: {
+                            content: ">",
+                            continued: true,
+                            subDir: isRtl ? "rtl" : "ltr"
                         },
-                    }],
+                        cases: [{
+                            args: {
+                                subs: {
+                                    content: "<",
+                                    continued: true,
+                                    subDir: isRtl ? "ltr" : "rtl"
+                                }
+                            }
+                        }]
                 };
 
                 if (!parseOnly) {
                     return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
                 }
-                return stext.parseStructure(text, fArgs, !!isHtml, locale);
-            },
+                else {
+                    return stext.parseStructure(text, fArgs, !!isHtml, locale);
+                }
+            }
         };
-    }());
+    })();
 
-    const comma = (function () {
+    var comma = (function() {
         return {
-            format(text, args, isRtl, isHtml, locale, parseOnly) {
-                const fArgs = {
-                    guiDir: isRtl ? 'rtl' : 'ltr',
-                    dir: 'ltr',
-                    points: ',',
+            format: function (text, args, isRtl, isHtml, locale, parseOnly) {
+                var fArgs =
+                {
+                        guiDir: isRtl ? "rtl" : "ltr",
+                        dir: "ltr",
+                        points: ","
                 };
                 if (!parseOnly) {
                     return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
                 }
-                return stext.parseStructure(text, fArgs, !!isHtml, locale);
-            },
+                else {
+                    return stext.parseStructure(text, fArgs, !!isHtml, locale);
+                }
+            }
         };
-    }());
+    })();
 
-    const email = (function () {
+    var email = (function() {
         function getDir(text, locale) {
-            if (misc.getLocaleDetails(locale).lang !== 'ar') {
-                return 'ltr';
+            if (misc.getLocaleDetails(locale).lang !== "ar") {
+                return "ltr";
             }
-            const ind = text.indexOf('@');
+            var ind = text.indexOf("@");
             if (ind > 0 && ind < text.length - 1) {
-                return misc.hasArabicChar(text.substring(ind + 1)) ? 'rtl' : 'ltr';
+                return misc.hasArabicChar(text.substring(ind + 1)) ? "rtl" : "ltr";
             }
-            return 'ltr';
+            return "ltr";
         }
 
         return {
-            format(text, args, isRtl, isHtml, locale, parseOnly) {
-                const fArgs = {
-                    guiDir: isRtl ? 'rtl' : 'ltr',
-                    dir: getDir(text, locale),
-                    points: '<>.:,;@',
-                    cases: [{
-                        handler: common,
-                        args: {
-                            bounds: [{
-                                startAfter: '"',
-                                endBefore: '"',
-                            },
-                            {
-                                startAfter: '(',
-                                endBefore: ')',
-                            },
-                            ],
-                            points: '',
+            format: function (text, args, isRtl, isHtml, locale, parseOnly) {
+                var fArgs =
+                {
+                        guiDir: isRtl ? "rtl" : "ltr",
+                        dir: getDir(text, locale),
+                        points: "<>.:,;@",
+                        cases: [{
+                            handler: common,
+                            args: {
+                                bounds: [{
+                                    startAfter: "\"",
+                                    endBefore: "\""
+                                },
+                                {
+                                    startAfter: "(",
+                                    endBefore: ")"
+                                }
+                                ],
+                                points: ""
+                            }
+                        }]
+                };
+                if (!parseOnly) {
+                    return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
+                }
+                else {
+                    return stext.parseStructure(text, fArgs, !!isHtml, locale);
+                }
+            }
+        };
+    })();
+
+    var filepath = (function() {
+        return {
+            format: function (text, args, isRtl, isHtml, locale, parseOnly) {
+                var fArgs =
+                {
+                        guiDir: isRtl ? "rtl" : "ltr",
+                        dir: "ltr",
+                        points: "/\\:."
+                };
+                if (!parseOnly) {
+                    return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
+                }
+                else {
+                    return stext.parseStructure(text, fArgs, !!isHtml, locale);
+                }
+            }
+        };
+    })();
+
+    var formula = (function() {
+        return {
+            format: function (text, args, isRtl, isHtml, locale, parseOnly) {
+                var fArgs =
+                {
+                        guiDir: isRtl ? "rtl" : "ltr",
+                        dir: "ltr",
+                        points: " /%^&[]<>=!?~:.,|()+-*{}",
+                };
+                if (!parseOnly) {
+                    return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
+                }
+                else {
+                    return stext.parseStructure(text, fArgs, !!isHtml, locale);
+                }
+            }
+        };
+    })();
+
+    var sql = (function() {
+        return {
+            format: function (text, args, isRtl, isHtml, locale, parseOnly) {
+                var fArgs =
+                {
+                        guiDir: isRtl ? "rtl" : "ltr",
+                        dir: "ltr",
+                        points: "\t!#%&()*+,-./:;<=>?|[]{}",
+                        cases: [{
+                            handler: common,
+                            args: {
+                                bounds: [{
+                                    startAfter: "/*",
+                                    endBefore: "*/"
+                                },
+                                {
+                                    startAfter: "--",
+                                    end: "\n"
+                                },
+                                {
+                                    startAfter: "--"
+                                }
+                                ]
+                            }
                         },
-                    }],
-                };
-                if (!parseOnly) {
-                    return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
-                }
-                return stext.parseStructure(text, fArgs, !!isHtml, locale);
-            },
-        };
-    }());
-
-    const filepath = (function () {
-        return {
-            format(text, args, isRtl, isHtml, locale, parseOnly) {
-                const fArgs = {
-                    guiDir: isRtl ? 'rtl' : 'ltr',
-                    dir: 'ltr',
-                    points: '/\\:.',
-                };
-                if (!parseOnly) {
-                    return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
-                }
-                return stext.parseStructure(text, fArgs, !!isHtml, locale);
-            },
-        };
-    }());
-
-    const formula = (function () {
-        return {
-            format(text, args, isRtl, isHtml, locale, parseOnly) {
-                const fArgs = {
-                    guiDir: isRtl ? 'rtl' : 'ltr',
-                    dir: 'ltr',
-                    points: ' /%^&[]<>=!?~:.,|()+-*{}',
-                };
-                if (!parseOnly) {
-                    return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
-                }
-                return stext.parseStructure(text, fArgs, !!isHtml, locale);
-            },
-        };
-    }());
-
-    const sql = (function () {
-        return {
-            format(text, args, isRtl, isHtml, locale, parseOnly) {
-                const fArgs = {
-                    guiDir: isRtl ? 'rtl' : 'ltr',
-                    dir: 'ltr',
-                    points: '\t!#%&()*+,-./:;<=>?|[]{}',
-                    cases: [{
-                        handler: common,
-                        args: {
-                            bounds: [{
-                                startAfter: '/*',
-                                endBefore: '*/',
-                            },
-                            {
-                                startAfter: '--',
-                                end: '\n',
-                            },
-                            {
-                                startAfter: '--',
-                            },
-                            ],
+                        {
+                            handler: common,
+                            args: {
+                                subs: {
+                                    content: " ",
+                                    continued: true
+                                }
+                            }
                         },
-                    },
-                    {
-                        handler: common,
-                        args: {
-                            subs: {
-                                content: ' ',
-                                continued: true,
-                            },
-                        },
-                    },
-                    {
-                        handler: common,
-                        args: {
-                            bounds: [{
-                                startAfter: "'",
-                                endBefore: "'",
-                            },
-                            {
-                                startAfter: '"',
-                                endBefore: '"',
-                            },
-                            ],
-                        },
-                    },
-                    ],
+                        {
+                            handler: common,
+                            args: {
+                                bounds: [{
+                                    startAfter: "'",
+                                    endBefore: "'"
+                                },
+                                {
+                                    startAfter: "\"",
+                                    endBefore: "\""
+                                }
+                                ]
+                            }
+                        }
+                        ]
                 };
                 if (!parseOnly) {
                     return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
                 }
-                return stext.parseStructure(text, fArgs, !!isHtml, locale);
-            },
+                else {
+                    return stext.parseStructure(text, fArgs, !!isHtml, locale);
+                }
+            }
         };
-    }());
+    })();
 
-    const underscore = (function () {
+    var underscore = (function() {
         return {
-            format(text, args, isRtl, isHtml, locale, parseOnly) {
-                const fArgs = {
-                    guiDir: isRtl ? 'rtl' : 'ltr',
-                    dir: 'ltr',
-                    points: '_',
+            format: function (text, args, isRtl, isHtml, locale, parseOnly) {
+                var fArgs =
+                {
+                        guiDir: isRtl ? "rtl" : "ltr",
+                        dir: "ltr",
+                        points: "_"
                 };
                 if (!parseOnly) {
                     return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
                 }
-                return stext.parseStructure(text, fArgs, !!isHtml, locale);
-            },
+                else {
+                    return stext.parseStructure(text, fArgs, !!isHtml, locale);
+                }
+            }
         };
-    }());
+    })();
 
-    const url = (function () {
+    var url = (function() {
         return {
-            format(text, args, isRtl, isHtml, locale, parseOnly) {
-                const fArgs = {
-                    guiDir: isRtl ? 'rtl' : 'ltr',
-                    dir: 'ltr',
-                    points: ':?#/@.[]=',
+            format: function (text, args, isRtl, isHtml, locale, parseOnly) {
+                var fArgs =
+                {
+                        guiDir: isRtl ? "rtl" : "ltr",
+                        dir: "ltr",
+                        points: ":?#/@.[]="
                 };
                 if (!parseOnly) {
                     return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
                 }
-                return stext.parseStructure(text, fArgs, !!isHtml, locale);
-            },
+                else {
+                    return stext.parseStructure(text, fArgs, !!isHtml, locale);
+                }
+            }
         };
-    }());
+    })();
 
-    const word = (function () {
+    var word = (function() {
         return {
-            format(text, args, isRtl, isHtml, locale, parseOnly) {
-                const fArgs = {
-                    guiDir: isRtl ? 'rtl' : 'ltr',
-                    dir: args.dir ? args.dir : isRtl ? 'rtl' : 'ltr',
-                    points: ' ,.!?;:',
+            format: function (text, args, isRtl, isHtml, locale, parseOnly) {
+                var fArgs =
+                {
+                        guiDir: isRtl ? "rtl" : "ltr",
+                        dir: args.dir ? args.dir : isRtl ? "rtl" : "ltr",
+                        points: " ,.!?;:",
                 };
                 if (!parseOnly) {
                     return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
                 }
-                return stext.parseStructure(text, fArgs, !!isHtml, locale);
-            },
+                else {
+                    return stext.parseStructure(text, fArgs, !!isHtml, locale);
+                }
+            }
         };
-    }());
+    })();
 
-    const xpath = (function () {
+    var xpath = (function() {
         return {
-            format(text, args, isRtl, isHtml, locale, parseOnly) {
-                const fArgs = {
-                    guiDir: isRtl ? 'rtl' : 'ltr',
-                    dir: 'ltr',
-                    points: ' /[]<>=!:@.|()+-*',
-                    cases: [{
-                        handler: common,
-                        args: {
-                            bounds: [{
-                                startAfter: '"',
-                                endBefore: '"',
-                            },
-                            {
-                                startAfter: "'",
-                                endBefore: "'",
-                            },
-                            ],
-                            points: '',
-                        },
-                    },
-                    ],
+            format: function (text, args, isRtl, isHtml, locale, parseOnly) {
+                var fArgs =
+                {
+                        guiDir: isRtl ? "rtl" : "ltr",
+                        dir: "ltr",
+                        points: " /[]<>=!:@.|()+-*",
+                        cases: [{
+                            handler: common,
+                            args: {
+                                bounds: [{
+                                    startAfter: "\"",
+                                    endBefore: "\""
+                                },
+                                {
+                                    startAfter: "'",
+                                    endBefore: "'"
+                                }
+                                ],
+                                points: ""
+                            }
+                        }
+                        ]
                 };
                 if (!parseOnly) {
                     return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
                 }
-                return stext.parseStructure(text, fArgs, !!isHtml, locale);
-            },
+                else {
+                    return stext.parseStructure(text, fArgs, !!isHtml, locale);
+                }
+            }
         };
-    }());
+    })();
 
-    const custom = (function () {
+    var custom = (function() {
         return {
-            format(text, args, isRtl, isHtml, locale, parseOnly) {
-                const hArgs = {};
-                let prop = '';
-                const sArgs = Array.isArray(args) ? args[0] : args;
+            format: function (text, args, isRtl, isHtml, locale, parseOnly) {
+                var hArgs = {};
+                var prop = "";
+                var sArgs = Array.isArray(args)? args[0] : args;
                 for (prop in sArgs) {
                     if (sArgs.hasOwnProperty(prop)) {
                         hArgs[prop] = sArgs[prop];
                     }
                 }
-                hArgs.guiDir = isRtl ? 'rtl' : 'ltr';
+                hArgs.guiDir = isRtl ? "rtl" : "ltr";
                 hArgs.dir = hArgs.dir ? hArgs.dir : hArgs.guiDir;
                 if (!parseOnly) {
                     return stext.parseAndDisplayStructure(text, hArgs, !!isHtml, locale);
                 }
-                return stext.parseStructure(text, hArgs, !!isHtml, locale);
-            },
+                else {
+                    return stext.parseStructure(text, hArgs, !!isHtml, locale);
+                }
+            }
         };
-    }());
+    })();
 
-    const message = (function () {
-        const params = {
-            msgLang: 'en', msgDir: '', phLang: '', phDir: '', phPacking: ['{', '}'], phStt: { type: 'none', args: {} }, guiDir: '',
-        };
-        let parametersChecked = false;
+    var message = (function() {
+        var params = {msgLang: "en", msgDir: "", phLang: "", phDir: "", phPacking: ["{","}"], phStt: {type: "none", args: {}}, guiDir: ""};
+        var parametersChecked = false;
 
         function getDirectionOfLanguage(lang) {
-            if (lang === 'he' || lang === 'iw' || lang === 'ar') {
-                return 'rtl';
+            if (lang === "he" || lang === "iw" || lang === "ar") {
+                return "rtl";
             }
-            return 'ltr';
+            return "ltr";
         }
 
         function checkParameters(obj) {
             if (obj.msgDir.length === 0) {
                 obj.msgDir = getDirectionOfLanguage(obj.msgLang);
             }
-            obj.msgDir = obj.msgDir !== 'ltr' && obj.msgDir !== 'rtl' && obj.msgDir != 'auto' ? 'ltr' : obj.msgDir;
+            obj.msgDir = obj.msgDir !== "ltr" && obj.msgDir !== "rtl" && obj.msgDir != "auto"? "ltr" : obj.msgDir;
             if (obj.guiDir.length === 0) {
                 obj.guiDir = obj.msgDir;
             }
-            obj.guiDir = obj.guiDir !== 'rtl' ? 'ltr' : 'rtl';
+            obj.guiDir = obj.guiDir !== "rtl"? "ltr" : "rtl";
             if (obj.phDir.length === 0) {
-                obj.phDir = obj.phLang.length === 0 ? obj.msgDir : getDirectionOfLanguage(obj.phLang);
+                obj.phDir = obj.phLang.length === 0? obj.msgDir : getDirectionOfLanguage(obj.phLang);
             }
-            obj.phDir = obj.phDir !== 'ltr' && obj.phDir !== 'rtl' && obj.phDir != 'auto' ? 'ltr' : obj.phDir;
-            if (typeof (obj.phPacking) === 'string') {
-                obj.phPacking = obj.phPacking.split('');
+            obj.phDir = obj.phDir !== "ltr" && obj.phDir !== "rtl" && obj.phDir != "auto"? "ltr" : obj.phDir;
+            if (typeof (obj.phPacking) === "string") {
+                obj.phPacking = obj.phPacking.split("");
             }
             if (obj.phPacking.length < 2) {
-                obj.phPacking = ['{', '}'];
+                obj.phPacking = ["{","}"];
             }
         }
 
         return {
-            setDefaults(args) {
-                for (const prop in args) {
+            setDefaults: function (args) {
+                for (var prop in args) {
                     if (params.hasOwnProperty(prop)) {
                         params[prop] = args[prop];
                     }
@@ -1307,148 +1350,155 @@ RED.text.format = (function () {
                 parametersChecked = true;
             },
 
-            format(text) {
+            format: function (text) {
                 if (!parametersChecked) {
                     checkParameters(params);
                     parametersChecked = true;
                 }
-                let isHtml = false;
-                let hasHtmlArg = false;
-                const spLength = params.phPacking[0].length;
-                const epLength = params.phPacking[1].length;
+                var isHtml = false;
+                var hasHtmlArg = false;
+                var spLength = params.phPacking[0].length;
+                var epLength = params.phPacking[1].length;
                 if (arguments.length > 0) {
-                    const last = arguments[arguments.length - 1];
-                    if (typeof (last) === 'boolean') {
+                    var last = arguments[arguments.length-1];
+                    if (typeof (last) === "boolean") {
                         isHtml = last;
                         hasHtmlArg = true;
                     }
                 }
-                // Message
-                const re = new RegExp(`${params.phPacking[0]}\\d+${params.phPacking[1]}`);
-                let m;
-                const tSegments = [];
-                let offset = 0;
-                let txt = text;
+                //Message
+                var re = new RegExp(params.phPacking[0] + "\\d+" + params.phPacking[1]);
+                var m;
+                var tSegments = [];
+                var offset = 0;
+                var txt = text;
                 while ((m = re.exec(txt)) != null) {
-                    const lastIndex = txt.indexOf(m[0]) + m[0].length;
+                    var lastIndex = txt.indexOf(m[0]) + m[0].length;
                     if (lastIndex > m[0].length) {
-                        tSegments.push({ text: txt.substring(0, lastIndex - m[0].length), ph: false });
+                        tSegments.push({text: txt.substring(0, lastIndex - m[0].length), ph: false});
                     }
-                    tSegments.push({ text: m[0], ph: true });
+                    tSegments.push({text: m[0], ph: true});
                     offset += lastIndex;
                     txt = txt.substring(lastIndex, txt.length);
                 }
                 if (offset < text.length) {
-                    tSegments.push({ text: text.substring(offset, text.length), ph: false });
+                    tSegments.push({text: text.substring(offset, text.length), ph: false});
                 }
-                // Parameters
-                const tArgs = [];
-                for (var i = 1; i < arguments.length - (hasHtmlArg ? 1 : 0); i++) {
-                    let arg = arguments[i];
-                    const checkArr = arg;
-                    let inLoop = false;
-                    let indArr = 0;
+                //Parameters
+                var tArgs = [];
+                for (var i = 1; i < arguments.length - (hasHtmlArg? 1 : 0); i++) {
+                    var arg = arguments[i];
+                    var checkArr = arg;
+                    var inLoop = false;
+                    var indArr = 0;
                     if (Array.isArray(checkArr)) {
                         arg = checkArr[0];
-                        if (typeof (arg) === 'undefined') {
+                        if (typeof(arg) === "undefined") {
                             continue;
                         }
                         inLoop = true;
                     }
                     do {
-                        if (typeof (arg) === 'string') {
-                            tArgs.push({ text: arg, dir: params.phDir, stt: params.stt });
-                        } else if (typeof (arg) === 'boolean') {
+                        if (typeof (arg) === "string") {
+                            tArgs.push({text: arg, dir: params.phDir, stt: params.stt});
+                        }
+                        else if(typeof (arg) === "boolean") {
                             isHtml = arg;
-                        } else if (typeof (arg) === 'object') {
+                        }
+                        else if(typeof (arg) === "object") {
                             tArgs.push(arg);
-                            if (!arg.hasOwnProperty('text')) {
-                                tArgs[tArgs.length - 1].text = '{???}';
+                            if (!arg.hasOwnProperty("text")) {
+                                tArgs[tArgs.length-1].text = "{???}";
                             }
-                            if (!arg.hasOwnProperty('dir') || arg.dir.length === 0) {
-                                tArgs[tArgs.length - 1].dir = params.phDir;
+                            if (!arg.hasOwnProperty("dir") || arg.dir.length === 0) {
+                                tArgs[tArgs.length-1].dir = params.phDir;
                             }
-                            if (!arg.hasOwnProperty('stt') || (typeof (arg.stt) === 'string' && arg.stt.length === 0)
-                                || (typeof (arg.stt) === 'object' && Object.keys(arg.stt).length === 0)) {
-                                tArgs[tArgs.length - 1].stt = params.phStt;
+                            if (!arg.hasOwnProperty("stt") || (typeof (arg.stt) === "string" && arg.stt.length === 0) ||
+                                (typeof (arg.stt) === "object" && Object.keys(arg.stt).length === 0)) {
+                                tArgs[tArgs.length-1].stt = params.phStt;
                             }
-                        } else {
-                            tArgs.push({ text: `${arg}`, dir: params.phDir, stt: params.phStt });
+                        }
+                        else {
+                            tArgs.push({text: "" + arg, dir: params.phDir, stt: params.phStt});
                         }
                         if (inLoop) {
                             indArr++;
                             if (indArr == checkArr.length) {
                                 inLoop = false;
-                            } else {
+                            }
+                            else {
                                 arg = checkArr[indArr];
                             }
                         }
-                    } while (inLoop);
+                    } while(inLoop);
                 }
-                // Indexing
-                const segments = [];
+                //Indexing
+                var segments = [];
                 for (i = 0; i < tSegments.length; i++) {
-                    const t = tSegments[i];
+                    var t = tSegments[i];
                     if (!t.ph) {
-                        segments.push(new TextSegment({ content: t.text, textDirection: params.msgDir }));
-                    } else {
-                        const ind = parseInt(t.text.substring(spLength, t.text.length - epLength));
+                        segments.push(new TextSegment({content: t.text, textDirection: params.msgDir}));
+                    }
+                    else {
+                        var ind = parseInt(t.text.substring(spLength, t.text.length - epLength));
                         if (isNaN(ind) || ind >= tArgs.length) {
-                            segments.push(new TextSegment({ content: t.text, textDirection: params.msgDir }));
+                            segments.push(new TextSegment({content: t.text, textDirection: params.msgDir}));
                             continue;
                         }
-                        let sttType = 'none';
+                        var sttType = "none";
                         if (!tArgs[ind].stt) {
                             tArgs[ind].stt = params.phStt;
                         }
                         if (tArgs[ind].stt) {
-                            if (typeof (tArgs[ind].stt) === 'string') {
+                            if (typeof (tArgs[ind].stt) === "string") {
                                 sttType = tArgs[ind].stt;
-                            } else if (tArgs[ind].stt.hasOwnProperty('type')) {
+                            }
+                            else if(tArgs[ind].stt.hasOwnProperty("type")) {
                                 sttType = tArgs[ind].stt.type;
                             }
                         }
-                        if (sttType.toLowerCase() !== 'none') {
-                            const sttSegs = getHandler(sttType).format(tArgs[ind].text, tArgs[ind].stt.args || {},
-                                params.msgDir === 'rtl', false, params.msgLang, true);
-                            for (let j = 0; j < sttSegs.length; j++) {
+                        if (sttType.toLowerCase() !== "none") {
+                            var sttSegs =  getHandler(sttType).format(tArgs[ind].text, tArgs[ind].stt.args || {},
+                                    params.msgDir === "rtl", false, params.msgLang, true);
+                            for (var j = 0; j < sttSegs.length; j++) {
                                 segments.push(sttSegs[j]);
                             }
-                            segments.push(new TextSegment({ isVisible: false }));
-                        } else {
-                            segments.push(new TextSegment({ content: tArgs[ind].text, textDirection: (tArgs[ind].dir ? tArgs[ind].dir : params.phDir) }));
+                            segments.push(new TextSegment({isVisible: false}));
+                        }
+                        else {
+                            segments.push(new TextSegment({content: tArgs[ind].text, textDirection: (tArgs[ind].dir? tArgs[ind].dir : params.phDir)}));
                         }
                     }
                 }
-                const result = stext.displayStructure(segments, { guiDir: params.guiDir, dir: params.msgDir }, isHtml);
+                var result =  stext.displayStructure(segments, {guiDir: params.guiDir, dir: params.msgDir}, isHtml);
                 return result;
-            },
+            }
         };
-    }());
+    })();
 
-    let event = null;
+    var event = null;
 
     function getHandler(type) {
         switch (type) {
-        case 'breadcrumb':
+        case "breadcrumb" :
             return breadcrumb;
-        case 'comma':
+        case "comma" :
             return comma;
-        case 'email':
+        case "email" :
             return email;
-        case 'filepath':
+        case "filepath" :
             return filepath;
-        case 'formula':
+        case "formula" :
             return formula;
-        case 'sql':
+        case "sql" :
             return sql;
-        case 'underscore':
+        case "underscore" :
             return underscore;
-        case 'url':
+        case "url" :
             return url;
-        case 'word':
+        case "word" :
             return word;
-        case 'xpath':
+        case "xpath" :
             return xpath;
         default:
             return custom;
@@ -1456,23 +1506,23 @@ RED.text.format = (function () {
     }
 
     function isInputEventSupported(element) {
-        const agent = window.navigator.userAgent;
-        if (agent.indexOf('MSIE') >= 0 || agent.indexOf('Trident') >= 0 || agent.indexOf('Edge') >= 0) {
+        var agent = window.navigator.userAgent;
+        if (agent.indexOf("MSIE") >=0 || agent.indexOf("Trident") >=0 || agent.indexOf("Edge") >=0) {
             return false;
         }
-        let checked = document.createElement(element.tagName);
+        var checked = document.createElement(element.tagName);
         checked.contentEditable = true;
-        let isSupported = ('oninput' in checked);
+        var isSupported = ("oninput" in checked);
         if (!isSupported) {
-            checked.setAttribute('oninput', 'return;');
-            isSupported = typeof checked.oninput === 'function';
+          checked.setAttribute('oninput', 'return;');
+          isSupported = typeof checked['oninput'] == 'function';
         }
         checked = null;
         return isSupported;
     }
 
     function attachElement(element, type, args, isRtl, locale) {
-        // if (!element || element.nodeType != 1 || !element.isContentEditable)
+        //if (!element || element.nodeType != 1 || !element.isContentEditable)
         if (!element || element.nodeType != 1) {
             return false;
         }
@@ -1480,31 +1530,33 @@ RED.text.format = (function () {
             event = document.createEvent('Event');
             event.initEvent('TF', true, true);
         }
-        element.setAttribute('data-tf-type', type);
-        const sArgs = args === 'undefined' ? '{}' : JSON.stringify(Array.isArray(args) ? args[0] : args);
-        element.setAttribute('data-tf-args', sArgs);
-        let dir = 'ltr';
-        if (isRtl === 'undefined') {
+        element.setAttribute("data-tf-type", type);
+        var sArgs = args === "undefined"? "{}" : JSON.stringify(Array.isArray(args)? args[0] : args);
+        element.setAttribute("data-tf-args", sArgs);
+        var dir = "ltr";
+        if (isRtl === "undefined") {
             if (element.dir) {
                 dir = element.dir;
-            } else if (element.style && element.style.direction) {
+            }
+            else if(element.style && element.style.direction) {
                 dir = element.style.direction;
             }
-            isRtl = dir.toLowerCase() === 'rtl';
+            isRtl = dir.toLowerCase() === "rtl";
         }
-        element.setAttribute('data-tf-dir', isRtl);
-        element.setAttribute('data-tf-locale', misc.getLocaleDetails(locale).lang);
+        element.setAttribute("data-tf-dir", isRtl);
+        element.setAttribute("data-tf-locale", misc.getLocaleDetails(locale).lang);
         if (isInputEventSupported(element)) {
-            const ehandler = element.oninput;
-            element.oninput = function (event) {
+            var ehandler = element.oninput;
+            element.oninput = function(event) {
                 displayWithStructure(event.target);
             };
-        } else {
-            element.onkeyup = function (e) {
+        }
+        else {
+            element.onkeyup = function(e) {
                 displayWithStructure(e.target);
                 element.dispatchEvent(event);
             };
-            element.onmouseup = function (e) {
+            element.onmouseup = function(e) {
                 displayWithStructure(e.target);
                 element.dispatchEvent(event);
             };
@@ -1518,60 +1570,62 @@ RED.text.format = (function () {
         if (!element || element.nodeType != 1) {
             return;
         }
-        element.removeAttribute('data-tf-type');
-        element.removeAttribute('data-tf-args');
-        element.removeAttribute('data-tf-dir');
-        element.removeAttribute('data-tf-locale');
-        element.innerHTML = element.textContent || '';
+        element.removeAttribute("data-tf-type");
+        element.removeAttribute("data-tf-args");
+        element.removeAttribute("data-tf-dir");
+        element.removeAttribute("data-tf-locale");
+        element.innerHTML = element.textContent || "";
     }
 
     function displayWithStructure(element) {
-        const txt = element.textContent || '';
-        const selection = document.getSelection();
+        var txt = element.textContent || "";
+        var selection = document.getSelection();
         if (txt.length === 0 || !selection || selection.rangeCount <= 0) {
             element.dispatchEvent(event);
             return;
         }
 
-        const range = selection.getRangeAt(0);
-        const tempRange = range.cloneRange(); let startNode; let
-            startOffset;
+        var range = selection.getRangeAt(0);
+        var tempRange = range.cloneRange(), startNode, startOffset;
         startNode = range.startContainer;
         startOffset = range.startOffset;
-        let textOffset = 0;
+        var textOffset = 0;
         if (startNode.nodeType === 3) {
             textOffset += startOffset;
         }
-        tempRange.setStart(element, 0);
+        tempRange.setStart(element,0);
         tempRange.setEndBefore(startNode);
-        const div = document.createElement('div');
+        var div = document.createElement('div');
         div.appendChild(tempRange.cloneContents());
         textOffset += div.textContent.length;
 
-        element.innerHTML = getHandler(element.getAttribute('data-tf-type'))
-            .format(txt, JSON.parse(element.getAttribute('data-tf-args')), (element.getAttribute('data-tf-dir') === 'true'),
-                true, element.getAttribute('data-tf-locale'));
-        let parent = element;
-        let node = element;
-        let newOffset = 0;
-        let inEnd = false;
+        element.innerHTML = getHandler(element.getAttribute("data-tf-type")).
+            format(txt, JSON.parse(element.getAttribute("data-tf-args")), (element.getAttribute("data-tf-dir") === "true"? true : false),
+            true, element.getAttribute("data-tf-locale"));
+        var parent = element;
+        var node = element;
+        var newOffset = 0;
+        var inEnd = false;
         selection.removeAllRanges();
-        range.setStart(element, 0);
-        range.setEnd(element, 0);
+        range.setStart(element,0);
+        range.setEnd(element,0);
         while (node) {
             if (node.nodeType === 3) {
                 if (newOffset + node.nodeValue.length >= textOffset) {
                     range.setStart(node, textOffset - newOffset);
                     break;
-                } else {
+                }
+                else {
                     newOffset += node.nodeValue.length;
                     node = node.nextSibling;
                 }
-            } else if (node.hasChildNodes()) {
+            }
+            else if(node.hasChildNodes()) {
                 parent = node;
                 node = parent.firstChild;
                 continue;
-            } else {
+            }
+            else {
                 node = node.nextSibling;
             }
             while (!node) {
@@ -1600,7 +1654,7 @@ RED.text.format = (function () {
         * @param isRtl - indicates if the GUI is mirrored
         * @param locale - the browser locale
         */
-        getHtml(text, type, args, isRtl, locale) {
+        getHtml: function (text, type, args, isRtl, locale) {
             return getHandler(type).format(text, args, isRtl, true, locale);
         },
         /**
@@ -1611,11 +1665,11 @@ RED.text.format = (function () {
         * @param isRtl - indicates if the GUI is mirrored
         * @param locale - the browser locale
         */
-        attach(element, type, args, isRtl, locale) {
+        attach: function (element, type, args, isRtl, locale) {
             return attachElement(element, type, args, isRtl, locale);
-        },
+        }
     };
-}());
+})();
 RED.state = {
     DEFAULT: 0,
     MOVING: 1,
@@ -1626,84 +1680,85 @@ RED.state = {
     EXPORT: 6,
     IMPORT: 7,
     IMPORT_DRAGGING: 8,
-    QUICK_JOINING: 9,
-};
-RED.nodes = (function () {
-    const node_defs = {};
-    let nodes = [];
-    let configNodes = {};
-    let links = [];
-    let defaultWorkspace;
-    const workspaces = {};
-    let workspacesOrder = [];
-    const subflows = {};
-    let loadedFlowVersion = null;
+    QUICK_JOINING: 9
+}
+RED.nodes = (function() {
 
-    let initialLoad;
+    var node_defs = {};
+    var nodes = [];
+    var configNodes = {};
+    var links = [];
+    var defaultWorkspace;
+    var workspaces = {};
+    var workspacesOrder =[];
+    var subflows = {};
+    var loadedFlowVersion = null;
 
-    let dirty = false;
+    var initialLoad;
+
+    var dirty = false;
 
     function setDirty(d) {
         dirty = d;
-        RED.events.emit('nodes:change', { dirty });
+        RED.events.emit("nodes:change",{dirty:dirty});
     }
 
-    const registry = (function () {
-        const moduleList = {};
-        let nodeList = [];
-        const nodeSets = {};
-        const typeToId = {};
-        const nodeDefinitions = {};
+    var registry = (function() {
+        var moduleList = {};
+        var nodeList = [];
+        var nodeSets = {};
+        var typeToId = {};
+        var nodeDefinitions = {};
 
         var exports = {
-            getModule(module) {
+            getModule: function(module) {
                 return moduleList[module];
             },
-            getNodeSetForType(nodeType) {
+            getNodeSetForType: function(nodeType) {
                 return exports.getNodeSet(typeToId[nodeType]);
             },
-            getModuleList() {
+            getModuleList: function() {
                 return moduleList;
             },
-            getNodeList() {
+            getNodeList: function() {
                 return nodeList;
             },
-            getNodeTypes() {
+            getNodeTypes: function() {
                 return Object.keys(nodeDefinitions);
             },
-            setNodeList(list) {
+            setNodeList: function(list) {
                 nodeList = [];
-                for (let i = 0; i < list.length; i++) {
-                    const ns = list[i];
+                for(var i=0;i<list.length;i++) {
+                    var ns = list[i];
                     exports.addNodeSet(ns);
                 }
             },
-            addNodeSet(ns) {
+            addNodeSet: function(ns) {
                 ns.added = false;
                 nodeSets[ns.id] = ns;
-                for (let j = 0; j < ns.types.length; j++) {
+                for (var j=0;j<ns.types.length;j++) {
                     typeToId[ns.types[j]] = ns.id;
                 }
                 nodeList.push(ns);
 
                 moduleList[ns.module] = moduleList[ns.module] || {
-                    name: ns.module,
-                    version: ns.version,
-                    local: ns.local,
-                    sets: {},
+                    name:ns.module,
+                    version:ns.version,
+                    local:ns.local,
+                    sets:{}
                 };
                 moduleList[ns.module].sets[ns.name] = ns;
-                RED.events.emit('registry:node-set-added', ns);
+                RED.events.emit("registry:node-set-added",ns);
             },
-            removeNodeSet(id) {
-                const ns = nodeSets[id];
-                for (let j = 0; j < ns.types.length; j++) {
+            removeNodeSet: function(id) {
+                var ns = nodeSets[id];
+                for (var j=0;j<ns.types.length;j++) {
                     delete typeToId[ns.types[j]];
                 }
                 delete nodeSets[id];
-                for (let i = 0; i < nodeList.length; i++) {
+                for (var i=0;i<nodeList.length;i++) {
                     if (nodeList[i].id === id) {
-                        nodeList.splice(i, 1);
+                        nodeList.splice(i,1);
                         break;
                     }
                 }
@@ -1711,92 +1766,92 @@ RED.nodes = (function () {
                 if (Object.keys(moduleList[ns.module].sets).length === 0) {
                     delete moduleList[ns.module];
                 }
-                RED.events.emit('registry:node-set-removed', ns);
+                RED.events.emit("registry:node-set-removed",ns);
                 return ns;
             },
-            getNodeSet(id) {
+            getNodeSet: function(id) {
                 return nodeSets[id];
             },
-            enableNodeSet(id) {
-                const ns = nodeSets[id];
+            enableNodeSet: function(id) {
+                var ns = nodeSets[id];
                 ns.enabled = true;
-                RED.events.emit('registry:node-set-enabled', ns);
+                RED.events.emit("registry:node-set-enabled",ns);
             },
-            disableNodeSet(id) {
-                const ns = nodeSets[id];
+            disableNodeSet: function(id) {
+                var ns = nodeSets[id];
                 ns.enabled = false;
-                RED.events.emit('registry:node-set-disabled', ns);
+                RED.events.emit("registry:node-set-disabled",ns);
             },
-            registerNodeType(nt, def) {
+            registerNodeType: function(nt,def) {
                 nodeDefinitions[nt] = def;
-                if (def.category != 'subflows') {
+                if (def.category != "subflows") {
                     def.set = nodeSets[typeToId[nt]];
                     nodeSets[typeToId[nt]].added = true;
                     nodeSets[typeToId[nt]].enabled = true;
 
-                    let ns;
-                    if (def.set.module === 'node-red') {
-                        ns = 'node-red';
+                    var ns;
+                    if (def.set.module === "node-red") {
+                        ns = "node-red";
                     } else {
                         ns = def.set.id;
                     }
-                    def._ = function () {
-                        const args = Array.prototype.slice.call(arguments, 0);
-                        if (args[0].indexOf(':') === -1) {
-                            args[0] = `${ns}:${args[0]}`;
+                    def["_"] = function() {
+                        var args = Array.prototype.slice.call(arguments, 0);
+                        if (args[0].indexOf(":") === -1) {
+                            args[0] = ns+":"+args[0];
                         }
-                        return RED._.apply(null, args);
-                    };
+                        return RED._.apply(null,args);
+                    }
 
                     // TODO: too tightly coupled into palette UI
                 }
-                RED.events.emit('registry:node-type-added', nt);
+                RED.events.emit("registry:node-type-added",nt);
             },
-            removeNodeType(nt) {
-                if (nt.substring(0, 8) != 'subflow:') {
+            removeNodeType: function(nt) {
+                if (nt.substring(0,8) != "subflow:") {
                     // NON-NLS - internal debug message
-                    throw new Error('this api is subflow only. called with:', nt);
+                    throw new Error("this api is subflow only. called with:",nt);
                 }
                 delete nodeDefinitions[nt];
-                RED.events.emit('registry:node-type-removed', nt);
+                RED.events.emit("registry:node-type-removed",nt);
             },
-            getNodeType(nt) {
+            getNodeType: function(nt) {
                 return nodeDefinitions[nt];
-            },
+            }
         };
         return exports;
-    }());
+    })();
 
     function getID() {
-        return (1 + Math.random() * 4294967295).toString(16);
+        return (1+Math.random()*4294967295).toString(16);
     }
 
     function addNode(n) {
-        if (n.type.indexOf('subflow') !== 0) {
-            n._ = n._def._;
+        if (n.type.indexOf("subflow") !== 0) {
+            n["_"] = n._def._;
         }
-        if (n._def.category == 'config') {
+        if (n._def.category == "config") {
             configNodes[n.id] = n;
         } else {
             n.ports = [];
             if (n.wires && (n.wires.length > n.outputs)) { n.outputs = n.wires.length; }
             if (n.outputs) {
-                for (let i = 0; i < n.outputs; i++) {
+                for (var i=0;i<n.outputs;i++) {
                     n.ports.push(i);
                 }
             }
             n.dirty = true;
             updateConfigNodeUsers(n);
-            if (n._def.category == 'subflows' && typeof n.i === 'undefined') {
-                let nextId = 0;
-                RED.nodes.eachNode((node) => {
-                    nextId = Math.max(nextId, node.i || 0);
+            if (n._def.category == "subflows" && typeof n.i === "undefined") {
+                var nextId = 0;
+                RED.nodes.eachNode(function(node) {
+                    nextId = Math.max(nextId,node.i||0);
                 });
-                n.i = nextId + 1;
+                n.i = nextId+1;
             }
             nodes.push(n);
         }
-        RED.events.emit('nodes:add', n);
+        RED.events.emit('nodes:add',n);
     }
     function addLink(l) {
         links.push(l);
@@ -1805,47 +1860,47 @@ RED.nodes = (function () {
     function getNode(id) {
         if (id in configNodes) {
             return configNodes[id];
-        }
-        for (const n in nodes) {
-            if (nodes[n].id == id) {
-                return nodes[n];
+        } else {
+            for (var n in nodes) {
+                if (nodes[n].id == id) {
+                    return nodes[n];
+                }
             }
         }
-
         return null;
     }
 
     function removeNode(id) {
-        let removedLinks = [];
-        const removedNodes = [];
-        let node;
+        var removedLinks = [];
+        var removedNodes = [];
+        var node;
         if (id in configNodes) {
             node = configNodes[id];
             delete configNodes[id];
-            RED.events.emit('nodes:remove', node);
+            RED.events.emit('nodes:remove',node);
             RED.workspaces.refresh();
         } else {
             node = getNode(id);
             if (node) {
-                nodes.splice(nodes.indexOf(node), 1);
-                removedLinks = links.filter(l => (l.source === node) || (l.target === node));
-                removedLinks.forEach((l) => { links.splice(links.indexOf(l), 1); });
-                let updatedConfigNode = false;
-                for (const d in node._def.defaults) {
+                nodes.splice(nodes.indexOf(node),1);
+                removedLinks = links.filter(function(l) { return (l.source === node) || (l.target === node); });
+                removedLinks.forEach(function(l) {links.splice(links.indexOf(l), 1); });
+                var updatedConfigNode = false;
+                for (var d in node._def.defaults) {
                     if (node._def.defaults.hasOwnProperty(d)) {
-                        const property = node._def.defaults[d];
+                        var property = node._def.defaults[d];
                         if (property.type) {
-                            const type = registry.getNodeType(property.type);
-                            if (type && type.category == 'config') {
-                                const configNode = configNodes[node[d]];
+                            var type = registry.getNodeType(property.type);
+                            if (type && type.category == "config") {
+                                var configNode = configNodes[node[d]];
                                 if (configNode) {
                                     updatedConfigNode = true;
                                     if (configNode._def.exclusive) {
                                         removeNode(node[d]);
                                         removedNodes.push(configNode);
                                     } else {
-                                        const users = configNode.users;
-                                        users.splice(users.indexOf(node), 1);
+                                        var users = configNode.users;
+                                        users.splice(users.indexOf(node),1);
                                     }
                                 }
                             }
@@ -1855,19 +1910,19 @@ RED.nodes = (function () {
                 if (updatedConfigNode) {
                     RED.workspaces.refresh();
                 }
-                RED.events.emit('nodes:remove', node);
+                RED.events.emit('nodes:remove',node);
             }
         }
         if (node && node._def.onremove) {
             node._def.onremove.call(n);
         }
-        return { links: removedLinks, nodes: removedNodes };
+        return {links:removedLinks,nodes:removedNodes};
     }
 
     function removeLink(l) {
-        const index = links.indexOf(l);
+        var index = links.indexOf(l);
         if (index != -1) {
-            links.splice(index, 1);
+            links.splice(index,1);
         }
     }
 
@@ -1875,8 +1930,8 @@ RED.nodes = (function () {
         workspaces[ws.id] = ws;
         ws._def = {
             defaults: {
-                label: { value: '' },
-            },
+                label: {value:""}
+            }
         };
 
         workspacesOrder.push(ws.id);
@@ -1886,19 +1941,19 @@ RED.nodes = (function () {
     }
     function removeWorkspace(id) {
         delete workspaces[id];
-        workspacesOrder.splice(workspacesOrder.indexOf(id), 1);
+        workspacesOrder.splice(workspacesOrder.indexOf(id),1);
 
-        const removedNodes = [];
-        let removedLinks = [];
-        let n;
-        let node;
-        for (n = 0; n < nodes.length; n++) {
+        var removedNodes = [];
+        var removedLinks = [];
+        var n;
+        var node;
+        for (n=0;n<nodes.length;n++) {
             node = nodes[n];
             if (node.z == id) {
                 removedNodes.push(node);
             }
         }
-        for (n in configNodes) {
+        for(n in configNodes) {
             if (configNodes.hasOwnProperty(n)) {
                 node = configNodes[n];
                 if (node.z == id) {
@@ -1906,73 +1961,78 @@ RED.nodes = (function () {
                 }
             }
         }
-        for (n = 0; n < removedNodes.length; n++) {
-            const result = removeNode(removedNodes[n].id);
+        for (n=0;n<removedNodes.length;n++) {
+            var result = removeNode(removedNodes[n].id);
             removedLinks = removedLinks.concat(result.links);
         }
-        return { nodes: removedNodes, links: removedLinks };
+        return {nodes:removedNodes,links:removedLinks};
     }
 
     function addSubflow(sf, createNewIds) {
         if (createNewIds) {
-            const subflowNames = Object.keys(subflows).map(sfid => subflows[sfid].name);
+            var subflowNames = Object.keys(subflows).map(function(sfid) {
+                return subflows[sfid].name;
+            });
 
             subflowNames.sort();
-            let copyNumber = 1;
-            let subflowName = sf.name;
-            subflowNames.forEach((name) => {
+            var copyNumber = 1;
+            var subflowName = sf.name;
+            subflowNames.forEach(function(name) {
                 if (subflowName == name) {
                     copyNumber++;
-                    subflowName = `${sf.name} (${copyNumber})`;
+                    subflowName = sf.name+" ("+copyNumber+")";
                 }
             });
             sf.name = subflowName;
         }
         sf._def = {
-            defaults: {},
-            icon: 'subflow.png',
-            category: 'subflows',
-            color: '#da9',
+            defaults:{},
+            icon:"subflow.png",
+            category: "subflows",
+            color: "#da9",
             inputs: sf.in.length,
-            outputs: sf.out.length,
-        };
+            outputs: sf.out.length
+        }
         subflows[sf.id] = sf;
-        RED.nodes.registerType(`subflow:${sf.id}`, {
-            defaults: { name: { value: '' } },
+        RED.nodes.registerType("subflow:"+sf.id, {
+            defaults:{name:{value:""}},
             info: sf.info,
-            icon: 'subflow.png',
-            category: 'subflows',
+            icon:"subflow.png",
+            category: "subflows",
             inputs: sf.in.length,
             outputs: sf.out.length,
-            color: '#da9',
-            label() { return this.name || RED.nodes.subflow(sf.id).name; },
-            labelStyle() { return this.name ? 'node_label_italic' : ''; },
-            paletteLabel() { return RED.nodes.subflow(sf.id).name; },
-            set: {
-                module: 'node-red',
-            },
+            color: "#da9",
+            label: function() { return this.name||RED.nodes.subflow(sf.id).name },
+            labelStyle: function() { return this.name?"node_label_italic":""; },
+            paletteLabel: function() { return RED.nodes.subflow(sf.id).name },
+            set:{
+                module: "node-red"
+            }
         });
+
+
     }
     function getSubflow(id) {
         return subflows[id];
     }
     function removeSubflow(sf) {
         delete subflows[sf.id];
-        registry.removeNodeType(`subflow:${sf.id}`);
+        registry.removeNodeType("subflow:"+sf.id);
     }
 
-    function subflowContains(sfid, nodeid) {
-        for (let i = 0; i < nodes.length; i++) {
-            const node = nodes[i];
+    function subflowContains(sfid,nodeid) {
+        for (var i=0;i<nodes.length;i++) {
+            var node = nodes[i];
             if (node.z === sfid) {
-                const m = /^subflow:(.+)$/.exec(node.type);
+                var m = /^subflow:(.+)$/.exec(node.type);
                 if (m) {
                     if (m[1] === nodeid) {
                         return true;
-                    }
-                    const result = subflowContains(m[1], nodeid);
-                    if (result) {
-                        return true;
+                    } else {
+                        var result = subflowContains(m[1],nodeid);
+                        if (result) {
+                            return true;
+                        }
                     }
                 }
             }
@@ -1981,18 +2041,18 @@ RED.nodes = (function () {
     }
 
     function getAllFlowNodes(node) {
-        const visited = {};
+        var visited = {};
         visited[node.id] = true;
-        const nns = [node];
-        const stack = [node];
-        while (stack.length !== 0) {
+        var nns = [node];
+        var stack = [node];
+        while(stack.length !== 0) {
             var n = stack.shift();
-            const childLinks = links.filter(d => (d.source === n) || (d.target === n));
-            for (let i = 0; i < childLinks.length; i++) {
-                const child = (childLinks[i].source === n) ? childLinks[i].target : childLinks[i].source;
-                let id = child.id;
+            var childLinks = links.filter(function(d) { return (d.source === n) || (d.target === n);});
+            for (var i=0;i<childLinks.length;i++) {
+                var child = (childLinks[i].source === n)?childLinks[i].target:childLinks[i].source;
+                var id = child.id;
                 if (!id) {
-                    id = `${child.direction}:${child.i}`;
+                    id = child.direction+":"+child.i;
                 }
                 if (!visited[id]) {
                     visited[id] = true;
@@ -2005,10 +2065,10 @@ RED.nodes = (function () {
     }
 
     function convertWorkspace(n) {
-        const node = {};
+        var node = {};
         node.id = n.id;
         node.type = n.type;
-        for (const d in n._def.defaults) {
+        for (var d in n._def.defaults) {
             if (n._def.defaults.hasOwnProperty(d)) {
                 node[d] = n[d];
             }
@@ -2017,37 +2077,37 @@ RED.nodes = (function () {
     }
     /**
      * Converts a node to an exportable JSON Object
-     * */
+     **/
     function convertNode(n, exportCreds) {
         if (n.type === 'tab') {
             return convertWorkspace(n);
         }
         exportCreds = exportCreds || false;
-        const node = {};
+        var node = {};
         node.id = n.id;
         node.type = n.type;
         node.z = n.z;
-        if (node.type == 'unknown') {
-            for (const p in n._orig) {
+        if (node.type == "unknown") {
+            for (var p in n._orig) {
                 if (n._orig.hasOwnProperty(p)) {
                     node[p] = n._orig[p];
                 }
             }
         } else {
-            for (const d in n._def.defaults) {
+            for (var d in n._def.defaults) {
                 if (n._def.defaults.hasOwnProperty(d)) {
                     node[d] = n[d];
                 }
             }
-            if (exportCreds && n.credentials) {
-                const credentialSet = {};
+            if(exportCreds && n.credentials) {
+                var credentialSet = {};
                 node.credentials = {};
-                for (const cred in n._def.credentials) {
+                for (var cred in n._def.credentials) {
                     if (n._def.credentials.hasOwnProperty(cred)) {
                         if (n._def.credentials[cred].type == 'password') {
-                            if (!n.credentials._
-                                || n.credentials[`has_${cred}`] != n.credentials._[`has_${cred}`]
-                                || (n.credentials[`has_${cred}`] && n.credentials[cred])) {
+                            if (!n.credentials._ ||
+                                n.credentials["has_"+cred] != n.credentials._["has_"+cred] ||
+                                (n.credentials["has_"+cred] && n.credentials[cred])) {
                                 credentialSet[cred] = n.credentials[cred];
                             }
                         } else if (n.credentials[cred] != null && (!n.credentials._ || n.credentials[cred] != n.credentials._[cred])) {
@@ -2060,17 +2120,17 @@ RED.nodes = (function () {
                 }
             }
         }
-        if (n._def.category != 'config') {
+        if (n._def.category != "config") {
             node.x = n.x;
             node.y = n.y;
             node.wires = [];
-            for (let i = 0; i < n.outputs; i++) {
+            for(var i=0;i<n.outputs;i++) {
                 node.wires.push([]);
             }
-            const wires = links.filter(d => d.source === n);
-            for (let j = 0; j < wires.length; j++) {
-                const w = wires[j];
-                if (w.target.type != 'subflow') {
+            var wires = links.filter(function(d){return d.source === n;});
+            for (var j=0;j<wires.length;j++) {
+                var w = wires[j];
+                if (w.target.type != "subflow") {
                     node.wires[w.sourcePort].push(w.target.id);
                 }
             }
@@ -2079,7 +2139,7 @@ RED.nodes = (function () {
     }
 
     function convertSubflow(n) {
-        const node = {};
+        var node = {};
         node.id = n.id;
         node.type = n.type;
         node.name = n.name;
@@ -2087,25 +2147,25 @@ RED.nodes = (function () {
         node.in = [];
         node.out = [];
 
-        n.in.forEach((p) => {
-            const nIn = { x: p.x, y: p.y, wires: [] };
-            const wires = links.filter(d => d.source === p);
-            for (let i = 0; i < wires.length; i++) {
-                const w = wires[i];
-                if (w.target.type != 'subflow') {
-                    nIn.wires.push({ id: w.target.id });
+        n.in.forEach(function(p) {
+            var nIn = {x:p.x,y:p.y,wires:[]};
+            var wires = links.filter(function(d) { return d.source === p });
+            for (var i=0;i<wires.length;i++) {
+                var w = wires[i];
+                if (w.target.type != "subflow") {
+                    nIn.wires.push({id:w.target.id})
                 }
             }
             node.in.push(nIn);
         });
-        n.out.forEach((p, c) => {
-            const nOut = { x: p.x, y: p.y, wires: [] };
-            const wires = links.filter(d => d.target === p);
-            for (i = 0; i < wires.length; i++) {
-                if (wires[i].source.type != 'subflow') {
-                    nOut.wires.push({ id: wires[i].source.id, port: wires[i].sourcePort });
+        n.out.forEach(function(p,c) {
+            var nOut = {x:p.x,y:p.y,wires:[]};
+            var wires = links.filter(function(d) { return d.target === p });
+            for (i=0;i<wires.length;i++) {
+                if (wires[i].source.type != "subflow") {
+                    nOut.wires.push({id:wires[i].source.id,port:wires[i].sourcePort})
                 } else {
-                    nOut.wires.push({ id: n.id, port: 0 });
+                    nOut.wires.push({id:n.id,port:0})
                 }
             }
             node.out.push(nOut);
@@ -2116,62 +2176,62 @@ RED.nodes = (function () {
     }
     /**
      * Converts the current node selection to an exportable JSON Object
-     * */
+     **/
     function createExportableNodeSet(set) {
-        let nns = [];
-        const exportedConfigNodes = {};
-        const exportedSubflows = {};
-        for (let n = 0; n < set.length; n++) {
-            const node = set[n];
-            if (node.type.substring(0, 8) == 'subflow:') {
+        var nns = [];
+        var exportedConfigNodes = {};
+        var exportedSubflows = {};
+        for (var n=0;n<set.length;n++) {
+            var node = set[n];
+            if (node.type.substring(0,8) == "subflow:") {
                 var subflowId = node.type.substring(8);
                 if (!exportedSubflows[subflowId]) {
                     exportedSubflows[subflowId] = true;
-                    const subflow = getSubflow(subflowId);
+                    var subflow = getSubflow(subflowId);
                     var subflowSet = [subflow];
-                    RED.nodes.eachNode((n) => {
+                    RED.nodes.eachNode(function(n) {
                         if (n.z == subflowId) {
                             subflowSet.push(n);
                         }
                     });
-                    const exportableSubflow = createExportableNodeSet(subflowSet);
+                    var exportableSubflow = createExportableNodeSet(subflowSet);
                     nns = exportableSubflow.concat(nns);
                 }
             }
-            if (node.type != 'subflow') {
-                const convertedNode = RED.nodes.convertNode(node);
-                for (const d in node._def.defaults) {
+            if (node.type != "subflow") {
+                var convertedNode = RED.nodes.convertNode(node);
+                for (var d in node._def.defaults) {
                     if (node._def.defaults[d].type && node[d] in configNodes) {
-                        const confNode = configNodes[node[d]];
-                        const exportable = registry.getNodeType(node._def.defaults[d].type).exportable;
+                        var confNode = configNodes[node[d]];
+                        var exportable = registry.getNodeType(node._def.defaults[d].type).exportable;
                         if ((exportable == null || exportable)) {
                             if (!(node[d] in exportedConfigNodes)) {
                                 exportedConfigNodes[node[d]] = true;
                                 set.push(confNode);
                             }
                         } else {
-                            convertedNode[d] = '';
+                            convertedNode[d] = "";
                         }
                     }
                 }
                 nns.push(convertedNode);
             } else {
-                const convertedSubflow = convertSubflow(node);
+                var convertedSubflow = convertSubflow(node);
                 nns.push(convertedSubflow);
             }
         }
         return nns;
     }
 
-    // TODO: rename this (createCompleteNodeSet)
+    //TODO: rename this (createCompleteNodeSet)
     function createCompleteNodeSet(exportCredentials) {
         if (exportCredentials === undefined) {
             exportCredentials = true;
         }
-        const nns = [];
-        let i;
-        for (i = 0; i < workspacesOrder.length; i++) {
-            if (workspaces[workspacesOrder[i]].type == 'tab') {
+        var nns = [];
+        var i;
+        for (i=0;i<workspacesOrder.length;i++) {
+            if (workspaces[workspacesOrder[i]].type == "tab") {
                 nns.push(convertWorkspace(workspaces[workspacesOrder[i]]));
             }
         }
@@ -2185,39 +2245,39 @@ RED.nodes = (function () {
                 nns.push(convertNode(configNodes[i], exportCredentials));
             }
         }
-        for (i = 0; i < nodes.length; i++) {
-            const node = nodes[i];
+        for (i=0;i<nodes.length;i++) {
+            var node = nodes[i];
             nns.push(convertNode(node, exportCredentials));
         }
         return nns;
     }
 
-    function checkForMatchingSubflow(subflow, subflowNodes) {
-        let i;
-        let match = null;
+    function checkForMatchingSubflow(subflow,subflowNodes) {
+        var i;
+        var match = null;
         try {
-            RED.nodes.eachSubflow((sf) => {
-                if (sf.name != subflow.name
-                    || sf.info != subflow.info
-                    || sf.in.length != subflow.in.length
-                    || sf.out.length != subflow.out.length) {
-                    return;
+            RED.nodes.eachSubflow(function(sf) {
+                if (sf.name != subflow.name ||
+                    sf.info != subflow.info ||
+                    sf.in.length != subflow.in.length ||
+                    sf.out.length != subflow.out.length) {
+                        return;
                 }
-                const sfNodes = RED.nodes.filterNodes({ z: sf.id });
+                var sfNodes = RED.nodes.filterNodes({z:sf.id});
                 if (sfNodes.length != subflowNodes.length) {
                     return;
                 }
 
-                const subflowNodeSet = [subflow].concat(subflowNodes);
-                const sfNodeSet = [sf].concat(sfNodes);
+                var subflowNodeSet = [subflow].concat(subflowNodes);
+                var sfNodeSet = [sf].concat(sfNodes);
 
-                let exportableSubflowNodes = JSON.stringify(subflowNodeSet);
-                const exportableSFNodes = JSON.stringify(createExportableNodeSet(sfNodeSet));
-                const nodeMap = {};
-                for (i = 0; i < sfNodes.length; i++) {
-                    exportableSubflowNodes = exportableSubflowNodes.replace(new RegExp(`"${subflowNodes[i].id}"`, 'g'), `"${sfNodes[i].id}"`);
+                var exportableSubflowNodes = JSON.stringify(subflowNodeSet);
+                var exportableSFNodes = JSON.stringify(createExportableNodeSet(sfNodeSet));
+                var nodeMap = {};
+                for (i=0;i<sfNodes.length;i++) {
+                    exportableSubflowNodes = exportableSubflowNodes.replace(new RegExp("\""+subflowNodes[i].id+"\"","g"),'"'+sfNodes[i].id+'"');
                 }
-                exportableSubflowNodes = exportableSubflowNodes.replace(new RegExp(`"${subflow.id}"`, 'g'), `"${sf.id}"`);
+                exportableSubflowNodes = exportableSubflowNodes.replace(new RegExp("\""+subflow.id+"\"","g"),'"'+sf.id+'"');
 
                 if (exportableSubflowNodes !== exportableSFNodes) {
                     return;
@@ -2226,52 +2286,54 @@ RED.nodes = (function () {
                 match = sf;
                 throw new Error();
             });
-        } catch (err) {
+        } catch(err) {
             console.log(err.stack);
         }
         return match;
     }
-    function compareNodes(nodeA, nodeB, idMustMatch) {
+    function compareNodes(nodeA,nodeB,idMustMatch) {
         if (idMustMatch && nodeA.id != nodeB.id) {
             return false;
         }
         if (nodeA.type != nodeB.type) {
             return false;
         }
-        const def = nodeA._def;
-        for (const d in def.defaults) {
+        var def = nodeA._def;
+        for (var d in def.defaults) {
             if (def.defaults.hasOwnProperty(d)) {
-                const vA = nodeA[d];
-                const vB = nodeB[d];
+                var vA = nodeA[d];
+                var vB = nodeB[d];
                 if (typeof vA !== typeof vB) {
                     return false;
                 }
-                if (vA === null || typeof vA === 'string' || typeof vA === 'number') {
+                if (vA === null || typeof vA === "string" || typeof vA === "number") {
                     if (vA !== vB) {
                         return false;
                     }
-                } else if (JSON.stringify(vA) !== JSON.stringify(vB)) {
-                    return false;
+                } else {
+                    if (JSON.stringify(vA) !== JSON.stringify(vB)) {
+                        return false;
+                    }
                 }
             }
         }
         return true;
     }
 
-    function importNodes(newNodesObj, createNewIds, createMissingWorkspace) {
-        let i;
-        let n;
-        let newNodes;
-        const nodeZmap = {};
-        if (typeof newNodesObj === 'string') {
-            if (newNodesObj === '') {
+    function importNodes(newNodesObj,createNewIds,createMissingWorkspace) {
+        var i;
+        var n;
+        var newNodes;
+        var nodeZmap = {};
+        if (typeof newNodesObj === "string") {
+            if (newNodesObj === "") {
                 return;
             }
             try {
                 newNodes = JSON.parse(newNodesObj);
-            } catch (err) {
-                const e = new Error(RED._('clipboard.invalidFlow', { message: err.message }));
-                e.code = 'NODE_RED';
+            } catch(err) {
+                var e = new Error(RED._("clipboard.invalidFlow",{message:err.message}));
+                e.code = "NODE_RED";
                 throw e;
             }
         } else {
@@ -2284,76 +2346,77 @@ RED.nodes = (function () {
         if (!initialLoad) {
             initialLoad = JSON.parse(JSON.stringify(newNodes));
         }
-        const unknownTypes = [];
-        for (i = 0; i < newNodes.length; i++) {
+        var unknownTypes = [];
+        for (i=0;i<newNodes.length;i++) {
             n = newNodes[i];
             // TODO: remove workspace in next release+1
-            if (n.type != 'workspace'
-                && n.type != 'tab'
-                && n.type != 'subflow'
-                && !registry.getNodeType(n.type)
-                && n.type.substring(0, 8) != 'subflow:'
-                && unknownTypes.indexOf(n.type) == -1) {
-                unknownTypes.push(n.type);
-                console.log(`found unknownTypes: ${n.type}`);
+            if (n.type != "workspace" &&
+                n.type != "tab" &&
+                n.type != "subflow" &&
+                !registry.getNodeType(n.type) &&
+                n.type.substring(0,8) != "subflow:" &&
+                unknownTypes.indexOf(n.type)==-1) {
+                    unknownTypes.push(n.type);
+                    console.log("found unknownTypes: " + n.type);
             }
             if (n.z) {
                 nodeZmap[n.z] = nodeZmap[n.z] || [];
                 nodeZmap[n.z].push(n);
             }
+
         }
         if (unknownTypes.length > 0) {
-            const typeList = `<ul><li>${unknownTypes.join('</li><li>')}</li></ul>`;
-            const type = `type${unknownTypes.length > 1 ? 's' : ''}`;
-            RED.notify(`<strong>${RED._('clipboard.importUnrecognised', { count: unknownTypes.length })}</strong>${typeList}`, 'error', false, 10000);
+            var typeList = "<ul><li>"+unknownTypes.join("</li><li>")+"</li></ul>";
+            var type = "type"+(unknownTypes.length > 1?"s":"");
+            RED.notify("<strong>"+RED._("clipboard.importUnrecognised",{count:unknownTypes.length})+"</strong>"+typeList,"error",false,10000);
         }
 
-        let activeWorkspace = RED.workspaces.active();
-        // TODO: check the z of the subflow instance and check _that_ if it exists
-        const activeSubflow = getSubflow(activeWorkspace);
-        for (i = 0; i < newNodes.length; i++) {
-            const m = /^subflow:(.+)$/.exec(newNodes[i].type);
+        var activeWorkspace = RED.workspaces.active();
+        //TODO: check the z of the subflow instance and check _that_ if it exists
+        var activeSubflow = getSubflow(activeWorkspace);
+        for (i=0;i<newNodes.length;i++) {
+            var m = /^subflow:(.+)$/.exec(newNodes[i].type);
             if (m) {
-                const subflowId = m[1];
-                const parent = getSubflow(newNodes[i].z || activeWorkspace);
+                var subflowId = m[1];
+                var parent = getSubflow(newNodes[i].z || activeWorkspace);
                 if (parent) {
                     var err;
                     if (subflowId === parent.id) {
-                        err = new Error(RED._('notification.errors.cannotAddSubflowToItself'));
+                        err = new Error(RED._("notification.errors.cannotAddSubflowToItself"));
                     }
-                    if (subflowContains(subflowId, parent.id)) {
-                        err = new Error(RED._('notification.errors.cannotAddCircularReference'));
+                    if (subflowContains(subflowId,parent.id)) {
+                        err = new Error(RED._("notification.errors.cannotAddCircularReference"));
                     }
                     if (err) {
                         // TODO: standardise error codes
-                        err.code = 'NODE_RED';
+                        err.code = "NODE_RED";
                         throw err;
                     }
                 }
             }
         }
 
-        const new_workspaces = [];
-        const workspace_map = {};
-        const new_subflows = [];
-        const subflow_map = {};
-        const subflow_blacklist = {};
-        const node_map = {};
-        const new_nodes = [];
-        const new_links = [];
-        let nid;
-        let def;
-        let configNode;
-        let missingWorkspace = null;
-        let d;
+        var new_workspaces = [];
+        var workspace_map = {};
+        var new_subflows = [];
+        var subflow_map = {};
+        var subflow_blacklist = {};
+        var node_map = {};
+        var new_nodes = [];
+        var new_links = [];
+        var nid;
+        var def;
+        var configNode;
+        var missingWorkspace = null;
+        var d;
 
         // Find all tabs and subflow templates
-        for (i = 0; i < newNodes.length; i++) {
+        for (i=0;i<newNodes.length;i++) {
             n = newNodes[i];
             // TODO: remove workspace in next release+1
-            if (n.type === 'workspace' || n.type === 'tab') {
-                if (n.type === 'workspace') {
-                    n.type = 'tab';
+            if (n.type === "workspace" || n.type === "tab") {
+                if (n.type === "workspace") {
+                    n.type = "tab";
                 }
                 if (defaultWorkspace == null) {
                     defaultWorkspace = n;
@@ -2367,8 +2430,8 @@ RED.nodes = (function () {
                 addWorkspace(n);
                 RED.workspaces.add(n);
                 new_workspaces.push(n);
-            } else if (n.type === 'subflow') {
-                const matchingSubflow = checkForMatchingSubflow(n, nodeZmap[n.id]);
+            } else if (n.type === "subflow") {
+                var matchingSubflow = checkForMatchingSubflow(n,nodeZmap[n.id]);
                 if (matchingSubflow) {
                     subflow_blacklist[n.id] = matchingSubflow;
                 } else {
@@ -2378,29 +2441,29 @@ RED.nodes = (function () {
                         n.id = nid;
                     }
                     // TODO: handle createNewIds - map old to new subflow ids
-                    n.in.forEach((input, i) => {
-                        input.type = 'subflow';
-                        input.direction = 'in';
+                    n.in.forEach(function(input,i) {
+                        input.type = "subflow";
+                        input.direction = "in";
                         input.z = n.id;
                         input.i = i;
                         input.id = getID();
                     });
-                    n.out.forEach((output, i) => {
-                        output.type = 'subflow';
-                        output.direction = 'out';
+                    n.out.forEach(function(output,i) {
+                        output.type = "subflow";
+                        output.direction = "out";
                         output.z = n.id;
                         output.i = i;
                         output.id = getID();
                     });
                     new_subflows.push(n);
-                    addSubflow(n, createNewIds);
+                    addSubflow(n,createNewIds);
                 }
             }
         }
 
         // Add a tab if there isn't one there already
         if (defaultWorkspace == null) {
-            defaultWorkspace = { type: 'tab', id: getID(), label: RED._('workspace.defaultName', { number: 1 }) };
+            defaultWorkspace = { type:"tab", id:getID(), label:RED._('workspace.defaultName',{number:1})};
             addWorkspace(defaultWorkspace);
             RED.workspaces.add(defaultWorkspace);
             new_workspaces.push(defaultWorkspace);
@@ -2408,11 +2471,11 @@ RED.nodes = (function () {
         }
 
         // Find all config nodes and add them
-        for (i = 0; i < newNodes.length; i++) {
+        for (i=0;i<newNodes.length;i++) {
             n = newNodes[i];
             def = registry.getNodeType(n.type);
-            if (def && def.category == 'config') {
-                let existingConfigNode = null;
+            if (def && def.category == "config") {
+                var existingConfigNode = null;
                 if (createNewIds) {
                     if (n.z) {
                         if (subflow_blacklist[n.z]) {
@@ -2424,7 +2487,7 @@ RED.nodes = (function () {
                             if (!workspaces[n.z]) {
                                 if (createMissingWorkspace) {
                                     if (missingWorkspace === null) {
-                                        missingWorkspace = RED.workspaces.add(null, true);
+                                        missingWorkspace = RED.workspaces.add(null,true);
                                         new_workspaces.push(missingWorkspace);
                                     }
                                     n.z = missingWorkspace.id;
@@ -2439,9 +2502,9 @@ RED.nodes = (function () {
                         if (n.z && existingConfigNode.z !== n.z) {
                             existingConfigNode = null;
                             // Check the config nodes on n.z
-                            for (const cn in configNodes) {
+                            for (var cn in configNodes) {
                                 if (configNodes.hasOwnProperty(cn)) {
-                                    if (configNodes[cn].z === n.z && compareNodes(configNodes[cn], n, false)) {
+                                    if (configNodes[cn].z === n.z && compareNodes(configNodes[cn],n,false)) {
                                         existingConfigNode = configNodes[cn];
                                         node_map[n.id] = configNodes[cn];
                                         break;
@@ -2450,12 +2513,11 @@ RED.nodes = (function () {
                             }
                         }
                     }
+
                 }
 
-                if (!existingConfigNode) { // } || !compareNodes(existingConfigNode,n,true) || existingConfigNode._def.exclusive || existingConfigNode.z !== n.z) {
-                    configNode = {
-                        id: n.id, z: n.z, type: n.type, users: [], _config: {},
-                    };
+                if (!existingConfigNode) { //} || !compareNodes(existingConfigNode,n,true) || existingConfigNode._def.exclusive || existingConfigNode.z !== n.z) {
+                    configNode = {id:n.id, z:n.z, type:n.type, users:[], _config:{}};
                     for (d in def.defaults) {
                         if (def.defaults.hasOwnProperty(d)) {
                             configNode[d] = n[d];
@@ -2483,15 +2545,13 @@ RED.nodes = (function () {
         }
 
         // Find regular flow nodes and subflow instances
-        for (i = 0; i < newNodes.length; i++) {
+        for (i=0;i<newNodes.length;i++) {
             n = newNodes[i];
             // TODO: remove workspace in next release+1
-            if (n.type !== 'workspace' && n.type !== 'tab' && n.type !== 'subflow') {
+            if (n.type !== "workspace" && n.type !== "tab" && n.type !== "subflow") {
                 def = registry.getNodeType(n.type);
-                if (!def || def.category != 'config') {
-                    const node = {
-                        x: n.x, y: n.y, z: n.z, type: 0, wires: n.wires, changed: false, _config: {},
-                    };
+                if (!def || def.category != "config") {
+                    var node = {x:n.x,y:n.y,z:n.z,type:0,wires:n.wires,changed:false,_config:{}};
                     if (createNewIds) {
                         if (subflow_blacklist[n.z]) {
                             continue;
@@ -2502,7 +2562,7 @@ RED.nodes = (function () {
                             if (!workspaces[node.z]) {
                                 if (createMissingWorkspace) {
                                     if (missingWorkspace === null) {
-                                        missingWorkspace = RED.workspaces.add(null, true);
+                                        missingWorkspace = RED.workspaces.add(null,true);
                                         new_workspaces.push(missingWorkspace);
                                     }
                                     node.z = missingWorkspace.id;
@@ -2517,7 +2577,7 @@ RED.nodes = (function () {
                         if (node.z == null || (!workspaces[node.z] && !subflow_map[node.z])) {
                             if (createMissingWorkspace) {
                                 if (missingWorkspace === null) {
-                                    missingWorkspace = RED.workspaces.add(null, true);
+                                    missingWorkspace = RED.workspaces.add(null,true);
                                     new_workspaces.push(missingWorkspace);
                                 }
                                 node.z = missingWorkspace.id;
@@ -2528,12 +2588,12 @@ RED.nodes = (function () {
                     }
                     node.type = n.type;
                     node._def = def;
-                    if (n.type.substring(0, 7) === 'subflow') {
-                        let parentId = n.type.split(':')[1];
-                        const subflow = subflow_blacklist[parentId] || subflow_map[parentId] || getSubflow(parentId);
+                    if (n.type.substring(0,7) === "subflow") {
+                        var parentId = n.type.split(":")[1];
+                        var subflow = subflow_blacklist[parentId]||subflow_map[parentId]||getSubflow(parentId);
                         if (createNewIds) {
                             parentId = subflow.id;
-                            node.type = `subflow:${parentId}`;
+                            node.type = "subflow:"+parentId;
                             node._def = registry.getNodeType(node.type);
                             delete node.i;
                         }
@@ -2544,33 +2604,33 @@ RED.nodes = (function () {
                         if (!node._def) {
                             if (node.x && node.y) {
                                 node._def = {
-                                    color: '#fee',
+                                    color:"#fee",
                                     defaults: {},
-                                    label: `unknown: ${n.type}`,
-                                    labelStyle: 'node_label_italic',
-                                    outputs: n.outputs || n.wires.length,
-                                    set: registry.getNodeSet('node-red/unknown'),
-                                };
+                                    label: "unknown: "+n.type,
+                                    labelStyle: "node_label_italic",
+                                    outputs: n.outputs||n.wires.length,
+                                    set: registry.getNodeSet("node-red/unknown")
+                                }
                             } else {
                                 node._def = {
-                                    category: 'config',
-                                    set: registry.getNodeSet('node-red/unknown'),
+                                    category:"config",
+                                    set: registry.getNodeSet("node-red/unknown")
                                 };
                                 node.users = [];
                             }
-                            const orig = {};
-                            for (const p in n) {
-                                if (n.hasOwnProperty(p) && p != 'x' && p != 'y' && p != 'z' && p != 'id' && p != 'wires') {
+                            var orig = {};
+                            for (var p in n) {
+                                if (n.hasOwnProperty(p) && p!="x" && p!="y" && p!="z" && p!="id" && p!="wires") {
                                     orig[p] = n[p];
                                 }
                             }
                             node._orig = orig;
                             node.name = n.type;
-                            node.type = 'unknown';
+                            node.type = "unknown";
                         }
-                        if (node._def.category != 'config') {
-                            node.inputs = n.inputs || node._def.inputs;
-                            node.outputs = n.outputs || node._def.outputs;
+                        if (node._def.category != "config") {
+                            node.inputs = n.inputs||node._def.inputs;
+                            node.outputs = n.outputs||node._def.outputs;
                             for (d in node._def.defaults) {
                                 if (node._def.defaults.hasOwnProperty(d)) {
                                     node[d] = n[d];
@@ -2592,7 +2652,7 @@ RED.nodes = (function () {
                     addNode(node);
                     RED.editor.validateNode(node);
                     node_map[n.id] = node;
-                    if (node._def.category != 'config') {
+                    if (node._def.category != "config") {
                         new_nodes.push(node);
                     }
                 }
@@ -2600,34 +2660,34 @@ RED.nodes = (function () {
         }
         // TODO: make this a part of the node definition so it doesn't have to
         //       be hardcoded here
-        const nodeTypeArrayReferences = {
-            catch: 'scope',
-            status: 'scope',
-            'link in': 'links',
-            'link out': 'links',
-        };
+        var nodeTypeArrayReferences = {
+            "catch":"scope",
+            "status":"scope",
+            "link in":"links",
+            "link out":"links"
+        }
 
         // Remap all wires and config node references
-        for (i = 0; i < new_nodes.length; i++) {
+        for (i=0;i<new_nodes.length;i++) {
             n = new_nodes[i];
             if (n.wires) {
-                for (let w1 = 0; w1 < n.wires.length; w1++) {
-                    const wires = (n.wires[w1] instanceof Array) ? n.wires[w1] : [n.wires[w1]];
-                    for (let w2 = 0; w2 < wires.length; w2++) {
+                for (var w1=0;w1<n.wires.length;w1++) {
+                    var wires = (n.wires[w1] instanceof Array)?n.wires[w1]:[n.wires[w1]];
+                    for (var w2=0;w2<wires.length;w2++) {
                         if (node_map.hasOwnProperty(wires[w2])) {
                             if (n.z === node_map[wires[w2]].z) {
-                                const link = { source: n, sourcePort: w1, target: node_map[wires[w2]] };
+                                var link = {source:n,sourcePort:w1,target:node_map[wires[w2]]};
                                 addLink(link);
                                 new_links.push(link);
                             } else {
-                                console.log('Warning: dropping link that crosses tabs:', n.id, '->', node_map[wires[w2]].id);
+                                console.log("Warning: dropping link that crosses tabs:",n.id,"->",node_map[wires[w2]].id);
                             }
                         }
                     }
                 }
                 delete n.wires;
             }
-            for (const d3 in n._def.defaults) {
+            for (var d3 in n._def.defaults) {
                 if (n._def.defaults.hasOwnProperty(d3)) {
                     if (n._def.defaults[d3].type && node_map[n[d3]]) {
                         n[d3] = node_map[n[d3]].id;
@@ -2636,20 +2696,21 @@ RED.nodes = (function () {
                             configNode.users.push(n);
                         }
                     } else if (nodeTypeArrayReferences.hasOwnProperty(n.type) && nodeTypeArrayReferences[n.type] === d3 && n[d3] !== undefined && n[d3] !== null) {
-                        for (let j = 0; j < n[d3].length; j++) {
+                        for (var j = 0;j<n[d3].length;j++) {
                             if (node_map[n[d3][j]]) {
                                 n[d3][j] = node_map[n[d3][j]].id;
                             }
                         }
+
                     }
                 }
             }
             // If importing into a subflow, ensure an outbound-link doesn't
             // get added
             if (activeSubflow && /^link /.test(n.type) && n.links) {
-                n.links = n.links.filter((id) => {
-                    const otherNode = RED.nodes.node(id);
-                    return (otherNode && otherNode.z === activeWorkspace);
+                n.links = n.links.filter(function(id) {
+                    var otherNode = RED.nodes.node(id);
+                    return (otherNode && otherNode.z === activeWorkspace)
                 });
             }
 
@@ -2657,23 +2718,23 @@ RED.nodes = (function () {
             // we can validate the node
             RED.editor.validateNode(n);
         }
-        for (i = 0; i < new_subflows.length; i++) {
+        for (i=0;i<new_subflows.length;i++) {
             n = new_subflows[i];
-            n.in.forEach((input) => {
-                input.wires.forEach((wire) => {
-                    const link = { source: input, sourcePort: 0, target: node_map[wire.id] };
+            n.in.forEach(function(input) {
+                input.wires.forEach(function(wire) {
+                    var link = {source:input, sourcePort:0, target:node_map[wire.id]};
                     addLink(link);
                     new_links.push(link);
                 });
                 delete input.wires;
             });
-            n.out.forEach((output) => {
-                output.wires.forEach((wire) => {
-                    let link;
+            n.out.forEach(function(output) {
+                output.wires.forEach(function(wire) {
+                    var link;
                     if (subflow_map[wire.id] && subflow_map[wire.id].id == n.id) {
-                        link = { source: n.in[wire.port], sourcePort: wire.port, target: output };
+                        link = {source:n.in[wire.port], sourcePort:wire.port,target:output};
                     } else {
-                        link = { source: node_map[wire.id] || subflow_map[wire.id], sourcePort: wire.port, target: output };
+                        link = {source:node_map[wire.id]||subflow_map[wire.id], sourcePort:wire.port,target:output};
                     }
                     addLink(link);
                     new_links.push(link);
@@ -2683,19 +2744,19 @@ RED.nodes = (function () {
         }
 
         RED.workspaces.refresh();
-        return [new_nodes, new_links, new_workspaces, new_subflows, missingWorkspace];
+        return [new_nodes,new_links,new_workspaces,new_subflows,missingWorkspace];
     }
 
     // TODO: supports filter.z|type
     function filterNodes(filter) {
-        const result = [];
+        var result = [];
 
-        for (let n = 0; n < nodes.length; n++) {
-            const node = nodes[n];
-            if (filter.hasOwnProperty('z') && node.z !== filter.z) {
+        for (var n=0;n<nodes.length;n++) {
+            var node = nodes[n];
+            if (filter.hasOwnProperty("z") && node.z !== filter.z) {
                 continue;
             }
-            if (filter.hasOwnProperty('type') && node.type !== filter.type) {
+            if (filter.hasOwnProperty("type") && node.type !== filter.type) {
                 continue;
             }
             result.push(node);
@@ -2703,27 +2764,27 @@ RED.nodes = (function () {
         return result;
     }
     function filterLinks(filter) {
-        const result = [];
+        var result = [];
 
-        for (let n = 0; n < links.length; n++) {
-            const link = links[n];
+        for (var n=0;n<links.length;n++) {
+            var link = links[n];
             if (filter.source) {
-                if (filter.source.hasOwnProperty('id') && link.source.id !== filter.source.id) {
+                if (filter.source.hasOwnProperty("id") && link.source.id !== filter.source.id) {
                     continue;
                 }
-                if (filter.source.hasOwnProperty('z') && link.source.z !== filter.source.z) {
+                if (filter.source.hasOwnProperty("z") && link.source.z !== filter.source.z) {
                     continue;
                 }
             }
             if (filter.target) {
-                if (filter.target.hasOwnProperty('id') && link.target.id !== filter.target.id) {
+                if (filter.target.hasOwnProperty("id") && link.target.id !== filter.target.id) {
                     continue;
                 }
-                if (filter.target.hasOwnProperty('z') && link.target.z !== filter.target.z) {
+                if (filter.target.hasOwnProperty("z") && link.target.z !== filter.target.z) {
                     continue;
                 }
             }
-            if (filter.hasOwnProperty('sourcePort') && link.sourcePort !== filter.sourcePort) {
+            if (filter.hasOwnProperty("sourcePort") && link.sourcePort !== filter.sourcePort) {
                 continue;
             }
             result.push(link);
@@ -2733,13 +2794,13 @@ RED.nodes = (function () {
 
     // Update any config nodes referenced by the provided node to ensure their 'users' list is correct
     function updateConfigNodeUsers(n) {
-        for (const d in n._def.defaults) {
+        for (var d in n._def.defaults) {
             if (n._def.defaults.hasOwnProperty(d)) {
-                const property = n._def.defaults[d];
+                var property = n._def.defaults[d];
                 if (property.type) {
-                    const type = registry.getNodeType(property.type);
-                    if (type && type.category == 'config') {
-                        const configNode = configNodes[n[d]];
+                    var type = registry.getNodeType(property.type);
+                    if (type && type.category == "config") {
+                        var configNode = configNodes[n[d]];
                         if (configNode) {
                             if (configNode.users.indexOf(n) === -1) {
                                 configNode.users.push(n);
@@ -2764,12 +2825,12 @@ RED.nodes = (function () {
         links = [];
         configNodes = {};
         workspacesOrder = [];
-        const subflowIds = Object.keys(subflows);
-        subflowIds.forEach((id) => {
-            RED.subflow.removeSubflow(id);
+        var subflowIds = Object.keys(subflows);
+        subflowIds.forEach(function(id) {
+            RED.subflow.removeSubflow(id)
         });
-        const workspaceIds = Object.keys(workspaces);
-        workspaceIds.forEach((id) => {
+        var workspaceIds = Object.keys(workspaces);
+        workspaceIds.forEach(function(id) {
             RED.workspaces.remove(workspaces[id]);
         });
         defaultWorkspace = null;
@@ -2792,7 +2853,7 @@ RED.nodes = (function () {
     }
 
     return {
-        registry,
+        registry:registry,
         setNodeList: registry.setNodeList,
 
         getNodeSet: registry.getNodeSet,
@@ -2803,52 +2864,52 @@ RED.nodes = (function () {
 
         registerType: registry.registerNodeType,
         getType: registry.getNodeType,
-        convertNode,
+        convertNode: convertNode,
 
         add: addNode,
         remove: removeNode,
-        clear,
+        clear: clear,
 
-        addLink,
-        removeLink,
+        addLink: addLink,
+        removeLink: removeLink,
 
-        addWorkspace,
-        removeWorkspace,
-        getWorkspaceOrder() { return workspacesOrder; },
-        setWorkspaceOrder(order) { workspacesOrder = order; },
+        addWorkspace: addWorkspace,
+        removeWorkspace: removeWorkspace,
+        getWorkspaceOrder: function() { return workspacesOrder },
+        setWorkspaceOrder: function(order) { workspacesOrder = order; },
         workspace: getWorkspace,
 
-        addSubflow,
-        removeSubflow,
+        addSubflow: addSubflow,
+        removeSubflow: removeSubflow,
         subflow: getSubflow,
-        subflowContains,
+        subflowContains: subflowContains,
 
-        eachNode(cb) {
-            for (let n = 0; n < nodes.length; n++) {
+        eachNode: function(cb) {
+            for (var n=0;n<nodes.length;n++) {
                 cb(nodes[n]);
             }
         },
-        eachLink(cb) {
-            for (let l = 0; l < links.length; l++) {
+        eachLink: function(cb) {
+            for (var l=0;l<links.length;l++) {
                 cb(links[l]);
             }
         },
-        eachConfig(cb) {
-            for (const id in configNodes) {
+        eachConfig: function(cb) {
+            for (var id in configNodes) {
                 if (configNodes.hasOwnProperty(id)) {
                     cb(configNodes[id]);
                 }
             }
         },
-        eachSubflow(cb) {
-            for (const id in subflows) {
+        eachSubflow: function(cb) {
+            for (var id in subflows) {
                 if (subflows.hasOwnProperty(id)) {
                     cb(subflows[id]);
                 }
             }
         },
-        eachWorkspace(cb) {
-            for (let i = 0; i < workspacesOrder.length; i++) {
+        eachWorkspace: function(cb) {
+            for (var i=0;i<workspacesOrder.length;i++) {
                 cb(workspaces[workspacesOrder[i]]);
             }
         },
@@ -2856,59 +2917,61 @@ RED.nodes = (function () {
         node: getNode,
 
         version: flowVersion,
-        originalFlow(flow) {
+        originalFlow: function(flow) {
             if (flow === undefined) {
                 return initialLoad;
+            } else {
+                initialLoad = flow;
             }
-            initialLoad = flow;
         },
 
-        filterNodes,
-        filterLinks,
+        filterNodes: filterNodes,
+        filterLinks: filterLinks,
 
         import: importNodes,
 
-        getAllFlowNodes,
-        createExportableNodeSet,
-        createCompleteNodeSet,
-        updateConfigNodeUsers,
+        getAllFlowNodes: getAllFlowNodes,
+        createExportableNodeSet: createExportableNodeSet,
+        createCompleteNodeSet: createCompleteNodeSet,
+        updateConfigNodeUsers: updateConfigNodeUsers,
         id: getID,
-        dirty(d) {
+        dirty: function(d) {
             if (d == null) {
                 return dirty;
+            } else {
+                setDirty(d);
             }
-            setDirty(d);
-        },
+        }
     };
-}());
-RED.history = (function () {
-    const undo_history = [];
+})();
+RED.history = (function() {
+    var undo_history = [];
 
     function undoEvent(ev) {
-        let i;
-        let len;
-        let node;
-        let subflow;
-        const modifiedTabs = {};
+        var i;
+        var len;
+        var node;
+        var subflow;
+        var modifiedTabs = {};
         if (ev) {
             if (ev.t == 'multi') {
                 len = ev.events.length;
-                for (i = len - 1; i >= 0; i--) {
+                for (i=len-1;i>=0;i--) {
                     undoEvent(ev.events[i]);
                 }
             } else if (ev.t == 'replace') {
                 RED.nodes.clear();
-                const imported = RED.nodes.import(ev.config);
-                imported[0].forEach((n) => {
+                var imported = RED.nodes.import(ev.config);
+                imported[0].forEach(function(n) {
                     if (ev.changed[n.id]) {
                         n.changed = true;
                     }
-                });
+                })
 
                 RED.nodes.version(ev.rev);
             } else if (ev.t == 'add') {
                 if (ev.nodes) {
-                    for (i = 0; i < ev.nodes.length; i++) {
+                    for (i=0;i<ev.nodes.length;i++) {
                         node = RED.nodes.node(ev.nodes[i]);
                         if (node.z) {
                             modifiedTabs[node.z] = true;
@@ -2917,26 +2980,26 @@ RED.history = (function () {
                     }
                 }
                 if (ev.links) {
-                    for (i = 0; i < ev.links.length; i++) {
+                    for (i=0;i<ev.links.length;i++) {
                         RED.nodes.removeLink(ev.links[i]);
                     }
                 }
                 if (ev.workspaces) {
-                    for (i = 0; i < ev.workspaces.length; i++) {
+                    for (i=0;i<ev.workspaces.length;i++) {
                         RED.nodes.removeWorkspace(ev.workspaces[i].id);
                         RED.workspaces.remove(ev.workspaces[i]);
                     }
                 }
                 if (ev.subflows) {
-                    for (i = 0; i < ev.subflows.length; i++) {
+                    for (i=0;i<ev.subflows.length;i++) {
                         RED.nodes.removeSubflow(ev.subflows[i]);
                         RED.workspaces.remove(ev.subflows[i]);
                     }
                 }
                 if (ev.subflow) {
                     if (ev.subflow.instances) {
-                        ev.subflow.instances.forEach((n) => {
-                            const node = RED.nodes.node(n.id);
+                        ev.subflow.instances.forEach(function(n) {
+                            var node = RED.nodes.node(n.id);
                             if (node) {
                                 node.changed = n.changed;
                                 node.dirty = true;
@@ -2951,13 +3014,14 @@ RED.history = (function () {
                     }
                 }
                 if (ev.removedLinks) {
-                    for (i = 0; i < ev.removedLinks.length; i++) {
+                    for (i=0;i<ev.removedLinks.length;i++) {
                         RED.nodes.addLink(ev.removedLinks[i]);
                     }
                 }
-            } else if (ev.t == 'delete') {
+
+            } else if (ev.t == "delete") {
                 if (ev.workspaces) {
-                    for (i = 0; i < ev.workspaces.length; i++) {
+                    for (i=0;i<ev.workspaces.length;i++) {
                         RED.nodes.addWorkspace(ev.workspaces[i]);
                         RED.workspaces.add(ev.workspaces[i]);
                     }
@@ -2972,16 +3036,16 @@ RED.history = (function () {
                 }
                 if (ev.subflowOutputs && ev.subflowOutputs.length > 0) {
                     subflow = RED.nodes.subflow(ev.subflowOutputs[0].z);
-                    ev.subflowOutputs.sort((a, b) => a.i - b.i);
-                    for (i = 0; i < ev.subflowOutputs.length; i++) {
+                    ev.subflowOutputs.sort(function(a,b) { return a.i-b.i});
+                    for (i=0;i<ev.subflowOutputs.length;i++) {
                         var output = ev.subflowOutputs[i];
-                        subflow.out.splice(output.i, 0, output);
-                        for (let j = output.i + 1; j < subflow.out.length; j++) {
+                        subflow.out.splice(output.i,0,output);
+                        for (var j=output.i+1;j<subflow.out.length;j++) {
                             subflow.out[j].i++;
                             subflow.out[j].dirty = true;
                         }
-                        RED.nodes.eachLink((l) => {
-                            if (l.source.type == `subflow:${subflow.id}`) {
+                        RED.nodes.eachLink(function(l) {
+                            if (l.source.type == "subflow:"+subflow.id) {
                                 if (l.sourcePort >= output.i) {
                                     l.sourcePort++;
                                 }
@@ -2990,8 +3054,8 @@ RED.history = (function () {
                     }
                 }
                 if (ev.subflow && ev.subflow.hasOwnProperty('instances')) {
-                    ev.subflow.instances.forEach((n) => {
-                        const node = RED.nodes.node(n.id);
+                    ev.subflow.instances.forEach(function(n) {
+                        var node = RED.nodes.node(n.id);
                         if (node) {
                             node.changed = n.changed;
                             node.dirty = true;
@@ -2999,7 +3063,7 @@ RED.history = (function () {
                     });
                 }
                 if (subflow) {
-                    RED.nodes.filterNodes({ type: `subflow:${subflow.id}` }).forEach((n) => {
+                    RED.nodes.filterNodes({type:"subflow:"+subflow.id}).forEach(function(n) {
                         n.inputs = subflow.in.length;
                         n.outputs = subflow.out.length;
                         while (n.outputs > n.ports.length) {
@@ -3010,13 +3074,13 @@ RED.history = (function () {
                     });
                 }
                 if (ev.nodes) {
-                    for (i = 0; i < ev.nodes.length; i++) {
+                    for (i=0;i<ev.nodes.length;i++) {
                         RED.nodes.add(ev.nodes[i]);
                         modifiedTabs[ev.nodes[i].z] = true;
                     }
                 }
                 if (ev.links) {
-                    for (i = 0; i < ev.links.length; i++) {
+                    for (i=0;i<ev.links.length;i++) {
                         RED.nodes.addLink(ev.links[i]);
                     }
                 }
@@ -3025,7 +3089,7 @@ RED.history = (function () {
                         if (ev.changes.hasOwnProperty(i)) {
                             node = RED.nodes.node(i);
                             if (node) {
-                                for (const d in ev.changes[i]) {
+                                for (var d in ev.changes[i]) {
                                     if (ev.changes[i].hasOwnProperty(d)) {
                                         node[d] = ev.changes[i][d];
                                     }
@@ -3034,10 +3098,11 @@ RED.history = (function () {
                             }
                         }
                     }
+
                 }
-            } else if (ev.t == 'move') {
-                for (i = 0; i < ev.nodes.length; i++) {
-                    const n = ev.nodes[i];
+            } else if (ev.t == "move") {
+                for (i=0;i<ev.nodes.length;i++) {
+                    var n = ev.nodes[i];
                     n.n.x = n.ox;
                     n.n.y = n.oy;
                     n.n.dirty = true;
@@ -3045,25 +3110,25 @@ RED.history = (function () {
                 }
                 // A move could have caused a link splice
                 if (ev.links) {
-                    for (i = 0; i < ev.links.length; i++) {
+                    for (i=0;i<ev.links.length;i++) {
                         RED.nodes.removeLink(ev.links[i]);
                     }
                 }
                 if (ev.removedLinks) {
-                    for (i = 0; i < ev.removedLinks.length; i++) {
+                    for (i=0;i<ev.removedLinks.length;i++) {
                         RED.nodes.addLink(ev.removedLinks[i]);
                     }
                 }
-            } else if (ev.t == 'edit') {
+            } else if (ev.t == "edit") {
                 for (i in ev.changes) {
                     if (ev.changes.hasOwnProperty(i)) {
                         if (ev.node._def.defaults[i].type) {
                             // This is a config node property
-                            const currentConfigNode = RED.nodes.node(ev.node[i]);
+                            var currentConfigNode = RED.nodes.node(ev.node[i]);
                             if (currentConfigNode) {
-                                currentConfigNode.users.splice(currentConfigNode.users.indexOf(ev.node), 1);
+                                currentConfigNode.users.splice(currentConfigNode.users.indexOf(ev.node),1);
                             }
-                            const newConfigNode = RED.nodes.node(ev.changes[i]);
+                            var newConfigNode = RED.nodes.node(ev.changes[i]);
                             if (newConfigNode) {
                                 newConfigNode.users.push(ev.node);
                             }
@@ -3087,51 +3152,51 @@ RED.history = (function () {
                         }
                     }
                     if (ev.subflow.hasOwnProperty('instances')) {
-                        ev.subflow.instances.forEach((n) => {
-                            const node = RED.nodes.node(n.id);
+                        ev.subflow.instances.forEach(function(n) {
+                            var node = RED.nodes.node(n.id);
                             if (node) {
                                 node.changed = n.changed;
                                 node.dirty = true;
                             }
                         });
                     }
-                    RED.nodes.filterNodes({ type: `subflow:${ev.node.id}` }).forEach((n) => {
+                    RED.nodes.filterNodes({type:"subflow:"+ev.node.id}).forEach(function(n) {
                         n.inputs = ev.node.in.length;
                         n.outputs = ev.node.out.length;
                         RED.editor.updateNodeProperties(n);
                     });
                 } else {
-                    let outputMap;
+                    var outputMap;
                     if (ev.outputMap) {
                         outputMap = {};
-                        for (const port in ev.outputMap) {
+                        for (var port in ev.outputMap) {
                             if (ev.outputMap.hasOwnProperty(port) && ev.outputMap[port] !== -1) {
                                 outputMap[ev.outputMap[port]] = port;
                             }
                         }
                     }
-                    RED.editor.updateNodeProperties(ev.node, outputMap);
+                    RED.editor.updateNodeProperties(ev.node,outputMap);
                     RED.editor.validateNode(ev.node);
                 }
                 if (ev.links) {
-                    for (i = 0; i < ev.links.length; i++) {
+                    for (i=0;i<ev.links.length;i++) {
                         RED.nodes.addLink(ev.links[i]);
                     }
                 }
                 ev.node.dirty = true;
                 ev.node.changed = ev.changed;
-            } else if (ev.t == 'createSubflow') {
+            } else if (ev.t == "createSubflow") {
                 if (ev.nodes) {
-                    RED.nodes.filterNodes({ z: ev.subflow.subflow.id }).forEach((n) => {
+                    RED.nodes.filterNodes({z:ev.subflow.subflow.id}).forEach(function(n) {
                         n.z = ev.activeWorkspace;
                         n.dirty = true;
                     });
-                    for (i = 0; i < ev.nodes.length; i++) {
+                    for (i=0;i<ev.nodes.length;i++) {
                         RED.nodes.remove(ev.nodes[i]);
                     }
                 }
                 if (ev.links) {
-                    for (i = 0; i < ev.links.length; i++) {
+                    for (i=0;i<ev.links.length;i++) {
                         RED.nodes.removeLink(ev.links[i]);
                     }
                 }
@@ -3140,17 +3205,17 @@ RED.history = (function () {
                 RED.workspaces.remove(ev.subflow.subflow);
 
                 if (ev.removedLinks) {
-                    for (i = 0; i < ev.removedLinks.length; i++) {
+                    for (i=0;i<ev.removedLinks.length;i++) {
                         RED.nodes.addLink(ev.removedLinks[i]);
                     }
                 }
-            } else if (ev.t == 'reorder') {
+            } else if (ev.t == "reorder") {
                 if (ev.order) {
                     RED.workspaces.order(ev.order);
                 }
             }
-            Object.keys(modifiedTabs).forEach((id) => {
-                const subflow = RED.nodes.subflow(id);
+            Object.keys(modifiedTabs).forEach(function(id) {
+                var subflow = RED.nodes.subflow(id);
                 if (subflow) {
                     RED.editor.validateNode(subflow);
                 }
@@ -3162,94 +3227,95 @@ RED.history = (function () {
             RED.workspaces.refresh();
             // RED.sidebar.config.refresh();
         }
+
     }
 
     return {
-        // TODO: this function is a placeholder until there is a 'save' event that can be listened to
-        markAllDirty() {
-            for (let i = 0; i < undo_history.length; i++) {
+        //TODO: this function is a placeholder until there is a 'save' event that can be listened to
+        markAllDirty: function() {
+            for (var i=0;i<undo_history.length;i++) {
                 undo_history[i].dirty = true;
             }
         },
-        list() {
-            return undo_history;
+        list: function() {
+            return undo_history
         },
-        depth() {
+        depth: function() {
             return undo_history.length;
         },
-        push(ev) {
+        push: function(ev) {
             undo_history.push(ev);
         },
-        pop() {
-            const ev = undo_history.pop();
+        pop: function() {
+            var ev = undo_history.pop();
             undoEvent(ev);
         },
-        peek() {
-            return undo_history[undo_history.length - 1];
-        },
-    };
-}());
+        peek: function() {
+            return undo_history[undo_history.length-1];
+        }
+    }
+
+})();
 RED.validators = {
-    number() { return function (v) { return v !== '' && !isNaN(v); }; },
-    regex(re) { return function (v) { return re.test(v); }; },
-    typedInput(ptypeName, isConfig) {
-        return function (v) {
-            const ptype = $(`#node-${isConfig ? 'config-' : ''}input-${ptypeName}`).val() || this[ptypeName];
-            if (ptype === 'json') {
-                try {
-                    JSON.parse(v);
-                    return true;
-                } catch (err) {
-                    return false;
-                }
-            } else if (ptype === 'msg' || ptype === 'flow' || ptype === 'global') {
-                return RED.utils.validatePropertyExpression(v);
-            } else if (ptype === 'num') {
-                return /^[+-]?[0-9]*\.?[0-9]*([eE][-+]?[0-9]+)?$/.test(v);
+    number: function(){return function(v) { return v!=='' && !isNaN(v);}},
+    regex: function(re){return function(v) { return re.test(v);}},
+    typedInput: function(ptypeName,isConfig) { return function(v) {
+        var ptype = $("#node-"+(isConfig?"config-":"")+"input-"+ptypeName).val() || this[ptypeName];
+        if (ptype === 'json') {
+            try {
+                JSON.parse(v);
+                return true;
+            } catch(err) {
+                return false;
             }
-            return true;
-        };
-    },
+        } else if (ptype === 'msg' || ptype === 'flow' || ptype === 'global' ) {
+            return RED.utils.validatePropertyExpression(v);
+        } else if (ptype === 'num') {
+            return /^[+-]?[0-9]*\.?[0-9]*([eE][-+]?[0-9]+)?$/.test(v);
+        }
+        return true;
+    }}
 };
-RED.utils = (function () {
+RED.utils = (function() {
+
     function formatString(str) {
-        return str.replace(/\r?\n/g, '&crarr;').replace(/\t/g, '&rarr;');
+        return str.replace(/\r?\n/g,"&crarr;").replace(/\t/g,"&rarr;");
     }
     function sanitize(m) {
-        return m.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return m.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
     }
 
     function buildMessageSummaryValue(value) {
-        let result;
+        var result;
         if (Array.isArray(value)) {
-            result = $('<span class="debug-message-object-value debug-message-type-meta"></span>').html(`array[${value.length}]`);
+            result = $('<span class="debug-message-object-value debug-message-type-meta"></span>').html('array['+value.length+']');
         } else if (value === null) {
             result = $('<span class="debug-message-object-value debug-message-type-null">null</span>');
         } else if (typeof value === 'object') {
             if (value.hasOwnProperty('type') && value.type === 'Buffer' && value.hasOwnProperty('data')) {
-                result = $('<span class="debug-message-object-value debug-message-type-meta"></span>').html(`buffer[${value.data.length}]`);
+                result = $('<span class="debug-message-object-value debug-message-type-meta"></span>').html('buffer['+value.data.length+']');
             } else if (value.hasOwnProperty('type') && value.type === 'array' && value.hasOwnProperty('data')) {
-                result = $('<span class="debug-message-object-value debug-message-type-meta"></span>').html(`array[${value.length}]`);
+                result = $('<span class="debug-message-object-value debug-message-type-meta"></span>').html('array['+value.length+']');
             } else {
                 result = $('<span class="debug-message-object-value debug-message-type-meta">object</span>');
             }
         } else if (typeof value === 'string') {
-            let subvalue;
+            var subvalue;
             if (value.length > 30) {
-                subvalue = `${sanitize(value.substring(0, 30))}&hellip;`;
+                subvalue = sanitize(value.substring(0,30))+"&hellip;";
             } else {
                 subvalue = sanitize(value);
             }
-            result = $('<span class="debug-message-object-value debug-message-type-string"></span>').html(`"${formatString(subvalue)}"`);
+            result = $('<span class="debug-message-object-value debug-message-type-string"></span>').html('"'+formatString(subvalue)+'"');
         } else {
-            result = $('<span class="debug-message-object-value debug-message-type-other"></span>').text(`${value}`);
+            result = $('<span class="debug-message-object-value debug-message-type-other"></span>').text(""+value);
         }
         return result;
     }
-    function makeExpandable(el, onexpand) {
-        el.addClass('debug-message-expandable');
-        el.click(function (e) {
-            const parent = $(this).parent();
+    function makeExpandable(el,onexpand) {
+        el.addClass("debug-message-expandable");
+        el.click(function(e) {
+            var parent = $(this).parent();
             if (parent.hasClass('collapsed')) {
                 if (onexpand && !parent.hasClass('built')) {
                     onexpand();
@@ -3263,16 +3329,16 @@ RED.utils = (function () {
         });
     }
 
-    function buildMessageElement(obj, key, typeHint, hideKey) {
-        let i;
-        let e;
-        let entryObj;
-        let header;
-        let headerHead;
-        let value;
-        const element = $('<span class="debug-message-element"></span>');
+    function buildMessageElement(obj,key,typeHint,hideKey) {
+        var i;
+        var e;
+        var entryObj;
+        var header;
+        var headerHead;
+        var value;
+        var element = $('<span class="debug-message-element"></span>');
         if (!key) {
-            element.addClass('debug-message-top-level');
+            element.addClass("debug-message-top-level");
         }
 
         header = $('<span></span>').appendTo(element);
@@ -3283,43 +3349,44 @@ RED.utils = (function () {
         }
         entryObj = $('<span class="debug-message-object-value"></span>').appendTo(header);
 
-        let isArray = Array.isArray(obj);
-        let isArrayObject = false;
+        var isArray = Array.isArray(obj);
+        var isArrayObject = false;
         if (obj && typeof obj === 'object' && obj.hasOwnProperty('type') && obj.hasOwnProperty('data') && ((obj.__encoded__ && obj.type === 'array') || obj.type === 'Buffer')) {
             isArray = true;
             isArrayObject = true;
         }
 
         if (obj === null || obj === undefined) {
-            $(`<span class="debug-message-type-null">${obj}</span>`).appendTo(entryObj);
+            $('<span class="debug-message-type-null">'+obj+'</span>').appendTo(entryObj);
         } else if (typeof obj === 'string') {
             if (/[\t\n\r]/.test(obj)) {
                 element.addClass('collapsed');
                 $('<i class="fa fa-caret-right debug-message-object-handle"></i> ').prependTo(header);
-                makeExpandable(header, () => {
-                    $('<span class="debug-message-type-meta debug-message-object-type-header"></span>').html(typeHint || 'string').appendTo(header);
-                    const row = $('<div class="debug-message-object-entry collapsed"></div>').appendTo(element);
+                makeExpandable(header, function() {
+                    $('<span class="debug-message-type-meta debug-message-object-type-header"></span>').html(typeHint||'string').appendTo(header);
+                    var row = $('<div class="debug-message-object-entry collapsed"></div>').appendTo(element);
                     $('<pre class="debug-message-type-string"></pre>').text(obj).appendTo(row);
                 });
             }
-            e = $('<span class="debug-message-type-string debug-message-object-header"></span>').html(`"${formatString(sanitize(obj))}"`).appendTo(entryObj);
+            e = $('<span class="debug-message-type-string debug-message-object-header"></span>').html('"'+formatString(sanitize(obj))+'"').appendTo(entryObj);
             if (/^#[0-9a-f]{6}$/i.test(obj)) {
-                $('<span class="debug-message-type-string-swatch"></span>').css('backgroundColor', obj).appendTo(e);
+                $('<span class="debug-message-type-string-swatch"></span>').css('backgroundColor',obj).appendTo(e);
             }
+
         } else if (typeof obj === 'number') {
-            e = $('<span class="debug-message-type-number"></span>').text(`${obj}`).appendTo(entryObj);
+            e = $('<span class="debug-message-type-number"></span>').text(""+obj).appendTo(entryObj);
             if (Number.isInteger(obj) && (obj >= 0)) { // if it's a +ve integer
-                e.addClass('debug-message-type-number-toggle');
-                e.click(function (evt) {
-                    const format = $(this).data('format') || 'date';
+                e.addClass("debug-message-type-number-toggle");
+                e.click(function(evt) {
+                    var format = $(this).data('format') || "date";
                     if (format === 'dec') {
-                        $(this).text(`${obj}`).data('format', 'date');
-                    } else if ((format === 'date') && (obj.toString().length === 13) && (obj <= 2147483647000)) {
-                        $(this).text((new Date(obj)).toISOString()).data('format', 'hex');
-                    } else if ((format === 'date') && (obj.toString().length === 10) && (obj <= 2147483647)) {
-                        $(this).text((new Date(obj * 1000)).toISOString()).data('format', 'hex');
+                        $(this).text(""+obj).data('format','date');
+                    } else if ((format === 'date') && (obj.toString().length===13) && (obj<=2147483647000)) {
+                        $(this).text((new Date(obj)).toISOString()).data('format','hex');
+                    } else if ((format === 'date') && (obj.toString().length===10) && (obj<=2147483647)) {
+                        $(this).text((new Date(obj*1000)).toISOString()).data('format','hex');
                     } else {
-                        $(this).text(`0x${(obj).toString(16)}`).data('format', 'dec');
+                        $(this).text("0x"+(obj).toString(16)).data('format','dec');
                     }
                     evt.preventDefault();
                 });
@@ -3327,15 +3394,15 @@ RED.utils = (function () {
         } else if (isArray) {
             element.addClass('collapsed');
 
-            let originalLength = obj.length;
+            var originalLength = obj.length;
             if (typeHint) {
-                const m = /\[(\d+)\]/.exec(typeHint);
+                var m = /\[(\d+)\]/.exec(typeHint);
                 if (m) {
                     originalLength = parseInt(m[1]);
                 }
             }
-            let data = obj;
-            let type = 'array';
+            var data = obj;
+            var type = 'array';
             if (isArrayObject) {
                 data = obj.data;
                 if (originalLength === undefined) {
@@ -3348,80 +3415,79 @@ RED.utils = (function () {
             } else if (/buffer/.test(typeHint)) {
                 type = 'buffer';
             }
-            const fullLength = data.length;
+            var fullLength = data.length;
 
             if (originalLength > 0) {
                 $('<i class="fa fa-caret-right debug-message-object-handle"></i> ').prependTo(header);
-                const arrayRows = $('<div class="debug-message-array-rows"></div>').appendTo(element);
+                var arrayRows = $('<div class="debug-message-array-rows"></div>').appendTo(element);
                 element.addClass('debug-message-buffer-raw');
-                makeExpandable(header, () => {
+                makeExpandable(header,function() {
                     if (!key) {
-                        headerHead = $('<span class="debug-message-type-meta debug-message-object-type-header"></span>').html(typeHint || (`${type}[${originalLength}]`)).appendTo(header);
+                        headerHead = $('<span class="debug-message-type-meta debug-message-object-type-header"></span>').html(typeHint||(type+'['+originalLength+']')).appendTo(header);
                     }
                     if (type === 'buffer') {
-                        const stringRow = $('<div class="debug-message-string-rows"></div>').appendTo(element);
-                        const sr = $('<div class="debug-message-object-entry collapsed"></div>').appendTo(stringRow);
-                        let stringEncoding = '';
+                        var stringRow = $('<div class="debug-message-string-rows"></div>').appendTo(element);
+                        var sr = $('<div class="debug-message-object-entry collapsed"></div>').appendTo(stringRow);
+                        var stringEncoding = "";
                         try {
-                            stringEncoding = String.fromCharCode.apply(null, new Uint16Array(data));
-                        } catch (err) {
+                            stringEncoding = String.fromCharCode.apply(null, new Uint16Array(data))
+                        } catch(err) {
                             console.log(err);
                         }
                         $('<pre class="debug-message-type-string"></pre>').text(stringEncoding).appendTo(sr);
-                        const bufferOpts = $('<span class="debug-message-buffer-opts"></span>').appendTo(headerHead);
-                        $('<a href="#"></a>').addClass('selected').html('raw').appendTo(bufferOpts)
-                            .click(function (e) {
-                                if ($(this).text() === 'raw') {
-                                    $(this).text('string');
-                                    element.addClass('debug-message-buffer-string').removeClass('debug-message-buffer-raw');
-                                } else {
-                                    $(this).text('raw');
-                                    element.removeClass('debug-message-buffer-string').addClass('debug-message-buffer-raw');
-                                }
-                                e.preventDefault();
-                                e.stopPropagation();
-                            });
+                        var bufferOpts = $('<span class="debug-message-buffer-opts"></span>').appendTo(headerHead);
+                        $('<a href="#"></a>').addClass('selected').html('raw').appendTo(bufferOpts).click(function(e) {
+                            if ($(this).text() === 'raw') {
+                                $(this).text('string');
+                                element.addClass('debug-message-buffer-string').removeClass('debug-message-buffer-raw');
+                            } else {
+                                $(this).text('raw');
+                                element.removeClass('debug-message-buffer-string').addClass('debug-message-buffer-raw');
+                            }
+                            e.preventDefault();
+                            e.stopPropagation();
+                        })
                     }
-                    let row;
+                    var row;
                     if (fullLength <= 10) {
-                        for (i = 0; i < fullLength; i++) {
+                        for (i=0;i<fullLength;i++) {
                             row = $('<div class="debug-message-object-entry collapsed"></div>').appendTo(arrayRows);
-                            buildMessageElement(data[i], `${i}`, false).appendTo(row);
+                            buildMessageElement(data[i],""+i,false).appendTo(row);
                         }
                     } else {
-                        for (i = 0; i < fullLength; i += 10) {
+                        for (i=0;i<fullLength;i+=10) {
                             var minRange = i;
                             row = $('<div class="debug-message-object-entry collapsed"></div>').appendTo(arrayRows);
                             header = $('<span></span>').appendTo(row);
                             $('<i class="fa fa-caret-right debug-message-object-handle"></i> ').appendTo(header);
-                            makeExpandable(header, (function () {
-                                const min = minRange;
-                                const max = Math.min(fullLength - 1, (minRange + 9));
-                                const parent = row;
-                                return function () {
-                                    for (let i = min; i <= max; i++) {
-                                        const row = $('<div class="debug-message-object-entry collapsed"></div>').appendTo(parent);
-                                        buildMessageElement(data[i], `${i}`, false).appendTo(row);
+                            makeExpandable(header, (function() {
+                                var min = minRange;
+                                var max = Math.min(fullLength-1,(minRange+9));
+                                var parent = row;
+                                return function() {
+                                    for (var i=min;i<=max;i++) {
+                                        var row = $('<div class="debug-message-object-entry collapsed"></div>').appendTo(parent);
+                                        buildMessageElement(data[i],""+i,false).appendTo(row);
                                     }
-                                };
-                            }()));
-                            $('<span class="debug-message-object-key"></span>').html(`[${minRange} &hellip; ${Math.min(fullLength - 1, (minRange + 9))}]`).appendTo(header);
+                                }
+                            })());
+                            $('<span class="debug-message-object-key"></span>').html("["+minRange+" &hellip; "+Math.min(fullLength-1,(minRange+9))+"]").appendTo(header);
                         }
                         if (fullLength < originalLength) {
-                            $(`<div class="debug-message-object-entry collapsed"><span class="debug-message-object-key">[${fullLength} &hellip; ${originalLength}]</span></div>`).appendTo(arrayRows);
+                             $('<div class="debug-message-object-entry collapsed"><span class="debug-message-object-key">['+fullLength+' &hellip; '+originalLength+']</span></div>').appendTo(arrayRows);
                         }
                     }
                 });
             }
             if (key) {
-                headerHead = $('<span class="debug-message-type-meta f"></span>').html(typeHint || (`${type}[${originalLength}]`)).appendTo(entryObj);
+                headerHead = $('<span class="debug-message-type-meta f"></span>').html(typeHint||(type+'['+originalLength+']')).appendTo(entryObj);
             } else {
                 headerHead = $('<span class="debug-message-object-header"></span>').appendTo(entryObj);
                 $('<span>[ </span>').appendTo(headerHead);
-                const arrayLength = Math.min(originalLength, 10);
-                for (i = 0; i < arrayLength; i++) {
+                var arrayLength = Math.min(originalLength,10);
+                for (i=0;i<arrayLength;i++) {
                     buildMessageSummaryValue(data[i]).appendTo(headerHead);
-                    if (i < arrayLength - 1) {
+                    if (i < arrayLength-1) {
                         $('<span>, </span>').appendTo(headerHead);
                     }
                 }
@@ -3433,21 +3499,22 @@ RED.utils = (function () {
                 }
                 $('<span> ]</span>').appendTo(headerHead);
             }
+
         } else if (typeof obj === 'object') {
             element.addClass('collapsed');
-            const keys = Object.keys(obj);
+            var keys = Object.keys(obj);
             if (key || keys.length > 0) {
                 $('<i class="fa fa-caret-right debug-message-object-handle"></i> ').prependTo(header);
-                makeExpandable(header, () => {
+                makeExpandable(header, function() {
                     if (!key) {
                         $('<span class="debug-message-type-meta debug-message-object-type-header"></span>').html('object').appendTo(header);
                     }
-                    for (i = 0; i < keys.length; i++) {
-                        const row = $('<div class="debug-message-object-entry collapsed"></div>').appendTo(element);
-                        buildMessageElement(obj[keys[i]], keys[i], false).appendTo(row);
+                    for (i=0;i<keys.length;i++) {
+                        var row = $('<div class="debug-message-object-entry collapsed"></div>').appendTo(element);
+                        buildMessageElement(obj[keys[i]],keys[i],false).appendTo(row);
                     }
                     if (keys.length === 0) {
-                        $('<div class="debug-message-object-entry debug-message-type-meta collapsed"></div>').text('empty').appendTo(element);
+                        $('<div class="debug-message-object-entry debug-message-type-meta collapsed"></div>').text("empty").appendTo(element);
                     }
                 });
             }
@@ -3456,12 +3523,12 @@ RED.utils = (function () {
             } else {
                 headerHead = $('<span class="debug-message-object-header"></span>').appendTo(entryObj);
                 $('<span>{ </span>').appendTo(headerHead);
-                const keysLength = Math.min(keys.length, 5);
-                for (i = 0; i < keysLength; i++) {
+                var keysLength = Math.min(keys.length,5);
+                for (i=0;i<keysLength;i++) {
                     $('<span class="debug-message-object-key"></span>').text(keys[i]).appendTo(headerHead);
                     $('<span>: </span>').appendTo(headerHead);
                     buildMessageSummaryValue(obj[keys[i]]).appendTo(headerHead);
-                    if (i < keysLength - 1) {
+                    if (i < keysLength-1) {
                         $('<span>, </span>').appendTo(headerHead);
                     }
                 }
@@ -3474,7 +3541,7 @@ RED.utils = (function () {
                 $('<span> }</span>').appendTo(headerHead);
             }
         } else {
-            $('<span class="debug-message-type-other"></span>').text(`${obj}`).appendTo(entryObj);
+            $('<span class="debug-message-type-other"></span>').text(""+obj).appendTo(entryObj);
         }
         return element;
     }
@@ -3483,17 +3550,17 @@ RED.utils = (function () {
         // This must be kept in sync with normalisePropertyExpression
         // in red/runtime/util.js
 
-        const length = str.length;
+        var length = str.length;
         if (length === 0) {
             return false;
         }
-        let start = 0;
-        let inString = false;
-        let inBox = false;
-        let quoteChar;
-        let v;
-        for (let i = 0; i < length; i++) {
-            const c = str[i];
+        var start = 0;
+        var inString = false;
+        var inBox = false;
+        var quoteChar;
+        var v;
+        for (var i=0;i<length;i++) {
+            var c = str[i];
             if (!inString) {
                 if (c === "'" || c === '"') {
                     if (i != start) {
@@ -3501,57 +3568,60 @@ RED.utils = (function () {
                     }
                     inString = true;
                     quoteChar = c;
-                    start = i + 1;
+                    start = i+1;
                 } else if (c === '.') {
-                    if (i === 0 || i === length - 1) {
+                    if (i===0 || i===length-1) {
                         return false;
                     }
                     // Next char is first char of an identifier: a-z 0-9 $ _
-                    if (!/[a-z0-9\$\_]/i.test(str[i + 1])) {
+                    if (!/[a-z0-9\$\_]/i.test(str[i+1])) {
                         return false;
                     }
-                    start = i + 1;
+                    start = i+1;
                 } else if (c === '[') {
                     if (i === 0) {
                         return false;
                     }
-                    if (i === length - 1) {
+                    if (i===length-1) {
                         return false;
                     }
                     // Next char is either a quote or a number
-                    if (!/["'\d]/.test(str[i + 1])) {
+                    if (!/["'\d]/.test(str[i+1])) {
                         return false;
                     }
-                    start = i + 1;
+                    start = i+1;
                     inBox = true;
                 } else if (c === ']') {
                     if (!inBox) {
                         return false;
                     }
                     if (start != i) {
-                        v = str.substring(start, i);
+                        v = str.substring(start,i);
                         if (!/^\d+$/.test(v)) {
                             return false;
                         }
                     }
-                    start = i + 1;
+                    start = i+1;
                     inBox = false;
                 } else if (c === ' ') {
                     return false;
                 }
-            } else if (c === quoteChar) {
-                if (i - start === 0) {
-                    return false;
+            } else {
+                if (c === quoteChar) {
+                    if (i-start === 0) {
+                        return false;
+                    }
+                    // Next char must be a ]
+                    if (inBox && !/\]/.test(str[i+1])) {
+                        return false;
+                    } else if (!inBox && i+1!==length && !/[\[\.]/.test(str[i+1])) {
+                        return false;
+                    }
+                    start = i+1;
+                    inString = false;
                 }
-                // Next char must be a ]
-                if (inBox && !/\]/.test(str[i + 1])) {
-                    return false;
-                } if (!inBox && i + 1 !== length && !/[\[\.]/.test(str[i + 1])) {
-                    return false;
-                }
-                start = i + 1;
-                inString = false;
             }
+
         }
         if (inBox || inString) {
             return false;
@@ -3561,10 +3631,11 @@ RED.utils = (function () {
 
     return {
         createObjectElement: buildMessageElement,
-        validatePropertyExpression,
-    };
-}());
-(function ($) {
+        validatePropertyExpression: validatePropertyExpression
+    }
+})();
+(function($) {
+
     /**
      * options:
      *   - addButton : boolean|string - text for add label, default 'add'
@@ -3591,96 +3662,99 @@ RED.utils = (function () {
      *   - sort(sort)
      *   - length()
      */
-    $.widget('nodered.editableList', {
-        _create() {
-            const that = this;
+    $.widget( "nodered.editableList", {
+        _create: function() {
+            var that = this;
 
             this.element.addClass('red-ui-editableList-list');
             this.uiWidth = this.element.width();
             this.uiContainer = this.element
-                .wrap('<div>')
+                .wrap( "<div>" )
                 .parent();
-            this.topContainer = this.uiContainer.wrap('<div>').parent();
+            this.topContainer = this.uiContainer.wrap("<div>").parent();
 
             this.topContainer.addClass('red-ui-editableList');
 
             if (this.options.addButton !== false) {
-                let addLabel;
+                var addLabel;
                 if (typeof this.options.addButton === 'string') {
-                    addLabel = this.options.addButton;
-                } else if (RED && RED._) {
-                    addLabel = RED._('editableList.add');
+                    addLabel = this.options.addButton
                 } else {
-                    addLabel = 'add';
+                    if (RED && RED._) {
+                        addLabel = RED._("editableList.add");
+                    } else {
+                        addLabel = 'add';
+                    }
                 }
-                $(`<a href="#" class="editor-button editor-button-small" style="margin-top: 4px;"><i class="fa fa-plus"></i> ${addLabel}</a>`)
+                $('<a href="#" class="editor-button editor-button-small" style="margin-top: 4px;"><i class="fa fa-plus"></i> '+addLabel+'</a>')
                     .appendTo(this.topContainer)
-                    .click((evt) => {
+                    .click(function(evt) {
                         evt.preventDefault();
                         that.addItem({});
                     });
             }
-            if (this.element.css('position') === 'absolute') {
-                ['top', 'left', 'bottom', 'right'].forEach((s) => {
-                    const v = that.element.css(s);
-                    if (s !== 'auto' && s !== '') {
-                        that.topContainer.css(s, v);
-                        that.uiContainer.css(s, '0');
-                        that.element.css(s, 'auto');
+            if (this.element.css("position") === "absolute") {
+                ["top","left","bottom","right"].forEach(function(s) {
+                    var v = that.element.css(s);
+                    if (s!=="auto" && s!=="") {
+                        that.topContainer.css(s,v);
+                        that.uiContainer.css(s,"0");
+                        that.element.css(s,'auto');
                     }
-                });
-                this.element.css('position', 'static');
-                this.topContainer.css('position', 'absolute');
-                this.uiContainer.css('position', 'absolute');
+                })
+                this.element.css("position","static");
+                this.topContainer.css("position","absolute");
+                this.uiContainer.css("position","absolute");
+
             }
-            this.uiContainer.addClass('red-ui-editableList-container');
+            this.uiContainer.addClass("red-ui-editableList-container");
 
             this.uiHeight = this.element.height();
 
-            this.activeFilter = this.options.filter || null;
-            this.activeSort = this.options.sort || null;
+            this.activeFilter = this.options.filter||null;
+            this.activeSort = this.options.sort||null;
             this.scrollOnAdd = this.options.scrollOnAdd;
             if (this.scrollOnAdd === undefined) {
                 this.scrollOnAdd = true;
             }
-            const minHeight = this.element.css('minHeight');
+            var minHeight = this.element.css("minHeight");
             if (minHeight !== '0px') {
-                this.uiContainer.css('minHeight', minHeight);
-                this.element.css('minHeight', 0);
+                this.uiContainer.css("minHeight",minHeight);
+                this.element.css("minHeight",0);
             }
             if (this.options.height !== 'auto') {
-                this.uiContainer.css('overflow-y', 'scroll');
+                this.uiContainer.css("overflow-y","scroll");
                 if (!isNaN(this.options.height)) {
                     this.uiHeight = this.options.height;
                 }
             }
             this.element.height('auto');
 
-            const attrStyle = this.element.attr('style');
-            let m;
+            var attrStyle = this.element.attr('style');
+            var m;
             if ((m = /width\s*:\s*(\d+%)/i.exec(attrStyle)) !== null) {
                 this.element.width('100%');
                 this.uiContainer.width(m[1]);
             }
             if (this.options.sortable) {
-                const handle = (typeof this.options.sortable === 'string')
-                    ? this.options.sortable
-                    : '.red-ui-editableList-item-handle';
-                const sortOptions = {
-                    axis: 'y',
-                    update(event, ui) {
+                var handle = (typeof this.options.sortable === 'string')?
+                                this.options.sortable :
+                                ".red-ui-editableList-item-handle";
+                var sortOptions = {
+                    axis: "y",
+                    update: function( event, ui ) {
                         if (that.options.sortItems) {
                             that.options.sortItems(that.items());
                         }
                     },
-                    handle,
-                    cursor: 'move',
-                    tolerance: 'pointer',
-                    forcePlaceholderSize: true,
-                    placeholder: 'red-ui-editabelList-item-placeholder',
-                    start(e, ui) {
-                        ui.placeholder.height(ui.item.height() - 4);
-                    },
+                    handle:handle,
+                    cursor: "move",
+                    tolerance: "pointer",
+                    forcePlaceholderSize:true,
+                    placeholder: "red-ui-editabelList-item-placeholder",
+                    start: function(e, ui){
+                        ui.placeholder.height(ui.item.height()-4);
+                    }
                 };
                 if (this.options.connectWith) {
                     sortOptions.connectWith = this.options.connectWith;
@@ -3694,102 +3768,104 @@ RED.utils = (function () {
             // this.menu = this._createMenu(this.types, function(v) { that.type(v) });
             // this.type(this.options.default||this.types[0].value);
         },
-        _resize() {
-            const currentFullHeight = this.topContainer.height();
-            const innerHeight = this.uiContainer.height();
-            const delta = currentFullHeight - innerHeight;
+        _resize: function() {
+            var currentFullHeight = this.topContainer.height();
+            var innerHeight = this.uiContainer.height();
+            var delta = currentFullHeight - innerHeight;
             if (this.uiHeight !== 0) {
-                this.uiContainer.height(this.uiHeight - delta);
+                this.uiContainer.height(this.uiHeight-delta);
             }
             if (this.options.resize) {
                 this.options.resize();
             }
             if (this.options.resizeItem) {
-                const that = this;
-                this.element.children().each(function (i) {
-                    that.options.resizeItem($(this).find('.red-ui-editableList-item-content'), i);
+                var that = this;
+                this.element.children().each(function(i) {
+                    that.options.resizeItem($(this).find(".red-ui-editableList-item-content"),i);
                 });
             }
         },
-        _destroy() {
+        _destroy: function() {
         },
-        _refreshFilter() {
-            const that = this;
-            let count = 0;
+        _refreshFilter: function() {
+            var that = this;
+            var count = 0;
             if (!this.activeFilter) {
-                this.element.children().attr('style', 'display: block !important');
+                this.element.children().attr("style", "display: block !important");
             }
-            const items = this.items();
-            items.each((i, el) => {
-                const data = el.data('data');
+            var items = this.items();
+            items.each(function (i,el) {
+                var data = el.data('data');
                 try {
                     if (that.activeFilter(data)) {
-                        el.parent().attr('style', 'display: block !important');
+                        el.parent().attr("style", "display: block !important");
                         count++;
                     } else {
                         el.parent().hide();
                     }
-                } catch (err) {
+                } catch(err) {
                     console.log(err);
-                    el.parent().attr('style', 'display: block !important');
+                    el.parent().attr("style", "display: block !important");
                     count++;
                 }
             });
             return count;
         },
-        _refreshSort() {
+        _refreshSort: function() {
             if (this.activeSort) {
-                const items = this.element.children();
-                const that = this;
-                items.sort((A, B) => that.activeSort($(A).find('.red-ui-editableList-item-content').data('data'), $(B).find('.red-ui-editableList-item-content').data('data')));
-                $.each(items, (idx, li) => {
-                    that.element.append(li);
+                var items = this.element.children();
+                var that = this;
+                items.sort(function(A,B) {
+                    return that.activeSort($(A).find(".red-ui-editableList-item-content").data('data'),$(B).find(".red-ui-editableList-item-content").data('data'));
                 });
+                $.each(items,function(idx,li) {
+                    that.element.append(li);
+                })
             }
         },
-        width(desiredWidth) {
+        width: function(desiredWidth) {
             this.uiWidth = desiredWidth;
             this._resize();
         },
-        height(desiredHeight) {
+        height: function(desiredHeight) {
             this.uiHeight = desiredHeight;
             this._resize();
         },
-        addItem(data) {
-            const that = this;
+        addItem: function(data) {
+            var that = this;
             data = data || {};
-            const li = $('<li>');
-            let added = false;
+            var li = $('<li>');
+            var added = false;
             if (this.activeSort) {
-                const items = this.items();
-                const skip = false;
-                items.each((i, el) => {
-                    if (added) { return; }
-                    const itemData = el.data('data');
-                    if (that.activeSort(data, itemData) < 0) {
-                        li.insertBefore(el.closest('li'));
-                        added = true;
+                var items = this.items();
+                var skip = false;
+                items.each(function(i,el) {
+                    if (added) { return }
+                    var itemData = el.data('data');
+                    if (that.activeSort(data,itemData) < 0) {
+                         li.insertBefore(el.closest("li"));
+                         added = true;
                     }
                 });
             }
             if (!added) {
                 li.appendTo(this.element);
             }
-            const row = $('<div/>').addClass('red-ui-editableList-item-content').appendTo(li);
-            row.data('data', data);
+            var row = $('<div/>').addClass("red-ui-editableList-item-content").appendTo(li);
+            row.data('data',data);
             if (this.options.sortable === true) {
                 $('<i class="red-ui-editableList-item-handle fa fa-bars"></i>').appendTo(li);
-                li.addClass('red-ui-editableList-item-sortable');
+                li.addClass("red-ui-editableList-item-sortable");
             }
             if (this.options.removable) {
-                const deleteButton = $('<a/>', { href: '#', class: 'red-ui-editableList-item-remove editor-button editor-button-small' }).appendTo(li);
-                $('<i/>', { class: 'fa fa-remove' }).appendTo(deleteButton);
-                li.addClass('red-ui-editableList-item-removable');
-                deleteButton.click((evt) => {
+                var deleteButton = $('<a/>',{href:"#",class:"red-ui-editableList-item-remove editor-button editor-button-small"}).appendTo(li);
+                $('<i/>',{class:"fa fa-remove"}).appendTo(deleteButton);
+                li.addClass("red-ui-editableList-item-removable");
+                deleteButton.click(function(evt) {
                     evt.preventDefault();
-                    const data = row.data('data');
-                    li.addClass('red-ui-editableList-item-deleting');
-                    li.fadeOut(300, function () {
+                    var data = row.data('data');
+                    li.addClass("red-ui-editableList-item-deleting")
+                    li.fadeOut(300, function() {
                         $(this).remove();
                         if (that.options.removeItem) {
                             that.options.removeItem(data);
@@ -3798,251 +3874,248 @@ RED.utils = (function () {
                 });
             }
             if (this.options.addItem) {
-                const index = that.element.children().length - 1;
-                setTimeout(() => {
-                    that.options.addItem(row, index, data);
+                var index = that.element.children().length-1;
+                setTimeout(function() {
+                    that.options.addItem(row,index,data);
                     if (that.activeFilter) {
                         try {
                             if (!that.activeFilter(data)) {
                                 li.hide();
                             }
-                        } catch (err) {
+                        } catch(err) {
                         }
                     }
 
                     if (!that.activeSort && that.scrollOnAdd) {
-                        setTimeout(() => {
+                        setTimeout(function() {
                             that.uiContainer.scrollTop(that.element.height());
-                        }, 0);
+                        },0);
                     }
-                }, 0);
+                },0);
             }
         },
-        removeItem(data) {
-            const items = this.element.children().filter(function (f) {
-                return data === $(this).find('.red-ui-editableList-item-content').data('data');
+        removeItem: function(data) {
+            var items = this.element.children().filter(function(f) {
+                return data === $(this).find(".red-ui-editableList-item-content").data('data');
             });
             items.remove();
             if (this.options.removeItem) {
                 this.options.removeItem(data);
             }
         },
-        items() {
-            return this.element.children().map(function (i) { return $(this).find('.red-ui-editableList-item-content'); });
+        items: function() {
+            return this.element.children().map(function(i) { return $(this).find(".red-ui-editableList-item-content"); });
         },
-        empty() {
+        empty: function() {
             this.element.empty();
         },
-        filter(filter) {
+        filter: function(filter) {
             if (filter !== undefined) {
                 this.activeFilter = filter;
             }
             return this._refreshFilter();
         },
-        sort(sort) {
+        sort: function(sort) {
             if (sort !== undefined) {
                 this.activeSort = sort;
             }
             return this._refreshSort();
         },
-        length() {
+        length: function() {
             return this.element.children().length;
-        },
+        }
     });
-}(jQuery));
+})(jQuery);
 
 // Handles display of user-friendly alert boxes
 // RED.popover is not needed
 
 
-(function ($) {
-    $.widget('nodered.searchBox', {
-        _create() {
-            const that = this;
+(function($) {
+
+    $.widget( "nodered.searchBox", {
+        _create: function() {
+            var that = this;
 
             this.currentTimeout = null;
-            this.lastSent = '';
-            this.element.val('');
-            this.uiContainer = this.element.wrap('<div>').parent();
-            this.uiContainer.addClass('red-ui-searchBox-container');
+            this.lastSent = "";
+            this.element.val("");
+            this.uiContainer = this.element.wrap("<div>").parent();
+            this.uiContainer.addClass("red-ui-searchBox-container");
 
             $('<i class="fa fa-search"></i>').prependTo(this.uiContainer);
             this.clearButton = $('<a href="#"><i class="fa fa-times"></i></a>').appendTo(this.uiContainer);
-            this.clearButton.on('click', (e) => {
+            this.clearButton.on("click",function(e) {
                 e.preventDefault();
-                that.element.val('');
-                that._change('', true);
+                that.element.val("");
+                that._change("",true);
                 that.element.focus();
             });
 
-            this.resultCount = $('<span>', { class: 'red-ui-searchBox-resultCount hide' }).appendTo(this.uiContainer);
+            this.resultCount = $('<span>',{class:"red-ui-searchBox-resultCount hide"}).appendTo(this.uiContainer);
 
-            this.element.val('');
-            this.element.on('keydown', (evt) => {
+            this.element.val("");
+            this.element.on("keydown",function(evt) {
                 if (evt.keyCode === 27) {
-                    that.element.val('');
+                    that.element.val("");
                 }
-            });
-            this.element.on('keyup', function (evt) {
+            })
+            this.element.on("keyup",function(evt) {
                 that._change($(this).val());
             });
 
-            this.element.on('focus', () => {
-                $('body').one('mousedown', () => {
+            this.element.on("focus",function() {
+                $("body").one("mousedown",function() {
                     that.element.blur();
                 });
             });
+
         },
-        _change(val, instant) {
-            let fireEvent = false;
-            if (val === '') {
+        _change: function(val,instant) {
+            var fireEvent = false;
+            if (val === "") {
                 this.clearButton.hide();
                 fireEvent = true;
             } else {
-                this.clearButton.attr('style', 'display: block !important');
-                fireEvent = (val.length >= (this.options.minimumLength || 0));
+                this.clearButton.attr("style", "display: block !important");
+                fireEvent = (val.length >= (this.options.minimumLength||0));
             }
-            const current = this.element.val();
+            var current = this.element.val();
             fireEvent = fireEvent && current !== this.lastSent;
             if (fireEvent) {
                 if (!instant && this.options.delay > 0) {
                     clearTimeout(this.currentTimeout);
-                    const that = this;
-                    this.currentTimeout = setTimeout(() => {
+                    var that = this;
+                    this.currentTimeout = setTimeout(function() {
                         that.lastSent = that.element.val();
-                        that._trigger('change');
-                    }, this.options.delay);
+                        that._trigger("change");
+                    },this.options.delay);
                 } else {
-                    this._trigger('change');
+                    this._trigger("change");
                 }
             }
         },
-        value(val) {
+        value: function(val) {
             if (val === undefined) {
                 return this.element.val();
-            }
-            this.element.val(val);
-            this._change(val);
-        },
-        count(val) {
-            if (val === undefined || val === null || val === '') {
-                this.resultCount.text('').hide();
             } else {
-                this.resultCount.text(val).attr('style', 'display: block !important');
+                this.element.val(val);
+                this._change(val);
             }
         },
+        count: function(val) {
+            if (val === undefined || val === null || val === "") {
+                this.resultCount.text("").hide();
+            } else {
+                this.resultCount.text(val).attr("style", "display: block !important");
+            }
+        }
     });
-}(jQuery));
-RED.tabs = (function () {
+})(jQuery);
+RED.tabs = (function() {
     function createTabs(options) {
-        let tabs = {};
-        let currentTabWidth;
-        const currentActiveTabWidth = 0;
+        var tabs = {};
+        var currentTabWidth;
+        var currentActiveTabWidth = 0;
 
         return {
-            addTab(tab) {
+            addTab: function(tab) {
                 tabs[tab.id] = tab;
                 if (options.onadd) {
                     options.onadd(tab);
                 }
             },
-            clear() { tabs = {}; },
-            removeTab() {},
-            activateTab(link) {
-                if (options.onchange) {
-                    options.onchange({ id: link });
-                }
+            clear: function() { tabs = {}; },
+            removeTab: function() {},
+            activateTab: function(link) {
+              if (options.onchange) {
+                options.onchange({id: link});
+              }
             },
-            nextTab() {},
-            previousTab() {},
-            resize() {},
-            count() {
+            nextTab: function() {},
+            previousTab: function() {},
+            resize: function() {},
+            count: function() {
                 return 1;
             },
-            contains(id) {
+            contains: function(id) {
                 return id == RED.__currentFlow;
             },
-            renameTab(id, label) {
+            renameTab: function(id,label) {
                 tabs[id].label = label;
             },
-            order(order) {},
+            order: function(order) {}
 
-        };
+        }
     }
 
     return {
-        create: createTabs,
-    };
-}());
-(function ($) {
-    const allOptions = {
-        msg: { value: 'msg', label: 'msg.', validate: RED.utils.validatePropertyExpression },
-        flow: { value: 'flow', label: 'flow.', validate: RED.utils.validatePropertyExpression },
-        global: { value: 'global', label: 'global.', validate: RED.utils.validatePropertyExpression },
-        str: { value: 'str', label: 'string', icon: 'mashup/red/images/typedInput/az.png' },
-        num: {
-            value: 'num', label: 'number', icon: 'mashup/red/images/typedInput/09.png', validate: /^[+-]?[0-9]*\.?[0-9]*([eE][-+]?[0-9]+)?$/,
-        },
-        bool: {
-            value: 'bool', label: 'boolean', icon: 'mashup/red/images/typedInput/bool.png', options: ['true', 'false'],
-        },
-        json: {
-            value: 'json', label: 'JSON', icon: 'mashup/red/images/typedInput/json.png', validate(v) { try { JSON.parse(v); return true; } catch (e) { return false; } },
-        },
-        re: { value: 're', label: 'regular expression', icon: 'mashup/red/images/typedInput/re.png' },
-        date: { value: 'date', label: 'timestamp', hasValue: false },
+        create: createTabs
+    }
+})();
+(function($) {
+    var allOptions = {
+        msg: {value:"msg",label:"msg.",validate:RED.utils.validatePropertyExpression},
+        flow: {value:"flow",label:"flow.",validate:RED.utils.validatePropertyExpression},
+        global: {value:"global",label:"global.",validate:RED.utils.validatePropertyExpression},
+        str: {value:"str",label:"string",icon:"mashup/red/images/typedInput/az.png"},
+        num: {value:"num",label:"number",icon:"mashup/red/images/typedInput/09.png",validate:/^[+-]?[0-9]*\.?[0-9]*([eE][-+]?[0-9]+)?$/},
+        bool: {value:"bool",label:"boolean",icon:"mashup/red/images/typedInput/bool.png",options:["true","false"]},
+        json: {value:"json",label:"JSON",icon:"mashup/red/images/typedInput/json.png", validate: function(v) { try{JSON.parse(v);return true;}catch(e){return false;}}},
+        re: {value:"re",label:"regular expression",icon:"mashup/red/images/typedInput/re.png"},
+        date: {value:"date",label:"timestamp",hasValue:false},
         jsonata: {
-            value: 'jsonata',
-            label: 'expression',
-            icon: 'mashup/red/images/typedInput/expr.png',
-            validate(v) { try { jsonata(v); return true; } catch (e) { return false; } },
-            expand() {
-                const that = this;
+            value: "jsonata",
+            label: "expression",
+            icon: "mashup/red/images/typedInput/expr.png",
+            validate: function(v) { try{jsonata(v);return true;}catch(e){return false;}},
+            expand:function() {
+                var that = this;
                 RED.editor.editExpression({
-                    value: this.value().replace(/\t/g, '\n'),
-                    complete(v) {
-                        that.value(v.replace(/\n/g, '\t'));
-                    },
-                });
-            },
-        },
+                    value: this.value().replace(/\t/g,"\n"),
+                    complete: function(v) {
+                        that.value(v.replace(/\n/g,"\t"));
+                    }
+                })
+            }
+        }
     };
-    let nlsd = false;
+    var nlsd = false;
 
-    $.widget('nodered.typedInput', {
-        _create() {
+    $.widget( "nodered.typedInput", {
+        _create: function() {
             if (!nlsd && RED && RED._) {
-                for (const i in allOptions) {
+                for (var i in allOptions) {
                     if (allOptions.hasOwnProperty(i)) {
-                        allOptions[i].label = RED._(`typedInput.type.${i}`, { defaultValue: allOptions[i].label });
+                        allOptions[i].label = RED._("typedInput.type."+i,{defaultValue:allOptions[i].label});
                     }
                 }
             }
             nlsd = true;
-            const that = this;
+            var that = this;
 
             this.disarmClick = false;
             this.element.addClass('red-ui-typedInput');
             this.uiWidth = this.element.outerWidth();
-            this.elementDiv = this.element.wrap('<div>').parent().addClass('red-ui-typedInput-input');
-            this.uiSelect = this.elementDiv.wrap('<div>').parent();
-            const attrStyle = this.element.attr('style');
-            let m;
+            this.elementDiv = this.element.wrap("<div>").parent().addClass('red-ui-typedInput-input');
+            this.uiSelect = this.elementDiv.wrap( "<div>" ).parent();
+            var attrStyle = this.element.attr('style');
+            var m;
             if ((m = /width\s*:\s*(\d+(%|px))/i.exec(attrStyle)) !== null) {
-                this.element.css('width', '100%');
+                this.element.css('width','100%');
                 this.uiSelect.width(m[1]);
                 this.uiWidth = null;
             } else {
                 this.uiSelect.width(this.uiWidth);
             }
-            ['Right', 'Left'].forEach((d) => {
-                const m = that.element.css(`margin${d}`);
-                that.uiSelect.css(`margin${d}`, m);
-                that.element.css(`margin${d}`, 0);
+            ["Right","Left"].forEach(function(d) {
+                var m = that.element.css("margin"+d);
+                that.uiSelect.css("margin"+d,m);
+                that.element.css("margin"+d,0);
             });
-            this.uiSelect.addClass('red-ui-typedInput-container');
+            this.uiSelect.addClass("red-ui-typedInput-container");
 
-            this.options.types = this.options.types || Object.keys(allOptions);
+            this.options.types = this.options.types||Object.keys(allOptions);
 
             this.selectTrigger = $('<button tabindex="0"></button>').prependTo(this.uiSelect);
             $('<i class="fa fa-sort-desc"></i>').appendTo(this.selectTrigger);
@@ -4052,205 +4125,206 @@ RED.tabs = (function () {
 
             if (this.options.typeField) {
                 this.typeField = $(this.options.typeField).hide();
-                const t = this.typeField.val();
+                var t = this.typeField.val();
                 if (t && this.typeMap[t]) {
                     this.options.default = t;
                 }
             } else {
-                this.typeField = $('<input>', { type: 'hidden' }).appendTo(this.uiSelect);
+                this.typeField = $("<input>",{type:'hidden'}).appendTo(this.uiSelect);
             }
 
-            this.element.on('focus', () => {
+            this.element.on('focus', function() {
                 that.uiSelect.addClass('red-ui-typedInput-focus');
             });
-            this.element.on('blur', () => {
+            this.element.on('blur', function() {
                 that.uiSelect.removeClass('red-ui-typedInput-focus');
             });
-            this.element.on('change', () => {
+            this.element.on('change', function() {
                 that.validate();
-            });
-            this.selectTrigger.click((event) => {
+            })
+            this.selectTrigger.click(function(event) {
                 event.preventDefault();
                 that._showTypeMenu();
             });
-            this.selectTrigger.on('keydown', (evt) => {
+            this.selectTrigger.on('keydown',function(evt) {
                 if (evt.keyCode === 40) {
                     // Down
                     that._showTypeMenu();
                 }
-            }).on('focus', () => {
+            }).on('focus', function() {
                 that.uiSelect.addClass('red-ui-typedInput-focus');
-            });
+            })
 
             // explicitly set optionSelectTrigger display to inline-block otherwise jQ sets it to 'inline'
             this.optionSelectTrigger = $('<button tabindex="0" class="red-ui-typedInput-option-trigger" style="display:inline-block"><span class="red-ui-typedInput-option-caret"><i class="fa fa-sort-desc"></i></span></button>').appendTo(this.uiSelect);
             this.optionSelectLabel = $('<span class="red-ui-typedInput-option-label"></span>').prependTo(this.optionSelectTrigger);
-            this.optionSelectTrigger.click((event) => {
+            this.optionSelectTrigger.click(function(event) {
                 event.preventDefault();
                 that._showOptionSelectMenu();
-            }).on('keydown', (evt) => {
+            }).on('keydown', function(evt) {
                 if (evt.keyCode === 40) {
                     // Down
                     that._showOptionSelectMenu();
                 }
-            }).on('blur', () => {
+            }).on('blur', function() {
                 that.uiSelect.removeClass('red-ui-typedInput-focus');
-            }).on('focus', () => {
+            }).on('focus', function() {
                 that.uiSelect.addClass('red-ui-typedInput-focus');
             });
 
             this.optionExpandButton = $('<button tabindex="0" class="red-ui-typedInput-option-expand" style="display:inline-block"><i class="fa fa-ellipsis-h"></i></button>').appendTo(this.uiSelect);
 
 
-            this.type(this.options.default || this.typeList[0].value);
+            this.type(this.options.default||this.typeList[0].value);
         },
-        _showTypeMenu() {
+        _showTypeMenu: function() {
             if (this.typeList.length > 1) {
-                this._showMenu(this.menu, this.selectTrigger);
-                this.menu.find(`[value='${this.propertyType}']`).focus();
+                this._showMenu(this.menu,this.selectTrigger);
+                this.menu.find("[value='"+this.propertyType+"']").focus();
             } else {
                 this.element.focus();
             }
         },
-        _showOptionSelectMenu() {
+        _showOptionSelectMenu: function() {
             if (this.optionMenu) {
                 this.optionMenu.css({
-                    minWidth: this.optionSelectLabel.width(),
+                    minWidth:this.optionSelectLabel.width()
                 });
 
-                this._showMenu(this.optionMenu, this.optionSelectLabel);
-                let selectedOption = this.optionMenu.find(`[value='${this.value()}']`);
+                this._showMenu(this.optionMenu,this.optionSelectLabel);
+                var selectedOption = this.optionMenu.find("[value='"+this.value()+"']");
                 if (selectedOption.length === 0) {
-                    selectedOption = this.optionMenu.children(':first');
+                    selectedOption = this.optionMenu.children(":first");
                 }
                 selectedOption.focus();
+
             }
         },
-        _hideMenu(menu) {
-            $(document).off('mousedown.close-property-select');
+        _hideMenu: function(menu) {
+            $(document).off("mousedown.close-property-select");
             menu.hide();
-            if (this.elementDiv.is(':visible')) {
+            if (this.elementDiv.is(":visible")) {
                 this.element.focus();
-            } else if (this.optionSelectTrigger.is(':visible')) {
+            } else if (this.optionSelectTrigger.is(":visible")){
                 this.optionSelectTrigger.focus();
             } else {
                 this.selectTrigger.focus();
             }
         },
-        _createMenu(opts, callback) {
-            const that = this;
-            const menu = $('<div>').addClass('red-ui-typedInput-options');
-            opts.forEach((opt) => {
+        _createMenu: function(opts,callback) {
+            var that = this;
+            var menu = $("<div>").addClass("red-ui-typedInput-options");
+            opts.forEach(function(opt) {
                 if (typeof opt === 'string') {
-                    opt = { value: opt, label: opt };
+                    opt = {value:opt,label:opt};
                 }
-                const op = $('<a href="#"></a>').attr('value', opt.value).appendTo(menu);
+                var op = $('<a href="#"></a>').attr("value",opt.value).appendTo(menu);
                 if (opt.label) {
                     op.text(opt.label);
                 }
                 if (opt.icon) {
-                    $('<img>', { src: opt.icon, style: 'margin-right: 4px; height: 18px;' }).prependTo(op);
+                    $('<img>',{src:opt.icon,style:"margin-right: 4px; height: 18px;"}).prependTo(op);
                 } else {
-                    op.css({ paddingLeft: '18px' });
+                    op.css({paddingLeft: "18px"});
                 }
 
-                op.click((event) => {
+                op.click(function(event) {
                     event.preventDefault();
                     callback(opt.value);
                     that._hideMenu(menu);
                 });
             });
-            menu.css({ display: 'none' });
+            menu.css({display: "none",});
             menu.appendTo($('.flows-wrapper'));
 
-            menu.on('keydown', function (evt) {
+            menu.on('keydown', function(evt) {
                 if (evt.keyCode === 40) {
                     // DOWN
-                    $(this).children(':focus').next().focus();
+                    $(this).children(":focus").next().focus();
                 } else if (evt.keyCode === 38) {
                     // UP
-                    $(this).children(':focus').prev().focus();
+                    $(this).children(":focus").prev().focus();
                 } else if (evt.keyCode === 27) {
                     that._hideMenu(menu);
                 }
-            });
+            })
 
             return menu;
         },
-        _showMenu(menu, relativeTo) {
+        _showMenu: function(menu,relativeTo) {
             if (this.disarmClick) {
                 this.disarmClick = false;
-                return;
+                return
             }
-            const that = this;
-            const pos = relativeTo.offset();
-            const height = relativeTo.height();
-            const menuHeight = menu.height();
-            let top = (height + pos.top - 3);
-            if (top + menuHeight > $(window).height()) {
-                top -= (top + menuHeight) - $(window).height() + 5;
+            var that = this;
+            var pos = relativeTo.offset();
+            var height = relativeTo.height();
+            var menuHeight = menu.height();
+            var top = (height+pos.top-3);
+            if (top+menuHeight > $(window).height()) {
+                top -= (top+menuHeight)-$(window).height()+5;
             }
             menu.css({
-                top: `${top}px`,
-                left: `${2 + pos.left}px`,
+                top: top+"px",
+                left: (2+pos.left)+"px",
             });
             menu.slideDown(100);
-            this._delay(() => {
+            this._delay(function() {
                 that.uiSelect.addClass('red-ui-typedInput-focus');
-                $(document).on('mousedown.close-property-select', (event) => {
-                    if (!$(event.target).closest(menu).length) {
+                $(document).on("mousedown.close-property-select", function(event) {
+                    if(!$(event.target).closest(menu).length) {
                         that._hideMenu(menu);
                     }
                     if ($(event.target).closest(relativeTo).length) {
                         that.disarmClick = true;
                         event.preventDefault();
                     }
-                });
+                })
             });
         },
-        _getLabelWidth(label) {
-            let labelWidth = label.outerWidth();
+        _getLabelWidth: function(label) {
+            var labelWidth = label.outerWidth();
             if (labelWidth === 0) {
-                const container = $('<div class="red-ui-typedInput-container"></div>').css({
-                    position: 'absolute',
-                    top: 0,
-                    left: -1000,
+                var container = $('<div class="red-ui-typedInput-container"></div>').css({
+                    position:"absolute",
+                    top:0,
+                    left:-1000
                 }).appendTo($('.flows-wrapper'));
-                const newTrigger = label.clone().appendTo(container);
+                var newTrigger = label.clone().appendTo(container);
                 labelWidth = newTrigger.outerWidth();
                 container.remove();
             }
             return labelWidth;
         },
-        _resize() {
+        _resize: function() {
             if (this.uiWidth !== null) {
                 this.uiSelect.width(this.uiWidth);
             }
             if (this.typeMap[this.propertyType] && this.typeMap[this.propertyType].hasValue === false) {
-                this.selectTrigger.addClass('red-ui-typedInput-full-width');
+                this.selectTrigger.addClass("red-ui-typedInput-full-width");
             } else {
-                this.selectTrigger.removeClass('red-ui-typedInput-full-width');
-                const labelWidth = this._getLabelWidth(this.selectTrigger);
-                this.elementDiv.css('left', `${labelWidth}px`);
-                if (this.optionExpandButton.is(':visible')) {
-                    this.elementDiv.css('right', '22px');
+                this.selectTrigger.removeClass("red-ui-typedInput-full-width");
+                var labelWidth = this._getLabelWidth(this.selectTrigger);
+                this.elementDiv.css('left',labelWidth+"px");
+                if (this.optionExpandButton.is(":visible")) {
+                    this.elementDiv.css('right',"22px");
                 } else {
-                    this.elementDiv.css('right', '0');
+                    this.elementDiv.css('right','0');
                 }
                 if (this.optionSelectTrigger) {
-                    this.optionSelectTrigger.css({ left: `${labelWidth}px`, width: `calc( 100% - ${labelWidth}px )` });
+                    this.optionSelectTrigger.css({'left':(labelWidth)+"px",'width':'calc( 100% - '+labelWidth+'px )'});
                 }
             }
         },
-        _destroy() {
+        _destroy: function() {
             this.menu.remove();
         },
-        types(types) {
-            const that = this;
-            const currentType = this.type();
+        types: function(types) {
+            var that = this;
+            var currentType = this.type();
             this.typeMap = {};
-            this.typeList = types.map((opt) => {
-                let result;
+            this.typeList = types.map(function(opt) {
+                var result;
                 if (typeof opt === 'string') {
                     result = allOptions[opt];
                 } else {
@@ -4259,114 +4333,116 @@ RED.tabs = (function () {
                 that.typeMap[result.value] = result;
                 return result;
             });
-            this.selectTrigger.toggleClass('disabled', this.typeList.length === 1);
+            this.selectTrigger.toggleClass("disabled", this.typeList.length === 1);
             if (this.menu) {
                 this.menu.remove();
             }
-            this.menu = this._createMenu(this.typeList, (v) => { that.type(v); });
+            this.menu = this._createMenu(this.typeList, function(v) { that.type(v) });
             if (currentType && !this.typeMap.hasOwnProperty(currentType)) {
                 this.type(this.typeList[0].value);
             }
         },
-        width(desiredWidth) {
+        width: function(desiredWidth) {
             this.uiWidth = desiredWidth;
             this._resize();
         },
-        value(value) {
+        value: function(value) {
             if (!arguments.length) {
                 return this.element.val();
-            }
-            if (this.typeMap[this.propertyType].options) {
-                if (this.typeMap[this.propertyType].options.indexOf(value) === -1) {
-                    value = '';
+            } else {
+                if (this.typeMap[this.propertyType].options) {
+                    if (this.typeMap[this.propertyType].options.indexOf(value) === -1) {
+                        value = "";
+                    }
+                    this.optionSelectLabel.text(value);
                 }
-                this.optionSelectLabel.text(value);
+                this.element.val(value);
+                this.element.trigger('change',this.type(),value);
             }
-            this.element.val(value);
-            this.element.trigger('change', this.type(), value);
         },
-        type(type) {
+        type: function(type) {
             if (!arguments.length) {
                 return this.propertyType;
-            }
-            const that = this;
-            const opt = this.typeMap[type];
-            if (opt && this.propertyType !== type) {
-                this.propertyType = type;
-                this.typeField.val(type);
-                this.selectLabel.empty();
-                let image;
-                if (opt.icon) {
-                    image = new Image();
-                    image.name = opt.icon;
-                    image.src = opt.icon;
-                    $('<img>', { src: opt.icon, style: 'margin-right: 4px;height: 18px;' }).prependTo(this.selectLabel);
-                } else {
-                    this.selectLabel.text(opt.label);
-                }
-                if (opt.options) {
-                    if (this.optionExpandButton) {
-                        this.optionExpandButton.hide();
+            } else {
+                var that = this;
+                var opt = this.typeMap[type];
+                if (opt && this.propertyType !== type) {
+                    this.propertyType = type;
+                    this.typeField.val(type);
+                    this.selectLabel.empty();
+                    var image;
+                    if (opt.icon) {
+                        image = new Image();
+                        image.name = opt.icon;
+                        image.src = opt.icon;
+                        $('<img>',{src:opt.icon,style:"margin-right: 4px;height: 18px;"}).prependTo(this.selectLabel);
+                    } else {
+                        this.selectLabel.text(opt.label);
                     }
-                    if (this.optionSelectTrigger) {
-                        this.optionSelectTrigger.attr('style', 'display: block !important');
-                        this.elementDiv.hide();
-                        this.optionMenu = this._createMenu(opt.options, (v) => {
-                            that.optionSelectLabel.text(v);
-                            that.value(v);
-                        });
-                        const currentVal = this.element.val();
-                        if (opt.options.indexOf(currentVal) !== -1) {
-                            this.optionSelectLabel.text(currentVal);
+                    if (opt.options) {
+                        if (this.optionExpandButton) {
+                            this.optionExpandButton.hide();
+                        }
+                        if (this.optionSelectTrigger) {
+                            this.optionSelectTrigger.attr("style", "display: block !important");
+                            this.elementDiv.hide();
+                            this.optionMenu = this._createMenu(opt.options,function(v){
+                                that.optionSelectLabel.text(v);
+                                that.value(v);
+                            });
+                            var currentVal = this.element.val();
+                            if (opt.options.indexOf(currentVal) !== -1) {
+                                this.optionSelectLabel.text(currentVal);
+                            } else {
+                                this.value(opt.options[0]);
+                            }
+                        }
+                    } else {
+                        if (this.optionMenu) {
+                            this.optionMenu.remove();
+                            this.optionMenu = null;
+                        }
+                        if (this.optionSelectTrigger) {
+                            this.optionSelectTrigger.hide();
+                        }
+                        if (opt.hasValue === false) {
+                            this.oldValue = this.element.val();
+                            this.element.val("");
+                            this.elementDiv.hide();
                         } else {
-                            this.value(opt.options[0]);
+                            if (this.oldValue !== undefined) {
+                                this.element.val(this.oldValue);
+                                delete this.oldValue;
+                            }
+                            this.elementDiv.attr("style", "display: block !important");
                         }
-                    }
-                } else {
-                    if (this.optionMenu) {
-                        this.optionMenu.remove();
-                        this.optionMenu = null;
-                    }
-                    if (this.optionSelectTrigger) {
-                        this.optionSelectTrigger.hide();
-                    }
-                    if (opt.hasValue === false) {
-                        this.oldValue = this.element.val();
-                        this.element.val('');
-                        this.elementDiv.hide();
-                    } else {
-                        if (this.oldValue !== undefined) {
-                            this.element.val(this.oldValue);
-                            delete this.oldValue;
+                        if (opt.expand && typeof opt.expand === 'function') {
+                            this.optionExpandButton.attr("style", "display: block !important");
+                            this.optionExpandButton.off('click');
+                            this.optionExpandButton.on('click',function(evt) {
+                                evt.preventDefault();
+                                opt.expand.call(that);
+                            })
+                        } else {
+                            this.optionExpandButton.hide();
                         }
-                        this.elementDiv.attr('style', 'display: block !important');
+                        this.element.trigger('change',this.propertyType,this.value());
                     }
-                    if (opt.expand && typeof opt.expand === 'function') {
-                        this.optionExpandButton.attr('style', 'display: block !important');
-                        this.optionExpandButton.off('click');
-                        this.optionExpandButton.on('click', (evt) => {
-                            evt.preventDefault();
-                            opt.expand.call(that);
-                        });
+                    if (image) {
+                        image.onload = function() { that._resize(); }
+                        image.onerror = function() { that._resize(); }
                     } else {
-                        this.optionExpandButton.hide();
+                        this._resize();
                     }
-                    this.element.trigger('change', this.propertyType, this.value());
-                }
-                if (image) {
-                    image.onload = function () { that._resize(); };
-                    image.onerror = function () { that._resize(); };
-                } else {
-                    this._resize();
                 }
             }
         },
-        validate() {
-            let result;
-            const value = this.value();
-            const type = this.type();
+        validate: function() {
+            var result;
+            var value = this.value();
+            var type = this.type();
             if (this.typeMap[type] && this.typeMap[type].validate) {
-                const val = this.typeMap[type].validate;
+                var val = this.typeMap[type].validate;
                 if (typeof val === 'function') {
                     result = val(value);
                 } else {
@@ -4382,21 +4458,21 @@ RED.tabs = (function () {
             }
             return result;
         },
-        show() {
+        show: function() {
             this.uiSelect.show();
             this._resize();
         },
-        hide() {
+        hide: function() {
             this.uiSelect.hide();
-        },
+        }
     });
-}(jQuery));
-RED.actions = (function () {
-    const actions = {
+})(jQuery);
+RED.actions = (function() {
+    var actions = {
 
-    };
+    }
 
-    function addAction(name, handler) {
+    function addAction(name,handler) {
         actions[name] = handler;
     }
     function removeAction(name) {
@@ -4411,11 +4487,11 @@ RED.actions = (function () {
         }
     }
     function listActions() {
-        const result = [];
-        Object.keys(actions).forEach((action) => {
-            const shortcut = RED.keyboard.getShortcut(action);
-            result.push({ id: action, scope: shortcut ? shortcut.scope : undefined, key: shortcut ? shortcut.key : undefined });
-        });
+        var result = [];
+        Object.keys(actions).forEach(function(action) {
+            var shortcut = RED.keyboard.getShortcut(action);
+            result.push({id:action,scope:shortcut?shortcut.scope:undefined,key:shortcut?shortcut.key:undefined})
+        })
         return result;
     }
     return {
@@ -4423,9 +4499,9 @@ RED.actions = (function () {
         remove: removeAction,
         get: getAction,
         invoke: invokeAction,
-        list: listActions,
-    };
-}());
+        list: listActions
+    }
+})();
 
 // handles deployment to node-red backend
 // RED.deploy is not needed | TODO: implement save button
@@ -4433,101 +4509,103 @@ RED.actions = (function () {
 // handles conflict resolution with backend version of the flow
 // RED.diff is not needed | TODO: implement concurrent usage interface (multi-tenancy)
 
-RED.keyboard = (function () {
-    const isMac = /Mac/i.test(window.navigator.platform);
+RED.keyboard = (function() {
 
-    const handlers = {};
-    let partialState;
+    var isMac = /Mac/i.test(window.navigator.platform);
 
-    const keyMap = {
-        left: 37,
-        up: 38,
-        right: 39,
-        down: 40,
-        escape: 27,
-        enter: 13,
-        backspace: 8,
-        delete: 46,
-        space: 32,
-        ';': 186,
-        '=': 187,
-        ',': 188,
-        '-': 189,
-        '.': 190,
-        '/': 191,
-        '\\': 220,
-        "'": 222,
-        '?': 191, // <- QWERTY specific
-    };
-    const metaKeyCodes = {
-        16: true,
-        17: true,
+    var handlers = {};
+    var partialState;
+
+    var keyMap = {
+        "left":37,
+        "up":38,
+        "right":39,
+        "down":40,
+        "escape":27,
+        "enter": 13,
+        "backspace": 8,
+        "delete": 46,
+        "space": 32,
+        ";":186,
+        "=":187,
+        ",":188,
+        "-":189,
+        ".":190,
+        "/":191,
+        "\\":220,
+        "'":222,
+        "?":191 // <- QWERTY specific
+    }
+    var metaKeyCodes = {
+        16:true,
+        17:true,
         18: true,
-        91: true,
-        93: true,
-    };
-    const actionToKeyMap = {};
+        91:true,
+        93: true
+    }
+    var actionToKeyMap = {}
 
     // FF generates some different keycodes because reasons.
-    const firefoxKeyCodeMap = {
-        59: 186,
-        61: 187,
-        173: 189,
-    };
+    var firefoxKeyCodeMap = {
+        59:186,
+        61:187,
+        173:189
+    }
 
     function init() {
-        $.getJSON('mashup/red/keymap.json', (data) => {
-            for (const scope in data) {
+        $.getJSON("mashup/red/keymap.json",function(data) {
+            for (var scope in data) {
                 if (data.hasOwnProperty(scope)) {
-                    const keys = data[scope];
-                    for (const key in keys) {
+                    var keys = data[scope];
+                    for (var key in keys) {
                         if (keys.hasOwnProperty(key)) {
-                            addHandler(scope, key, keys[key]);
+                            addHandler(scope,key,keys[key]);
                         }
                     }
                 }
             }
-        });
-        RED.actions.add('core:show-help', showKeyboardHelp);
+        })
+        RED.actions.add("core:show-help", showKeyboardHelp);
+
     }
     function parseKeySpecifier(key) {
-        const parts = key.toLowerCase().split('-');
-        const modifiers = {};
-        let keycode;
-        let blank = 0;
-        for (let i = 0; i < parts.length; i++) {
-            switch (parts[i]) {
-            case 'ctrl':
-            case 'cmd':
-                modifiers.ctrl = true;
-                modifiers.meta = true;
-                break;
-            case 'alt':
-                modifiers.alt = true;
-                break;
-            case 'shift':
-                modifiers.shift = true;
-                break;
-            case '':
-                blank++;
-                keycode = keyMap['-'];
-                break;
-            default:
-                if (keyMap.hasOwnProperty(parts[i])) {
-                    keycode = keyMap[parts[i]];
-                } else if (parts[i].length > 1) {
-                    return null;
-                } else {
-                    keycode = parts[i].toUpperCase().charCodeAt(0);
-                }
-                break;
+        var parts = key.toLowerCase().split("-");
+        var modifiers = {};
+        var keycode;
+        var blank = 0;
+        for (var i=0;i<parts.length;i++) {
+            switch(parts[i]) {
+                case "ctrl":
+                case "cmd":
+                    modifiers.ctrl = true;
+                    modifiers.meta = true;
+                    break;
+                case "alt":
+                    modifiers.alt = true;
+                    break;
+                case "shift":
+                    modifiers.shift = true;
+                    break;
+                case "":
+                    blank++;
+                    keycode = keyMap["-"];
+                    break;
+                default:
+                    if (keyMap.hasOwnProperty(parts[i])) {
+                        keycode = keyMap[parts[i]];
+                    } else if (parts[i].length > 1) {
+                        return null;
+                    } else {
+                        keycode = parts[i].toUpperCase().charCodeAt(0);
+                    }
+                    break;
             }
         }
-        return [keycode, modifiers];
+        return [keycode,modifiers];
     }
 
     function resolveKeyEvent(evt) {
-        let slot = partialState || handlers;
+        var slot = partialState||handlers;
         if (evt.ctrlKey || evt.metaKey) {
             slot = slot.ctrl;
         }
@@ -4537,19 +4615,20 @@ RED.keyboard = (function () {
         if (slot && evt.altKey) {
             slot = slot.alt;
         }
-        const keyCode = firefoxKeyCodeMap[evt.keyCode] || evt.keyCode;
+        var keyCode = firefoxKeyCodeMap[evt.keyCode] || evt.keyCode;
         if (slot && slot[keyCode]) {
-            let handler = slot[keyCode];
+            var handler = slot[keyCode];
             if (!handler.scope) {
                 if (partialState) {
                     partialState = null;
                     return resolveKeyEvent(evt);
+                } else {
+                    partialState = handler;
+                    evt.preventDefault();
+                    return null;
                 }
-                partialState = handler;
-                evt.preventDefault();
-                return null;
-            } if (handler.scope && handler.scope !== '*') {
-                let target = evt.target;
+            } else if (handler.scope && handler.scope !== "*") {
+                var target = evt.target;
                 while (target.nodeName !== 'BODY' && target.id !== handler.scope) {
                     target = target.parentElement;
                 }
@@ -4559,18 +4638,18 @@ RED.keyboard = (function () {
             }
             partialState = null;
             return handler;
-        } if (partialState) {
+        } else if (partialState) {
             partialState = null;
             return resolveKeyEvent(evt);
         }
     }
-    d3.select(window).on('keydown', () => {
+    d3.select(window).on("keydown",function() {
         if (metaKeyCodes[d3.event.keyCode]) {
             return;
         }
-        const handler = resolveKeyEvent(d3.event);
+        var handler = resolveKeyEvent(d3.event);
         if (handler && handler.ondown) {
-            if (typeof handler.ondown === 'string') {
+            if (typeof handler.ondown === "string") {
                 RED.actions.invoke(handler.ondown);
             } else {
                 handler.ondown();
@@ -4579,77 +4658,77 @@ RED.keyboard = (function () {
         }
     });
 
-    function addHandler(scope, key, modifiers, ondown) {
-        let mod = modifiers;
-        let cbdown = ondown;
-        if (typeof modifiers === 'function' || typeof modifiers === 'string') {
+    function addHandler(scope,key,modifiers,ondown) {
+        var mod = modifiers;
+        var cbdown = ondown;
+        if (typeof modifiers == "function" || typeof modifiers === "string") {
             mod = {};
             cbdown = modifiers;
         }
-        const keys = [];
-        let i = 0;
+        var keys = [];
+        var i=0;
         if (typeof key === 'string') {
             if (typeof cbdown === 'string') {
-                actionToKeyMap[cbdown] = { scope, key };
+                actionToKeyMap[cbdown] = {scope:scope,key:key};
             }
-            const parts = key.split(' ');
-            for (i = 0; i < parts.length; i++) {
-                const parsedKey = parseKeySpecifier(parts[i]);
+            var parts = key.split(" ");
+            for (i=0;i<parts.length;i++) {
+                var parsedKey = parseKeySpecifier(parts[i]);
                 if (parsedKey) {
                     keys.push(parsedKey);
                 } else {
-                    console.log('Unrecognised key specifier:', key);
+                    console.log("Unrecognised key specifier:",key)
                     return;
                 }
             }
         } else {
-            keys.push([key, mod]);
+            keys.push([key,mod])
         }
-        let slot = handlers;
-        for (i = 0; i < keys.length; i++) {
+        var slot = handlers;
+        for (i=0;i<keys.length;i++) {
             key = keys[i][0];
             mod = keys[i][1];
             if (mod.ctrl) {
-                slot.ctrl = slot.ctrl || {};
+                slot.ctrl = slot.ctrl||{};
                 slot = slot.ctrl;
             }
             if (mod.shift) {
-                slot.shift = slot.shift || {};
+                slot.shift = slot.shift||{};
                 slot = slot.shift;
             }
             if (mod.alt) {
-                slot.alt = slot.alt || {};
+                slot.alt = slot.alt||{};
                 slot = slot.alt;
             }
             slot[key] = slot[key] || {};
             slot = slot[key];
-            // slot[key] = {scope: scope, ondown:cbdown};
+            //slot[key] = {scope: scope, ondown:cbdown};
         }
         slot.scope = scope;
         slot.ondown = cbdown;
     }
 
-    function removeHandler(key, modifiers) {
-        let mod = modifiers || {};
-        const keys = [];
-        let i = 0;
+    function removeHandler(key,modifiers) {
+        var mod = modifiers || {};
+        var keys = [];
+        var i=0;
         if (typeof key === 'string') {
             delete actionToKeyMap[key];
-            const parts = key.split(' ');
-            for (i = 0; i < parts.length; i++) {
-                const parsedKey = parseKeySpecifier(parts[i]);
+            var parts = key.split(" ");
+            for (i=0;i<parts.length;i++) {
+                var parsedKey = parseKeySpecifier(parts[i]);
                 if (parsedKey) {
                     keys.push(parsedKey);
                 } else {
-                    console.log('Unrecognised key specifier:', key);
+                    console.log("Unrecognised key specifier:",key)
                     return;
                 }
             }
         } else {
-            keys.push([key, mod]);
+            keys.push([key,mod])
         }
-        let slot = handlers;
-        for (i = 0; i < keys.length; i++) {
+        var slot = handlers;
+        for (i=0;i<keys.length;i++) {
             key = keys[i][0];
             mod = keys[i][1];
             if (mod.ctrl) {
@@ -4670,110 +4749,117 @@ RED.keyboard = (function () {
         delete slot.ondown;
     }
 
-    let shortcutDialog = null;
+    var shortcutDialog = null;
 
-    const cmdCtrlKey = `<span class="help-key">${isMac ? '&#8984;' : 'Ctrl'}</span>`;
+    var cmdCtrlKey = '<span class="help-key">'+(isMac?'&#8984;':'Ctrl')+'</span>';
 
     function showKeyboardHelp() {
-        if (!RED.settings.theme('menu.menu-item-keyboard-shortcuts', true)) {
+        if (!RED.settings.theme("menu.menu-item-keyboard-shortcuts",true)) {
             return;
         }
         if (!shortcutDialog) {
-            shortcutDialog = $('<div id="keyboard-help-dialog" class="hide">'
-                + '<div class="keyboard-shortcut-entry keyboard-shortcut-list-header">'
-                    + '<div class="keyboard-shortcut-entry-key">shortcut</div>'
-                    + '<div class="keyboard-shortcut-entry-key">action</div>'
-                    + '<div class="keyboard-shortcut-entry-scope">scope</div>'
-                + '</div>'
-                + '<ol id="keyboard-shortcut-list"></ol>'
-                + '</div>')
-                .appendTo('body');
+            shortcutDialog = $('<div id="keyboard-help-dialog" class="hide">'+
+                '<div class="keyboard-shortcut-entry keyboard-shortcut-list-header">'+
+                    '<div class="keyboard-shortcut-entry-key">shortcut</div>'+
+                    '<div class="keyboard-shortcut-entry-key">action</div>'+
+                    '<div class="keyboard-shortcut-entry-scope">scope</div>'+
+                '</div>'+
+                '<ol id="keyboard-shortcut-list"></ol>'+
+                '</div>')
+            .appendTo("body");
 
-            const shortcutList = $('#keyboard-shortcut-list').editableList({
+            var shortcutList = $('#keyboard-shortcut-list').editableList({
                 addButton: false,
                 scrollOnAdd: false,
-                addItem(container, i, object) {
-                    const item = $('<div class="keyboard-shortcut-entry">').appendTo(container);
+                addItem: function(container,i,object) {
+                    var item = $('<div class="keyboard-shortcut-entry">').appendTo(container);
 
-                    const key = $('<div class="keyboard-shortcut-entry-key">').appendTo(item);
+                    var key = $('<div class="keyboard-shortcut-entry-key">').appendTo(item);
                     if (object.key) {
                         key.append(formatKey(object.key));
                     } else {
-                        item.addClass('keyboard-shortcut-entry-unassigned');
+                        item.addClass("keyboard-shortcut-entry-unassigned");
                         key.html(RED._('keyboard.unassigned'));
                     }
 
-                    const text = object.id.replace(/(^.+:([a-z]))|(-([a-z]))/g, function () {
+                    var text = object.id.replace(/(^.+:([a-z]))|(-([a-z]))/g,function() {
                         if (arguments[5] === 0) {
                             return arguments[2].toUpperCase();
+                        } else {
+                            return " "+arguments[4].toUpperCase();
                         }
-                        return ` ${arguments[4].toUpperCase()}`;
                     });
-                    const label = $('<div>').html(text).appendTo(item);
+                    var label = $('<div>').html(text).appendTo(item);
                     if (object.scope) {
                         $('<div class="keyboard-shortcut-entry-scope">').html(object.scope).appendTo(item);
                     }
+
+
                 },
             });
-            const shortcuts = RED.actions.list();
-            shortcuts.sort((A, B) => A.id.localeCompare(B.id));
-            shortcuts.forEach((s) => {
-                shortcutList.editableList('addItem', s);
+            var shortcuts = RED.actions.list();
+            shortcuts.sort(function(A,B) {
+                return A.id.localeCompare(B.id);
             });
+            shortcuts.forEach(function(s) {
+                shortcutList.editableList('addItem',s);
+            })
 
             shortcutDialog.dialog({
                 modal: true,
                 autoOpen: false,
-                width: '800',
-                height: '400',
-                title: RED._('keyboard.title'),
-                resizable: false,
+                width: "800",
+                height: "400",
+                title:RED._("keyboard.title"),
+                resizable: false
             });
         }
 
-        shortcutDialog.dialog('open');
+        shortcutDialog.dialog("open");
     }
     function formatKey(key) {
-        let formattedKey = isMac ? key.replace(/ctrl-?/, '&#8984;') : key;
-        formattedKey = isMac ? formattedKey.replace(/alt-?/, '&#8997;') : key;
-        formattedKey = formattedKey.replace(/shift-?/, '&#8679;');
-        formattedKey = formattedKey.replace(/left/, '&#x2190;');
-        formattedKey = formattedKey.replace(/up/, '&#x2191;');
-        formattedKey = formattedKey.replace(/right/, '&#x2192;');
-        formattedKey = formattedKey.replace(/down/, '&#x2193;');
-        return `<span class="help-key-block"><span class="help-key">${formattedKey.split(' ').join('</span> <span class="help-key">')}</span></span>`;
+        var formattedKey = isMac?key.replace(/ctrl-?/,"&#8984;"):key;
+        formattedKey = isMac?formattedKey.replace(/alt-?/,"&#8997;"):key;
+        formattedKey = formattedKey.replace(/shift-?/,"&#8679;")
+        formattedKey = formattedKey.replace(/left/,"&#x2190;")
+        formattedKey = formattedKey.replace(/up/,"&#x2191;")
+        formattedKey = formattedKey.replace(/right/,"&#x2192;")
+        formattedKey = formattedKey.replace(/down/,"&#x2193;")
+        return '<span class="help-key-block"><span class="help-key">'+formattedKey.split(" ").join('</span> <span class="help-key">')+'</span></span>';
     }
 
     return {
-        init,
+        init: init,
         add: addHandler,
         remove: removeHandler,
-        getShortcut(actionName) {
+        getShortcut: function(actionName) {
             return actionToKeyMap[actionName];
         },
-        formatKey,
-    };
-}());
-RED.workspaces = (function () {
-    let activeWorkspace = 0;
-    let workspaceIndex = 0;
+        formatKey: formatKey
+    }
 
-    function addWorkspace(ws, skipHistoryEntry) {
+})();
+RED.workspaces = (function() {
+
+    var activeWorkspace = 0;
+    var workspaceIndex = 0;
+
+    function addWorkspace(ws,skipHistoryEntry) {
         if (ws) {
             workspace_tabs.addTab(ws);
             workspace_tabs.resize();
         } else {
-            const tabId = RED.nodes.id();
+            var tabId = RED.nodes.id();
             do {
                 workspaceIndex += 1;
-            } while ($(`#workspace-tabs a[title='${RED._('workspace.defaultName', { number: workspaceIndex })}']`).size() !== 0);
+            } while($("#workspace-tabs a[title='"+RED._('workspace.defaultName',{number:workspaceIndex})+"']").size() !== 0);
 
-            ws = { type: 'tab', id: tabId, label: RED._('workspace.defaultName', { number: workspaceIndex }) };
+            ws = {type:"tab",id:tabId,label:RED._('workspace.defaultName',{number:workspaceIndex})};
             RED.nodes.addWorkspace(ws);
             workspace_tabs.addTab(ws);
             workspace_tabs.activateTab(tabId);
             if (!skipHistoryEntry) {
-                RED.history.push({ t: 'add', workspaces: [ws], dirty: RED.nodes.dirty() });
+                RED.history.push({t:'add',workspaces:[ws],dirty:RED.nodes.dirty()});
                 RED.nodes.dirty(true);
             }
         }
@@ -4785,7 +4871,7 @@ RED.workspaces = (function () {
             return;
         }
         removeWorkspace(ws);
-        const historyEvent = RED.nodes.removeWorkspace(ws.id);
+        var historyEvent = RED.nodes.removeWorkspace(ws.id);
         historyEvent.t = 'delete';
         historyEvent.dirty = RED.nodes.dirty();
         historyEvent.workspaces = [ws];
@@ -4795,118 +4881,118 @@ RED.workspaces = (function () {
     }
 
     function showRenameWorkspaceDialog(id) {
-        const workspace = RED.nodes.workspace(id);
+        var workspace = RED.nodes.workspace(id);
         RED.view.state(RED.state.EDITING);
-        const trayOptions = {
-            title: RED._('workspace.editFlow', { name: workspace.label }),
+        var trayOptions = {
+            title: RED._("workspace.editFlow",{name:workspace.label}),
             buttons: [
                 {
-                    id: 'node-dialog-delete',
-                    class: `leftButton${(workspace_tabs.count() == 1) ? ' disabled' : ''}`,
-                    text: RED._('common.label.delete'), // '<i class="fa fa-trash"></i>',
-                    click() {
+                    id: "node-dialog-delete",
+                    class: 'leftButton'+((workspace_tabs.count() == 1)?" disabled":""),
+                    text: RED._("common.label.delete"), //'<i class="fa fa-trash"></i>',
+                    click: function() {
                         deleteWorkspace(workspace);
                         RED.tray.close();
-                    },
+                    }
                 },
                 {
-                    id: 'node-dialog-cancel',
-                    text: RED._('common.label.cancel'),
-                    click() {
+                    id: "node-dialog-cancel",
+                    text: RED._("common.label.cancel"),
+                    click: function() {
                         RED.tray.close();
-                    },
+                    }
                 },
                 {
-                    id: 'node-dialog-ok',
-                    class: 'primary',
-                    text: RED._('common.label.done'),
-                    click() {
-                        const label = $('#node-input-name').val();
+                    id: "node-dialog-ok",
+                    class: "primary",
+                    text: RED._("common.label.done"),
+                    click: function() {
+                        var label = $( "#node-input-name" ).val();
                         if (workspace.label != label) {
-                            const changes = {
-                                label: workspace.label,
-                            };
-                            const historyEvent = {
-                                t: 'edit',
-                                changes,
+                            var changes = {
+                                label:workspace.label
+                            }
+                            var historyEvent = {
+                                t: "edit",
+                                changes:changes,
                                 node: workspace,
-                                dirty: RED.nodes.dirty(),
-                            };
+                                dirty: RED.nodes.dirty()
+                            }
                             workspace.changed = true;
                             RED.history.push(historyEvent);
-                            workspace_tabs.renameTab(workspace.id, label);
+                            workspace_tabs.renameTab(workspace.id,label);
                             RED.nodes.dirty(true);
                             // RED.sidebar.config.refresh();
                         }
                         RED.tray.close();
-                    },
-                },
+                    }
+                }
             ],
-            open(tray) {
-                const trayBody = tray.find('.editor-tray-body');
-                const dialogForm = $('<form id="dialog-form" class="form-horizontal"></form>').appendTo(trayBody);
-                $('<div class="form-row">'
-                    + '<label for="node-input-name" data-i18n="[append]editor:common.label.name"><i class="fa fa-tag"></i> </label>'
-                    + '<input type="text" id="node-input-name">'
-                + '</div>').appendTo(dialogForm);
+            open: function(tray) {
+                var trayBody = tray.find('.editor-tray-body');
+                var dialogForm = $('<form id="dialog-form" class="form-horizontal"></form>').appendTo(trayBody);
+                $('<div class="form-row">'+
+                    '<label for="node-input-name" data-i18n="[append]editor:common.label.name"><i class="fa fa-tag"></i> </label>'+
+                    '<input type="text" id="node-input-name">'+
+                '</div>').appendTo(dialogForm);
                 $('<input type="text" style="display: none;" />').prependTo(dialogForm);
-                dialogForm.submit((e) => { e.preventDefault(); });
-                $('#node-input-name').val(workspace.label);
-                RED.text.bidi.prepareInput($('#node-input-name'));
+                dialogForm.submit(function(e) { e.preventDefault();});
+                $("#node-input-name").val(workspace.label);
+                RED.text.bidi.prepareInput($("#node-input-name"))
                 dialogForm.i18n();
             },
-            close() {
+            close: function() {
                 if (RED.view.state() != RED.state.IMPORT_DRAGGING) {
                     RED.view.state(RED.state.DEFAULT);
                 }
-            },
-        };
+            }
+        }
         RED.tray.show(trayOptions);
     }
 
 
-    let workspace_tabs;
-    function createWorkspaceTabs() {
+    var workspace_tabs;
+    function createWorkspaceTabs(){
         workspace_tabs = RED.tabs.create({
-            id: 'workspace-tabs',
-            onchange(tab) {
-                const event = {
-                    old: activeWorkspace,
-                };
+            id: "workspace-tabs",
+            onchange: function(tab) {
+                var event = {
+                    old: activeWorkspace
+                }
                 activeWorkspace = tab.id;
                 event.workspace = activeWorkspace;
-                RED.events.emit('workspace:change', event);
-                RED.__currentFlow = `flow/${tab.id}`;
+                RED.events.emit("workspace:change",event);
+                RED.__currentFlow = 'flow/'+tab.id;
             },
-            ondblclick(tab) {
-                if (tab.type != 'subflow') {
+            ondblclick: function(tab) {
+                if (tab.type != "subflow") {
                     showRenameWorkspaceDialog(tab.id);
                 } else {
                     RED.editor.editSubflow(RED.nodes.subflow(tab.id));
                 }
             },
-            onadd(tab) {
+            onadd: function(tab) {
                 // RED.menu.setDisabled("menu-item-workspace-delete",workspace_tabs.count() == 1);
             },
-            onremove(tab) {
+            onremove: function(tab) {
                 // RED.menu.setDisabled("menu-item-workspace-delete",workspace_tabs.count() == 1);
             },
-            onreorder(oldOrder, newOrder) {
-                RED.history.push({ t: 'reorder', order: oldOrder, dirty: RED.nodes.dirty() });
+            onreorder: function(oldOrder, newOrder) {
+                RED.history.push({t:'reorder',order:oldOrder,dirty:RED.nodes.dirty()});
                 RED.nodes.dirty(true);
                 setWorkspaceOrder(newOrder);
             },
             minimumActiveTabWidth: 150,
             scrollable: true,
-            addButton() {
+            addButton: function() {
                 addWorkspace();
-            },
+            }
         });
     }
 
     function init() {
         createWorkspaceTabs();
-        RED.events.on('sidebar:resize', workspace_tabs.resize);
+        RED.events.on("sidebar:resize",workspace_tabs.resize);
         // RED.actions.add("core:show-next-tab",workspace_tabs.nextTab);
         // RED.actions.add("core:show-previous-tab",workspace_tabs.previousTab);
 
@@ -4914,376 +5000,323 @@ RED.workspaces = (function () {
         //     deleteWorkspace(RED.nodes.workspace(activeWorkspace));
         // });
 
-        $(window).resize(() => {
+        $(window).resize(function() {
             workspace_tabs.resize();
         });
 
         // RED.actions.add("core:add-flow",addWorkspace);
         // RED.actions.add("core:edit-flow",editWorkspace);
         // RED.actions.add("core:remove-flow",removeWorkspace);
+
     }
 
     function editWorkspace(id) {
-        showRenameWorkspaceDialog(id || activeWorkspace);
+        showRenameWorkspaceDialog(id||activeWorkspace);
     }
 
     function removeWorkspace(ws) {
         if (!ws) {
             deleteWorkspace(RED.nodes.workspace(activeWorkspace));
-        } else if (workspace_tabs.contains(ws.id)) {
-            workspace_tabs.removeTab(ws.id);
+        } else {
+            if (workspace_tabs.contains(ws.id)) {
+                workspace_tabs.removeTab(ws.id);
+            }
         }
     }
 
     function setWorkspaceOrder(order) {
-        RED.nodes.setWorkspaceOrder(order.filter(id => RED.nodes.workspace(id) !== undefined));
+        RED.nodes.setWorkspaceOrder(order.filter(function(id) {
+            return RED.nodes.workspace(id) !== undefined;
+        }));
         workspace_tabs.order(order);
     }
 
     return {
-        init,
+        init: init,
         add: addWorkspace,
         remove: removeWorkspace,
         order: setWorkspaceOrder,
         edit: editWorkspace,
-        contains(id) {
+        contains: function(id) {
             return workspace_tabs.contains(id);
         },
-        count() {
+        count: function() {
             return workspace_tabs.count();
         },
-        active() {
-            return activeWorkspace;
+        active: function() {
+            return activeWorkspace
         },
-        show(id) {
+        show: function(id) {
             if (!workspace_tabs.contains(id)) {
-                const sf = RED.nodes.subflow(id);
+                var sf = RED.nodes.subflow(id);
                 if (sf) {
-                    addWorkspace({
-                        type: 'subflow', id, icon: 'mashup/red/images/subflow_tab.png', label: sf.name, closeable: true,
-                    });
+                    addWorkspace({type:"subflow",id:id,icon:"mashup/red/images/subflow_tab.png",label:sf.name, closeable: true});
                 } else {
-                    console.error(`Invalid wk id: ${id}`);
+                    console.error("Invalid wk id: " + id);
                     return;
                 }
             }
 
             workspace_tabs.activateTab(id);
         },
-        refresh() {
-            RED.nodes.eachWorkspace((ws) => {
-                workspace_tabs.renameTab(ws.id, ws.label);
-            });
-            RED.nodes.eachSubflow((sf) => {
+        refresh: function() {
+            RED.nodes.eachWorkspace(function(ws) {
+                workspace_tabs.renameTab(ws.id,ws.label);
+
+            })
+            RED.nodes.eachSubflow(function(sf) {
                 if (workspace_tabs.contains(sf.id)) {
-                    workspace_tabs.renameTab(sf.id, sf.name);
+                    workspace_tabs.renameTab(sf.id,sf.name);
                 }
             });
             // RED.sidebar.config.refresh();
         },
-        resize() {
+        resize: function() {
             workspace_tabs.resize();
-        },
-    };
-}());
-RED.view = (function () {
-    const space_width = 5000;
-
-
-    const space_height = 5000;
-
-
-    const lineCurveScale = 0.75;
-
-
-    let scaleFactor = 1;
-
-
-    const node_width = 100;
-
-
-    const node_height = 30;
-
-    const touchLongPressTimeout = 1000;
-
-
-    let startTouchDistance = 0;
-
-
-    let startTouchCenter = [];
-
-
-    let moveTouchCenter = [];
-
-
-    let touchStartTime = 0;
-
-    const workspaceScrollPositions = {};
-
-    const gridSize = 20;
-    let snapGrid = false;
-
-    let activeSpliceLink;
-    let spliceActive = false;
-    let spliceTimer;
-
-    let activeSubflow = null;
-    let activeNodes = [];
-    let activeLinks = [];
-    let activeFlowLinks = [];
-
-    let selected_link = null;
-
-
-    let mousedown_link = null;
-
-
-    let mousedown_node = null;
-
-
-    let mousedown_port_type = null;
-
-
-    let mousedown_port_index = 0;
-
-
-    let mouseup_node = null;
-
-
-    let mouse_offset = [0, 0];
-
-
-    let mouse_position = null;
-
-
-    let mouse_mode = 0;
-
-
-    let moving_set = [];
-
-
-    let lasso = null;
-
-
-    let showStatus = false;
-
-
-    let lastClickNode = null;
-
-
-    let dblClickPrimed = null;
-
-
-    let clickTime = 0;
-
-
-    let clickElapsed = 0;
-
-    let clipboard = '';
-
-    const status_colours = {
-        red: '#c00',
-        green: '#5a8',
-        yellow: '#F9DF31',
-        blue: '#53A3F3',
-        grey: '#d3d3d3',
-    };
-
-    let outer = null;
-
-
-    let vis = null;
-
-
-    let outer_background = null;
-
-
-    let grid = null;
-
-
-    let dragGroup = null;
+        }
+    }
+})();
+RED.view = (function() {
+    var space_width = 5000,
+        space_height = 5000,
+        lineCurveScale = 0.75,
+        scaleFactor = 1,
+        node_width = 100,
+        node_height = 30;
+
+    var touchLongPressTimeout = 1000,
+        startTouchDistance = 0,
+        startTouchCenter = [],
+        moveTouchCenter = [],
+        touchStartTime = 0;
+
+    var workspaceScrollPositions = {};
+
+    var gridSize = 20;
+    var snapGrid = false;
+
+    var activeSpliceLink;
+    var spliceActive = false;
+    var spliceTimer;
+
+    var activeSubflow = null;
+    var activeNodes = [];
+    var activeLinks = [];
+    var activeFlowLinks = [];
+
+    var selected_link = null,
+        mousedown_link = null,
+        mousedown_node = null,
+        mousedown_port_type = null,
+        mousedown_port_index = 0,
+        mouseup_node = null,
+        mouse_offset = [0,0],
+        mouse_position = null,
+        mouse_mode = 0,
+        moving_set = [],
+        lasso = null,
+        showStatus = false,
+        lastClickNode = null,
+        dblClickPrimed = null,
+        clickTime = 0,
+        clickElapsed = 0;
+
+    var clipboard = "";
+
+    var status_colours = {
+        "red":    "#c00",
+        "green":  "#5a8",
+        "yellow": "#F9DF31",
+        "blue":   "#53A3F3",
+        "grey":   "#d3d3d3"
+    }
+
+    var outer = null,
+        vis = null,
+        outer_background = null,
+        grid = null,
+        dragGroup = null;
 
 
     function domInit() {
-        outer = d3.select('#chart')
-            .append('svg:svg')
-            .attr('width', space_width)
-            .attr('height', space_height)
-            .attr('pointer-events', 'all')
-            .style('cursor', 'crosshair')
-            .on('mousedown', () => {
-                focusView();
-            });
-        vis = outer
-            .append('svg:g')
-            .on('dblclick.zoom', null)
-            .append('svg:g')
-            .on('mousemove', canvasMouseMove)
-            .on('mousedown', canvasMouseDown)
-            .on('mouseup', canvasMouseUp)
-            .on('touchend', function () {
-                clearTimeout(touchStartTime);
-                touchStartTime = null;
-                if (RED.touch.radialMenu.active()) {
-                    return;
-                }
-                if (lasso) {
-                    outer_background.attr('fill', '#fff');
-                }
-                canvasMouseUp.call(this);
-            })
-            .on('touchcancel', canvasMouseUp)
-            .on('touchstart', function () {
-                let touch0;
-                if (d3.event.touches.length > 1) {
-                    clearTimeout(touchStartTime);
-                    touchStartTime = null;
-                    d3.event.preventDefault();
-                    touch0 = d3.event.touches.item(0);
-                    const touch1 = d3.event.touches.item(1);
-                    const a = touch0.pageY - touch1.pageY;
-                    const b = touch0.pageX - touch1.pageX;
+      outer = d3.select("#chart")
+          .append("svg:svg")
+          .attr("width", space_width)
+          .attr("height", space_height)
+          .attr("pointer-events", "all")
+          .style("cursor","crosshair")
+          .on("mousedown", function() {
+              focusView();
+          });
+      vis = outer
+          .append("svg:g")
+          .on("dblclick.zoom", null)
+          .append("svg:g")
+          .on("mousemove", canvasMouseMove)
+          .on("mousedown", canvasMouseDown)
+          .on("mouseup", canvasMouseUp)
+          .on("touchend", function() {
+              clearTimeout(touchStartTime);
+              touchStartTime = null;
+              if  (RED.touch.radialMenu.active()) {
+                  return;
+              }
+              if (lasso) {
+                  outer_background.attr("fill","#fff");
+              }
+              canvasMouseUp.call(this);
+          })
+          .on("touchcancel", canvasMouseUp)
+          .on("touchstart", function() {
+              var touch0;
+              if (d3.event.touches.length>1) {
+                  clearTimeout(touchStartTime);
+                  touchStartTime = null;
+                  d3.event.preventDefault();
+                  touch0 = d3.event.touches.item(0);
+                  var touch1 = d3.event.touches.item(1);
+                  var a = touch0["pageY"]-touch1["pageY"];
+                  var b = touch0["pageX"]-touch1["pageX"];
 
-                    const offset = $('#chart').offset();
-                    const scrollPos = [$('#chart').scrollLeft(), $('#chart').scrollTop()];
-                    startTouchCenter = [
-                        (touch1.pageX + (b / 2) - offset.left + scrollPos[0]) / scaleFactor,
-                        (touch1.pageY + (a / 2) - offset.top + scrollPos[1]) / scaleFactor,
-                    ];
-                    moveTouchCenter = [
-                        touch1.pageX + (b / 2),
-                        touch1.pageY + (a / 2),
-                    ];
-                    startTouchDistance = Math.sqrt((a * a) + (b * b));
-                } else {
-                    const obj = d3.select(document.body);
-                    touch0 = d3.event.touches.item(0);
-                    const pos = [touch0.pageX, touch0.pageY];
-                    startTouchCenter = [touch0.pageX, touch0.pageY];
-                    startTouchDistance = 0;
-                    const point = d3.touches(this)[0];
-                    touchStartTime = setTimeout(() => {
-                        touchStartTime = null;
-                        showTouchMenu(obj, pos);
-                        // lasso = vis.append("rect")
-                        //    .attr("ox",point[0])
-                        //    .attr("oy",point[1])
-                        //    .attr("rx",2)
-                        //    .attr("ry",2)
-                        //    .attr("x",point[0])
-                        //    .attr("y",point[1])
-                        //    .attr("width",0)
-                        //    .attr("height",0)
-                        //    .attr("class","lasso");
-                        // outer_background.attr("fill","#e3e3f3");
-                    }, touchLongPressTimeout);
-                }
-            })
-            .on('touchmove', function () {
-                if (RED.touch.radialMenu.active()) {
-                    d3.event.preventDefault();
-                    return;
-                }
-                let touch0;
-                if (d3.event.touches.length < 2) {
-                    if (touchStartTime) {
-                        touch0 = d3.event.touches.item(0);
-                        const dx = (touch0.pageX - startTouchCenter[0]);
-                        const dy = (touch0.pageY - startTouchCenter[1]);
-                        const d = Math.abs(dx * dx + dy * dy);
-                        if (d > 64) {
-                            clearTimeout(touchStartTime);
-                            touchStartTime = null;
-                        }
-                    } else if (lasso) {
-                        d3.event.preventDefault();
-                    }
-                    canvasMouseMove.call(this);
-                } else {
-                    touch0 = d3.event.touches.item(0);
-                    const touch1 = d3.event.touches.item(1);
-                    const a = touch0.pageY - touch1.pageY;
-                    const b = touch0.pageX - touch1.pageX;
-                    const offset = $('#chart').offset();
-                    const scrollPos = [$('#chart').scrollLeft(), $('#chart').scrollTop()];
-                    const moveTouchDistance = Math.sqrt((a * a) + (b * b));
-                    const touchCenter = [
-                        touch1.pageX + (b / 2),
-                        touch1.pageY + (a / 2),
-                    ];
+                  var offset = $("#chart").offset();
+                  var scrollPos = [$("#chart").scrollLeft(),$("#chart").scrollTop()];
+                  startTouchCenter = [
+                      (touch1["pageX"]+(b/2)-offset.left+scrollPos[0])/scaleFactor,
+                      (touch1["pageY"]+(a/2)-offset.top+scrollPos[1])/scaleFactor
+                  ];
+                  moveTouchCenter = [
+                      touch1["pageX"]+(b/2),
+                      touch1["pageY"]+(a/2)
+                  ]
+                  startTouchDistance = Math.sqrt((a*a)+(b*b));
+              } else {
+                  var obj = d3.select(document.body);
+                  touch0 = d3.event.touches.item(0);
+                  var pos = [touch0.pageX,touch0.pageY];
+                  startTouchCenter = [touch0.pageX,touch0.pageY];
+                  startTouchDistance = 0;
+                  var point = d3.touches(this)[0];
+                  touchStartTime = setTimeout(function() {
+                      touchStartTime = null;
+                      showTouchMenu(obj,pos);
+                      //lasso = vis.append("rect")
+                      //    .attr("ox",point[0])
+                      //    .attr("oy",point[1])
+                      //    .attr("rx",2)
+                      //    .attr("ry",2)
+                      //    .attr("x",point[0])
+                      //    .attr("y",point[1])
+                      //    .attr("width",0)
+                      //    .attr("height",0)
+                      //    .attr("class","lasso");
+                      //outer_background.attr("fill","#e3e3f3");
+                  },touchLongPressTimeout);
+              }
+          })
+          .on("touchmove", function(){
+                  if  (RED.touch.radialMenu.active()) {
+                      d3.event.preventDefault();
+                      return;
+                  }
+                  var touch0;
+                  if (d3.event.touches.length<2) {
+                      if (touchStartTime) {
+                          touch0 = d3.event.touches.item(0);
+                          var dx = (touch0.pageX-startTouchCenter[0]);
+                          var dy = (touch0.pageY-startTouchCenter[1]);
+                          var d = Math.abs(dx*dx+dy*dy);
+                          if (d > 64) {
+                              clearTimeout(touchStartTime);
+                              touchStartTime = null;
+                          }
+                      } else if (lasso) {
+                          d3.event.preventDefault();
+                      }
+                      canvasMouseMove.call(this);
+                  } else {
+                      touch0 = d3.event.touches.item(0);
+                      var touch1 = d3.event.touches.item(1);
+                      var a = touch0["pageY"]-touch1["pageY"];
+                      var b = touch0["pageX"]-touch1["pageX"];
+                      var offset = $("#chart").offset();
+                      var scrollPos = [$("#chart").scrollLeft(),$("#chart").scrollTop()];
+                      var moveTouchDistance = Math.sqrt((a*a)+(b*b));
+                      var touchCenter = [
+                          touch1["pageX"]+(b/2),
+                          touch1["pageY"]+(a/2)
+                      ];
 
-                    if (!isNaN(moveTouchDistance)) {
-                        oldScaleFactor = scaleFactor;
-                        scaleFactor = Math.min(2, Math.max(0.3, scaleFactor + (Math.floor(((moveTouchDistance * 100) - (startTouchDistance * 100))) / 10000)));
+                      if (!isNaN(moveTouchDistance)) {
+                          oldScaleFactor = scaleFactor;
+                          scaleFactor = Math.min(2,Math.max(0.3, scaleFactor + (Math.floor(((moveTouchDistance*100)-(startTouchDistance*100)))/10000)));
 
-                        const deltaTouchCenter = [ // Try to pan whilst zooming - not 100%
-                            startTouchCenter[0] * (scaleFactor - oldScaleFactor), // -(touchCenter[0]-moveTouchCenter[0]),
-                            startTouchCenter[1] * (scaleFactor - oldScaleFactor), // -(touchCenter[1]-moveTouchCenter[1])
-                        ];
+                          var deltaTouchCenter = [                             // Try to pan whilst zooming - not 100%
+                              startTouchCenter[0]*(scaleFactor-oldScaleFactor),//-(touchCenter[0]-moveTouchCenter[0]),
+                              startTouchCenter[1]*(scaleFactor-oldScaleFactor) //-(touchCenter[1]-moveTouchCenter[1])
+                          ];
 
-                        startTouchDistance = moveTouchDistance;
-                        moveTouchCenter = touchCenter;
+                          startTouchDistance = moveTouchDistance;
+                          moveTouchCenter = touchCenter;
 
-                        $('#chart').scrollLeft(scrollPos[0] + deltaTouchCenter[0]);
-                        $('#chart').scrollTop(scrollPos[1] + deltaTouchCenter[1]);
-                        redraw();
-                    }
-                }
-            });
-        outer_background = vis.append('svg:rect')
-            .attr('width', space_width)
-            .attr('height', space_height)
-            .attr('fill', '#fff');
+                          $("#chart").scrollLeft(scrollPos[0]+deltaTouchCenter[0]);
+                          $("#chart").scrollTop(scrollPos[1]+deltaTouchCenter[1]);
+                          redraw();
+                      }
+                  }
+          });
+      outer_background = vis.append("svg:rect")
+          .attr("width", space_width)
+          .attr("height", space_height)
+          .attr("fill","#fff");
 
-        grid = vis.append('g');
-        grid.selectAll('line.horizontal').data(gridScale.ticks(space_width / gridSize)).enter()
-            .append('line')
-            .attr(
-                {
-                    class: 'horizontal',
-                    x1: 0,
-                    x2: space_width,
-                    y1(d) { return gridScale(d); },
-                    y2(d) { return gridScale(d); },
-                    fill: 'none',
-                    'shape-rendering': 'crispEdges',
-                    stroke: '#eee',
-                    'stroke-width': '1px',
-                },
-            );
-        grid.selectAll('line.vertical').data(gridScale.ticks(space_width / gridSize)).enter()
-            .append('line')
-            .attr(
-                {
-                    class: 'vertical',
-                    y1: 0,
-                    y2: space_width,
-                    x1(d) { return gridScale(d); },
-                    x2(d) { return gridScale(d); },
-                    fill: 'none',
-                    'shape-rendering': 'crispEdges',
-                    stroke: '#eee',
-                    'stroke-width': '1px',
-                },
-            );
-        grid.style('visibility', 'hidden');
+      grid = vis.append("g");
+      grid.selectAll("line.horizontal").data(gridScale.ticks(space_width/gridSize)).enter()
+         .append("line")
+             .attr(
+             {
+                 "class":"horizontal",
+                 "x1" : 0,
+                 "x2" : space_width,
+                 "y1" : function(d){ return gridScale(d);},
+                 "y2" : function(d){ return gridScale(d);},
+                 "fill" : "none",
+                 "shape-rendering" : "crispEdges",
+                 "stroke" : "#eee",
+                 "stroke-width" : "1px"
+             });
+      grid.selectAll("line.vertical").data(gridScale.ticks(space_width/gridSize)).enter()
+         .append("line")
+             .attr(
+             {
+                 "class":"vertical",
+                 "y1" : 0,
+                 "y2" : space_width,
+                 "x1" : function(d){ return gridScale(d);},
+                 "x2" : function(d){ return gridScale(d);},
+                 "fill" : "none",
+                 "shape-rendering" : "crispEdges",
+                 "stroke" : "#eee",
+                 "stroke-width" : "1px"
+             });
+      grid.style("visibility","hidden");
 
-        dragGroup = vis.append('g');
+      dragGroup = vis.append("g");
     }
 
-    var gridScale = d3.scale.linear().range([0, space_width]).domain([0, space_width]);
-    const drag_lines = [];
+    var gridScale = d3.scale.linear().range([0,space_width]).domain([0,space_width]);
+    var drag_lines = [];
 
     function showDragLines(nodes) {
-        for (let i = 0; i < nodes.length; i++) {
-            const node = nodes[i];
-            node.el = dragGroup.append('svg:path').attr('class', 'drag_line');
+        for (var i=0;i<nodes.length;i++) {
+            var node = nodes[i];
+            node.el = dragGroup.append("svg:path").attr("class", "drag_line");
             drag_lines.push(node);
         }
+
     }
     function hideDragLines() {
-        while (drag_lines.length) {
-            const line = drag_lines.pop();
+        while(drag_lines.length) {
+            var line = drag_lines.pop();
             if (line.el) {
                 line.el.remove();
             }
@@ -5291,28 +5324,28 @@ RED.view = (function () {
     }
 
     function updateActiveNodes() {
-        const activeWorkspace = RED.workspaces.active();
+        var activeWorkspace = RED.workspaces.active();
 
-        activeNodes = RED.nodes.filterNodes({ z: activeWorkspace });
+        activeNodes = RED.nodes.filterNodes({z:activeWorkspace});
 
         activeLinks = RED.nodes.filterLinks({
-            source: { z: activeWorkspace },
-            target: { z: activeWorkspace },
+            source:{z:activeWorkspace},
+            target:{z:activeWorkspace}
         });
     }
 
     function init() {
         domInit();
-        RED.events.on('workspace:change', (event) => {
-            const chart = $('#chart');
+        RED.events.on("workspace:change",function(event) {
+            var chart = $("#chart");
             if (event.old !== 0) {
                 workspaceScrollPositions[event.old] = {
-                    left: chart.scrollLeft(),
-                    top: chart.scrollTop(),
+                    left:chart.scrollLeft(),
+                    top:chart.scrollTop()
                 };
             }
-            const scrollStartLeft = chart.scrollLeft();
-            const scrollStartTop = chart.scrollTop();
+            var scrollStartLeft = chart.scrollLeft();
+            var scrollStartTop = chart.scrollTop();
 
             activeSubflow = RED.nodes.subflow(event.workspace);
 
@@ -5323,14 +5356,14 @@ RED.view = (function () {
                 chart.scrollLeft(0);
                 chart.scrollTop(0);
             }
-            const scrollDeltaLeft = chart.scrollLeft() - scrollStartLeft;
-            const scrollDeltaTop = chart.scrollTop() - scrollStartTop;
+            var scrollDeltaLeft = chart.scrollLeft() - scrollStartLeft;
+            var scrollDeltaTop = chart.scrollTop() - scrollStartTop;
             if (mouse_position != null) {
                 mouse_position[0] += scrollDeltaLeft;
                 mouse_position[1] += scrollDeltaTop;
             }
             clearSelection();
-            RED.nodes.eachNode((n) => {
+            RED.nodes.eachNode(function(n) {
                 n.dirty = true;
             });
             updateSelection();
@@ -5338,63 +5371,64 @@ RED.view = (function () {
             redraw();
         });
 
-        $('#btn-zoom-out').click(() => { zoomOut(); });
-        $('#btn-zoom-zero').click(() => { zoomZero(); });
-        $('#btn-zoom-in').click(() => { zoomIn(); });
-        $('#chart').on('DOMMouseScroll mousewheel', (evt) => {
-            if (evt.altKey) {
+        $("#btn-zoom-out").click(function() {zoomOut();});
+        $("#btn-zoom-zero").click(function() {zoomZero();});
+        $("#btn-zoom-in").click(function() {zoomIn();});
+        $("#chart").on("DOMMouseScroll mousewheel", function (evt) {
+            if ( evt.altKey ) {
                 evt.preventDefault();
                 evt.stopPropagation();
-                const move = -(evt.originalEvent.detail) || evt.originalEvent.wheelDelta;
-                if (move <= 0) { zoomOut(); } else { zoomIn(); }
+                var move = -(evt.originalEvent.detail) || evt.originalEvent.wheelDelta;
+                if (move <= 0) { zoomOut(); }
+                else { zoomIn(); }
             }
         });
 
         // Handle nodes dragged from the palette
-        $('#chart').droppable({
-            accept: '.palette_node',
-            drop(event, ui) {
+        $("#chart").droppable({
+            accept:".palette_node",
+            drop: function( event, ui ) {
                 d3.event = event;
-                const selected_tool = ui.draggable[0].type;
-                const result = addNode(selected_tool);
+                var selected_tool = ui.draggable[0].type;
+                var result = addNode(selected_tool);
                 if (!result) {
                     return;
                 }
-                const historyEvent = result.historyEvent;
-                const nn = result.node;
+                var historyEvent = result.historyEvent;
+                var nn = result.node;
 
-                const helperOffset = d3.touches(ui.helper.get(0))[0] || d3.mouse(ui.helper.get(0));
-                const mousePos = d3.touches(this)[0] || d3.mouse(this);
+                var helperOffset = d3.touches(ui.helper.get(0))[0]||d3.mouse(ui.helper.get(0));
+                var mousePos = d3.touches(this)[0]||d3.mouse(this);
 
-                mousePos[1] += this.scrollTop + ((nn.h / 2) - helperOffset[1]);
-                mousePos[0] += this.scrollLeft + ((nn.w / 2) - helperOffset[0]);
+                mousePos[1] += this.scrollTop + ((nn.h/2)-helperOffset[1]);
+                mousePos[0] += this.scrollLeft + ((nn.w/2)-helperOffset[0]);
                 mousePos[1] /= scaleFactor;
                 mousePos[0] /= scaleFactor;
 
                 if (snapGrid) {
-                    mousePos[0] = gridSize * (Math.ceil(mousePos[0] / gridSize));
-                    mousePos[1] = gridSize * (Math.ceil(mousePos[1] / gridSize));
+                    mousePos[0] = gridSize*(Math.ceil(mousePos[0]/gridSize));
+                    mousePos[1] = gridSize*(Math.ceil(mousePos[1]/gridSize));
                 }
                 nn.x = mousePos[0];
                 nn.y = mousePos[1];
 
-                const spliceLink = $(ui.helper).data('splice');
+                var spliceLink = $(ui.helper).data("splice");
                 if (spliceLink) {
                     // TODO: DRY - droppable/nodeMouseDown/canvasMouseUp
                     RED.nodes.removeLink(spliceLink);
-                    const link1 = {
-                        source: spliceLink.source,
-                        sourcePort: spliceLink.sourcePort,
-                        target: nn,
+                    var link1 = {
+                        source:spliceLink.source,
+                        sourcePort:spliceLink.sourcePort,
+                        target: nn
                     };
-                    const link2 = {
-                        source: nn,
-                        sourcePort: 0,
-                        target: spliceLink.target,
+                    var link2 = {
+                        source:nn,
+                        sourcePort:0,
+                        target: spliceLink.target
                     };
                     RED.nodes.addLink(link1);
                     RED.nodes.addLink(link2);
-                    historyEvent.links = [link1, link2];
+                    historyEvent.links = [link1,link2];
                     historyEvent.removedLinks = [spliceLink];
                 }
 
@@ -5405,7 +5439,7 @@ RED.view = (function () {
                 // auto select dropped node - so info shows (if visible)
                 clearSelection();
                 nn.selected = true;
-                moving_set.push({ n: nn });
+                moving_set.push({n:nn});
                 updateActiveNodes();
                 updateSelection();
                 redraw();
@@ -5413,69 +5447,69 @@ RED.view = (function () {
                 if (nn._def.autoedit) {
                     RED.editor.edit(nn);
                 }
-            },
+            }
         });
 
-        RED.actions.add('core:copy-selection-to-internal-clipboard', copySelection);
-        RED.actions.add('core:cut-selection-to-internal-clipboard', () => { copySelection(); deleteSelection(); });
-        RED.actions.add('core:paste-from-internal-clipboard', () => { importNodes(clipboard); });
-        RED.actions.add('core:delete-selection', deleteSelection);
-        RED.actions.add('core:edit-selected-node', editSelection);
-        RED.actions.add('core:undo', RED.history.pop);
-        RED.actions.add('core:select-all-nodes', selectAll);
-        RED.actions.add('core:zoom-in', zoomIn);
-        RED.actions.add('core:zoom-out', zoomOut);
-        RED.actions.add('core:zoom-reset', zoomZero);
+        RED.actions.add("core:copy-selection-to-internal-clipboard",copySelection);
+        RED.actions.add("core:cut-selection-to-internal-clipboard",function(){copySelection();deleteSelection();});
+        RED.actions.add("core:paste-from-internal-clipboard",function(){importNodes(clipboard);});
+        RED.actions.add("core:delete-selection",deleteSelection);
+        RED.actions.add("core:edit-selected-node",editSelection);
+        RED.actions.add("core:undo",RED.history.pop);
+        RED.actions.add("core:select-all-nodes",selectAll);
+        RED.actions.add("core:zoom-in",zoomIn);
+        RED.actions.add("core:zoom-out",zoomOut);
+        RED.actions.add("core:zoom-reset",zoomZero);
 
-        RED.actions.add('core:toggle-show-grid', (state) => {
+        RED.actions.add("core:toggle-show-grid",function(state) {
             if (state === undefined) {
-                RED.menu.toggleSelected('menu-item-view-show-grid');
+                RED.menu.toggleSelected("menu-item-view-show-grid");
             } else {
                 toggleShowGrid(state);
             }
         });
-        RED.actions.add('core:toggle-snap-grid', (state) => {
+        RED.actions.add("core:toggle-snap-grid",function(state) {
             if (state === undefined) {
-                RED.menu.toggleSelected('menu-item-view-snap-grid');
+                RED.menu.toggleSelected("menu-item-view-snap-grid");
             } else {
                 toggleSnapGrid(state);
             }
         });
-        RED.actions.add('core:toggle-status', (state) => {
+        RED.actions.add("core:toggle-status",function(state) {
             if (state === undefined) {
-                RED.menu.toggleSelected('menu-item-status');
+                RED.menu.toggleSelected("menu-item-status");
             } else {
                 toggleStatus(state);
             }
         });
 
-        RED.actions.add('core:move-selection-up', () => { moveSelection(0, -1); });
-        RED.actions.add('core:step-selection-up', () => { moveSelection(0, -20); });
-        RED.actions.add('core:move-selection-right', () => { moveSelection(1, 0); });
-        RED.actions.add('core:step-selection-right', () => { moveSelection(20, 0); });
-        RED.actions.add('core:move-selection-down', () => { moveSelection(0, 1); });
-        RED.actions.add('core:step-selection-down', () => { moveSelection(0, 20); });
-        RED.actions.add('core:move-selection-left', () => { moveSelection(-1, 0); });
-        RED.actions.add('core:step-selection-left', () => { moveSelection(-20, 0); });
+        RED.actions.add("core:move-selection-up", function() { moveSelection(0,-1);});
+        RED.actions.add("core:step-selection-up", function() { moveSelection(0,-20);});
+        RED.actions.add("core:move-selection-right", function() { moveSelection(1,0);});
+        RED.actions.add("core:step-selection-right", function() { moveSelection(20,0);});
+        RED.actions.add("core:move-selection-down", function() { moveSelection(0,1);});
+        RED.actions.add("core:step-selection-down", function() { moveSelection(0,20);});
+        RED.actions.add("core:move-selection-left", function() { moveSelection(-1,0);});
+        RED.actions.add("core:step-selection-left", function() { moveSelection(-20,0);});
     }
 
 
-    function addNode(type, x, y) {
-        const m = /^subflow:(.+)$/.exec(type);
+    function addNode(type,x,y) {
+        var m = /^subflow:(.+)$/.exec(type);
 
         if (activeSubflow && m) {
-            const subflowId = m[1];
+            var subflowId = m[1];
             if (subflowId === activeSubflow.id) {
-                RED.notify(RED._('notification.error', { message: RED._('notification.errors.cannotAddSubflowToItself') }), 'error');
+                RED.notify(RED._("notification.error",{message: RED._("notification.errors.cannotAddSubflowToItself")}),"error");
                 return;
             }
-            if (RED.nodes.subflowContains(m[1], activeSubflow.id)) {
-                RED.notify(RED._('notification.error', { message: RED._('notification.errors.cannotAddCircularReference') }), 'error');
+            if (RED.nodes.subflowContains(m[1],activeSubflow.id)) {
+                RED.notify(RED._("notification.error",{message: RED._("notification.errors.cannotAddCircularReference")}),"error");
                 return;
             }
         }
 
-        const nn = { id: RED.nodes.id(), z: RED.workspaces.active() };
+        var nn = { id:RED.nodes.id(),z:RED.workspaces.active()};
 
         nn.type = type;
         nn._def = RED.nodes.getType(nn.type);
@@ -5484,7 +5518,7 @@ RED.view = (function () {
             nn.inputs = nn._def.inputs || 0;
             nn.outputs = nn._def.outputs;
 
-            for (const d in nn._def.defaults) {
+            for (var d in nn._def.defaults) {
                 if (nn._def.defaults.hasOwnProperty(d)) {
                     if (nn._def.defaults[d].value !== undefined) {
                         nn[d] = JSON.parse(JSON.stringify(nn._def.defaults[d].value));
@@ -5495,12 +5529,12 @@ RED.view = (function () {
             if (nn._def.onadd) {
                 try {
                     nn._def.onadd.call(nn);
-                } catch (err) {
-                    console.log('onadd:', err);
+                } catch(err) {
+                    console.log("onadd:",err);
                 }
             }
         } else {
-            const subflow = RED.nodes.subflow(m[1]);
+            var subflow = RED.nodes.subflow(m[1]);
             nn.inputs = subflow.in.length;
             nn.outputs = subflow.out.length;
         }
@@ -5508,31 +5542,32 @@ RED.view = (function () {
         nn.changed = true;
 
         nn.w = node_width;
-        nn.h = Math.max(node_height, (nn.outputs || 0) * 15);
+        nn.h = Math.max(node_height,(nn.outputs||0) * 15);
 
-        const historyEvent = {
-            t: 'add',
-            nodes: [nn.id],
-            dirty: RED.nodes.dirty(),
-        };
+        var historyEvent = {
+            t:"add",
+            nodes:[nn.id],
+            dirty:RED.nodes.dirty()
+        }
         if (activeSubflow) {
-            const subflowRefresh = RED.subflow.refresh(true);
+            var subflowRefresh = RED.subflow.refresh(true);
             if (subflowRefresh) {
                 historyEvent.subflow = {
-                    id: activeSubflow.id,
+                    id:activeSubflow.id,
                     changed: activeSubflow.changed,
-                    instances: subflowRefresh.instances,
-                };
+                    instances: subflowRefresh.instances
+                }
             }
         }
         return {
             node: nn,
-            historyEvent,
-        };
+            historyEvent: historyEvent
+        }
+
     }
 
     function canvasMouseDown() {
-        let point;
+        var point;
 
         if (!mousedown_node && !mousedown_link) {
             selected_link = null;
@@ -5548,29 +5583,29 @@ RED.view = (function () {
             if (d3.event.metaKey || d3.event.ctrlKey) {
                 point = d3.mouse(this);
                 d3.event.stopPropagation();
-                const mainPos = $('#main-container').position();
+                var mainPos = $("#main-container").position();
 
                 if (mouse_mode !== RED.state.QUICK_JOINING) {
                     mouse_mode = RED.state.QUICK_JOINING;
-                    $(window).on('keyup', disableQuickJoinEventHandler);
+                    $(window).on('keyup',disableQuickJoinEventHandler);
                 }
 
                 RED.typeSearch.show({
-                    x: d3.event.clientX - mainPos.left - node_width / 2,
-                    y: d3.event.clientY - mainPos.top - node_height / 2,
-                    add(type) {
-                        const result = addNode(type);
+                    x:d3.event.clientX-mainPos.left-node_width/2,
+                    y:d3.event.clientY-mainPos.top-node_height/2,
+                    add: function(type) {
+                        var result = addNode(type);
                         if (!result) {
                             return;
                         }
-                        const nn = result.node;
-                        const historyEvent = result.historyEvent;
+                        var nn = result.node;
+                        var historyEvent = result.historyEvent;
                         nn.x = point[0];
                         nn.y = point[1];
                         if (mouse_mode === RED.state.QUICK_JOINING) {
                             if (drag_lines.length > 0) {
-                                const drag_line = drag_lines[0];
-                                let src = null; let dst; let src_port;
+                                var drag_line = drag_lines[0];
+                                var src = null,dst,src_port;
 
                                 if (drag_line.portType === 0 && nn.inputs > 0) {
                                     src = drag_line.node;
@@ -5582,14 +5617,14 @@ RED.view = (function () {
                                     src_port = 0;
                                 }
                                 if (src !== null) {
-                                    const link = { source: src, sourcePort: src_port, target: dst };
+                                    var link = {source: src, sourcePort:src_port, target: dst};
                                     RED.nodes.addLink(link);
                                     historyEvent.links = [link];
                                     hideDragLines();
                                     if (drag_line.portType === 0 && nn.outputs > 0) {
-                                        showDragLines([{ node: nn, port: 0, portType: 0 }]);
+                                        showDragLines([{node:nn,port:0,portType:0}]);
                                     } else if (drag_line.portType === 1 && nn.inputs > 0) {
-                                        showDragLines([{ node: nn, port: 0, portType: 1 }]);
+                                        showDragLines([{node:nn,port:0,portType:1}]);
                                     } else {
                                         resetMouseVars();
                                     }
@@ -5597,12 +5632,14 @@ RED.view = (function () {
                                     hideDragLines();
                                     resetMouseVars();
                                 }
-                            } else if (nn.outputs > 0) {
-                                showDragLines([{ node: nn, port: 0, portType: 0 }]);
-                            } else if (nn.inputs > 0) {
-                                showDragLines([{ node: nn, port: 0, portType: 1 }]);
                             } else {
-                                resetMouseVars();
+                                if (nn.outputs > 0) {
+                                    showDragLines([{node:nn,port:0,portType:0}]);
+                                } else if (nn.inputs > 0) {
+                                    showDragLines([{node:nn,port:0,portType:1}]);
+                                } else {
+                                    resetMouseVars();
+                                }
                             }
                         }
 
@@ -5614,11 +5651,11 @@ RED.view = (function () {
                         // auto select dropped node - so info shows (if visible)
                         clearSelection();
                         nn.selected = true;
-                        moving_set.push({ n: nn });
+                        moving_set.push({n:nn});
                         updateActiveNodes();
                         updateSelection();
                         redraw();
-                    },
+                    }
                 });
 
                 updateActiveNodes();
@@ -5629,59 +5666,60 @@ RED.view = (function () {
         if (mouse_mode === 0 && !(d3.event.metaKey || d3.event.ctrlKey)) {
             if (!touchStartTime) {
                 point = d3.mouse(this);
-                lasso = vis.append('rect')
-                    .attr('ox', point[0])
-                    .attr('oy', point[1])
-                    .attr('rx', 1)
-                    .attr('ry', 1)
-                    .attr('x', point[0])
-                    .attr('y', point[1])
-                    .attr('width', 0)
-                    .attr('height', 0)
-                    .attr('class', 'lasso');
+                lasso = vis.append("rect")
+                .attr("ox",point[0])
+                .attr("oy",point[1])
+                .attr("rx",1)
+                .attr("ry",1)
+                .attr("x",point[0])
+                .attr("y",point[1])
+                .attr("width",0)
+                .attr("height",0)
+                .attr("class","lasso");
                 d3.event.preventDefault();
             }
         }
     }
 
     function canvasMouseMove() {
-        let i;
-        let node;
-        mouse_position = d3.touches(this)[0] || d3.mouse(this);
+        var i;
+        var node;
+        mouse_position = d3.touches(this)[0]||d3.mouse(this);
         // Prevent touch scrolling...
-        // if (d3.touches(this)[0]) {
+        //if (d3.touches(this)[0]) {
         //    d3.event.preventDefault();
-        // }
+        //}
 
         // TODO: auto scroll the container
-        // var point = d3.mouse(this);
-        // if (point[0]-container.scrollLeft < 30 && container.scrollLeft > 0) { container.scrollLeft -= 15; }
-        // console.log(d3.mouse(this),container.offsetWidth,container.offsetHeight,container.scrollLeft,container.scrollTop);
+        //var point = d3.mouse(this);
+        //if (point[0]-container.scrollLeft < 30 && container.scrollLeft > 0) { container.scrollLeft -= 15; }
+        //console.log(d3.mouse(this),container.offsetWidth,container.offsetHeight,container.scrollLeft,container.scrollTop);
 
         if (lasso) {
-            const ox = parseInt(lasso.attr('ox'));
-            const oy = parseInt(lasso.attr('oy'));
-            let x = parseInt(lasso.attr('x'));
-            let y = parseInt(lasso.attr('y'));
-            let w;
-            let h;
+            var ox = parseInt(lasso.attr("ox"));
+            var oy = parseInt(lasso.attr("oy"));
+            var x = parseInt(lasso.attr("x"));
+            var y = parseInt(lasso.attr("y"));
+            var w;
+            var h;
             if (mouse_position[0] < ox) {
                 x = mouse_position[0];
-                w = ox - x;
+                w = ox-x;
             } else {
-                w = mouse_position[0] - x;
+                w = mouse_position[0]-x;
             }
             if (mouse_position[1] < oy) {
                 y = mouse_position[1];
-                h = oy - y;
+                h = oy-y;
             } else {
-                h = mouse_position[1] - y;
+                h = mouse_position[1]-y;
             }
             lasso
-                .attr('x', x)
-                .attr('y', y)
-                .attr('width', w)
-                .attr('height', h);
+                .attr("x",x)
+                .attr("y",y)
+                .attr("width",w)
+                .attr("height",h)
+            ;
             return;
         }
 
@@ -5689,47 +5727,47 @@ RED.view = (function () {
             return;
         }
 
-        let mousePos;
+        var mousePos;
         if (mouse_mode == RED.state.JOINING || mouse_mode === RED.state.QUICK_JOINING) {
             // update drag line
             if (drag_lines.length === 0) {
                 if (d3.event.shiftKey) {
                     // Get all the wires we need to detach.
-                    const links = [];
-                    let existingLinks = [];
-                    if (selected_link
-                        && ((mousedown_port_type === 0
-                            && selected_link.source === mousedown_node
-                            && selected_link.sourcePort === mousedown_port_index
-                        )
-                        || (mousedown_port_type === 1
-                            && selected_link.target === mousedown_node
+                    var links = [];
+                    var existingLinks = [];
+                    if (selected_link &&
+                        ((mousedown_port_type === 0 &&
+                            selected_link.source === mousedown_node &&
+                            selected_link.sourcePort === mousedown_port_index
+                        ) ||
+                        (mousedown_port_type === 1 &&
+                            selected_link.target === mousedown_node
                         ))
                     ) {
                         existingLinks = [selected_link];
                     } else {
-                        let filter;
+                        var filter;
                         if (mousedown_port_type === 0) {
                             filter = {
-                                source: mousedown_node,
-                                sourcePort: mousedown_port_index,
-                            };
+                                source:mousedown_node,
+                                sourcePort: mousedown_port_index
+                            }
                         } else {
                             filter = {
-                                target: mousedown_node,
-                            };
+                                target: mousedown_node
+                            }
                         }
                         existingLinks = RED.nodes.filterLinks(filter);
                     }
-                    for (i = 0; i < existingLinks.length; i++) {
-                        const link = existingLinks[i];
+                    for (i=0;i<existingLinks.length;i++) {
+                        var link = existingLinks[i];
                         RED.nodes.removeLink(link);
                         links.push({
-                            link,
-                            node: (mousedown_port_type === 0) ? link.target : link.source,
-                            port: (mousedown_port_type === 0) ? 0 : link.sourcePort,
-                            portType: (mousedown_port_type === 0) ? 1 : 0,
-                        });
+                            link:link,
+                            node: (mousedown_port_type===0)?link.target:link.source,
+                            port: (mousedown_port_type===0)?0:link.sourcePort,
+                            portType: (mousedown_port_type===0)?1:0
+                        })
                     }
                     if (links.length === 0) {
                         resetMouseVars();
@@ -5742,40 +5780,41 @@ RED.view = (function () {
                         mouse_mode = RED.state.JOINING;
                     }
                 } else if (mousedown_node) {
-                    showDragLines([{ node: mousedown_node, port: mousedown_port_index, portType: mousedown_port_type }]);
+                    showDragLines([{node:mousedown_node,port:mousedown_port_index,portType:mousedown_port_type}]);
                 }
                 selected_link = null;
             }
             mousePos = mouse_position;
-            for (i = 0; i < drag_lines.length; i++) {
-                const drag_line = drag_lines[i];
-                const numOutputs = (drag_line.portType === 0) ? (drag_line.node.outputs || 1) : 1;
-                const sourcePort = drag_line.port;
-                const portY = -((numOutputs - 1) / 2) * 13 + 13 * sourcePort;
+            for (i=0;i<drag_lines.length;i++) {
+                var drag_line = drag_lines[i];
+                var numOutputs = (drag_line.portType === 0)?(drag_line.node.outputs || 1):1;
+                var sourcePort = drag_line.port;
+                var portY = -((numOutputs-1)/2)*13 +13*sourcePort;
 
-                const sc = (drag_line.portType === 0) ? 1 : -1;
+                var sc = (drag_line.portType === 0)?1:-1;
 
-                const dy = mousePos[1] - (drag_line.node.y + portY);
-                const dx = mousePos[0] - (drag_line.node.x + sc * drag_line.node.w / 2);
-                const delta = Math.sqrt(dy * dy + dx * dx);
-                let scale = lineCurveScale;
-                let scaleY = 0;
+                var dy = mousePos[1]-(drag_line.node.y+portY);
+                var dx = mousePos[0]-(drag_line.node.x+sc*drag_line.node.w/2);
+                var delta = Math.sqrt(dy*dy+dx*dx);
+                var scale = lineCurveScale;
+                var scaleY = 0;
 
                 if (delta < node_width) {
-                    scale = 0.75 - 0.75 * ((node_width - delta) / node_width);
+                    scale = 0.75-0.75*((node_width-delta)/node_width);
                 }
-                if (dx * sc < 0) {
-                    scale += 2 * (Math.min(5 * node_width, Math.abs(dx)) / (5 * node_width));
-                    if (Math.abs(dy) < 3 * node_height) {
-                        scaleY = ((dy > 0) ? 0.5 : -0.5) * (((3 * node_height) - Math.abs(dy)) / (3 * node_height)) * (Math.min(node_width, Math.abs(dx)) / (node_width));
+                if (dx*sc < 0) {
+                    scale += 2*(Math.min(5*node_width,Math.abs(dx))/(5*node_width));
+                    if (Math.abs(dy) < 3*node_height) {
+                        scaleY = ((dy>0)?0.5:-0.5)*(((3*node_height)-Math.abs(dy))/(3*node_height))*(Math.min(node_width,Math.abs(dx))/(node_width)) ;
                     }
                 }
 
-                drag_line.el.attr('d',
-                    `M ${drag_line.node.x + sc * drag_line.node.w / 2} ${drag_line.node.y + portY
-                    } C ${drag_line.node.x + sc * (drag_line.node.w / 2 + node_width * scale)} ${drag_line.node.y + portY + scaleY * node_height} ${
-                        mousePos[0] - sc * (scale) * node_width} ${mousePos[1] - scaleY * node_height} ${
-                        mousePos[0]} ${mousePos[1]}`);
+                drag_line.el.attr("d",
+                    "M "+(drag_line.node.x+sc*drag_line.node.w/2)+" "+(drag_line.node.y+portY)+
+                    " C "+(drag_line.node.x+sc*(drag_line.node.w/2+node_width*scale))+" "+(drag_line.node.y+portY+scaleY*node_height)+" "+
+                    (mousePos[0]-sc*(scale)*node_width)+" "+(mousePos[1]-scaleY*node_height)+" "+
+                    mousePos[0]+" "+mousePos[1]
+                    );
             }
             d3.event.preventDefault();
         } else if (mouse_mode == RED.state.MOVING) {
@@ -5783,61 +5822,61 @@ RED.view = (function () {
             if (isNaN(mousePos[0])) {
                 mousePos = d3.touches(document.body)[0];
             }
-            const d = (mouse_offset[0] - mousePos[0]) * (mouse_offset[0] - mousePos[0]) + (mouse_offset[1] - mousePos[1]) * (mouse_offset[1] - mousePos[1]);
+            var d = (mouse_offset[0]-mousePos[0])*(mouse_offset[0]-mousePos[0]) + (mouse_offset[1]-mousePos[1])*(mouse_offset[1]-mousePos[1]);
             if (d > 3) {
                 mouse_mode = RED.state.MOVING_ACTIVE;
                 clickElapsed = 0;
                 spliceActive = false;
                 if (moving_set.length === 1) {
                     node = moving_set[0];
-                    spliceActive = node.n.hasOwnProperty('_def')
-                                   && node.n._def.inputs > 0
-                                   && node.n._def.outputs > 0
-                                   && RED.nodes.filterLinks({ source: node.n }).length === 0
-                                   && RED.nodes.filterLinks({ target: node.n }).length === 0;
+                    spliceActive = node.n.hasOwnProperty("_def") &&
+                                   node.n._def.inputs > 0 &&
+                                   node.n._def.outputs > 0 &&
+                                   RED.nodes.filterLinks({ source: node.n }).length === 0 &&
+                                   RED.nodes.filterLinks({ target: node.n }).length === 0;
                 }
             }
         } else if (mouse_mode == RED.state.MOVING_ACTIVE || mouse_mode == RED.state.IMPORT_DRAGGING) {
             mousePos = mouse_position;
-            let minX = 0;
-            let minY = 0;
-            let maxX = space_width;
-            let maxY = space_height;
-            for (let n = 0; n < moving_set.length; n++) {
+            var minX = 0;
+            var minY = 0;
+            var maxX = space_width;
+            var maxY = space_height;
+            for (var n = 0; n<moving_set.length; n++) {
                 node = moving_set[n];
                 if (d3.event.shiftKey) {
                     node.n.ox = node.n.x;
                     node.n.oy = node.n.y;
                 }
-                node.n.x = mousePos[0] + node.dx;
-                node.n.y = mousePos[1] + node.dy;
+                node.n.x = mousePos[0]+node.dx;
+                node.n.y = mousePos[1]+node.dy;
                 node.n.dirty = true;
-                minX = Math.min(node.n.x - node.n.w / 2 - 5, minX);
-                minY = Math.min(node.n.y - node.n.h / 2 - 5, minY);
-                maxX = Math.max(node.n.x + node.n.w / 2 + 5, maxX);
-                maxY = Math.max(node.n.y + node.n.h / 2 + 5, maxY);
+                minX = Math.min(node.n.x-node.n.w/2-5,minX);
+                minY = Math.min(node.n.y-node.n.h/2-5,minY);
+                maxX = Math.max(node.n.x+node.n.w/2+5,maxX);
+                maxY = Math.max(node.n.y+node.n.h/2+5,maxY);
             }
             if (minX !== 0 || minY !== 0) {
-                for (i = 0; i < moving_set.length; i++) {
+                for (i = 0; i<moving_set.length; i++) {
                     node = moving_set[i];
                     node.n.x -= minX;
                     node.n.y -= minY;
                 }
             }
             if (maxX !== space_width || maxY !== space_height) {
-                for (i = 0; i < moving_set.length; i++) {
+                for (i = 0; i<moving_set.length; i++) {
                     node = moving_set[i];
                     node.n.x -= (maxX - space_width);
                     node.n.y -= (maxY - space_height);
                 }
             }
             if (snapGrid != d3.event.shiftKey && moving_set.length > 0) {
-                const gridOffset = [0, 0];
+                var gridOffset = [0,0];
                 node = moving_set[0];
-                gridOffset[0] = node.n.x - (gridSize * Math.floor((node.n.x - node.n.w / 2) / gridSize) + node.n.w / 2);
-                gridOffset[1] = node.n.y - (gridSize * Math.floor(node.n.y / gridSize));
+                gridOffset[0] = node.n.x-(gridSize*Math.floor((node.n.x-node.n.w/2)/gridSize)+node.n.w/2);
+                gridOffset[1] = node.n.y-(gridSize*Math.floor(node.n.y/gridSize));
                 if (gridOffset[0] !== 0 || gridOffset[1] !== 0) {
-                    for (i = 0; i < moving_set.length; i++) {
+                    for (i = 0; i<moving_set.length; i++) {
                         node = moving_set[i];
                         node.n.x -= gridOffset[0];
                         node.n.y -= gridOffset[1];
@@ -5851,14 +5890,14 @@ RED.view = (function () {
                 node = moving_set[0];
                 if (spliceActive) {
                     if (!spliceTimer) {
-                        spliceTimer = setTimeout(() => {
-                            let nodes = [];
-                            let bestDistance = Infinity;
-                            let bestLink = null;
-                            const mouseX = node.n.x;
-                            const mouseY = node.n.y;
+                        spliceTimer = setTimeout(function() {
+                            var nodes = [];
+                            var bestDistance = Infinity;
+                            var bestLink = null;
+                            var mouseX = node.n.x;
+                            var mouseY = node.n.y;
                             if (outer[0][0].getIntersectionList) {
-                                const svgRect = outer[0][0].createSVGRect();
+                                var svgRect = outer[0][0].createSVGRect();
                                 svgRect.x = mouseX;
                                 svgRect.y = mouseY;
                                 svgRect.width = 1;
@@ -5867,14 +5906,14 @@ RED.view = (function () {
                             } else {
                                 // Firefox doesn"t do getIntersectionList and that
                                 // makes us sad
-                                nodes = RED.view.getLinksAtPoint(mouseX, mouseY);
+                                nodes = RED.view.getLinksAtPoint(mouseX,mouseY);
                             }
-                            for (let i = 0; i < nodes.length; i++) {
-                                if (d3.select(nodes[i]).classed('link_background')) {
-                                    const length = nodes[i].getTotalLength();
-                                    for (let j = 0; j < length; j += 10) {
-                                        const p = nodes[i].getPointAtLength(j);
-                                        const d2 = ((p.x - mouseX) * (p.x - mouseX)) + ((p.y - mouseY) * (p.y - mouseY));
+                            for (var i=0;i<nodes.length;i++) {
+                                if (d3.select(nodes[i]).classed("link_background")) {
+                                    var length = nodes[i].getTotalLength();
+                                    for (var j=0;j<length;j+=10) {
+                                        var p = nodes[i].getPointAtLength(j);
+                                        var d2 = ((p.x-mouseX)*(p.x-mouseX))+((p.y-mouseY)*(p.y-mouseY));
                                         if (d2 < 200 && d2 < bestDistance) {
                                             bestDistance = d2;
                                             bestLink = nodes[i];
@@ -5883,19 +5922,21 @@ RED.view = (function () {
                                 }
                             }
                             if (activeSpliceLink && activeSpliceLink !== bestLink) {
-                                d3.select(activeSpliceLink.parentNode).classed('link_splice', false);
+                                d3.select(activeSpliceLink.parentNode).classed("link_splice",false);
                             }
                             if (bestLink) {
-                                d3.select(bestLink.parentNode).classed('link_splice', true);
+                                d3.select(bestLink.parentNode).classed("link_splice",true)
                             } else {
-                                d3.select('.link_splice').classed('link_splice', false);
+                                d3.select(".link_splice").classed("link_splice",false);
                             }
                             activeSpliceLink = bestLink;
                             spliceTimer = null;
-                        }, 100);
+                        },100);
                     }
                 }
             }
+
+
         }
         if (mouse_mode !== 0) {
             redraw();
@@ -5903,94 +5944,92 @@ RED.view = (function () {
     }
 
     function canvasMouseUp() {
-        let i;
-        let historyEvent;
+        var i;
+        var historyEvent;
         if (mouse_mode === RED.state.QUICK_JOINING) {
             return;
         }
         if (mousedown_node && mouse_mode == RED.state.JOINING) {
-            const removedLinks = [];
-            for (i = 0; i < drag_lines.length; i++) {
+            var removedLinks = [];
+            for (i=0;i<drag_lines.length;i++) {
                 if (drag_lines[i].link) {
-                    removedLinks.push(drag_lines[i].link);
+                    removedLinks.push(drag_lines[i].link)
                 }
             }
             historyEvent = {
-                t: 'delete',
+                t:"delete",
                 links: removedLinks,
-                dirty: RED.nodes.dirty(),
+                dirty:RED.nodes.dirty()
             };
             RED.history.push(historyEvent);
             hideDragLines();
         }
         if (lasso) {
-            const x = parseInt(lasso.attr('x'));
-            const y = parseInt(lasso.attr('y'));
-            const x2 = x + parseInt(lasso.attr('width'));
-            const y2 = y + parseInt(lasso.attr('height'));
+            var x = parseInt(lasso.attr("x"));
+            var y = parseInt(lasso.attr("y"));
+            var x2 = x+parseInt(lasso.attr("width"));
+            var y2 = y+parseInt(lasso.attr("height"));
             if (!d3.event.ctrlKey) {
                 clearSelection();
             }
-            RED.nodes.eachNode((n) => {
+            RED.nodes.eachNode(function(n) {
                 if (n.z == RED.workspaces.active() && !n.selected) {
                     n.selected = (n.x > x && n.x < x2 && n.y > y && n.y < y2);
                     if (n.selected) {
                         n.dirty = true;
-                        moving_set.push({ n });
+                        moving_set.push({n:n});
                     }
                 }
             });
             if (activeSubflow) {
-                activeSubflow.in.forEach((n) => {
+                activeSubflow.in.forEach(function(n) {
                     n.selected = (n.x > x && n.x < x2 && n.y > y && n.y < y2);
                     if (n.selected) {
                         n.dirty = true;
-                        moving_set.push({ n });
+                        moving_set.push({n:n});
                     }
                 });
-                activeSubflow.out.forEach((n) => {
+                activeSubflow.out.forEach(function(n) {
                     n.selected = (n.x > x && n.x < x2 && n.y > y && n.y < y2);
                     if (n.selected) {
                         n.dirty = true;
-                        moving_set.push({ n });
+                        moving_set.push({n:n});
                     }
                 });
             }
             updateSelection();
             lasso.remove();
             lasso = null;
-        } else if (mouse_mode == RED.state.DEFAULT && mousedown_link == null && !d3.event.ctrlKey && !d3.event.metaKey) {
+        } else if (mouse_mode == RED.state.DEFAULT && mousedown_link == null && !d3.event.ctrlKey&& !d3.event.metaKey ) {
             clearSelection();
             updateSelection();
         }
         if (mouse_mode == RED.state.MOVING_ACTIVE) {
             if (moving_set.length > 0) {
-                const ns = [];
-                for (let j = 0; j < moving_set.length; j++) {
-                    ns.push({
-                        n: moving_set[j].n, ox: moving_set[j].ox, oy: moving_set[j].oy, changed: moving_set[j].n.changed,
-                    });
+                var ns = [];
+                for (var j=0;j<moving_set.length;j++) {
+                    ns.push({n:moving_set[j].n,ox:moving_set[j].ox,oy:moving_set[j].oy,changed:moving_set[j].n.changed});
                     moving_set[j].n.dirty = true;
                     moving_set[j].n.changed = true;
                 }
-                historyEvent = { t: 'move', nodes: ns, dirty: RED.nodes.dirty() };
+                historyEvent = {t:"move",nodes:ns,dirty:RED.nodes.dirty()};
                 if (activeSpliceLink) {
                     // TODO: DRY - droppable/nodeMouseDown/canvasMouseUp
-                    const spliceLink = d3.select(activeSpliceLink).data()[0];
+                    var spliceLink = d3.select(activeSpliceLink).data()[0];
                     RED.nodes.removeLink(spliceLink);
-                    const link1 = {
-                        source: spliceLink.source,
-                        sourcePort: spliceLink.sourcePort,
-                        target: moving_set[0].n,
+                    var link1 = {
+                        source:spliceLink.source,
+                        sourcePort:spliceLink.sourcePort,
+                        target: moving_set[0].n
                     };
-                    const link2 = {
-                        source: moving_set[0].n,
-                        sourcePort: 0,
-                        target: spliceLink.target,
+                    var link2 = {
+                        source:moving_set[0].n,
+                        sourcePort:0,
+                        target: spliceLink.target
                     };
                     RED.nodes.addLink(link1);
                     RED.nodes.addLink(link2);
-                    historyEvent.links = [link1, link2];
+                    historyEvent.links = [link1,link2];
                     historyEvent.removedLinks = [spliceLink];
                     updateActiveNodes();
                 }
@@ -5999,13 +6038,13 @@ RED.view = (function () {
             }
         }
         if (mouse_mode == RED.state.MOVING || mouse_mode == RED.state.MOVING_ACTIVE) {
-            for (i = 0; i < moving_set.length; i++) {
+            for (i=0;i<moving_set.length;i++) {
                 delete moving_set[i].ox;
                 delete moving_set[i].oy;
             }
         }
         if (mouse_mode == RED.state.IMPORT_DRAGGING) {
-            RED.keyboard.remove('escape');
+            RED.keyboard.remove("escape");
             updateActiveNodes();
             RED.nodes.dirty(true);
         }
@@ -6031,28 +6070,28 @@ RED.view = (function () {
     }
 
     function selectAll() {
-        RED.nodes.eachNode((n) => {
+        RED.nodes.eachNode(function(n) {
             if (n.z == RED.workspaces.active()) {
                 if (!n.selected) {
                     n.selected = true;
                     n.dirty = true;
-                    moving_set.push({ n });
+                    moving_set.push({n:n});
                 }
             }
         });
         if (activeSubflow) {
-            activeSubflow.in.forEach((n) => {
+            activeSubflow.in.forEach(function(n) {
                 if (!n.selected) {
                     n.selected = true;
                     n.dirty = true;
-                    moving_set.push({ n });
+                    moving_set.push({n:n});
                 }
             });
-            activeSubflow.out.forEach((n) => {
+            activeSubflow.out.forEach(function(n) {
                 if (!n.selected) {
                     n.selected = true;
                     n.dirty = true;
-                    moving_set.push({ n });
+                    moving_set.push({n:n});
                 }
             });
         }
@@ -6063,8 +6102,8 @@ RED.view = (function () {
     }
 
     function clearSelection() {
-        for (let i = 0; i < moving_set.length; i++) {
-            const n = moving_set[i];
+        for (var i=0;i<moving_set.length;i++) {
+            var n = moving_set[i];
             n.n.dirty = true;
             n.n.selected = false;
         }
@@ -6073,109 +6112,109 @@ RED.view = (function () {
     }
 
     function updateSelection() {
-        const selection = {};
+        var selection = {};
 
         if (moving_set.length > 0) {
-            selection.nodes = moving_set.map(n => n.n);
+            selection.nodes = moving_set.map(function(n) { return n.n;});
         }
         if (selected_link != null) {
             selection.link = selected_link;
         }
-        const activeWorkspace = RED.workspaces.active();
+        var activeWorkspace = RED.workspaces.active();
         activeLinks = RED.nodes.filterLinks({
-            source: { z: activeWorkspace },
-            target: { z: activeWorkspace },
+            source:{z:activeWorkspace},
+            target:{z:activeWorkspace}
         });
-        const tabOrder = RED.nodes.getWorkspaceOrder();
-        const currentLinks = activeLinks;
-        const addedLinkLinks = {};
+        var tabOrder = RED.nodes.getWorkspaceOrder();
+        var currentLinks = activeLinks;
+        var addedLinkLinks = {};
         activeFlowLinks = [];
-        for (let i = 0; i < moving_set.length; i++) {
-            if (moving_set[i].n.type === 'link out' || moving_set[i].n.type === 'link in') {
+        for (var i=0;i<moving_set.length;i++) {
+            if (moving_set[i].n.type === "link out" || moving_set[i].n.type === "link in") {
                 var linkNode = moving_set[i].n;
                 var offFlowLinks = {};
-                linkNode.links.forEach((id) => {
-                    const target = RED.nodes.node(id);
+                linkNode.links.forEach(function(id) {
+                    var target = RED.nodes.node(id);
                     if (target) {
-                        if (linkNode.type === 'link out') {
+                        if (linkNode.type === "link out") {
                             if (target.z === linkNode.z) {
-                                if (!addedLinkLinks[`${linkNode.id}:${target.id}`]) {
+                                if (!addedLinkLinks[linkNode.id+":"+target.id]) {
                                     activeLinks.push({
-                                        source: linkNode,
-                                        sourcePort: 0,
-                                        target,
-                                        link: true,
+                                        source:linkNode,
+                                        sourcePort:0,
+                                        target: target,
+                                        link: true
                                     });
-                                    addedLinkLinks[`${linkNode.id}:${target.id}`] = true;
+                                    addedLinkLinks[linkNode.id+":"+target.id] = true;
                                 }
                             } else {
-                                offFlowLinks[target.z] = offFlowLinks[target.z] || [];
+                                offFlowLinks[target.z] = offFlowLinks[target.z]||[];
                                 offFlowLinks[target.z].push(target);
                             }
-                        } else if (target.z === linkNode.z) {
-                            if (!addedLinkLinks[`${target.id}:${linkNode.id}`]) {
-                                activeLinks.push({
-                                    source: target,
-                                    sourcePort: 0,
-                                    target: linkNode,
-                                    link: true,
-                                });
-                                addedLinkLinks[`${target.id}:${linkNode.id}`] = true;
-                            }
                         } else {
-                            offFlowLinks[target.z] = offFlowLinks[target.z] || [];
-                            offFlowLinks[target.z].push(target);
+                            if (target.z === linkNode.z) {
+                                if (!addedLinkLinks[target.id+":"+linkNode.id]) {
+                                    activeLinks.push({
+                                        source:target,
+                                        sourcePort:0,
+                                        target: linkNode,
+                                        link: true
+                                    });
+                                    addedLinkLinks[target.id+":"+linkNode.id] = true;
+                                }
+                            } else {
+                                offFlowLinks[target.z] = offFlowLinks[target.z]||[];
+                                offFlowLinks[target.z].push(target);
+                            }
                         }
                     }
                 });
-                const offFlows = Object.keys(offFlowLinks);
+                var offFlows = Object.keys(offFlowLinks);
                 // offFlows.sort(function(A,B) {
                 //     return tabOrder.indexOf(A) - tabOrder.indexOf(B);
                 // });
                 if (offFlows.length > 0) {
                     activeFlowLinks.push({
-                        refresh: Math.floor(Math.random() * 10000),
+                        refresh: Math.floor(Math.random()*10000),
                         node: linkNode,
-                        links: offFlowLinks, // offFlows.map(function(i) { return {id:i,links:offFlowLinks[i]};})
+                        links: offFlowLinks//offFlows.map(function(i) { return {id:i,links:offFlowLinks[i]};})
                     });
                 }
             }
         }
 
 
-        RED.events.emit('view:selection-changed', selection);
+        RED.events.emit("view:selection-changed",selection);
     }
 
     function endKeyboardMove() {
         endMoveSet = false;
         if (moving_set.length > 0) {
-            const ns = [];
-            for (let i = 0; i < moving_set.length; i++) {
-                ns.push({
-                    n: moving_set[i].n, ox: moving_set[i].ox, oy: moving_set[i].oy, changed: moving_set[i].n.changed,
-                });
+            var ns = [];
+            for (var i=0;i<moving_set.length;i++) {
+                ns.push({n:moving_set[i].n,ox:moving_set[i].ox,oy:moving_set[i].oy,changed:moving_set[i].n.changed});
                 moving_set[i].n.changed = true;
                 moving_set[i].n.dirty = true;
                 delete moving_set[i].ox;
                 delete moving_set[i].oy;
             }
             redraw();
-            RED.history.push({ t: 'move', nodes: ns, dirty: RED.nodes.dirty() });
+            RED.history.push({t:"move",nodes:ns,dirty:RED.nodes.dirty()});
             RED.nodes.dirty(true);
         }
     }
     var endMoveSet = false;
-    function moveSelection(dx, dy) {
+    function moveSelection(dx,dy) {
         if (moving_set.length > 0) {
             if (!endMoveSet) {
-                $(document).one('keyup', endKeyboardMove);
+                $(document).one('keyup',endKeyboardMove);
                 endMoveSet = true;
             }
-            let minX = 0;
-            let minY = 0;
-            let node;
+            var minX = 0;
+            var minY = 0;
+            var node;
 
-            for (let i = 0; i < moving_set.length; i++) {
+            for (var i=0;i<moving_set.length;i++) {
                 node = moving_set[i];
                 node.n.changed = true;
                 node.n.dirty = true;
@@ -6186,12 +6225,12 @@ RED.view = (function () {
                 node.n.x += dx;
                 node.n.y += dy;
                 node.n.dirty = true;
-                minX = Math.min(node.n.x - node.n.w / 2 - 5, minX);
-                minY = Math.min(node.n.y - node.n.h / 2 - 5, minY);
+                minX = Math.min(node.n.x-node.n.w/2-5,minX);
+                minY = Math.min(node.n.y-node.n.h/2-5,minY);
             }
 
             if (minX !== 0 || minY !== 0) {
-                for (let n = 0; n < moving_set.length; n++) {
+                for (var n = 0; n<moving_set.length; n++) {
                     node = moving_set[n];
                     node.n.x -= minX;
                     node.n.y -= minY;
@@ -6204,8 +6243,8 @@ RED.view = (function () {
     function editSelection() {
         console.log('editSelection');
         if (moving_set.length > 0) {
-            const node = moving_set[0].n;
-            if (node.type === 'subflow') {
+            var node = moving_set[0].n;
+            if (node.type === "subflow") {
                 RED.editor.editSubflow(activeSubflow);
             } else {
                 RED.editor.edit(node);
@@ -6214,31 +6253,31 @@ RED.view = (function () {
     }
     function deleteSelection() {
         if (moving_set.length > 0 || selected_link != null) {
-            let result;
-            let removedNodes = [];
-            let removedLinks = [];
-            const removedSubflowOutputs = [];
-            const removedSubflowInputs = [];
-            const subflowInstances = [];
+            var result;
+            var removedNodes = [];
+            var removedLinks = [];
+            var removedSubflowOutputs = [];
+            var removedSubflowInputs = [];
+            var subflowInstances = [];
 
-            const startDirty = RED.nodes.dirty();
-            const startChanged = false;
+            var startDirty = RED.nodes.dirty();
+            var startChanged = false;
             if (moving_set.length > 0) {
-                for (let i = 0; i < moving_set.length; i++) {
-                    const node = moving_set[i].n;
+                for (var i=0;i<moving_set.length;i++) {
+                    var node = moving_set[i].n;
                     node.selected = false;
-                    if (node.type != 'subflow') {
+                    if (node.type != "subflow") {
                         if (node.x < 0) {
-                            node.x = 25;
+                            node.x = 25
                         }
-                        const removedEntities = RED.nodes.remove(node.id);
+                        var removedEntities = RED.nodes.remove(node.id);
                         removedNodes.push(node);
                         removedNodes = removedNodes.concat(removedEntities.nodes);
                         removedLinks = removedLinks.concat(removedEntities.links);
                     } else {
-                        if (node.direction === 'out') {
+                        if (node.direction === "out") {
                             removedSubflowOutputs.push(node);
-                        } else if (node.direction === 'in') {
+                        } else if (node.direction === "in") {
                             removedSubflowInputs.push(node);
                         }
                         node.dirty = true;
@@ -6271,16 +6310,16 @@ RED.view = (function () {
                 removedLinks.push(selected_link);
                 RED.nodes.dirty(true);
             }
-            const historyEvent = {
-                t: 'delete',
-                nodes: removedNodes,
-                links: removedLinks,
-                subflowOutputs: removedSubflowOutputs,
-                subflowInputs: removedSubflowInputs,
+            var historyEvent = {
+                t:"delete",
+                nodes:removedNodes,
+                links:removedLinks,
+                subflowOutputs:removedSubflowOutputs,
+                subflowInputs:removedSubflowInputs,
                 subflow: {
-                    instances: null,
+                    instances: null
                 },
-                dirty: startDirty,
+                dirty:startDirty
             };
             RED.history.push(historyEvent);
 
@@ -6293,16 +6332,16 @@ RED.view = (function () {
 
     function copySelection() {
         if (moving_set.length > 0) {
-            const nns = [];
-            for (let n = 0; n < moving_set.length; n++) {
-                const node = moving_set[n].n;
+            var nns = [];
+            for (var n=0;n<moving_set.length;n++) {
+                var node = moving_set[n].n;
                 // The only time a node.type == subflow can be selected is the
                 // input/output "proxy" nodes. They cannot be copied.
-                if (node.type != 'subflow') {
-                    for (const d in node._def.defaults) {
+                if (node.type != "subflow") {
+                    for (var d in node._def.defaults) {
                         if (node._def.defaults.hasOwnProperty(d)) {
                             if (node._def.defaults[d].type) {
-                                const configNode = RED.nodes.node(node[d]);
+                                var configNode = RED.nodes.node(node[d]);
                                 if (configNode && configNode._def.exclusive) {
                                     nns.push(RED.nodes.convertNode(configNode));
                                 }
@@ -6310,25 +6349,25 @@ RED.view = (function () {
                         }
                     }
                     nns.push(RED.nodes.convertNode(node));
-                    // TODO: if the node has an exclusive config node, it should also be copied, to ensure it remains exclusive...
+                    //TODO: if the node has an exclusive config node, it should also be copied, to ensure it remains exclusive...
                 }
             }
             clipboard = JSON.stringify(nns);
-            RED.notify(RED._('clipboard.nodeCopied', { count: nns.length }));
+            RED.notify(RED._("clipboard.nodeCopied",{count:nns.length}));
         }
     }
 
 
     function calculateTextWidth(str, className, offset) {
-        const sp = document.createElement('span');
+        var sp = document.createElement("span");
         sp.className = className;
-        sp.style.position = 'absolute';
-        sp.style.top = '-1000px';
-        sp.textContent = (str || '');
+        sp.style.position = "absolute";
+        sp.style.top = "-1000px";
+        sp.textContent = (str||"");
         document.body.appendChild(sp);
-        const w = sp.offsetWidth;
+        var w = sp.offsetWidth;
         document.body.removeChild(sp);
-        return offset + w;
+        return offset+w;
     }
 
     function resetMouseVars() {
@@ -6339,7 +6378,7 @@ RED.view = (function () {
         mousedown_port_type = 0;
         activeSpliceLink = null;
         spliceActive = false;
-        d3.select('.link_splice').classed('link_splice', false);
+        d3.select(".link_splice").classed("link_splice",false);
         if (spliceTimer) {
             clearTimeout(spliceTimer);
             spliceTimer = null;
@@ -6348,71 +6387,71 @@ RED.view = (function () {
 
     function disableQuickJoinEventHandler(evt) {
         // Check for ctrl (all browsers), "Meta" (Chrome/FF), keyCode 91 (Safari)
-        if (evt.keyCode === 17 || evt.key === 'Meta' || evt.keyCode === 91) {
+        if (evt.keyCode === 17 || evt.key === "Meta" || evt.keyCode === 91) {
             resetMouseVars();
             hideDragLines();
             redraw();
-            $(window).off('keyup', disableQuickJoinEventHandler);
+            $(window).off('keyup',disableQuickJoinEventHandler);
         }
     }
 
-    function portMouseDown(d, portType, portIndex) {
-        // console.log(d,portType,portIndex);
+    function portMouseDown(d,portType,portIndex) {
+        //console.log(d,portType,portIndex);
         // disable zoom
-        // vis.call(d3.behavior.zoom().on("zoom"), null);
+        //vis.call(d3.behavior.zoom().on("zoom"), null);
         mousedown_node = d;
         mousedown_port_type = portType;
         mousedown_port_index = portIndex || 0;
         if (mouse_mode !== RED.state.QUICK_JOINING) {
             mouse_mode = RED.state.JOINING;
-            document.body.style.cursor = 'crosshair';
+            document.body.style.cursor = "crosshair";
             if (d3.event.ctrlKey || d3.event.metaKey) {
                 mouse_mode = RED.state.QUICK_JOINING;
-                showDragLines([{ node: mousedown_node, port: mousedown_port_index, portType: mousedown_port_type }]);
-                $(window).on('keyup', disableQuickJoinEventHandler);
+                showDragLines([{node:mousedown_node,port:mousedown_port_index,portType:mousedown_port_type}]);
+                $(window).on('keyup',disableQuickJoinEventHandler);
             }
         }
         d3.event.stopPropagation();
         d3.event.preventDefault();
     }
 
-    function portMouseUp(d, portType, portIndex) {
-        let i;
+    function portMouseUp(d,portType,portIndex) {
+        var i;
         if (mouse_mode === RED.state.QUICK_JOINING) {
-            if (drag_lines[0].node === d) {
-                return;
+            if (drag_lines[0].node===d) {
+                return
             }
         }
-        document.body.style.cursor = '';
+        document.body.style.cursor = "";
         if (mouse_mode == RED.state.JOINING || mouse_mode == RED.state.QUICK_JOINING) {
-            if (typeof TouchEvent !== 'undefined' && d3.event instanceof TouchEvent) {
-                RED.nodes.eachNode((n) => {
+            if (typeof TouchEvent != "undefined" && d3.event instanceof TouchEvent) {
+                RED.nodes.eachNode(function(n) {
                     if (n.z == RED.workspaces.active()) {
-                        const hw = n.w / 2;
-                        const hh = n.h / 2;
-                        if (n.x - hw < mouse_position[0] && n.x + hw > mouse_position[0]
-                            && n.y - hh < mouse_position[1] && n.y + hh > mouse_position[1]) {
-                            mouseup_node = n;
-                            portType = mouseup_node.inputs > 0 ? 1 : 0;
-                            portIndex = 0;
+                        var hw = n.w/2;
+                        var hh = n.h/2;
+                        if (n.x-hw<mouse_position[0] && n.x+hw> mouse_position[0] &&
+                            n.y-hh<mouse_position[1] && n.y+hh>mouse_position[1]) {
+                                mouseup_node = n;
+                                portType = mouseup_node.inputs>0?1:0;
+                                portIndex = 0;
                         }
                     }
                 });
             } else {
                 mouseup_node = d;
             }
-            const addedLinks = [];
-            const removedLinks = [];
+            var addedLinks = [];
+            var removedLinks = [];
 
-            for (i = 0; i < drag_lines.length; i++) {
+            for (i=0;i<drag_lines.length;i++) {
                 if (drag_lines[i].link) {
-                    removedLinks.push(drag_lines[i].link);
+                    removedLinks.push(drag_lines[i].link)
                 }
             }
-            for (i = 0; i < drag_lines.length; i++) {
+            for (i=0;i<drag_lines.length;i++) {
                 if (portType != drag_lines[i].portType && mouseup_node !== drag_lines[i].node) {
-                    const drag_line = drag_lines[i];
-                    var src; var dst; var src_port;
+                    var drag_line = drag_lines[i];
+                    var src,dst,src_port;
                     if (drag_line.portType === 0) {
                         src = drag_line.node;
                         src_port = drag_line.port;
@@ -6422,29 +6461,29 @@ RED.view = (function () {
                         dst = drag_line.node;
                         src_port = portIndex;
                     }
-                    const existingLink = RED.nodes.filterLinks({ source: src, target: dst, sourcePort: src_port }).length !== 0;
+                    var existingLink = RED.nodes.filterLinks({source:src,target:dst,sourcePort: src_port}).length !== 0;
                     if (!existingLink) {
-                        const link = { source: src, sourcePort: src_port, target: dst };
+                        var link = {source: src, sourcePort:src_port, target: dst};
                         RED.nodes.addLink(link);
                         addedLinks.push(link);
                     }
                 }
             }
             if (addedLinks.length > 0 || removedLinks.length > 0) {
-                const historyEvent = {
-                    t: 'add',
-                    links: addedLinks,
-                    removedLinks,
-                    dirty: RED.nodes.dirty(),
+                var historyEvent = {
+                    t:"add",
+                    links:addedLinks,
+                    removedLinks: removedLinks,
+                    dirty:RED.nodes.dirty()
                 };
                 if (activeSubflow) {
-                    const subflowRefresh = RED.subflow.refresh(true);
+                    var subflowRefresh = RED.subflow.refresh(true);
                     if (subflowRefresh) {
                         historyEvent.subflow = {
-                            id: activeSubflow.id,
+                            id:activeSubflow.id,
                             changed: activeSubflow.changed,
-                            instances: subflowRefresh.instances,
-                        };
+                            instances: subflowRefresh.instances
+                        }
                     }
                 }
                 RED.history.push(historyEvent);
@@ -6455,9 +6494,9 @@ RED.view = (function () {
                 if (addedLinks.length > 0) {
                     hideDragLines();
                     if (portType === 1 && d.outputs > 0) {
-                        showDragLines([{ node: d, port: 0, portType: 0 }]);
+                        showDragLines([{node:d,port:0,portType:0}]);
                     } else if (portType === 0 && d.inputs > 0) {
-                        showDragLines([{ node: d, port: 0, portType: 1 }]);
+                        showDragLines([{node:d,port:0,portType:1}]);
                     } else {
                         resetMouseVars();
                     }
@@ -6476,7 +6515,7 @@ RED.view = (function () {
     function nodeMouseUp(d) {
         if (dblClickPrimed && mousedown_node == d && clickElapsed > 0 && clickElapsed < 750) {
             mouse_mode = RED.state.DEFAULT;
-            if (d.type != 'subflow') {
+            if (d.type != "subflow") {
                 RED.editor.edit(d);
             } else {
                 RED.editor.editSubflow(activeSubflow);
@@ -6485,36 +6524,36 @@ RED.view = (function () {
             d3.event.stopPropagation();
             return;
         }
-        const direction = d._def ? (d.inputs > 0 ? 1 : 0) : (d.direction == 'in' ? 0 : 1);
+        var direction = d._def? (d.inputs > 0 ? 1: 0) : (d.direction == "in" ? 0: 1)
         portMouseUp(d, direction, 0);
     }
 
     function nodeMouseDown(d) {
         focusView();
-        // var touch0 = d3.event;
-        // var pos = [touch0.pageX,touch0.pageY];
-        // RED.touch.radialMenu.show(d3.select(this),pos);
+        //var touch0 = d3.event;
+        //var pos = [touch0.pageX,touch0.pageY];
+        //RED.touch.radialMenu.show(d3.select(this),pos);
         if (mouse_mode == RED.state.IMPORT_DRAGGING) {
-            RED.keyboard.remove('escape');
+            RED.keyboard.remove("escape");
 
             if (activeSpliceLink) {
                 // TODO: DRY - droppable/nodeMouseDown/canvasMouseUp
-                const spliceLink = d3.select(activeSpliceLink).data()[0];
+                var spliceLink = d3.select(activeSpliceLink).data()[0];
                 RED.nodes.removeLink(spliceLink);
-                const link1 = {
-                    source: spliceLink.source,
-                    sourcePort: spliceLink.sourcePort,
-                    target: moving_set[0].n,
+                var link1 = {
+                    source:spliceLink.source,
+                    sourcePort:spliceLink.sourcePort,
+                    target: moving_set[0].n
                 };
-                const link2 = {
-                    source: moving_set[0].n,
-                    sourcePort: 0,
-                    target: spliceLink.target,
+                var link2 = {
+                    source:moving_set[0].n,
+                    sourcePort:0,
+                    target: spliceLink.target
                 };
                 RED.nodes.addLink(link1);
                 RED.nodes.addLink(link2);
-                const historyEvent = RED.history.peek();
-                historyEvent.links = [link1, link2];
+                var historyEvent = RED.history.peek();
+                historyEvent.links = [link1,link2];
                 historyEvent.removedLinks = [spliceLink];
                 updateActiveNodes();
             }
@@ -6525,55 +6564,55 @@ RED.view = (function () {
             resetMouseVars();
             d3.event.stopPropagation();
             return;
-        } if (mouse_mode == RED.state.QUICK_JOINING) {
+        } else if (mouse_mode == RED.state.QUICK_JOINING) {
             d3.event.stopPropagation();
             return;
         }
         mousedown_node = d;
-        const now = Date.now();
-        clickElapsed = now - clickTime;
+        var now = Date.now();
+        clickElapsed = now-clickTime;
         clickTime = now;
 
         dblClickPrimed = (lastClickNode == mousedown_node);
         lastClickNode = mousedown_node;
 
-        let i;
+        var i;
 
-        if (d.selected && (d3.event.ctrlKey || d3.event.metaKey)) {
+        if (d.selected && (d3.event.ctrlKey||d3.event.metaKey)) {
             mousedown_node.selected = false;
-            for (i = 0; i < moving_set.length; i += 1) {
+            for (i=0;i<moving_set.length;i+=1) {
                 if (moving_set[i].n === mousedown_node) {
-                    moving_set.splice(i, 1);
+                    moving_set.splice(i,1);
                     break;
                 }
             }
         } else {
             if (d3.event.shiftKey) {
                 clearSelection();
-                const cnodes = RED.nodes.getAllFlowNodes(mousedown_node);
-                for (let n = 0; n < cnodes.length; n++) {
+                var cnodes = RED.nodes.getAllFlowNodes(mousedown_node);
+                for (var n=0;n<cnodes.length;n++) {
                     cnodes[n].selected = true;
                     cnodes[n].dirty = true;
-                    moving_set.push({ n: cnodes[n] });
+                    moving_set.push({n:cnodes[n]});
                 }
             } else if (!d.selected) {
                 if (!d3.event.ctrlKey && !d3.event.metaKey) {
                     clearSelection();
                 }
                 mousedown_node.selected = true;
-                moving_set.push({ n: mousedown_node });
+                moving_set.push({n:mousedown_node});
             }
             selected_link = null;
             if (d3.event.button != 2) {
                 mouse_mode = RED.state.MOVING;
-                const mouse = d3.touches(this)[0] || d3.mouse(this);
-                mouse[0] += d.x - d.w / 2;
-                mouse[1] += d.y - d.h / 2;
-                for (i = 0; i < moving_set.length; i++) {
+                var mouse = d3.touches(this)[0]||d3.mouse(this);
+                mouse[0] += d.x-d.w/2;
+                mouse[1] += d.y-d.h/2;
+                for (i=0;i<moving_set.length;i++) {
                     moving_set[i].ox = moving_set[i].n.x;
                     moving_set[i].oy = moving_set[i].n.y;
-                    moving_set[i].dx = moving_set[i].n.x - mouse[0];
-                    moving_set[i].dy = moving_set[i].n.y - mouse[1];
+                    moving_set[i].dx = moving_set[i].n.x-mouse[0];
+                    moving_set[i].dy = moving_set[i].n.y-mouse[1];
                 }
                 mouse_offset = d3.mouse(document.body);
                 if (isNaN(mouse_offset[0])) {
@@ -6597,631 +6636,602 @@ RED.view = (function () {
             if (d._def.button.onclick) {
                 try {
                     d._def.button.onclick.call(d);
-                } catch (err) {
-                    console.log(`Definition error: ${d.type}.onclick`, err);
+                } catch(err) {
+                    console.log("Definition error: "+d.type+".onclick",err);
                 }
             }
             if (d.dirty) {
                 redraw();
             }
         } else if (d.changed) {
-            RED.notify(RED._('notification.warning', { message: RED._('notification.warnings.undeployedChanges') }), 'warning');
+            RED.notify(RED._("notification.warning", {message:RED._("notification.warnings.undeployedChanges")}),"warning");
         } else {
-            RED.notify(RED._('notification.warning', { message: RED._('notification.warnings.nodeActionDisabled') }), 'warning');
+            RED.notify(RED._("notification.warning", {message:RED._("notification.warnings.nodeActionDisabled")}),"warning");
         }
         d3.event.preventDefault();
     }
 
-    function showTouchMenu(obj, pos) {
-        const mdn = mousedown_node;
-        const options = [];
-        options.push({ name: 'delete', disabled: (moving_set.length === 0 && selected_link === null), onselect() { deleteSelection(); } });
-        options.push({ name: 'cut', disabled: (moving_set.length === 0), onselect() { copySelection(); deleteSelection(); } });
-        options.push({ name: 'copy', disabled: (moving_set.length === 0), onselect() { copySelection(); } });
-        options.push({ name: 'paste', disabled: (clipboard.length === 0), onselect() { importNodes(clipboard, false, true); } });
-        options.push({ name: 'edit', disabled: (moving_set.length != 1), onselect() { RED.editor.edit(mdn); } });
-        options.push({ name: 'select', onselect() { selectAll(); } });
-        options.push({ name: 'undo', disabled: (RED.history.depth() === 0), onselect() { RED.history.pop(); } });
+    function showTouchMenu(obj,pos) {
+        var mdn = mousedown_node;
+        var options = [];
+        options.push({name:"delete",disabled:(moving_set.length===0 && selected_link === null),onselect:function() {deleteSelection();}});
+        options.push({name:"cut",disabled:(moving_set.length===0),onselect:function() {copySelection();deleteSelection();}});
+        options.push({name:"copy",disabled:(moving_set.length===0),onselect:function() {copySelection();}});
+        options.push({name:"paste",disabled:(clipboard.length===0),onselect:function() {importNodes(clipboard,false,true);}});
+        options.push({name:"edit",disabled:(moving_set.length != 1),onselect:function() { RED.editor.edit(mdn);}});
+        options.push({name:"select",onselect:function() {selectAll();}});
+        options.push({name:"undo",disabled:(RED.history.depth() === 0),onselect:function() {RED.history.pop();}});
 
-        RED.touch.radialMenu.show(obj, pos, options);
+        RED.touch.radialMenu.show(obj,pos,options);
         resetMouseVars();
     }
     function redraw() {
-        vis.attr('transform', `scale(${scaleFactor})`);
-        outer.attr('width', space_width * scaleFactor).attr('height', space_height * scaleFactor);
+        vis.attr("transform","scale("+scaleFactor+")");
+        outer.attr("width", space_width*scaleFactor).attr("height", space_height*scaleFactor);
 
         // Don't bother redrawing nodes if we're drawing links
         if (mouse_mode != RED.state.JOINING) {
-            const dirtyNodes = {};
+
+            var dirtyNodes = {};
 
             if (activeSubflow) {
-                const subflowOutputs = vis.selectAll('.subflowoutput').data(activeSubflow.out, (d, i) => d.id);
+                var subflowOutputs = vis.selectAll(".subflowoutput").data(activeSubflow.out,function(d,i){ return d.id;});
                 subflowOutputs.exit().remove();
-                const outGroup = subflowOutputs.enter().insert('svg:g').attr('class', 'node subflowoutput').attr('transform', d => `translate(${d.x - 20},${d.y - 20})`);
-                outGroup.each((d, i) => {
-                    d.w = 40;
-                    d.h = 40;
+                var outGroup = subflowOutputs.enter().insert("svg:g").attr("class","node subflowoutput").attr("transform",function(d) { return "translate("+(d.x-20)+","+(d.y-20)+")"});
+                outGroup.each(function(d,i) {
+                    d.w=40;
+                    d.h=40;
                 });
-                outGroup.append('rect').attr('class', 'subflowport').attr('rx', 8).attr('ry', 8)
-                    .attr('width', 40)
-                    .attr('height', 40)
+                outGroup.append("rect").attr("class","subflowport").attr("rx",8).attr("ry",8).attr("width",40).attr("height",40)
                     // TODO: This is exactly the same set of handlers used for regular nodes - DRY
-                    .on('mouseup', nodeMouseUp)
-                    .on('mousedown', nodeMouseDown)
-                    .on('touchstart', function (d) {
-                        const obj = d3.select(this);
-                        const touch0 = d3.event.touches.item(0);
-                        const pos = [touch0.pageX, touch0.pageY];
-                        startTouchCenter = [touch0.pageX, touch0.pageY];
-                        startTouchDistance = 0;
-                        touchStartTime = setTimeout(() => {
-                            showTouchMenu(obj, pos);
-                        }, touchLongPressTimeout);
-                        nodeMouseDown.call(this, d);
+                    .on("mouseup",nodeMouseUp)
+                    .on("mousedown",nodeMouseDown)
+                    .on("touchstart",function(d) {
+                            var obj = d3.select(this);
+                            var touch0 = d3.event.touches.item(0);
+                            var pos = [touch0.pageX,touch0.pageY];
+                            startTouchCenter = [touch0.pageX,touch0.pageY];
+                            startTouchDistance = 0;
+                            touchStartTime = setTimeout(function() {
+                                    showTouchMenu(obj,pos);
+                            },touchLongPressTimeout);
+                            nodeMouseDown.call(this,d)
                     })
-                    .on('touchend', function (d) {
-                        clearTimeout(touchStartTime);
-                        touchStartTime = null;
-                        if (RED.touch.radialMenu.active()) {
-                            d3.event.stopPropagation();
-                            return;
-                        }
-                        nodeMouseUp.call(this, d);
+                    .on("touchend", function(d) {
+                            clearTimeout(touchStartTime);
+                            touchStartTime = null;
+                            if  (RED.touch.radialMenu.active()) {
+                                d3.event.stopPropagation();
+                                return;
+                            }
+                            nodeMouseUp.call(this,d);
                     });
 
-                outGroup.append('rect').attr('class', 'port').attr('rx', 3).attr('ry', 3)
-                    .attr('width', 10)
-                    .attr('height', 10)
-                    .attr('x', -5)
-                    .attr('y', 15)
-                    .on('mousedown', (d, i) => { portMouseDown(d, 1, 0); })
-                    .on('touchstart', (d, i) => { portMouseDown(d, 1, 0); })
-                    .on('mouseup', (d, i) => { portMouseUp(d, 1, 0); })
-                    .on('touchend', (d, i) => { portMouseUp(d, 1, 0); })
-                    .on('mouseover', function (d, i) { const port = d3.select(this); port.classed('port_hovered', (mouse_mode != RED.state.JOINING || (drag_lines.length > 0 && drag_lines[0].portType !== 1))); })
-                    .on('mouseout', function (d, i) { const port = d3.select(this); port.classed('port_hovered', false); });
+                outGroup.append("rect").attr("class","port").attr("rx",3).attr("ry",3).attr("width",10).attr("height",10).attr("x",-5).attr("y",15)
+                    .on("mousedown", function(d,i){portMouseDown(d,1,0);} )
+                    .on("touchstart", function(d,i){portMouseDown(d,1,0);} )
+                    .on("mouseup", function(d,i){portMouseUp(d,1,0);})
+                    .on("touchend",function(d,i){portMouseUp(d,1,0);} )
+                    .on("mouseover",function(d,i) { var port = d3.select(this); port.classed("port_hovered",(mouse_mode!=RED.state.JOINING || (drag_lines.length > 0 && drag_lines[0].portType !== 1)));})
+                    .on("mouseout",function(d,i) { var port = d3.select(this); port.classed("port_hovered",false);});
 
-                outGroup.append('svg:text').attr('class', 'port_label').attr('x', 20).attr('y', 8)
-                    .style('font-size', '10px')
-                    .text('output');
-                outGroup.append('svg:text').attr('class', 'port_label port_index').attr('x', 20).attr('y', 24)
-                    .text((d, i) => i + 1);
+                outGroup.append("svg:text").attr("class","port_label").attr("x",20).attr("y",8).style("font-size","10px").text("output");
+                outGroup.append("svg:text").attr("class","port_label port_index").attr("x",20).attr("y",24).text(function(d,i){ return i+1});
 
-                const subflowInputs = vis.selectAll('.subflowinput').data(activeSubflow.in, (d, i) => d.id);
+                var subflowInputs = vis.selectAll(".subflowinput").data(activeSubflow.in,function(d,i){ return d.id;});
                 subflowInputs.exit().remove();
-                const inGroup = subflowInputs.enter().insert('svg:g').attr('class', 'node subflowinput').attr('transform', d => `translate(${d.x - 20},${d.y - 20})`);
-                inGroup.each((d, i) => {
-                    d.w = 40;
-                    d.h = 40;
+                var inGroup = subflowInputs.enter().insert("svg:g").attr("class","node subflowinput").attr("transform",function(d) { return "translate("+(d.x-20)+","+(d.y-20)+")"});
+                inGroup.each(function(d,i) {
+                    d.w=40;
+                    d.h=40;
                 });
-                inGroup.append('rect').attr('class', 'subflowport').attr('rx', 8).attr('ry', 8)
-                    .attr('width', 40)
-                    .attr('height', 40)
+                inGroup.append("rect").attr("class","subflowport").attr("rx",8).attr("ry",8).attr("width",40).attr("height",40)
                     // TODO: This is exactly the same set of handlers used for regular nodes - DRY
-                    .on('mouseup', nodeMouseUp)
-                    .on('mousedown', nodeMouseDown)
-                    .on('touchstart', function (d) {
-                        const obj = d3.select(this);
-                        const touch0 = d3.event.touches.item(0);
-                        const pos = [touch0.pageX, touch0.pageY];
-                        startTouchCenter = [touch0.pageX, touch0.pageY];
-                        startTouchDistance = 0;
-                        touchStartTime = setTimeout(() => {
-                            showTouchMenu(obj, pos);
-                        }, touchLongPressTimeout);
-                        nodeMouseDown.call(this, d);
+                    .on("mouseup",nodeMouseUp)
+                    .on("mousedown",nodeMouseDown)
+                    .on("touchstart",function(d) {
+                            var obj = d3.select(this);
+                            var touch0 = d3.event.touches.item(0);
+                            var pos = [touch0.pageX,touch0.pageY];
+                            startTouchCenter = [touch0.pageX,touch0.pageY];
+                            startTouchDistance = 0;
+                            touchStartTime = setTimeout(function() {
+                                    showTouchMenu(obj,pos);
+                            },touchLongPressTimeout);
+                            nodeMouseDown.call(this,d)
                     })
-                    .on('touchend', function (d) {
-                        clearTimeout(touchStartTime);
-                        touchStartTime = null;
-                        if (RED.touch.radialMenu.active()) {
-                            d3.event.stopPropagation();
-                            return;
-                        }
-                        nodeMouseUp.call(this, d);
+                    .on("touchend", function(d) {
+                            clearTimeout(touchStartTime);
+                            touchStartTime = null;
+                            if  (RED.touch.radialMenu.active()) {
+                                d3.event.stopPropagation();
+                                return;
+                            }
+                            nodeMouseUp.call(this,d);
                     });
 
-                inGroup.append('rect').attr('class', 'port').attr('rx', 3).attr('ry', 3)
-                    .attr('width', 10)
-                    .attr('height', 10)
-                    .attr('x', 35)
-                    .attr('y', 15)
-                    .on('mousedown', (d, i) => { portMouseDown(d, 0, i); })
-                    .on('touchstart', (d, i) => { portMouseDown(d, 0, i); })
-                    .on('mouseup', (d, i) => { portMouseUp(d, 0, i); })
-                    .on('touchend', (d, i) => { portMouseUp(d, 0, i); })
-                    .on('mouseover', function (d, i) { const port = d3.select(this); port.classed('port_hovered', (mouse_mode != RED.state.JOINING || (drag_lines.length > 0 && drag_lines[0].portType !== 0))); })
-                    .on('mouseout', function (d, i) { const port = d3.select(this); port.classed('port_hovered', false); });
-                inGroup.append('svg:text').attr('class', 'port_label').attr('x', 18).attr('y', 20)
-                    .style('font-size', '10px')
-                    .text('input');
+                inGroup.append("rect").attr("class","port").attr("rx",3).attr("ry",3).attr("width",10).attr("height",10).attr("x",35).attr("y",15)
+                    .on("mousedown", function(d,i){portMouseDown(d,0,i);} )
+                    .on("touchstart", function(d,i){portMouseDown(d,0,i);} )
+                    .on("mouseup", function(d,i){portMouseUp(d,0,i);})
+                    .on("touchend",function(d,i){portMouseUp(d,0,i);} )
+                    .on("mouseover",function(d,i) { var port = d3.select(this); port.classed("port_hovered",(mouse_mode!=RED.state.JOINING || (drag_lines.length > 0 && drag_lines[0].portType !== 0) ));})
+                    .on("mouseout",function(d,i) { var port = d3.select(this); port.classed("port_hovered",false);});
+                inGroup.append("svg:text").attr("class","port_label").attr("x",18).attr("y",20).style("font-size","10px").text("input");
 
 
-                subflowOutputs.each(function (d, i) {
+
+                subflowOutputs.each(function(d,i) {
                     if (d.dirty) {
-                        const output = d3.select(this);
-                        output.selectAll('.subflowport').classed('node_selected', d => d.selected);
-                        output.selectAll('.port_index').text(d => d.i + 1);
-                        output.attr('transform', d => `translate(${d.x - d.w / 2},${d.y - d.h / 2})`);
+                        var output = d3.select(this);
+                        output.selectAll(".subflowport").classed("node_selected",function(d) { return d.selected; })
+                        output.selectAll(".port_index").text(function(d){ return d.i+1});
+                        output.attr("transform", function(d) { return "translate(" + (d.x-d.w/2) + "," + (d.y-d.h/2) + ")"; });
                         dirtyNodes[d.id] = d;
                         d.dirty = false;
                     }
                 });
-                subflowInputs.each(function (d, i) {
+                subflowInputs.each(function(d,i) {
                     if (d.dirty) {
-                        const input = d3.select(this);
-                        input.selectAll('.subflowport').classed('node_selected', d => d.selected);
-                        input.attr('transform', d => `translate(${d.x - d.w / 2},${d.y - d.h / 2})`);
+                        var input = d3.select(this);
+                        input.selectAll(".subflowport").classed("node_selected",function(d) { return d.selected; })
+                        input.attr("transform", function(d) { return "translate(" + (d.x-d.w/2) + "," + (d.y-d.h/2) + ")"; });
                         dirtyNodes[d.id] = d;
                         d.dirty = false;
                     }
                 });
             } else {
-                vis.selectAll('.subflowoutput').remove();
-                vis.selectAll('.subflowinput').remove();
+                vis.selectAll(".subflowoutput").remove();
+                vis.selectAll(".subflowinput").remove();
             }
 
-            const node = vis.selectAll('.nodegroup').data(activeNodes, d => d.id);
+            var node = vis.selectAll(".nodegroup").data(activeNodes,function(d){return d.id});
             node.exit().remove();
 
-            const nodeEnter = node.enter().insert('svg:g')
-                .attr('class', 'node nodegroup')
-                .classed('node_subflow', d => activeSubflow != null)
-                .classed('node_link', d => d.type === 'link in' || d.type === 'link out');
+            var nodeEnter = node.enter().insert("svg:g")
+                .attr("class", "node nodegroup")
+                .classed("node_subflow",function(d) { return activeSubflow != null; })
+                .classed("node_link",function(d) { return d.type === "link in" || d.type === "link out" });
 
-            nodeEnter.each(function (d, i) {
-                const node = d3.select(this);
-                const isLink = d.type === 'link in' || d.type === 'link out';
-                node.attr('id', d.id);
-                let l = d._def.label;
-                try {
-                    l = (typeof l === 'function' ? l.call(d) : l) || '';
-                } catch (err) {
-                    console.log(`Definition error: ${d.type}.label`, err);
-                    l = d.type;
-                }
-
-                if (isLink) {
-                    d.w = node_height;
-                } else {
-                    d.w = Math.max(node_width, gridSize * (Math.ceil((calculateTextWidth(l, 'node_label', 50) + (d._def.inputs > 0 ? 7 : 0)) / gridSize)));
-                }
-                d.h = Math.max(node_height, (d.outputs || 0) * 15);
-
-                if (d._def.badge) {
-                    const badge = node.append('svg:g').attr('class', 'node_badge_group');
-                    const badgeRect = badge.append('rect').attr('class', 'node_badge').attr('rx', 5).attr('ry', 5)
-                        .attr('width', 40)
-                        .attr('height', 15);
-                    badge.append('svg:text').attr('class', 'node_badge_label').attr('x', 35).attr('y', 11)
-                        .attr('text-anchor', 'end')
-                        .text(d._def.badge());
-                    if (d._def.onbadgeclick) {
-                        badgeRect.attr('cursor', 'pointer')
-                            .on('click', (d) => { d._def.onbadgeclick.call(d); d3.event.preventDefault(); });
+            nodeEnter.each(function(d,i) {
+                    var node = d3.select(this);
+                    var isLink = d.type === "link in" || d.type === "link out";
+                    node.attr("id",d.id);
+                    var l = d._def.label;
+                    try {
+                        l = (typeof l === "function" ? l.call(d) : l)||"";
+                    } catch(err) {
+                        console.log("Definition error: "+d.type+".label",err);
+                        l = d.type;
                     }
-                }
 
-                if (d._def.button) {
-                    const nodeButtonGroup = node.append('svg:g')
-                        .attr('transform', d => `translate(${(d._def.align == 'right') ? 94 : -25},2)`)
-                        .attr('class', d => `node_button ${(d._def.align == 'right') ? 'node_right_button' : 'node_left_button'}`);
-                    nodeButtonGroup.append('rect')
-                        .attr('rx', 5)
-                        .attr('ry', 5)
-                        .attr('width', 32)
-                        .attr('height', node_height - 4)
-                        .attr('fill', '#eee');// function(d) { return d._def.color;})
-                    nodeButtonGroup.append('rect')
-                        .attr('class', 'node_button_button')
-                        .attr('x', d => (d._def.align == 'right' ? 11 : 5))
-                        .attr('y', 4)
-                        .attr('rx', 4)
-                        .attr('ry', 4)
-                        .attr('width', 16)
-                        .attr('height', node_height - 12)
-                        .attr('fill', d => d._def.color)
-                        .attr('cursor', 'pointer')
-                        .on('mousedown', function (d) { if (!lasso && !d.changed) { focusView(); d3.select(this).attr('fill-opacity', 0.2); d3.event.preventDefault(); d3.event.stopPropagation(); } })
-                        .on('mouseup', function (d) { if (!lasso && !d.changed) { d3.select(this).attr('fill-opacity', 0.4); d3.event.preventDefault(); d3.event.stopPropagation(); } })
-                        .on('mouseover', function (d) { if (!lasso && !d.changed) { d3.select(this).attr('fill-opacity', 0.4); } })
-                        .on('mouseout', function (d) {
-                            if (!lasso && !d.changed) {
-                                let op = 1;
+                    if (isLink) {
+                        d.w = node_height;
+                    } else {
+                        d.w = Math.max(node_width,gridSize*(Math.ceil((calculateTextWidth(l, "node_label", 50)+(d._def.inputs>0?7:0))/gridSize)) );
+                    }
+                    d.h = Math.max(node_height,(d.outputs||0) * 15);
+
+                    if (d._def.badge) {
+                        var badge = node.append("svg:g").attr("class","node_badge_group");
+                        var badgeRect = badge.append("rect").attr("class","node_badge").attr("rx",5).attr("ry",5).attr("width",40).attr("height",15);
+                        badge.append("svg:text").attr("class","node_badge_label").attr("x",35).attr("y",11).attr("text-anchor","end").text(d._def.badge());
+                        if (d._def.onbadgeclick) {
+                            badgeRect.attr("cursor","pointer")
+                                .on("click",function(d) { d._def.onbadgeclick.call(d);d3.event.preventDefault();});
+                        }
+                    }
+
+                    if (d._def.button) {
+                        var nodeButtonGroup = node.append("svg:g")
+                            .attr("transform",function(d) { return "translate("+((d._def.align == "right") ? 94 : -25)+",2)"; })
+                            .attr("class",function(d) { return "node_button "+((d._def.align == "right") ? "node_right_button" : "node_left_button"); });
+                        nodeButtonGroup.append("rect")
+                            .attr("rx",5)
+                            .attr("ry",5)
+                            .attr("width",32)
+                            .attr("height",node_height-4)
+                            .attr("fill","#eee");//function(d) { return d._def.color;})
+                        nodeButtonGroup.append("rect")
+                            .attr("class","node_button_button")
+                            .attr("x",function(d) { return d._def.align == "right"? 11:5})
+                            .attr("y",4)
+                            .attr("rx",4)
+                            .attr("ry",4)
+                            .attr("width",16)
+                            .attr("height",node_height-12)
+                            .attr("fill",function(d) { return d._def.color;})
+                            .attr("cursor","pointer")
+                            .on("mousedown",function(d) {if (!lasso && !d.changed) {focusView();d3.select(this).attr("fill-opacity",0.2);d3.event.preventDefault(); d3.event.stopPropagation();}})
+                            .on("mouseup",function(d) {if (!lasso && !d.changed) { d3.select(this).attr("fill-opacity",0.4);d3.event.preventDefault();d3.event.stopPropagation();}})
+                            .on("mouseover",function(d) {if (!lasso && !d.changed) { d3.select(this).attr("fill-opacity",0.4);}})
+                            .on("mouseout",function(d) {if (!lasso  && !d.changed) {
+                                var op = 1;
                                 if (d._def.button.toggle) {
-                                    op = d[d._def.button.toggle] ? 1 : 0.2;
+                                    op = d[d._def.button.toggle]?1:0.2;
                                 }
-                                d3.select(this).attr('fill-opacity', op);
+                                d3.select(this).attr("fill-opacity",op);
+                            }})
+                            .on("click",nodeButtonClicked)
+                            .on("touchstart",nodeButtonClicked)
+                    }
+
+                    var mainRect = node.append("rect")
+                        .attr("class", "node")
+                        .classed("node_unknown",function(d) { return d.type == "unknown"; })
+                        .attr("rx", 5)
+                        .attr("ry", 5)
+                        .attr("fill",function(d) { return d._def.color;})
+                        .on("mouseup",nodeMouseUp)
+                        .on("mousedown",nodeMouseDown)
+                        .on("touchstart",function(d) {
+                            var obj = d3.select(this);
+                            var touch0 = d3.event.touches.item(0);
+                            var pos = [touch0.pageX,touch0.pageY];
+                            startTouchCenter = [touch0.pageX,touch0.pageY];
+                            startTouchDistance = 0;
+                            touchStartTime = setTimeout(function() {
+                                showTouchMenu(obj,pos);
+                            },touchLongPressTimeout);
+                            nodeMouseDown.call(this,d)
+                        })
+                        .on("touchend", function(d) {
+                            clearTimeout(touchStartTime);
+                            touchStartTime = null;
+                            if  (RED.touch.radialMenu.active()) {
+                                d3.event.stopPropagation();
+                                return;
+                            }
+                            nodeMouseUp.call(this,d);
+                        })
+                        .on("mouseover",function(d) {
+                            if (mouse_mode === 0) {
+                                var node = d3.select(this);
+                                node.classed("node_hovered",true);
                             }
                         })
-                        .on('click', nodeButtonClicked)
-                        .on('touchstart', nodeButtonClicked);
-                }
+                        .on("mouseout",function(d) {
+                            var node = d3.select(this);
+                            node.classed("node_hovered",false);
+                        });
 
-                const mainRect = node.append('rect')
-                    .attr('class', 'node')
-                    .classed('node_unknown', d => d.type == 'unknown')
-                    .attr('rx', 5)
-                    .attr('ry', 5)
-                    .attr('fill', d => d._def.color)
-                    .on('mouseup', nodeMouseUp)
-                    .on('mousedown', nodeMouseDown)
-                    .on('touchstart', function (d) {
-                        const obj = d3.select(this);
-                        const touch0 = d3.event.touches.item(0);
-                        const pos = [touch0.pageX, touch0.pageY];
-                        startTouchCenter = [touch0.pageX, touch0.pageY];
-                        startTouchDistance = 0;
-                        touchStartTime = setTimeout(() => {
-                            showTouchMenu(obj, pos);
-                        }, touchLongPressTimeout);
-                        nodeMouseDown.call(this, d);
-                    })
-                    .on('touchend', function (d) {
-                        clearTimeout(touchStartTime);
-                        touchStartTime = null;
-                        if (RED.touch.radialMenu.active()) {
-                            d3.event.stopPropagation();
-                            return;
+                   //node.append("rect").attr("class", "node-gradient-top").attr("rx", 6).attr("ry", 6).attr("height",30).attr("stroke","none").attr("fill","url(#gradient-top)").style("pointer-events","none");
+                   //node.append("rect").attr("class", "node-gradient-bottom").attr("rx", 6).attr("ry", 6).attr("height",30).attr("stroke","none").attr("fill","url(#gradient-bottom)").style("pointer-events","none");
+
+                    if (d._def.icon) {
+
+                        var icon_group = node.append("g")
+                            .attr("class","node_icon_group")
+                            .attr("x",0).attr("y",0);
+
+                        var icon_shade = icon_group.append("rect")
+                            .attr("x",0).attr("y",0)
+                            .attr("class","node_icon_shade")
+                            .attr("width","30")
+                            .attr("stroke","none")
+                            .attr("fill","#000")
+                            .attr("fill-opacity","0.05")
+                            .attr("height",function(d){return Math.min(50,d.h-4);});
+
+                        var icon = icon_group.append("image")
+                            .attr("xlink:href","mashup/icons/"+d._def.icon)
+                            .attr("class","node_icon")
+                            .attr("x",0)
+                            .attr("width","30")
+                            .attr("height","30");
+
+                        var icon_shade_border = icon_group.append("path")
+                            .attr("d",function(d) { return "M 30 1 l 0 "+(d.h-2)})
+                            .attr("class","node_icon_shade_border")
+                            .attr("stroke-opacity","0.1")
+                            .attr("stroke","#000")
+                            .attr("stroke-width","1");
+
+                        if ("right" == d._def.align) {
+                            icon_group.attr("class","node_icon_group node_icon_group_"+d._def.align);
+                            icon_shade_border.attr("d",function(d) { return "M 0 1 l 0 "+(d.h-2)})
+                            //icon.attr("class","node_icon node_icon_"+d._def.align);
+                            //icon.attr("class","node_icon_shade node_icon_shade_"+d._def.align);
+                            //icon.attr("class","node_icon_shade_border node_icon_shade_border_"+d._def.align);
                         }
-                        nodeMouseUp.call(this, d);
-                    })
-                    .on('mouseover', function (d) {
-                        if (mouse_mode === 0) {
-                            const node = d3.select(this);
-                            node.classed('node_hovered', true);
+
+                        //if (d.inputs > 0 && d._def.align == null) {
+                        //    icon_shade.attr("width",35);
+                        //    icon.attr("transform","translate(5,0)");
+                        //    icon_shade_border.attr("transform","translate(5,0)");
+                        //}
+                        //if (d._def.outputs > 0 && "right" == d._def.align) {
+                        //    icon_shade.attr("width",35); //icon.attr("x",5);
+                        //}
+
+                        var img = new Image();
+                        img.src = "mashup/icons/"+d._def.icon;
+                        img.onload = function() {
+                            icon.attr("width",Math.min(img.width,30));
+                            icon.attr("height",Math.min(img.height,30));
+                            icon.attr("x",15-Math.min(img.width,30)/2);
+                            //if ("right" == d._def.align) {
+                            //    icon.attr("x",function(d){return d.w-img.width-1-(d.outputs>0?5:0);});
+                            //    icon_shade.attr("x",function(d){return d.w-30});
+                            //    icon_shade_border.attr("d",function(d){return "M "+(d.w-30)+" 1 l 0 "+(d.h-2);});
+                            //}
                         }
-                    })
-                    .on('mouseout', function (d) {
-                        const node = d3.select(this);
-                        node.classed('node_hovered', false);
-                    });
 
-                // node.append("rect").attr("class", "node-gradient-top").attr("rx", 6).attr("ry", 6).attr("height",30).attr("stroke","none").attr("fill","url(#gradient-top)").style("pointer-events","none");
-                // node.append("rect").attr("class", "node-gradient-bottom").attr("rx", 6).attr("ry", 6).attr("height",30).attr("stroke","none").attr("fill","url(#gradient-bottom)").style("pointer-events","none");
-
-                if (d._def.icon) {
-                    const icon_group = node.append('g')
-                        .attr('class', 'node_icon_group')
-                        .attr('x', 0).attr('y', 0);
-
-                    const icon_shade = icon_group.append('rect')
-                        .attr('x', 0).attr('y', 0)
-                        .attr('class', 'node_icon_shade')
-                        .attr('width', '30')
-                        .attr('stroke', 'none')
-                        .attr('fill', '#000')
-                        .attr('fill-opacity', '0.05')
-                        .attr('height', d => Math.min(50, d.h - 4));
-
-                    const icon = icon_group.append('image')
-                        .attr('xlink:href', `mashup/icons/${d._def.icon}`)
-                        .attr('class', 'node_icon')
-                        .attr('x', 0)
-                        .attr('width', '30')
-                        .attr('height', '30');
-
-                    const icon_shade_border = icon_group.append('path')
-                        .attr('d', d => `M 30 1 l 0 ${d.h - 2}`)
-                        .attr('class', 'node_icon_shade_border')
-                        .attr('stroke-opacity', '0.1')
-                        .attr('stroke', '#000')
-                        .attr('stroke-width', '1');
-
-                    if (d._def.align == 'right') {
-                        icon_group.attr('class', `node_icon_group node_icon_group_${d._def.align}`);
-                        icon_shade_border.attr('d', d => `M 0 1 l 0 ${d.h - 2}`);
-                        // icon.attr("class","node_icon node_icon_"+d._def.align);
-                        // icon.attr("class","node_icon_shade node_icon_shade_"+d._def.align);
-                        // icon.attr("class","node_icon_shade_border node_icon_shade_border_"+d._def.align);
+                        //icon.style("pointer-events","none");
+                        icon_group.style("pointer-events","none");
                     }
-
-                    // if (d.inputs > 0 && d._def.align == null) {
-                    //    icon_shade.attr("width",35);
-                    //    icon.attr("transform","translate(5,0)");
-                    //    icon_shade_border.attr("transform","translate(5,0)");
-                    // }
-                    // if (d._def.outputs > 0 && "right" == d._def.align) {
-                    //    icon_shade.attr("width",35); //icon.attr("x",5);
-                    // }
-
-                    const img = new Image();
-                    img.src = `mashup/icons/${d._def.icon}`;
-                    img.onload = function () {
-                        icon.attr('width', Math.min(img.width, 30));
-                        icon.attr('height', Math.min(img.height, 30));
-                        icon.attr('x', 15 - Math.min(img.width, 30) / 2);
-                        // if ("right" == d._def.align) {
-                        //    icon.attr("x",function(d){return d.w-img.width-1-(d.outputs>0?5:0);});
-                        //    icon_shade.attr("x",function(d){return d.w-30});
-                        //    icon_shade_border.attr("d",function(d){return "M "+(d.w-30)+" 1 l 0 "+(d.h-2);});
-                        // }
-                    };
-
-                    // icon.style("pointer-events","none");
-                    icon_group.style('pointer-events', 'none');
-                }
-                if (!isLink) {
-                    const text = node.append('svg:text').attr('class', 'node_label').attr('x', 38).attr('dy', '.35em')
-                        .attr('text-anchor', 'start');
-                    if (d._def.align) {
-                        text.attr('class', `node_label node_label_${d._def.align}`);
-                        if (d._def.align === 'right') {
-                            text.attr('text-anchor', 'end');
+                    if (!isLink) {
+                        var text = node.append("svg:text").attr("class","node_label").attr("x", 38).attr("dy", ".35em").attr("text-anchor","start");
+                        if (d._def.align) {
+                            text.attr("class","node_label node_label_"+d._def.align);
+                            if (d._def.align === "right") {
+                                text.attr("text-anchor","end");
+                            }
                         }
+
+                        var status = node.append("svg:g").attr("class","node_status_group").style("display","none");
+
+                        var statusRect = status.append("rect").attr("class","node_status")
+                                            .attr("x",6).attr("y",1).attr("width",9).attr("height",9)
+                                            .attr("rx",2).attr("ry",2).attr("stroke-width","3");
+
+                        var statusLabel = status.append("svg:text")
+                            .attr("class","node_status_label")
+                            .attr("x",20).attr("y",9);
                     }
+                    //node.append("circle").attr({"class":"centerDot","cx":0,"cy":0,"r":5});
 
-                    const status = node.append('svg:g').attr('class', 'node_status_group').style('display', 'none');
-
-                    const statusRect = status.append('rect').attr('class', 'node_status')
-                        .attr('x', 6).attr('y', 1)
-                        .attr('width', 9)
-                        .attr('height', 9)
-                        .attr('rx', 2)
-                        .attr('ry', 2)
-                        .attr('stroke-width', '3');
-
-                    const statusLabel = status.append('svg:text')
-                        .attr('class', 'node_status_label')
-                        .attr('x', 20).attr('y', 9);
-                }
-                // node.append("circle").attr({"class":"centerDot","cx":0,"cy":0,"r":5});
-
-                // node.append("path").attr("class","node_error").attr("d","M 3,-3 l 10,0 l -5,-8 z");
-                node.append('image').attr('class', 'node_error hidden').attr('xlink:href', 'mashup/icons/node-error.png').attr('x', 0)
-                    .attr('y', -6)
-                    .attr('width', 10)
-                    .attr('height', 9);
-                node.append('image').attr('class', 'node_changed hidden').attr('xlink:href', 'mashup/icons/node-changed.png').attr('x', 12)
-                    .attr('y', -6)
-                    .attr('width', 10)
-                    .attr('height', 10);
+                    //node.append("path").attr("class","node_error").attr("d","M 3,-3 l 10,0 l -5,-8 z");
+                    node.append("image").attr("class","node_error hidden").attr("xlink:href","mashup/icons/node-error.png").attr("x",0).attr("y",-6).attr("width",10).attr("height",9);
+                    node.append("image").attr("class","node_changed hidden").attr("xlink:href","mashup/icons/node-changed.png").attr("x",12).attr("y",-6).attr("width",10).attr("height",10);
             });
 
-            node.each(function (d, i) {
-                if (d.dirty) {
-                    const isLink = d.type === 'link in' || d.type === 'link out';
-                    dirtyNodes[d.id] = d;
-                    // if (d.x < -50) deleteSelection();  // Delete nodes if dragged back to palette
-                    if (!isLink && d.resize) {
-                        let l = d._def.label;
-                        try {
-                            l = (typeof l === 'function' ? l.call(d) : l) || '';
-                        } catch (err) {
-                            console.log(`Definition error: ${d.type}.label`, err);
-                            l = d.type;
-                        }
-                        const ow = d.w;
-                        d.w = Math.max(node_width, gridSize * (Math.ceil((calculateTextWidth(l, 'node_label', 50) + (d._def.inputs > 0 ? 7 : 0)) / gridSize)));
-                        d.h = Math.max(node_height, (d.outputs || 0) * 15);
-                        d.x += (d.w - ow) / 2;
-                        d.resize = false;
-                    }
-                    const thisNode = d3.select(this);
-                    // thisNode.selectAll(".centerDot").attr({"cx":function(d) { return d.w/2;},"cy":function(d){return d.h/2}});
-                    thisNode.attr('transform', d => `translate(${d.x - d.w / 2},${d.y - d.h / 2})`);
-
-                    if (mouse_mode != RED.state.MOVING_ACTIVE) {
-                        thisNode.selectAll('.node')
-                            .attr('width', d => d.w)
-                            .attr('height', d => d.h)
-                            .classed('node_selected', d => d.selected)
-                            .classed('node_highlighted', d => d.highlighted)
-                        ;
-                        // thisNode.selectAll(".node-gradient-top").attr("width",function(d){return d.w});
-                        // thisNode.selectAll(".node-gradient-bottom").attr("width",function(d){return d.w}).attr("y",function(d){return d.h-30});
-
-                        thisNode.selectAll('.node_icon_group_right').attr('transform', d => `translate(${d.w - 30},0)`);
-                        thisNode.selectAll('.node_label_right').attr('x', d => d.w - 38);
-                        // thisNode.selectAll(".node_icon_right").attr("x",function(d){return d.w-d3.select(this).attr("width")-1-(d.outputs>0?5:0);});
-                        // thisNode.selectAll(".node_icon_shade_right").attr("x",function(d){return d.w-30;});
-                        // thisNode.selectAll(".node_icon_shade_border_right").attr("d",function(d){return "M "+(d.w-30)+" 1 l 0 "+(d.h-2)});
-
-                        const inputPorts = thisNode.selectAll('.port_input');
-                        if (d.inputs === 0 && !inputPorts.empty()) {
-                            inputPorts.remove();
-                            // nodeLabel.attr("x",30);
-                        } else if (d.inputs === 1 && inputPorts.empty()) {
-                            const inputGroup = thisNode.append('g').attr('class', 'port_input');
-                            inputGroup.append('rect').attr('class', 'port').attr('rx', 3).attr('ry', 3)
-                                .attr('width', 10)
-                                .attr('height', 10)
-                                .on('mousedown', (d) => { portMouseDown(d, 1, 0); })
-                                .on('touchstart', (d) => { portMouseDown(d, 1, 0); })
-                                .on('mouseup', (d) => { portMouseUp(d, 1, 0); })
-                                .on('touchend', (d) => { portMouseUp(d, 1, 0); })
-                                .on('mouseover', function (d) { const port = d3.select(this); port.classed('port_hovered', (mouse_mode != RED.state.JOINING || (drag_lines.length > 0 && drag_lines[0].portType !== 1))); })
-                                .on('mouseout', function (d) { const port = d3.select(this); port.classed('port_hovered', false); });
-                        }
-
-                        let numOutputs = d.outputs;
-                        let y = (d.h / 2) - ((numOutputs - 1) / 2) * 13;
-                        d.ports = d.ports || d3.range(numOutputs);
-                        d._ports = thisNode.selectAll('.port_output').data(d.ports);
-                        const output_group = d._ports.enter().append('g').attr('class', 'port_output');
-
-                        output_group.append('rect').attr('class', 'port').attr('rx', 3).attr('ry', 3)
-                            .attr('width', 10)
-                            .attr('height', 10)
-                            .on('mousedown', (function () { const node = d; return function (d, i) { portMouseDown(node, 0, i); }; }()))
-                            .on('touchstart', (function () { const node = d; return function (d, i) { portMouseDown(node, 0, i); }; }()))
-                            .on('mouseup', (function () { const node = d; return function (d, i) { portMouseUp(node, 0, i); }; }()))
-                            .on('touchend', (function () { const node = d; return function (d, i) { portMouseUp(node, 0, i); }; }()))
-                            .on('mouseover', function (d, i) { const port = d3.select(this); port.classed('port_hovered', (mouse_mode != RED.state.JOINING || (drag_lines.length > 0 && drag_lines[0].portType !== 0))); })
-                            .on('mouseout', function (d, i) { const port = d3.select(this); port.classed('port_hovered', false); });
-
-                        d._ports.exit().remove();
-                        if (d._ports) {
-                            numOutputs = d.outputs || 1;
-                            y = (d.h / 2) - ((numOutputs - 1) / 2) * 13;
-                            const x = d.w - 5;
-                            d._ports.each(function (d, i) {
-                                const port = d3.select(this);
-                                // port.attr("y",(y+13*i)-5).attr("x",x);
-                                port.attr('transform', d => `translate(${x},${(y + 13 * i) - 5})`);
-                            });
-                        }
-                        thisNode.selectAll('text.node_label').text((d, i) => {
-                            let l = '';
-                            if (d._def.label) {
-                                l = d._def.label;
-                                try {
-                                    l = (typeof l === 'function' ? l.call(d) : l) || '';
-                                    l = RED.text.bidi.enforceTextDirectionWithUCC(l);
-                                } catch (err) {
-                                    console.log(`Definition error: ${d.type}.label`, err);
-                                    l = d.type;
-                                }
+            node.each(function(d,i) {
+                    if (d.dirty) {
+                        var isLink = d.type === "link in" || d.type === "link out";
+                        dirtyNodes[d.id] = d;
+                        //if (d.x < -50) deleteSelection();  // Delete nodes if dragged back to palette
+                        if (!isLink && d.resize) {
+                            var l = d._def.label;
+                            try {
+                                l = (typeof l === "function" ? l.call(d) : l)||"";
+                            } catch(err) {
+                                console.log("Definition error: "+d.type+".label",err);
+                                l = d.type;
                             }
-                            return l;
-                        })
-                            .attr('y', d => (d.h / 2) - 1)
-                            .attr('class', (d) => {
-                                let s = '';
-                                if (d._def.labelStyle) {
-                                    s = d._def.labelStyle;
-                                    try {
-                                        s = (typeof s === 'function' ? s.call(d) : s) || '';
-                                    } catch (err) {
-                                        console.log(`Definition error: ${d.type}.labelStyle`, err);
-                                        s = '';
+                            var ow = d.w;
+                            d.w = Math.max(node_width,gridSize*(Math.ceil((calculateTextWidth(l, "node_label", 50)+(d._def.inputs>0?7:0))/gridSize)) );
+                            d.h = Math.max(node_height,(d.outputs||0) * 15);
+                            d.x += (d.w-ow)/2;
+                            d.resize = false;
+                        }
+                        var thisNode = d3.select(this);
+                        //thisNode.selectAll(".centerDot").attr({"cx":function(d) { return d.w/2;},"cy":function(d){return d.h/2}});
+                        thisNode.attr("transform", function(d) { return "translate(" + (d.x-d.w/2) + "," + (d.y-d.h/2) + ")"; });
+
+                        if (mouse_mode != RED.state.MOVING_ACTIVE) {
+                            thisNode.selectAll(".node")
+                                .attr("width",function(d){return d.w})
+                                .attr("height",function(d){return d.h})
+                                .classed("node_selected",function(d) { return d.selected; })
+                                .classed("node_highlighted",function(d) { return d.highlighted; })
+                            ;
+                            //thisNode.selectAll(".node-gradient-top").attr("width",function(d){return d.w});
+                            //thisNode.selectAll(".node-gradient-bottom").attr("width",function(d){return d.w}).attr("y",function(d){return d.h-30});
+
+                            thisNode.selectAll(".node_icon_group_right").attr("transform", function(d){return "translate("+(d.w-30)+",0)"});
+                            thisNode.selectAll(".node_label_right").attr("x", function(d){return d.w-38});
+                            //thisNode.selectAll(".node_icon_right").attr("x",function(d){return d.w-d3.select(this).attr("width")-1-(d.outputs>0?5:0);});
+                            //thisNode.selectAll(".node_icon_shade_right").attr("x",function(d){return d.w-30;});
+                            //thisNode.selectAll(".node_icon_shade_border_right").attr("d",function(d){return "M "+(d.w-30)+" 1 l 0 "+(d.h-2)});
+
+                            var inputPorts = thisNode.selectAll(".port_input");
+                            if (d.inputs === 0 && !inputPorts.empty()) {
+                                inputPorts.remove();
+                                //nodeLabel.attr("x",30);
+                            } else if (d.inputs === 1 && inputPorts.empty()) {
+                                var inputGroup = thisNode.append("g").attr("class","port_input");
+                                inputGroup.append("rect").attr("class","port").attr("rx",3).attr("ry",3).attr("width",10).attr("height",10)
+                                    .on("mousedown",function(d){portMouseDown(d,1,0);})
+                                    .on("touchstart",function(d){portMouseDown(d,1,0);})
+                                    .on("mouseup",function(d){portMouseUp(d,1,0);} )
+                                    .on("touchend",function(d){portMouseUp(d,1,0);} )
+                                    .on("mouseover",function(d) { var port = d3.select(this); port.classed("port_hovered",(mouse_mode!=RED.state.JOINING || (drag_lines.length > 0 && drag_lines[0].portType !== 1) ));})
+                                    .on("mouseout",function(d) { var port = d3.select(this); port.classed("port_hovered",false);})
+                            }
+
+                            var numOutputs = d.outputs;
+                            var y = (d.h/2)-((numOutputs-1)/2)*13;
+                            d.ports = d.ports || d3.range(numOutputs);
+                            d._ports = thisNode.selectAll(".port_output").data(d.ports);
+                            var output_group = d._ports.enter().append("g").attr("class","port_output");
+
+                            output_group.append("rect").attr("class","port").attr("rx",3).attr("ry",3).attr("width",10).attr("height",10)
+                                .on("mousedown",(function(){var node = d; return function(d,i){portMouseDown(node,0,i);}})() )
+                                .on("touchstart",(function(){var node = d; return function(d,i){portMouseDown(node,0,i);}})() )
+                                .on("mouseup",(function(){var node = d; return function(d,i){portMouseUp(node,0,i);}})() )
+                                .on("touchend",(function(){var node = d; return function(d,i){portMouseUp(node,0,i);}})() )
+                                .on("mouseover",function(d,i) { var port = d3.select(this); port.classed("port_hovered",(mouse_mode!=RED.state.JOINING || (drag_lines.length > 0 && drag_lines[0].portType !== 0) ));})
+                                .on("mouseout",function(d,i) { var port = d3.select(this); port.classed("port_hovered",false);});
+
+                            d._ports.exit().remove();
+                            if (d._ports) {
+                                numOutputs = d.outputs || 1;
+                                y = (d.h/2)-((numOutputs-1)/2)*13;
+                                var x = d.w - 5;
+                                d._ports.each(function(d,i) {
+                                        var port = d3.select(this);
+                                        //port.attr("y",(y+13*i)-5).attr("x",x);
+                                        port.attr("transform", function(d) { return "translate("+x+","+((y+13*i)-5)+")";});
+                                });
+                            }
+                            thisNode.selectAll("text.node_label").text(function(d,i){
+                                    var l = "";
+                                    if (d._def.label) {
+                                        l = d._def.label;
+                                        try {
+                                            l = (typeof l === "function" ? l.call(d) : l)||"";
+                                            l = RED.text.bidi.enforceTextDirectionWithUCC(l);
+                                        } catch(err) {
+                                            console.log("Definition error: "+d.type+".label",err);
+                                            l = d.type;
+                                        }
                                     }
-                                    s = ` ${s}`;
-                                }
-                                return `node_label${
-                                    d._def.align ? ` node_label_${d._def.align}` : ''}${s}`;
+                                    return l;
+                                })
+                                .attr("y", function(d){return (d.h/2)-1;})
+                                .attr("class",function(d){
+                                    var s = "";
+                                    if (d._def.labelStyle) {
+                                        s = d._def.labelStyle;
+                                        try {
+                                            s = (typeof s === "function" ? s.call(d) : s)||"";
+                                        } catch(err) {
+                                            console.log("Definition error: "+d.type+".labelStyle",err);
+                                            s = "";
+                                        }
+                                        s = " "+s;
+                                    }
+                                    return "node_label"+
+                                    (d._def.align?" node_label_"+d._def.align:"")+s;
                             });
 
-                        if (d._def.icon) {
-                            const icon = thisNode.select('.node_icon');
-                            const current_url = icon.attr('xlink:href');
-                            let icon_url;
-                            if (typeof d._def.icon === 'function') {
-                                try {
-                                    icon_url = d._def.icon.call(d);
-                                } catch (err) {
-                                    console.log('icon', err);
-                                    icon_url = 'arrow-in.png';
-                                }
-                            } else {
-                                icon_url = d._def.icon;
-                            }
-                            if (`mashup/icons/${icon_url}` != current_url) {
-                                icon.attr('xlink:href', `mashup/icons/${icon_url}`);
-                                const img = new Image();
-                                img.src = `mashup/icons/${d._def.icon}`;
-                                img.onload = function () {
-                                    icon.attr('width', Math.min(img.width, 30));
-                                    icon.attr('height', Math.min(img.height, 30));
-                                    icon.attr('x', 15 - Math.min(img.width, 30) / 2);
-                                };
-                            }
-                        }
-
-
-                        thisNode.selectAll('.node_tools').attr('x', d => d.w - 35).attr('y', d => d.h - 20);
-
-                        thisNode.selectAll('.node_changed')
-                            .attr('x', d => d.w - 10)
-                            .classed('hidden', d => !d.changed);
-
-                        thisNode.selectAll('.node_error')
-                            .attr('x', d => d.w - 10 - (d.changed ? 13 : 0))
-                            .classed('hidden', d => d.valid);
-
-                        thisNode.selectAll('.port_input').each(function (d, i) {
-                            const port = d3.select(this);
-                            port.attr('transform', d => `translate(-5,${(d.h / 2) - 5})`);
-                        });
-
-                        thisNode.selectAll('.node_icon').attr('y', function (d) { return (d.h - d3.select(this).attr('height')) / 2; });
-                        thisNode.selectAll('.node_icon_shade').attr('height', d => d.h);
-                        thisNode.selectAll('.node_icon_shade_border').attr('d', d => `M ${(d._def.align == 'right') ? 0 : 30} 1 l 0 ${d.h - 2}`);
-
-                        thisNode.selectAll('.node_button').attr('opacity', d => ((activeSubflow || d.changed) ? 0.4 : 1));
-                        thisNode.selectAll('.node_button_button').attr('cursor', d => ((activeSubflow || d.changed) ? '' : 'pointer'));
-                        thisNode.selectAll('.node_right_button').attr('transform', (d) => {
-                            let x = d.w - 6;
-                            if (d._def.button.toggle && !d[d._def.button.toggle]) {
-                                x -= 8;
-                            }
-                            return `translate(${x},2)`;
-                        });
-                        thisNode.selectAll('.node_right_button rect').attr('fill-opacity', (d) => {
-                            if (d._def.button.toggle) {
-                                return d[d._def.button.toggle] ? 1 : 0.2;
-                            }
-                            return 1;
-                        });
-
-                        // thisNode.selectAll(".node_right_button").attr("transform",function(d){return "translate("+(d.w - d._def.button.width.call(d))+","+0+")";}).attr("fill",function(d) {
-                        //         return typeof d._def.button.color  === "function" ? d._def.button.color.call(d):(d._def.button.color != null ? d._def.button.color : d._def.color)
-                        // });
-
-                        thisNode.selectAll('.node_badge_group').attr('transform', d => `translate(${d.w - 40},${d.h + 3})`);
-                        thisNode.selectAll('text.node_badge_label').text((d, i) => {
-                            if (d._def.badge) {
-                                if (typeof d._def.badge === 'function') {
+                            if (d._def.icon) {
+                                var icon = thisNode.select(".node_icon");
+                                var current_url = icon.attr("xlink:href");
+                                var icon_url;
+                                if (typeof d._def.icon == "function") {
                                     try {
-                                        return d._def.badge.call(d);
-                                    } catch (err) {
-                                        console.log(`Definition error: ${d.type}.badge`, err);
-                                        return '';
+                                        icon_url = d._def.icon.call(d);
+                                    } catch(err) {
+                                        console.log("icon",err);
+                                        icon_url = "arrow-in.png";
                                     }
                                 } else {
-                                    return d._def.badge;
+                                    icon_url = d._def.icon;
+                                }
+                                if ("mashup/icons/"+icon_url != current_url) {
+                                    icon.attr("xlink:href","mashup/icons/"+icon_url);
+                                    var img = new Image();
+                                    img.src = "mashup/icons/"+d._def.icon;
+                                    img.onload = function() {
+                                        icon.attr("width",Math.min(img.width,30));
+                                        icon.attr("height",Math.min(img.height,30));
+                                        icon.attr("x",15-Math.min(img.width,30)/2);
+                                    }
                                 }
                             }
-                            return '';
-                        });
-                    }
 
-                    if (!showStatus || !d.status) {
-                        thisNode.selectAll('.node_status_group').style('display', 'none');
-                    } else {
-                        thisNode.selectAll('.node_status_group').style('display', 'inline').attr('transform', `translate(3,${d.h + 3})`);
-                        const fill = status_colours[d.status.fill]; // Only allow our colours for now
-                        if (d.status.shape == null && fill == null) {
-                            thisNode.selectAll('.node_status').style('display', 'none');
+
+                            thisNode.selectAll(".node_tools").attr("x",function(d){return d.w-35;}).attr("y",function(d){return d.h-20;});
+
+                            thisNode.selectAll(".node_changed")
+                                .attr("x",function(d){return d.w-10})
+                                .classed("hidden",function(d) { return !d.changed; });
+
+                            thisNode.selectAll(".node_error")
+                                .attr("x",function(d){return d.w-10-(d.changed?13:0)})
+                                .classed("hidden",function(d) { return d.valid; });
+
+                            thisNode.selectAll(".port_input").each(function(d,i) {
+                                    var port = d3.select(this);
+                                    port.attr("transform",function(d){return "translate(-5,"+((d.h/2)-5)+")";})
+                            });
+
+                            thisNode.selectAll(".node_icon").attr("y",function(d){return (d.h-d3.select(this).attr("height"))/2;});
+                            thisNode.selectAll(".node_icon_shade").attr("height",function(d){return d.h;});
+                            thisNode.selectAll(".node_icon_shade_border").attr("d",function(d){ return "M "+(("right" == d._def.align) ?0:30)+" 1 l 0 "+(d.h-2)});
+
+                            thisNode.selectAll(".node_button").attr("opacity",function(d) {
+                                return (activeSubflow||d.changed)?0.4:1
+                            });
+                            thisNode.selectAll(".node_button_button").attr("cursor",function(d) {
+                                return (activeSubflow||d.changed)?"":"pointer";
+                            });
+                            thisNode.selectAll(".node_right_button").attr("transform",function(d){
+                                    var x = d.w-6;
+                                    if (d._def.button.toggle && !d[d._def.button.toggle]) {
+                                        x = x - 8;
+                                    }
+                                    return "translate("+x+",2)";
+                            });
+                            thisNode.selectAll(".node_right_button rect").attr("fill-opacity",function(d){
+                                    if (d._def.button.toggle) {
+                                        return d[d._def.button.toggle]?1:0.2;
+                                    }
+                                    return 1;
+                            });
+
+                            //thisNode.selectAll(".node_right_button").attr("transform",function(d){return "translate("+(d.w - d._def.button.width.call(d))+","+0+")";}).attr("fill",function(d) {
+                            //         return typeof d._def.button.color  === "function" ? d._def.button.color.call(d):(d._def.button.color != null ? d._def.button.color : d._def.color)
+                            //});
+
+                            thisNode.selectAll(".node_badge_group").attr("transform",function(d){return "translate("+(d.w-40)+","+(d.h+3)+")";});
+                            thisNode.selectAll("text.node_badge_label").text(function(d,i) {
+                                if (d._def.badge) {
+                                    if (typeof d._def.badge == "function") {
+                                        try {
+                                            return d._def.badge.call(d);
+                                        } catch(err) {
+                                            console.log("Definition error: "+d.type+".badge",err);
+                                            return "";
+                                        }
+                                    } else {
+                                        return d._def.badge;
+                                    }
+                                }
+                                return "";
+                            });
+                        }
+
+                        if (!showStatus || !d.status) {
+                            thisNode.selectAll(".node_status_group").style("display","none");
                         } else {
-                            let style;
-                            if (d.status.shape == null || d.status.shape == 'dot') {
-                                style = {
-                                    display: 'inline',
-                                    fill,
-                                    stroke: fill,
-                                };
-                            } else if (d.status.shape == 'ring') {
-                                style = {
-                                    display: 'inline',
-                                    fill: '#fff',
-                                    stroke: fill,
-                                };
+                            thisNode.selectAll(".node_status_group").style("display","inline").attr("transform","translate(3,"+(d.h+3)+")");
+                            var fill = status_colours[d.status.fill]; // Only allow our colours for now
+                            if (d.status.shape == null && fill == null) {
+                                thisNode.selectAll(".node_status").style("display","none");
+                            } else {
+                                var style;
+                                if (d.status.shape == null || d.status.shape == "dot") {
+                                    style = {
+                                        display: "inline",
+                                        fill: fill,
+                                        stroke: fill
+                                    };
+                                } else if (d.status.shape == "ring" ){
+                                    style = {
+                                        display: "inline",
+                                        fill: "#fff",
+                                        stroke: fill
+                                    }
+                                }
+                                thisNode.selectAll(".node_status").style(style);
                             }
-                            thisNode.selectAll('.node_status').style(style);
+                            if (d.status.text) {
+                                thisNode.selectAll(".node_status_label").text(d.status.text);
+                            } else {
+                                thisNode.selectAll(".node_status_label").text("");
+                            }
                         }
-                        if (d.status.text) {
-                            thisNode.selectAll('.node_status_label').text(d.status.text);
-                        } else {
-                            thisNode.selectAll('.node_status_label').text('');
-                        }
-                    }
 
-                    d.dirty = false;
-                }
+                        d.dirty = false;
+                    }
             });
 
-            const link = vis.selectAll('.link').data(
+            var link = vis.selectAll(".link").data(
                 activeLinks,
-                d => `${d.source.id}:${d.sourcePort}:${d.target.id}:${d.target.i}`,
+                function(d) {
+                    return d.source.id+":"+d.sourcePort+":"+d.target.id+":"+d.target.i;
+                }
             );
-            const linkEnter = link.enter().insert('g', '.node').attr('class', 'link');
+            var linkEnter = link.enter().insert("g",".node").attr("class","link");
 
-            linkEnter.each(function (d, i) {
-                const l = d3.select(this);
+            linkEnter.each(function(d,i) {
+                var l = d3.select(this);
                 d.added = true;
-                l.append('svg:path').attr('class', 'link_background link_path')
-                    .on('mousedown', (d) => {
+                l.append("svg:path").attr("class","link_background link_path")
+                   .on("mousedown",function(d) {
                         mousedown_link = d;
                         clearSelection();
                         selected_link = mousedown_link;
@@ -7230,7 +7240,7 @@ RED.view = (function () {
                         focusView();
                         d3.event.stopPropagation();
                     })
-                    .on('touchstart', (d) => {
+                    .on("touchstart",function(d) {
                         mousedown_link = d;
                         clearSelection();
                         selected_link = mousedown_link;
@@ -7239,156 +7249,163 @@ RED.view = (function () {
                         focusView();
                         d3.event.stopPropagation();
 
-                        const obj = d3.select(document.body);
-                        const touch0 = d3.event.touches.item(0);
-                        const pos = [touch0.pageX, touch0.pageY];
-                        touchStartTime = setTimeout(() => {
+                        var obj = d3.select(document.body);
+                        var touch0 = d3.event.touches.item(0);
+                        var pos = [touch0.pageX,touch0.pageY];
+                        touchStartTime = setTimeout(function() {
                             touchStartTime = null;
-                            showTouchMenu(obj, pos);
-                        }, touchLongPressTimeout);
-                    });
-                l.append('svg:path').attr('class', 'link_outline link_path');
-                l.append('svg:path').attr('class', 'link_line link_path')
-                    .classed('link_link', d => d.link)
-                    .classed('link_subflow', d => !d.link && activeSubflow);
+                            showTouchMenu(obj,pos);
+                        },touchLongPressTimeout);
+                    })
+                l.append("svg:path").attr("class","link_outline link_path");
+                l.append("svg:path").attr("class","link_line link_path")
+                    .classed("link_link", function(d) { return d.link })
+                    .classed("link_subflow", function(d) { return !d.link && activeSubflow });
             });
 
             link.exit().remove();
-            const links = vis.selectAll('.link_path');
-            links.each(function (d) {
-                const link = d3.select(this);
-                if (d.added || d === selected_link || d.selected || dirtyNodes[d.source.id] || dirtyNodes[d.target.id]) {
-                    link.attr('d', (d) => {
-                        const numOutputs = d.source.outputs || 1;
-                        const sourcePort = d.sourcePort || 0;
-                        const y = -((numOutputs - 1) / 2) * 13 + 13 * sourcePort;
+            var links = vis.selectAll(".link_path");
+            links.each(function(d) {
+                var link = d3.select(this);
+                if (d.added || d===selected_link || d.selected || dirtyNodes[d.source.id] || dirtyNodes[d.target.id]) {
+                    link.attr("d",function(d){
+                        var numOutputs = d.source.outputs || 1;
+                        var sourcePort = d.sourcePort || 0;
+                        var y = -((numOutputs-1)/2)*13 +13*sourcePort;
 
-                        const dy = d.target.y - (d.source.y + y);
-                        const dx = (d.target.x - d.target.w / 2) - (d.source.x + d.source.w / 2);
-                        const delta = Math.sqrt(dy * dy + dx * dx);
-                        let scale = lineCurveScale;
-                        let scaleY = 0;
+                        var dy = d.target.y-(d.source.y+y);
+                        var dx = (d.target.x-d.target.w/2)-(d.source.x+d.source.w/2);
+                        var delta = Math.sqrt(dy*dy+dx*dx);
+                        var scale = lineCurveScale;
+                        var scaleY = 0;
                         if (delta < node_width) {
-                            scale = 0.75 - 0.75 * ((node_width - delta) / node_width);
+                            scale = 0.75-0.75*((node_width-delta)/node_width);
                         }
 
                         if (dx < 0) {
-                            scale += 2 * (Math.min(5 * node_width, Math.abs(dx)) / (5 * node_width));
-                            if (Math.abs(dy) < 3 * node_height) {
-                                scaleY = ((dy > 0) ? 0.5 : -0.5) * (((3 * node_height) - Math.abs(dy)) / (3 * node_height)) * (Math.min(node_width, Math.abs(dx)) / (node_width));
+                            scale += 2*(Math.min(5*node_width,Math.abs(dx))/(5*node_width));
+                            if (Math.abs(dy) < 3*node_height) {
+                                scaleY = ((dy>0)?0.5:-0.5)*(((3*node_height)-Math.abs(dy))/(3*node_height))*(Math.min(node_width,Math.abs(dx))/(node_width)) ;
                             }
                         }
 
-                        d.x1 = d.source.x + d.source.w / 2;
-                        d.y1 = d.source.y + y;
-                        d.x2 = d.target.x - d.target.w / 2;
+                        d.x1 = d.source.x+d.source.w/2;
+                        d.y1 = d.source.y+y;
+                        d.x2 = d.target.x-d.target.w/2;
                         d.y2 = d.target.y;
 
-                        return `M ${d.source.x + d.source.w / 2} ${d.source.y + y
-                        } C ${d.source.x + d.source.w / 2 + scale * node_width} ${d.source.y + y + scaleY * node_height} ${
-                            d.target.x - d.target.w / 2 - scale * node_width} ${d.target.y - scaleY * node_height} ${
-                            d.target.x - d.target.w / 2} ${d.target.y}`;
+                        return "M "+(d.source.x+d.source.w/2)+" "+(d.source.y+y)+
+                            " C "+(d.source.x+d.source.w/2+scale*node_width)+" "+(d.source.y+y+scaleY*node_height)+" "+
+                            (d.target.x-d.target.w/2-scale*node_width)+" "+(d.target.y-scaleY*node_height)+" "+
+                            (d.target.x-d.target.w/2)+" "+d.target.y;
                     });
                 }
-            });
+            })
 
-            link.classed('link_selected', d => d === selected_link || d.selected);
-            link.classed('link_unknown', (d) => {
+            link.classed("link_selected", function(d) { return d === selected_link || d.selected; });
+            link.classed("link_unknown",function(d) {
                 delete d.added;
-                return d.target.type == 'unknown' || d.source.type == 'unknown';
+                return d.target.type == "unknown" || d.source.type == "unknown"
             });
-            let offLinks = vis.selectAll('.link_flow_link_g').data(
+            var offLinks = vis.selectAll(".link_flow_link_g").data(
                 activeFlowLinks,
-                d => `${d.node.id}:${d.refresh}`,
+                function(d) {
+                    return d.node.id+":"+d.refresh
+                }
             );
 
-            const offLinksEnter = offLinks.enter().insert('g', '.node').attr('class', 'link_flow_link_g');
-            offLinksEnter.each(function (d, i) {
-                const g = d3.select(this);
-                let s = 1;
-                let labelAnchor = 'start';
-                if (d.node.type === 'link in') {
+            var offLinksEnter = offLinks.enter().insert("g",".node").attr("class","link_flow_link_g");
+            offLinksEnter.each(function(d,i) {
+                var g = d3.select(this);
+                var s = 1;
+                var labelAnchor = "start";
+                if (d.node.type === "link in") {
                     s = -1;
-                    labelAnchor = 'end';
+                    labelAnchor = "end";
                 }
-                const stemLength = s * 30;
-                const branchLength = s * 20;
-                const l = g.append('svg:path').attr('class', 'link_flow_link')
-                    .attr('class', 'link_link').attr('d', `M 0 0 h ${stemLength}`);
-                const links = d.links;
-                const flows = Object.keys(links);
-                const tabOrder = RED.nodes.getWorkspaceOrder();
-                flows.sort((A, B) => tabOrder.indexOf(A) - tabOrder.indexOf(B));
-                const linkWidth = 10;
-                const h = node_height;
-                let y = -(flows.length - 1) * h / 2;
-                const linkGroups = g.selectAll('.link_group').data(flows);
-                const enterLinkGroups = linkGroups.enter().append('g').attr('class', 'link_group')
-                    .on('mouseover', function () { d3.select(this).classed('link_group_active', true); })
-                    .on('mouseout', function () { d3.select(this).classed('link_group_active', false); })
-                    .on('mousedown', () => { d3.event.preventDefault(); d3.event.stopPropagation(); })
-                    .on('mouseup', (f) => {
-                        d3.event.stopPropagation();
-                        const targets = d.links[f];
-                        RED.workspaces.show(f);
-                        targets.forEach((n) => {
-                            n.selected = true;
-                            n.dirty = true;
-                            moving_set.push({ n });
+                var stemLength = s*30;
+                var branchLength = s*20;
+                var l = g.append("svg:path").attr("class","link_flow_link")
+                        .attr("class","link_link").attr("d","M 0 0 h "+stemLength);
+                var links = d.links;
+                var flows = Object.keys(links);
+                var tabOrder = RED.nodes.getWorkspaceOrder();
+                flows.sort(function(A,B) {
+                    return tabOrder.indexOf(A) - tabOrder.indexOf(B);
+                });
+                var linkWidth = 10;
+                var h = node_height;
+                var y = -(flows.length-1)*h/2;
+                var linkGroups = g.selectAll(".link_group").data(flows);
+                var enterLinkGroups = linkGroups.enter().append("g").attr("class","link_group")
+                        .on('mouseover', function() { d3.select(this).classed('link_group_active',true)})
+                        .on('mouseout', function() { d3.select(this).classed('link_group_active',false)})
+                        .on('mousedown', function() { d3.event.preventDefault(); d3.event.stopPropagation(); })
+                        .on('mouseup', function(f) {
+                            d3.event.stopPropagation();
+                            var targets = d.links[f];
+                            RED.workspaces.show(f);
+                            targets.forEach(function(n) {
+                                n.selected = true;
+                                n.dirty = true;
+                                moving_set.push({n:n});
+                            });
+                            updateSelection();
+                            redraw();
                         });
-                        updateSelection();
-                        redraw();
-                    });
-                enterLinkGroups.each(function (f) {
-                    const linkG = d3.select(this);
-                    linkG.append('svg:path').attr('class', 'link_flow_link')
-                        .attr('class', 'link_link')
-                        .attr('d',
-                            `M ${stemLength} 0 `
-                            + `C ${stemLength + (1.7 * branchLength)} ${0
-                            } ${stemLength + (0.1 * branchLength)} ${y} ${
-                                stemLength + branchLength * 1.5} ${y} `);
-                    linkG.append('svg:path')
-                        .attr('class', 'link_port')
-                        .attr('d',
-                            `M ${stemLength + branchLength * 1.5 + s * (linkWidth + 7)} ${y - 12} `
-                            + `h ${-s * linkWidth} `
-                            + `a 3 3 45 0 ${s === 1 ? '0' : '1'} ${s * -3} 3 `
-                            + 'v 18 '
-                            + `a 3 3 45 0 ${s === 1 ? '0' : '1'} ${s * 3} 3 `
-                            + `h ${s * linkWidth}`);
-                    linkG.append('svg:path')
-                        .attr('class', 'link_port')
-                        .attr('d',
-                            `M ${stemLength + branchLength * 1.5 + s * (linkWidth + 10)} ${y - 12} `
-                            + `h ${s * (linkWidth * 3)} `
-                            + `M ${stemLength + branchLength * 1.5 + s * (linkWidth + 10)} ${y + 12} `
-                            + `h ${s * (linkWidth * 3)}`).style('stroke-dasharray', '12 3 8 4 3');
-                    linkG.append('rect').attr('class', 'port link_port')
-                        .attr('x', stemLength + branchLength * 1.5 - 4 + (s * 4))
-                        .attr('y', y - 4)
-                        .attr('rx', 2)
-                        .attr('ry', 2)
-                        .attr('width', 8)
-                        .attr('height', 8);
-                    linkG.append('rect')
-                        .attr('x', stemLength + branchLength * 1.5 - (s === -1 ? node_width : 0))
-                        .attr('y', y - 12)
-                        .attr('width', node_width)
-                        .attr('height', 24)
-                        .style('stroke', 'none')
-                        .style('fill', 'transparent');
-                    const tab = RED.nodes.workspace(f);
-                    let label;
+                enterLinkGroups.each(function(f) {
+                    var linkG = d3.select(this);
+                    linkG.append("svg:path").attr("class","link_flow_link")
+                        .attr("class","link_link")
+                        .attr("d",
+                            "M "+stemLength+" 0 "+
+                            "C "+(stemLength+(1.7*branchLength))+" "+0+
+                            " "+(stemLength+(0.1*branchLength))+" "+y+" "+
+                            (stemLength+branchLength*1.5)+" "+y+" "
+                        );
+                    linkG.append("svg:path")
+                        .attr("class","link_port")
+                        .attr("d",
+                            "M "+(stemLength+branchLength*1.5+s*(linkWidth+7))+" "+(y-12)+" "+
+                            "h "+(-s*linkWidth)+" "+
+                            "a 3 3 45 0 "+(s===1?"0":"1")+" "+(s*-3)+" 3 "+
+                            "v 18 "+
+                            "a 3 3 45 0 "+(s===1?"0":"1")+" "+(s*3)+" 3 "+
+                            "h "+(s*linkWidth)
+                        );
+                    linkG.append("svg:path")
+                        .attr("class","link_port")
+                        .attr("d",
+                            "M "+(stemLength+branchLength*1.5+s*(linkWidth+10))+" "+(y-12)+" "+
+                            "h "+(s*(linkWidth*3))+" "+
+                            "M "+(stemLength+branchLength*1.5+s*(linkWidth+10))+" "+(y+12)+" "+
+                            "h "+(s*(linkWidth*3))
+                        ).style("stroke-dasharray","12 3 8 4 3");
+                    linkG.append("rect").attr("class","port link_port")
+                        .attr("x",stemLength+branchLength*1.5-4+(s*4))
+                        .attr("y",y-4)
+                        .attr("rx",2)
+                        .attr("ry",2)
+                        .attr("width",8)
+                        .attr("height",8);
+                    linkG.append("rect")
+                        .attr("x",stemLength+branchLength*1.5-(s===-1?node_width:0))
+                        .attr("y",y-12)
+                        .attr("width",node_width)
+                        .attr("height",24)
+                        .style("stroke","none")
+                        .style("fill","transparent")
+                    var tab = RED.nodes.workspace(f);
+                    var label;
                     if (tab) {
                         label = tab.label || tab.id;
                     }
-                    linkG.append('svg:text')
-                        .attr('class', 'port_label')
-                        .attr('x', stemLength + branchLength * 1.5 + (s * 15))
-                        .attr('y', y + 1)
-                        .style('font-size', '10px')
-                        .style('text-anchor', labelAnchor)
+                    linkG.append("svg:text")
+                        .attr("class","port_label")
+                        .attr("x",stemLength+branchLength*1.5+(s*15))
+                        .attr("y",y+1)
+                        .style("font-size","10px")
+                        .style("text-anchor",labelAnchor)
                         .text(label);
 
                     y += h;
@@ -7396,26 +7413,31 @@ RED.view = (function () {
                 linkGroups.exit().remove();
             });
             offLinks.exit().remove();
-            offLinks = vis.selectAll('.link_flow_link_g');
-            offLinks.each(function (d) {
-                let s = 1;
-                if (d.node.type === 'link in') {
+            offLinks = vis.selectAll(".link_flow_link_g");
+            offLinks.each(function(d) {
+                var s = 1;
+                if (d.node.type === "link in") {
                     s = -1;
                 }
-                const link = d3.select(this);
-                link.attr('transform', d => `translate(${d.node.x + (s * d.node.w / 2)},${d.node.y})`);
-            });
+                var link = d3.select(this);
+                link.attr("transform", function(d) { return "translate(" + (d.node.x+(s*d.node.w/2)) + "," + (d.node.y) + ")"; });
+
+            })
+
         } else {
             // JOINING - unselect any selected links
-            vis.selectAll('.link_selected').data(
+            vis.selectAll(".link_selected").data(
                 activeLinks,
-                d => `${d.source.id}:${d.sourcePort}:${d.target.id}:${d.target.i}`,
-            ).classed('link_selected', false);
+                function(d) {
+                    return d.source.id+":"+d.sourcePort+":"+d.target.id+":"+d.target.i;
+                }
+            ).classed("link_selected", false);
         }
 
         if (d3.event) {
             d3.event.preventDefault();
         }
+
     }
 
     function focusView() {
@@ -7423,14 +7445,14 @@ RED.view = (function () {
             // Workaround for browser unexpectedly scrolling iframe into full
             // view - record the parent scroll position and restore it after
             // setting the focus
-            const scrollX = window.parent.window.scrollX;
-            const scrollY = window.parent.window.scrollY;
-            $('#chart').focus();
-            window.parent.window.scrollTo(scrollX, scrollY);
-        } catch (err) {
+            var scrollX = window.parent.window.scrollX;
+            var scrollY = window.parent.window.scrollY;
+            $("#chart").focus();
+            window.parent.window.scrollTo(scrollX,scrollY);
+        } catch(err) {
             // In case we're iframed into a page of a different origin, just focus
             // the view following the inevitable DOMException
-            $('#chart').focus();
+            $("#chart").focus();
         }
     }
 
@@ -7440,41 +7462,41 @@ RED.view = (function () {
      *  - all "selected"
      *  - attached to mouse for placing - "IMPORT_DRAGGING"
      */
-    function importNodes(newNodesStr, addNewFlow, touchImport) {
+    function importNodes(newNodesStr,addNewFlow,touchImport) {
         try {
-            let activeSubflowChanged;
+            var activeSubflowChanged;
             if (activeSubflow) {
                 activeSubflowChanged = activeSubflow.changed;
             }
-            const result = RED.nodes.import(newNodesStr, true, addNewFlow);
+            var result = RED.nodes.import(newNodesStr,true,addNewFlow);
             if (result) {
-                const new_nodes = result[0];
-                const new_links = result[1];
-                const new_workspaces = result[2];
-                const new_subflows = result[3];
-                const new_default_workspace = result[4];
+                var new_nodes = result[0];
+                var new_links = result[1];
+                var new_workspaces = result[2];
+                var new_subflows = result[3];
+                var new_default_workspace = result[4];
                 if (addNewFlow && new_default_workspace) {
                     RED.workspaces.show(new_default_workspace.id);
                 }
-                const new_ms = new_nodes.filter(n => n.hasOwnProperty('x') && n.hasOwnProperty('y') && n.z == RED.workspaces.active()).map(n => ({ n }));
-                const new_node_ids = new_nodes.map(n => n.id);
+                var new_ms = new_nodes.filter(function(n) { return n.hasOwnProperty("x") && n.hasOwnProperty("y") && n.z == RED.workspaces.active() }).map(function(n) { return {n:n};});
+                var new_node_ids = new_nodes.map(function(n){ return n.id; });
 
                 // TODO: pick a more sensible root node
                 if (new_ms.length > 0) {
-                    const root_node = new_ms[0].n;
-                    const dx = root_node.x;
-                    const dy = root_node.y;
+                    var root_node = new_ms[0].n;
+                    var dx = root_node.x;
+                    var dy = root_node.y;
 
                     if (mouse_position == null) {
-                        mouse_position = [0, 0];
+                        mouse_position = [0,0];
                     }
 
-                    let minX = 0;
-                    let minY = 0;
-                    let i;
-                    let node;
+                    var minX = 0;
+                    var minY = 0;
+                    var i;
+                    var node;
 
-                    for (i = 0; i < new_ms.length; i++) {
+                    for (i=0;i<new_ms.length;i++) {
                         node = new_ms[i];
                         node.n.selected = true;
                         node.n.changed = true;
@@ -7482,10 +7504,10 @@ RED.view = (function () {
                         node.n.y -= dy - mouse_position[1];
                         node.dx = node.n.x - mouse_position[0];
                         node.dy = node.n.y - mouse_position[1];
-                        minX = Math.min(node.n.x - node_width / 2 - 5, minX);
-                        minY = Math.min(node.n.y - node_height / 2 - 5, minY);
+                        minX = Math.min(node.n.x-node_width/2-5,minX);
+                        minY = Math.min(node.n.y-node_height/2-5,minY);
                     }
-                    for (i = 0; i < new_ms.length; i++) {
+                    for (i=0;i<new_ms.length;i++) {
                         node = new_ms[i];
                         node.n.x -= minX;
                         node.n.y -= minY;
@@ -7494,50 +7516,51 @@ RED.view = (function () {
                         if (node.n._def.onadd) {
                             try {
                                 node.n._def.onadd.call(node.n);
-                            } catch (err) {
-                                console.log('onadd:', err);
+                            } catch(err) {
+                                console.log("onadd:",err);
                             }
                         }
+
                     }
                     if (!touchImport) {
                         mouse_mode = RED.state.IMPORT_DRAGGING;
                         spliceActive = false;
                         if (new_ms.length === 1) {
                             node = new_ms[0];
-                            spliceActive = node.n.hasOwnProperty('_def')
-                                           && node.n._def.inputs > 0
-                                           && node.n._def.outputs > 0;
+                            spliceActive = node.n.hasOwnProperty("_def") &&
+                                           node.n._def.inputs > 0 &&
+                                           node.n._def.outputs > 0;
                         }
                     }
-                    RED.keyboard.add('*', 'escape', () => {
-                        RED.keyboard.remove('escape');
-                        clearSelection();
-                        RED.history.pop();
-                        mouse_mode = 0;
+                    RED.keyboard.add("*","escape",function(){
+                            RED.keyboard.remove("escape");
+                            clearSelection();
+                            RED.history.pop();
+                            mouse_mode = 0;
                     });
                     clearSelection();
                     moving_set = new_ms;
                 }
 
-                const historyEvent = {
-                    t: 'add',
-                    nodes: new_node_ids,
-                    links: new_links,
-                    workspaces: new_workspaces,
-                    subflows: new_subflows,
-                    dirty: RED.nodes.dirty(),
+                var historyEvent = {
+                    t:"add",
+                    nodes:new_node_ids,
+                    links:new_links,
+                    workspaces:new_workspaces,
+                    subflows:new_subflows,
+                    dirty:RED.nodes.dirty()
                 };
                 if (new_ms.length === 0) {
                     RED.nodes.dirty(true);
                 }
                 if (activeSubflow) {
-                    const subflowRefresh = RED.subflow.refresh(true);
+                    var subflowRefresh = RED.subflow.refresh(true);
                     if (subflowRefresh) {
                         historyEvent.subflow = {
-                            id: activeSubflow.id,
+                            id:activeSubflow.id,
                             changed: activeSubflowChanged,
-                            instances: subflowRefresh.instances,
-                        };
+                            instances: subflowRefresh.instances
+                        }
                     }
                 }
                 RED.history.push(historyEvent);
@@ -7545,21 +7568,21 @@ RED.view = (function () {
                 updateActiveNodes();
                 redraw();
             }
-        } catch (error) {
-            if (error.code != 'NODE_RED') {
+        } catch(error) {
+            if (error.code != "NODE_RED") {
                 console.log(error.stack);
-                RED.notify(RED._('notification.error', { message: error.toString() }), 'error');
+                RED.notify(RED._("notification.error",{message:error.toString()}),"error");
             } else {
-                RED.notify(RED._('notification.error', { message: error.message }), 'error');
+                RED.notify(RED._("notification.error",{message:error.message}),"error");
             }
         }
     }
 
     function toggleShowGrid(state) {
         if (state) {
-            grid.style('visibility', 'visible');
+            grid.style("visibility","visible");
         } else {
-            grid.style('visibility', 'hidden');
+            grid.style("visibility","hidden");
         }
     }
     function toggleSnapGrid(state) {
@@ -7568,21 +7591,22 @@ RED.view = (function () {
     }
     function toggleStatus(s) {
         showStatus = s;
-        RED.nodes.eachNode((n) => { n.dirty = true; });
-        // TODO: subscribe/unsubscribe here
+        RED.nodes.eachNode(function(n) { n.dirty = true;});
+        //TODO: subscribe/unsubscribe here
         redraw();
     }
 
     return {
-        init,
-        state(state) {
+        init: init,
+        state:function(state) {
             if (state == null) {
-                return mouse_mode;
+                return mouse_mode
+            } else {
+                mouse_mode = state;
             }
-            mouse_mode = state;
         },
 
-        redraw(updateActive) {
+        redraw: function(updateActive) {
             if (updateActive) {
                 updateActiveNodes();
                 updateSelection();
@@ -7590,271 +7614,273 @@ RED.view = (function () {
             redraw();
         },
         focus: focusView,
-        importNodes,
-        calculateTextWidth,
-        select(selection) {
-            if (typeof selection !== 'undefined') {
+        importNodes: importNodes,
+        calculateTextWidth: calculateTextWidth,
+        select: function(selection) {
+            if (typeof selection !== "undefined") {
                 clearSelection();
-                if (typeof selection === 'string') {
-                    const selectedNode = RED.nodes.node(selection);
+                if (typeof selection == "string") {
+                    var selectedNode = RED.nodes.node(selection);
                     if (selectedNode) {
                         selectedNode.selected = true;
                         selectedNode.dirty = true;
-                        moving_set = [{ n: selectedNode }];
+                        moving_set = [{n:selectedNode}];
                     }
                 }
             }
             updateSelection();
             redraw();
         },
-        selection() {
-            const selection = {};
+        selection: function() {
+            var selection = {};
             if (moving_set.length > 0) {
-                selection.nodes = moving_set.map(n => n.n);
+                selection.nodes = moving_set.map(function(n) { return n.n;});
             }
             if (selected_link != null) {
                 selection.link = selected_link;
             }
             return selection;
         },
-        scale() {
+        scale: function() {
             return scaleFactor;
         },
-        getLinksAtPoint(x, y) {
-            const result = [];
-            const links = outer.selectAll('.link_background')[0];
-            for (let i = 0; i < links.length; i++) {
-                const bb = links[i].getBBox();
-                if (x >= bb.x && y >= bb.y && x <= bb.x + bb.width && y <= bb.y + bb.height) {
-                    result.push(links[i]);
+        getLinksAtPoint: function(x,y) {
+            var result = [];
+            var links = outer.selectAll(".link_background")[0];
+            for (var i=0;i<links.length;i++) {
+                var bb = links[i].getBBox();
+                if (x >= bb.x && y >= bb.y && x <= bb.x+bb.width && y <= bb.y+bb.height) {
+                    result.push(links[i])
                 }
             }
             return result;
         },
-        reveal(id) {
+        reveal: function(id) {
             if (RED.nodes.workspace(id) || RED.nodes.subflow(id)) {
                 RED.workspaces.show(id);
             } else {
-                const node = RED.nodes.node(id);
+                var node = RED.nodes.node(id);
                 if (node._def.category !== 'config' && node.z) {
                     node.highlighted = true;
                     node.dirty = true;
                     RED.workspaces.show(node.z);
 
-                    const screenSize = [$('#chart').width(), $('#chart').height()];
-                    const scrollPos = [$('#chart').scrollLeft(), $('#chart').scrollTop()];
+                    var screenSize = [$("#chart").width(),$("#chart").height()];
+                    var scrollPos = [$("#chart").scrollLeft(),$("#chart").scrollTop()];
 
-                    if (node.x < scrollPos[0] || node.y < scrollPos[1] || node.x > screenSize[0] + scrollPos[0] || node.y > screenSize[1] + scrollPos[1]) {
-                        const deltaX = `-=${(scrollPos[0] - node.x) + screenSize[0] / 2}`;
-                        const deltaY = `-=${(scrollPos[1] - node.y) + screenSize[1] / 2}`;
-                        $('#chart').animate({
+                    if (node.x < scrollPos[0] || node.y < scrollPos[1] || node.x > screenSize[0]+scrollPos[0] || node.y > screenSize[1]+scrollPos[1]) {
+                        var deltaX = '-='+((scrollPos[0] - node.x) + screenSize[0]/2);
+                        var deltaY = '-='+((scrollPos[1] - node.y) + screenSize[1]/2);
+                        $("#chart").animate({
                             scrollLeft: deltaX,
-                            scrollTop: deltaY,
-                        }, 200);
+                            scrollTop: deltaY
+                        },200);
                     }
 
                     if (!node._flashing) {
                         node._flashing = true;
-                        let flash = 22;
-                        var flashFunc = function () {
+                        var flash = 22;
+                        var flashFunc = function() {
                             flash--;
                             node.dirty = true;
                             if (flash >= 0) {
                                 node.highlighted = !node.highlighted;
-                                setTimeout(flashFunc, 100);
+                                setTimeout(flashFunc,100);
                             } else {
                                 node.highlighted = false;
                                 delete node._flashing;
                             }
                             RED.view.redraw();
-                        };
+                        }
                         flashFunc();
                     }
                 } else if (node._def.category === 'config') {
                     // RED.sidebar.config.show(id);
                 }
             }
-        },
+        }
 
     };
-}());
+})();
 
 // Handles the static sidebar used to display, node help, debug and general node-red options
 // RED.sidebar is not needed
 
-RED.palette = (function () {
-    const exclusion = ['config', 'unknown', 'deprecated'];
-    const coreCategories = ['subflows', 'input', 'output', 'function', 'social', 'mobile', 'storage', 'analysis', 'advanced'];
+RED.palette = (function() {
 
-    const categoryContainers = {};
+    var exclusion = ['config','unknown','deprecated'];
+    var coreCategories = ['subflows', 'input', 'output', 'function', 'social', 'mobile', 'storage', 'analysis', 'advanced'];
 
-    function createCategoryContainer(category, label) {
-        label = label || category.replace('_', ' ');
-        const catDiv = $(`<div id="palette-container-${category}" class="palette-category palette-close hide">`
-            + `<div id="palette-header-${category}" class="palette-header"><i class="expanded fa fa-angle-down"></i><span>${label}</span></div>`
-            + `<div class="palette-content" id="palette-base-category-${category}">`
-            + `<div id="palette-${category}-input"></div>`
-            + `<div id="palette-${category}-output"></div>`
-            + `<div id="palette-${category}-function"></div>`
-            + '</div>'
-            + '</div>').appendTo('#palette-container');
+    var categoryContainers = {};
+
+    function createCategoryContainer(category, label){
+        label = label || category.replace("_", " ");
+        var catDiv = $('<div id="palette-container-'+category+'" class="palette-category palette-close hide">'+
+            '<div id="palette-header-'+category+'" class="palette-header"><i class="expanded fa fa-angle-down"></i><span>'+label+'</span></div>'+
+            '<div class="palette-content" id="palette-base-category-'+category+'">'+
+            '<div id="palette-'+category+'-input"></div>'+
+            '<div id="palette-'+category+'-output"></div>'+
+            '<div id="palette-'+category+'-function"></div>'+
+            '</div>'+
+            '</div>').appendTo("#palette-container");
 
         categoryContainers[category] = {
             container: catDiv,
-            close() {
-                catDiv.removeClass('palette-open');
-                catDiv.addClass('palette-closed');
-                $(`#palette-base-category-${category}`).slideUp();
-                $(`#palette-header-${category} i`).removeClass('expanded');
+            close: function() {
+                catDiv.removeClass("palette-open");
+                catDiv.addClass("palette-closed");
+                $("#palette-base-category-"+category).slideUp();
+                $("#palette-header-"+category+" i").removeClass("expanded");
             },
-            open() {
-                catDiv.addClass('palette-open');
-                catDiv.removeClass('palette-closed');
-                $(`#palette-base-category-${category}`).slideDown();
-                $(`#palette-header-${category} i`).addClass('expanded');
+            open: function() {
+                catDiv.addClass("palette-open");
+                catDiv.removeClass("palette-closed");
+                $("#palette-base-category-"+category).slideDown();
+                $("#palette-header-"+category+" i").addClass("expanded");
             },
-            toggle() {
-                if (catDiv.hasClass('palette-open')) {
+            toggle: function() {
+                if (catDiv.hasClass("palette-open")) {
                     categoryContainers[category].close();
                 } else {
                     categoryContainers[category].open();
                 }
-            },
+            }
         };
 
-        $(`#palette-header-${category}`).on('click', (e) => {
+        $("#palette-header-"+category).on('click', function(e) {
             categoryContainers[category].toggle();
         });
     }
 
-    function setLabel(type, el, label, info) {
-        const nodeWidth = 82;
-        const nodeHeight = 25;
-        const lineHeight = 20;
-        const portHeight = 10;
+    function setLabel(type, el,label, info) {
+        var nodeWidth = 82;
+        var nodeHeight = 25;
+        var lineHeight = 20;
+        var portHeight = 10;
 
-        const words = label.split(/[ -]/);
+        var words = label.split(/[ -]/);
 
-        const displayLines = [];
+        var displayLines = [];
 
-        let currentLine = words[0];
-        let currentLineWidth = RED.view.calculateTextWidth(currentLine, 'palette_label', 0);
+        var currentLine = words[0];
+        var currentLineWidth = RED.view.calculateTextWidth(currentLine, "palette_label", 0);
 
-        for (let i = 1; i < words.length; i++) {
-            const newWidth = RED.view.calculateTextWidth(`${currentLine} ${words[i]}`, 'palette_label', 0);
+        for (var i=1;i<words.length;i++) {
+            var newWidth = RED.view.calculateTextWidth(currentLine+" "+words[i], "palette_label", 0);
             if (newWidth < nodeWidth) {
-                currentLine += ` ${words[i]}`;
+                currentLine += " "+words[i];
                 currentLineWidth = newWidth;
             } else {
                 displayLines.push(currentLine);
                 currentLine = words[i];
-                currentLineWidth = RED.view.calculateTextWidth(currentLine, 'palette_label', 0);
+                currentLineWidth = RED.view.calculateTextWidth(currentLine, "palette_label", 0);
             }
         }
         displayLines.push(currentLine);
 
-        const lines = displayLines.join('<br/>');
-        const multiLineNodeHeight = 8 + (lineHeight * displayLines.length);
-        el.css({ height: `${multiLineNodeHeight}px` });
+        var lines = displayLines.join("<br/>");
+        var multiLineNodeHeight = 8+(lineHeight*displayLines.length);
+        el.css({height:multiLineNodeHeight+"px"});
 
-        const labelElement = el.find('.palette_label');
+        var labelElement = el.find(".palette_label");
         labelElement.html(lines).attr('dir', RED.text.bidi.resolveBaseTextDir(lines));
 
-        el.find('.palette_port').css({ top: `${multiLineNodeHeight / 2 - 5}px` });
+        el.find(".palette_port").css({top:(multiLineNodeHeight/2-5)+"px"});
 
-        let popOverContent;
+        var popOverContent;
         try {
-            let l = `<p><b>${RED.text.bidi.enforceTextDirectionWithUCC(label)}</b></p>`;
+            var l = "<p><b>"+RED.text.bidi.enforceTextDirectionWithUCC(label)+"</b></p>";
             if (label != type) {
-                l = `<p><b>${RED.text.bidi.enforceTextDirectionWithUCC(label)}</b><br/><i>${type}</i></p>`;
+                l = "<p><b>"+RED.text.bidi.enforceTextDirectionWithUCC(label)+"</b><br/><i>"+type+"</i></p>";
             }
-            popOverContent = $(l + (info || $(`script[data-help-name$='${type}']`).html() || `<p>${RED._('palette.noInfo')}</p>`).trim())
-                .filter(function (n) {
-                    return (this.nodeType == 1 && this.nodeName == 'P') || (this.nodeType == 3 && this.textContent.trim().length > 0);
-                }).slice(0, 2);
-        } catch (err) {
+            popOverContent = $(l+(info?info:$("script[data-help-name$='"+type+"']").html()||"<p>"+RED._("palette.noInfo")+"</p>").trim())
+                                .filter(function(n) {
+                                    return (this.nodeType == 1 && this.nodeName == "P") || (this.nodeType == 3 && this.textContent.trim().length > 0)
+                                }).slice(0,2);
+        } catch(err) {
             // Malformed HTML may cause errors. TODO: need to understand what can break
             // NON-NLS: internal debug
-            console.log('Error generating pop-over label for ', type);
+            console.log("Error generating pop-over label for ",type);
             console.log(err.toString());
-            popOverContent = `<p><b>${label}</b></p><p>${RED._('palette.noInfo')}</p>`;
+            popOverContent = "<p><b>"+label+"</b></p><p>"+RED._("palette.noInfo")+"</p>";
         }
 
         // el.data('popover').setContent(popOverContent);
     }
 
     function escapeNodeType(nt) {
-        return nt.replace(/ /g, '_').replace(/\./g, '_').replace(/:/g, '_');
+        return nt.replace(/ /g,"_").replace(/\./g,"_").replace(/:/g,"_");
     }
 
-    function addNodeType(nt, def) {
-        const nodeTypeId = escapeNodeType(nt);
-        if ($(`#palette_node_${nodeTypeId}`).length) {
+    function addNodeType(nt,def) {
+        var nodeTypeId = escapeNodeType(nt);
+        if ($("#palette_node_" + nodeTypeId).length) {
             return;
         }
-        if (exclusion.indexOf(def.category) === -1) {
-            const category = def.category.replace(' ', '_');
-            const rootCategory = category.split('-')[0];
+        if (exclusion.indexOf(def.category)===-1) {
 
-            const d = document.createElement('div');
-            d.id = `palette_node_${nodeTypeId}`;
+            var category = def.category.replace(" ","_");
+            var rootCategory = category.split("-")[0];
+
+            var d = document.createElement("div");
+            d.id = "palette_node_"+nodeTypeId;
             d.type = nt;
 
-            let label = /^(.*?)([ -]in|[ -]out)?$/.exec(nt)[1];
-            if (typeof def.paletteLabel !== 'undefined') {
+            var label = /^(.*?)([ -]in|[ -]out)?$/.exec(nt)[1];
+            if (typeof def.paletteLabel !== "undefined") {
                 try {
-                    label = (typeof def.paletteLabel === 'function' ? def.paletteLabel.call(def) : def.paletteLabel) || '';
-                } catch (err) {
-                    console.log(`Definition error: ${nt}.paletteLabel`, err);
+                    label = (typeof def.paletteLabel === "function" ? def.paletteLabel.call(def) : def.paletteLabel)||"";
+                } catch(err) {
+                    console.log("Definition error: "+nt+".paletteLabel",err);
                 }
             }
 
-            $('<div/>', { class: `palette_label${def.align == 'right' ? ' palette_label_right' : ''}` }).appendTo(d);
+            $('<div/>',{class:"palette_label"+(def.align=="right"?" palette_label_right":"")}).appendTo(d);
 
-            d.className = 'palette_node';
+            d.className="palette_node";
 
 
             if (def.icon) {
-                let icon_url = 'arrow-in.png';
+                var icon_url = "arrow-in.png";
                 try {
-                    icon_url = (typeof def.icon === 'function' ? def.icon.call({}) : def.icon);
-                } catch (err) {
-                    console.log(`Definition error: ${nt}.icon`, err);
+                    icon_url = (typeof def.icon === "function" ? def.icon.call({}) : def.icon);
+                } catch(err) {
+                    console.log("Definition error: "+nt+".icon",err);
                 }
-                const iconContainer = $('<div/>', { class: `palette_icon_container${def.align == 'right' ? ' palette_icon_container_right' : ''}` }).appendTo(d);
-                $('<div/>', { class: 'palette_icon', style: `background-image: url(mashup/icons/${icon_url})` }).appendTo(iconContainer);
+                var iconContainer = $('<div/>',{class:"palette_icon_container"+(def.align=="right"?" palette_icon_container_right":"")}).appendTo(d);
+                $('<div/>',{class:"palette_icon",style:"background-image: url(mashup/icons/"+icon_url+")"}).appendTo(iconContainer);
             }
 
             d.style.backgroundColor = def.color;
 
             if (def.outputs > 0) {
-                const portOut = document.createElement('div');
-                portOut.className = 'palette_port palette_port_output';
+                var portOut = document.createElement("div");
+                portOut.className = "palette_port palette_port_output";
                 d.appendChild(portOut);
             }
 
             if (def.inputs > 0) {
-                const portIn = document.createElement('div');
-                portIn.className = 'palette_port palette_port_input';
+                var portIn = document.createElement("div");
+                portIn.className = "palette_port palette_port_input";
                 d.appendChild(portIn);
             }
 
-            if ($(`#palette-base-category-${rootCategory}`).length === 0) {
-                if (coreCategories.indexOf(rootCategory) !== -1) {
-                    createCategoryContainer(rootCategory, RED._(`node-red:palette.label.${rootCategory}`, { defaultValue: rootCategory }));
+            if ($("#palette-base-category-"+rootCategory).length === 0) {
+                if(coreCategories.indexOf(rootCategory) !== -1){
+                    createCategoryContainer(rootCategory, RED._("node-red:palette.label."+rootCategory, {defaultValue:rootCategory}));
                 } else {
-                    const ns = def.set.id;
-                    createCategoryContainer(rootCategory, RED._(`${ns}:palette.label.${rootCategory}`, { defaultValue: rootCategory }));
+                    var ns = def.set.id;
+                    createCategoryContainer(rootCategory, RED._(ns+":palette.label."+rootCategory, {defaultValue:rootCategory}));
                 }
             }
-            $(`#palette-container-${rootCategory}`).attr('style', 'display: block !important');
+            $("#palette-container-"+rootCategory).attr("style", "display: block !important");
 
-            if ($(`#palette-${category}`).length === 0) {
-                $(`#palette-base-category-${rootCategory}`).append(`<div id="palette-${category}"></div>`);
+            if ($("#palette-"+category).length === 0) {
+                $("#palette-base-category-"+rootCategory).append('<div id="palette-'+category+'"></div>');
             }
 
-            $(`#palette-${category}`).append(d);
-            d.onmousedown = function (e) { e.preventDefault(); };
+            $("#palette-"+category).append(d);
+            d.onmousedown = function(e) { e.preventDefault(); };
 
             // $(d).popover({
             //     title:d.type,
@@ -7865,54 +7891,55 @@ RED.palette = (function () {
             //     container:'body'
             // });
 
-            $(d).click(() => {
+            $(d).click(function() {
                 RED.view.focus();
-                let helpText;
-                if (nt.indexOf('subflow:') === 0) {
-                    helpText = marked(RED.nodes.subflow(nt.substring(8)).info || '');
+                var helpText;
+                if (nt.indexOf("subflow:") === 0) {
+                    helpText = marked(RED.nodes.subflow(nt.substring(8)).info||"");
                 } else {
-                    helpText = $(`script[data-help-name$='${d.type}']`).html() || '';
+                    helpText = $("script[data-help-name$='"+d.type+"']").html()||"";
                 }
-                const help = `<div class="node-help">${helpText}</div>`;
+                var help = '<div class="node-help">'+helpText+"</div>";
                 // RED.sidebar.info.set(help);
             });
-            const chart = $('#chart');
-            const chartOffset = chart.offset();
-            const chartSVG = $('#chart>svg').get(0);
-            let activeSpliceLink;
-            let mouseX;
-            let mouseY;
-            let spliceTimer;
+            var chart = $("#chart");
+            var chartOffset = chart.offset();
+            var chartSVG = $("#chart>svg").get(0);
+            var activeSpliceLink;
+            var mouseX;
+            var mouseY;
+            var spliceTimer;
             $(d).draggable({
                 helper: 'clone',
                 appendTo: $('.flows-wrapper'),
                 revert: true,
                 revertDuration: 50,
-                containment: '#main-container',
-                start() { RED.view.focus(); },
-                stop() { d3.select('.link_splice').classed('link_splice', false); if (spliceTimer) { clearTimeout(spliceTimer); spliceTimer = null; } },
-                drag(e, ui) {
+                containment:'#main-container',
+                start: function() {RED.view.focus();},
+                stop: function() { d3.select('.link_splice').classed('link_splice',false); if (spliceTimer) { clearTimeout(spliceTimer); spliceTimer = null;}},
+                drag: function(e,ui) {
+
                     // TODO: this is the margin-left of palette node. Hard coding
                     // it here makes me sad
-                    // console.log(ui.helper.position());
+                    //console.log(ui.helper.position());
                     ui.position.left += 17.5;
 
                     if (def.inputs > 0 && def.outputs > 0) {
-                        mouseX = ui.position.left + (ui.helper.width() / 2) - chartOffset.left + chart.scrollLeft();
-                        mouseY = ui.position.top + (ui.helper.height() / 2) - chartOffset.top + chart.scrollTop();
+                        mouseX = ui.position.left+(ui.helper.width()/2) - chartOffset.left + chart.scrollLeft();
+                        mouseY = ui.position.top+(ui.helper.height()/2) - chartOffset.top + chart.scrollTop();
 
                         if (!spliceTimer) {
-                            spliceTimer = setTimeout(() => {
-                                let nodes = [];
-                                let bestDistance = Infinity;
-                                let bestLink = null;
+                            spliceTimer = setTimeout(function() {
+                                var nodes = [];
+                                var bestDistance = Infinity;
+                                var bestLink = null;
                                 if (chartSVG.getIntersectionList) {
-                                    const svgRect = chartSVG.createSVGRect();
+                                    var svgRect = chartSVG.createSVGRect();
                                     svgRect.x = mouseX;
                                     svgRect.y = mouseY;
                                     svgRect.width = 1;
                                     svgRect.height = 1;
-                                    nodes = chartSVG.getIntersectionList(svgRect, chartSVG);
+                                    nodes = chartSVG.getIntersectionList(svgRect,chartSVG);
                                     mouseX /= RED.view.scale();
                                     mouseY /= RED.view.scale();
                                 } else {
@@ -7920,14 +7947,14 @@ RED.palette = (function () {
                                     // makes us sad
                                     mouseX /= RED.view.scale();
                                     mouseY /= RED.view.scale();
-                                    nodes = RED.view.getLinksAtPoint(mouseX, mouseY);
+                                    nodes = RED.view.getLinksAtPoint(mouseX,mouseY);
                                 }
-                                for (let i = 0; i < nodes.length; i++) {
+                                for (var i=0;i<nodes.length;i++) {
                                     if (d3.select(nodes[i]).classed('link_background')) {
-                                        const length = nodes[i].getTotalLength();
-                                        for (let j = 0; j < length; j += 10) {
-                                            const p = nodes[i].getPointAtLength(j);
-                                            const d2 = ((p.x - mouseX) * (p.x - mouseX)) + ((p.y - mouseY) * (p.y - mouseY));
+                                        var length = nodes[i].getTotalLength();
+                                        for (var j=0;j<length;j+=10) {
+                                            var p = nodes[i].getPointAtLength(j);
+                                            var d2 = ((p.x-mouseX)*(p.x-mouseX))+((p.y-mouseY)*(p.y-mouseY));
                                             if (d2 < 200 && d2 < bestDistance) {
                                                 bestDistance = d2;
                                                 bestLink = nodes[i];
@@ -7936,109 +7963,110 @@ RED.palette = (function () {
                                     }
                                 }
                                 if (activeSpliceLink && activeSpliceLink !== bestLink) {
-                                    d3.select(activeSpliceLink.parentNode).classed('link_splice', false);
+                                    d3.select(activeSpliceLink.parentNode).classed('link_splice',false);
                                 }
                                 if (bestLink) {
-                                    d3.select(bestLink.parentNode).classed('link_splice', true);
+                                    d3.select(bestLink.parentNode).classed('link_splice',true)
                                 } else {
-                                    d3.select('.link_splice').classed('link_splice', false);
+                                    d3.select('.link_splice').classed('link_splice',false);
                                 }
                                 if (activeSpliceLink !== bestLink) {
                                     if (bestLink) {
-                                        $(ui.helper).data('splice', d3.select(bestLink).data()[0]);
+                                        $(ui.helper).data('splice',d3.select(bestLink).data()[0]);
                                     } else {
                                         $(ui.helper).removeData('splice');
                                     }
                                 }
                                 activeSpliceLink = bestLink;
                                 spliceTimer = null;
-                            }, 200);
+                            },200);
                         }
                     }
-                },
+                }
             });
 
-            let nodeInfo = null;
-            if (def.category == 'subflows') {
-                $(d).dblclick((e) => {
+            var nodeInfo = null;
+            if (def.category == "subflows") {
+                $(d).dblclick(function(e) {
                     RED.workspaces.show(nt.substring(8));
                     e.preventDefault();
                 });
-                nodeInfo = marked(def.info || '');
+                nodeInfo = marked(def.info||"");
             }
-            setLabel(nt, $(d), label, nodeInfo);
+            setLabel(nt,$(d),label,nodeInfo);
 
-            const categoryNode = $(`#palette-container-${category}`);
-            if (categoryNode.find('.palette_node').length === 1) {
+            var categoryNode = $("#palette-container-"+category);
+            if (categoryNode.find(".palette_node").length === 1) {
                 categoryContainers[category].open();
             }
+
         }
     }
 
     function removeNodeType(nt) {
-        const nodeTypeId = escapeNodeType(nt);
-        const paletteNode = $(`#palette_node_${nodeTypeId}`);
-        const categoryNode = paletteNode.closest('.palette-category');
+        var nodeTypeId = escapeNodeType(nt);
+        var paletteNode = $("#palette_node_"+nodeTypeId);
+        var categoryNode = paletteNode.closest(".palette-category");
         paletteNode.remove();
-        if (categoryNode.find('.palette_node').length === 0) {
-            if (categoryNode.find('i').hasClass('expanded')) {
-                categoryNode.find('.palette-content').slideToggle();
-                categoryNode.find('i').toggleClass('expanded');
+        if (categoryNode.find(".palette_node").length === 0) {
+            if (categoryNode.find("i").hasClass("expanded")) {
+                categoryNode.find(".palette-content").slideToggle();
+                categoryNode.find("i").toggleClass("expanded");
             }
         }
     }
 
     function hideNodeType(nt) {
-        const nodeTypeId = escapeNodeType(nt);
-        $(`#palette_node_${nodeTypeId}`).hide();
+        var nodeTypeId = escapeNodeType(nt);
+        $("#palette_node_"+nodeTypeId).hide();
     }
 
     function showNodeType(nt) {
-        const nodeTypeId = escapeNodeType(nt);
-        $(`#palette_node_${nodeTypeId}`).attr('style', 'display: block !important');
+        var nodeTypeId = escapeNodeType(nt);
+        $("#palette_node_"+nodeTypeId).attr("style", "display: block !important");
     }
 
     function refreshNodeTypes() {
-        RED.nodes.eachSubflow((sf) => {
-            const paletteNode = $(`#palette_node_subflow_${sf.id.replace('.', '_')}`);
-            const portInput = paletteNode.find('.palette_port_input');
-            const portOutput = paletteNode.find('.palette_port_output');
+        RED.nodes.eachSubflow(function(sf) {
+            var paletteNode = $("#palette_node_subflow_"+sf.id.replace(".","_"));
+            var portInput = paletteNode.find(".palette_port_input");
+            var portOutput = paletteNode.find(".palette_port_output");
 
             if (portInput.length === 0 && sf.in.length > 0) {
-                const portIn = document.createElement('div');
-                portIn.className = 'palette_port palette_port_input';
+                var portIn = document.createElement("div");
+                portIn.className = "palette_port palette_port_input";
                 paletteNode.append(portIn);
             } else if (portInput.length !== 0 && sf.in.length === 0) {
                 portInput.remove();
             }
 
             if (portOutput.length === 0 && sf.out.length > 0) {
-                const portOut = document.createElement('div');
-                portOut.className = 'palette_port palette_port_output';
+                var portOut = document.createElement("div");
+                portOut.className = "palette_port palette_port_output";
                 paletteNode.append(portOut);
             } else if (portOutput.length !== 0 && sf.out.length === 0) {
                 portOutput.remove();
             }
-            setLabel(`${sf.type}:${sf.id}`, paletteNode, sf.name, marked(sf.info || ''));
+            setLabel(sf.type+":"+sf.id,paletteNode,sf.name,marked(sf.info||""));
         });
     }
 
     function filterChange(val) {
-        const re = new RegExp(val.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i');
-        $('#palette-container .palette_node').each(function (i, el) {
-            const currentLabel = $(el).find('.palette_label').text();
-            if (val === '' || re.test(el.id) || re.test(currentLabel)) {
-                $(this).attr('style', 'display: block !important');
+        var re = new RegExp(val.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'),'i');
+        $("#palette-container .palette_node").each(function(i,el) {
+            var currentLabel = $(el).find(".palette_label").text();
+            if (val === "" || re.test(el.id) || re.test(currentLabel)) {
+                $(this).attr("style", "display: block !important");
             } else {
                 $(this).hide();
             }
         });
 
-        for (const category in categoryContainers) {
+        for (var category in categoryContainers) {
             if (categoryContainers.hasOwnProperty(category)) {
                 if (categoryContainers[category].container
-                    .find('.palette_node')
-                    .filter(function () { return $(this).css('display') !== 'none'; }).length === 0) {
+                        .find(".palette_node")
+                        .filter(function() { return $(this).css('display') !== 'none'}).length === 0) {
                     categoryContainers[category].close();
                 } else {
                     categoryContainers[category].open();
@@ -8048,41 +8076,42 @@ RED.palette = (function () {
     }
 
     function init() {
-        RED.events.on('registry:node-type-added', (nodeType) => {
-            const def = RED.nodes.getType(nodeType);
-            addNodeType(nodeType, def);
-            if (def.onpaletteadd && typeof def.onpaletteadd === 'function') {
+
+        RED.events.on('registry:node-type-added', function(nodeType) {
+            var def = RED.nodes.getType(nodeType);
+            addNodeType(nodeType,def);
+            if (def.onpaletteadd && typeof def.onpaletteadd === "function") {
                 def.onpaletteadd.call(def);
             }
         });
-        RED.events.on('registry:node-type-removed', (nodeType) => {
+        RED.events.on('registry:node-type-removed', function(nodeType) {
             removeNodeType(nodeType);
         });
 
-        RED.events.on('registry:node-set-enabled', (nodeSet) => {
-            for (let j = 0; j < nodeSet.types.length; j++) {
+        RED.events.on('registry:node-set-enabled', function(nodeSet) {
+            for (var j=0;j<nodeSet.types.length;j++) {
                 showNodeType(nodeSet.types[j]);
-                const def = RED.nodes.getType(nodeSet.types[j]);
-                if (def.onpaletteadd && typeof def.onpaletteadd === 'function') {
+                var def = RED.nodes.getType(nodeSet.types[j]);
+                if (def.onpaletteadd && typeof def.onpaletteadd === "function") {
                     def.onpaletteadd.call(def);
                 }
             }
         });
-        RED.events.on('registry:node-set-disabled', (nodeSet) => {
-            for (let j = 0; j < nodeSet.types.length; j++) {
+        RED.events.on('registry:node-set-disabled', function(nodeSet) {
+            for (var j=0;j<nodeSet.types.length;j++) {
                 hideNodeType(nodeSet.types[j]);
-                const def = RED.nodes.getType(nodeSet.types[j]);
-                if (def.onpaletteremove && typeof def.onpaletteremove === 'function') {
+                var def = RED.nodes.getType(nodeSet.types[j]);
+                if (def.onpaletteremove && typeof def.onpaletteremove === "function") {
                     def.onpaletteremove.call(def);
                 }
             }
         });
-        RED.events.on('registry:node-set-removed', (nodeSet) => {
+        RED.events.on('registry:node-set-removed', function(nodeSet) {
             if (nodeSet.added) {
-                for (let j = 0; j < nodeSet.types.length; j++) {
+                for (var j=0;j<nodeSet.types.length;j++) {
                     removeNodeType(nodeSet.types[j]);
-                    const def = RED.nodes.getType(nodeSet.types[j]);
-                    if (def.onpaletteremove && typeof def.onpaletteremove === 'function') {
+                    var def = RED.nodes.getType(nodeSet.types[j]);
+                    if (def.onpaletteremove && typeof def.onpaletteremove === "function") {
                         def.onpaletteremove.call(def);
                     }
                 }
@@ -8097,32 +8126,32 @@ RED.palette = (function () {
         //     }
         // })
 
-        let categoryList = coreCategories;
+        var categoryList = coreCategories;
         if (RED.settings.paletteCategories) {
             categoryList = RED.settings.paletteCategories;
         } else if (RED.settings.theme('palette.categories')) {
             categoryList = RED.settings.theme('palette.categories');
         }
         if (!Array.isArray(categoryList)) {
-            categoryList = coreCategories;
+            categoryList = coreCategories
         }
-        categoryList.forEach((category) => {
-            createCategoryContainer(category, RED._(`palette.label.${category}`, { defaultValue: category }));
+        categoryList.forEach(function(category){
+            createCategoryContainer(category, RED._("palette.label."+category,{defaultValue:category}));
         });
 
 
         // matheusr @TODO dom manip here makes me sad
-        $('#palette-collapse-all').on('click', (e) => {
+        $("#palette-collapse-all").on("click", function(e) {
             e.preventDefault();
-            for (const cat in categoryContainers) {
+            for (var cat in categoryContainers) {
                 if (categoryContainers.hasOwnProperty(cat)) {
                     categoryContainers[cat].close();
                 }
             }
         });
-        $('#palette-expand-all').on('click', (e) => {
+        $("#palette-expand-all").on("click", function(e) {
             e.preventDefault();
-            for (const cat in categoryContainers) {
+            for (var cat in categoryContainers) {
                 if (categoryContainers.hasOwnProperty(cat)) {
                     categoryContainers[cat].open();
                 }
@@ -8131,94 +8160,95 @@ RED.palette = (function () {
     }
 
     return {
-        init,
-        add: addNodeType,
-        remove: removeNodeType,
-        hide: hideNodeType,
-        show: showNodeType,
-        refresh: refreshNodeTypes,
+        init: init,
+        add:addNodeType,
+        remove:removeNodeType,
+        hide:hideNodeType,
+        show:showNodeType,
+        refresh:refreshNodeTypes
     };
-}());
-RED.palette.editor = (function () {
-    let disabled = false;
+})();
+RED.palette.editor = (function() {
 
-    let editorTabs;
-    let filterInput;
-    let searchInput;
-    let nodeList;
-    let packageList;
-    let loadedList = [];
-    let filteredList = [];
-    let loadedIndex = {};
+    var disabled = false;
 
-    const typesInUse = {};
-    const nodeEntries = {};
-    const eventTimers = {};
-    let activeFilter = '';
+    var editorTabs;
+    var filterInput;
+    var searchInput;
+    var nodeList;
+    var packageList;
+    var loadedList = [];
+    var filteredList = [];
+    var loadedIndex = {};
 
-    function delayCallback(start, callback) {
-        let delta = Date.now() - start;
+    var typesInUse = {};
+    var nodeEntries = {};
+    var eventTimers = {};
+    var activeFilter = "";
+
+    function delayCallback(start,callback) {
+        var delta = Date.now() - start;
         if (delta < 300) {
             delta = 300;
         } else {
             delta = 0;
         }
-        setTimeout(() => {
+        setTimeout(function() {
             callback();
-        }, delta);
+        },delta);
     }
-    function changeNodeState(id, state, shade, callback) {
-        shade.attr('style', 'display: block !important');
-        const start = Date.now();
+    function changeNodeState(id,state,shade,callback) {
+        shade.attr("style", "display: block !important");
+        var start = Date.now();
         $.ajax({
-            url: `nodes/${id}`,
-            type: 'PUT',
+            url:"nodes/"+id,
+            type: "PUT",
             data: JSON.stringify({
-                enabled: state,
+                enabled: state
             }),
-            contentType: 'application/json; charset=utf-8',
-        }).done((data, textStatus, xhr) => {
-            delayCallback(start, () => {
+            contentType: "application/json; charset=utf-8"
+        }).done(function(data,textStatus,xhr) {
+            delayCallback(start,function() {
                 shade.hide();
                 callback();
             });
-        }).fail((xhr, textStatus, err) => {
-            delayCallback(start, () => {
+        }).fail(function(xhr,textStatus,err) {
+            delayCallback(start,function() {
                 shade.hide();
                 callback(xhr);
             });
-        });
+        })
     }
-    function installNodeModule(id, shade, callback) {
-        shade.attr('style', 'display: block !important');
+    function installNodeModule(id,shade,callback) {
+        shade.attr("style", "display: block !important");
         $.ajax({
-            url: 'nodes',
-            type: 'POST',
+            url:"nodes",
+            type: "POST",
             data: JSON.stringify({
-                module: id,
+                module: id
             }),
-            contentType: 'application/json; charset=utf-8',
-        }).done((data, textStatus, xhr) => {
+            contentType: "application/json; charset=utf-8"
+        }).done(function(data,textStatus,xhr) {
             shade.hide();
             callback();
-        }).fail((xhr, textStatus, err) => {
+        }).fail(function(xhr,textStatus,err) {
             shade.hide();
             callback(xhr);
         });
     }
-    function removeNodeModule(id, callback) {
+    function removeNodeModule(id,callback) {
         $.ajax({
-            url: `nodes/${id}`,
-            type: 'DELETE',
-        }).done((data, textStatus, xhr) => {
+            url:"nodes/"+id,
+            type: "DELETE"
+        }).done(function(data,textStatus,xhr) {
             callback();
-        }).fail((xhr, textStatus, err) => {
+        }).fail(function(xhr,textStatus,err) {
             callback(xhr);
-        });
+        })
     }
 
     function refreshNodeModuleList() {
-        for (const id in nodeEntries) {
+        for (var id in nodeEntries) {
             if (nodeEntries.hasOwnProperty(id)) {
                 _refreshNodeModule(id);
             }
@@ -8227,127 +8257,130 @@ RED.palette.editor = (function () {
 
     function refreshNodeModule(module) {
         if (!eventTimers.hasOwnProperty(module)) {
-            eventTimers[module] = setTimeout(() => {
+            eventTimers[module] = setTimeout(function() {
                 delete eventTimers[module];
                 _refreshNodeModule(module);
-            }, 100);
+            },100);
         }
     }
 
 
-    function getContrastingBorder(rgbColor) {
-        const parts = /^rgba?\(\s*(\d+),\s*(\d+),\s*(\d+)[,)]/.exec(rgbColor);
+    function getContrastingBorder(rgbColor){
+        var parts = /^rgba?\(\s*(\d+),\s*(\d+),\s*(\d+)[,)]/.exec(rgbColor);
         if (parts) {
-            let r = parseInt(parts[1]);
-            let g = parseInt(parts[2]);
-            let b = parseInt(parts[3]);
-            const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+            var r = parseInt(parts[1]);
+            var g = parseInt(parts[2]);
+            var b = parseInt(parts[3]);
+            var yiq = ((r*299)+(g*587)+(b*114))/1000;
             if (yiq > 160) {
-                r = Math.floor(r * 0.8);
-                g = Math.floor(g * 0.8);
-                b = Math.floor(b * 0.8);
-                return `rgb(${r},${g},${b})`;
+                r = Math.floor(r*0.8);
+                g = Math.floor(g*0.8);
+                b = Math.floor(b*0.8);
+                return "rgb("+r+","+g+","+b+")";
             }
         }
         return rgbColor;
     }
 
     function formatUpdatedAt(dateString) {
-        const now = new Date();
-        const d = new Date(dateString);
-        let delta = (Date.now() - new Date(dateString).getTime()) / 1000;
+        var now = new Date();
+        var d = new Date(dateString);
+        var delta = (Date.now() - new Date(dateString).getTime())/1000;
 
         if (delta < 60) {
             return RED._('palette.editor.times.seconds');
         }
-        delta = Math.floor(delta / 60);
+        delta = Math.floor(delta/60);
         if (delta < 10) {
             return RED._('palette.editor.times.minutes');
         }
         if (delta < 60) {
-            return RED._('palette.editor.times.minutesV', { count: delta });
+            return RED._('palette.editor.times.minutesV',{count:delta});
         }
 
-        delta = Math.floor(delta / 60);
+        delta = Math.floor(delta/60);
 
         if (delta < 24) {
-            return RED._('palette.editor.times.hoursV', { count: delta });
+            return RED._('palette.editor.times.hoursV',{count:delta});
         }
 
-        delta = Math.floor(delta / 24);
+        delta = Math.floor(delta/24);
 
         if (delta < 7) {
-            return RED._('palette.editor.times.daysV', { count: delta });
+            return RED._('palette.editor.times.daysV',{count:delta})
         }
-        let weeks = Math.floor(delta / 7);
-        const days = delta % 7;
+        var weeks = Math.floor(delta/7);
+        var days = delta%7;
 
         if (weeks < 4) {
-            return RED._('palette.editor.times.weeksV', { count: weeks });
+            return RED._('palette.editor.times.weeksV',{count:weeks})
         }
 
-        let months = Math.floor(weeks / 4);
-        weeks %= 4;
+        var months = Math.floor(weeks/4);
+        weeks = weeks%4;
 
         if (months < 12) {
-            return RED._('palette.editor.times.monthsV', { count: months });
+            return RED._('palette.editor.times.monthsV',{count:months})
         }
-        const years = Math.floor(months / 12);
-        months %= 12;
+        var years = Math.floor(months/12);
+        months = months%12;
 
         if (months === 0) {
-            return RED._('palette.editor.times.yearsV', { count: years });
+            return RED._('palette.editor.times.yearsV',{count:years})
+        } else {
+            return RED._('palette.editor.times.year'+(years>1?'s':'')+'MonthsV',{y:years,count:months})
         }
-        return RED._(`palette.editor.times.year${years > 1 ? 's' : ''}MonthsV`, { y: years, count: months });
     }
 
 
     function _refreshNodeModule(module) {
         if (!nodeEntries.hasOwnProperty(module)) {
-            nodeEntries[module] = { info: RED.nodes.registry.getModule(module) };
-            let index = [module];
-            for (const s in nodeEntries[module].info.sets) {
+            nodeEntries[module] = {info:RED.nodes.registry.getModule(module)};
+            var index = [module];
+            for (var s in nodeEntries[module].info.sets) {
                 if (nodeEntries[module].info.sets.hasOwnProperty(s)) {
                     index.push(s);
-                    index = index.concat(nodeEntries[module].info.sets[s].types);
+                    index = index.concat(nodeEntries[module].info.sets[s].types)
                 }
             }
-            nodeEntries[module].index = index.join(',').toLowerCase();
+            nodeEntries[module].index = index.join(",").toLowerCase();
 
             nodeList.editableList('addItem', nodeEntries[module]);
+
         } else {
-            const moduleInfo = nodeEntries[module].info;
-            const nodeEntry = nodeEntries[module].elements;
+            var moduleInfo = nodeEntries[module].info;
+            var nodeEntry = nodeEntries[module].elements;
             if (nodeEntry) {
-                let activeTypeCount = 0;
-                let typeCount = 0;
+                var activeTypeCount = 0;
+                var typeCount = 0;
                 nodeEntries[module].totalUseCount = 0;
                 nodeEntries[module].setUseCount = {};
 
-                for (const setName in moduleInfo.sets) {
+                for (var setName in moduleInfo.sets) {
                     if (moduleInfo.sets.hasOwnProperty(setName)) {
-                        let inUseCount = 0;
-                        const set = moduleInfo.sets[setName];
-                        const setElements = nodeEntry.sets[setName];
+                        var inUseCount = 0;
+                        var set = moduleInfo.sets[setName];
+                        var setElements = nodeEntry.sets[setName];
 
                         if (set.enabled) {
                             activeTypeCount += set.types.length;
                         }
                         typeCount += set.types.length;
-                        for (let i = 0; i < moduleInfo.sets[setName].types.length; i++) {
-                            const t = moduleInfo.sets[setName].types[i];
-                            inUseCount += (typesInUse[t] || 0);
-                            const swatch = setElements.swatches[t];
+                        for (var i=0;i<moduleInfo.sets[setName].types.length;i++) {
+                            var t = moduleInfo.sets[setName].types[i];
+                            inUseCount += (typesInUse[t]||0);
+                            var swatch = setElements.swatches[t];
                             if (set.enabled) {
-                                const def = RED.nodes.getType(t);
+                                var def = RED.nodes.getType(t);
                                 if (def && def.color) {
-                                    swatch.css({ background: def.color });
-                                    swatch.css({ border: `1px solid ${getContrastingBorder(swatch.css('backgroundColor'))}` });
+                                    swatch.css({background:def.color});
+                                    swatch.css({border: "1px solid "+getContrastingBorder(swatch.css('backgroundColor'))})
+
                                 } else {
-                                    swatch.css({ background: '#eee', border: '1px dashed #999' });
+                                    swatch.css({background:"#eee",border:"1px dashed #999"})
                                 }
                             } else {
-                                swatch.css({ background: '#eee', border: '1px dashed #999' });
+                                swatch.css({background:"#eee",border:"1px dashed #999"})
                             }
                         }
                         nodeEntries[module].setUseCount[setName] = inUseCount;
@@ -8364,11 +8397,11 @@ RED.palette.editor = (function () {
                                 setElements.enableButton.html(RED._('palette.editor.enable'));
                             }
                         }
-                        setElements.setRow.toggleClass('palette-module-set-disabled', !set.enabled);
+                        setElements.setRow.toggleClass("palette-module-set-disabled",!set.enabled);
                     }
                 }
-                const nodeCount = (activeTypeCount === typeCount) ? typeCount : `${activeTypeCount} / ${typeCount}`;
-                nodeEntry.setCount.html(RED._('palette.editor.nodeCount', { count: typeCount, label: nodeCount }));
+                var nodeCount = (activeTypeCount === typeCount)?typeCount:activeTypeCount+" / "+typeCount;
+                nodeEntry.setCount.html(RED._('palette.editor.nodeCount',{count:typeCount,label:nodeCount}));
 
                 if (nodeEntries[module].totalUseCount > 0) {
                     nodeEntry.enableButton.html(RED._('palette.editor.inuse'));
@@ -8377,19 +8410,20 @@ RED.palette.editor = (function () {
                 } else {
                     nodeEntry.enableButton.removeClass('disabled');
                     if (moduleInfo.local) {
-                        nodeEntry.removeButton.attr('style', 'display: block !important');
+                        nodeEntry.removeButton.attr("style", "display: block !important");
                     }
                     if (activeTypeCount === 0) {
                         nodeEntry.enableButton.html(RED._('palette.editor.enableall'));
                     } else {
                         nodeEntry.enableButton.html(RED._('palette.editor.disableall'));
                     }
-                    nodeEntry.container.toggleClass('disabled', (activeTypeCount === 0));
+                    nodeEntry.container.toggleClass("disabled",(activeTypeCount === 0));
                 }
             }
 
             nodeEntry.updateButton.hide();
         }
+
     }
     function showPaletteEditor() {
         if (RED.settings.theme('palette.editable') === false) {
@@ -8400,61 +8434,62 @@ RED.palette.editor = (function () {
         }
 
         initInstallTab();
-        $('#header-shade').attr('style', 'display: block !important');
-        $('#editor-shade').attr('style', 'display: block !important');
-        $('#sidebar-shade').attr('style', 'display: block !important');
-        $('#sidebar-separator').hide();
+        $("#header-shade").attr("style", "display: block !important");
+        $("#editor-shade").attr("style", "display: block !important");
+        $("#sidebar-shade").attr("style", "display: block !important");
+        $("#sidebar-separator").hide();
 
         editorTabs.activateTab('nodes');
 
-        $('#main-container').addClass('palette-expanded');
-        setTimeout(() => {
+        $("#main-container").addClass("palette-expanded");
+        setTimeout(function() {
             editorTabs.resize();
             filterInput.focus();
-        }, 250);
-        RED.events.emit('palette-editor:open');
-        RED.keyboard.add('*', 'escape', () => { hidePaletteEditor(); });
+        },250);
+        RED.events.emit("palette-editor:open");
+        RED.keyboard.add("*","escape",function(){hidePaletteEditor()});
     }
     function hidePaletteEditor() {
-        RED.keyboard.remove('escape');
-        $('#main-container').removeClass('palette-expanded');
-        $('#header-shade').hide();
-        $('#editor-shade').hide();
-        $('#sidebar-shade').hide();
-        $('#sidebar-separator').attr('style', 'display: block !important');
-        $('#palette-editor').find('.expanded').each((i, el) => {
-            $(el).find('.palette-module-content').slideUp();
+        RED.keyboard.remove("escape");
+        $("#main-container").removeClass("palette-expanded");
+        $("#header-shade").hide();
+        $("#editor-shade").hide();
+        $("#sidebar-shade").hide();
+        $("#sidebar-separator").attr("style", "display: block !important");
+        $("#palette-editor").find('.expanded').each(function(i,el) {
+            $(el).find(".palette-module-content").slideUp();
             $(el).removeClass('expanded');
         });
-        filterInput.searchBox('value', '');
-        searchInput.searchBox('value', '');
-        RED.events.emit('palette-editor:close');
+        filterInput.searchBox('value',"");
+        searchInput.searchBox('value',"");
+        RED.events.emit("palette-editor:close");
+
     }
 
     function filterChange(val) {
         activeFilter = val.toLowerCase();
-        const visible = nodeList.editableList('filter');
-        const size = nodeList.editableList('length');
-        if (val === '') {
+        var visible = nodeList.editableList('filter');
+        var size = nodeList.editableList('length');
+        if (val === "") {
             filterInput.searchBox('count');
         } else {
-            filterInput.searchBox('count', `${visible} / ${size}`);
+            filterInput.searchBox('count',visible+" / "+size);
         }
     }
 
 
-    let catalogueCount;
-    let catalogueLoadStatus = [];
-    let catalogueLoadStart;
-    let catalogueLoadErrors = false;
+    var catalogueCount;
+    var catalogueLoadStatus = [];
+    var catalogueLoadStart;
+    var catalogueLoadErrors = false;
 
-    let activeSort = sortModulesAZ;
+    var activeSort = sortModulesAZ;
 
-    function handleCatalogResponse(err, catalog, index, v) {
-        catalogueLoadStatus.push(err || v);
+    function handleCatalogResponse(err,catalog,index,v) {
+        catalogueLoadStatus.push(err||v);
         if (!err) {
             if (v.modules) {
-                v.modules.forEach((m) => {
+                v.modules.forEach(function(m) {
                     loadedIndex[m.id] = m;
                     m.index = [m.id];
                     if (m.keywords) {
@@ -8465,25 +8500,26 @@ RED.palette.editor = (function () {
                     } else {
                         m.timestamp = 0;
                     }
-                    m.index = m.index.join(',').toLowerCase();
-                });
+                    m.index = m.index.join(",").toLowerCase();
+                })
                 loadedList = loadedList.concat(v.modules);
             }
-            searchInput.searchBox('count', loadedList.length);
+            searchInput.searchBox('count',loadedList.length);
         } else {
             catalogueLoadErrors = true;
         }
         if (catalogueCount > 1) {
-            $('.palette-module-shade-status').html(`${RED._('palette.editor.loading')}<br>${catalogueLoadStatus.length}/${catalogueCount}`);
+            $(".palette-module-shade-status").html(RED._('palette.editor.loading')+"<br>"+catalogueLoadStatus.length+"/"+catalogueCount);
         }
         if (catalogueLoadStatus.length === catalogueCount) {
             if (catalogueLoadErrors) {
-                RED.notify(RED._('palette.editor.errors.catalogLoadFailed', { url: catalog }), 'error', false, 8000);
+                RED.notify(RED._('palette.editor.errors.catalogLoadFailed',{url: catalog}),"error",false,8000);
             }
-            const delta = 250 - (Date.now() - catalogueLoadStart);
-            setTimeout(() => {
-                $('#palette-module-install-shade').hide();
-            }, Math.max(delta, 0));
+            var delta = 250-(Date.now() - catalogueLoadStart);
+            setTimeout(function() {
+                $("#palette-module-install-shade").hide();
+            },Math.max(delta,0));
+
         }
     }
 
@@ -8492,23 +8528,23 @@ RED.palette.editor = (function () {
             loadedList = [];
             loadedIndex = {};
             packageList.editableList('empty');
-            $('.palette-module-shade-status').html(RED._('palette.editor.loading'));
-            const catalogues = RED.settings.theme('palette.catalogues') || ['https://catalogue.nodered.org/catalogue.json'];
+            $(".palette-module-shade-status").html(RED._('palette.editor.loading'));
+            var catalogues = RED.settings.theme('palette.catalogues')||['https://catalogue.nodered.org/catalogue.json'];
             catalogueLoadStatus = [];
             catalogueLoadErrors = false;
             catalogueCount = catalogues.length;
             if (catalogues.length > 1) {
-                $('.palette-module-shade-status').html(`${RED._('palette.editor.loading')}<br>0/${catalogues.length}`);
+                $(".palette-module-shade-status").html(RED._('palette.editor.loading')+"<br>0/"+catalogues.length);
             }
-            $('#palette-module-install-shade').attr('style', 'display: block !important');
+            $("#palette-module-install-shade").attr("style", "display: block !important");
             catalogueLoadStart = Date.now();
-            catalogues.forEach((catalog, index) => {
-                $.getJSON(catalog, { _: new Date().getTime() }, (v) => {
-                    handleCatalogResponse(null, catalog, index, v);
+            catalogues.forEach(function(catalog,index) {
+                $.getJSON(catalog, {_: new Date().getTime()},function(v) {
+                    handleCatalogResponse(null,catalog,index,v);
                     refreshNodeModuleList();
-                }).fail((jqxhr, textStatus, error) => {
-                    handleCatalogResponse(jqxhr, catalog, index);
-                });
+                }).fail(function(jqxhr, textStatus, error) {
+                    handleCatalogResponse(jqxhr,catalog,index);
+                })
             });
         }
     }
@@ -8516,22 +8552,22 @@ RED.palette.editor = (function () {
     function refreshFilteredItems() {
         packageList.editableList('empty');
         filteredList.sort(activeSort);
-        for (let i = 0; i < Math.min(10, filteredList.length); i++) {
-            packageList.editableList('addItem', filteredList[i]);
+        for (var i=0;i<Math.min(10,filteredList.length);i++) {
+            packageList.editableList('addItem',filteredList[i]);
         }
         if (filteredList.length === 0) {
-            packageList.editableList('addItem', {});
+            packageList.editableList('addItem',{});
         }
 
         if (filteredList.length > 10) {
-            packageList.editableList('addItem', { start: 10, more: filteredList.length - 10 });
+            packageList.editableList('addItem',{start:10,more:filteredList.length-10})
         }
     }
-    function sortModulesAZ(A, B) {
+    function sortModulesAZ(A,B) {
         return A.info.id.localeCompare(B.info.id);
     }
-    function sortModulesRecent(A, B) {
-        return -1 * (A.info.timestamp - B.info.timestamp);
+    function sortModulesRecent(A,B) {
+        return -1 * (A.info.timestamp-B.info.timestamp);
     }
 
     function init() {
@@ -8539,130 +8575,132 @@ RED.palette.editor = (function () {
             return;
         }
 
-        RED.events.on('editor:open', () => { disabled = true; });
-        RED.events.on('editor:close', () => { disabled = false; });
-        RED.events.on('search:open', () => { disabled = true; });
-        RED.events.on('search:close', () => { disabled = false; });
-        RED.events.on('type-search:open', () => { disabled = true; });
-        RED.events.on('type-search:close', () => { disabled = false; });
+        RED.events.on("editor:open",function() { disabled = true; });
+        RED.events.on("editor:close",function() { disabled = false; });
+        RED.events.on("search:open",function() { disabled = true; });
+        RED.events.on("search:close",function() { disabled = false; });
+        RED.events.on("type-search:open",function() { disabled = true; });
+        RED.events.on("type-search:close",function() { disabled = false; });
 
-        RED.actions.add('core:manage-palette', RED.palette.editor.show);
+        RED.actions.add("core:manage-palette",RED.palette.editor.show);
 
         editorTabs = RED.tabs.create({
-            id: 'palette-editor-tabs',
-            onchange(tab) {
-                $('#palette-editor .palette-editor-tab').hide();
-                tab.content.attr('style', 'display: block !important');
+            id:"palette-editor-tabs",
+            onchange:function(tab) {
+                $("#palette-editor .palette-editor-tab").hide();
+                tab.content.attr("style", "display: block !important");
                 if (filterInput) {
-                    filterInput.searchBox('value', '');
+                    filterInput.searchBox('value',"");
                 }
                 if (searchInput) {
-                    searchInput.searchBox('value', '');
+                    searchInput.searchBox('value',"");
                 }
                 if (tab.id === 'install') {
                     if (searchInput) {
                         searchInput.focus();
                     }
-                } else if (filterInput) {
-                    filterInput.focus();
+                } else {
+                    if (filterInput) {
+                        filterInput.focus();
+                    }
                 }
             },
-            minimumActiveTabWidth: 110,
+            minimumActiveTabWidth: 110
         });
 
 
-        $('#editor-shade').click(() => {
-            if ($('#main-container').hasClass('palette-expanded')) {
+        $("#editor-shade").click(function() {
+            if ($("#main-container").hasClass("palette-expanded")) {
                 hidePaletteEditor();
             }
         });
 
-        $('#palette-editor-close').on('click', (e) => {
+        $("#palette-editor-close").on("click", function(e) {
             hidePaletteEditor();
-        });
+        })
 
-        const modulesTab = $('<div>', { class: 'palette-editor-tab' }).appendTo('#palette-editor');
+        var modulesTab = $('<div>',{class:"palette-editor-tab"}).appendTo("#palette-editor");
 
         editorTabs.addTab({
             id: 'nodes',
             label: RED._('palette.editor.tab-nodes'),
-            content: modulesTab,
-        });
+            content: modulesTab
+        })
 
-        const filterDiv = $('<div>', { class: 'palette-search' }).appendTo(modulesTab);
+        var filterDiv = $('<div>',{class:"palette-search"}).appendTo(modulesTab);
         filterInput = $('<input type="text" data-i18n="[placeholder]palette.filter"></input>')
             .appendTo(filterDiv)
             .searchBox({
                 delay: 200,
-                change() {
+                change: function() {
                     filterChange($(this).val());
-                },
+                }
             });
 
 
-        nodeList = $('<ol>', { id: 'palette-module-list', style: 'position: absolute;top: 35px;bottom: 0;left: 0;right: 0px;' }).appendTo(modulesTab).editableList({
+        nodeList = $('<ol>',{id:"palette-module-list", style:"position: absolute;top: 35px;bottom: 0;left: 0;right: 0px;"}).appendTo(modulesTab).editableList({
             addButton: false,
             scrollOnAdd: false,
-            sort(A, B) {
+            sort: function(A,B) {
                 return A.info.name.localeCompare(B.info.name);
             },
-            filter(data) {
-                if (activeFilter === '') {
+            filter: function(data) {
+                if (activeFilter === "" ) {
                     return true;
                 }
 
-                return (activeFilter === '') || (data.index.indexOf(activeFilter) > -1);
+                return (activeFilter==="")||(data.index.indexOf(activeFilter) > -1);
             },
-            addItem(container, i, object) {
-                const entry = object.info;
+            addItem: function(container,i,object) {
+                var entry = object.info;
                 if (entry) {
-                    const headerRow = $('<div>', { class: 'palette-module-header' }).appendTo(container);
-                    const titleRow = $('<div class="palette-module-meta palette-module-name"><i class="fa fa-cube"></i></div>').appendTo(headerRow);
+                    var headerRow = $('<div>',{class:"palette-module-header"}).appendTo(container);
+                    var titleRow = $('<div class="palette-module-meta palette-module-name"><i class="fa fa-cube"></i></div>').appendTo(headerRow);
                     $('<span>').html(entry.name).appendTo(titleRow);
-                    const metaRow = $('<div class="palette-module-meta palette-module-version"><i class="fa fa-tag"></i></div>').appendTo(headerRow);
+                    var metaRow = $('<div class="palette-module-meta palette-module-version"><i class="fa fa-tag"></i></div>').appendTo(headerRow);
                     $('<span>').html(entry.version).appendTo(metaRow);
-                    const buttonRow = $('<div>', { class: 'palette-module-meta' }).appendTo(headerRow);
-                    const setButton = $('<a href="#" class="editor-button editor-button-small palette-module-set-button"><i class="fa fa-angle-right palette-module-node-chevron"></i> </a>').appendTo(buttonRow);
-                    const setCount = $('<span>').appendTo(setButton);
-                    const buttonGroup = $('<div>', { class: 'palette-module-button-group' }).appendTo(buttonRow);
+                    var buttonRow = $('<div>',{class:"palette-module-meta"}).appendTo(headerRow);
+                    var setButton = $('<a href="#" class="editor-button editor-button-small palette-module-set-button"><i class="fa fa-angle-right palette-module-node-chevron"></i> </a>').appendTo(buttonRow);
+                    var setCount = $('<span>').appendTo(setButton);
+                    var buttonGroup = $('<div>',{class:"palette-module-button-group"}).appendTo(buttonRow);
 
-                    const updateButton = $('<a href="#" class="editor-button editor-button-small"></a>').html(RED._('palette.editor.update')).appendTo(buttonGroup);
-                    updateButton.click((evt) => {
+                    var updateButton = $('<a href="#" class="editor-button editor-button-small"></a>').html(RED._('palette.editor.update')).appendTo(buttonGroup);
+                    updateButton.click(function(evt) {
                         evt.preventDefault();
-                    });
+                    })
 
 
-                    const removeButton = $('<a href="#" class="editor-button editor-button-small"></a>').html(RED._('palette.editor.remove')).appendTo(buttonGroup);
-                    removeButton.click((evt) => {
+                    var removeButton = $('<a href="#" class="editor-button editor-button-small"></a>').html(RED._('palette.editor.remove')).appendTo(buttonGroup);
+                    removeButton.click(function(evt) {
                         evt.preventDefault();
 
-                        $('#palette-module-install-confirm').data('module', entry.name);
-                        $('#palette-module-install-confirm').data('shade', shade);
-                        $('#palette-module-install-confirm-body').html(RED._('palette.editor.confirm.remove.body'));
-                        $('.palette-module-install-confirm-button-install').hide();
-                        $('.palette-module-install-confirm-button-remove').attr('style', 'display: block !important');
-                        $('#palette-module-install-confirm')
-                            .dialog('option', 'title', RED._('palette.editor.confirm.remove.title'))
+                        $("#palette-module-install-confirm").data('module',entry.name);
+                        $("#palette-module-install-confirm").data('shade',shade);
+                        $("#palette-module-install-confirm-body").html(RED._("palette.editor.confirm.remove.body"));
+                        $(".palette-module-install-confirm-button-install").hide();
+                        $(".palette-module-install-confirm-button-remove").attr("style", "display: block !important");
+                        $("#palette-module-install-confirm")
+                            .dialog('option', 'title', RED._("palette.editor.confirm.remove.title"))
                             .dialog('open');
-                    });
+                    })
                     if (!entry.local) {
                         removeButton.hide();
                     }
-                    const enableButton = $('<a href="#" class="editor-button editor-button-small"></a>').html(RED._('palette.editor.disableall')).appendTo(buttonGroup);
+                    var enableButton = $('<a href="#" class="editor-button editor-button-small"></a>').html(RED._('palette.editor.disableall')).appendTo(buttonGroup);
 
-                    const contentRow = $('<div>', { class: 'palette-module-content' }).appendTo(container);
+                    var contentRow = $('<div>',{class:"palette-module-content"}).appendTo(container);
                     var shade = $('<div class="palette-module-shade hide"><img src="mashupmashup/red/images/spin.svg" class="palette-spinner"/></div>').appendTo(container);
 
                     object.elements = {
-                        updateButton,
-                        removeButton,
-                        enableButton,
-                        setCount,
-                        container,
-                        shade,
-                        sets: {},
-                    };
-                    setButton.click((evt) => {
+                        updateButton: updateButton,
+                        removeButton: removeButton,
+                        enableButton: enableButton,
+                        setCount: setCount,
+                        container: container,
+                        shade: shade,
+                        sets: {}
+                    }
+                    setButton.click(function(evt) {
                         evt.preventDefault();
                         if (container.hasClass('expanded')) {
                             container.removeClass('expanded');
@@ -8671,286 +8709,292 @@ RED.palette.editor = (function () {
                             container.addClass('expanded');
                             contentRow.slideDown();
                         }
+                    })
+
+                    var setList = Object.keys(entry.sets)
+                    setList.sort(function(A,B) {
+                        return A.toLowerCase().localeCompare(B.toLowerCase());
                     });
+                    setList.forEach(function(setName) {
+                        var set = entry.sets[setName];
+                        var setRow = $('<div>',{class:"palette-module-set"}).appendTo(contentRow);
+                        var buttonGroup = $('<div>',{class:"palette-module-set-button-group"}).appendTo(setRow);
+                        var typeSwatches = {};
+                        set.types.forEach(function(t) {
+                            var typeDiv = $('<div>',{class:"palette-module-type"}).appendTo(setRow);
+                            typeSwatches[t] = $('<span>',{class:"palette-module-type-swatch"}).appendTo(typeDiv);
+                            $('<span>',{class:"palette-module-type-node"}).html(t).appendTo(typeDiv);
+                        })
 
-                    const setList = Object.keys(entry.sets);
-                    setList.sort((A, B) => A.toLowerCase().localeCompare(B.toLowerCase()));
-                    setList.forEach((setName) => {
-                        const set = entry.sets[setName];
-                        const setRow = $('<div>', { class: 'palette-module-set' }).appendTo(contentRow);
-                        const buttonGroup = $('<div>', { class: 'palette-module-set-button-group' }).appendTo(setRow);
-                        const typeSwatches = {};
-                        set.types.forEach((t) => {
-                            const typeDiv = $('<div>', { class: 'palette-module-type' }).appendTo(setRow);
-                            typeSwatches[t] = $('<span>', { class: 'palette-module-type-swatch' }).appendTo(typeDiv);
-                            $('<span>', { class: 'palette-module-type-node' }).html(t).appendTo(typeDiv);
-                        });
-
-                        const enableButton = $('<a href="#" class="editor-button editor-button-small"></a>').appendTo(buttonGroup);
-                        enableButton.click((evt) => {
+                        var enableButton = $('<a href="#" class="editor-button editor-button-small"></a>').appendTo(buttonGroup);
+                        enableButton.click(function(evt) {
                             evt.preventDefault();
                             if (object.setUseCount[setName] === 0) {
-                                const currentSet = RED.nodes.registry.getNodeSet(set.id);
-                                shade.attr('style', 'display: block !important');
-                                changeNodeState(set.id, !currentSet.enabled, shade, (xhr) => {
-                                    console.log(xhr);
+                                var currentSet = RED.nodes.registry.getNodeSet(set.id);
+                                shade.attr("style", "display: block !important");
+                                changeNodeState(set.id,!currentSet.enabled,shade,function(xhr){
+                                    console.log(xhr)
                                 });
                             }
-                        });
+                        })
 
                         object.elements.sets[set.name] = {
-                            setRow,
-                            enableButton,
-                            swatches: typeSwatches,
+                            setRow: setRow,
+                            enableButton: enableButton,
+                            swatches: typeSwatches
                         };
                     });
-                    enableButton.click((evt) => {
+                    enableButton.click(function(evt) {
                         evt.preventDefault();
                         if (object.totalUseCount === 0) {
-                            changeNodeState(entry.name, (container.hasClass('disabled')), shade, (xhr) => {
-                                console.log(xhr);
+                            changeNodeState(entry.name,(container.hasClass('disabled')),shade,function(xhr){
+                                console.log(xhr)
                             });
                         }
-                    });
+                    })
                     refreshNodeModule(entry.name);
                 } else {
-                    $('<div>', { class: 'red-ui-search-empty' }).html(RED._('search.empty')).appendTo(container);
+                    $('<div>',{class:"red-ui-search-empty"}).html(RED._('search.empty')).appendTo(container);
                 }
-            },
+            }
         });
 
 
-        const installTab = $('<div>', { class: 'palette-editor-tab hide' }).appendTo('#palette-editor');
+
+        var installTab = $('<div>',{class:"palette-editor-tab hide"}).appendTo("#palette-editor");
 
         editorTabs.addTab({
             id: 'install',
             label: RED._('palette.editor.tab-install'),
-            content: installTab,
-        });
+            content: installTab
+        })
 
-        const toolBar = $('<div>', { class: 'palette-editor-toolbar' }).appendTo(installTab);
+        var toolBar = $('<div>',{class:"palette-editor-toolbar"}).appendTo(installTab);
 
-        const searchDiv = $('<div>', { class: 'palette-search' }).appendTo(installTab);
+        var searchDiv = $('<div>',{class:"palette-search"}).appendTo(installTab);
         searchInput = $('<input type="text" data-i18n="[placeholder]palette.search"></input>')
             .appendTo(searchDiv)
             .searchBox({
                 delay: 300,
-                change() {
-                    const searchTerm = $(this).val().toLowerCase();
+                change: function() {
+                    var searchTerm = $(this).val().toLowerCase();
                     if (searchTerm.length > 0) {
-                        filteredList = loadedList.filter(m => (m.index.indexOf(searchTerm) > -1)).map(f => ({ info: f }));
+                        filteredList = loadedList.filter(function(m) {
+                            return (m.index.indexOf(searchTerm) > -1);
+                        }).map(function(f) { return {info:f}});
                         refreshFilteredItems();
-                        searchInput.searchBox('count', `${filteredList.length} / ${loadedList.length}`);
+                        searchInput.searchBox('count',filteredList.length+" / "+loadedList.length);
                     } else {
-                        searchInput.searchBox('count', loadedList.length);
+                        searchInput.searchBox('count',loadedList.length);
                         packageList.editableList('empty');
                     }
-                },
+                }
             });
 
 
-        $('<span>').html(`${RED._('palette.editor.sort')} `).appendTo(toolBar);
-        const sortGroup = $('<span class="button-group"></span>').appendTo(toolBar);
-        const sortAZ = $('<a href="#" class="sidebar-header-button-toggle selected" data-i18n="palette.editor.sortAZ"></a>').appendTo(sortGroup);
-        const sortRecent = $('<a href="#" class="sidebar-header-button-toggle" data-i18n="palette.editor.sortRecent"></a>').appendTo(sortGroup);
+        $('<span>').html(RED._("palette.editor.sort")+' ').appendTo(toolBar);
+        var sortGroup = $('<span class="button-group"></span>').appendTo(toolBar);
+        var sortAZ = $('<a href="#" class="sidebar-header-button-toggle selected" data-i18n="palette.editor.sortAZ"></a>').appendTo(sortGroup);
+        var sortRecent = $('<a href="#" class="sidebar-header-button-toggle" data-i18n="palette.editor.sortRecent"></a>').appendTo(sortGroup);
 
-        sortAZ.click(function (e) {
+        sortAZ.click(function(e) {
             e.preventDefault();
-            if ($(this).hasClass('selected')) {
+            if ($(this).hasClass("selected")) {
                 return;
             }
-            $(this).addClass('selected');
-            sortRecent.removeClass('selected');
+            $(this).addClass("selected");
+            sortRecent.removeClass("selected");
             activeSort = sortModulesAZ;
             refreshFilteredItems();
         });
 
-        sortRecent.click(function (e) {
+        sortRecent.click(function(e) {
             e.preventDefault();
-            if ($(this).hasClass('selected')) {
+            if ($(this).hasClass("selected")) {
                 return;
             }
-            $(this).addClass('selected');
-            sortAZ.removeClass('selected');
+            $(this).addClass("selected");
+            sortAZ.removeClass("selected");
             activeSort = sortModulesRecent;
             refreshFilteredItems();
         });
 
 
-        const refreshSpan = $('<span>').appendTo(toolBar);
-        const refreshButton = $('<a href="#" class="sidebar-header-button"><i class="fa fa-refresh"></i></a>').appendTo(refreshSpan);
-        refreshButton.click((e) => {
+        var refreshSpan = $('<span>').appendTo(toolBar);
+        var refreshButton = $('<a href="#" class="sidebar-header-button"><i class="fa fa-refresh"></i></a>').appendTo(refreshSpan);
+        refreshButton.click(function(e) {
             e.preventDefault();
             loadedList = [];
             loadedIndex = {};
             initInstallTab();
-        });
+        })
 
-        packageList = $('<ol>', { style: 'position: absolute;top: 78px;bottom: 0;left: 0;right: 0px;' }).appendTo(installTab).editableList({
+        packageList = $('<ol>',{style:"position: absolute;top: 78px;bottom: 0;left: 0;right: 0px;"}).appendTo(installTab).editableList({
             addButton: false,
             scrollOnAdd: false,
-            addItem(container, i, object) {
+            addItem: function(container,i,object) {
+
                 if (object.more) {
                     container.addClass('palette-module-more');
-                    const moreRow = $('<div>', { class: 'palette-module-header palette-module' }).appendTo(container);
-                    const moreLink = $('<a href="#"></a>').html(RED._('palette.editor.more', { count: object.more })).appendTo(moreRow);
-                    moreLink.click((e) => {
+                    var moreRow = $('<div>',{class:"palette-module-header palette-module"}).appendTo(container);
+                    var moreLink = $('<a href="#"></a>').html(RED._('palette.editor.more',{count:object.more})).appendTo(moreRow);
+                    moreLink.click(function(e) {
                         e.preventDefault();
-                        packageList.editableList('removeItem', object);
-                        for (let i = object.start; i < Math.min(object.start + 10, object.start + object.more); i++) {
-                            packageList.editableList('addItem', filteredList[i]);
+                        packageList.editableList('removeItem',object);
+                        for (var i=object.start;i<Math.min(object.start+10,object.start+object.more);i++) {
+                            packageList.editableList('addItem',filteredList[i]);
                         }
                         if (object.more > 10) {
-                            packageList.editableList('addItem', { start: object.start + 10, more: object.more - 10 });
+                            packageList.editableList('addItem',{start:object.start+10, more:object.more-10})
                         }
-                    });
+                    })
                     return;
                 }
                 if (object.info) {
-                    const entry = object.info;
-                    const headerRow = $('<div>', { class: 'palette-module-header' }).appendTo(container);
-                    const titleRow = $('<div class="palette-module-meta"><i class="fa fa-cube"></i></div>').appendTo(headerRow);
-                    $('<span>', { class: 'palette-module-name' }).html(entry.name || entry.id).appendTo(titleRow);
-                    $('<a target="_blank" class="palette-module-link"><i class="fa fa-external-link"></i></a>').attr('href', entry.url).appendTo(titleRow);
-                    const descRow = $('<div class="palette-module-meta"></div>').appendTo(headerRow);
-                    $('<div>', { class: 'palette-module-description' }).html(entry.description).appendTo(descRow);
+                    var entry = object.info;
+                    var headerRow = $('<div>',{class:"palette-module-header"}).appendTo(container);
+                    var titleRow = $('<div class="palette-module-meta"><i class="fa fa-cube"></i></div>').appendTo(headerRow);
+                    $('<span>',{class:"palette-module-name"}).html(entry.name||entry.id).appendTo(titleRow);
+                    $('<a target="_blank" class="palette-module-link"><i class="fa fa-external-link"></i></a>').attr('href',entry.url).appendTo(titleRow);
+                    var descRow = $('<div class="palette-module-meta"></div>').appendTo(headerRow);
+                    $('<div>',{class:"palette-module-description"}).html(entry.description).appendTo(descRow);
 
-                    const metaRow = $('<div class="palette-module-meta"></div>').appendTo(headerRow);
-                    $(`<span class="palette-module-version"><i class="fa fa-tag"></i> ${entry.version}</span>`).appendTo(metaRow);
-                    $(`<span class="palette-module-updated"><i class="fa fa-calendar"></i> ${formatUpdatedAt(entry.updated_at)}</span>`).appendTo(metaRow);
-                    const buttonRow = $('<div>', { class: 'palette-module-meta' }).appendTo(headerRow);
-                    const buttonGroup = $('<div>', { class: 'palette-module-button-group' }).appendTo(buttonRow);
-                    const shade = $('<div class="palette-module-shade hide"><img src="mashupmashup/red/images/spin.svg" class="palette-spinner"/></div>').appendTo(container);
-                    const installButton = $('<a href="#" class="editor-button editor-button-small"></a>').html(RED._('palette.editor.install')).appendTo(buttonGroup);
-                    installButton.click(function (e) {
+                    var metaRow = $('<div class="palette-module-meta"></div>').appendTo(headerRow);
+                    $('<span class="palette-module-version"><i class="fa fa-tag"></i> '+entry.version+'</span>').appendTo(metaRow);
+                    $('<span class="palette-module-updated"><i class="fa fa-calendar"></i> '+formatUpdatedAt(entry.updated_at)+'</span>').appendTo(metaRow);
+                    var buttonRow = $('<div>',{class:"palette-module-meta"}).appendTo(headerRow);
+                    var buttonGroup = $('<div>',{class:"palette-module-button-group"}).appendTo(buttonRow);
+                    var shade = $('<div class="palette-module-shade hide"><img src="mashupmashup/red/images/spin.svg" class="palette-spinner"/></div>').appendTo(container);
+                    var installButton = $('<a href="#" class="editor-button editor-button-small"></a>').html(RED._('palette.editor.install')).appendTo(buttonGroup);
+                    installButton.click(function(e) {
                         e.preventDefault();
                         if (!$(this).hasClass('disabled')) {
-                            $('#palette-module-install-confirm').data('module', entry.id);
-                            $('#palette-module-install-confirm').data('url', entry.url);
-                            $('#palette-module-install-confirm').data('shade', shade);
-                            $('#palette-module-install-confirm-body').html(RED._('palette.editor.confirm.install.body'));
-                            $('.palette-module-install-confirm-button-install').attr('style', 'display: block !important');
-                            $('.palette-module-install-confirm-button-remove').hide();
-                            $('#palette-module-install-confirm')
-                                .dialog('option', 'title', RED._('palette.editor.confirm.install.title'))
+                            $("#palette-module-install-confirm").data('module',entry.id);
+                            $("#palette-module-install-confirm").data('url',entry.url);
+                            $("#palette-module-install-confirm").data('shade',shade);
+                            $("#palette-module-install-confirm-body").html(RED._("palette.editor.confirm.install.body"));
+                            $(".palette-module-install-confirm-button-install").attr("style", "display: block !important");
+                            $(".palette-module-install-confirm-button-remove").hide();
+                            $("#palette-module-install-confirm")
+                                .dialog('option', 'title', RED._("palette.editor.confirm.install.title"))
                                 .dialog('open');
                         }
-                    });
+                    })
                     if (nodeEntries.hasOwnProperty(entry.id)) {
                         installButton.addClass('disabled');
                         installButton.html(RED._('palette.editor.installed'));
                     }
 
                     object.elements = {
-                        installButton,
-                    };
+                        installButton:installButton
+                    }
                 } else {
-                    $('<div>', { class: 'red-ui-search-empty' }).html(RED._('search.empty')).appendTo(container);
+                    $('<div>',{class:"red-ui-search-empty"}).html(RED._('search.empty')).appendTo(container);
                 }
-            },
+            }
         });
 
         $('<div id="palette-module-install-shade" class="palette-module-shade hide"><div class="palette-module-shade-status"></div><img src="mashupmashup/red/images/spin.svg" class="palette-spinner"/></div>').appendTo(installTab);
 
         $('<div id="palette-module-install-confirm" class="hide"><form class="form-horizontal"><div id="palette-module-install-confirm-body" class="node-dialog-confirm-row"></div></form></div>').appendTo(document.body);
-        $('#palette-module-install-confirm').dialog({
+        $("#palette-module-install-confirm").dialog({
             title: RED._('palette.editor.confirm.title'),
             modal: true,
             autoOpen: false,
             width: 550,
-            height: 'auto',
+            height: "auto",
             buttons: [
                 {
-                    text: RED._('common.label.cancel'),
-                    click() {
-                        $(this).dialog('close');
-                    },
+                    text: RED._("common.label.cancel"),
+                    click: function() {
+                        $( this ).dialog( "close" );
+                    }
                 },
                 {
-                    text: RED._('palette.editor.confirm.button.review'),
-                    class: 'primary palette-module-install-confirm-button-install',
-                    click() {
-                        const url = $(this).data('url');
+                    text: RED._("palette.editor.confirm.button.review"),
+                    class: "primary palette-module-install-confirm-button-install",
+                    click: function() {
+                        var url = $(this).data('url');
                         window.open(url);
-                    },
+                    }
                 },
                 {
-                    text: RED._('palette.editor.confirm.button.install'),
-                    class: 'primary palette-module-install-confirm-button-install',
-                    click() {
-                        const id = $(this).data('module');
-                        const shade = $(this).data('shade');
-                        installNodeModule(id, shade, (xhr) => {
-                            if (xhr) {
-                                if (xhr.responseJSON) {
-                                    RED.notify(RED._('palette.editor.errors.installFailed', { module: id, message: xhr.responseJSON.message }));
-                                }
-                            }
+                    text: RED._("palette.editor.confirm.button.install"),
+                    class: "primary palette-module-install-confirm-button-install",
+                    click: function() {
+                        var id = $(this).data('module');
+                        var shade = $(this).data('shade');
+                        installNodeModule(id,shade,function(xhr) {
+                             if (xhr) {
+                                 if (xhr.responseJSON) {
+                                     RED.notify(RED._('palette.editor.errors.installFailed',{module: id,message:xhr.responseJSON.message}));
+                                 }
+                             }
                         });
-                        $(this).dialog('close');
-                    },
+                        $( this ).dialog( "close" );
+                    }
                 },
                 {
-                    text: RED._('palette.editor.confirm.button.remove'),
-                    class: 'primary palette-module-install-confirm-button-remove',
-                    click() {
-                        const id = $(this).data('module');
-                        const shade = $(this).data('shade');
-                        shade.attr('style', 'display: block !important');
-                        removeNodeModule(id, (xhr) => {
+                    text: RED._("palette.editor.confirm.button.remove"),
+                    class: "primary palette-module-install-confirm-button-remove",
+                    click: function() {
+                        var id = $(this).data('module');
+                        var shade = $(this).data('shade');
+                        shade.attr("style", "display: block !important");
+                        removeNodeModule(id, function(xhr) {
                             shade.hide();
                             if (xhr) {
                                 if (xhr.responseJSON) {
-                                    RED.notify(RED._('palette.editor.errors.removeFailed', { module: id, message: xhr.responseJSON.message }));
+                                    RED.notify(RED._('palette.editor.errors.removeFailed',{module: id,message:xhr.responseJSON.message}));
                                 }
                             }
-                        });
+                        })
 
-                        $(this).dialog('close');
-                    },
-                },
-            ],
-        });
+                        $( this ).dialog( "close" );
+                    }
+                }
+            ]
+        })
 
-        RED.events.on('registry:node-set-enabled', (ns) => {
+        RED.events.on('registry:node-set-enabled', function(ns) {
             refreshNodeModule(ns.module);
         });
-        RED.events.on('registry:node-set-disabled', (ns) => {
+        RED.events.on('registry:node-set-disabled', function(ns) {
             refreshNodeModule(ns.module);
         });
-        RED.events.on('registry:node-type-added', (nodeType) => {
+        RED.events.on('registry:node-type-added', function(nodeType) {
             if (!/^subflow:/.test(nodeType)) {
-                const ns = RED.nodes.registry.getNodeSetForType(nodeType);
+                var ns = RED.nodes.registry.getNodeSetForType(nodeType);
                 refreshNodeModule(ns.module);
             }
         });
-        RED.events.on('registry:node-type-removed', (nodeType) => {
+        RED.events.on('registry:node-type-removed', function(nodeType) {
             if (!/^subflow:/.test(nodeType)) {
-                const ns = RED.nodes.registry.getNodeSetForType(nodeType);
+                var ns = RED.nodes.registry.getNodeSetForType(nodeType);
                 refreshNodeModule(ns.module);
             }
         });
-        RED.events.on('registry:node-set-added', (ns) => {
+        RED.events.on('registry:node-set-added', function(ns) {
             refreshNodeModule(ns.module);
-            for (let i = 0; i < filteredList.length; i++) {
+            for (var i=0;i<filteredList.length;i++) {
                 if (filteredList[i].info.id === ns.module) {
-                    const installButton = filteredList[i].elements.installButton;
+                    var installButton = filteredList[i].elements.installButton;
                     installButton.addClass('disabled');
                     installButton.html(RED._('palette.editor.installed'));
                     break;
                 }
             }
         });
-        RED.events.on('registry:node-set-removed', (ns) => {
-            const module = RED.nodes.registry.getModule(ns.module);
+        RED.events.on('registry:node-set-removed', function(ns) {
+            var module = RED.nodes.registry.getModule(ns.module);
             if (!module) {
-                const entry = nodeEntries[ns.module];
+                var entry = nodeEntries[ns.module];
                 if (entry) {
                     nodeList.editableList('removeItem', entry);
                     delete nodeEntries[ns.module];
-                    for (let i = 0; i < filteredList.length; i++) {
+                    for (var i=0;i<filteredList.length;i++) {
                         if (filteredList[i].info.id === ns.module) {
-                            const installButton = filteredList[i].elements.installButton;
+                            var installButton = filteredList[i].elements.installButton;
                             installButton.removeClass('disabled');
                             installButton.html(RED._('palette.editor.install'));
                             break;
@@ -8959,45 +9003,48 @@ RED.palette.editor = (function () {
                 }
             }
         });
-        RED.events.on('nodes:add', (n) => {
+        RED.events.on('nodes:add', function(n) {
             if (!/^subflow:/.test(n.type)) {
-                typesInUse[n.type] = (typesInUse[n.type] || 0) + 1;
+                typesInUse[n.type] = (typesInUse[n.type]||0)+1;
                 if (typesInUse[n.type] === 1) {
-                    const ns = RED.nodes.registry.getNodeSetForType(n.type);
+                    var ns = RED.nodes.registry.getNodeSetForType(n.type);
                     refreshNodeModule(ns.module);
                 }
             }
-        });
-        RED.events.on('nodes:remove', (n) => {
+        })
+        RED.events.on('nodes:remove', function(n) {
             if (typesInUse.hasOwnProperty(n.type)) {
                 typesInUse[n.type]--;
                 if (typesInUse[n.type] === 0) {
                     delete typesInUse[n.type];
-                    const ns = RED.nodes.registry.getNodeSetForType(n.type);
+                    var ns = RED.nodes.registry.getNodeSetForType(n.type);
                     refreshNodeModule(ns.module);
                 }
             }
-        });
+        })
+
+
     }
 
     return {
-        init,
-        show: showPaletteEditor,
-    };
-}());
+        init: init,
+        show: showPaletteEditor
+    }
+})();
 
 
-RED.editor = (function () {
-    const editStack = [];
-    const editing_node = null;
-    const editing_config_node = null;
-    let subflowEditor;
+RED.editor = (function() {
 
-    const editTrayWidthCache = {};
+    var editStack = [];
+    var editing_node = null;
+    var editing_config_node = null;
+    var subflowEditor;
+
+    var editTrayWidthCache = {};
 
     function getCredentialsURL(nodeType, nodeID) {
-        const dashedType = nodeType.replace(/\s+/g, '-');
-        return `credentials/${dashedType}/${nodeID}`;
+        var dashedType = nodeType.replace(/\s+/g, '-');
+        return  'credentials/' + dashedType + "/" + nodeID;
     }
 
     /**
@@ -9006,13 +9053,13 @@ RED.editor = (function () {
      * @returns {boolean} whether the node is valid. Sets node.dirty if needed
      */
     function validateNode(node) {
-        const oldValue = node.valid;
-        const oldChanged = node.changed;
+        var oldValue = node.valid;
+        var oldChanged = node.changed;
         node.valid = true;
-        let subflow;
-        let isValid;
-        let hasChanged;
-        if (node.type.indexOf('subflow:') === 0) {
+        var subflow;
+        var isValid;
+        var hasChanged;
+        if (node.type.indexOf("subflow:")===0) {
             subflow = RED.nodes.subflow(node.type.substring(8));
             isValid = subflow.valid;
             hasChanged = subflow.changed;
@@ -9027,9 +9074,9 @@ RED.editor = (function () {
             if (node._def._creds) {
                 node.valid = node.valid && validateNodeProperties(node, node._def.credentials, node._def._creds);
             }
-        } else if (node.type == 'subflow') {
-            const subflowNodes = RED.nodes.filterNodes({ z: node.id });
-            for (var i = 0; i < subflowNodes.length; i++) {
+        } else if (node.type == "subflow") {
+            var subflowNodes = RED.nodes.filterNodes({z:node.id});
+            for (var i=0;i<subflowNodes.length;i++) {
                 isValid = subflowNodes[i].valid;
                 hasChanged = subflowNodes[i].changed;
                 if (isValid === undefined) {
@@ -9039,16 +9086,16 @@ RED.editor = (function () {
                 node.valid = node.valid && isValid;
                 node.changed = node.changed || hasChanged;
             }
-            const subflowInstances = RED.nodes.filterNodes({ type: `subflow:${node.id}` });
-            const modifiedTabs = {};
-            for (i = 0; i < subflowInstances.length; i++) {
+            var subflowInstances = RED.nodes.filterNodes({type:"subflow:"+node.id});
+            var modifiedTabs = {};
+            for (i=0;i<subflowInstances.length;i++) {
                 subflowInstances[i].valid = node.valid;
                 subflowInstances[i].changed = subflowInstances[i].changed || node.changed;
                 subflowInstances[i].dirty = true;
                 modifiedTabs[subflowInstances[i].z] = true;
             }
-            Object.keys(modifiedTabs).forEach((id) => {
-                const subflow = RED.nodes.subflow(id);
+            Object.keys(modifiedTabs).forEach(function(id) {
+                var subflow = RED.nodes.subflow(id);
                 if (subflow) {
                     validateNode(subflow);
                 }
@@ -9072,8 +9119,8 @@ RED.editor = (function () {
      * @returns {boolean} whether the node's properties are valid
      */
     function validateNodeProperties(node, definition, properties) {
-        let isValid = true;
-        for (const prop in definition) {
+        var isValid = true;
+        for (var prop in definition) {
             if (definition.hasOwnProperty(prop)) {
                 if (!validateNodeProperty(node, definition, prop, properties[prop])) {
                     isValid = false;
@@ -9091,26 +9138,26 @@ RED.editor = (function () {
      * @param value - the property value being validated
      * @returns {boolean} whether the node proprty is valid
      */
-    function validateNodeProperty(node, definition, property, value) {
-        let valid = true;
+    function validateNodeProperty(node,definition,property,value) {
+        var valid = true;
         if (/^\$\([a-zA-Z_][a-zA-Z0-9_]*\)$/.test(value)) {
             return true;
         }
-        if ('required' in definition[property] && definition[property].required) {
-            valid = value !== '';
+        if ("required" in definition[property] && definition[property].required) {
+            valid = value !== "";
         }
-        if (valid && 'validate' in definition[property]) {
+        if (valid && "validate" in definition[property]) {
             try {
-                valid = definition[property].validate.call(node, value);
-            } catch (err) {
-                console.log('Validation error:', node.type, node.id, `property: ${property}`, 'value:', value, err);
+                valid = definition[property].validate.call(node,value);
+            } catch(err) {
+                console.log("Validation error:",node.type,node.id,"property: "+property,"value:",value,err);
             }
         }
-        if (valid && definition[property].type && RED.nodes.getType(definition[property].type) && !('validate' in definition[property])) {
-            if (!value || value == '_ADD_') {
-                valid = definition[property].hasOwnProperty('required') && !definition[property].required;
+        if (valid && definition[property].type && RED.nodes.getType(definition[property].type) && !("validate" in definition[property])) {
+            if (!value || value == "_ADD_") {
+                valid = definition[property].hasOwnProperty("required") && !definition[property].required;
             } else {
-                const configNode = RED.nodes.node(value);
+                var configNode = RED.nodes.node(value);
                 valid = (configNode !== null && (configNode.valid == null || configNode.valid));
             }
         }
@@ -9118,31 +9165,31 @@ RED.editor = (function () {
     }
 
 
-    function validateNodeEditor(node, prefix) {
+    function validateNodeEditor(node,prefix) {
         for (var prop in node._def.defaults) {
             if (node._def.defaults.hasOwnProperty(prop)) {
-                validateNodeEditorProperty(node, node._def.defaults, prop, prefix);
+                validateNodeEditorProperty(node,node._def.defaults,prop,prefix);
             }
         }
         if (node._def.credentials) {
             for (prop in node._def.credentials) {
                 if (node._def.credentials.hasOwnProperty(prop)) {
-                    validateNodeEditorProperty(node, node._def.credentials, prop, prefix);
+                    validateNodeEditorProperty(node,node._def.credentials,prop,prefix);
                 }
             }
         }
     }
-    function validateNodeEditorProperty(node, defaults, property, prefix) {
-        const input = $(`#${prefix}-${property}`);
+    function validateNodeEditorProperty(node,defaults,property,prefix) {
+        var input = $("#"+prefix+"-"+property);
         if (input.length > 0) {
-            let value = input.val();
-            if (defaults[property].hasOwnProperty('format') && defaults[property].format !== '' && input[0].nodeName === 'DIV') {
+            var value = input.val();
+            if (defaults[property].hasOwnProperty("format") && defaults[property].format !== "" && input[0].nodeName === "DIV") {
                 value = input.text();
             }
-            if (!validateNodeProperty(node, defaults, property, value)) {
-                input.addClass('input-error');
+            if (!validateNodeProperty(node, defaults, property,value)) {
+                input.addClass("input-error");
             } else {
-                input.removeClass('input-error');
+                input.removeClass("input-error");
             }
         }
     }
@@ -9158,10 +9205,10 @@ RED.editor = (function () {
     function updateNodeProperties(node, outputMap) {
         node.resize = true;
         node.dirty = true;
-        const removedLinks = [];
+        var removedLinks = [];
         if (node.ports) {
             if (outputMap) {
-                RED.nodes.eachLink((l) => {
+                RED.nodes.eachLink(function(l) {
                     if (l.source === node && outputMap.hasOwnProperty(l.sourcePort)) {
                         if (outputMap[l.sourcePort] === -1) {
                             removedLinks.push(l);
@@ -9175,7 +9222,7 @@ RED.editor = (function () {
                 while (node.outputs < node.ports.length) {
                     node.ports.pop();
                 }
-                RED.nodes.eachLink((l) => {
+                RED.nodes.eachLink(function(l) {
                     if (l.source === node && l.sourcePort >= node.outputs && removedLinks.indexOf(l) === -1) {
                         removedLinks.push(l);
                     }
@@ -9187,9 +9234,9 @@ RED.editor = (function () {
             }
         }
         if (node.inputs === 0) {
-            removedLinks.concat(RED.nodes.filterLinks({ target: node }));
+            removedLinks.concat(RED.nodes.filterLinks({target:node}));
         }
-        for (let l = 0; l < removedLinks.length; l++) {
+        for (var l=0;l<removedLinks.length;l++) {
             RED.nodes.removeLink(removedLinks[l]);
         }
         return removedLinks;
@@ -9201,48 +9248,48 @@ RED.editor = (function () {
      * @param property - the name of the field
      * @param type - the type of the config-node
      */
-    function prepareConfigNodeSelect(node, property, type, prefix) {
-        const input = $(`#${prefix}-${property}`);
-        if (input.length === 0) {
+    function prepareConfigNodeSelect(node,property,type,prefix) {
+        var input = $("#"+prefix+"-"+property);
+        if (input.length === 0 ) {
             return;
         }
-        let newWidth = input.width();
-        const attrStyle = input.attr('style');
-        let m;
+        var newWidth = input.width();
+        var attrStyle = input.attr('style');
+        var m;
         if ((m = /width\s*:\s*(\d+(%|[a-z]+))/i.exec(attrStyle)) !== null) {
             newWidth = m[1];
         } else {
-            newWidth = '70%';
+            newWidth = "70%";
         }
-        const outerWrap = $('<div></div>').css({ display: 'inline-block', position: 'relative' });
-        const selectWrap = $('<div></div>').css({ position: 'absolute', left: 0, right: '40px' }).appendTo(outerWrap);
-        const select = $(`<select id="${prefix}-${property}"></select>`).appendTo(selectWrap);
+        var outerWrap = $("<div></div>").css({display:'inline-block',position:'relative'});
+        var selectWrap = $("<div></div>").css({position:'absolute',left:0,right:'40px'}).appendTo(outerWrap);
+        var select = $('<select id="'+prefix+'-'+property+'"></select>').appendTo(selectWrap);
 
         outerWrap.width(newWidth).height(input.height());
         if (outerWrap.width() === 0) {
-            outerWrap.width('70%');
+            outerWrap.width("70%");
         }
         input.replaceWith(outerWrap);
         // set the style attr directly - using width() on FF causes a value of 114%...
-        select.attr('style', 'width:100%');
-        updateConfigNodeSelect(property, type, node[property], prefix);
-        $(`<a id="${prefix}-lookup-${property}" class="editor-button"><i class="fa fa-pencil"></i></a>`)
-            .css({ position: 'absolute', right: 0, top: 0 })
+        select.attr('style',"width:100%");
+        updateConfigNodeSelect(property,type,node[property],prefix);
+        $('<a id="'+prefix+'-lookup-'+property+'" class="editor-button"><i class="fa fa-pencil"></i></a>')
+            .css({position:'absolute',right:0,top:0})
             .appendTo(outerWrap);
-        $(`#${prefix}-lookup-${property}`).click((e) => {
-            showEditConfigNodeDialog(property, type, select.find(':selected').val(), prefix);
+        $('#'+prefix+'-lookup-'+property).click(function(e) {
+            showEditConfigNodeDialog(property,type,select.find(":selected").val(),prefix);
             e.preventDefault();
         });
-        let label = '';
-        const configNode = RED.nodes.node(node[property]);
-        const node_def = RED.nodes.getType(type);
+        var label = "";
+        var configNode = RED.nodes.node(node[property]);
+        var node_def = RED.nodes.getType(type);
 
         if (configNode && node_def.label) {
-            if (typeof node_def.label === 'function') {
+            if (typeof node_def.label == "function") {
                 try {
                     label = node_def.label.call(configNode);
-                } catch (err) {
-                    console.log(`Definition error: ${node_def.type}.label`, err);
+                } catch(err) {
+                    console.log("Definition error: "+node_def.type+".label",err);
                     label = node_def.type;
                 }
             } else {
@@ -9258,22 +9305,22 @@ RED.editor = (function () {
      * @param property - the name of the field
      * @param type - the type of the config-node
      */
-    function prepareConfigNodeButton(node, property, type, prefix) {
-        const input = $(`#${prefix}-${property}`);
+    function prepareConfigNodeButton(node,property,type,prefix) {
+        var input = $("#"+prefix+"-"+property);
         input.val(node[property]);
-        input.attr('type', 'hidden');
+        input.attr("type","hidden");
 
-        const button = $('<a>', { id: `${prefix}-edit-${property}`, class: 'editor-button' });
+        var button = $("<a>",{id:prefix+"-edit-"+property, class:"editor-button"});
         input.after(button);
 
         if (node[property]) {
-            button.text(RED._('editor.configEdit'));
+            button.text(RED._("editor.configEdit"));
         } else {
-            button.text(RED._('editor.configAdd'));
+            button.text(RED._("editor.configAdd"));
         }
 
-        button.click((e) => {
-            showEditConfigNodeDialog(property, type, input.val() || '_ADD_', prefix);
+        button.click(function(e) {
+            showEditConfigNodeDialog(property,type,input.val()||"_ADD_",prefix);
             e.preventDefault();
         });
     }
@@ -9285,21 +9332,22 @@ RED.editor = (function () {
      * @param prefix - the prefix to use in the input element ids (node-input|node-config-input)
      * @param definition - the definition of the field
      */
-    function preparePropertyEditor(node, property, prefix, definition) {
-        const input = $(`#${prefix}-${property}`);
+    function preparePropertyEditor(node,property,prefix,definition) {
+        var input = $("#"+prefix+"-"+property);
         if (input.length === 0) {
             return;
         }
-        if (input.attr('type') === 'checkbox') {
-            input.prop('checked', node[property]);
-        } else {
-            let val = node[property];
+        if (input.attr('type') === "checkbox") {
+            input.prop('checked',node[property]);
+        }
+        else {
+            var val = node[property];
             if (val == null) {
-                val = '';
+                val = "";
             }
-            if (definition !== undefined && definition[property].hasOwnProperty('format') && definition[property].format !== '' && input[0].nodeName === 'DIV') {
-                input.html(RED.text.format.getHtml(val, definition[property].format, {}, false, 'en'));
-                RED.text.format.attach(input[0], definition[property].format, {}, false, 'en');
+            if (definition !== undefined && definition[property].hasOwnProperty("format") && definition[property].format !== "" && input[0].nodeName === "DIV") {
+                input.html(RED.text.format.getHtml(val, definition[property].format, {}, false, "en"));
+                RED.text.format.attach(input[0], definition[property].format, {}, false, "en");
             } else {
                 input.val(val);
                 if (input[0].nodeName === 'INPUT' || input[0].nodeName === 'TEXTAREA') {
@@ -9316,18 +9364,18 @@ RED.editor = (function () {
      * @param property - the name of the field
      * @param prefix - the prefix to use in the input element ids (node-input|node-config-input)
      */
-    function attachPropertyChangeHandler(node, definition, property, prefix) {
-        const input = $(`#${prefix}-${property}`);
-        if (definition !== undefined && 'format' in definition[property] && definition[property].format !== '' && input[0].nodeName === 'DIV') {
-            $(`#${prefix}-${property}`).on('change keyup', (event, skipValidation) => {
+    function attachPropertyChangeHandler(node,definition,property,prefix) {
+        var input = $("#"+prefix+"-"+property);
+        if (definition !== undefined && "format" in definition[property] && definition[property].format !== "" && input[0].nodeName === "DIV") {
+            $("#"+prefix+"-"+property).on('change keyup', function(event,skipValidation) {
                 if (!skipValidation) {
-                    validateNodeEditor(node, prefix);
+                    validateNodeEditor(node,prefix);
                 }
             });
         } else {
-            $(`#${prefix}-${property}`).change((event, skipValidation) => {
+            $("#"+prefix+"-"+property).change(function(event,skipValidation) {
                 if (!skipValidation) {
-                    validateNodeEditor(node, prefix);
+                    validateNodeEditor(node,prefix);
                 }
             });
         }
@@ -9341,16 +9389,17 @@ RED.editor = (function () {
      * @param prefix
      */
     function populateCredentialsInputs(node, credDef, credData, prefix) {
-        let cred;
+        var cred;
         for (cred in credDef) {
             if (credDef.hasOwnProperty(cred)) {
                 if (credDef[cred].type == 'password') {
                     if (credData[cred]) {
-                        $(`#${prefix}-${cred}`).val(credData[cred]);
-                    } else if (credData[`has_${cred}`]) {
-                        $(`#${prefix}-${cred}`).val('__PWRD__');
-                    } else {
-                        $(`#${prefix}-${cred}`).val('');
+                        $('#' + prefix + '-' + cred).val(credData[cred]);
+                    } else if (credData['has_' + cred]) {
+                        $('#' + prefix + '-' + cred).val('__PWRD__');
+                    }
+                    else {
+                        $('#' + prefix + '-' + cred).val('');
                     }
                 } else {
                     preparePropertyEditor(credData, cred, prefix, credDef);
@@ -9368,21 +9417,22 @@ RED.editor = (function () {
      * @return {boolean} whether anything has changed
      */
     function updateNodeCredentials(node, credDefinition, prefix) {
-        let changed = false;
-        if (!node.credentials) {
-            node.credentials = { _: {} };
+        var changed = false;
+        if(!node.credentials) {
+            node.credentials = {_:{}};
         }
 
-        for (const cred in credDefinition) {
+        for (var cred in credDefinition) {
             if (credDefinition.hasOwnProperty(cred)) {
-                const input = $(`#${prefix}-${cred}`);
-                const value = input.val();
+                var input = $("#" + prefix + '-' + cred);
+                var value = input.val();
                 if (credDefinition[cred].type == 'password') {
-                    node.credentials[`has_${cred}`] = (value !== '');
+                    node.credentials['has_' + cred] = (value !== "");
                     if (value == '__PWRD__') {
                         continue;
                     }
                     changed = true;
+
                 }
                 node.credentials[cred] = value;
                 if (value != node.credentials._[cred]) {
@@ -9399,63 +9449,63 @@ RED.editor = (function () {
      * @param definition - the node definition
      * @param prefix - the prefix to use in the input element ids (node-input|node-config-input)
      */
-    function prepareEditDialog(node, definition, prefix, done) {
-        for (const d in definition.defaults) {
+    function prepareEditDialog(node,definition,prefix,done) {
+        for (var d in definition.defaults) {
             if (definition.defaults.hasOwnProperty(d)) {
                 if (definition.defaults[d].type) {
-                    const configTypeDef = RED.nodes.getType(definition.defaults[d].type);
+                    var configTypeDef = RED.nodes.getType(definition.defaults[d].type);
                     if (configTypeDef) {
                         if (configTypeDef.exclusive) {
-                            prepareConfigNodeButton(node, d, definition.defaults[d].type, prefix);
+                            prepareConfigNodeButton(node,d,definition.defaults[d].type,prefix);
                         } else {
-                            prepareConfigNodeSelect(node, d, definition.defaults[d].type, prefix);
+                            prepareConfigNodeSelect(node,d,definition.defaults[d].type,prefix);
                         }
                     } else {
-                        console.log('Unknown type:', definition.defaults[d].type);
-                        preparePropertyEditor(node, d, prefix, definition.defaults);
+                        console.log("Unknown type:", definition.defaults[d].type);
+                        preparePropertyEditor(node,d,prefix,definition.defaults);
                     }
                 } else {
-                    preparePropertyEditor(node, d, prefix, definition.defaults);
+                    preparePropertyEditor(node,d,prefix,definition.defaults);
                 }
-                attachPropertyChangeHandler(node, definition.defaults, d, prefix);
+                attachPropertyChangeHandler(node,definition.defaults,d,prefix);
             }
         }
-        const completePrepare = function () {
+        var completePrepare = function() {
             if (definition.oneditprepare) {
                 try {
                     definition.oneditprepare.call(node);
-                } catch (err) {
-                    console.log('oneditprepare', node.id, node.type, err.toString());
+                } catch(err) {
+                    console.log("oneditprepare",node.id,node.type,err.toString());
                 }
             }
             // Now invoke any change handlers added to the fields - passing true
             // to prevent full node validation from being triggered each time
             for (var d in definition.defaults) {
                 if (definition.defaults.hasOwnProperty(d)) {
-                    $(`#${prefix}-${d}`).trigger('change', [true]);
+                    $("#"+prefix+"-"+d).trigger("change",[true]);
                 }
             }
             if (definition.credentials) {
                 for (d in definition.credentials) {
                     if (definition.credentials.hasOwnProperty(d)) {
-                        $(`#${prefix}-${d}`).trigger('change', [true]);
+                        $("#"+prefix+"-"+d).trigger("change",[true]);
                     }
                 }
             }
-            validateNodeEditor(node, prefix);
+            validateNodeEditor(node,prefix);
             if (done) {
                 done();
             }
-        };
+        }
 
         if (definition.credentials) {
             if (node.credentials) {
                 populateCredentialsInputs(node, definition.credentials, node.credentials, prefix);
                 completePrepare();
             } else {
-                $.getJSON(getCredentialsURL(node.type, node.id), (data) => {
+                $.getJSON(getCredentialsURL(node.type, node.id), function (data) {
                     node.credentials = data;
-                    node.credentials._ = $.extend(true, {}, data);
+                    node.credentials._ = $.extend(true,{},data);
                     populateCredentialsInputs(node, definition.credentials, node.credentials, prefix);
                     completePrepare();
                 });
@@ -9466,129 +9516,129 @@ RED.editor = (function () {
     }
 
     function getEditStackTitle() {
-        let title = '<ul class="editor-tray-breadcrumbs">';
-        for (let i = 0; i < editStack.length; i++) {
-            const node = editStack[i];
-            let label = node.type;
+        var title = '<ul class="editor-tray-breadcrumbs">';
+        for (var i=0;i<editStack.length;i++) {
+            var node = editStack[i];
+            var label = node.type;
             if (node.type === '_expression') {
-                label = 'Expression editor';
+                label = "Expression editor";
             } else if (node.type === 'subflow') {
-                label = RED._('subflow.editSubflow', { name: node.name });
-            } else if (node.type.indexOf('subflow:') === 0) {
-                const subflow = RED.nodes.subflow(node.type.substring(8));
-                label = RED._('subflow.editSubflow', { name: subflow.name });
+                label = RED._("subflow.editSubflow",{name:node.name})
+            } else if (node.type.indexOf("subflow:")===0) {
+                var subflow = RED.nodes.subflow(node.type.substring(8));
+                label = RED._("subflow.editSubflow",{name:subflow.name})
             } else {
-                if (typeof node._def.paletteLabel !== 'undefined') {
+                if (typeof node._def.paletteLabel !== "undefined") {
                     try {
-                        label = (typeof node._def.paletteLabel === 'function' ? node._def.paletteLabel.call(node._def) : node._def.paletteLabel) || '';
-                    } catch (err) {
-                        console.log(`Definition error: ${node.type}.paletteLabel`, err);
+                        label = (typeof node._def.paletteLabel === "function" ? node._def.paletteLabel.call(node._def) : node._def.paletteLabel)||"";
+                    } catch(err) {
+                        console.log("Definition error: "+node.type+".paletteLabel",err);
                     }
                 }
-                if (i === editStack.length - 1) {
+                if (i === editStack.length-1) {
                     if (RED.nodes.node(node.id)) {
-                        label = RED._('editor.editNode', { type: label });
+                        label = RED._("editor.editNode",{type:label});
                     } else {
-                        label = RED._('editor.addNewConfig', { type: label });
+                        label = RED._("editor.addNewConfig",{type:label});
                     }
                 }
             }
-            title += `<li>${label}</li>`;
+            title += '<li>'+label+'</li>';
         }
         title += '</ul>';
         return title;
     }
 
-    function buildEditForm(tray, formId, type, ns) {
-        const trayBody = tray.find('.editor-tray-body');
-        const dialogForm = $(`<form id="${formId}" class="form-horizontal" autocomplete="off"></form>`).appendTo(trayBody);
-        dialogForm.html($(`script[data-template-name='${type}']`).html());
-        ns = ns || 'node-red';
-        dialogForm.find('[data-i18n]').each(function () {
-            const current = $(this).attr('data-i18n');
-            const keys = current.split(';');
-            for (let i = 0; i < keys.length; i++) {
-                let key = keys[i];
-                if (key.indexOf(':') === -1) {
-                    let prefix = '';
-                    if (key.indexOf('[') === 0) {
-                        const parts = key.split(']');
-                        prefix = `${parts[0]}]`;
+    function buildEditForm(tray,formId,type,ns) {
+        var trayBody = tray.find('.editor-tray-body');
+        var dialogForm = $('<form id="'+formId+'" class="form-horizontal" autocomplete="off"></form>').appendTo(trayBody);
+        dialogForm.html($("script[data-template-name='"+type+"']").html());
+        ns = ns||"node-red";
+        dialogForm.find('[data-i18n]').each(function() {
+            var current = $(this).attr("data-i18n");
+            var keys = current.split(";");
+            for (var i=0;i<keys.length;i++) {
+                var key = keys[i];
+                if (key.indexOf(":") === -1) {
+                    var prefix = "";
+                    if (key.indexOf("[")===0) {
+                        var parts = key.split("]");
+                        prefix = parts[0]+"]";
                         key = parts[1];
                     }
-                    keys[i] = `${prefix + ns}:${key}`;
+                    keys[i] = prefix+ns+":"+key;
                 }
             }
-            $(this).attr('data-i18n', keys.join(';'));
+            $(this).attr("data-i18n",keys.join(";"));
         });
         // Add dummy fields to prevent 'Enter' submitting the form in some
         // cases, and also prevent browser auto-fill of password
         // Add in reverse order as they are prepended...
         $('<input type="password" style="display: none;" />').prependTo(dialogForm);
         $('<input type="text" style="display: none;" />').prependTo(dialogForm);
-        dialogForm.submit((e) => { e.preventDefault(); });
+        dialogForm.submit(function(e) { e.preventDefault();});
         return dialogForm;
     }
 
     function showEditDialog(node) {
-        const editing_node = node;
+        var editing_node = node;
         editStack.push(node);
         RED.view.state(RED.state.EDITING);
-        let type = node.type;
-        if (node.type.substring(0, 8) == 'subflow:') {
-            type = 'subflow';
+        var type = node.type;
+        if (node.type.substring(0,8) == "subflow:") {
+            type = "subflow";
         }
-        const trayOptions = {
+        var trayOptions = {
             title: getEditStackTitle(),
             buttons: [
                 {
-                    id: 'node-dialog-delete',
+                    id: "node-dialog-delete",
                     class: 'leftButton',
-                    text: RED._('common.label.delete'),
-                    click() {
-                        const startDirty = RED.nodes.dirty();
-                        let removedNodes = [];
-                        let removedLinks = [];
-                        const removedEntities = RED.nodes.remove(editing_node.id);
+                    text: RED._("common.label.delete"),
+                    click: function() {
+                        var startDirty = RED.nodes.dirty();
+                        var removedNodes = [];
+                        var removedLinks = [];
+                        var removedEntities = RED.nodes.remove(editing_node.id);
                         removedNodes.push(editing_node);
                         removedNodes = removedNodes.concat(removedEntities.nodes);
                         removedLinks = removedLinks.concat(removedEntities.links);
 
-                        const historyEvent = {
-                            t: 'delete',
-                            nodes: removedNodes,
-                            links: removedLinks,
+                        var historyEvent = {
+                            t:'delete',
+                            nodes:removedNodes,
+                            links:removedLinks,
                             changes: {},
-                            dirty: startDirty,
-                        };
+                            dirty: startDirty
+                        }
 
                         RED.nodes.dirty(true);
                         RED.view.redraw(true);
                         RED.history.push(historyEvent);
                         RED.tray.close();
-                    },
+                    }
                 },
                 {
-                    id: 'node-dialog-cancel',
-                    text: RED._('common.label.cancel'),
-                    click() {
+                    id: "node-dialog-cancel",
+                    text: RED._("common.label.cancel"),
+                    click: function() {
                         if (editing_node._def) {
                             if (editing_node._def.oneditcancel) {
                                 try {
                                     editing_node._def.oneditcancel.call(editing_node);
-                                } catch (err) {
-                                    console.log('oneditcancel', editing_node.id, editing_node.type, err.toString());
+                                } catch(err) {
+                                    console.log("oneditcancel",editing_node.id,editing_node.type,err.toString());
                                 }
                             }
 
-                            for (const d in editing_node._def.defaults) {
+                            for (var d in editing_node._def.defaults) {
                                 if (editing_node._def.defaults.hasOwnProperty(d)) {
-                                    const def = editing_node._def.defaults[d];
+                                    var def = editing_node._def.defaults[d];
                                     if (def.type) {
-                                        const configTypeDef = RED.nodes.getType(def.type);
+                                        var configTypeDef = RED.nodes.getType(def.type);
                                         if (configTypeDef && configTypeDef.exclusive) {
-                                            const input = $(`#node-input-${d}`).val() || '';
-                                            if (input !== '' && !editing_node[d]) {
+                                            var input = $("#node-input-"+d).val()||"";
+                                            if (input !== "" && !editing_node[d]) {
                                                 // This node has an exclusive config node that
                                                 // has just been added. As the user is cancelling
                                                 // the edit, need to delete the just-added config
@@ -9598,52 +9648,55 @@ RED.editor = (function () {
                                         }
                                     }
                                 }
+
                             }
                         }
                         RED.tray.close();
-                    },
+                    }
                 },
                 {
-                    id: 'node-dialog-ok',
-                    text: RED._('common.label.done'),
-                    class: 'primary',
-                    click() {
-                        const changes = {};
-                        let changed = false;
-                        const wasDirty = RED.nodes.dirty();
-                        let d;
-                        let outputMap;
+                    id: "node-dialog-ok",
+                    text: RED._("common.label.done"),
+                    class: "primary",
+                    click: function() {
+                        var changes = {};
+                        var changed = false;
+                        var wasDirty = RED.nodes.dirty();
+                        var d;
+                        var outputMap;
 
                         if (editing_node._def.oneditsave) {
-                            const oldValues = {};
+                            var oldValues = {};
                             for (d in editing_node._def.defaults) {
                                 if (editing_node._def.defaults.hasOwnProperty(d)) {
-                                    if (typeof editing_node[d] === 'string' || typeof editing_node[d] === 'number') {
+                                    if (typeof editing_node[d] === "string" || typeof editing_node[d] === "number") {
                                         oldValues[d] = editing_node[d];
                                     } else {
-                                        oldValues[d] = $.extend(true, {}, { v: editing_node[d] }).v;
+                                        oldValues[d] = $.extend(true,{},{v:editing_node[d]}).v;
                                     }
                                 }
                             }
                             try {
-                                const rc = editing_node._def.oneditsave.call(editing_node);
+                                var rc = editing_node._def.oneditsave.call(editing_node);
                                 if (rc === true) {
                                     changed = true;
                                 }
-                            } catch (err) {
-                                console.log('oneditsave', editing_node.id, editing_node.type, err.toString());
+                            } catch(err) {
+                                console.log("oneditsave",editing_node.id,editing_node.type,err.toString());
                             }
 
                             for (d in editing_node._def.defaults) {
                                 if (editing_node._def.defaults.hasOwnProperty(d)) {
-                                    if (oldValues[d] === null || typeof oldValues[d] === 'string' || typeof oldValues[d] === 'number') {
+                                    if (oldValues[d] === null || typeof oldValues[d] === "string" || typeof oldValues[d] === "number") {
                                         if (oldValues[d] !== editing_node[d]) {
                                             changes[d] = oldValues[d];
                                             changed = true;
                                         }
-                                    } else if (JSON.stringify(oldValues[d]) !== JSON.stringify(editing_node[d])) {
-                                        changes[d] = oldValues[d];
-                                        changed = true;
+                                    } else {
+                                        if (JSON.stringify(oldValues[d]) !== JSON.stringify(editing_node[d])) {
+                                            changes[d] = oldValues[d];
+                                            changed = true;
+                                        }
                                     }
                                 }
                             }
@@ -9652,29 +9705,29 @@ RED.editor = (function () {
                         if (editing_node._def.defaults) {
                             for (d in editing_node._def.defaults) {
                                 if (editing_node._def.defaults.hasOwnProperty(d)) {
-                                    const input = $(`#node-input-${d}`);
+                                    var input = $("#node-input-"+d);
                                     var newValue;
-                                    if (input.attr('type') === 'checkbox') {
+                                    if (input.attr('type') === "checkbox") {
                                         newValue = input.prop('checked');
-                                    } else if ('format' in editing_node._def.defaults[d] && editing_node._def.defaults[d].format !== '' && input[0].nodeName === 'DIV') {
+                                    } else if ("format" in editing_node._def.defaults[d] && editing_node._def.defaults[d].format !== "" && input[0].nodeName === "DIV") {
                                         newValue = input.text();
                                     } else {
                                         newValue = input.val();
                                     }
                                     if (newValue != null) {
-                                        if (d === 'outputs' && (newValue.trim() === '' || isNaN(newValue))) {
+                                        if (d === "outputs" && (newValue.trim() === "" || isNaN(newValue))) {
                                             continue;
                                         }
                                         if (editing_node[d] != newValue) {
                                             if (editing_node._def.defaults[d].type) {
-                                                if (newValue == '_ADD_') {
-                                                    newValue = '';
+                                                if (newValue == "_ADD_") {
+                                                    newValue = "";
                                                 }
                                                 // Change to a related config node
-                                                let configNode = RED.nodes.node(editing_node[d]);
+                                                var configNode = RED.nodes.node(editing_node[d]);
                                                 if (configNode) {
-                                                    const users = configNode.users;
-                                                    users.splice(users.indexOf(editing_node), 1);
+                                                    var users = configNode.users;
+                                                    users.splice(users.indexOf(editing_node),1);
                                                 }
                                                 configNode = RED.nodes.node(newValue);
                                                 if (configNode) {
@@ -9690,33 +9743,33 @@ RED.editor = (function () {
                             }
                         }
                         if (editing_node._def.credentials) {
-                            const prefix = 'node-input';
-                            const credDefinition = editing_node._def.credentials;
-                            const credsChanged = updateNodeCredentials(editing_node, credDefinition, prefix);
+                            var prefix = 'node-input';
+                            var credDefinition = editing_node._def.credentials;
+                            var credsChanged = updateNodeCredentials(editing_node,credDefinition,prefix);
                             changed = changed || credsChanged;
                         }
-                        if (editing_node.hasOwnProperty('_outputs')) {
+                        if (editing_node.hasOwnProperty("_outputs")) {
                             outputMap = editing_node._outputs;
                             delete editing_node._outputs;
                             if (Object.keys(outputMap).length > 0) {
                                 changed = true;
                             }
                         }
-                        const removedLinks = updateNodeProperties(editing_node, outputMap);
+                        var removedLinks = updateNodeProperties(editing_node,outputMap);
                         if (changed) {
-                            const wasChanged = editing_node.changed;
+                            var wasChanged = editing_node.changed;
                             editing_node.changed = true;
                             RED.nodes.dirty(true);
 
-                            const activeSubflow = RED.nodes.subflow(RED.workspaces.active());
-                            let subflowInstances = null;
+                            var activeSubflow = RED.nodes.subflow(RED.workspaces.active());
+                            var subflowInstances = null;
                             if (activeSubflow) {
                                 subflowInstances = [];
-                                RED.nodes.eachNode((n) => {
-                                    if (n.type == `subflow:${RED.workspaces.active()}`) {
+                                RED.nodes.eachNode(function(n) {
+                                    if (n.type == "subflow:"+RED.workspaces.active()) {
                                         subflowInstances.push({
-                                            id: n.id,
-                                            changed: n.changed,
+                                            id:n.id,
+                                            changed:n.changed
                                         });
                                         n.changed = true;
                                         n.dirty = true;
@@ -9724,59 +9777,60 @@ RED.editor = (function () {
                                     }
                                 });
                             }
-                            const historyEvent = {
-                                t: 'edit',
-                                node: editing_node,
-                                changes,
-                                links: removedLinks,
-                                dirty: wasDirty,
-                                changed: wasChanged,
+                            var historyEvent = {
+                                t:'edit',
+                                node:editing_node,
+                                changes:changes,
+                                links:removedLinks,
+                                dirty:wasDirty,
+                                changed:wasChanged
                             };
                             if (outputMap) {
                                 historyEvent.outputMap = outputMap;
                             }
                             if (subflowInstances) {
                                 historyEvent.subflow = {
-                                    instances: subflowInstances,
-                                };
+                                    instances:subflowInstances
+                                }
                             }
                             RED.history.push(historyEvent);
                         }
                         editing_node.dirty = true;
                         validateNode(editing_node);
-                        RED.events.emit('editor:save', editing_node);
+                        RED.events.emit("editor:save",editing_node);
                         RED.tray.close();
-                    },
-                },
+                    }
+                }
             ],
-            resize(dimensions) {
+            resize: function(dimensions) {
                 editTrayWidthCache[type] = dimensions.width;
                 if (editing_node && editing_node._def.oneditresize) {
-                    const form = $('#dialog-form');
+                    var form = $("#dialog-form");
                     try {
-                        editing_node._def.oneditresize.call(editing_node, { width: form.width(), height: form.height() });
-                    } catch (err) {
-                        console.log('oneditresize', editing_node.id, editing_node.type, err.toString());
+                        editing_node._def.oneditresize.call(editing_node,{width:form.width(),height:form.height()});
+                    } catch(err) {
+                        console.log("oneditresize",editing_node.id,editing_node.type,err.toString());
                     }
                 }
             },
-            open(tray, done) {
+            open: function(tray,done) {
                 if (editing_node) {
                     // RED.sidebar.info.refresh(editing_node);
                 }
-                let ns;
-                if (node._def.set.module === 'node-red') {
-                    ns = 'node-red';
+                var ns;
+                if (node._def.set.module === "node-red") {
+                    ns = "node-red";
                 } else {
                     ns = node._def.set.id;
                 }
-                const dialogForm = buildEditForm(tray, 'dialog-form', type, ns);
-                prepareEditDialog(node, node._def, 'node-input', () => {
+                var dialogForm = buildEditForm(tray,"dialog-form",type,ns);
+                prepareEditDialog(node,node._def,"node-input", function() {
                     dialogForm.i18n();
                     done();
                 });
+
             },
-            close() {
+            close: function() {
                 if (RED.view.state() != RED.state.IMPORT_DRAGGING) {
                     RED.view.state(RED.state.DEFAULT);
                 }
@@ -9787,25 +9841,25 @@ RED.editor = (function () {
                 RED.view.redraw(true);
                 editStack.pop();
             },
-            show() {
+            show: function() {
                 if (editing_node) {
                     // RED.sidebar.info.refresh(editing_node);
                 }
-            },
-        };
+            }
+        }
         if (editTrayWidthCache.hasOwnProperty(type)) {
             trayOptions.width = editTrayWidthCache[type];
         }
 
         if (type === 'subflow') {
-            const id = editing_node.type.substring(8);
+            var id = editing_node.type.substring(8);
             trayOptions.buttons.unshift({
                 class: 'leftButton',
-                text: RED._('subflow.edit'),
-                click() {
+                text: RED._("subflow.edit"),
+                click: function() {
                     RED.workspaces.show(id);
-                    $('#node-dialog-ok').click();
-                },
+                    $("#node-dialog-ok").click();
+                }
             });
         }
 
@@ -9817,19 +9871,19 @@ RED.editor = (function () {
      * id - id of config node to edit. _ADD_ for a new one
      * prefix - the input prefix of the parent property
      */
-    function showEditConfigNodeDialog(name, type, id, prefix) {
-        const adding = (id == '_ADD_');
-        const node_def = RED.nodes.getType(type);
-        let editing_config_node = RED.nodes.node(id);
+    function showEditConfigNodeDialog(name,type,id,prefix) {
+        var adding = (id == "_ADD_");
+        var node_def = RED.nodes.getType(type);
+        var editing_config_node = RED.nodes.node(id);
 
-        let ns;
-        if (node_def.set.module === 'node-red') {
-            ns = 'node-red';
+        var ns;
+        if (node_def.set.module === "node-red") {
+            ns = "node-red";
         } else {
             ns = node_def.set.id;
         }
-        let configNodeScope = ''; // default to global
-        const activeSubflow = RED.nodes.subflow(RED.workspaces.active());
+        var configNodeScope = ""; // default to global
+        var activeSubflow = RED.nodes.subflow(RED.workspaces.active());
         if (activeSubflow) {
             configNodeScope = activeSubflow.id;
         }
@@ -9837,86 +9891,86 @@ RED.editor = (function () {
             editing_config_node = {
                 id: RED.nodes.id(),
                 _def: node_def,
-                type,
+                type: type,
                 z: configNodeScope,
-                users: [],
-            };
-            for (const d in node_def.defaults) {
+                users: []
+            }
+            for (var d in node_def.defaults) {
                 if (node_def.defaults[d].value) {
                     editing_config_node[d] = JSON.parse(JSON.stringify(node_def.defaults[d].value));
                 }
             }
-            editing_config_node._ = node_def._;
+            editing_config_node["_"] = node_def._;
         }
         editStack.push(editing_config_node);
 
         RED.view.state(RED.state.EDITING);
-        const trayOptions = {
-            title: getEditStackTitle(), // (adding?RED._("editor.addNewConfig", {type:type}):RED._("editor.editConfig", {type:type})),
-            resize() {
+        var trayOptions = {
+            title: getEditStackTitle(), //(adding?RED._("editor.addNewConfig", {type:type}):RED._("editor.editConfig", {type:type})),
+            resize: function() {
                 if (editing_config_node && editing_config_node._def.oneditresize) {
-                    const form = $('#node-config-dialog-edit-form');
+                    var form = $("#node-config-dialog-edit-form");
                     try {
-                        editing_config_node._def.oneditresize.call(editing_config_node, { width: form.width(), height: form.height() });
-                    } catch (err) {
-                        console.log('oneditresize', editing_config_node.id, editing_config_node.type, err.toString());
+                        editing_config_node._def.oneditresize.call(editing_config_node,{width:form.width(),height:form.height()});
+                    } catch(err) {
+                        console.log("oneditresize",editing_config_node.id,editing_config_node.type,err.toString());
                     }
                 }
             },
-            open(tray, done) {
-                const trayHeader = tray.find('.editor-tray-header');
-                const trayFooter = tray.find('.editor-tray-footer');
+            open: function(tray, done) {
+                var trayHeader = tray.find(".editor-tray-header");
+                var trayFooter = tray.find(".editor-tray-footer");
 
                 if (node_def.hasUsers !== false) {
                     trayFooter.prepend('<div id="node-config-dialog-user-count"><i class="fa fa-info-circle"></i> <span></span></div>');
                 }
                 trayFooter.append('<span id="node-config-dialog-scope-container"><span id="node-config-dialog-scope-warning" data-i18n="[title]editor.errors.scopeChange"><i class="fa fa-warning"></i></span><select id="node-config-dialog-scope"></select></span>');
 
-                const dialogForm = buildEditForm(tray, 'node-config-dialog-edit-form', type, ns);
+                var dialogForm = buildEditForm(tray,"node-config-dialog-edit-form",type,ns);
 
-                prepareEditDialog(editing_config_node, node_def, 'node-config-input', () => {
+                prepareEditDialog(editing_config_node,node_def,"node-config-input", function() {
                     if (editing_config_node._def.exclusive) {
-                        $('#node-config-dialog-scope').hide();
+                        $("#node-config-dialog-scope").hide();
                     } else {
-                        $('#node-config-dialog-scope').attr('style', 'display: block !important');
+                        $("#node-config-dialog-scope").attr("style", "display: block !important");
                     }
-                    $('#node-config-dialog-scope-warning').hide();
+                    $("#node-config-dialog-scope-warning").hide();
 
-                    const nodeUserFlows = {};
-                    editing_config_node.users.forEach((n) => {
+                    var nodeUserFlows = {};
+                    editing_config_node.users.forEach(function(n) {
                         nodeUserFlows[n.z] = true;
                     });
-                    const flowCount = Object.keys(nodeUserFlows).length;
-                    const tabSelect = $('#node-config-dialog-scope').empty();
-                    tabSelect.off('change');
-                    tabSelect.append(`<option value=""${!editing_config_node.z ? ' selected' : ''} data-i18n="sidebar.config.global"></option>`);
+                    var flowCount = Object.keys(nodeUserFlows).length;
+                    var tabSelect = $("#node-config-dialog-scope").empty();
+                    tabSelect.off("change");
+                    tabSelect.append('<option value=""'+(!editing_config_node.z?" selected":"")+' data-i18n="sidebar.config.global"></option>');
                     tabSelect.append('<option disabled data-i18n="sidebar.config.flows"></option>');
-                    RED.nodes.eachWorkspace((ws) => {
-                        let workspaceLabel = ws.label;
+                    RED.nodes.eachWorkspace(function(ws) {
+                        var workspaceLabel = ws.label;
                         if (nodeUserFlows[ws.id]) {
-                            workspaceLabel = `* ${workspaceLabel}`;
+                            workspaceLabel = "* "+workspaceLabel;
                         }
-                        tabSelect.append(`<option value="${ws.id}"${ws.id == editing_config_node.z ? ' selected' : ''}>${workspaceLabel}</option>`);
+                        tabSelect.append('<option value="'+ws.id+'"'+(ws.id==editing_config_node.z?" selected":"")+'>'+workspaceLabel+'</option>');
                     });
                     tabSelect.append('<option disabled data-i18n="sidebar.config.subflows"></option>');
-                    RED.nodes.eachSubflow((ws) => {
-                        let workspaceLabel = ws.name;
+                    RED.nodes.eachSubflow(function(ws) {
+                        var workspaceLabel = ws.name;
                         if (nodeUserFlows[ws.id]) {
-                            workspaceLabel = `* ${workspaceLabel}`;
+                            workspaceLabel = "* "+workspaceLabel;
                         }
-                        tabSelect.append(`<option value="${ws.id}"${ws.id == editing_config_node.z ? ' selected' : ''}>${workspaceLabel}</option>`);
+                        tabSelect.append('<option value="'+ws.id+'"'+(ws.id==editing_config_node.z?" selected":"")+'>'+workspaceLabel+'</option>');
                     });
                     if (flowCount > 0) {
-                        tabSelect.on('change', function () {
-                            const newScope = $(this).val();
+                        tabSelect.on('change',function() {
+                            var newScope = $(this).val();
                             if (newScope === '') {
                                 // global scope - everyone can use it
-                                $('#node-config-dialog-scope-warning').hide();
+                                $("#node-config-dialog-scope-warning").hide();
                             } else if (!nodeUserFlows[newScope] || flowCount > 1) {
                                 // a user will loose access to it
-                                $('#node-config-dialog-scope-warning').attr('style', 'display: block !important');
+                                $("#node-config-dialog-scope-warning").attr("style", "display: block !important");
                             } else {
-                                $('#node-config-dialog-scope-warning').hide();
+                                $("#node-config-dialog-scope-warning").hide();
                             }
                         });
                     }
@@ -9924,97 +9978,96 @@ RED.editor = (function () {
 
                     dialogForm.i18n();
                     if (node_def.hasUsers !== false) {
-                        $('#node-config-dialog-user-count').find('span').html(RED._('editor.nodesUse', { count: editing_config_node.users.length })).parent()
-                            .attr('style', 'display: block !important');
+                        $("#node-config-dialog-user-count").find("span").html(RED._("editor.nodesUse", {count:editing_config_node.users.length})).parent().attr("style", "display: block !important");
                     }
                     done();
                 });
             },
-            close() {
+            close: function() {
                 RED.workspaces.refresh();
                 editStack.pop();
             },
-            show() {
+            show: function() {
                 if (editing_config_node) {
                     // RED.sidebar.info.refresh(editing_config_node);
                 }
-            },
-        };
+            }
+        }
         trayOptions.buttons = [
             {
-                id: 'node-config-dialog-cancel',
-                text: RED._('common.label.cancel'),
-                click() {
-                    const configType = type;
-                    const configId = editing_config_node.id;
-                    const configAdding = adding;
-                    const configTypeDef = RED.nodes.getType(configType);
+                id: "node-config-dialog-cancel",
+                text: RED._("common.label.cancel"),
+                click: function() {
+                    var configType = type;
+                    var configId = editing_config_node.id;
+                    var configAdding = adding;
+                    var configTypeDef = RED.nodes.getType(configType);
 
                     if (configTypeDef.oneditcancel) {
                         // TODO: what to pass as this to call
                         if (configTypeDef.oneditcancel) {
-                            const cn = RED.nodes.node(configId);
+                            var cn = RED.nodes.node(configId);
                             if (cn) {
                                 try {
-                                    configTypeDef.oneditcancel.call(cn, false);
-                                } catch (err) {
-                                    console.log('oneditcancel', cn.id, cn.type, err.toString());
+                                    configTypeDef.oneditcancel.call(cn,false);
+                                } catch(err) {
+                                    console.log("oneditcancel",cn.id,cn.type,err.toString());
                                 }
                             } else {
                                 try {
-                                    configTypeDef.oneditcancel.call({ id: configId }, true);
-                                } catch (err) {
-                                    console.log('oneditcancel', configId, configType, err.toString());
+                                    configTypeDef.oneditcancel.call({id:configId},true);
+                                } catch(err) {
+                                    console.log("oneditcancel",configId,configType,err.toString());
                                 }
                             }
                         }
                     }
                     RED.tray.close();
-                },
+                }
             },
             {
-                id: 'node-config-dialog-ok',
-                text: adding ? RED._('editor.configAdd') : RED._('editor.configUpdate'),
-                class: 'primary',
-                click() {
-                    const configProperty = name;
-                    const configId = editing_config_node.id;
-                    const configType = type;
-                    const configAdding = adding;
-                    const configTypeDef = RED.nodes.getType(configType);
-                    let d;
-                    let input;
-                    const scope = $('#node-config-dialog-scope').val();
+                id: "node-config-dialog-ok",
+                text: adding?RED._("editor.configAdd"):RED._("editor.configUpdate"),
+                class: "primary",
+                click: function() {
+                    var configProperty = name;
+                    var configId = editing_config_node.id;
+                    var configType = type;
+                    var configAdding = adding;
+                    var configTypeDef = RED.nodes.getType(configType);
+                    var d;
+                    var input;
+                    var scope = $("#node-config-dialog-scope").val();
 
                     if (configTypeDef.oneditsave) {
                         try {
                             configTypeDef.oneditsave.call(editing_config_node);
-                        } catch (err) {
-                            console.log('oneditsave', editing_config_node.id, editing_config_node.type, err.toString());
+                        } catch(err) {
+                            console.log("oneditsave",editing_config_node.id,editing_config_node.type,err.toString());
                         }
                     }
 
                     for (d in configTypeDef.defaults) {
                         if (configTypeDef.defaults.hasOwnProperty(d)) {
                             var newValue;
-                            input = $(`#node-config-input-${d}`);
-                            if (input.attr('type') === 'checkbox') {
+                            input = $("#node-config-input-"+d);
+                            if (input.attr('type') === "checkbox") {
                                 newValue = input.prop('checked');
-                            } else if ('format' in configTypeDef.defaults[d] && configTypeDef.defaults[d].format !== '' && input[0].nodeName === 'DIV') {
+                            } else if ("format" in configTypeDef.defaults[d] && configTypeDef.defaults[d].format !== "" && input[0].nodeName === "DIV") {
                                 newValue = input.text();
                             } else {
                                 newValue = input.val();
                             }
                             if (newValue != null && newValue !== editing_config_node[d]) {
                                 if (editing_config_node._def.defaults[d].type) {
-                                    if (newValue == '_ADD_') {
-                                        newValue = '';
+                                    if (newValue == "_ADD_") {
+                                        newValue = "";
                                     }
                                     // Change to a related config node
-                                    let configNode = RED.nodes.node(editing_config_node[d]);
+                                    var configNode = RED.nodes.node(editing_config_node[d]);
                                     if (configNode) {
-                                        const users = configNode.users;
-                                        users.splice(users.indexOf(editing_config_node), 1);
+                                        var users = configNode.users;
+                                        users.splice(users.indexOf(editing_config_node),1);
                                     }
                                     configNode = RED.nodes.node(newValue);
                                     if (configNode) {
@@ -10031,20 +10084,20 @@ RED.editor = (function () {
                     if (scope) {
                         // Search for nodes that use this one that are no longer
                         // in scope, so must be removed
-                        editing_config_node.users = editing_config_node.users.filter((n) => {
-                            let keep = true;
-                            for (const d in n._def.defaults) {
+                        editing_config_node.users = editing_config_node.users.filter(function(n) {
+                            var keep = true;
+                            for (var d in n._def.defaults) {
                                 if (n._def.defaults.hasOwnProperty(d)) {
-                                    if (n._def.defaults[d].type === editing_config_node.type
-                                        && n[d] === editing_config_node.id
-                                        && n.z !== scope) {
-                                        keep = false;
-                                        // Remove the reference to this node
-                                        // and revalidate
-                                        n[d] = null;
-                                        n.dirty = true;
-                                        n.changed = true;
-                                        validateNode(n);
+                                    if (n._def.defaults[d].type === editing_config_node.type &&
+                                        n[d] === editing_config_node.id &&
+                                        n.z !== scope) {
+                                            keep = false;
+                                            // Remove the reference to this node
+                                            // and revalidate
+                                            n[d] = null;
+                                            n.dirty = true;
+                                            n.changed = true;
+                                            validateNode(n);
                                     }
                                 }
                             }
@@ -10057,15 +10110,15 @@ RED.editor = (function () {
                     }
 
                     if (configTypeDef.credentials) {
-                        updateNodeCredentials(editing_config_node, configTypeDef.credentials, 'node-config-input');
+                        updateNodeCredentials(editing_config_node,configTypeDef.credentials,"node-config-input");
                     }
                     validateNode(editing_config_node);
-                    const validatedNodes = {};
+                    var validatedNodes = {};
                     validatedNodes[editing_config_node.id] = true;
 
-                    let userStack = editing_config_node.users.slice();
-                    while (userStack.length > 0) {
-                        const user = userStack.pop();
+                    var userStack = editing_config_node.users.slice();
+                    while(userStack.length > 0) {
+                        var user = userStack.pop();
                         if (!validatedNodes[user.id]) {
                             validatedNodes[user.id] = true;
                             if (user.users) {
@@ -10077,54 +10130,55 @@ RED.editor = (function () {
                     RED.nodes.dirty(true);
                     RED.view.redraw(true);
                     if (!configAdding) {
-                        RED.events.emit('editor:save', editing_config_node);
+                        RED.events.emit("editor:save",editing_config_node);
                     }
-                    RED.tray.close(() => {
-                        updateConfigNodeSelect(configProperty, configType, editing_config_node.id, prefix);
+                    RED.tray.close(function() {
+                        updateConfigNodeSelect(configProperty,configType,editing_config_node.id,prefix);
                     });
-                },
-            },
+                }
+            }
         ];
 
         if (!adding) {
             trayOptions.buttons.unshift({
                 class: 'leftButton',
-                text: RED._('editor.configDelete'), // '<i class="fa fa-trash"></i>',
-                click() {
-                    const configProperty = name;
-                    const configId = editing_config_node.id;
-                    const configType = type;
-                    const configTypeDef = RED.nodes.getType(configType);
+                text: RED._("editor.configDelete"), //'<i class="fa fa-trash"></i>',
+                click: function() {
+                    var configProperty = name;
+                    var configId = editing_config_node.id;
+                    var configType = type;
+                    var configTypeDef = RED.nodes.getType(configType);
 
                     try {
+
                         if (configTypeDef.ondelete) {
                             // Deprecated: never documented but used by some early nodes
-                            console.log('Deprecated API warning: config node type ', configType, ' has an ondelete function - should be oneditdelete');
+                            console.log("Deprecated API warning: config node type ",configType," has an ondelete function - should be oneditdelete");
                             configTypeDef.ondelete.call(editing_config_node);
                         }
                         if (configTypeDef.oneditdelete) {
                             configTypeDef.oneditdelete.call(editing_config_node);
                         }
-                    } catch (err) {
-                        console.log('oneditdelete', editing_config_node.id, editing_config_node.type, err.toString());
+                    } catch(err) {
+                        console.log("oneditdelete",editing_config_node.id,editing_config_node.type,err.toString());
                     }
 
-                    const historyEvent = {
-                        t: 'delete',
-                        nodes: [editing_config_node],
+                    var historyEvent = {
+                        t:'delete',
+                        nodes:[editing_config_node],
                         changes: {},
-                        dirty: RED.nodes.dirty(),
-                    };
-                    for (let i = 0; i < editing_config_node.users.length; i++) {
-                        const user = editing_config_node.users[i];
+                        dirty: RED.nodes.dirty()
+                    }
+                    for (var i=0;i<editing_config_node.users.length;i++) {
+                        var user = editing_config_node.users[i];
                         historyEvent.changes[user.id] = {
                             changed: user.changed,
-                            valid: user.valid,
+                            valid: user.valid
                         };
-                        for (const d in user._def.defaults) {
+                        for (var d in user._def.defaults) {
                             if (user._def.defaults.hasOwnProperty(d) && user[d] == configId) {
-                                historyEvent.changes[user.id][d] = configId;
-                                user[d] = '';
+                                historyEvent.changes[user.id][d] = configId
+                                user[d] = "";
                                 user.changed = true;
                                 user.dirty = true;
                             }
@@ -10135,56 +10189,57 @@ RED.editor = (function () {
                     RED.nodes.dirty(true);
                     RED.view.redraw(true);
                     RED.history.push(historyEvent);
-                    RED.tray.close(() => {
-                        updateConfigNodeSelect(configProperty, configType, '', prefix);
+                    RED.tray.close(function() {
+                        updateConfigNodeSelect(configProperty,configType,"",prefix);
                     });
-                },
+                }
             });
         }
 
         RED.tray.show(trayOptions);
     }
 
-    function defaultConfigNodeSort(A, B) {
+    function defaultConfigNodeSort(A,B) {
         if (A.__label__ < B.__label__) {
             return -1;
-        } if (A.__label__ > B.__label__) {
+        } else if (A.__label__ > B.__label__) {
             return 1;
         }
         return 0;
     }
 
-    function updateConfigNodeSelect(name, type, value, prefix) {
+    function updateConfigNodeSelect(name,type,value,prefix) {
         // if prefix is null, there is no config select to update
         if (prefix) {
-            const button = $(`#${prefix}-edit-${name}`);
+            var button = $("#"+prefix+"-edit-"+name);
             if (button.length) {
                 if (value) {
-                    button.text(RED._('editor.configEdit'));
+                    button.text(RED._("editor.configEdit"));
                 } else {
-                    button.text(RED._('editor.configAdd'));
+                    button.text(RED._("editor.configAdd"));
                 }
-                $(`#${prefix}-${name}`).val(value);
+                $("#"+prefix+"-"+name).val(value);
             } else {
-                const select = $(`#${prefix}-${name}`);
-                const node_def = RED.nodes.getType(type);
+
+                var select = $("#"+prefix+"-"+name);
+                var node_def = RED.nodes.getType(type);
                 select.children().remove();
 
-                let activeWorkspace = RED.nodes.workspace(RED.workspaces.active());
+                var activeWorkspace = RED.nodes.workspace(RED.workspaces.active());
                 if (!activeWorkspace) {
                     activeWorkspace = RED.nodes.subflow(RED.workspaces.active());
                 }
 
-                const configNodes = [];
+                var configNodes = [];
 
-                RED.nodes.eachConfig((config) => {
+                RED.nodes.eachConfig(function(config) {
                     if (config.type == type && (!config.z || config.z === activeWorkspace.id)) {
-                        let label = '';
-                        if (typeof node_def.label === 'function') {
+                        var label = "";
+                        if (typeof node_def.label == "function") {
                             try {
                                 label = node_def.label.call(config);
-                            } catch (err) {
-                                console.log(`Definition error: ${node_def.type}.label`, err);
+                            } catch(err) {
+                                console.log("Definition error: "+node_def.type+".label",err);
                                 label = node_def.type;
                             }
                         } else {
@@ -10194,65 +10249,65 @@ RED.editor = (function () {
                         configNodes.push(config);
                     }
                 });
-                let configSortFn = defaultConfigNodeSort;
-                if (typeof node_def.sort === 'function') {
+                var configSortFn = defaultConfigNodeSort;
+                if (typeof node_def.sort == "function") {
                     configSortFn = node_def.sort;
                 }
                 try {
                     configNodes.sort(configSortFn);
-                } catch (err) {
-                    console.log(`Definition error: ${node_def.type}.sort`, err);
+                } catch(err) {
+                    console.log("Definition error: "+node_def.type+".sort",err);
                 }
 
-                configNodes.forEach((cn) => {
-                    select.append(`<option value="${cn.id}"${value == cn.id ? ' selected' : ''}>${RED.text.bidi.enforceTextDirectionWithUCC(cn.__label__)}</option>`);
+                configNodes.forEach(function(cn) {
+                    select.append('<option value="'+cn.id+'"'+(value==cn.id?" selected":"")+'>'+RED.text.bidi.enforceTextDirectionWithUCC(cn.__label__)+'</option>');
                     delete cn.__label__;
                 });
 
-                select.append(`<option value="_ADD_"${value === '' ? ' selected' : ''}>${RED._('editor.addNewType', { type })}</option>`);
-                window.setTimeout(() => { select.change(); }, 50);
+                select.append('<option value="_ADD_"'+(value===""?" selected":"")+'>'+RED._("editor.addNewType", {type:type})+'</option>');
+                window.setTimeout(function() { select.change();},50);
             }
         }
     }
 
     function showEditSubflowDialog(subflow) {
-        let editing_node = subflow;
+        var editing_node = subflow;
         editStack.push(subflow);
         RED.view.state(RED.state.EDITING);
-        let subflowEditor;
+        var subflowEditor;
 
-        const trayOptions = {
+        var trayOptions = {
             title: getEditStackTitle(),
             buttons: [
                 {
-                    id: 'node-dialog-cancel',
-                    text: RED._('common.label.cancel'),
-                    click() {
+                    id: "node-dialog-cancel",
+                    text: RED._("common.label.cancel"),
+                    click: function() {
                         RED.tray.close();
-                    },
+                    }
                 },
                 {
-                    id: 'node-dialog-ok',
-                    class: 'primary',
-                    text: RED._('common.label.done'),
-                    click() {
-                        let i;
-                        const changes = {};
-                        let changed = false;
-                        const wasDirty = RED.nodes.dirty();
+                    id: "node-dialog-ok",
+                    class: "primary",
+                    text: RED._("common.label.done"),
+                    click: function() {
+                        var i;
+                        var changes = {};
+                        var changed = false;
+                        var wasDirty = RED.nodes.dirty();
 
-                        const newName = $('#subflow-input-name').val();
+                        var newName = $("#subflow-input-name").val();
 
                         if (newName != editing_node.name) {
-                            changes.name = editing_node.name;
+                            changes['name'] = editing_node.name;
                             editing_node.name = newName;
                             changed = true;
                         }
 
-                        const newDescription = subflowEditor.getValue();
+                        var newDescription = subflowEditor.getValue();
 
                         if (newDescription != editing_node.info) {
-                            changes.info = editing_node.info;
+                            changes['info'] = editing_node.info;
                             editing_node.info = newDescription;
                             changed = true;
                         }
@@ -10260,76 +10315,76 @@ RED.editor = (function () {
                         RED.palette.refresh();
 
                         if (changed) {
-                            const subflowInstances = [];
-                            RED.nodes.eachNode((n) => {
-                                if (n.type == `subflow:${editing_node.id}`) {
+                            var subflowInstances = [];
+                            RED.nodes.eachNode(function(n) {
+                                if (n.type == "subflow:"+editing_node.id) {
                                     subflowInstances.push({
-                                        id: n.id,
-                                        changed: n.changed,
-                                    });
+                                        id:n.id,
+                                        changed:n.changed
+                                    })
                                     n.changed = true;
                                     n.dirty = true;
                                     updateNodeProperties(n);
                                 }
                             });
-                            const wasChanged = editing_node.changed;
+                            var wasChanged = editing_node.changed;
                             editing_node.changed = true;
                             RED.nodes.dirty(true);
-                            const historyEvent = {
-                                t: 'edit',
-                                node: editing_node,
-                                changes,
-                                dirty: wasDirty,
-                                changed: wasChanged,
+                            var historyEvent = {
+                                t:'edit',
+                                node:editing_node,
+                                changes:changes,
+                                dirty:wasDirty,
+                                changed:wasChanged,
                                 subflow: {
-                                    instances: subflowInstances,
-                                },
+                                    instances:subflowInstances
+                                }
                             };
 
                             RED.history.push(historyEvent);
                         }
                         editing_node.dirty = true;
                         RED.tray.close();
-                    },
-                },
+                    }
+                }
             ],
-            resize() {
-                const rows = $('#dialog-form>div:not(.node-text-editor-row)');
-                const editorRow = $('#dialog-form>div.node-text-editor-row');
-                let height = $('#dialog-form').height();
-                for (let i = 0; i < rows.size(); i++) {
+            resize: function() {
+                var rows = $("#dialog-form>div:not(.node-text-editor-row)");
+                var editorRow = $("#dialog-form>div.node-text-editor-row");
+                var height = $("#dialog-form").height();
+                for (var i=0;i<rows.size();i++) {
                     height -= $(rows[i]).outerHeight(true);
                 }
-                height -= (parseInt($('#dialog-form').css('marginTop')) + parseInt($('#dialog-form').css('marginBottom')));
-                $('.node-text-editor').css('height', `${height}px`);
+                height -= (parseInt($("#dialog-form").css("marginTop"))+parseInt($("#dialog-form").css("marginBottom")));
+                $(".node-text-editor").css("height",height+"px");
                 subflowEditor.resize();
             },
-            open(tray) {
+            open: function(tray) {
                 if (editing_node) {
                     // RED.sidebar.info.refresh(editing_node);
                 }
-                const dialogForm = buildEditForm(tray, 'dialog-form', 'subflow-template');
+                var dialogForm = buildEditForm(tray,"dialog-form","subflow-template");
                 subflowEditor = RED.editor.createEditor({
                     id: 'subflow-input-info-editor',
                     mode: 'ace/mode/markdown',
-                    value: '',
+                    value: ""
                 });
 
-                $('#subflow-input-name').val(subflow.name);
-                RED.text.bidi.prepareInput($('#subflow-input-name'));
-                subflowEditor.getSession().setValue(subflow.info || '', -1);
-                let userCount = 0;
-                const subflowType = `subflow:${editing_node.id}`;
+                $("#subflow-input-name").val(subflow.name);
+                RED.text.bidi.prepareInput($("#subflow-input-name"));
+                subflowEditor.getSession().setValue(subflow.info||"",-1);
+                var userCount = 0;
+                var subflowType = "subflow:"+editing_node.id;
 
-                RED.nodes.eachNode((n) => {
+                RED.nodes.eachNode(function(n) {
                     if (n.type === subflowType) {
                         userCount++;
                     }
                 });
-                $('#subflow-dialog-user-count').html(RED._('subflow.subflowInstances', { count: userCount })).attr('style', 'display: block !important');
+                $("#subflow-dialog-user-count").html(RED._("subflow.subflowInstances", {count:userCount})).attr("style", "display: block !important");
                 dialogForm.i18n();
             },
-            close() {
+            close: function() {
                 if (RED.view.state() != RED.state.IMPORT_DRAGGING) {
                     RED.view.state(RED.state.DEFAULT);
                 }
@@ -10338,97 +10393,98 @@ RED.editor = (function () {
                 editStack.pop();
                 editing_node = null;
             },
-            show() {
-            },
-        };
+            show: function() {
+            }
+        }
         RED.tray.show(trayOptions);
     }
 
 
     function editExpression(options) {
-        const value = options.value;
-        const onComplete = options.complete;
-        const type = '_expression';
-        editStack.push({ type });
+        var value = options.value;
+        var onComplete = options.complete;
+        var type = "_expression"
+        editStack.push({type:type});
         RED.view.state(RED.state.EDITING);
-        let expressionEditor;
+        var expressionEditor;
 
-        const trayOptions = {
+        var trayOptions = {
             title: getEditStackTitle(),
             buttons: [
                 {
-                    id: 'node-dialog-cancel',
-                    text: RED._('common.label.cancel'),
-                    click() {
+                    id: "node-dialog-cancel",
+                    text: RED._("common.label.cancel"),
+                    click: function() {
                         RED.tray.close();
-                    },
+                    }
                 },
                 {
-                    id: 'node-dialog-ok',
-                    text: RED._('common.label.done'),
-                    class: 'primary',
-                    click() {
-                        $('#node-input-expression-help').html('');
+                    id: "node-dialog-ok",
+                    text: RED._("common.label.done"),
+                    class: "primary",
+                    click: function() {
+                        $("#node-input-expression-help").html("");
                         onComplete(expressionEditor.getValue());
                         RED.tray.close();
-                    },
-                },
+                    }
+                }
             ],
-            resize(dimensions) {
+            resize: function(dimensions) {
                 editTrayWidthCache[type] = dimensions.width;
 
-                const rows = $('#dialog-form>div:not(.node-text-editor-row)');
-                const editorRow = $('#dialog-form>div.node-text-editor-row');
-                let height = $('#dialog-form').height();
-                for (let i = 0; i < rows.size(); i++) {
+                var rows = $("#dialog-form>div:not(.node-text-editor-row)");
+                var editorRow = $("#dialog-form>div.node-text-editor-row");
+                var height = $("#dialog-form").height();
+                for (var i=0;i<rows.size();i++) {
                     height -= $(rows[i]).outerHeight(true);
                 }
-                height -= (parseInt($('#dialog-form').css('marginTop')) + parseInt($('#dialog-form').css('marginBottom')));
-                $('.node-text-editor').css('height', `${height}px`);
+                height -= (parseInt($("#dialog-form").css("marginTop"))+parseInt($("#dialog-form").css("marginBottom")));
+                $(".node-text-editor").css("height",height+"px");
                 expressionEditor.resize();
             },
-            open(tray) {
-                const trayBody = tray.find('.editor-tray-body');
-                const dialogForm = buildEditForm(tray, 'dialog-form', '_expression', 'editor');
-                const funcSelect = $('#node-input-expression-func');
-                Object.keys(jsonata.functions).forEach((f) => {
-                    funcSelect.append($('<option></option>').val(f).text(f));
-                });
-                funcSelect.change(function (e) {
-                    const f = $(this).val();
-                    const args = RED._(`jsonata:${f}.args`, { defaultValue: '' });
-                    const title = `<h5>${f}(${args})</h5>`;
-                    const body = marked(RED._(`jsonata:${f}.desc`, { defaultValue: '' }));
-                    $('#node-input-expression-help').html(`${title}<p>${body}</p>`);
-                });
+            open: function(tray) {
+                var trayBody = tray.find('.editor-tray-body');
+                var dialogForm = buildEditForm(tray,'dialog-form','_expression','editor');
+                var funcSelect = $("#node-input-expression-func");
+                Object.keys(jsonata.functions).forEach(function(f) {
+                    funcSelect.append($("<option></option>").val(f).text(f));
+                })
+                funcSelect.change(function(e) {
+                    var f = $(this).val();
+                    var args = RED._('jsonata:'+f+".args",{defaultValue:''});
+                    var title = "<h5>"+f+"("+args+")</h5>";
+                    var body = marked(RED._('jsonata:'+f+'.desc',{defaultValue:''}));
+                    $("#node-input-expression-help").html(title+"<p>"+body+"</p>");
+
+                })
                 expressionEditor = RED.editor.createEditor({
                     id: 'node-input-expression',
-                    value: '',
-                    mode: 'ace/mode/jsonata',
+                    value: "",
+                    mode:"ace/mode/jsonata",
                     options: {
-                        enableBasicAutocompletion: true,
-                        enableSnippets: true,
-                        enableLiveAutocompletion: true,
-                    },
+                        enableBasicAutocompletion:true,
+                        enableSnippets:true,
+                        enableLiveAutocompletion: true
+                    }
                 });
-                let currentToken = null;
-                let currentTokenPos = -1;
-                const currentFunctionMarker = null;
+                var currentToken = null;
+                var currentTokenPos = -1;
+                var currentFunctionMarker = null;
 
-                expressionEditor.getSession().setValue(value || '', -1);
-                expressionEditor.on('changeSelection', () => {
-                    const c = expressionEditor.getCursorPosition();
-                    const token = expressionEditor.getSession().getTokenAt(c.row, c.column);
+                expressionEditor.getSession().setValue(value||"",-1);
+                expressionEditor.on("changeSelection", function() {
+                    var c = expressionEditor.getCursorPosition();
+                    var token = expressionEditor.getSession().getTokenAt(c.row,c.column);
                     if (token !== currentToken || (token && /paren/.test(token.type) && c.column !== currentTokenPos)) {
                         currentToken = token;
-                        let r; let p;
-                        let scopedFunction = null;
+                        var r,p;
+                        var scopedFunction = null;
                         if (token && token.type === 'keyword') {
                             r = c.row;
                             scopedFunction = token;
                         } else {
-                            let depth = 0;
-                            let next = false;
+                            var depth = 0;
+                            var next = false;
                             if (token) {
                                 if (token.type === 'paren.rparen') {
                                     // If this is a block of parens ')))', set
@@ -10440,16 +10496,16 @@ RED.editor = (function () {
                                 r = c.row;
                                 p = token.index;
                             } else {
-                                r = c.row - 1;
+                                r = c.row-1;
                                 p = -1;
                             }
-                            while (scopedFunction === null && r > -1) {
-                                const rowTokens = expressionEditor.getSession().getTokens(r);
+                            while ( scopedFunction === null && r > -1) {
+                                var rowTokens = expressionEditor.getSession().getTokens(r);
                                 if (p === -1) {
-                                    p = rowTokens.length - 1;
+                                    p = rowTokens.length-1;
                                 }
                                 while (p > -1) {
-                                    const type = rowTokens[p].type;
+                                    var type = rowTokens[p].type;
                                     if (next) {
                                         if (type === 'keyword') {
                                             scopedFunction = rowTokens[p];
@@ -10459,9 +10515,9 @@ RED.editor = (function () {
                                         next = false;
                                     }
                                     if (type === 'paren.lparen') {
-                                        depth -= rowTokens[p].value.length;
+                                        depth-=rowTokens[p].value.length;
                                     } else if (type === 'paren.rparen') {
-                                        depth += rowTokens[p].value.length;
+                                        depth+=rowTokens[p].value.length;
                                     }
                                     if (depth < 0) {
                                         next = true;
@@ -10477,27 +10533,27 @@ RED.editor = (function () {
                         }
                         expressionEditor.session.removeMarker(currentFunctionMarker);
                         if (scopedFunction) {
-                        // console.log(token,.map(function(t) { return t.type}));
+                        //console.log(token,.map(function(t) { return t.type}));
                             funcSelect.val(scopedFunction.value).change();
                         }
                     }
                 });
 
                 dialogForm.i18n();
-                $('#node-input-expression-func-insert').click((e) => {
+                $("#node-input-expression-func-insert").click(function(e) {
                     e.preventDefault();
-                    const pos = expressionEditor.getCursorPosition();
-                    const f = funcSelect.val();
-                    const snippet = jsonata.getFunctionSnippet(f);
+                    var pos = expressionEditor.getCursorPosition();
+                    var f = funcSelect.val();
+                    var snippet = jsonata.getFunctionSnippet(f);
                     expressionEditor.insertSnippet(snippet);
                     expressionEditor.focus();
-                });
+                })
             },
-            close() {
+            close: function() {
                 editStack.pop();
             },
-            show() {},
-        };
+            show: function() {}
+        }
         if (editTrayWidthCache.hasOwnProperty(type)) {
             trayOptions.width = editTrayWidthCache[type];
         }
@@ -10505,28 +10561,28 @@ RED.editor = (function () {
     }
 
     return {
-        init() {
+        init: function() {
             RED.tray.init();
-            RED.actions.add('core:confirm-edit-tray', () => {
-                $('#node-dialog-ok').click();
-                $('#node-config-dialog-ok').click();
+            RED.actions.add("core:confirm-edit-tray", function() {
+                $("#node-dialog-ok").click();
+                $("#node-config-dialog-ok").click();
             });
-            RED.actions.add('core:cancel-edit-tray', () => {
-                $('#node-dialog-cancel').click();
-                $('#node-config-dialog-cancel').click();
+            RED.actions.add("core:cancel-edit-tray", function() {
+                $("#node-dialog-cancel").click();
+                $("#node-config-dialog-cancel").click();
             });
         },
         edit: showEditDialog,
         editConfig: showEditConfigNodeDialog,
         editSubflow: showEditSubflowDialog,
-        editExpression,
-        validateNode,
-        updateNodeProperties, // TODO: only exposed for edit-undo
+        editExpression: editExpression,
+        validateNode: validateNode,
+        updateNodeProperties: updateNodeProperties, // TODO: only exposed for edit-undo
 
-        createEditor(options) {
-            const editor = ace.edit(options.id);
-            editor.setTheme('ace/theme/tomorrow');
-            const session = editor.getSession();
+        createEditor: function(options) {
+            var editor = ace.edit(options.id);
+            editor.setTheme("ace/theme/tomorrow");
+            var session = editor.getSession();
             if (options.mode) {
                 session.setMode(options.mode);
             }
@@ -10539,59 +10595,60 @@ RED.editor = (function () {
                 editor.setOptions(options.options);
             } else {
                 editor.setOptions({
-                    enableBasicAutocompletion: true,
-                    enableSnippets: true,
+                    enableBasicAutocompletion:true,
+                    enableSnippets:true
                 });
             }
             editor.$blockScrolling = Infinity;
             if (options.value) {
-                session.setValue(options.value, -1);
+                session.setValue(options.value,-1);
             }
             if (options.globals) {
-                setTimeout(() => {
-                    if (session.$worker) {
-                        session.$worker.send('setOptions', [{ globals: options.globals, esversion: 6 }]);
+                setTimeout(function() {
+                    if (!!session.$worker) {
+                        session.$worker.send("setOptions", [{globals: options.globals, esversion:6}]);
                     }
-                }, 100);
+                },100);
             }
             return editor;
-        },
-    };
-}());
+        }
+    }
+})();
 
 // Handles node's configuration right-handed sidebar
-RED.tray = (function () {
-    const stack = [];
-    let editorStack = null;
-    let openingTray = false;
+RED.tray = (function() {
+
+    var stack = [];
+    var editorStack = null;
+    var openingTray = false;
 
     function resize() {}
 
     function showTray(options) {
-        const el = $('<div class="editor-tray"></div>');
-        const header = $('<div class="editor-tray-header"></div>').appendTo(el);
-        const bodyWrapper = $('<div class="editor-tray-body-wrapper"></div>').appendTo(el);
-        const body = $('<div class="editor-tray-body"></div>').appendTo(bodyWrapper);
-        const footer = $('<div class="editor-tray-footer"></div>').appendTo(el);
-        const resizer = $('<div class="editor-tray-resize-handle"></div>').appendTo(el);
+        var el = $('<div class="editor-tray"></div>');
+        var header = $('<div class="editor-tray-header"></div>').appendTo(el);
+        var bodyWrapper = $('<div class="editor-tray-body-wrapper"></div>').appendTo(el);
+        var body = $('<div class="editor-tray-body"></div>').appendTo(bodyWrapper);
+        var footer = $('<div class="editor-tray-footer"></div>').appendTo(el);
+        var resizer = $('<div class="editor-tray-resize-handle"></div>').appendTo(el);
         if (options.title) {
-            $(`<div class="editor-tray-titlebar">${options.title}</div>`).appendTo(header);
+            $('<div class="editor-tray-titlebar">'+options.title+'</div>').appendTo(header);
         }
-        const buttonBar = $('<div class="editor-tray-toolbar"></div>').appendTo(header);
-        let primaryButton;
+        var buttonBar = $('<div class="editor-tray-toolbar"></div>').appendTo(header);
+        var primaryButton;
         if (options.buttons) {
-            for (let i = 0; i < options.buttons.length; i++) {
-                const button = options.buttons[i];
-                const b = $('<button>').button().appendTo(buttonBar);
+            for (var i=0;i<options.buttons.length;i++) {
+                var button = options.buttons[i];
+                var b = $('<button>').button().appendTo(buttonBar);
                 if (button.id) {
-                    b.attr('id', button.id);
+                    b.attr('id',button.id);
                 }
                 if (button.text) {
                     b.html(button.text);
                 }
                 if (button.click) {
-                    b.click((function (action) {
-                        return function (evt) {
+                    b.click((function(action) {
+                        return function(evt) {
                             if (!$(this).hasClass('disabled')) {
                                 action(evt);
                             }
@@ -10600,7 +10657,7 @@ RED.tray = (function () {
                 }
                 if (button.class) {
                     b.addClass(button.class);
-                    if (button.class === 'primary') {
+                    if (button.class === "primary") {
                         primaryButton = button;
                     }
                 }
@@ -10608,58 +10665,58 @@ RED.tray = (function () {
         }
 
         el.appendTo(editorStack);
-        const tray = {
+        var tray = {
             tray: el,
-            header,
-            body,
-            footer,
-            options,
-            primaryButton,
+            header: header,
+            body: body,
+            footer: footer,
+            options: options,
+            primaryButton: primaryButton
         };
         stack.push(tray);
 
         el.draggable({
-            handle: resizer,
-            axis: 'x',
-            start(event, ui) {
-                el.width('auto');
-            },
-            drag(event, ui) {
-                const absolutePosition = editorStack.position().left + ui.position.left;
-                if (absolutePosition < 7) {
-                    ui.position.left += 7 - absolutePosition;
-                } else if (ui.position.left > -tray.preferredWidth - 1) {
-                    ui.position.left = -Math.min(editorStack.position().left - 7, tray.preferredWidth - 1);
+                handle: resizer,
+                axis: "x",
+                start:function(event,ui) {
+                    el.width('auto');
+                },
+                drag: function(event,ui) {
+                    var absolutePosition = editorStack.position().left+ui.position.left
+                    if (absolutePosition < 7) {
+                        ui.position.left += 7-absolutePosition;
+                    } else if (ui.position.left > -tray.preferredWidth-1) {
+                        ui.position.left = -Math.min(editorStack.position().left-7,tray.preferredWidth-1);
+                    }
+                    if (tray.options.resize) {
+                        setTimeout(function() {
+                            tray.options.resize({width: -ui.position.left});
+                        },0);
+                    }
+                    tray.width = -ui.position.left;
+                },
+                stop:function(event,ui) {
+                    el.width(-ui.position.left);
+                    el.css({left:''});
+                    if (tray.options.resize) {
+                        tray.options.resize({width: -ui.position.left});
+                    }
+                    tray.width = -ui.position.left;
                 }
-                if (tray.options.resize) {
-                    setTimeout(() => {
-                        tray.options.resize({ width: -ui.position.left });
-                    }, 0);
-                }
-                tray.width = -ui.position.left;
-            },
-            stop(event, ui) {
-                el.width(-ui.position.left);
-                el.css({ left: '' });
-                if (tray.options.resize) {
-                    tray.options.resize({ width: -ui.position.left });
-                }
-                tray.width = -ui.position.left;
-            },
-        });
+            });
 
         function finishBuild() {
-            $('#header-shade').attr('style', 'display: block !important');
-            $('#editor-shade').attr('style', 'display: block !important');
-            $('#palette-shade').attr('style', 'display: block !important');
-            $('.sidebar-shade').attr('style', 'display: block !important');
+            $("#header-shade").attr("style", "display: block !important");
+            $("#editor-shade").attr("style", "display: block !important");
+            $("#palette-shade").attr("style", "display: block !important");
+            $(".sidebar-shade").attr("style", "display: block !important");
 
-            tray.preferredWidth = Math.max(el.width(), 500);
-            body.css({ minWidth: tray.preferredWidth - 40 });
+            tray.preferredWidth = Math.max(el.width(),500);
+            body.css({"minWidth":tray.preferredWidth-40});
 
             if (options.width) {
-                if (options.width > $('#editor-stack').position().left - 8) {
-                    options.width = $('#editor-stack').position().left - 8;
+                if (options.width > $("#editor-stack").position().left-8) {
+                    options.width = $("#editor-stack").position().left-8;
                 }
                 el.width(options.width);
             } else {
@@ -10667,44 +10724,45 @@ RED.tray = (function () {
             }
 
             tray.width = el.width();
-            if (tray.width > $('#editor-stack').position().left - 8) {
-                tray.width = Math.max(0/* tray.preferredWidth */, $('#editor-stack').position().left - 8);
+            if (tray.width > $("#editor-stack").position().left-8) {
+                tray.width = Math.max(0/*tray.preferredWidth*/,$("#editor-stack").position().left-8);
                 el.width(tray.width);
             }
 
             el.css({
-                right: `${-(el.width() + 10)}px`,
-                transition: 'right 0.25s ease',
+                right: -(el.width()+10)+"px",
+                transition: "right 0.25s ease"
             });
-            $('#workspace').scrollLeft(0);
+            $("#workspace").scrollLeft(0);
             handleWindowResize();
             openingTray = true;
-            setTimeout(() => {
-                setTimeout(() => {
+            setTimeout(function() {
+                setTimeout(function() {
                     if (!options.width) {
-                        el.width(Math.min(tray.preferredWidth, $('#editor-stack').position().left - 8));
+                        el.width(Math.min(tray.preferredWidth,$("#editor-stack").position().left-8));
                     }
                     if (options.resize) {
-                        options.resize({ width: el.width() });
+                        options.resize({width:el.width()});
                     }
                     if (options.show) {
                         // options.attr("style", "display: block !important");
                     }
-                    setTimeout(() => {
+                    setTimeout(function() {
                         // Delay resetting the flag, so we don't close prematurely
                         openingTray = false;
-                    }, 200);
-                    body.find(':focusable:first').focus();
-                }, 150);
-                el.css({ right: 0 });
-            }, 0);
+                    },200);
+                    body.find(":focusable:first").focus();
+
+                },150);
+                el.css({right:0});
+            },0);
         }
         if (options.open) {
             if (options.open.length === 1) {
                 options.open(el);
                 finishBuild();
             } else {
-                options.open(el, finishBuild);
+                options.open(el,finishBuild);
             }
         } else {
             finishBuild();
@@ -10713,20 +10771,20 @@ RED.tray = (function () {
 
     function handleWindowResize() {
         if (stack.length > 0) {
-            const tray = stack[stack.length - 1];
-            const trayHeight = tray.tray.height() - tray.header.outerHeight() - tray.footer.outerHeight();
-            tray.body.height(trayHeight - 40);
-            if (tray.width > $('#editor-stack').position().left - 8) {
-                tray.width = $('#editor-stack').position().left - 8;
+            var tray = stack[stack.length-1];
+            var trayHeight = tray.tray.height()-tray.header.outerHeight()-tray.footer.outerHeight();
+            tray.body.height(trayHeight-40);
+            if (tray.width > $("#editor-stack").position().left-8) {
+                tray.width = $("#editor-stack").position().left-8;
                 tray.tray.width(tray.width);
                 // tray.body.parent().width(tray.width);
             } else if (tray.width < tray.preferredWidth) {
-                tray.width = Math.min($('#editor-stack').position().left - 8, tray.preferredWidth);
+                tray.width = Math.min($("#editor-stack").position().left-8,tray.preferredWidth);
                 tray.tray.width(tray.width);
                 // tray.body.parent().width(tray.width);
             }
             if (tray.options.resize) {
-                tray.options.resize({ width: tray.width });
+                tray.options.resize({width:tray.width});
             }
         }
     }
@@ -10734,12 +10792,12 @@ RED.tray = (function () {
     return {
         init: function init() {
             // hot fix for navigational init
-            editorStack = $('#editor-stack');
+            editorStack = $("#editor-stack");
             $(window).resize(handleWindowResize);
-            RED.events.on('sidebar:resize', handleWindowResize);
-            $('#editor-shade').click(() => {
+            RED.events.on("sidebar:resize",handleWindowResize);
+            $("#editor-shade").click(function() {
                 if (!openingTray) {
-                    const tray = stack[stack.length - 1];
+                    var tray = stack[stack.length-1];
                     if (tray && tray.primaryButton) {
                         tray.primaryButton.click();
                     }
@@ -10748,57 +10806,57 @@ RED.tray = (function () {
         },
         show: function show(options) {
             if (stack.length > 0) {
-                const oldTray = stack[stack.length - 1];
+                var oldTray = stack[stack.length-1];
                 oldTray.tray.css({
-                    right: `${-(oldTray.tray.width() + 10)}px`,
+                    right: -(oldTray.tray.width()+10)+"px"
                 });
-                setTimeout(() => {
+                setTimeout(function() {
                     oldTray.tray.detach();
                     showTray(options);
-                }, 250);
+                },250)
             } else {
-                RED.events.emit('editor:open');
+                RED.events.emit("editor:open");
                 showTray(options);
             }
         },
         close: function close(done) {
             if (stack.length > 0) {
-                const tray = stack.pop();
+                var tray = stack.pop();
                 tray.tray.css({
-                    right: `${-(tray.tray.width() + 10)}px`,
+                    right: -(tray.tray.width()+10)+"px"
                 });
-                setTimeout(() => {
+                setTimeout(function() {
                     if (tray.options.close) {
                         tray.options.close();
                     }
                     tray.tray.remove();
                     if (stack.length > 0) {
-                        const oldTray = stack[stack.length - 1];
-                        oldTray.tray.appendTo('#editor-stack');
-                        setTimeout(() => {
+                        var oldTray = stack[stack.length-1];
+                        oldTray.tray.appendTo("#editor-stack");
+                        setTimeout(function() {
                             handleWindowResize();
-                            oldTray.tray.css({ right: 0 });
+                            oldTray.tray.css({right:0});
                             if (oldTray.options.show) {
-                                oldTray.options.attr('style', 'display: block !important');
+                                oldTray.options.attr("style", "display: block !important");
                             }
-                        }, 0);
+                        },0);
                     }
                     if (done) {
                         done();
                     }
                     if (stack.length === 0) {
-                        $('#header-shade').hide();
-                        $('#editor-shade').hide();
-                        $('#palette-shade').hide();
-                        $('.sidebar-shade').hide();
-                        RED.events.emit('editor:close');
+                        $("#header-shade").hide();
+                        $("#editor-shade").hide();
+                        $("#palette-shade").hide();
+                        $(".sidebar-shade").hide();
+                        RED.events.emit("editor:close");
                         RED.view.focus();
                     }
-                }, 250);
+                },250)
             }
-        },
-    };
-}());
+        }
+    }
+})();
 
 // Handles the import/export of flow configuration to clipboard
 // RED.clipboard is not needed | TODO: this should be done via a file download/upload to the middleware
@@ -10807,68 +10865,69 @@ RED.tray = (function () {
 
 // handles toaster notifications
 // RED.notify is not needed | TODO: implement this as a plugin for the outer system
-RED.notify = function () {};
+RED.notify = function(){};
 
 // RED.search is not needed
 
 // Handles ctrl+click context menu for quick node insertion
-RED.typeSearch = (function () {
-    let shade;
-    const disabled = false;
-    let dialog = null;
-    let searchInput;
-    let searchResults;
-    let searchResultsDiv;
-    let selected = -1;
-    let visible = false;
+RED.typeSearch = (function() {
+    var shade;
+    var disabled = false;
+    var dialog = null;
+    var searchInput;
+    var searchResults;
+    var searchResultsDiv;
+    var selected = -1;
+    var visible = false;
 
-    let activeFilter = '';
-    let addCallback;
+    var activeFilter = "";
+    var addCallback;
 
-    const typesUsed = {};
+    var typesUsed = {};
 
     function search(val) {
         activeFilter = val.toLowerCase();
-        const visible = searchResults.editableList('filter');
-        setTimeout(() => {
+        var visible = searchResults.editableList('filter');
+        setTimeout(function() {
             selected = 0;
             searchResults.children().removeClass('selected');
-            searchResults.children(':visible:first').addClass('selected');
-        }, 100);
+            searchResults.children(":visible:first").addClass('selected');
+        },100);
+
     }
 
     function ensureSelectedIsVisible() {
-        const selectedEntry = searchResults.find('li.selected');
+        var selectedEntry = searchResults.find("li.selected");
         if (selectedEntry.length === 1) {
-            const scrollWindow = searchResults.parent();
-            const scrollHeight = scrollWindow.height();
-            const scrollOffset = scrollWindow.scrollTop();
-            const y = selectedEntry.position().top;
-            const h = selectedEntry.height();
-            if (y + h > scrollHeight) {
-                scrollWindow.animate({ scrollTop: `-=${scrollHeight - (y + h) - 10}` }, 50);
-            } else if (y < 0) {
-                scrollWindow.animate({ scrollTop: `+=${y - 10}` }, 50);
+            var scrollWindow = searchResults.parent();
+            var scrollHeight = scrollWindow.height();
+            var scrollOffset = scrollWindow.scrollTop();
+            var y = selectedEntry.position().top;
+            var h = selectedEntry.height();
+            if (y+h > scrollHeight) {
+                scrollWindow.animate({scrollTop: '-='+(scrollHeight-(y+h)-10)},50);
+            } else if (y<0) {
+                scrollWindow.animate({scrollTop: '+='+(y-10)},50);
             }
         }
     }
 
     function createDialog() {
-        // shade = $('<div>',{class:"red-ui-type-search-shade"}).appendTo("#main-container");
-        dialog = $('<div>', { id: 'red-ui-type-search', class: 'red-ui-search red-ui-type-search' }).appendTo('#main-container');
-        const searchDiv = $('<div>', { class: 'red-ui-search-container' }).appendTo(dialog);
-        searchInput = $('<input type="text">').attr('placeholder', RED._('search.addNode')).appendTo(searchDiv).searchBox({
+        //shade = $('<div>',{class:"red-ui-type-search-shade"}).appendTo("#main-container");
+        dialog = $("<div>",{id:"red-ui-type-search",class:"red-ui-search red-ui-type-search"}).appendTo("#main-container");
+        var searchDiv = $("<div>",{class:"red-ui-search-container"}).appendTo(dialog);
+        searchInput = $('<input type="text">').attr("placeholder",RED._("search.addNode")).appendTo(searchDiv).searchBox({
             delay: 50,
-            change() {
+            change: function() {
                 search($(this).val());
-            },
+            }
         });
-        searchInput.on('keydown', (evt) => {
-            const children = searchResults.children(':visible');
+        searchInput.on('keydown',function(evt) {
+            var children = searchResults.children(":visible");
             if (children.length > 0) {
                 if (evt.keyCode === 40) {
                     // Down
-                    if (selected < children.length - 1) {
+                    if (selected < children.length-1) {
                         if (selected > -1) {
                             $(children[selected]).removeClass('selected');
                         }
@@ -10890,73 +10949,74 @@ RED.typeSearch = (function () {
                     evt.preventDefault();
                 } else if (evt.keyCode === 13) {
                     // Enter
-                    const index = Math.max(0, selected);
+                    var index = Math.max(0,selected);
                     if (index < children.length) {
                         // TODO: dips into editableList impl details
-                        confirm($(children[index]).find('.red-ui-editableList-item-content').data('data'));
+                        confirm($(children[index]).find(".red-ui-editableList-item-content").data('data'));
                     }
                 }
             }
         });
 
-        searchResultsDiv = $('<div>', { class: 'red-ui-search-results-container' }).appendTo(dialog);
-        searchResults = $('<ol>', { id: 'search-result-list', style: 'position: absolute;top: 0;bottom: 0;left: 0;right: 0;' }).appendTo(searchResultsDiv).editableList({
+        searchResultsDiv = $("<div>",{class:"red-ui-search-results-container"}).appendTo(dialog);
+        searchResults = $('<ol>',{id:"search-result-list", style:"position: absolute;top: 0;bottom: 0;left: 0;right: 0;"}).appendTo(searchResultsDiv).editableList({
             addButton: false,
-            filter(data) {
-                if (activeFilter === '') {
+            filter: function(data) {
+                if (activeFilter === "" ) {
                     return true;
                 }
                 if (data.recent || data.common) {
                     return false;
                 }
-                return (activeFilter === '') || (data.index.indexOf(activeFilter) > -1);
+                return (activeFilter==="")||(data.index.indexOf(activeFilter) > -1);
             },
-            addItem(container, i, object) {
-                const def = object.def;
+            addItem: function(container,i,object) {
+                var def = object.def;
                 object.index = object.type.toLowerCase();
                 if (object.separator) {
-                    container.addClass('red-ui-search-result-separator');
+                    container.addClass("red-ui-search-result-separator")
                 }
-                const div = $('<a>', { href: '#', class: 'red-ui-search-result' }).appendTo(container);
+                var div = $('<a>',{href:'#',class:"red-ui-search-result"}).appendTo(container);
 
-                const nodeDiv = $('<div>', { class: 'red-ui-search-result-node' }).appendTo(div);
-                const colour = def.color;
-                let icon_url = 'arrow-in.png';
+                var nodeDiv = $('<div>',{class:"red-ui-search-result-node"}).appendTo(div);
+                var colour = def.color;
+                var icon_url = "arrow-in.png";
                 if (def.category === 'config') {
-                    icon_url = 'cog.png';
+                    icon_url = "cog.png";
                 } else {
                     try {
-                        icon_url = (typeof def.icon === 'function' ? def.icon.call({}) : def.icon);
-                    } catch (err) {
-                        console.log(`Definition error: ${object.type}.icon`, err);
+                        icon_url = (typeof def.icon === "function" ? def.icon.call({}) : def.icon);
+                    } catch(err) {
+                        console.log("Definition error: "+object.type+".icon",err);
                     }
                 }
-                nodeDiv.css('backgroundColor', colour);
+                nodeDiv.css('backgroundColor',colour);
 
-                const iconContainer = $('<div/>', { class: 'palette_icon_container' }).appendTo(nodeDiv);
-                $('<div/>', { class: 'palette_icon', style: `background-image: url(mashup/icons/${icon_url})` }).appendTo(iconContainer);
+                var iconContainer = $('<div/>',{class:"palette_icon_container"}).appendTo(nodeDiv);
+                $('<div/>',{class:"palette_icon",style:"background-image: url(mashup/icons/"+icon_url+")"}).appendTo(iconContainer);
 
                 if (def.inputs > 0) {
-                    $('<div/>', { class: 'red-ui-search-result-node-port' }).appendTo(nodeDiv);
+                    $('<div/>',{class:"red-ui-search-result-node-port"}).appendTo(nodeDiv);
                 }
                 if (def.outputs > 0) {
-                    $('<div/>', { class: 'red-ui-search-result-node-port red-ui-search-result-node-output' }).appendTo(nodeDiv);
+                    $('<div/>',{class:"red-ui-search-result-node-port red-ui-search-result-node-output"}).appendTo(nodeDiv);
                 }
 
-                const contentDiv = $('<div>', { class: 'red-ui-search-result-description' }).appendTo(div);
+                var contentDiv = $('<div>',{class:"red-ui-search-result-description"}).appendTo(div);
 
-                const label = object.label;
-                object.index += `|${label.toLowerCase()}`;
+                var label = object.label;
+                object.index += "|"+label.toLowerCase();
 
-                $('<div>', { class: 'red-ui-search-result-node-label' }).html(label).appendTo(contentDiv);
+                $('<div>',{class:"red-ui-search-result-node-label"}).html(label).appendTo(contentDiv);
 
-                div.click((evt) => {
+                div.click(function(evt) {
                     evt.preventDefault();
                     confirm(object);
                 });
             },
-            scrollOnAdd: false,
+            scrollOnAdd: false
         });
+
     }
     function confirm(def) {
         hide();
@@ -10966,7 +11026,7 @@ RED.typeSearch = (function () {
 
     function handleMouseActivity(evt) {
         if (visible) {
-            let t = $(evt.target);
+            var t = $(evt.target);
             while (t.prop('nodeName').toLowerCase() !== 'body') {
                 if (t.attr('id') === 'red-ui-type-search') {
                     return;
@@ -10978,43 +11038,43 @@ RED.typeSearch = (function () {
     }
     function show(opts) {
         if (!visible) {
-            RED.keyboard.add('*', 'escape', () => { hide(); });
+            RED.keyboard.add("*","escape",function(){hide()});
             if (dialog === null) {
                 createDialog();
             }
             visible = true;
-            setTimeout(() => {
-                $(document).on('mousedown.type-search', handleMouseActivity);
-                $(document).on('mouseup.type-search', handleMouseActivity);
-                $(document).on('click.type-search', handleMouseActivity);
-            }, 200);
+            setTimeout(function() {
+                $(document).on('mousedown.type-search',handleMouseActivity);
+                $(document).on('mouseup.type-search',handleMouseActivity);
+                $(document).on('click.type-search',handleMouseActivity);
+            },200);
         } else {
             dialog.hide();
             searchResultsDiv.hide();
         }
         refreshTypeList();
         addCallback = opts.add;
-        RED.events.emit('type-search:open');
-        // shade.attr("style", "display: block !important");
-        dialog.css({ left: `${opts.x}px`, top: `${opts.y}px` }).attr('style', 'display: block !important');
+        RED.events.emit("type-search:open");
+        //shade.attr("style", "display: block !important");
+        dialog.css({left:opts.x+"px",top:opts.y+"px"}).attr("style", "display: block !important");
         searchResultsDiv.slideDown(300);
-        setTimeout(() => {
-            searchResultsDiv.find('.red-ui-editableList-container').scrollTop(0);
+        setTimeout(function() {
+            searchResultsDiv.find(".red-ui-editableList-container").scrollTop(0);
             searchInput.focus();
-        }, 100);
+        },100);
     }
     function hide(fast) {
         if (visible) {
-            RED.keyboard.remove('escape');
+            RED.keyboard.remove("escape");
             visible = false;
             if (dialog !== null) {
-                searchResultsDiv.slideUp(fast ? 50 : 200, () => {
+                searchResultsDiv.slideUp(fast?50:200,function() {
                     dialog.hide();
-                    searchInput.searchBox('value', '');
+                    searchInput.searchBox('value','');
                 });
-                // shade.hide();
+                //shade.hide();
             }
-            RED.events.emit('type-search:close');
+            RED.events.emit("type-search:close");
             RED.view.focus();
             $(document).off('mousedown.type-search');
             $(document).off('mouseup.type-search');
@@ -11023,90 +11083,96 @@ RED.typeSearch = (function () {
     }
 
     function getTypeLabel(type, def) {
-        let label = type;
-        if (typeof def.paletteLabel !== 'undefined') {
+        var label = type;
+        if (typeof def.paletteLabel !== "undefined") {
             try {
-                label = (typeof def.paletteLabel === 'function' ? def.paletteLabel.call(def) : def.paletteLabel) || '';
-                label += ` (${type})`;
-            } catch (err) {
-                console.log(`Definition error: ${type}.paletteLabel`, err);
+                label = (typeof def.paletteLabel === "function" ? def.paletteLabel.call(def) : def.paletteLabel)||"";
+                label += " ("+type+")";
+            } catch(err) {
+                console.log("Definition error: "+type+".paletteLabel",err);
             }
         }
         return label;
     }
 
     function refreshTypeList() {
-        let i;
+        var i;
         searchResults.editableList('empty');
-        searchInput.searchBox('value', '');
+        searchInput.searchBox('value','');
         selected = -1;
-        const common = [
-            'inject', 'function', 'change', 'switch',
+        var common = [
+            'inject','function','change','switch'
         ];
 
-        let recentlyUsed = Object.keys(typesUsed);
-        recentlyUsed.sort((a, b) => typesUsed[b] - typesUsed[a]);
-        recentlyUsed = recentlyUsed.filter(t => common.indexOf(t) === -1);
+        var recentlyUsed = Object.keys(typesUsed);
+        recentlyUsed.sort(function(a,b) {
+            return typesUsed[b]-typesUsed[a];
+        });
+        recentlyUsed = recentlyUsed.filter(function(t) {
+            return common.indexOf(t) === -1;
+        });
 
-        const items = [];
-        RED.nodes.registry.getNodeTypes().forEach((t) => {
-            const def = RED.nodes.getType(t);
+        var items = [];
+        RED.nodes.registry.getNodeTypes().forEach(function(t) {
+            var def = RED.nodes.getType(t);
             if (def.category !== 'config' && t !== 'unknown') {
-                items.push({ type: t, def, label: getTypeLabel(t, def) });
+                items.push({type:t,def: def, label:getTypeLabel(t,def)});
             }
         });
-        items.sort((a, b) => {
-            const al = a.label.toLowerCase();
-            const bl = b.label.toLowerCase();
+        items.sort(function(a,b) {
+            var al = a.label.toLowerCase();
+            var bl = b.label.toLowerCase();
             if (al < bl) {
                 return -1;
-            } if (al === bl) {
+            } else if (al === bl) {
                 return 0;
+            } else {
+                return 1;
             }
-            return 1;
-        });
+        })
 
-        const commonCount = 0;
-        let item;
-        for (i = 0; i < common.length; i++) {
+        var commonCount = 0;
+        var item;
+        for(i=0;i<common.length;i++) {
             item = {
                 type: common[i],
                 common: true,
-                def: RED.nodes.getType(common[i]),
+                def: RED.nodes.getType(common[i])
             };
-            item.label = getTypeLabel(item.type, item.def);
-            if (i === common.length - 1) {
+            item.label = getTypeLabel(item.type,item.def);
+            if (i === common.length-1) {
                 item.separator = true;
             }
             searchResults.editableList('addItem', item);
         }
-        for (i = 0; i < Math.min(5, recentlyUsed.length); i++) {
+        for(i=0;i<Math.min(5,recentlyUsed.length);i++) {
             item = {
-                type: recentlyUsed[i],
+                type:recentlyUsed[i],
                 def: RED.nodes.getType(recentlyUsed[i]),
-                recent: true,
+                recent: true
             };
-            item.label = getTypeLabel(item.type, item.def);
-            if (i === recentlyUsed.length - 1) {
+            item.label = getTypeLabel(item.type,item.def);
+            if (i === recentlyUsed.length-1) {
                 item.separator = true;
             }
             searchResults.editableList('addItem', item);
         }
-        for (i = 0; i < items.length; i++) {
+        for (i=0;i<items.length;i++) {
             searchResults.editableList('addItem', items[i]);
         }
-        setTimeout(() => {
+        setTimeout(function() {
             selected = 0;
-            searchResults.children(':first').addClass('selected');
-        }, 100);
+            searchResults.children(":first").addClass('selected');
+        },100);
     }
 
     return {
-        show,
-        hide,
-        init() { dialog = null; },
+        show: show,
+        hide: hide,
+        init: function() { dialog = null; }
     };
-}());
+
+})();
 
 // RED.subflow is not needed | TODO: implement flow reuse scheme
 // RED.touch is not needed | TODO:check viability for touch based devices (tablets)

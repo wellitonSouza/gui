@@ -1,3 +1,4 @@
+/* eslint-disable */
 import util from '../comms/util';
 
 const alt = require('../alt');
@@ -28,7 +29,7 @@ class TemplateStore {
         });
     }
 
-    handleTriggerIcon(id, icon) {
+    handleTriggerIcon() {
         this.error = null;
         this.loading = true;
     }
@@ -37,7 +38,7 @@ class TemplateStore {
         this.error = null;
         this.loading = false;
         for (let i = 0; i < this.templates.length; i++) {
-            if (this.templates[i].id == id) {
+            if (this.templates[i].id === id) {
                 const newTemplate = JSON.parse(JSON.stringify(this.templates[i]));
                 // newTemplate.has_icon = true;
                 newTemplate.has_icon = util.guid();
@@ -56,7 +57,7 @@ class TemplateStore {
 
     handleUpdateSingle(template) {
         for (let i = 0; i < this.templates.length; i++) {
-            if (this.templates[i].id == template.id) {
+            if (this.templates[i].id === template.id) {
                 const newTemplate = JSON.parse(JSON.stringify(template));
                 this.templates[i] = newTemplate;
             }
@@ -64,20 +65,20 @@ class TemplateStore {
         this.loading = false;
     }
 
-    handleTriggerUpdate(template) {
+    handleTriggerUpdate() {
     // trigger handler for updateSingle
         this.error = null;
         this.loading = true;
     }
 
-    handleTriggerRemoval(template) {
+    handleTriggerRemoval() {
     // trigger handler for updateSingle
         this.error = null;
         this.loading = true;
     }
 
     handleRemoveSingle(id) {
-        this.templates = this.templates.filter(e => e.id != id);
+        this.templates = this.templates.filter(e => e.id !== id);
         this.loading = false;
     }
 
@@ -87,7 +88,7 @@ class TemplateStore {
         this.loading = false;
     }
 
-    handleAddTemplate(newTemplate) {
+    handleAddTemplate() {
     // this is actually just a intermediary while addition happens asynchonously
         this.error = null;
         this.loading = true;

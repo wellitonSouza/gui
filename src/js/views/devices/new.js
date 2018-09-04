@@ -1,27 +1,22 @@
+/* eslint-disable */
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import { Link, hashHistory } from 'react-router';
+import { hashHistory } from 'react-router';
 import AltContainer from 'alt-container';
 import alt from '../../alt';
-import { NewPageHeader, PageHeader, ActionHeader } from '../../containers/full/PageHeader';
+import { NewPageHeader } from '../../containers/full/PageHeader';
 import DeviceActions from '../../actions/DeviceActions';
 import deviceManager from '../../comms/devices/DeviceManager';
 import DeviceStore from '../../stores/DeviceStore';
-import TagForm from '../../components/TagForm';
 import util from '../../comms/util/util';
-import { DojotBtnCircle, DojotBtnClassic, DojotBtnLink } from '../../components/DojotButton';
+import { DojotBtnCircle, DojotBtnClassic, DojotBtnRedCircle } from '../../components/DojotButton';
 
 import TemplateStore from '../../stores/TemplateStore';
 import TemplateActions from '../../actions/TemplateActions';
 
-import MaterialSelect from '../../components/MaterialSelect';
 import MaterialInput from '../../components/MaterialInput';
 import toaster from '../../comms/util/materialize';
-
-import { DojotBtnRedCircle } from '../../components/DojotButton';
-
 
 /*
  Below begins the React Flux's hell
@@ -42,34 +37,22 @@ class DeviceHandlerActions {
     }
 }
 const FormActions = alt.createActions(DeviceHandlerActions);
-// const AttrActions = alt.generateActions('set', 'update', 'add', 'remove');
 const AttrActions = alt.generateActions('update');
 
 class DeviceHandlerStore {
     constructor() {
         this.device = {}; this.set();
         this.usedTemplates = {};
-        // this.newAttr = {};
-        // this.setAttr();
-
-        // Map used to filter out duplicated attr names. Do check loadAttrs() for further notes.
+        
         this.attrNames = {};
-        //  this.loadAttrs();
-
-        // General form-wide sticky error messages
         this.attrError = '';
-        // Map used to keep per field, custom error messages
         this.fieldError = {};
 
         this.bindListeners({
             set: FormActions.SET,
             updateDevice: FormActions.UPDATE,
             fetch: FormActions.FETCH,
-            // setAttr: AttrActions.SET,
             setAttributes: AttrActions.UPDATE,
-            // updAttr: AttrActions.UPDATE,
-            // addAttr: AttrActions.ADD,
-            // removeAttr: AttrActions.REMOVE,
         });
         this.set(null);
     }
@@ -110,9 +93,8 @@ class DeviceHandlerStore {
         } else {
             this.device = device;
             this.usedTemplates = device.templates;
-            // creating a map makes easy to quickly find attributes
             this.loadAttrs();
-            console.log('Device was updated in Store: ', this.device);
+            // console.log('Device was updated in Store: ', this.device);
         }
     }
 
@@ -123,7 +105,6 @@ class DeviceHandlerStore {
     setAttributes(attr_list) {
         this.device.attrs = [];
         for (const k in attr_list) {
-            // First at all, checks the relation between value and its type.
             if (!util.isTypeValid(attr_list[k].value, attr_list[k].type)) {
                 return;
             }
@@ -134,65 +115,11 @@ class DeviceHandlerStore {
             }
             this.device.attrs.push(JSON.parse(JSON.stringify(attr_list[k])));
         }
-        console.log('All attributes were set.', this.device);
+        // console.log('All attributes were set.', this.device);
     }
-    // setAttr(attr) {
-    //   if (attr) {
-    //     this.newAttr = attr;
-    //   } else {
-    //     this.newAttr = {
-    //       object_id: '',
-    //       name: '',
-    //       type: 'string',
-    //       value: ''
-    //     };
-    //   }
-    // }
-
-    // updAttr(diff) {
-    //   this.newAttr[diff.f] = diff.v;
-    // }
-
-    // addAttr() {
-    //
-
-
-    // check for duplicate names. Do check loadAttrs() for further details.
-    //   // if (this.attrNames.hasOwnProperty(this.newAttr.name)) {
-    //   //   this.errorAttr({
-    //   //     field: 'name',
-    //   //     message: "There's already an attribute named '" + this.newAttr.name + "'"
-    //   //   });
-    //   //   return;
-    //   // } else {
-    //   //   this.attrNames[this.newAttr.name] = this.newAttr.name;
-    //   // }
-    //
-    //   this.newAttr.object_id = util.sid();
-    //   if (this.newAttr.type === "") { this.newAttr.type = 'string'; }
-    //   if (this.newAttr.value.length > 0) {
-    //     this.device.static_attrs.push(JSON.parse(JSON.stringify(this.newAttr)));
-    //   } else {
-    //     delete this.newAttr.value;
-    //     this.device.attrs.push(JSON.parse(JSON.stringify(this.newAttr)));
-    //   }
-    //   this.setAttr(); // clean attr slot
-    //   this.loadAttrs();
-    // }
-
-    // removeAttr(attribute) {
-    //   if (attribute.value != undefined && attribute.value.length > 0) {
-    //     this.device.static_attrs = this.device.static_attrs.filter((i) => {return i.object_id !== attribute.object_id});
-    //   } else {
-    //     this.device.attrs = this.device.attrs.filter((i) => {return i.object_id !== attribute.object_id});
-    //   }
-    //   this.loadAttrs();
-    // }
 }
 
 const DeviceFormStore = alt.createStore(DeviceHandlerStore, 'DeviceFormStore');
-
-// var attrType = new TypeDisplay();
 
 class StaticAttributes extends Component {
     constructor(props) {
@@ -227,7 +154,6 @@ class StaticAttributes extends Component {
 
         return (
             <div className="attr-box specific-attr">
-                {/* Configurations */}
                 {properties.length > 0 && (
                     <div className="col s12">
                         <div className="col s12">
@@ -254,7 +180,6 @@ class StaticAttributes extends Component {
                         </div>
                     </div>
                 )}
-                {/* Static Attributes */}
                 {statics.length > 0 && (
                     <div className="col s12">
                         <div className="col s12">
@@ -296,7 +221,6 @@ class DeviceHeader extends Component {
         return (
             <div className="col s12 pb20">
                 <div className="col s3">
-                    {/* TODO clickable, file upload */}
                     <div className="img">
                         <img src="images/big-chip.png" />
                     </div>
@@ -322,14 +246,12 @@ class AttrBox extends Component {
     render() {
         const attr_list = this.props.attrs.filter(attr => attr.type == 'dynamic');
 
-        console.log('attr_list', attr_list);
+        // console.log('attr_list', attr_list);
         return (
             <div>
                 {attr_list.length > 0 ? (
                     <div className="col s12">
-                        {// <div className="icon">
-                            //   <img src={"images/tag.png"} />
-                            // </div>
+                        {
                             attr_list.map((attr, index) => (
                                 <div key={index} className="col s4">
                                     <div className="bg-gray">
@@ -356,9 +278,7 @@ class AttrActuatorBox extends Component {
             <div>
                 {attr_actuators_list.length > 0 ? (
                     <div className="col s12">
-                        {// <div className="icon">
-                            //   <img src={"images/tag.png"} />
-                            // </div>
+                        {
                             attr_actuators_list.map((attr, index) => (
                                 <div key={index} className="col s4">
                                     <div className="bg-gray">
@@ -385,8 +305,7 @@ class DeviceForm extends Component {
             selectedTemplates: [],
             loaded: false,
         };
-        // templateState = 0 - Removal painel
-        // templateState = 1 - Addition painel
+
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeAttr = this.handleChangeAttr.bind(this);
 
@@ -404,7 +323,6 @@ class DeviceForm extends Component {
     }
 
     componentDidUpdate() {
-    // if is edition mode, we should wait for templates and iterate over them updating the selected templates
         const templates = this.props.templates.templates;
         const device = this.props.device.device;
         if (
@@ -477,12 +395,12 @@ class DeviceForm extends Component {
         }
         FormActions.update({ f: 'templates', v: template_list });
 
-        console.log('Object to be saved: ', JSON.parse(JSON.stringify(DeviceFormStore.getState().device)));
+        // console.log('Object to be saved: ', JSON.parse(JSON.stringify(DeviceFormStore.getState().device)));
 
         // Now, saves the device;
         const ongoingOps = DeviceStore.getState().loading;
         if (ongoingOps == false) {
-            console.log('ongoingOps');
+            // console.log('ongoingOps');
             this.props.operator(JSON.parse(JSON.stringify(DeviceFormStore.getState().device)), this.props.deviceid);
         }
     }
@@ -664,16 +582,10 @@ class TemplateFrame extends Component {
     }
 
     showSearchBox() {
-        console.log('Not implemented yet');
+        // console.log('Not implemented yet');
     }
 
-    // handleRemove(event) {
-    //   event.preventDefault();
-    //   AttrActions.remove(this.props);
-    // }
-
     render() {
-    // const hasValue = (this.props.templates && this.props.templates.length > 0);
         if (this.props.numberOfTemplates > 0) {
             return (
                 <div className="col s12 template-frame">
@@ -690,10 +602,6 @@ class TemplateFrame extends Component {
                             ) : (
                                 <div>
                                     <DojotBtnCircle click={this.setRemovalMode} icon="fa fa-chevron-left" tooltip="Remove templates" />
-                                    {/*
-                    // This feature is not working yet
-                    <DojotBtnCircle click={this.showSearchBox} icon={'fa fa-search'} />
-                  */}
                                 </div>
                             )}
                         </div>
@@ -750,7 +658,6 @@ class NewDevice extends Component {
         if (edit) {
             FormActions.fetch(edit);
         }
-        // DeviceActions.fetchStats(this.props.user.user.service);
         TemplateActions.fetchTemplates.defer();
     }
 
@@ -761,7 +668,6 @@ class NewDevice extends Component {
 
         let ops = function (device) {
             DeviceActions.addDevice(device, (device) => {
-                // FormActions.set(device);
                 toaster.success('Device created');
                 hashHistory.push('/device/list');
             });
@@ -775,7 +681,7 @@ class NewDevice extends Component {
                 });
             };
         }
-        console.log('this.props,', this.props);
+        // console.log('this.props,', this.props);
         return (
             <div className="full-width full-height">
                 <ReactCSSTransitionGroup transitionName="first" transitionAppear transitionAppearTimeout={500} transitionEntattrTypeerTimeout={500} transitionLeaveTimeout={500}>

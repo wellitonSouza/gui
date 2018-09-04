@@ -1,3 +1,4 @@
+/* eslint-disable */
 const alt = require('../alt');
 const MenuActions = require('../actions/MenuActions');
 

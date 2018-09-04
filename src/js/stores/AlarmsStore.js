@@ -1,3 +1,4 @@
+/* eslint-disable */
 import alt from '../alt';
 import alarmsActions from '../actions/AlarmsActions';
 

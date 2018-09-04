@@ -1,8 +1,7 @@
+/* eslint-disable */
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import { hashHistory } from 'react-router';
 import AltContainer from 'alt-container';
-import Script from 'react-load-script';
 import { NewPageHeader } from '../../containers/full/PageHeader';
 import MeasureStore from '../../stores/MeasureStore';
 import MeasureActions from '../../actions/MeasureActions';
@@ -11,46 +10,21 @@ import DeviceStore from '../../stores/DeviceStore';
 import util from '../../comms/util/util';
 import { Loading } from '../../components/Loading';
 import { Attr, HandleGeoElements } from '../../components/HistoryElements';
-import { MapWrapper } from './Devices.js';
 import toaster from '../../comms/util/materialize';
 import { DojotBtnRedCircle } from '../../components/DojotButton';
 import { RemoveModal } from '../../components/Modal';
 
-
-class Tooltip extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        console.log('TooltipValue: ', this.props.tooltipValue);
-        return (
-            <div className="div-tooltip">
-                <span>{this.props.tooltipValue}</span>
-            </div>
-        );
-    }
-}
-
-class DeviceHeader extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return (
-            <div className="row devicesSubHeader p0 device-details-header">
-                <div className="col s8 m8">
-                    <label className="col s12 device-label truncate" title={this.props.device.label}>
-                        {' '}
-                        {this.props.device.label}
-                    </label>
-                    <div className="col s12 device-label-name">Name</div>
-                </div>
-            </div>
-        );
-    }
-}
+const DeviceHeader = ({device}) => (
+    <div className="row devicesSubHeader p0 device-details-header">
+        <div className="col s8 m8">
+            <label className="col s12 device-label truncate" title={device.label}>
+                {' '}
+                {device.label}
+            </label>
+            <div className="col s12 device-label-name">Name</div>
+        </div>
+    </div>
+);
 
 
 class Attribute extends Component {
@@ -544,7 +518,7 @@ class DeviceDetail extends Component {
             }
         }
 
-        console.log('attrs: ', dal);
+        // console.log('attrs: ', dal);
         return (
             <div className="row detail-body">
                 <div className="first-col">
@@ -649,7 +623,7 @@ class ViewDevice extends Component {
                     init(reply.token);
                 })
                 .catch((error) => {
-                    console.log('Failed!', error);
+                    // console.log('Failed!', error);
                 });
         }
 
@@ -661,7 +635,7 @@ class ViewDevice extends Component {
             });
 
             device_detail_socket.on('error', (data) => {
-                console.log('socket error', data);
+                // console.log('socket error', data);
                 if (device_detail_socket) device_detail_socket.close();
                 // getWsToken();
             });

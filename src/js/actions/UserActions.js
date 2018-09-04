@@ -1,3 +1,4 @@
+/* eslint-disable */
 import userManager from '../comms/users/UserManager';
 import toaster from '../comms/util/materialize';
 

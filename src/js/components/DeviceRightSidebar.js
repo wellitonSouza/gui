@@ -1,7 +1,5 @@
+/* eslint-disable */
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import ReactResizeDetector from 'react-resize-detector';
 import { Link } from 'react-router';
 
 class ListItem extends Component {

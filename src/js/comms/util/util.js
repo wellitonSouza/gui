@@ -1,3 +1,4 @@
+/* eslint-disable */
 import moment from 'moment';
 import LoginActions from '../../actions/LoginActions';
 import 'babel-polyfill';
@@ -54,7 +55,7 @@ class Util {
     }
 
     POST_MULTIPART(url, payload) {
-        console.log('POST_MULTIPART', payload);
+        // console.log('POST_MULTIPART', payload);
         const data = new FormData();
         data.append('sha1', payload.sha1);
         data.append('image', payload.binary);

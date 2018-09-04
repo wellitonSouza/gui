@@ -1,10 +1,9 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AltContainer from 'alt-container';
 import { hashHistory } from 'react-router';
-import Toggle from 'material-ui/Toggle';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import toaster from '../../comms/util/materialize';
 
 import { Loading } from '../../components/Loading';
@@ -51,7 +50,7 @@ class ImageModal extends Component {
     }
 
     dismiss() {
-        console.log('dismiss');
+        // console.log('dismiss');
         this.props.toggleModal();
     }
 
@@ -749,7 +748,7 @@ class ListItem extends Component {
         this.removeAttributeId(this.state.template);
         // Validation of template attributes
         for (const k in this.state.template.attrs) {
-            console.log('attrs: ', this.state.template.attrs);
+            // console.log('attrs: ', this.state.template.attrs);
             // Validation of config attributes
             if (this.state.template.attrs[k].type == 'meta') {
                 if (this.state.template.attrs[k].label == '') {
@@ -1284,7 +1283,7 @@ class TemplateOperations extends GenericOperations {
 
     _fetch() {
         const res = Object.assign({}, this.paginationParams, this.filterParams);
-        console.log('fetching: ', res);
+        // console.log('fetching: ', res);
         TemplateActions.fetchTemplates(res);
     }
 }

@@ -1,18 +1,14 @@
+/* eslint-disable */
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import AltContainer from 'alt-container';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import { Link } from 'react-router';
 import Dropzone from 'react-dropzone';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import ImageStore from '../../stores/ImageStore';
 import ImageActions from '../../actions/ImageActions';
 import TemplateStore from '../../stores/TemplateStore';
 import TemplateActions from '../../actions/TemplateActions';
 import { NewPageHeader } from '../../containers/full/PageHeader';
-import { DojotBtnLink } from '../../components/DojotButton';
 import util from '../../comms/util';
-import LoginStore from '../../stores/LoginStore';
 import { Loading } from '../../components/Loading';
 
 // UI elements
@@ -43,7 +39,7 @@ class UploadDialog extends Component {
 
     save(event) {
         event.preventDefault();
-        console.log('save', this.state.files);
+        // console.log('save', this.state.files);
 
         if (this.state.files.length == 0) {
             toaster.success('No image added.');
@@ -133,14 +129,14 @@ class NewImageCard extends Component {
     save(e) {
         e.preventDefault();
 
-        console.log('save');
+        // console.log('save');
         // let image = ImageStore.getState().new_image;
         // console.log('image', image);
         const img = {
             template_id: this.props.template.id,
             fw_version: this.state.fw_version,
         };
-        console.log('image', img);
+        // console.log('image', img);
         ImageActions.triggerInsert(img, (img) => {
             toaster.success('Image created.');
         });
@@ -148,7 +144,7 @@ class NewImageCard extends Component {
     }
 
     cancel() {
-        console.log('cancel');
+        // console.log('cancel');
         this.props.setNewImage(false);
     }
 
@@ -160,7 +156,7 @@ class NewImageCard extends Component {
         // FirmwareActions.update({ f: f, v: v });
         this.setState({ fw_version: event.target.value });
 
-        console.log('chacdnign');
+        // console.log('chacdnign');
     }
 
     render() {
@@ -225,7 +221,7 @@ class ImageCard extends Component {
     }
 
     removeImage(e) {
-        console.log('removeImage', this.props.image);
+        // console.log('removeImage', this.props.image);
         e.preventDefault();
         ImageActions.triggerRemoval(this.props.image);
     }
@@ -240,7 +236,7 @@ class ImageCard extends Component {
 
 
     clickStar() {
-        console.log('clickStar');
+        // console.log('clickStar');
         // this.props.changeState(0);
         this.setState({ starred: !this.state.starred });
     }
@@ -255,7 +251,7 @@ class ImageCard extends Component {
             binary: '',
             sha1: '',
         };
-        console.log('removeBinary', img_binary);
+        // console.log('removeBinary', img_binary);
         ImageActions.triggerUpdate(img_binary, () => {
             toaster.success('Image updated.');
         });
@@ -358,13 +354,13 @@ class FirmwareCardImpl extends Component {
     }
 
     render() {
-        console.log('this.props.template_2', this.props.template);
-        console.log('this.props.images', this.props.images);
+        // console.log('this.props.template_2', this.props.template);
+        // console.log('this.props.images', this.props.images);
         // this.images = this.props.images;
 
         const images = [];
         for (const img in this.props.images) images.push(this.props.images[img]);
-        console.log('images', images);
+        // console.log('images', images);
         // return (
         //   null
         // )
@@ -439,21 +435,21 @@ class ImageArea extends Component {
     }
 
     activeImage(image_id) {
-        console.log('changing active_image_id', image_id);
+        // console.log('changing active_image_id', image_id);
         this.setState({ active_image_id: image_id });
     }
 
     render() {
-        console.log('this.props.templates', this.props.templates);
+        // console.log('this.props.templates', this.props.templates);
         // it happens when TemplateStore is loading
-        console.log('this.props.loading', this.props.loading);
+        // console.log('this.props.loading', this.props.loading);
         if (this.props.loading == undefined || this.props.loading) {
             return (<Loading />);
         }
 
         this.filteredList = this.getTemplateWithImages(this.props.templates);
         // let selectedImage = this.filteredList[0];
-        console.log('filteredList', this.filteredList);
+        // console.log('filteredList', this.filteredList);
         return (
             <div className="row bg-light-gray">
                 <div className="col s12 data-frame p0">
@@ -487,7 +483,7 @@ class FirmwareUpdate extends Component {
     }
 
     componentDidMount() {
-        console.log('componentDidMount');
+        // console.log('componentDidMount');
         // ImageActions.fetchImages.defer();
         TemplateActions.fetchTemplates.defer();
     }

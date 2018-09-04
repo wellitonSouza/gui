@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 
 class MaterialSelect extends Component {
@@ -14,7 +15,7 @@ class MaterialSelect extends Component {
     }
 
     render() {
-        console.log('Material Select, this.props: ', this.props);
+        // console.log('Material Select, this.props: ', this.props);
         const options = this.props.children;
         return (
             <div className="card-select-2">

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import util from '../util';
 
 class DeviceManager {

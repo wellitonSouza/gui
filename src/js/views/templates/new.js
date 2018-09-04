@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
@@ -5,7 +6,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Link, hashHistory } from 'react-router';
 import AltContainer from 'alt-container';
 import Materialize from 'materialize-css';
-import { NewPageHeader, PageHeader, ActionHeader } from '../../containers/full/PageHeader';
+import { NewPageHeader } from '../../containers/full/PageHeader';
 
 import alt from '../../alt';
 import TemplateActions from '../../actions/TemplateActions';

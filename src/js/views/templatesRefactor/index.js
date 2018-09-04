@@ -1,3 +1,4 @@
+/* eslint no-underscore-dangle: 0 */
 import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AltContainer from 'alt-container';
@@ -17,14 +18,19 @@ class TemplatesRefactor extends Component {
         this.addTemplate = this.addTemplate.bind(this);
     }
 
+    componentDidMount() {
+        this.tempOpex._fetch();
+        this.setState({ hasNewTemplate: false });
+    }
 
     toggleSearchBar() {
-        const last = this.state.showFilter;
+        const { showFilter: last } = this.state;
         this.setState({ showFilter: !last });
     }
 
     addTemplate() {
-        if (this.state.hasNewTemplate) return;
+        const { hasNewTemplate } = this.state;
+        if (hasNewTemplate) return;
         const template = {
             id: 'new_template',
             label: '',
@@ -41,12 +47,6 @@ class TemplatesRefactor extends Component {
         this.setState({ hasNewTemplate: false });
     }
 
-    componentDidMount() {
-        this.tempOpex._fetch();
-        this.setState({ hasNewTemplate: false });
-    }
-
-
     render() {
         return (
             <ReactCSSTransitionGroup
@@ -58,7 +58,11 @@ class TemplatesRefactor extends Component {
             >
                 <div className="full-device-area">
                     <AltContainer store={TemplateStore}>
-                        <TemplateHeader toggleSearchBar={this.toggleSearchBar} addTemplate={this.addTemplate} tempOpex={this.tempOpex} />
+                        <TemplateHeader
+                            toggleSearchBar={this.toggleSearchBar}
+                            addTemplate={this.addTemplate}
+                            tempOpex={this.tempOpex}
+                        />
                     </AltContainer>
                 </div>
 

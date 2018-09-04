@@ -1,9 +1,10 @@
+/* eslint-disable */
 import imageManager from '../comms/ImageManager';
 import toaster from '../comms/util/materialize';
 
 const alt = require('../alt');
 
-console.log('ImageActions');
+// console.log('ImageActions');
 
 class ImageActions {
     updateImages(images) {
@@ -30,7 +31,7 @@ class ImageActions {
             dispatch();
             imageManager.setBinary(image)
                 .then((response) => {
-                    console.log('imageManager.setBinary', response);
+                    // console.log('imageManager.setBinary', response);
                     this.updateSingle(response.image);
                     if (cb) {
                         cb(response.image);
@@ -91,7 +92,7 @@ class ImageActions {
             dispatch();
             imageManager.deleteBinary(image_id)
                 .then((response) => {
-                    console.log('response', response);
+                    // console.log('response', response);
                     if (response.result == 'ok') {
                         this.removeSingleBinary(image_id);
                         if (cb) {

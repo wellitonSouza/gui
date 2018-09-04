@@ -1,3 +1,4 @@
+/* eslint-disable */
 import FlowActions from '../actions/FlowActions';
 
 const alt = require('../alt');

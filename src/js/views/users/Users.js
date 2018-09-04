@@ -1,9 +1,9 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import AltContainer from 'alt-container';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { NewPageHeader } from '../../containers/full/PageHeader';
-import { SimpleFilter } from '../utils/Manipulation';
 import MaterialSelect from '../../components/MaterialSelect';
 import AutheticationFailed from '../../components/AuthenticationFailed';
 import LoginStore from '../../stores/LoginStore';
@@ -36,10 +36,15 @@ class SideBar extends Component {
         this.setModal = this.setModal.bind(this);
         this.removeUser = this.removeUser.bind(this);
         this.fieldValidation = this.fieldValidation.bind(this);
+        this.checkName = this.checkName.bind(this);
+        this.checkUsername = this.checkUsername.bind(this);
+        this.checkEmail = this.checkEmail.bind(this);
+        this.checkConfirmEmail = this.checkConfirmEmail.bind(this);
     }
 
     componentDidMount() {
-        if (this.props.user.profile === 'admin') {
+        const { user } = this.props;
+        if (user.profile === 'admin') {
             UserActions.fetchUsers.defer();
         }
     }
@@ -57,27 +62,32 @@ class SideBar extends Component {
         this.setState(context);
     }
 
+    setModal(status) {
+        this.setState({ show_modal: status });
+    }
+
     checkValidation() {
-        if (this.checkName(this.state.user.name)) {
+        const { user } = this.state;
+        if (this.checkName(user.name)) {
             toaster.warning('Invalid name.');
             return false;
         }
-        if (this.checkEmail(this.state.user.email)) {
+        if (this.checkEmail(user.email)) {
             toaster.warning('Invalid email.');
             return false;
         }
 
-        if (this.checkUsername(this.state.user.username)) {
+        if (this.checkUsername(user.username)) {
             toaster.warning('Invalid username.');
             return false;
         }
 
-        if (this.checkConfirmEmail(this.state.user.email, this.state.user.confirmEmail)) {
+        if (this.checkConfirmEmail(user.email, user.confirmEmail)) {
             toaster.warning('Email address mismatch.');
             return false;
         }
 
-        if (this.state.user.profile === '') {
+        if (user.profile === '') {
             toaster.warning('Missing profile.');
             return false;
         }
@@ -85,14 +95,15 @@ class SideBar extends Component {
     }
 
     handleChange(event) {
-        const target = event.target;
-        const user = this.state.user;
+        const { target } = event;
+        const { user } = this.state;
         user[target.name] = target.value;
         this.fieldValidation(user, target.name);
     }
 
     handleSave() {
-        const tmp = JSON.parse(JSON.stringify(this.state.user));
+        const { user } = this.state;
+        const tmp = JSON.parse(JSON.stringify(user));
         delete tmp.created_by;
         delete tmp.created_date;
         delete tmp.passwd;
@@ -113,9 +124,9 @@ class SideBar extends Component {
 
     handleCreate() {
         if (this.checkValidation()) {
-            const temp = this.state.user;
+            const { user: temp } = this.state;
             temp.email = String(temp.email).toLowerCase();
-            console.log('User to be created: ', temp);
+            // console.log('User to be created: ', temp);
             UserActions.addUser(
                 temp,
                 () => {
@@ -130,19 +141,17 @@ class SideBar extends Component {
     }
 
     hideSideBar() {
-        this.props.hide();
+        const { hide } = this.props;
+        hide();
     }
 
     handleDelete() {
         this.setState({ show_modal: true });
     }
 
-    setModal(status) {
-        this.setState({ show_modal: status });
-    }
-
     removeUser() {
-        UserActions.triggerRemoval(this.state.user, () => {
+        const { user } = this.state;
+        UserActions.triggerRemoval(user, () => {
             this.hideSideBar();
             toaster.success('User removed', 4000);
             this.setState({ show_modal: false });
@@ -150,7 +159,7 @@ class SideBar extends Component {
     }
 
     checkName(name) {
-        const regex = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
+        const regex = /^([ \u00c0-\u01ffa-zA-Z'-])+$/;
         return !regex.test(name);
     }
 
@@ -160,7 +169,7 @@ class SideBar extends Component {
     }
 
     checkEmail(email) {
-        const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return !regex.test(String(email).toLocaleLowerCase());
     }
 
@@ -184,40 +193,42 @@ class SideBar extends Component {
     }
 
     render() {
+        const { edit, visible } = this.props;
+        const { user, isInvalid, show_modal: showModal } = this.state;
         let sideBar;
-        if (this.props.visible) {
+        if (visible) {
             sideBar = (
                 <div id="sidebar" className="sidebar-auth visible">
                     <div
                         id="auth-title"
-                        className={`title${this.props.edit ? ' ' : ' hide'}`}
+                        className={`title${edit ? ' ' : ' hide'}`}
                     >
                         <span id="title-text" className="title-text">
-              Edit User
+                            Edit User
                         </span>
                     </div>
                     <div
                         id="auth-title"
-                        className={`title${this.props.edit ? ' hide' : ''}`}
+                        className={`title${edit ? ' hide' : ''}`}
                     >
                         <span id="title-text" className="title-text">
-              New User
+                            New User
                         </span>
                     </div>
                     <div className="fixed-height">
                         <div id="auth-icon" className="user-icon">
-                            <img src="images/generic-user-icon.png" />
+                            <img src="images/generic-user-icon.png" alt="" />
                         </div>
                         <div id="auth-name" className="input-field icon-space">
                             <input
                                 id="userName46465"
-                                value={this.state.user.username}
+                                value={user.username}
                                 name="username"
-                                disabled={this.props.edit}
+                                disabled={edit}
                                 onChange={this.handleChange}
                                 style={{ fontSize: '16px' }}
                                 className={
-                                    `validate${this.state.isInvalid.username ? ' invalid' : ''}`
+                                    `validate${isInvalid.username ? ' invalid' : ''}`
                                 }
                                 maxLength="40"
                             />
@@ -226,18 +237,18 @@ class SideBar extends Component {
                                 data-error="Please use only letters (a-z) and numbers (0-9)"
                                 className="active"
                             >
-                User Name
+                                User Name
                             </label>
                         </div>
                         <div id="auth-usr" className="input-field">
                             <input
                                 id="name"
-                                value={this.state.user.name}
+                                value={user.name}
                                 name="name"
                                 onChange={this.handleChange}
                                 style={{ fontSize: '16px' }}
                                 className={
-                                    `validate${this.state.isInvalid.name ? ' invalid' : ''}`
+                                    `validate${isInvalid.name ? ' invalid' : ''}`
                                 }
                                 maxLength="40"
                             />
@@ -246,18 +257,18 @@ class SideBar extends Component {
                                 data-error="Invalid name"
                                 className="active"
                             >
-                Name
+                                Name
                             </label>
                         </div>
                         <div id="auth-email" className="input-field">
                             <input
                                 id="email"
-                                value={this.state.user.email}
+                                value={user.email}
                                 name="email"
                                 onChange={this.handleChange}
                                 style={{ fontSize: '16px' }}
                                 className={
-                                    `validate${this.state.isInvalid.email ? ' invalid' : ''}`
+                                    `validate${isInvalid.email ? ' invalid' : ''}`
                                 }
                                 maxLength="40"
                             />
@@ -266,19 +277,19 @@ class SideBar extends Component {
                                 data-error="Please enter a valid email address."
                                 className="active"
                             >
-                Email
+                                Email
                             </label>
                         </div>
                         <div id="auth-confirm" className="input-field">
                             <input
                                 id="confirm-email"
-                                value={this.state.user.confirmEmail}
+                                value={user.confirmEmail}
                                 name="confirmEmail"
                                 onChange={this.handleChange}
                                 style={{ fontSize: '16px' }}
                                 className={
                                     `validate${
-                                        this.state.isInvalid.confirmEmail ? ' invalid' : ''}`
+                                        isInvalid.confirmEmail ? ' invalid' : ''}`
                                 }
                                 maxLength="40"
                             />
@@ -287,7 +298,7 @@ class SideBar extends Component {
                                 data-error="Email address mismatch"
                                 className="active"
                             >
-                Confirm Email
+                                Confirm Email
                             </label>
                         </div>
                         <div>
@@ -298,24 +309,24 @@ class SideBar extends Component {
                             <MaterialSelect
                                 id="flr_profiles"
                                 name="profile"
-                                value={this.state.user.profile}
+                                value={user.profile}
                                 onChange={this.handleChange}
                             >
                                 <option value="" disabled>
-                  Choose your option
+                                    hoose your option
                                 </option>
                                 <option value="admin" id="adm-option">
-                  Administrator
+                                    Administrator
                                 </option>
                                 <option value="user" id="user-option">
-                  User
+                                    User
                                 </option>
                             </MaterialSelect>
                         </div>
                     </div>
                     <div
                         id="edit-footer"
-                        className={`action-footer${this.props.edit ? '' : ' hide'}`}
+                        className={`action-footer${edit ? '' : ' hide'}`}
                     >
                         <div
                             id="auth-save"
@@ -345,7 +356,7 @@ class SideBar extends Component {
 
                     <div
                         id="create-footer"
-                        className={`action-footer${this.props.edit ? ' hide' : ''}`}
+                        className={`action-footer${edit ? ' hide' : ''}`}
                     >
                         <div
                             id="auth-save"
@@ -376,7 +387,7 @@ class SideBar extends Component {
                 transitionLeaveTimeout={500}
             >
                 {sideBar}
-                {this.state.show_modal ? (
+                {showModal ? (
                     <RemoveModal
                         name="user"
                         remove={this.removeUser}
@@ -391,14 +402,15 @@ class SideBar extends Component {
 }
 
 function SummaryItem(props) {
+    const { user } = props;
     return (
         <div className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight">
             <div className="lst-entry-title col s12">
-                <img className="title-icon" src="images/generic-user-icon.png" />
-                <div className="title-text truncate" title={props.user.name}>
+                <img className="title-icon" src="images/generic-user-icon.png" alt="" />
+                <div className="title-text truncate" title={user.name}>
                     <span className="text">
                         {' '}
-                        {props.user.name}
+                        {user.name}
                         {' '}
                     </span>
                 </div>
@@ -407,31 +419,31 @@ function SummaryItem(props) {
                 <div className="attr-area light-background">
                     <div className="attr-row">
                         <div className="icon">
-                            <img src="images/usr-icon.png" />
+                            <img src="images/usr-icon.png" alt="" />
                         </div>
-                        <div className="user-card attr-content" title={props.user.username}>
-                            <input className="truncate" type="text" value={props.user.username} disabled />
+                        <div className="user-card attr-content" title={user.username}>
+                            <input className="truncate" type="text" value={user.username} disabled />
                             <span>User Name</span>
                         </div>
                     </div>
                     <div className="attr-row">
                         <div className="icon">
-                            <img src="images/email-icon.png" />
+                            <img src="images/email-icon.png" alt="" />
                         </div>
-                        <div className="user-card attr-content" title={props.user.email}>
-                            <input className="truncate" type="text" value={props.user.email} disabled />
+                        <div className="user-card attr-content" title={user.email}>
+                            <input className="truncate" type="text" value={user.email} disabled />
                             <span>Email</span>
                         </div>
                     </div>
                     <div className="attr-row">
                         <div className="icon">
-                            <img src="images/profile-icon.png" />
+                            <img src="images/profile-icon.png" alt="" />
                         </div>
                         <div className="user-card attr-content">
                             <input
                                 className="truncate"
                                 type="text"
-                                value={props.user.profile === 'admin' ? 'Administrator' : 'User'}
+                                value={user.profile === 'admin' ? 'Administrator' : 'User'}
                                 disabled
                             />
                             <span>Profile</span>
@@ -451,14 +463,16 @@ class ListItem extends Component {
 
     handleDetail(e) {
         e.preventDefault();
-        this.props.editUser(this.props.user);
+        const { editUser, user } = this.props;
+        editUser(user);
     }
 
     render() {
-        const active = (this.props.user.id === this.props.detail);
+        const { user, detail } = this.props;
+        const active = (user.id === detail);
         return (
-            <div className="col s12 no-padding clickable" id={this.props.user.id} onClick={this.handleDetail}>
-                <SummaryItem user={this.props.user} isActive={active} />
+            <div className="col s12 no-padding clickable" id={user.id} onClick={this.handleDetail}>
+                <SummaryItem user={user} isActive={active} />
             </div>
         );
     }
@@ -495,8 +509,9 @@ class RemoveDialog extends Component {
     }
 
     render() {
+        const { target } = this.props;
         return (
-            <div className="modal" id={this.props.target} ref="modal">
+            <div className="modal" id={target} ref="modal">
                 <div className="modal-content full">
                     <div className="row center background-info">
                         <div><i className="fa fa-exclamation-triangle fa-4x" /></div>
@@ -548,11 +563,12 @@ class UserList extends Component {
 
     editUser(user) {
         const temp = this.state;
+        const { visibility } = this.props;
         temp.user = user;
         temp.create = false;
         temp.edit = true;
         this.setState(temp);
-        this.props.visibility(true, 'edit');
+        visibility(true, 'edit');
     }
 
     createUser() {
@@ -570,22 +586,25 @@ class UserList extends Component {
     }
 
     hideSideBar() {
-        this.props.visibility(false, 'hide');
+        const { visibility } = this.props;
+        visibility(false, 'hide');
     }
 
     render() {
+        const { visible, values } = this.props;
+        const { detail } = this.state;
         return (
             <div className="fill">
                 <AltContainer store={LoginStore}>
-                    <SideBar {...this.state} hide={this.hideSideBar} visible={this.props.visible} />
+                    <SideBar {...this.state} hide={this.hideSideBar} visible={visible} />
                 </AltContainer>
                 <RemoveDialog callback={this.deleteUser} target="confirmDiag" />
                 <div id="user-wrapper" className="col s12  lst-wrapper extra-padding scroll-bar">
-                    {this.props.values.map(user => (
+                    {values.map(user => (
                         <ListItem
                             user={user}
                             key={user.id}
-                            detail={this.state.detail}
+                            detail={detail}
                             editUser={this.editUser}
                         />
                     ))}
@@ -596,7 +615,7 @@ class UserList extends Component {
 }
 
 function UserFilter(props) {
-    const filter = props.filter;
+    const { filter, users } = props;
 
     // parse the given field, searching for special selectors on the form <field name>:<value>
     const tokens = filter.match(/([a-z]+)\W*:\W*(\w+)\W*/g);
@@ -612,7 +631,7 @@ function UserFilter(props) {
     }
 
     // does the actual filtering
-    const filteredList = props.users.filter((e) => {
+    const filteredList = users.filter((e) => {
         if (tokens !== undefined && parsed !== undefined) {
             let match = true;
             for (let i = 0; i < parsed.length; i++) {
@@ -648,6 +667,13 @@ class UsersContent extends Component {
         this.newUser = this.newUser.bind(this);
         this.visibility = this.visibility.bind(this);
     }
+    
+    componentDidMount() {
+        const { user } = this.props;
+        if (user.profile === 'admin') {
+            UserActions.fetchUsers.defer();
+        }
+    }
 
     // Uses Users' internal state as store for the filter field. No sync issues since the
     // rendering of the affected view is done on the lower order compoenent (UserFilter).
@@ -669,22 +695,19 @@ class UsersContent extends Component {
         this.setState(tmp);
     }
 
-    componentDidMount() {
-        if (this.props.user.profile === 'admin') {
-            UserActions.fetchUsers.defer();
-        }
-    }
 
     render() {
-        console.log('entrou até aqui. ');
-        if (this.props.user.profile === 'admin') {
+        const { user } = this.props;
+        const { filter } = this.state;
+        // console.log('entrou até aqui. ');
+        if (user.profile === 'admin') {
             return (
                 <span id="userMain">
                     <NewPageHeader title="Auth" subtitle="Users" icon="user">
                         <OperationsHeader newUser={this.newUser} />
                     </NewPageHeader>
                     <AltContainer store={UserStore}>
-                        <UserFilter filter={this.state.filter} {...this.state} visibility={this.visibility} />
+                        <UserFilter filter={filter} {...this.state} visibility={this.visibility} />
                     </AltContainer>
                 </span>
             );
@@ -698,26 +721,17 @@ class UsersContent extends Component {
 }
 
 
-class Users extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return (
-            <AltContainer store={LoginStore}>
-                <UsersContent />
-            </AltContainer>
-        );
-    }
-}
-
+const Users = () => (
+    <AltContainer store={LoginStore}>
+        <UsersContent />
+    </AltContainer>
+);
 
 function OperationsHeader(props) {
     return (
         <div className="col s12 pull-right pt10">
-            <div onClick={props.newUser} className="new-btn-flat red" title="Create a new user">
-          New User
+            <div onClick={props.newUser} className="new-btn-flat red" title="Create a new user" role="user">
+                New User
                 <i className="fa fa-plus" />
             </div>
         </div>

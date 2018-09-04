@@ -1,15 +1,11 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import Materialize from 'materialize-css';
 import { Loading } from '../../components/Loading';
 import util from '../../comms/util/util';
-import DeviceActions from '../../actions/DeviceActions';
-import DeviceStore from '../../stores/DeviceStore';
 import TemplateActions from '../../actions/TemplateActions';
 import TemplateStore from '../../stores/TemplateStore';
 
-import MaterialInput from '../../components/MaterialInput';
 import MaterialSelect from '../../components/MaterialSelect';
 
 import { Filter } from '../utils/Manipulation';
@@ -20,7 +16,7 @@ function SummaryItem(props) {
     for (const attribute in props.device.attrs) {
         attrs += props.device.attrs[attribute].length;
     }
-    console.log('props.device.label: ', props.device.label);
+    // console.log('props.device.label: ', props.device.label);
     return (
 
         <Link to={`/device/id/${props.device.id}/detail`}>
@@ -151,7 +147,7 @@ class DevFilterFields extends Component {
     }
 
     render() {
-        console.log('DevFilterFields', this.props);
+        // console.log('DevFilterFields', this.props);
         if (this.templates.length == 0) this.convertTemplateList();
 
         this.opts = this.createSelectTemplates();

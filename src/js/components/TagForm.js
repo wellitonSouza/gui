@@ -3,7 +3,7 @@
 
   Uses TagActions to manipulate the list of tags.
  */
-
+/* eslint-disable */
 import React, { Component } from 'react';
 import TagActions from '../actions/TagActions';
 

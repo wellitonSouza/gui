@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AltContainer from 'alt-container';
@@ -25,7 +26,7 @@ class Recovery extends Component {
         const temp = this.state;
         temp.token = test[test.length - 1];
         this.setState(temp);
-        console.log(temp);
+        // console.log(temp);
     }
 
     validate() {

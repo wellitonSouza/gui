@@ -8,7 +8,7 @@
     "build": "webpack -p --config production.config.js --bail",
     "watch": "webpack-dev-server --hot --progress --colors",
     "lint": "./node_modules/.bin/eslint src/js/*",
-    "lint:fix": "./node_modules/.bin/eslint src/js/* --fix" 
+    "lint:fix": "./node_modules/.bin/eslint src/js/* --fix"
   },
   "babel": {
     "plugins": [

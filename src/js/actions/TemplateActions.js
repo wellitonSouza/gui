@@ -1,3 +1,4 @@
+/* eslint-disable */
 import templateManager from '../comms/templates/TemplateManager';
 import toaster from '../comms/util/materialize';
 

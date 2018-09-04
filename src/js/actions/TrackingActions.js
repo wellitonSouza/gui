@@ -1,3 +1,4 @@
+/* eslint-disable */
 import alt from '../alt';
 import util from '../comms/util';
 import LoginStore from '../stores/LoginStore';

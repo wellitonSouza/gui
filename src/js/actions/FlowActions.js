@@ -1,4 +1,4 @@
-
+/* eslint-disable */
 import util from '../comms/util';
 
 const alt = require('../alt');

@@ -7,7 +7,7 @@ import { Devices, ViewDevice, NewDevice } from './views/devices';
 import { TemplateList, NewTemplate } from './views/templates';
 import Users from './views/users';
 import { Flows, EditFlow } from './views/flows';
-import { Alarms } from './views/alarms';
+import Alarms from './views/alarms';
 import Todo from './views/utils/todo';
 import NotFound from './views/utils/404';
 

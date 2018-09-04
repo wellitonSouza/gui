@@ -1,8 +1,9 @@
+/* eslint-disable */
 import React from 'react';
 
 function NewPageHeader(props) {
     const childrenWithProps = React.Children.map(props.children, child => React.cloneElement(child, { ...props }));
-    console.log('newPageHeader', props);
+    // console.log('newPageHeader', props);
     return (
         <div className="header-box">
             <div className="title-box">

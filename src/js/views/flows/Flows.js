@@ -1,5 +1,5 @@
+/* eslint-disable */
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import { Link } from 'react-router';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
@@ -8,7 +8,7 @@ import AltContainer from 'alt-container';
 import FlowStore from '../../stores/FlowStore';
 import FlowActions from '../../actions/FlowActions';
 
-import { PageHeader, NewPageHeader } from '../../containers/full/PageHeader';
+import { NewPageHeader } from '../../containers/full/PageHeader';
 import util from '../../comms/util/util';
 
 function SummaryItem(props) {
@@ -265,7 +265,7 @@ class FlowList extends Component {
     }
 }
 
-class Flows extends Component {
+export class Flows extends Component {
     constructor(props) {
         super(props);
 
@@ -303,7 +303,7 @@ class Flows extends Component {
     }
 }
 
-function OperationsHeader(props) {
+function OperationsHeader() {
     return (
         <div className="col s12 pull-right pt10">
             <Link to="/flows/new" className="new-btn-flat red waves-effect waves-light " title="Create a new data flow">
@@ -314,5 +314,3 @@ function OperationsHeader(props) {
         </div>
     );
 }
-
-export { Flows };

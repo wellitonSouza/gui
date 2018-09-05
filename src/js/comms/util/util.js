@@ -259,7 +259,15 @@ class Util {
           ret.result = value.trim().length > 0;
           ret.error = 'This translator is not valid';
           return ret;
-      }
+      },
+      'device_timeout': function (value) {
+        const re = /^[+-]?\d+$/;
+        ret.result = re.test(value);
+        if (ret.result === false) {
+            ret.error = 'This device timiout is not an integer';
+        }
+        return ret;
+      },
     };
     
     if (validator.hasOwnProperty(type)) {
@@ -277,6 +285,11 @@ class Util {
 
   isDeviceTimeoutValid(device_timeout){
     let ret = {result: true, error: ""};
+    if (device_timeout.length === 0) {
+      ret.result = false;
+      ret.error = "You can't leave the device timeout empty.";
+    return ret;
+  }
     const re = /^[+-]?\d+$/;
     ret.result = re.test(device_timeout);
     if (ret.result === false) {

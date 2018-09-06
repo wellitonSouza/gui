@@ -16,7 +16,14 @@ class SideBar extends Component {
   constructor() {
     super();
     this.state = {
-      user: {},
+      user:  {
+        name: '',
+        username: '',
+        email: '',
+        confirmEmail: '',
+        profile: '',
+        service: 'admin'
+      },
       show_modal: false,
       confirmEmail: "",
       isInvalid: {
@@ -40,34 +47,23 @@ class SideBar extends Component {
   }
 
   componentDidMount() {
-    console.log(">>> componentDidMount -> this.state.user=", this.state.user);
-    console.log(">>> componentDidMount -> this.props.user= ", this.props.user);
     if (this.props.user.profile === "admin") {
       UserActions.fetchUsers.defer();
     }
   }
 
-  componentWillReceiveProps(next) {
-    console.log(">>>> SideBar -> componentWillReceiveProps -> nextProps.user= ", next.user);
-    console.log(">>>> SideBar -> componentWillReceiveProps -> this.props.user= ", this.props.user);
-    console.log(">>>> SideBar -> componentWillReceiveProps -> this.state.user= ", this.state.user);
-    let context = this.state;
-    context.user = JSON.parse(JSON.stringify(next.user));
-    if (context.user !== "") context.user.confirmEmail = context.user.email;
-    context.isInvalid = {
-      username: false,
-      name: false,
-      email: false,
-      confirmEmail: false
-    };
-    this.setState(context);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    console.log(">>> componentDidUpdate -> this.props.user=", this.props.user);
-    console.log(">>> componentDidUpdate -> this.state.user=", this.state.user);
-    console.log(">>> componentDidUpdate -> prevProps.user=", prevProps.user);
-    console.log(">>> componentDidUpdate -> prevState.user=", prevState.user);
+  static getDerivedStateFromProps(props, state) {
+    console.log(">>> getDerivedStateFromProps -> props=", props);
+    console.log(">>> getDerivedStateFromProps -> state=", state);
+    if (props.user !== state.user) {
+      return { user: props.user,
+               isInvalid : { username: false,
+                             name: false,
+                             email: false,
+                             confirmEmail: false } };
+    }
+    // Return null to indicate no change to state.
+    return null;
   }
 
   checkValidation() {
@@ -105,7 +101,6 @@ class SideBar extends Component {
   }
 
   handleSave() {
-    console.log(">>>> SideBar -> handleSave -> this.state.user= ", this.state.user);
     let tmp = JSON.parse(JSON.stringify(this.state.user));
     delete tmp.created_by;
     delete tmp.created_date;
@@ -120,7 +115,6 @@ class SideBar extends Component {
         },
         () => {
           toaster.error("Failed to update user.");
-          console.log(">>>> SideBar -> handleSave -> ERROR: Failed to update user. -> this.state.user= ", this.state.user);
         }
       );
     }
@@ -139,7 +133,6 @@ class SideBar extends Component {
         },
         (user) => {
           this.formUser(user);
-          console.log(">>> Failed to create user.");
           toaster.success("Failed to create user.");
         }
       );
@@ -538,7 +531,14 @@ class UserList extends Component {
         this.state = {
             create: false,
             edit: false,
-            user: {}
+            user: {
+              name: '',
+              username: '',
+              email: '',
+              confirmEmail: '',
+              profile: '',
+              service: 'admin'
+            }
         };
 
         this.editUser = this.editUser.bind(this);
@@ -547,25 +547,35 @@ class UserList extends Component {
         this.formUser = this.formUser.bind(this);
     }
 
-    componentWillReceiveProps(next) {
-
-        if (next.createUser) {
-            this.createUser();
-        }
+    static getDerivedStateFromProps(props, state) {
+        if (props.createUser/* && !state.create*/) {
+        return { create: true,
+                 edit: false,
+                 user: {
+                  name: '',
+                  username: '',
+                  email: '',
+                  confirmEmail: '',
+                  profile: '',
+                  service: 'admin' }
+                };
+      }
+      // Return null to indicate no change to state.
+      return null;
     }
 
     formUser(user) {
-      console.log(">>> UserList -> formUser -> user= ", user);
       let temp = this.state;
       temp.create = true;
       temp.edit = false;
       temp.user = user;
       this.setState(temp);
-  }
+    }
 
     editUser(user) {
         let temp = this.state;
         temp.user = user;
+        temp.user.confirmEmail = user.email;
         temp.create = false;
         temp.edit = true;
         this.setState(temp);
@@ -580,6 +590,7 @@ class UserList extends Component {
             name: '',
             username: '',
             email: '',
+            confirmEmail: '',
             profile: '',
             service: 'admin'
         };

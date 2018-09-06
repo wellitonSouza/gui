@@ -577,10 +577,8 @@ class UserList extends Component {
     render() {
         return (
             <div className="fill">
-                <AltContainer store={LoginStore}>
-                    <SideBar {...this.state} hide={this.hideSideBar} visible={this.props.visible} />
-                </AltContainer>
-                <RemoveDialog callback={this.deleteUser} target="confirmDiag" />
+                <SideBar {...this.state} hide={this.hideSideBar} visible={this.props.visible} />
+                <RemoveDialog callback={this.deleteUser} target="confirmDiag"/>
                 <div id="user-wrapper" className="col s12  lst-wrapper extra-padding scroll-bar">
                     {this.props.values.map(user => (
                         <ListItem
@@ -681,11 +679,11 @@ class UsersContent extends Component {
         if (this.props.user.profile === 'admin') {
             return (
                 <span id="userMain">
-                    <NewPageHeader title="Auth" subtitle="Users" icon="user">
-                        <OperationsHeader newUser={this.newUser} />
-                    </NewPageHeader>
                     <AltContainer store={UserStore}>
-                        <UserFilter filter={this.state.filter} {...this.state} visibility={this.visibility} />
+                      <NewPageHeader title="Auth" subtitle="Users" icon='user'>
+                        <OperationsHeader newUser={this.newUser}/>
+                      </NewPageHeader>
+                      <UserFilter filter={this.state.filter} {...this.state} visibility={this.visibility}/>
                     </AltContainer>
                 </span>
             );

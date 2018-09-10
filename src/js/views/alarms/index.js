@@ -1,3 +1,3 @@
 import { Alarms } from './Alarms';
 
-module.exports = { Alarms };
+export default Alarms;

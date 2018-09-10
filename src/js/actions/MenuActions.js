@@ -1,9 +1,10 @@
-var alt = require('../alt');
+/* eslint-disable */
+const alt = require('../alt');
 
 class MenuActions {
-  toggleLeft() {
-    return true;
-  }
+    toggleLeft() {
+        return true;
+    }
 }
 
 alt.createActions(MenuActions, exports);

@@ -1,7 +1,6 @@
-let alt = require('../alt');
-let UserActions = require('../actions/UserActions');
-
-import util from '../comms/util';
+/* eslint-disable */
+const alt = require('../alt');
+const UserActions = require('../actions/UserActions');
 
 class UserStore {
     constructor() {
@@ -22,7 +21,7 @@ class UserStore {
             handleUpdateSingle: UserActions.UPDATE_SINGLE,
 
             handleTriggerRemoval: UserActions.TRIGGER_REMOVAL,
-            handleRemoveSingle: UserActions.REMOVE_SINGLE
+            handleRemoveSingle: UserActions.REMOVE_SINGLE,
         });
     }
 
@@ -37,22 +36,22 @@ class UserStore {
 
     handleUpdateSingle(user) {
         for (let i = 0; i < this.users.length; i++) {
-            if (this.users[i].id == user.id) {
-                let newUser = JSON.parse(JSON.stringify(user))
-                newUser.password = ""
+            if (this.users[i].id === user.id) {
+                const newUser = JSON.parse(JSON.stringify(user));
+                newUser.password = '';
                 this.users[i] = newUser;
             }
         }
         this.loading = false;
     }
 
-    handleTriggerUpdate(user) {
+    handleTriggerUpdate() {
         // trigger handler for updateSingle
         this.error = null;
         this.loading = true;
     }
 
-    handleTriggerRemoval(user) {
+    handleTriggerRemoval() {
         // trigger handler for removeSingle
         this.error = null;
         this.loading = true;
@@ -60,9 +59,7 @@ class UserStore {
 
     handleRemoveSingle(id) {
         this.loading = false;
-        this.users = this.users.filter(function (e) {
-            return e.id != id;
-        })
+        this.users = this.users.filter(e => e.id !== id);
     }
 
     handleInsertUser(user) {
@@ -71,7 +68,7 @@ class UserStore {
         this.loading = false;
     }
 
-    handleAddUser(newUser) {
+    handleAddUser() {
         this.error = null;
         this.loading = true;
     }
@@ -87,5 +84,5 @@ class UserStore {
     }
 }
 
-let _store = alt.createStore(UserStore, 'UserStore');
+const _store = alt.createStore(UserStore, 'UserStore');
 export default _store;

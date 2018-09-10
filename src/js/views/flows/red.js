@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Copyright JS Foundation and other contributors, http://js.foundation
  *

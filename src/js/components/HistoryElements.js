@@ -113,8 +113,11 @@ function HistoryList(props) {
             if (i.value.length != undefined) {
                 return i.value.length > 0;
             }
-            return i.value;
-        });
+           else {
+              return true;
+            };
+          
+         });
 
         trimmedList.reverse();
 

@@ -117,7 +117,7 @@ function HistoryList(props) {
       if (i.value.length != undefined) {
         return i.value.length > 0
       } else {
-        return i.value
+        return true
       }
     })
 

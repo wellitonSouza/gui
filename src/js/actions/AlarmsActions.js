@@ -1,10 +1,10 @@
+/* eslint-disable */
 import alarmsManager from '../comms/alarms/AlarmsManager';
-import toaster from "../comms/util/materialize";
-import alt from "../alt"
+import toaster from '../comms/util/materialize';
+import alt from '../alt';
 
 
 class AlarmsActions {
-
     alarmsLoad() {
         return true;
     }
@@ -28,7 +28,7 @@ class AlarmsActions {
                 .catch((error) => {
                     this.alarmsFailed(error);
                 });
-        }
+        };
     }
 
     fetchAlarmsHistory() {
@@ -41,7 +41,7 @@ class AlarmsActions {
                 .catch((error) => {
                     this.alarmsFailed(error);
                 });
-        }
+        };
     }
 
     alarmsFailed(error) {
@@ -50,5 +50,5 @@ class AlarmsActions {
     }
 }
 
-let _alarms = alt.createActions(AlarmsActions, exports);
+const _alarms = alt.createActions(AlarmsActions, exports);
 export default _alarms;

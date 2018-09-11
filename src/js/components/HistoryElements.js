@@ -29,10 +29,12 @@ class Graph extends Component {
             return undefined;
         }
 
-        this.props.data[this.props.device.id][`_${this.props.attr}`].map((i) => {
+        this.props.MeasureStore.data[this.props.device.id][`_${this.props.attr}`].map(
+          i => {
             labels.push(util.iso_to_date_hour(i.ts));
             values.push(i.value);
-        });
+          }
+        );
 
         if (values.length === 0) {
             return (
@@ -104,8 +106,8 @@ class Graph extends Component {
 function HistoryList(props) {
     // handle values
     const value = [];
-    for (const k in props.data[props.device.id][`_${props.attr}`]) {
-        value[k] = props.data[props.device.id][`_${props.attr}`][k];
+    for (const k in props.MeasureStore.data[props.device.id][`_${props.attr}`]) {
+        value[k] = props.MeasureStore.data[props.device.id][`_${props.attr}`][k];
     }
 
     if (value.length > 0) {
@@ -217,48 +219,38 @@ available
             validDevices = this.handleDevicePosition(this.props.device);
         } else {
             // dynamic attribute
-            validDevices = this.handleDevicePosition(this.props.data[this.props.device.id]);
+            validDevices = this.handleDevicePosition(this.props.MeasureStore.data[this.props.device.id]);
         }
+
+        let geoconfs = this.props.Config;
+        if (geoconfs == undefined)
+            geoconfs = {}
 
         if (validDevices.length == 0) {
             return <NoData />;
         }
-        if (this.props.isStatic) {
-            return (
-                <div className={`attributeBox ${this.state.opened ? 'expanded' : 'compressed'}`}>
+        else
+        {
+            if (this.props.isStatic) {
+                return <div className={"attributeBox " + (this.state.opened ? "expanded" : "compressed")}>
                     <div className="header">
                         <label>{this.props.label}</label>
                         {!this.state.opened ? <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand" /> : <i onClick={this.toogleExpand.bind(this, false)} className="fa fa-compress" />}
                     </div>
                     <div>
-                        <Script
-                            url="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=zvpeonXbjGkoRqVMtyQYCGVn4JQG8rd9"
-                            onLoad={this.mqLoaded}
-                        />
+                        <Script url="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=zvpeonXbjGkoRqVMtyQYCGVn4JQG8rd9" onLoad={this.mqLoaded} />
                     </div>
-                    {this.state.mapquest ? (
-                        <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false} />
-                    ) : (
-                        <Loading />
-                    )}
-                </div>
-            );
+                    {this.state.mapquest ? <PositionRenderer showLayersIcons={false} devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false} config={geoconfs} /> : <Loading />}
+                </div>;
+            } else {
+                return <span>
+                    <div>
+                        <Script url="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=zvpeonXbjGkoRqVMtyQYCGVn4JQG8rd9" onLoad={this.mqLoaded} />
+                    </div>
+                    {this.state.mapquest ? <PositionRenderer showLayersIcons={false} devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false} config={this.props.Config} /> : <Loading />}
+                </span>;
+            }
         }
-        return (
-            <span>
-                <div>
-                    <Script
-                        url="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=zvpeonXbjGkoRqVMtyQYCGVn4JQG8rd9"
-                        onLoad={this.mqLoaded}
-                    />
-                </div>
-                {this.state.mapquest ? (
-                    <PositionRenderer devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false} />
-                ) : (
-                    <Loading />
-                )}
-            </span>
-        );
     }
 }
 
@@ -290,12 +282,12 @@ function Attr(props) {
         );
     }
 
-    if (props.data[props.device.id] === undefined) {
-        return <NoData />;
+    if (props.MeasureStore.data[props.device.id] === undefined) {
+      return <NoData />;
     }
 
-    if (props.data[props.device.id][`_${props.attr}`] == undefined) {
-        return <NoDataAv />;
+    if (props.MeasureStore.data[props.device.id][`_${props.attr}`] == undefined) {
+      return <NoDataAv />;
     }
 
 

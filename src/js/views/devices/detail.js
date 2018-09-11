@@ -13,6 +13,7 @@ import { Attr, HandleGeoElements } from '../../components/HistoryElements';
 import toaster from '../../comms/util/materialize';
 import { DojotBtnRedCircle } from '../../components/DojotButton';
 import { RemoveModal } from '../../components/Modal';
+import ConfigStore from "../../stores/ConfigStore";
 
 const DeviceHeader = ({device}) => (
     <div className="row devicesSubHeader p0 device-details-header">
@@ -441,7 +442,7 @@ class AttrHistory extends Component {
     render() {
         return (
             <div className="graphLarge">
-                <AltContainer store={MeasureStore}>
+                <AltContainer stores={{MeasureStore: MeasureStore, Config: ConfigStore}}>
                     <Attr device={this.props.device} type={this.props.type} attr={this.props.attr} label={this.props.attr} isStatic={false} />
                 </AltContainer>
             </div>

@@ -669,7 +669,7 @@ class NewDevice extends Component {
         let ops = function (device) {
             DeviceActions.addDevice(device, (device) => {
                 toaster.success('Device created');
-                hashHistory.push('/device/list');
+                // hashHistory.push('/device/list');
             });
         };
         if (this.props.params.device) {
@@ -677,7 +677,7 @@ class NewDevice extends Component {
             ops = function (device) {
                 DeviceActions.triggerUpdate(device, () => {
                     toaster.success('Device updated');
-                    hashHistory.push('/device/list');
+                    // hashHistory.push('/device/list');
                 });
             };
         }

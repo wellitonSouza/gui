@@ -7,6 +7,7 @@ import MenuStore from '../../stores/MenuStore';
 import LoginStore from '../../stores/LoginStore';
 import LoginActions from '../../actions/LoginActions';
 import { ChangePasswordModal } from '../../components/Modal';
+import ConfigActions from "../../actions/ConfigActions";
 
 class Navbar extends Component {
     // TODO: header widgets should be received as children to this (Navbar) node
@@ -329,6 +330,10 @@ class Full extends Component {
         this.toggleUserSidebar = this.toggleUserSidebar.bind(this);
     }
 
+    componentDidMount() {
+        ConfigActions.fetchCurrentConfig.defer(true);
+    }
+    
     toggleUserSidebar() {
         this.setState({ user_sidebar: !this.state.user_sidebar });
     }

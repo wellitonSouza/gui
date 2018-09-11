@@ -10,7 +10,9 @@ import Script from 'react-load-script';
 import ReactResizeDetector from 'react-resize-detector';
 import DivIcon from 'react-leaflet-div-icon';
 import Sidebar from '../../components/DeviceRightSidebar';
-import config from '../../config';
+import * as pins from '../../config'
+import { Filter } from "../utils/Manipulation";
+
 import TrackingActions from '../../actions/TrackingActions';
 
 const trackingPin = <DivIcon className="icon-marker bg-tracking-marker" />;
@@ -25,29 +27,43 @@ class PositionRenderer extends Component {
             selected_device_id: -1,
             isTerrain: true,
             selectedPin: true,
-            center: (this.props.center ? this.props.center : [-21.277057, -47.9590129]),
-            zoom: (this.props.zoom ? this.props.zoom : 2),
+            layers: [],
+            loadedLayers: false,
+            center: (this.props.config.mapCenter ? this.props.config.mapCenter : [-21.277057, -47.9590129]),
+            zoom: (this.props.zoom ? this.props.zoom : this.props.config.mapZoom ? this.props.config.mapZoom : 7),
         };
 
         this.setTiles = this.setTiles.bind(this);
         this.handleTracking = this.handleTracking.bind(this);
         this.handleContextMenu = this.handleContextMenu.bind(this);
         this.handleCenter = this.handleCenter.bind(this);
+        this.toggleLayer = this.toggleLayer.bind(this);
+        this.layers = [];
     }
 
     componentDidMount() {
-        if (this.leafletMap !== undefined) {
-            // console.log('will attempt to add layer', MQ.mapLayer, this.leafletMap);
+            if (!this.state.loadedLayers) {
+          if (this.leafletMap !== undefined) {
+         // console.log('will attempt to add layer', MQ.mapLayer, this.leafletMap);
             // mq = require('..//../external/mq-map.js');
 
             const mapLayer = MQ.mapLayer();
             mapLayer.addTo(this.leafletMap.leafletElement);
 
-            L.control.layers({
-                Map: mapLayer,
-                Hybrid: MQ.hybridLayer(),
-                Satellite: MQ.satelliteLayer(),
-            }).addTo(this.leafletMap.leafletElement);
+                L.control
+                    .layers({
+                        Map: mapLayer,
+                        Hybrid: MQ.hybridLayer(),
+                        Satellite: MQ.satelliteLayer()
+                    })
+                    .addTo(this.leafletMap.leafletElement);
+            }
+            let layers = this.props.config.mapObj;
+            console.log("I got my layers! ", layers);
+            for (let index in layers) {
+                layers[index].isVisible = true;
+            }
+            this.setState({ loadedLayers: true, layers: layers });
         }
     }
 
@@ -56,6 +72,14 @@ class PositionRenderer extends Component {
 
         // closing ctxMenu
         this.setState({ visible: false });
+    }
+
+    toggleLayer(id) {
+        let layers = this.state.layers;
+        for (let index in layers)
+            if (layers[index].id === id)
+                layers[index].isVisible = !layers[index].isVisible;
+        this.setState({ layers: layers });
     }
 
     // context menu based at
@@ -106,11 +130,21 @@ class PositionRenderer extends Component {
 
     render() {
         // console.log('PropsPositionRenderer: ', this.props);
-        function getPin(device) {
+        function getPin(device, config) {
+            let varToMeasure = "_" + config.measureAttribute;
+
             if (device.hasOwnProperty('unique_key')) {
                 return trackingPin;
             }
-            return config.SinrSignalLevel(device.hasOwnProperty('_sinr') ? device._sinr[0].value : -1);
+            if (device.hasOwnProperty(varToMeasure) && config.mapColorActive) {
+                for (let index in config.range) {
+                    if (config.range.hasOwnProperty(index) && config.range[index].value <= device[varToMeasure]["0"].value) {
+                        let method = "mapPin" + config.range[index].pin;
+                        return pins[method];
+                    }
+                }
+            }
+            return pins.mapPinBlack;
         }
 
         const parsedEntries = this.props.devices.reduce((result, k) => {
@@ -119,7 +153,7 @@ class PositionRenderer extends Component {
                     id: k.id,
                     pos: k.position,
                     name: k.label,
-                    pin: getPin(k),
+                    pin: getPin(k, this.props.config),
                     timestamp: k.timestamp,
                     tracking: k.tracking,
                     key: (k.unique_key ? k.unique_key : k.id),
@@ -164,54 +198,42 @@ Toggle tracking
             }
         }
 
-        return (
-            <Map
-                center={this.props.center ? this.props.center : this.state.center}
-                zoom={this.state.zoom}
-                ref={(m) => {
-                    this.leafletMap = m;
-                }}
-            >
 
-                {process.env.MAP_HAS_OVERLAY_ENV ? <LayerBox /> : ''}
-
-                {contextMenu}
-                <ReactResizeDetector handleWidth onResize={this.resize.bind(this)} />
-
-                {parsedEntries.map(k => (
-                    <Marker
-                        onContextMenu={(e) => {
-                            this.handleContextMenu(e, k.id);
-                        }}
-                        onClick={(e) => {
-                            this.handleContextMenu(e, k.id);
-                        }}
-                        position={k.pos}
-                        key={k.key}
-                        icon={k.pin}
-                    >
-                        <Tooltip>
-                            <span>
-                                {k.name}
-                                {' '}
-:
-                                {' '}
-                                {k.timestamp}
-                            </span>
-                        </Tooltip>
-                        {listLatLngs[k.id] && k.tracking && this.props.showPolyline ? (
-                            <Polyline
-                                positions={listLatLngs[k.id]}
-                                color="#7fb2f9"
-                                dashArray="10,10"
-                                repeatMode={false}
+        return <Map center={this.props.center ? this.props.center : this.state.center} zoom={this.state.zoom} ref={m => {
+            this.leafletMap = m;
+        }}>
+            <div className="col s12 layer-box" >
+                {
+                    (this.props.showLayersIcons && this.state.layers.length) ?
+                        this.state.layers.map(lyr => (
+                            <LayerBox
+                                key={lyr.id}
+                                toggleLayer={this.toggleLayer}
+                                config={lyr}
                             />
-                        ) : null}
-                    </Marker>
-                ))}
-                <ScaleControl />
-            </Map>
-        );
+                        )) : null
+                }
+            </div>
+            {contextMenu}
+            <ReactResizeDetector handleWidth onResize={this.resize.bind(this)} />
+            {parsedEntries.map(k => {
+                return <Marker onContextMenu={e => {
+                    this.handleContextMenu(e, k.id);
+                }} onClick={e => {
+                    this.handleContextMenu(e, k.id);
+                }} position={k.pos} key={k.key} icon={k.pin}>
+                    <Tooltip direction='top' offset={[0, -40]}>
+                        <span>
+                            {k.name} : {k.timestamp}
+                        </span>
+                    </Tooltip>
+                    {listLatLngs[k.id] && k.tracking && this.props.showPolyline ? <Polyline positions={listLatLngs[k.id]} color="#7fb2f9" dashArray="10,10" repeatMode={false} /> : null}
+                </Marker>;
+            })}
+            <ScaleControl />
+        </Map>;
+ 
+
     }
 }
 
@@ -219,35 +241,30 @@ Toggle tracking
 class LayerBox extends Component {
     constructor(props) {
         super(props);
-        this.state = { visible: true };
+        // this.state = { visible: true };
         this.toggleLayer = this.toggleLayer.bind(this);
     }
 
     toggleLayer() {
-        this.setState({ visible: !this.state.visible });
+        console.log("layerbox: togglelayer: ", this.props.config.id);
+        this.props.toggleLayer(this.props.config.id);
+        // this.setState({visible: !this.state.visible});
     }
 
     render() {
-        const config = process.env.MAP_OVERLAY_JSON_ENV;
-        const corner1 = L.latLng(config.corner1.lat, config.corner1.lng);
-        const corner2 = L.latLng(config.corner2.lat, config.corner2.lng);
-        const layerMapBounds = L.latLngBounds(corner1, corner2);
+        console.log("LayerBox: render.");
+        let corner1 = L.latLng(this.props.config.overlay_data.corner1.lat, this.props.config.overlay_data.corner1.lng);
+        let corner2 = L.latLng(this.props.config.overlay_data.corner2.lat, this.props.config.overlay_data.corner2.lng);
+         const layerMapBounds = L.latLngBounds(corner1, corner2);
         const layerOpacity = 0.3;
-        const imageOverlay = this.state.visible ? (
-            <ImageOverlay
-                opacity={layerOpacity}
-                bounds={layerMapBounds}
-                url={config.path}
-            />) : null;
-
-        return (
-            <div className="col s12">
-                <div className="layer-div" onClick={this.toggleLayer}>
-                    <img src="images/layers.png" />
-                </div>
-                {imageOverlay}
+        const imageOverlay = this.props.config.isVisible ? <ImageOverlay opacity={layerOpacity} bounds={layerMapBounds} url={this.props.config.overlay_data.path} /> : null;
+        console.log("imageOverlay", this.props.config);
+         return <div className="layer-mr">
+            <div title={this.props.config.description} className={"layer-div "+ (this.props.config.isVisible ? "active-btn":"")} onClick={this.toggleLayer}>
+              <i className={"fa fa-map"} />
             </div>
-        );
+         {imageOverlay}
+         </div>;
     }
 }
 
@@ -354,18 +371,18 @@ class DeviceMap extends Component {
     }
 
     toggleTracking(device_id) {
-        if (!this.props.tracking.hasOwnProperty(device_id)) {
-            for (const k in this.props.devices[device_id].attrs) {
-                for (const j in this.props.devices[device_id].attrs[k]) {
-                    if (this.props.devices[device_id].attrs[k][j].value_type === 'geo:point') {
-                        TrackingActions.fetch(device_id, this.props.devices[device_id].attrs[k][j].label);
-                        this.props.devices[device_id].tracking = true;
-                    }
-                }
+        if (!this.props.Measure.tracking.hasOwnProperty(device_id)) {
+          for (const k in this.props.devices[device_id].attrs) {
+            for (const j in this.props.devices[device_id].attrs[k]) {
+              if (this.props.devices[device_id].attrs[k][j].value_type === "geo:point") {
+                TrackingActions.fetch(device_id, this.props.devices[device_id].attrs[k][j].label);
+                this.props.devices[device_id].tracking = true;
+              }
             }
+          }
         } else {
-            TrackingActions.dismiss(device_id);
-            this.props.devices[device_id].tracking = false;
+          TrackingActions.dismiss(device_id);
+          this.props.devices[device_id].tracking = false;
         }
     }
 
@@ -424,36 +441,66 @@ class DeviceMap extends Component {
         for (const k in filteredList) {
             const device = filteredList[k];
             device.hasPosition = device.hasOwnProperty('position');
-            if (this.props.tracking.hasOwnProperty(device.id) && this.state.displayMap[device.id]) {
-                pointList = pointList.concat(this.props.tracking[device.id].map((e, k) => {
+            if (this.props.Measure.tracking.hasOwnProperty(device.id) && this.state.displayMap[device.id]) {
+                pointList = pointList.concat(this.props.Measure.tracking[device.id].map(
+                  (e, k) => {
                     const updated = e;
                     updated.id = device.id;
                     updated.unique_key = `${device.id}_${k}`;
                     updated.label = device.label;
                     updated.timestamp = e.timestamp;
                     return updated;
-                }));
+                  }
+                ));
             }
             if (this.state.displayMap[device.id]) pointList.push(device);
         }
 
+        this.metaData = { alias: "device" };
+        this.props.dev_opex.setFilterToMap();
+
+
         return (
             <div className="fix-map-bug">
                 <div className="flex-wrapper">
+                    <div className="map-filter-box">
+                        <Filter showPainel={this.props.showFilter} metaData={this.metaData} ops={this.props.dev_opex} fields={DevFilterFields} />
+                    </div>
+
                     <div className="deviceMapCanvas deviceMapCanvas-map col m12 s12 relative">
                         <Script url="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=zvpeonXbjGkoRqVMtyQYCGVn4JQG8rd9" onLoad={this.mqLoaded} />
-                        {this.state.mapquest ? <PositionRenderer devices={pointList} toggleTracking={this.toggleTracking} allowContextMenu listPositions={this.props.tracking} showPolyline /> : (
+                        {this.state.mapquest ? <PositionRenderer showLayersIcons={true} devices={pointList} toggleTracking={this.toggleTracking} allowContextMenu={true} listPositions={this.props.Measure.tracking} showPolyline={true} config={this.props.Config} /> : <div className="row full-height relative">
                             <div className="row full-height relative">
                                 <div className="background-info valign-wrapper full-height">
                                     <i className="fa fa-circle-o-notch fa-spin fa-fw horizontal-center" />
                                 </div>
                             </div>
-                        )}
+                        </div>
+                        }
                         <Sidebar deviceInfo={displayDevicesCount} toggleVisibility={this.toggleVisibility} devices={this.validDevices} hideAll={this.hideAll} showAll={this.showAll} displayMap={this.state.displayMap} />
                     </div>
                 </div>
             </div>
         );
+    }
+}
+
+class DevFilterFields extends Component {
+    constructor(props) {
+        super(props);
+    }
+    
+    render() {
+        console.log("DevFilterFields - DeviceMaps", this.props);
+        return <div className="col s12 m12">
+        <div className="col s5 m5">
+            <div className="dev_field_filter">
+                <label htmlFor="fld_device_name">Device Name</label>
+                <input id="fld_device_name" type="text" className="form-control form-control-lg margin-top-mi7px" placeholder="Device Name" value={this.props.fields.label} name="label" onChange={this.props.onChange} />
+            </div>
+        </div>
+        <div className="col s1 m1" />
+        </div>;
     }
 }
 

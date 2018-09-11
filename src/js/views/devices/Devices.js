@@ -4,6 +4,7 @@ import AltContainer from 'alt-container';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Toggle from 'material-ui/Toggle';
 import DeviceStore from '../../stores/DeviceStore';
+import ConfigStore from "../../stores/ConfigStore";
 import MeasureStore from '../../stores/MeasureStore';
 import DeviceActions from '../../actions/DeviceActions';
 import MeasureActions from '../../actions/MeasureActions';
@@ -64,7 +65,7 @@ class MapWrapper extends Component {
 
     render() {
         return (
-            <AltContainer store={MeasureStore}>
+            <AltContainer stores={{Measure: MeasureStore, Config: ConfigStore}}>
                 <DeviceMap devices={this.props.devices} showFilter={this.props.showFilter} dev_opex={this.props.dev_opex} />
             </AltContainer>
         );
@@ -92,14 +93,14 @@ class DeviceOperations extends GenericOperations {
 
     setFilterToMap() {
         this.paginationParams = {
-            page_size: 100,
+            page_size: 5000,
             page_num: 1,
         };
         this.filterParams = {};
     }
 
     whenUpdateFilter(config) {
-        this.setDefaultPageNumber();
+        // this.setDefaultPageNumber();
         this.filterParams = config;
         this._fetch();
     }

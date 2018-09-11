@@ -38,6 +38,7 @@ class SideBar extends Component {
     this.handleCreate = this.handleCreate.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.loadUsers = this.loadUsers.bind(this);
     this.checkValidation = this.checkValidation.bind(this);
     this.hideSideBar = this.hideSideBar.bind(this);
     this.formUser = this.formUser.bind(this);
@@ -47,14 +48,10 @@ class SideBar extends Component {
   }
 
   componentDidMount() {
-    if (this.props.user.profile === "admin") {
-      UserActions.fetchUsers.defer();
-    }
+    this.loadUsers();
   }
 
   static getDerivedStateFromProps(props, state) {
-    console.log(">>> getDerivedStateFromProps -> props=", props);
-    console.log(">>> getDerivedStateFromProps -> state=", state);
     if (props.user !== state.user) {
       return { user: props.user,
                isInvalid : { username: false,
@@ -64,6 +61,12 @@ class SideBar extends Component {
     }
     // Return null to indicate no change to state.
     return null;
+  }
+
+  loadUsers() {
+    if (this.props.user.profile === "admin") {
+      UserActions.fetchUsers.defer();
+    }
   }
 
   checkValidation() {
@@ -145,6 +148,7 @@ class SideBar extends Component {
 
   hideSideBar() {
     this.props.hide();
+    this.loadUsers();
   }
 
   handleDelete() {
@@ -548,7 +552,7 @@ class UserList extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.createUser/* && !state.create*/) {
+        if (props.createUser && !state.create) {
         return { create: true,
                  edit: false,
                  user: {

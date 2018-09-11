@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export default function notFound(props) {
+export default function notFound() {
     return (
         <div className="full-height relative background-info">
             <div className="valign-wrapper center-align full-height todo-div">
@@ -10,5 +10,5 @@ export default function notFound(props) {
                 </div>
             </div>
         </div>
-    )
+    );
 }

@@ -1,5 +1,6 @@
-var alt = require('../alt');
-var ImageActions = require('../actions/ImageActions');
+/* eslint-disable */
+const alt = require('../alt');
+const ImageActions = require('../actions/ImageActions');
 
 class ImageStore {
     constructor() {
@@ -13,14 +14,14 @@ class ImageStore {
             fetchSingle: ImageActions.FETCH_SINGLE,
             // handleFetchImageList: ImageActions.FETCH_IMAGES,
 
-            handleTriggerInsertion:ImageActions.TRIGGER_INSERT,
-            handleInsertImage:ImageActions.INSERT_IMAGE,
+            handleTriggerInsertion: ImageActions.TRIGGER_INSERT,
+            handleInsertImage: ImageActions.INSERT_IMAGE,
 
             handleTriggerUpdate: ImageActions.TRIGGER_UPDATE,
             handleUpdateSingle: ImageActions.UPDATE_SINGLE,
 
-            handleTriggerRemoval:ImageActions.TRIGGER_REMOVAL,
-            handleRemoveSingle:ImageActions.REMOVE_SINGLE,
+            handleTriggerRemoval: ImageActions.TRIGGER_REMOVAL,
+            handleRemoveSingle: ImageActions.REMOVE_SINGLE,
 
 
             handleTriggerRemovalBinary: ImageActions.TRIGGER_REMOVAL_BINARY,
@@ -84,14 +85,14 @@ class ImageStore {
     }
 
     handleUpdateImageList(images) {
-        console.log("images", images);
+        // console.log('images', images);
         // let images = images;
         this.images = {};
         for (let idx = 0; idx < images.length; idx++) {
-            this.images[images[idx].id] = JSON.parse(JSON.stringify(images[idx]))
+            this.images[images[idx].id] = JSON.parse(JSON.stringify(images[idx]));
             this.images[images[idx].id].has_image = this.images[images[idx].id].confirmed;
         }
-        console.log("handleUpdateImageList", this.images);
+        // console.log('handleUpdateImageList', this.images);
         // this.images = images;
         this.error = null;
         this.loading = false;
@@ -117,5 +118,5 @@ class ImageStore {
     }
 }
 
-var _store = alt.createStore(ImageStore, 'ImageStore');
+const _store = alt.createStore(ImageStore, 'ImageStore');
 export default _store;

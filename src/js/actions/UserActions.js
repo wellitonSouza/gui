@@ -16,29 +16,32 @@ class UserActions {
     addUser(user, cb, error_cb) {
         const newUser = user;
         return (dispatch) => {
-            dispatch();
-            userManager.addUser(newUser)
-                .then((response) => {
-                    // @bug: backend won't return full public record of the created user, so merge the
-                    //       server-side data (id) with the known record of the user.
-                    const updatedUser = JSON.parse(JSON.stringify(newUser));
-                    updatedUser.id = response[0].user.id;
-                    updatedUser.passwd = '';
-                    this.insertUser(updatedUser);
-                    if (cb) {
-                        cb(response);
-                    }
-                })
-                .catch((error) => {
-                    this.usersFailed(error);
-                    // error.data.json()
-                    // .then((data) => {
-                    //   if (error_cb) {
-                    //     error_cb(data);
-                    //   }
-                    // })
-                });
-        };
+        dispatch();
+        userManager.addUser(newUser)
+            .then((response) => {
+            // @bug: backend won't return full public record of the created user, so merge the
+            //       server-side data (id) with the known record of the user.
+            let updatedUser = JSON.parse(JSON.stringify(newUser));
+            updatedUser['id'] = response[0].user.id;
+            updatedUser['passwd'] = '';
+            this.insertUser(updatedUser);
+            if(cb){
+                cb(response);
+            }
+            })
+            .catch((error) => {
+            if(error_cb) {
+                error_cb(newUser);
+            }
+            this.usersFailed(error);
+            // error.data.json()
+                // .then((data) => {
+                //   if (error_cb) {
+                //     error_cb(data);
+                //   }
+                // })
+            })
+        }
     }
 
     fetchUsers() {

@@ -14,125 +14,145 @@ import { RemoveModal } from '../../components/Modal';
 import UserStore from '../../stores/UserStore';
 
 class SideBar extends Component {
-    constructor() {
-        super();
-        this.state = {
-            user: {},
-            show_modal: false,
-            confirmEmail: '',
-            isInvalid: {
-                username: false,
-                name: false,
-                email: false,
-                confirmEmail: false,
-            },
-        };
+  constructor() {
+    super();
+    this.state = {
+      user:  {
+        name: '',
+        username: '',
+        email: '',
+        confirmEmail: '',
+        profile: '',
+        service: 'admin'
+      },
+      show_modal: false,
+      confirmEmail: "",
+      isInvalid: {
+        username: false,
+        name: false,
+        email: false,
+        confirmEmail: false,
+      },
+    };
 
-        this.handleChange = this.handleChange.bind(this);
-        this.handleCreate = this.handleCreate.bind(this);
-        this.handleSave = this.handleSave.bind(this);
-        this.handleDelete = this.handleDelete.bind(this);
-        this.checkValidation = this.checkValidation.bind(this);
-        this.hideSideBar = this.hideSideBar.bind(this);
-        this.setModal = this.setModal.bind(this);
-        this.removeUser = this.removeUser.bind(this);
-        this.fieldValidation = this.fieldValidation.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleCreate = this.handleCreate.bind(this);
+    this.handleSave = this.handleSave.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.loadUsers = this.loadUsers.bind(this);
+    this.checkValidation = this.checkValidation.bind(this);
+    this.hideSideBar = this.hideSideBar.bind(this);
+    this.formUser = this.formUser.bind(this);
+    this.setModal = this.setModal.bind(this);
+    this.removeUser = this.removeUser.bind(this);
+    this.fieldValidation = this.fieldValidation.bind(this);
+  }
+
+  componentDidMount() {
+    this.loadUsers();
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    if (props.user !== state.user) {
+      return { user: props.user,
+               isInvalid : { username: false,
+                             name: false,
+                             email: false,
+                             confirmEmail: false } };
+    }
+    // Return null to indicate no change to state.
+    return null;
+  }
+
+  loadUsers() {
+    if (this.props.user.profile === 'admin') {
+      UserActions.fetchUsers.defer();
+    }
+  }
+
+  checkValidation() {
+    if (this.checkName(this.state.user.name)) {
+      toaster.warning('Invalid name.');
+      return false;
+    }
+    if (this.checkEmail(this.state.user.email)) {
+      toaster.warning('Invalid email.');
+      return false;
     }
 
-    componentDidMount() {
-        if (this.props.user.profile === 'admin') {
-            UserActions.fetchUsers.defer();
-        }
+    if (this.checkUsername(this.state.user.username)) {
+      toaster.warning('Invalid username.');
+      return false;
     }
 
-    componentWillReceiveProps(next) {
-        const context = this.state;
-        context.user = JSON.parse(JSON.stringify(next.user));
-        if (context.user !== '') context.user.confirmEmail = context.user.email;
-        context.isInvalid = {
-            username: false,
-            name: false,
-            email: false,
-            confirmEmail: false,
-        };
-        this.setState(context);
+    if (this.checkConfirmEmail(this.state.user.email, this.state.user.confirmEmail)) {
+      toaster.warning('Email address mismatch.');
+      return false;
     }
 
-    checkValidation() {
-        if (this.checkName(this.state.user.name)) {
-            toaster.warning('Invalid name.');
-            return false;
-        }
-        if (this.checkEmail(this.state.user.email)) {
-            toaster.warning('Invalid email.');
-            return false;
-        }
+    if (this.state.user.profile === '') {
+      toaster.warning('Missing profile.');
+      return false;
+    }
+    return true;
+  }
 
-        if (this.checkUsername(this.state.user.username)) {
-            toaster.warning('Invalid username.');
-            return false;
-        }
+  handleChange(event) {
+    const target = event.target;
+    const user = this.state.user;
+    user[target.name] = target.value;
+    this.fieldValidation(user, target.name);
+  }
 
-        if (this.checkConfirmEmail(this.state.user.email, this.state.user.confirmEmail)) {
-            toaster.warning('Email address mismatch.');
-            return false;
-        }
+  handleSave() {
+    const tmp = JSON.parse(JSON.stringify(this.state.user));
+    delete tmp.created_by;
+    delete tmp.created_date;
+    delete tmp.passwd;
+    delete tmp.password;
+    if (this.checkValidation()) {
+      UserActions.triggerUpdate(
+        tmp,
+        () => {
+          toaster.success('User updated.');
+          this.hideSideBar();
+        },
+        () => {
+          toaster.error('Failed to update user.');
+        },
+      );
+    }
+  }
 
-        if (this.state.user.profile === '') {
-            toaster.warning('Missing profile.');
-            return false;
-        }
-        return true;
+  handleCreate() {
+    if (this.checkValidation()) {
+      const temp = this.state.user;
+      temp.email = String(temp.email).toLowerCase();
+      console.log('User to be created: ', temp);
+      UserActions.addUser(
+        temp,
+        () => {
+          toaster.success('User created.');
+          this.hideSideBar();
+        },
+        (user) => {
+          this.formUser(user);
+          toaster.success('Failed to create user.');
+
+        },
+      )}
     }
 
-    handleChange(event) {
-        const target = event.target;
-        const user = this.state.user;
-        user[target.name] = target.value;
-        this.fieldValidation(user, target.name);
-    }
 
-    handleSave() {
-        const tmp = JSON.parse(JSON.stringify(this.state.user));
-        delete tmp.created_by;
-        delete tmp.created_date;
-        delete tmp.passwd;
-        delete tmp.password;
-        if (this.checkValidation()) {
-            UserActions.triggerUpdate(
-                tmp,
-                () => {
-                    toaster.success('User updated.');
-                    this.hideSideBar();
-                },
-                () => {
-                    toaster.error('Failed to update user.');
-                },
-            );
-        }
-    }
+  formUser(user) {
+    this.props.formUser(user);
+  }
 
-    handleCreate() {
-        if (this.checkValidation()) {
-            const temp = this.state.user;
-            temp.email = String(temp.email).toLowerCase();
-            console.log('User to be created: ', temp);
-            UserActions.addUser(
-                temp,
-                () => {
-                    toaster.success('User created.');
-                    this.hideSideBar();
-                },
-                () => {
-                    toaster.success('Failed to create user.');
-                },
-            );
-        }
-    }
-
-    hideSideBar() {
-        this.props.hide();
-    }
+  hideSideBar() {
+    this.props.hide();
+    this.loadUsers();
+  }
+    
 
     handleDelete() {
         this.setState({ show_modal: true });
@@ -533,23 +553,52 @@ class UserList extends Component {
         this.state = {
             create: false,
             edit: false,
-            user: {},
+            user: {
+              name: '',
+              username: '',
+              email: '',
+              confirmEmail: '',
+              profile: '',
+              service: 'admin'
+            }
         };
 
         this.editUser = this.editUser.bind(this);
         this.createUser = this.createUser.bind(this);
         this.hideSideBar = this.hideSideBar.bind(this);
+        this.formUser = this.formUser.bind(this);
     }
 
-    componentWillReceiveProps(next) {
-        if (next.createUser) {
-            this.createUser();
-        }
+    static getDerivedStateFromProps(props, state) {
+        if (props.createUser && !state.create) {
+        return { create: true,
+                 edit: false,
+                 user: {
+                  name: '',
+                  username: '',
+                  email: '',
+                  confirmEmail: '',
+                  profile: '',
+                  service: 'admin' }
+                };
+      }
+      // Return null to indicate no change to state.
+      return null;
+    }
+
+    formUser(user) {
+      let temp = this.state;
+      temp.create = true;
+      temp.edit = false;
+      temp.user = user;
+      this.setState(temp);
+
     }
 
     editUser(user) {
         const temp = this.state;
         temp.user = user;
+        temp.user.confirmEmail = user.email;
         temp.create = false;
         temp.edit = true;
         this.setState(temp);
@@ -564,6 +613,7 @@ class UserList extends Component {
             name: '',
             username: '',
             email: '',
+            confirmEmail: '',
             profile: '',
             service: 'admin',
         };
@@ -577,7 +627,7 @@ class UserList extends Component {
     render() {
         return (
             <div className="fill">
-                <SideBar {...this.state} hide={this.hideSideBar} visible={this.props.visible} />
+                <SideBar {...this.state} hide={this.hideSideBar} visible={this.props.visible} formUser={this.formUser}/>
                 <RemoveDialog callback={this.deleteUser} target="confirmDiag"/>
                 <div id="user-wrapper" className="col s12  lst-wrapper extra-padding scroll-bar">
                     {this.props.values.map(user => (

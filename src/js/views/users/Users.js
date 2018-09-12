@@ -65,9 +65,9 @@ class SideBar extends Component {
   }
 
   loadUsers() {
-    if (this.props.user.profile === 'admin') {
+    //if (this.props.user.profile === 'admin') {
       UserActions.fetchUsers.defer();
-    }
+    //}
   }
 
   checkValidation() {
@@ -149,6 +149,7 @@ class SideBar extends Component {
   }
 
   hideSideBar() {
+    this.props.formUser({});
     this.props.hide();
     this.loadUsers();
   }
@@ -719,9 +720,9 @@ class UsersContent extends Component {
     }
 
     componentDidMount() {
-        if (this.props.user.profile === 'admin') {
+        //if (this.props.user.profile === 'admin') {
             UserActions.fetchUsers.defer();
-        }
+        //}
     }
 
     render() {

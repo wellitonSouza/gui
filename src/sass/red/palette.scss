@@ -44,7 +44,7 @@
 
 
 .palette-scroll {
-    position: absolute;
+    position: static;
     top: 35px;
     right: 0;
     bottom: 25px;
@@ -52,6 +52,7 @@
     padding: 0;
     overflow-y: auto;
     box-sizing:border-box;
+    height: calc(100% - 150px);
 }
 #palette > .palette-spinner {
     padding-top: 80px;
@@ -69,6 +70,7 @@
 
 #palette-footer {
     @include component-footer;
+    position: static;
 }
 .palette-button {
     @include component-footer-button;

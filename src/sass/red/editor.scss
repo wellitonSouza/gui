@@ -20,7 +20,6 @@
     margin: 0;
     top: 0;
     bottom: 0px;
-    right: 323px;
     width: 0;
     z-index: 5;
 }
@@ -93,9 +92,6 @@
                 background: $editor-button-background-primary-hover;
                 color: $editor-button-color-primary !important;
             }
-        }
-        &:not(.disabled):hover {
-            //color: $editor-button-color;
         }
         &.disabled {
             background: none;
@@ -244,17 +240,6 @@
     padding: 0 5px;
 }
 
-.dialog-form {
-    .button-group {
-        .editor-button {
-            &:first-child {
-
-            }
-        }
-    }
-
-}
-
 #node-config-dialog-scope-container {
     cursor: auto;
     float: right;
@@ -278,7 +263,6 @@
     vertical-align: middle;
     display:inline-block;
     margin-right: 20px;
-    float:left;
     font-size: 12px;
     line-height: 35px;
 }

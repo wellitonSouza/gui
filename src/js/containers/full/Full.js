@@ -340,7 +340,7 @@ class Full extends Component {
 
     render() {
         return (
-            <div>
+            <div className="full-height">
                 <AltContainer store={LoginStore}>
 
                     {

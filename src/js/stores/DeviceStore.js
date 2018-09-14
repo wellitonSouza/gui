@@ -111,6 +111,7 @@ class DeviceStore {
         this.pagination = res.pagination;
         const devices = res.devices;
         this.devices = {};
+        this.deviceList = [];
         for (let idx = 0; idx < devices.length; idx++) {
             // devices[idx]._status = this.parseStatus(devices[idx]);
             if (devices[idx].attrs === undefined) {

@@ -178,49 +178,57 @@ class GenericList extends Component {
                 </div>
                 <div className="col s12 body">
                     {this.props.box_title == 'Configurations' ? (
-                        <div key="id" className="line col s12">
+                        <div key="id" className="line display-flex">
                             <div className="col s12 pr0">
                                 <div className="col s5">
                                     <div className="name-value">device id</div>
                                     <div className="value-label">Name</div>
                                 </div>
                                 <div className="col s7 p0 text-right">
-                                    <div className="value-value">{this.props.device.id}</div>
-                                    <div className="value-label">STRING</div>
+                                    <div className="value-value pr0">{this.props.device.id}</div>
+                                    <div className="value-label pr0">STRING</div>
                                 </div>
                             </div>
                         </div>
                     ) : ('')}
                     {this.props.attrs.map(attr => (
                         attr.isGeo ? (
-                            <div key={attr.label} className="line col s12" id="static-geo-attribute" onClick={this.openMap}>
-                                {/* <div className="col s4">
-                <div className="name-value">{attr.label}</div>
-                <div className="value-label">Name</div>
-              </div> */}
-                                <div className="col s12">
-                                    <div className={this.state.truncate ? 'name-value col s10 truncate' : 'name-value col s10'} title={attr.label}>{attr.label}</div>
-                                    <div className={this.state.truncate ? 'value-value col s10 truncate' : 'value-value col s10'} title={attr.static_value}>{attr.static_value}</div>
-                                    <div className="value-label col s2" title={attr.value_type}>{attr.value_type}</div>
-                                    {/* <div className="name-value col s12">{attr.label}</div>
-                  <div className="value-label">Name</div> */}
-                                </div>
-                                <div className="star">
-                                    <i className={`fa ${this.state.visible_static_map ? 'fa-star' : 'fa-star-o'}`} />
+                            <div key={attr.label} className="line col s12 pl30" id="static-geo-attribute" onClick={this.openMap}>
+                                <div className="display-flex-column flex-1">
+                                    <div className={this.state.truncate ? 
+                                        'name-value display-flex flex-1 space-between truncate' : 
+                                        'name-value display-flex flex-1 space-between'} 
+                                        title={attr.label}
+                                    >
+                                        {attr.label}
+                                        <div className="star">
+                                            <i className={`fa ${this.state.visible_static_map ? 'fa-star' : 'fa-star-o'}`} />
+                                        </div>
+                                    </div>
+                                    <div className="display-flex-no-wrap space-between">
+                                        <div className={this.state.truncate ? 'value-value truncate' : 'value-value'} title={attr.static_value}>
+                                            {attr.static_value.length > 25 ?
+                                                attr.static_value.substr(1, 22) + '...' :
+                                                attr.static_value
+                                            }
+                                        </div>
+                                        <div className="value-label" title={attr.value_type}>{attr.value_type}</div>
+                                    </div>
                                 </div>
                             </div>
                         ) : (
-                            <div key={attr.label} className="line col s12">
-                                {/* <div className="col s4">
-                <div className="name-value">{attr.label}</div>
-                <div className="value-label">Name</div>
-              </div> */}
-                                <div className="col s12">
-                                    <div className={this.state.truncate ? 'name-value col s10 truncate' : 'name-value col s10'} title={attr.label}>{attr.label}</div>
-                                    <div className={this.state.truncate ? 'value-value col s10 truncate' : 'value-value col s10'} title={attr.static_value}>{attr.static_value}</div>
-                                    <div className="value-label col s2" title={attr.value_type}>{attr.value_type}</div>
-                                    {/* <div className="name-value col s12">{attr.label}</div>
-                  <div className="value-label">Name</div> */}
+                            <div key={attr.label} className="line col s12 pl30">
+                                <div className="display-flex-column flex-1">
+                                    <div className={this.state.truncate ? 'name-value  truncate' : 'name-value '} title={attr.label}>{attr.label}</div>
+                                    <div className="display-flex-no-wrap space-between">
+                                        <div className={this.state.truncate ? 'value-value  truncate' : 'value-value '} title={attr.static_value}>
+                                            {attr.static_value.length > 25 ?
+                                                attr.static_value.substr(1, 22) + '...' :
+                                                attr.static_value
+                                            }
+                                        </div>
+                                        <div className="value-label" title={attr.value_type}>{attr.value_type}</div>
+                                    </div>
                                 </div>
                             </div>
                         )

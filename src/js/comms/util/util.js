@@ -258,7 +258,7 @@ class Util {
             const re = /^[+-]?\d+$/;
             ret.result = re.test(value);
             if (ret.result === false) {
-                ret.error = 'This device timiout is not an integer';
+                ret.error = 'This device timeout is not an integer';
             }
             return ret;
         },

@@ -293,6 +293,10 @@ body {
   padding-left: 40px !important;
 }
 
+.pl30px, .pl30
+{
+  padding-left: 30px !important;
+}
 
 
 .pull-right
@@ -361,11 +365,31 @@ body {
   z-index: 9999 !important;
 }
 
+.flex-1{
+  flex: 1;
+}
+
 
 .display-flex
 {
   display: flex;
   flex-wrap: wrap;
+}
+
+.display-flex-no-wrap
+{
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.display-flex-column{
+  display: flex;
+  flex-direction: column;
+}
+
+.space-between{
+  flex: 1;
+  justify-content: space-between;
 }
 
 .flex-order-2{

@@ -3,8 +3,7 @@ import React, { Component } from 'react';
 import { Line } from 'react-chartjs-2';
 import Script from 'react-load-script';
 import util from '../comms/util/util';
-import { PositionRenderer } from '../views/devices/DeviceMap';
-import { Loading } from './Loading';
+import { SmallPositionRenderer } from "../views/utils/Maps";
 
 
 class Graph extends Component {
@@ -155,17 +154,11 @@ class HandleGeoElements extends Component {
         this.state = {
             opened: false,
             hasPosition: false,
-            pos: [],
-            mapquest: false,
+            pos: []
         };
 
         this.handleDevicePosition = this.handleDevicePosition.bind(this);
         this.toogleExpand = this.toogleExpand.bind(this);
-        this.mqLoaded = this.mqLoaded.bind(this);
-    }
-
-    mqLoaded() {
-        this.setState({ mapquest: true });
     }
 
     toogleExpand(state) {
@@ -237,17 +230,11 @@ available
                         <label>{this.props.label}</label>
                         {!this.state.opened ? <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand" /> : <i onClick={this.toogleExpand.bind(this, false)} className="fa fa-compress" />}
                     </div>
-                    <div>
-                        <Script url="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=zvpeonXbjGkoRqVMtyQYCGVn4JQG8rd9" onLoad={this.mqLoaded} />
-                    </div>
-                    {this.state.mapquest ? <PositionRenderer showLayersIcons={false} devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false} config={geoconfs} /> : <Loading />}
+                    <SmallPositionRenderer showLayersIcons={false} devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false} config={geoconfs} />
                 </div>;
             } else {
                 return <span>
-                    <div>
-                        <Script url="https://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=zvpeonXbjGkoRqVMtyQYCGVn4JQG8rd9" onLoad={this.mqLoaded} />
-                    </div>
-                    {this.state.mapquest ? <PositionRenderer showLayersIcons={false} devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false} config={this.props.Config} /> : <Loading />}
+                    <SmallPositionRenderer showLayersIcons={false} devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false} config={this.props.Config} />
                 </span>;
             }
         }

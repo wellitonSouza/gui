@@ -28,6 +28,39 @@ class DeviceManager {
         return util.GET(`${this.baseUrl}/device/${id}`);
     }
 
+    getDevicesWithPosition(params) {
+        let corners = {
+            "filterType": "geo",
+            "value": [
+                {
+                    "latitude": 0,
+                    "longitude": 0
+                },
+                {
+                    "latitude": 0,
+                    "longitude": "1.1"
+                },
+                {
+                    "latitude": "1.1",
+                    "longitude": "1.1"
+                },
+                {
+                    "latitude": "1.1",
+                    "longitude": 0
+                }
+            ]
+        }
+        let qs = Object.keys(corners)
+            .map(key => key + "=" + corners[key])
+            .join("&");
+        return util.GET(this.baseUrl + "/device/geo?" + qs);
+        // return Promise.resolve({ ok: true, json: clusterData });
+    }
+
+
+
+
+
     getDeviceByTemplateId(templateId, params) {
         if (params) {
             const qs = Object.keys(params)

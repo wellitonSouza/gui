@@ -149,7 +149,12 @@ class SideBar extends Component {
   }
 
   hideSideBar() {
-    this.props.formUser({});
+    this.props.formUser({ name: '',
+                          username: '',
+                          email: '',
+                          confirmEmail: '',
+                          profile: '',
+                          service: 'admin' });
     this.props.hide();
     this.loadUsers();
   }

@@ -500,7 +500,10 @@ class DeviceDetail extends Component {
         let actuators = [];
         let config_list = [];
         for (const index in this.props.device.attrs) {
-            const tmp = this.props.device.attrs[index];
+            let tmp = this.props.device.attrs[index];
+            if (!Array.isArray(tmp))
+                tmp = this.props.device.attrs;
+
             attr_list = attr_list.concat(tmp.filter(i => String(i.type) === 'static'));
             dal = dal.concat(tmp.filter((i) => {
                 i.visible = false;
@@ -635,8 +638,8 @@ class ViewDevice extends Component {
                 MeasureActions.appendMeasures(data);
             });
 
-            device_detail_socket.on('error', (data) => {
-                // console.log('socket error', data);
+            // console.log('socket error', data);
+                device_detail_socket.on('error', (data) => {
                 if (device_detail_socket) device_detail_socket.close();
                 // getWsToken();
             });

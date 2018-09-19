@@ -142,8 +142,13 @@ class StaticAttributes extends Component {
             );
         }
 
-        const statics = this.props.attrs.filter(item => String(item.type) == 'static');
+        let statics = this.props.attrs.filter(item => String(item.type) == 'static');
         const properties = this.props.attrs.filter(item => String(item.type) == 'meta');
+
+        for (let index in statics) {
+            if (statics[index].value == undefined)
+              statics[index].value = statics[index].static_value;
+        }
 
         for (const index in properties) {
             if (properties[index].label === 'protocol') {

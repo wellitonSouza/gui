@@ -635,7 +635,7 @@ class UserList extends Component {
             <div className="fill">
                 <SideBar {...this.state} hide={this.hideSideBar} visible={this.props.visible} formUser={this.formUser}/>
                 <RemoveDialog callback={this.deleteUser} target="confirmDiag"/>
-                <div id="user-wrapper" className="col s12  lst-wrapper extra-padding scroll-bar">
+                <div id="user-wrapper" className="col s12  lst-wrapper scroll-bar">
                     {this.props.values.map(user => (
                         <ListItem
                             user={user}

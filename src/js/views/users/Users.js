@@ -358,7 +358,7 @@ class SideBar extends Component {
                             title="Discard Changes"
                             onClick={this.hideSideBar}
                         >
-                            <span className="text center-text-child">cancel</span>
+                            <span className="text center-text-child">discard</span>
                         </div>
                         <div
                             id="auth-delete"

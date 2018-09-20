@@ -156,7 +156,7 @@ class ListRender extends Component {
             );
         }
         return (
-            <div className="row full-height relative">
+            <div className="full-height relative">
                 <ReactCSSTransitionGroup
                     transitionName="flowsSubHeader"
                     transitionAppear

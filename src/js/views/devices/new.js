@@ -167,7 +167,7 @@ class StaticAttributes extends Component {
                         <div className="col s12 bg-gray">
                             {properties.map(attr => (
                                 <div key={attr.label} className="col s6 attr-fields">
-                                    <div className="attr-name">{attr.label}</div>
+                                    <div className="attr-name truncate">{attr.label}</div>
                                     <div className="attr-type">{attr.value_type}</div>
                                     <div className="attr-name input-field fix-inputs">
                                         <MaterialInput
@@ -193,7 +193,7 @@ class StaticAttributes extends Component {
                         <div className="col s12 bg-gray">
                             {statics.map(attr => (
                                 <div key={attr.label} className="col s6 attr-fields">
-                                    <div className="attr-name">{attr.label}</div>
+                                    <div className="attr-name truncate">{attr.label}</div>
                                     <div className="attr-type">{attr.value_type}</div>
                                     <div className="attr-name input-field fix-inputs">
                                         <MaterialInput
@@ -260,7 +260,7 @@ class AttrBox extends Component {
                             attr_list.map((attr, index) => (
                                 <div key={index} className="col s4">
                                     <div className="bg-gray">
-                                        <div className="attr-name">{attr.label}</div>
+                                        <div className="attr-name truncate">{attr.label}</div>
                                         <div className="attr-type">{attr.value_type}</div>
                                     </div>
                                 </div>
@@ -287,7 +287,7 @@ class AttrActuatorBox extends Component {
                             attr_actuators_list.map((attr, index) => (
                                 <div key={index} className="col s4">
                                     <div className="bg-gray">
-                                        <div className="attr-name">{attr.label}</div>
+                                        <div className="attr-name truncate">{attr.label}</div>
                                         <div className="attr-type">{attr.value_type}</div>
                                     </div>
                                 </div>

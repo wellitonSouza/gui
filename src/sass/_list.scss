@@ -9,7 +9,6 @@ $status: #0c343d;
   width:  2.1em;
   height: 2.1em;
   margin: 5% 0.8em;
-  /*left: 10px;*/
   padding: 0.6em  !important;
   text-align: center;
   vertical-align: middle;
@@ -17,7 +16,6 @@ $status: #0c343d;
 }
 
 .lst-fa-icon {
-  /*font-size: 16px !important;*/
   background: #2a7f88;
   border-radius: 3em;
   color: white  !important;
@@ -39,19 +37,14 @@ $status: #0c343d;
 
 .lst-wrapper {
   padding: 0 20px !important;
-  // float: left;
 }
 
 #user-wrapper{
+  flex-wrap: wrap;
   padding-bottom: 30px !important;
-
-  display: inline-grid;
-  grid-template-columns: 300px 300px 300px 300px;
-  grid-row-gap: 25px;
-  grid-column-gap: 50px;
-
+  display: flex;
   .card-size{
-    margin: 0 !important;
+    margin: 20px !important;
     max-height: 225px;
   }
 }
@@ -101,8 +94,6 @@ $status: #0c343d;
 
   .detail-header {
     background-color: #f3f3f3;
-    // z-index: -1;
-    // position: relative;
   }
 
   .table {
@@ -115,10 +106,6 @@ $status: #0c343d;
     .header {
       border-bottom: solid 2px $black;
       font-weight: bold;
-    }
-
-    .body {
-
     }
   }
 
@@ -491,15 +478,11 @@ $status: #0c343d;
       .value {
         color: $value-color;
         text-align: left;
-        // margin-left: 1em;
       }
     }
 
     .graph {
       background-color: #fff;
-      // height: 125px;
-      // padding: 0.2em;
-
       $title-height: 25px;
       .title {
         display: block;
@@ -518,7 +501,6 @@ $status: #0c343d;
 
     .graphLarge {
       background-color: #fff;
-
       $title-height: 30px;
       .title {
         display: block;
@@ -1122,7 +1104,6 @@ $action-area-width: 200px;
 }
 
 .raised-btn{
-  //box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.14);
   background-color: rgba(0, 0, 0, 0.3);
   border-radius: 4px;
   color: white;
@@ -1219,7 +1200,6 @@ $action-area-width: 200px;
 }
 
 .scroll-bar {
-  // height: 100%;
   width: 100%;
   overflow-y: auto;
 }

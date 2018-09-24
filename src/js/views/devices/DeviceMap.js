@@ -287,7 +287,7 @@ class DeviceMapBig extends Component {
     }
     render() {
         this.handleGeoDevices();
-        // let displayDevicesCount = "Showing " + filteredList.length + " device(s)";
+        let displayDevicesCount = "Showing " + filteredList.length + " device(s)";
         return (
             <BigPositionRenderer showLayersIcons={true}
                 config={this.props.Config}

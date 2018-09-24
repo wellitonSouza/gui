@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import {
-    Map, Marker, ImageOverlay, Tooltip, ScaleControl, Polyline,
+    TileLayer, Map, Marker, ImageOverlay, Tooltip, ScaleControl, Polyline,
 } from 'react-leaflet';
 import L from 'leaflet';
 // import * as L from "leaflet";
@@ -21,22 +21,22 @@ class ContextMenu {
         console.log("ContextMenu loaded.");
     }
     // context menu based at: https://codepen.io/devhamsters/pen/yMProm
-    updateCurrentContextMenu(event) {
+    updateCurrentContextMenu(event,root) {
         console.log("updateCurrentContextMenu");
         const clickX = event.clientX;
         const clickY = event.clientY;
         const screenW = window.innerWidth;
         const screenH = window.innerHeight;
-        const rootW = this.root.offsetWidth;
-        const rootH = this.root.offsetHeight;
+        const rootW = root.offsetWidth;
+        const rootH = root.offsetHeight;
         const right = screenW - clickX > rootW;
         const left = !right;
         const top = screenH - clickY > rootH;
         const bottom = !top;
-        if (right) this.root.style.left = `${clickX + 5}px`;
-        if (left) this.root.style.left = `${clickX - rootW - 5}px`;
-        if (top) this.root.style.top = `${clickY + 5}px`;
-        if (bottom) this.root.style.top = `${clickY - rootH - 5}px`;
+        if (right) root.style.left = `${clickX + 5}px`;
+        if (left) root.style.left = `${clickX - rootW - 5}px`;
+        if (top) root.style.top = `${clickY + 5}px`;
+        if (bottom) root.style.top = `${clickY - rootH - 5}px`;
     }
 }
 
@@ -53,7 +53,6 @@ class CustomMap extends Component {
         console.log("CustomMap: componentDidMount");
         // create map
         this.map = L.map("map", {
-            center: [49.8419, 24.0315],
             zoom: 16,
             layers: [
                 L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
@@ -67,51 +66,57 @@ class CustomMap extends Component {
         // this.updateMarkers(this.props.markersData);
         // this.clusters = {};
     }
-    updateClusters(clusterIndex, markersData) {
-        console.log("updateClusters", clusterIndex, markersData);
-    }
-    createCluster(devicesData) {
-        var markerList = [];
-        for (var i = 0; i < devicesData.length; i++) {
-            var dev = devicesData[i];
-            //   var marker = L.marker(L.latLng(a[0], a[1]), {
-            //       title: title
-            //   });
-            //   dev.lat, dev.lng
-            var marker = L.marker(L.latLng(dev.pos), {
-                title: dev.label
-            });
-            // marker.bindPopup(title);
-            markerList.push(marker);
-        }
-        return L.markerClusterGroup({
-            chunkedLoading: true
-        }).addLayers(markerList);
-    }
-    componentDidUpdate() {
-        console.log("componentDidUpdate: clustererData", this.props.clustererData);
-        //   let markerList = markersData;
-        //   if (markersData === undefined)
-        //   {
-        //   markerList = [];
-        //   }
-        //   clustererData
-        this.clusters = {};
-        this.props.clustererData.map((element, i1) => {
-            this.clusters[element.index] = this.createCluster(element.devices);
-            this.map.addLayer(this.clusters[element.index]);
-        })
-        // check if data has changed
-        // if (this.props.markersData !== markersData) {
-        //   this.updateMarkers(this.props.markersData);
-        // }
-    }
+
+    // updateClusters(clusterIndex, markersData) {
+    //     console.log("updateClusters", clusterIndex, markersData);
+    // }
+
+    // createCluster(devicesData) {
+    //     var markerList = [];
+    //     for (var i = 0; i < devicesData.length; i++) {
+    //         var dev = devicesData[i];
+    //         //   var marker = L.marker(L.latLng(a[0], a[1]), {
+    //         //       title: title
+    //         //   });
+    //         //   dev.lat, dev.lng
+    //         var marker = L.marker(L.latLng(dev.pos), {
+    //             title: dev.label
+    //         });
+    //         // marker.bindPopup(title);
+    //         markerList.push(marker);
+    //     }
+    //     return L.markerClusterGroup({
+    //         chunkedLoading: true
+    //     }).addLayers(markerList);
+    // }
+
+    // componentDidUpdate() {
+    //     console.log("componentDidUpdate: clustererData", this.props.clustererData);
+    //     //   let markerList = markersData;
+    //     //   if (markersData === undefined)
+    //     //   {
+    //     //   markerList = [];
+    //     //   }
+    //     //   clustererData
+    //     this.clusters = {};
+    //     this.props.clustererData.map((element, i1) => {
+    //         this.clusters[element.index] = this.createCluster(element.devices);
+    //         this.map.addLayer(this.clusters[element.index]);
+    //     })
+    //     // check if data has changed
+    //     // if (this.props.markersData !== markersData) {
+    //     //   this.updateMarkers(this.props.markersData);
+    //     // }
+    // }
+
     //   updateMarkers(markersData) {
     //     this.layer.clearLayers();
     //     markersData.forEach(marker => {
     //       L.marker(marker.latLng, { title: marker.title }).addTo(this.layer);
     //     });
     //   }
+
+
     render() {
         console.log("CustomMap - Render: ", this.props);
         return <div id="map" />;
@@ -139,7 +144,6 @@ class BigPositionRenderer extends Component {
           : 7
     };
 
-    this.setTiles = this.setTiles.bind(this);
     this.handleContextMenu = this.handleContextMenu.bind(this);
     this.toggleLayer = this.toggleLayer.bind(this);
     this.contextMenu = new ContextMenu();
@@ -175,7 +179,7 @@ class BigPositionRenderer extends Component {
             selectedDeviceId: device_id
         });
         // this.refs.map.leafletElement.locate()
-        this.contextMenu.updateCurrentContextMenu(event);
+        this.contextMenu.updateCurrentContextMenu(event,this.root);
     };
 
   render() {
@@ -226,17 +230,19 @@ class SmallPositionRenderer extends Component {
             isTerrain: true,
             selectedPin: true,
             layers: [],
+            bounds: false,
             loadedLayers: false,
-            center: (this.props.config.mapCenter ? this.props.config.mapCenter : [-21.277057, -47.9590129]),
             zoom: (this.props.zoom ? this.props.zoom : this.props.config.mapZoom ? this.props.config.mapZoom : 7),
         };
-
-        this.setTiles = this.setTiles.bind(this);
+        
         this.handleTracking = this.handleTracking.bind(this);
         this.handleContextMenu = this.handleContextMenu.bind(this);
-        this.handleCenter = this.handleCenter.bind(this);
         this.toggleLayer = this.toggleLayer.bind(this);
         this.layers = [];
+        this.bounds = null;
+        
+        this.contextMenu = new ContextMenu();
+        this.handleMapClick = this.handleMapClick.bind(this);
     }
 
     componentDidMount() {
@@ -257,23 +263,22 @@ class SmallPositionRenderer extends Component {
                 app_id: '<your app_id>',
                 app_code: '<your app_code>',
                 base: 'aerial',
-                maxZoom: 20,
+                maxZoom: 17,
                 type: 'maptile',
                 language: 'eng',
                 format: 'png8',
                 size: '256'
                 });
 
-                var OpenMapSurfer_Roads = L.tileLayer('https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}', {
-                    maxZoom: 20,
-                    attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 17,
+                    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 });
-
 
                 L.control
                   .layers({
-                      Map: OpenMapSurfer_Roads,
-                     Hybrid: HERE_hybridDay
+                    Map: OpenStreetMap_Mapnik,
+                    Hybrid: HERE_hybridDay
                   })
                   .addTo(this.leafletMap.leafletElement);
             }
@@ -282,15 +287,15 @@ class SmallPositionRenderer extends Component {
             for (let index in layers) {
                 layers[index].isVisible = true;
             }
+
+            
             this.setState({ loadedLayers: true, layers: layers });
         }
     }
 
     handleTracking(device_id) {
         this.props.toggleTracking(device_id);
-
-        // closing ctxMenu
-        this.setState({ visible: false });
+        this.setState({ visible: false }); // closing ctxMenu
     }
 
     toggleLayer(id) {
@@ -311,40 +316,20 @@ class SmallPositionRenderer extends Component {
         event.preventDefault();
         this.setState({ visible: true, selected_device_id: device_id });
 
-        // this.refs.map.leafletElement.locate()
-        const clickX = event.clientX;
-        const clickY = event.clientY;
-        const screenW = window.innerWidth;
-        const screenH = window.innerHeight;
-        const rootW = this.root.offsetWidth;
-        const rootH = this.root.offsetHeight;
-
-        const right = (screenW - clickX) > rootW;
-        const left = !right;
-        const top = (screenH - clickY) > rootH;
-        const bottom = !top;
-        if (right) this.root.style.left = `${clickX + 5}px`;
-        if (left) this.root.style.left = `${clickX - rootW - 5}px`;
-        if (top) this.root.style.top = `${clickY + 5}px`;
-        if (bottom) this.root.style.top = `${clickY - rootH - 5}px`;
+        this.contextMenu.updateCurrentContextMenu(event, this.root);
     }
 
-    // resize() {
-    //     if (this.leafletMap !== undefined) {
-    //         this.leafletMap.leafletElement.invalidateSize();
-    //     }
-    // }
-
-    setTiles(isMap) {
-        this.setState({ isTerrain: isMap });
-    }
-
-    handleCenter() {
-        if (this.props.center) {
-            this.setState({ center: this.props.center });
-        } else {
-            this.setState({ center: [-21.277057, -47.9590129] });
+    handleMapClick(e)
+    {
+        if (!this.props.allowContextMenu) {
+          return false;
         }
+
+        console.log("handleMapClick");
+        const event = e.originalEvent;
+        event.preventDefault();
+        if (this.state.visible)
+            this.setState({ visible: false});
     }
 
     render() {
@@ -366,6 +351,7 @@ class SmallPositionRenderer extends Component {
             return pins.mapPinBlack;
         }
 
+
         const parsedEntries = this.props.devices.reduce((result, k) => {
             if (k.position !== undefined) {
                 result.push({
@@ -381,6 +367,8 @@ class SmallPositionRenderer extends Component {
 
             return result;
         }, []);
+
+
 
         const contextMenu = this.state.visible ? (
             <div
@@ -417,10 +405,40 @@ class SmallPositionRenderer extends Component {
             }
         }
 
+        console.log("parsedEntries", parsedEntries);
+        // set initial map center or boundaries
+        let positionList = [];
+        parsedEntries.map((element, index) => {
+          positionList.push(L.latLng(element.pos[0], element.pos[1]));
+        });
+        if (positionList.length && !this.state.bounds && this.leafletMap !== undefined) {
+            if (positionList.length > 1)
+            {
+                this.bounds = L.latLngBounds(positionList);
+                this.leafletMap.leafletElement.fitBounds(this.bounds);
+                this.setState({ bounds: true });
+            }
+            else
+            {
+                this.leafletMap.leafletElement.panTo(positionList[0]);
+                this.setState({ bounds: true });
+            }
+        } 
+        
+        // set center
+        // this.center = this.props.config.mapCenter ? this.props.config.mapCenter : positionList[0] ;
+        // if (this.center == undefined) {
+        //     this.center = [-20.90974, -48.83651];
+        // }
 
-        return <Map center={this.props.center ? this.props.center : this.state.center} zoom={this.state.zoom} ref={m => {
+        //  center={this.center}  bounds={this.bounds}
+        return <Map zoom={this.state.zoom} ref={m => {
             this.leafletMap = m;
-        }}>
+        }} onClick={this.handleMapClick}>
+            <TileLayer
+                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+            />
             <div className="col s12 layer-box" >
                 {
                     (this.props.showLayersIcons && this.state.layers.length) ?
@@ -435,6 +453,7 @@ class SmallPositionRenderer extends Component {
             </div>
             {contextMenu}
             {parsedEntries.map(k => {
+
                 return <Marker onContextMenu={e => {
                     this.handleContextMenu(e, k.id);
                 }} onClick={e => {
@@ -469,7 +488,6 @@ class LayerBox extends Component {
     }
 
     render() {
-        console.log("LayerBox: render.");
         let corner1 = L.latLng(this.props.config.overlay_data.corner1.lat, this.props.config.overlay_data.corner1.lng);
         let corner2 = L.latLng(this.props.config.overlay_data.corner2.lat, this.props.config.overlay_data.corner2.lng);
         const layerMapBounds = L.latLngBounds(corner1, corner2);

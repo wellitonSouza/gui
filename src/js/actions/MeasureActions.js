@@ -34,9 +34,10 @@ class MeasureActions {
                     if (reply !== null || reply !== undefined) {
                         device[`_${attrs}`] = reply.reverse();
                     }
-                    this.updateMeasures(device);
+                    //this.updateMeasures(device);
                 })
                 .catch((error) => { console.error('failed to fetch data', error); });
+                this.updateMeasures(device);
         };
     }
 

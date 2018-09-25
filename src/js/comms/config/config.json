@@ -173,10 +173,6 @@
         }
     ],
     "mapZoom": 11,
-    "mapCenter": [
-        -21.322263,
-        -48.046234
-    ],
     "tileSelect": "road",
     "mapColorActive": true,
     "range": [

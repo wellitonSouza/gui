@@ -4,6 +4,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AltContainer from 'alt-container';
 import LoginActions from '../../actions/LoginActions';
 import LoginStore from '../../stores/LoginStore';
+import toaster from '../../comms/util/materialize';
 
 class Recovery extends Component {
     constructor(props) {
@@ -35,7 +36,7 @@ class Recovery extends Component {
         if (this.state.password.trim().length < 8) {
             errorMsg.password = 'Password must be at least 8 characters';
             this.setState({ invalid: errorMsg });
-            return false;
+            return 1;
         }
         delete errorMsg.password;
         this.setState({ invalid: errorMsg });
@@ -43,7 +44,7 @@ class Recovery extends Component {
         if (this.state.confirmPassword !== this.state.password) {
             errorMsg.confirm = 'Password mismatch';
             this.setState({ invalid: errorMsg });
-            return false;
+            return 2;
         }
         delete errorMsg.confirm;
         this.setState({ invalid: errorMsg });
@@ -54,12 +55,18 @@ class Recovery extends Component {
     password(e) {
         e.preventDefault();
 
-        if (this.validate()) {
-            const password = { passwd: this.state.password, token: this.state.token };
-            LoginActions.setPassword(password);
-        } else {
+        if (this.validate()=== 1) {
+          toaster.critical('Password must be at least 8 characters')
+          this.setState({ invalid: {} });
+        } else if(this.validate()=== 2){
+            toaster.critical('Password mismatch')
             this.setState({ invalid: {} });
         }
+        else{
+        const password = { passwd: this.state.password, token: this.state.token };
+        LoginActions.setPassword(password);
+        }
+        
     }
 
     handleChange(event) {
@@ -110,7 +117,6 @@ class Recovery extends Component {
                                             name="password"
                                             className={getClass('password')}
                                             onChange={this.handleChange}
-                                            minLength={6}
                                             value={this.state.password}
                                         />
                                         <label
@@ -129,7 +135,6 @@ Password
                                             name="confirmPassword"
                                             className={getClass('confirm')}
                                             onChange={this.handleChange}
-                                            minLength={6}
                                             value={this.state.confirmPassword}
                                         />
                                         <label

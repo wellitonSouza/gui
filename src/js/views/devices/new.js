@@ -405,8 +405,9 @@ class DeviceForm extends Component {
         // Now, saves the device;
         const ongoingOps = DeviceStore.getState().loading;
         if (ongoingOps == false) {
-            // console.log('ongoingOps');
+            //console.log('ongoingOps');
             this.props.operator(JSON.parse(JSON.stringify(DeviceFormStore.getState().device)), this.props.deviceid);
+            hashHistory.push('/device/list');
         }
     }
 

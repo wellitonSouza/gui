@@ -239,6 +239,7 @@ function OperationsHeader(props) {
             </div>
             {props.displayToggle}
             <DojotBtnLink
+                responsive="true"
                 linkto="/device/new"
                 label="New Device"
                 alt="Create a new device"

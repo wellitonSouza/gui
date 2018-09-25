@@ -731,7 +731,6 @@ class ListItem extends Component {
 
     updateTemplate(e) {
         if (e != undefined) e.preventDefault();
-
         // Verify template name
         let ret = util.isNameValid(this.state.template.label);
         if (!ret.result && !this.state.isConfiguration) {
@@ -750,6 +749,12 @@ class ListItem extends Component {
         for (const k in this.state.template.attrs) {
             // console.log('attrs: ', this.state.template.attrs);
             // Validation of config attributes
+            let ret = util.isNameValid(this.state.template.attrs[k].label);
+            if (!ret.result && !this.state.isConfiguration) {
+                toaster.error(ret.error);
+                return;
+            }
+
             if (this.state.template.attrs[k].type == 'meta') {
                 if (this.state.template.attrs[k].label == '') {
                     toaster.error("You can't leave configuration attribute type empty");

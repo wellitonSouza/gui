@@ -137,8 +137,6 @@ class SideBar extends Component {
         },
         (user) => {
           this.formUser(user);
-          toaster.success('Failed to create user.');
-
         },
       )}
     }

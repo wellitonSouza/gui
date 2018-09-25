@@ -36,7 +36,10 @@ class MeasureActions {
                     }
                     this.updateMeasures(device);
                 })
-                .catch((error) => { console.error('failed to fetch data', error); });
+                .catch((error) => {
+                    this.updateMeasures(device);
+                    console.error('failed to fetch data', error);
+                });
         };
     }
 

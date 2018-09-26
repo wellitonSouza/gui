@@ -407,7 +407,7 @@ class DeviceForm extends Component {
         if (ongoingOps == false) {
             //console.log('ongoingOps');
             this.props.operator(JSON.parse(JSON.stringify(DeviceFormStore.getState().device)), this.props.deviceid);
-            hashHistory.push('/device/list');
+            hashHistory.goBack();
         }
     }
 

@@ -240,7 +240,7 @@ function OperationsHeader(props) {
             {props.displayToggle}
             <DojotBtnLink
                 responsive="true"
-                linkto="/device/new"
+                linkTo="/device/new"
                 label="New Device"
                 alt="Create a new device"
                 icon="fa fa-plus"

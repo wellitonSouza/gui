@@ -14,15 +14,15 @@ class DojotBtnLink extends Component {
             document.body.clientWidth;
 
         if (this.props.responsive && width < 1226) {
-          return <DojotBtnRedCircle click={this.props.onClick} to={this.props.linkto} icon={this.props.icon} tooltip={this.props.alt} />;
+          return <DojotBtnRedCircle click={this.props.onClick} to={this.props.linkTo} icon={this.props.icon} tooltip={this.props.alt} />;
         }
         // we should check if contains 'to' props or onclick props
-        else if (this.props.linkto) {
-          return <Link to={this.props.linkto} className={`new-btn-flat red ${this.props.className}`} title={this.props.alt}>
+        else if (this.props.linkTo) {
+          return <Link to={this.props.linkTo} className={`new-btn-flat red ${this.props.className}`} title={this.props.alt}>
               {this.props.label} <i className={this.props.icon} />
             </Link>;
         } else {
-          return <div onClick={this.props.addTemplate} className="new-btn-flat red" title={this.props.alt}>
+          return <div onClick={this.props.onClick} className="new-btn-flat red" title={this.props.alt}>
               {this.props.label} <i className={this.props.icon} />
             </div>;
         }

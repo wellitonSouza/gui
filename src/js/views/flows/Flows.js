@@ -307,6 +307,6 @@ export class Flows extends Component {
 
 function OperationsHeader() {
     return <div className="col s12 pull-right pt10">
-        <DojotBtnLink responsive="true" linkto="/flows/new" label="New Flow" alt="Create a new data flow" icon="fa fa-plus" className="w130px" />
+        <DojotBtnLink responsive="true" linkTo="/flows/new" label="New Flow" alt="Create a new data flow" icon="fa fa-plus" className="w130px" />
       </div>;
 }

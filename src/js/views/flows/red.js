@@ -10679,7 +10679,7 @@ RED.tray = (function() {
                 handle: resizer,
                 axis: "x",
                 start:function(event,ui) {
-                    el.width(500);
+                    el.width('auto');
                 },
                 drag: function(event,ui) {
                     var absolutePosition = editorStack.position().left+ui.position.left
@@ -10696,7 +10696,6 @@ RED.tray = (function() {
                     tray.width = -ui.position.left;
                 },
                 stop:function(event,ui) {
-                    console.log('ui.position.left :', ui.position.left);
                     el.width(-ui.position.left);
                     el.css({left: ui.position.left});
                     if (tray.options.resize) {

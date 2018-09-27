@@ -10679,14 +10679,14 @@ RED.tray = (function() {
                 handle: resizer,
                 axis: "x",
                 start:function(event,ui) {
-                    el.width('auto');
+                    el.width(500);
                 },
                 drag: function(event,ui) {
                     var absolutePosition = editorStack.position().left+ui.position.left
                     if (absolutePosition < 7) {
                         ui.position.left += 7-absolutePosition;
                     } else if (ui.position.left > -tray.preferredWidth-1) {
-                        ui.position.left = -Math.min(editorStack.position().left-7,tray.preferredWidth-1);
+                        ui.position.left =   ui.position.left;
                     }
                     if (tray.options.resize) {
                         setTimeout(function() {
@@ -10696,8 +10696,9 @@ RED.tray = (function() {
                     tray.width = -ui.position.left;
                 },
                 stop:function(event,ui) {
+                    console.log('ui.position.left :', ui.position.left);
                     el.width(-ui.position.left);
-                    el.css({left:''});
+                    el.css({left: ui.position.left});
                     if (tray.options.resize) {
                         tray.options.resize({width: -ui.position.left});
                     }

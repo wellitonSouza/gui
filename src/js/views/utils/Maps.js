@@ -326,8 +326,8 @@ class SmallPositionRenderer extends Component {
         }
 
         console.log("handleMapClick");
-        const event = e.originalEvent;
-        event.preventDefault();
+        // const event = e.originalEvent;
+        // event.preventDefault();
         if (this.state.visible)
             this.setState({ visible: false});
     }
@@ -371,12 +371,9 @@ class SmallPositionRenderer extends Component {
 
 
         const contextMenu = this.state.visible ? (
-            <div
-                ref={(ref) => {
+            <div ref={(ref) => {
                     this.root = ref;
-                }}
-                className="contextMenu"
-            >
+                }} className="contextMenu">
                 <Link to={`/device/id/${this.state.selected_device_id}/detail`} title="View details">
                     <div className="contextMenu--option cmenu">
                         <i className="fa fa-info-circle" />

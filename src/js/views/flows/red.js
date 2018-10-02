@@ -10819,9 +10819,9 @@ RED.tray = (function() {
             }
         },
         close: function close(done) {
-            if (stack.length > 0) {
-                for (stack.length ; stack.length > 0; stack.pop()) {
-                    var tray = stack[stack.length-1];
+            let stackLenght = stack.length;
+                for (stackLenght; stackLenght > 0; stack.pop()) {
+                    let tray = stack[stack.length-1];
                     console.log('tray :', tray);
                     tray.tray.css({
                         right: -(tray.tray.width()+10)+"px"

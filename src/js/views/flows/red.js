@@ -10820,30 +10820,29 @@ RED.tray = (function() {
         },
         close: function close(done) {
             let stackLenght = stack.length;
-                for (stackLenght; stackLenght > 0; stack.pop()) {
-                    let tray = stack[stack.length-1];
-                    console.log('tray :', tray);
-                    tray.tray.css({
-                        right: -(tray.tray.width()+10)+"px"
-                    });
-                    setTimeout(function() {
-                        if (tray.options.close) {
-                            tray.options.close();
-                        }
-                        tray.tray.remove();                    
-                        if (done) {
-                            done();
-                        }
-                        if (stack.length === 0) {
-                            $("#header-shade").hide();
-                            $("#editor-shade").hide();
-                            $("#palette-shade").hide();
-                            $(".sidebar-shade").hide();
-                            RED.events.emit("editor:close");
-                            RED.view.focus();
-                        }
-                    },250)
-                }
+            for (stackLenght; stackLenght > 0; stack.pop()) {
+                let tray = stack[stack.length - 1];
+                console.log('tray :', tray);
+                tray.tray.css({
+                    right: -(tray.tray.width() + 10) + "px"
+                });
+                setTimeout(function () {
+                    if (tray.options.close) {
+                        tray.options.close();
+                    }
+                    tray.tray.remove();
+                    if (done) {
+                        done();
+                    }
+                    if (stack.length === 0) {
+                        $("#header-shade").hide();
+                        $("#editor-shade").hide();
+                        $("#palette-shade").hide();
+                        $(".sidebar-shade").hide();
+                        RED.events.emit("editor:close");
+                        RED.view.focus();
+                    }
+                }, 250)
             }
         }
     }

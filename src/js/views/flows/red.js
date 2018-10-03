@@ -10819,27 +10819,18 @@ RED.tray = (function() {
             }
         },
         close: function close(done) {
-            if (stack.length > 0) {
-                var tray = stack.pop();
+            let stackLenght = stack.length;
+            for (stackLenght; stackLenght > 0; stack.pop()) {
+                let tray = stack[stack.length - 1];
+                console.log('tray :', tray);
                 tray.tray.css({
-                    right: -(tray.tray.width()+10)+"px"
+                    right: -(tray.tray.width() + 10) + "px"
                 });
-                setTimeout(function() {
+                setTimeout(function () {
                     if (tray.options.close) {
                         tray.options.close();
                     }
                     tray.tray.remove();
-                    if (stack.length > 0) {
-                        var oldTray = stack[stack.length-1];
-                        oldTray.tray.appendTo("#editor-stack");
-                        setTimeout(function() {
-                            handleWindowResize();
-                            oldTray.tray.css({right:0});
-                            if (oldTray.options.show) {
-                                oldTray.options.attr("style", "display: block !important");
-                            }
-                        },0);
-                    }
                     if (done) {
                         done();
                     }
@@ -10851,7 +10842,7 @@ RED.tray = (function() {
                         RED.events.emit("editor:close");
                         RED.view.focus();
                     }
-                },250)
+                }, 250)
             }
         }
     }

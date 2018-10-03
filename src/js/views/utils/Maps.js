@@ -275,10 +275,14 @@ class SmallPositionRenderer extends Component {
                     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 });
 
+                var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+                });
+
                 L.control
                   .layers({
                     Map: OpenStreetMap_Mapnik,
-                    Hybrid: HERE_hybridDay
+                    Satelite: Esri_WorldImagery
                   })
                   .addTo(this.leafletMap.leafletElement);
             }
@@ -294,6 +298,7 @@ class SmallPositionRenderer extends Component {
     }
 
     handleTracking(device_id) {
+        console.log("handleTracking", device_id);
         this.props.toggleTracking(device_id);
         this.setState({ visible: false }); // closing ctxMenu
     }
@@ -333,7 +338,7 @@ class SmallPositionRenderer extends Component {
     }
 
     render() {
-        // console.log('PropsSmallPositionRenderer: ', this.props);
+        console.log('PropsSmallPositionRenderer: ', this.props);
         function getPin(device, config) {
             let varToMeasure = "_" + config.measureAttribute;
 

@@ -56,10 +56,10 @@ class Recovery extends Component {
         e.preventDefault();
         let validate = this.validate();
         if (validate === 1) {
-          toaster.critical('Password must be at least 8 characters')
+          toaster.error('Password must be at least 8 characters')
           this.setState({ invalid: {} });
         } else if(validate === 2){
-            toaster.critical('Password mismatch')
+            toaster.error('Password mismatch')
             this.setState({ invalid: {} });
         } else{
             const password = { passwd: this.state.password, token: this.state.token };

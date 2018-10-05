@@ -300,7 +300,7 @@
     height: 100%;
     width: 100%;
     padding-top: 2px;
-    position: fixed;
+    position: relative;
     .flex-wrapper
     {
       height: 100%;
@@ -802,10 +802,9 @@
     height: 100%;
     width: 100%;
     z-index: 9991;
-    overflow: scroll;
+    overflow: auto;
     top: 117px;
     margin: 0;
-    padding-bottom: 120px;
     
     &>div
     {
@@ -827,5 +826,6 @@
 
 .device-card-area {
   height: 100%;
+  width: 100%;
   float: left;
 }

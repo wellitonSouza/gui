@@ -353,7 +353,7 @@ class DeviceForm extends Component {
 
             currentAttrs = currentAttrs.reduce((newArray, currentValue) => {
                 for (let index = 0; index < newArray.length; index++) {
-                    if(newArray[index].label === currentValue.label){
+                    if(newArray[index].id === currentValue.id){
                         return newArray;
                     }
                 }

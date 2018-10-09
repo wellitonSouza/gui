@@ -350,6 +350,19 @@ class DeviceForm extends Component {
                     }
                 }
             }
+
+            currentAttrs = currentAttrs.reduce((newArray, currentValue) => {
+                for (let index = 0; index < newArray.length; index++) {
+                    if(newArray[index].id === currentValue.id){
+                        return newArray;
+                    }
+                }
+
+                newArray.push(currentValue);
+                return newArray;
+
+            }, []);
+
             this.setState({ selectedTemplates: list, loaded: true, staticAttrs: currentAttrs });
         }
     }
@@ -361,6 +374,7 @@ class DeviceForm extends Component {
                 for (const index in deviceAttrs[tmp]) {
                     if (deviceAttrs[tmp][index].type == 'static' || deviceAttrs[tmp][index].type == 'meta') {
                         configAttrs = configAttrs.concat(deviceAttrs[tmp][index]);
+                        console.log('handleStaticsAttributes', deviceAttrs[tmp][index]);
                     }
                 }
             }

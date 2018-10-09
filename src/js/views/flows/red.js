@@ -4297,9 +4297,6 @@ RED.tabs = (function() {
             return labelWidth;
         },
         _resize: function() {
-            if (this.uiWidth !== null) {
-                this.uiSelect.width(this.uiWidth);
-            }
             if (this.typeMap[this.propertyType] && this.typeMap[this.propertyType].hasValue === false) {
                 this.selectTrigger.addClass("red-ui-typedInput-full-width");
             } else {

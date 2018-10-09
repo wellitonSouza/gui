@@ -87,7 +87,9 @@ class DeviceCardList extends Component {
         this.convertDeviceList();
 
         this.metaData = { alias: 'device' };
-        this.props.dev_opex.setDefaultFilter();
+        if (this.props.toggle.props.toggleState) {
+            this.props.dev_opex.setFilterToCard();
+        }
 
         return (
             <div className="device-card-area">

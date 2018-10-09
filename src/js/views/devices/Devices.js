@@ -99,6 +99,12 @@ class DeviceOperations extends GenericOperations {
         this.filterParams = {};
     }
 
+    setFilterToCard() {
+        if (this.paginationParams.page_size === 5000) {
+            this.setDefaultPaginationParams();
+        }
+    }
+
     whenUpdateFilter(config) {
         // this.setDefaultPageNumber();
         this.filterParams = config;

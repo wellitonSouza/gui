@@ -824,6 +824,9 @@ class ListItem extends Component {
         TemplateActions.triggerRemoval(this.state.template.id, (template) => {
             hashHistory.push('/template/list');
             toaster.success('Template removed');
+            if (this.props.numOfTempPage === 1) {
+                this.props.temp_opex.whenRemoveItemFromLastPage();
+            }
             this.props.temp_opex._fetch();
         });
     }
@@ -1248,6 +1251,7 @@ class TemplateList extends Component {
                                 enableNewTemplate={this.props.enableNewTemplate}
                                 confirmTarget="confirmDiag"
                                 temp_opex={this.props.temp_opex}
+                                numOfTempPage={this.props.templates.length}
                             />
                         ))}
                     </div>
@@ -1286,6 +1290,12 @@ class TemplateOperations extends GenericOperations {
         this.setDefaultPageNumber();
         this.filterParams = config;
         this._fetch();
+    }
+
+    whenRemoveItemFromLastPage() {
+        if (this.paginationParams.page_num > 0) {
+            this.paginationParams.page_num = this.paginationParams.page_num - 1;
+        }
     }
 
     _fetch() {

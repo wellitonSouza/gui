@@ -153,7 +153,8 @@ class StaticAttributes extends Component {
         for (const index in properties) {
             if (properties[index].label === 'protocol') {
                 properties[index].static_value = properties[index].static_value.toUpperCase();
-                properties[index].value = properties[index].value.toUpperCase();
+                const propertiesI = properties[index].value !== undefined ? properties[index].value.toUpperCase() : properties[index].value;
+                properties[index].value = propertiesI
             }
         }
 

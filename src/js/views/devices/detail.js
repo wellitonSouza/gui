@@ -218,8 +218,8 @@ class GenericList extends Component {
                                     <div className={this.state.truncate ? 'name-value  truncate' : 'name-value '} title={attr.label}>{attr.label}</div>
                                     <div className="display-flex-no-wrap space-between">
                                         <div className={this.state.truncate ? 'value-value  truncate' : 'value-value '} title={attr.static_value}>
-                                            {attr.static_value.length > 25 ?
-                                                attr.static_value.substr(1, 22) + '...' :
+                                            {(attr.static_value !== undefined && attr.static_value.length > 25) ?
+                                                attr.static_value.substr(1, 22) + '...' : 
                                                 attr.static_value
                                             }
                                         </div>

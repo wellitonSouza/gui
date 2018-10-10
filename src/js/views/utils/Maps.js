@@ -413,18 +413,25 @@ class SmallPositionRenderer extends Component {
         parsedEntries.map((element, index) => {
           positionList.push(L.latLng(element.pos[0], element.pos[1]));
         });
-        if (positionList.length && !this.state.bounds && this.leafletMap !== undefined) {
+
+        if (!this.state.bounds && this.leafletMap !== undefined)
+        {
+            if (positionList.length == 0)
+            {
+                let temporaryCenter = [-20.90974, -48.83651];
+                this.leafletMap.leafletElement.panTo(temporaryCenter);
+            }
+            else
             if (positionList.length > 1)
             {
                 this.bounds = L.latLngBounds(positionList);
                 this.leafletMap.leafletElement.fitBounds(this.bounds);
-                this.setState({ bounds: true });
             }
             else
             {
                 this.leafletMap.leafletElement.panTo(positionList[0]);
-                this.setState({ bounds: true });
             }
+            this.setState({ bounds: true });
         } 
         
         // set center

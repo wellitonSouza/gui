@@ -3,7 +3,14 @@ import templateManager from '../comms/templates/TemplateManager';
 import toaster from '../comms/util/materialize';
 
 const alt = require('../alt');
-
+const newTemplate = {
+    id: Math.floor(Math.random() * 100000),
+    label: '',
+    attrs: [],
+    config_attrs: [],
+    data_attrs: [],
+    newTemplate: true,
+}
 class TemplateActions {
     updateTemplates(list) {
         return list;
@@ -49,6 +56,7 @@ class TemplateActions {
 
     triggerUpdate(template, cb) {
         return (dispatch) => {
+            console.log('triggerUpdate', template);
             templateManager.setTemplate(template)
                 .then((response) => {
                     this.updateSingle(template);
@@ -109,6 +117,16 @@ class TemplateActions {
         toaster.error(error.message);
         return error;
     }
+
+    selectTemplate(template = newTemplate){
+        return JSON.parse(JSON.stringify(template)); // passing obj by value
+    }
+
+    toogleSidebar(){
+        return (dispatch) => dispatch()
+    }
+    toogleSidebarAttribute(){}
+    toogleSidebarConfiguration(){}
 }
 
 const _action = alt.createActions(TemplateActions, exports);

@@ -6,10 +6,19 @@ const TemplateActions = require('../actions/TemplateActions');
 
 class TemplateStore {
     constructor() {
+        this.template = {
+            label: '',
+            attrs: [],
+            config_attrs: [],
+            data_attrs: [],
+            newTemplate: true,
+        };
         this.templates = [];
         this.pagination = null;
         this.error = null;
         this.loading = false;
+        this.showSidebar = false;
+        this.isNewTemplate = false;
 
         this.bindListeners({
             handleUpdateTemplateList: TemplateActions.UPDATE_TEMPLATES,
@@ -26,12 +35,35 @@ class TemplateStore {
 
             handleTriggerIcon: TemplateActions.TRIGGER_ICON_UPDATE,
             handleUpdateIcon: TemplateActions.SET_ICON,
+
+            handleSelectTemplate: TemplateActions.SELECT_TEMPLATE,
+            toogleSidebar: TemplateActions.TOOGLE_SIDEBAR,
+            toogleSidebarAttribute: TemplateActions.TOOGLE_SIDEBAR_ATTRIBUTE,
+            toogleSidebarConfiguration: TemplateActions.TOOGLE_SIDEBAR_CONFIGURATION,
         });
     }
 
     handleTriggerIcon() {
         this.error = null;
         this.loading = true;
+    }
+
+    toogleSidebar(){
+        this.showSidebar = !this.showSidebar;
+        this.showSidebarAtribute = false;
+        this.showSidebarConfiguration = false; 
+    }
+
+    toogleSidebarAttribute(){
+        this.showSidebar = true;
+        this.showSidebarAtribute = true;
+        this.showSidebarConfiguration = false; 
+    }
+
+    toogleSidebarConfiguration(){
+        this.showSidebar = true;
+        this.showSidebarAtribute = false;
+        this.showSidebarConfiguration = true; 
     }
 
     handleUpdateIcon(id) {
@@ -88,6 +120,19 @@ class TemplateStore {
         this.loading = false;
     }
 
+    handleSelectTemplate(template) {
+        this.template = {...template};
+        if (Object.prototype.hasOwnProperty.call(template, 'newTemplate')){
+            this.isNewTemplate = true;
+            delete this.template.newTemplate;
+        } else {
+            this.isNewTemplate = false;
+        }
+        this.showSidebar = true;
+        this.showSidebarAtribute = false;
+        this.showSidebarConfiguration = false; 
+    }
+
     handleAddTemplate() {
     // this is actually just a intermediary while addition happens asynchonously
         this.error = null;
@@ -103,6 +148,12 @@ class TemplateStore {
     handleFailure(error) {
         this.error = error;
         this.loading = false;
+    }
+
+    handleChangeValue(field, value) {
+        let template = {...this.template};
+        template[field] = value;
+        this.template = template;
     }
 }
 

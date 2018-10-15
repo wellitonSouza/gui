@@ -279,6 +279,8 @@ class SmallPositionRenderer extends Component {
                     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
                 });
 
+                OpenStreetMap_Mapnik.addTo(this.leafletMap.leafletElement);
+
                 L.control
                   .layers({
                     Map: OpenStreetMap_Mapnik,

@@ -829,3 +829,14 @@
   width: 100%;
   float: left;
 }
+
+[type="radio"]{
+  &.leaflet-control-layers-selector{
+    opacity: 1;
+    position: relative;
+  }
+}
+
+.leaflet-control-layers-base label{
+  cursor:pointer;
+}

@@ -4106,7 +4106,12 @@ RED.tabs = (function() {
                 this.uiSelect.width(m[1]);
                 this.uiWidth = null;
             } else {
+                if(this.uiWidth>70){
                 this.uiSelect.width(this.uiWidth);
+                }
+                else {
+                    this.uiSelect.width(this.uiWidth + '%'); 
+                }
             }
             ["Right","Left"].forEach(function(d) {
                 var m = that.element.css("margin"+d);
@@ -4340,7 +4345,6 @@ RED.tabs = (function() {
             }
         },
         width: function(desiredWidth) {
-            this.uiWidth = desiredWidth;
             this._resize();
         },
         value: function(value) {
@@ -10819,7 +10823,6 @@ RED.tray = (function() {
             let stackLenght = stack.length;
             for (stackLenght; stackLenght > 0; stack.pop()) {
                 let tray = stack[stack.length - 1];
-                console.log('tray :', tray);
                 tray.tray.css({
                     right: -(tray.tray.width() + 10) + "px"
                 });

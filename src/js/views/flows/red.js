@@ -4345,6 +4345,7 @@ RED.tabs = (function() {
             }
         },
         width: function(desiredWidth) {
+            this.uiWidth = desiredWidth;
             this._resize();
         },
         value: function(value) {

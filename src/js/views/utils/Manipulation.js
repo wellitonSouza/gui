@@ -203,7 +203,6 @@ class Filter extends Component {
         event.preventDefault();
         const f = event.target.name;
         const v = event.target.value;
-        console.log('object');
         this.updateQuery({ label: f, value: v });
     }
 

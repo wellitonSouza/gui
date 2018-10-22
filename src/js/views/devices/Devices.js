@@ -6,13 +6,14 @@ import Toggle from 'material-ui/Toggle';
 import DeviceStore from '../../stores/DeviceStore';
 import ConfigStore from "../../stores/ConfigStore";
 import MeasureStore from '../../stores/MeasureStore';
+import MapPositionStore from "../../stores/MapPositionStore";
+import MapPositionActions from "../../actions/MapPositionActions";
 import DeviceActions from '../../actions/DeviceActions';
 import MeasureActions from '../../actions/MeasureActions';
 import { NewPageHeader } from '../../containers/full/PageHeader';
 import { DojotBtnLink } from '../../components/DojotButton';
-import { DeviceMap } from './DeviceMap';
+import { DeviceMapWrapper } from './DeviceMap';
 import { DeviceCardList } from './DeviceCard';
-import util from '../../comms/util';
 import {
     Pagination, FilterLabel, GenericOperations,
 } from '../utils/Manipulation';
@@ -48,27 +49,12 @@ class MapWrapper extends Component {
         super(props);
     }
 
-    componentDidMount() {
-        const devices = this.props.devices;
-        for (const deviceID in devices) {
-            for (const templateID in devices[deviceID].attrs) {
-                for (const attrID in devices[deviceID].attrs[templateID]) {
-                    if (devices[deviceID].attrs[templateID][attrID].type === 'dynamic') {
-                        if (devices[deviceID].attrs[templateID][attrID].value_type === 'geo:point') {
-                            MeasureActions.fetchPosition.defer(devices[deviceID], devices[deviceID].id, devices[deviceID].attrs[templateID][attrID].label);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     render() {
-        return (
-            <AltContainer stores={{Measure: MeasureStore, Config: ConfigStore}}>
-                <DeviceMap devices={this.props.devices} showFilter={this.props.showFilter} dev_opex={this.props.dev_opex} />
-            </AltContainer>
-        );
+        console.log("2.<MapWrapper>.render.", this.props);
+
+        return <AltContainer stores={{ positions: MapPositionStore, measures: MeasureStore, configs: ConfigStore }}>
+            <DeviceMapWrapper devices={this.props.devices} showFilter={this.props.showFilter} dev_opex={this.props.dev_opex} />
+          </AltContainer>;
     }
 }
 
@@ -91,6 +77,7 @@ class DeviceOperations extends GenericOperations {
         this.setDefaultPaginationParams();
     }
 
+    // @TODO: I think we need create a state variable to khow when is in the map mode;
     setFilterToMap() {
         this.paginationParams = {
             page_size: 5000,
@@ -117,9 +104,14 @@ class DeviceOperations extends GenericOperations {
             delete res.templates;
             res.template = this.filterParams.templates;
         }
-        // console.log('fetching: ', res, 'all templates ');
-        DeviceActions.fetchDevices.defer(res, cb);
-    // }
+        console.log('fetching using: ', res);
+        if (this.paginationParams.page_size !== 5000) {
+            DeviceActions.fetchDevices.defer(res, cb); 
+        }
+        else
+        {
+            MapPositionActions.fetchDevices.defer(res, cb); 
+        }
     }
 }
 
@@ -142,9 +134,10 @@ class Devices extends Component {
     // DeviceActions.fetchDevices.defer();
         // console.log('devices: componentDidMount');
         this.dev_opex._fetch();
+ 
+ /*
         // Realtime
         const socketio = require('socket.io-client');
-
         const target = `${window.location.protocol}//${window.location.host}`;
         const token_url = `${target}/stream/socketio`;
 
@@ -160,21 +153,21 @@ class Devices extends Component {
 
         function init(token) {
             device_list_socket = socketio(target, { query: `token=${token}`, transports: ['polling'] });
-
             device_list_socket.on('all', (data) => {
-                // console.log('received socket information:', data);
+                console.log('received socket information:', data);
                 MeasureActions.appendMeasures(data);
-                DeviceActions.updateStatus(data);
+                // DeviceActions.updateStatus(data);
             });
 
             device_list_socket.on('error', (data) => {
-                // console.log('socket error', data);
+                console.log('socket error', data);
                 if (device_list_socket !== null) device_list_socket.close();
                 // getWsToken();
             });
         }
-
         _getWsToken();
+        */
+
     }
 
     componentWillUnmount() {
@@ -203,7 +196,7 @@ class Devices extends Component {
     }
 
     render() {
-        // console.log('Loading Devices Component.');
+        console.info('1. <Devices>.render.');
 
         const detail = 'detail' in this.props.location.query
             ? this.props.location.query.detail
@@ -225,7 +218,7 @@ class Devices extends Component {
                         <Pagination show_pagination={show_pagination} ops={this.dev_opex} />
                         <OperationsHeader displayToggle={displayToggle} toggleSearchBar={this.toggleSearchBar.bind(this)} />
                     </NewPageHeader>
-                    {this.state.displayList ? <DeviceCardList deviceid={detail} toggle={displayToggle} dev_opex={this.dev_opex} showFilter={this.state.showFilter} /> : <MapWrapper deviceid={detail} toggle={displayToggle} showFilter={this.state.showFilter} dev_opex={this.dev_opex} />}
+                    {this.state.displayList ? <DeviceCardList deviceid={detail} toggle={displayToggle} dev_opex={this.dev_opex} showFilter={this.state.showFilter} /> : <MapWrapper toggle={displayToggle} showFilter={this.state.showFilter} dev_opex={this.dev_opex} />}
                 </AltContainer>
             </div>
         );

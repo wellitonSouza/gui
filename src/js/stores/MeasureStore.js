@@ -1,6 +1,5 @@
 /* eslint-disable */
 import util from '../comms/util';
-
 const alt = require('../alt');
 const MeasureActions = require('../actions/MeasureActions');
 const TrackingActions = require('../actions/TrackingActions');

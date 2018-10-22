@@ -141,6 +141,7 @@ class Sidebar extends Component {
         const last = this.state.sideBarOpened;
         this.setState({ sideBarOpened: !last });
     }
+    
 
     render() {
         const btnSideBarClass = `fa fa-chevron-${this.state.sideBarOpened ? 'right' : 'left'}`;

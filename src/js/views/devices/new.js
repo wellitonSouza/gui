@@ -401,6 +401,8 @@ class DeviceForm extends Component {
         if (!ret.result) {
             toaster.error(ret.error);
             return;
+        }else{
+            DeviceFormStore.getState().device.label = ret.label
         }
 
         // templates describe all attributes that should be applied to device, so we only need set values related to static attributes.

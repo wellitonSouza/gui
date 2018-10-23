@@ -448,7 +448,10 @@ class NewAttribute extends Component {
         if (!ret.result && !this.state.isConfiguration) {
             toaster.error(ret.error);
             return;
+        }else{
+            attribute.label = ret.label;
         }
+
 
         ret = util.isTypeValid(attribute.value, attribute.value_type, attribute.type, this.state.isActuator);
         if (!ret.result) {
@@ -738,6 +741,8 @@ class ListItem extends Component {
         if (!ret.result && !this.state.isConfiguration) {
             toaster.error(ret.error);
             return;
+        }else{
+            this.state.template.label = ret.label;
         }
 
         const template = this.state.template;
@@ -755,6 +760,8 @@ class ListItem extends Component {
             if (!ret.result && !this.state.isConfiguration) {
                 toaster.error(ret.error);
                 return;
+            }else{
+                this.state.template.attrs[k].label = ret.label;
             }
 
             if (this.state.template.attrs[k].type == 'meta') {
@@ -923,6 +930,8 @@ class ListItem extends Component {
         if (!ret.result && !this.state.isConfiguration) {
             toaster.error(ret.error);
             return;
+        }else{
+            this.state.template.label = ret.label;
         }
 
         this.state.template.attrs.push.apply(this.state.template.attrs, this.state.template.data_attrs);

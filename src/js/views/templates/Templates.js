@@ -276,8 +276,7 @@ class AttributeList extends Component {
                 <div className="attr-row">
                     <div className="icon" />
                     <div className="attr-content">
-                    {this.state.isActuator ? null
-                    : (
+                    {!this.state.isActuator ? (
                         <input
                             className={this.state.fieldSizeStaticAttrStatus ? 'truncate' : ''}
                             type="text"
@@ -288,7 +287,8 @@ class AttributeList extends Component {
                             maxLength="25"
                             title={staticValue}
                         />
-                    )}
+                    ): null
+                    }
                         <select
                             id="select_attribute_type"
                             className="card-select mini-card-select"
@@ -584,8 +584,7 @@ class NewAttribute extends Component {
                     <div className="attr-row">
                         <div className="icon" />
                         <div className="attr-content">
-                            {this.state.isActuator ? null
-                                : (
+                            {!this.state.isActuator ? (
                                     <input
                                         className={(this.state.newAttr.value_type === 'protocol' ? 'none' : '')}
                                         type="text"
@@ -594,7 +593,8 @@ class NewAttribute extends Component {
                                         onChange={this.handleChange}
                                         name="value"
                                     />
-                                )}
+                                ): null
+                            }
                             <select
                                 id="select_attribute_type"
                                 className={`${this.state.isConfiguration ? (this.state.newAttr.value_type === 'protocol' ? '' : 'none') : 'none'} card-select dark-background`}

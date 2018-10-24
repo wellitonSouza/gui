@@ -109,7 +109,7 @@ class RecoveryPasswordModal extends Component {
             );
         }
         return (
-            <div className="row">
+            <div className="login row">
                 <div className="recovery-password-modal">
                     <div className="row">
                         <div className="recovery-password-title">[&nbsp;&nbsp;Forgot your password?&nbsp;&nbsp;]</div>

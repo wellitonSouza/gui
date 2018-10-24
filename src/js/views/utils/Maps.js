@@ -6,6 +6,7 @@ import L from 'leaflet';
 import DivIcon from 'react-leaflet-div-icon';
 import * as pins from '../../config'
 import util from "../../comms/util";
+import MaterialInput from '../../components/MaterialInput';
 
 require('leaflet.markercluster');
 
@@ -96,6 +97,34 @@ class CustomMap extends Component {
     this.handleTracking = this.handleTracking.bind(this);
     this.handleMapClick = this.handleMapClick.bind(this);
     this.handleContextMenu = this.handleContextMenu.bind(this);
+    this.closeContextMenu = this.closeContextMenu.bind(this);
+  }
+
+    componentDidMount() {
+    console.log("5. CustomMap: componentDidMount");
+    // create map
+    this.map = L.map("map", {
+      zoom: this.props.zoom,
+      center: [51.505, -0.09],
+      layers: [OpenStreetMap_Mapnik]
+    });
+
+    // Adding layer to the map
+    // this.map.addLayer(OpenStreetMap_Mapnik);
+
+    var overlays = { Map: OpenStreetMap_Mapnik, Satelite: Esri_WorldImagery };
+    L.control.layers(overlays).addTo(this.map);
+
+    // this.markers = L.layerGroup().addTo(this.map); // without clustering
+    this.markers = L.markerClusterGroup({
+      chunkedLoading: true,
+      disableClusteringAtZoom: 10,
+      iconCreateFunction: function(cluster) {
+        return pins.mapPinBlack;
+      }
+    }).addLayers([]);
+
+    this.updateMarkers();
   }
 
   handleContextMenu(e, device_id, tracking) {
@@ -110,6 +139,13 @@ class CustomMap extends Component {
       device_id: device_id
     };
     this.setState({ cm_visible: true, contextMenuInfo: this.contextMenuInfo });
+  }
+  
+  closeContextMenu()
+  {
+    this.setState({
+      cm_visible: false
+    });
   }
 
   handleBounds() {
@@ -133,30 +169,6 @@ class CustomMap extends Component {
     }
   }
 
-  componentDidMount() {
-    console.log("5. CustomMap: componentDidMount");
-    // create map
-    this.map = L.map("map", {
-      zoom: this.props.zoom,
-      center: [51.505, -0.09]
-    });
-
-    // Adding layer to the map
-    this.map.addLayer(OpenStreetMap_Mapnik);
-
-    var overlays = { Map: OpenStreetMap_Mapnik, Satelite: Esri_WorldImagery };
-    L.control.layers(overlays).addTo(this.map);
-
-    this.markers = L.markerClusterGroup({
-      chunkedLoading: true,
-      disableClusteringAtZoom: 10,
-      iconCreateFunction: function(cluster) {
-        return pins.mapPinBlack;
-      }
-    }).addLayers([]);
-
-    this.updateMarkers();
-  }
 
   handleDyData(socket_data) {
     console.log("5. handleDyData", socket_data);
@@ -230,7 +242,8 @@ class CustomMap extends Component {
       <div className="fix-map-bug">
         <div onClick={this.handleMapClick} id="map" />
         {this.state.cm_visible ? (
-          <ContextMenuComponent
+          <ContextMenuComponent 
+            closeContextMenu={this.closeContextMenu}
             handleTracking={this.handleTracking}
             metadata={this.state.contextMenuInfo}
           />
@@ -282,6 +295,10 @@ class ContextMenuComponent extends Component {
                     this.handleTracking(md.device_id);
                 }}
             ><img src="images/icons/location.png" />Toggle tracking</div> : null}
+          <div onClick={() => {
+            this.props.closeContextMenu();
+          }} className="contextMenu--option cmenu"><i className="fa fa-close" />Close Menu</div>
+
         </div>;
     }
 }
@@ -345,94 +362,11 @@ class MapSocket extends Component {
 }
 
 
-class OldCustomMap extends Component {
-    constructor(props) {
-        super(props);
-        this.map = null;
-        this.clusters = {};
-        this.updateClusters = this.updateClusters.bind(this);
-        this.createCluster = this.createCluster.bind(this);
-    }
-    componentDidMount() {
-        console.log("CustomMap: componentDidMount");
-        // create map
-        this.map = L.map("map", {
-            zoom: 16,
-            layers: [
-                L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
-                    attribution:
-                        '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                })
-            ]
-        });
-        // add layer
-        // this.layer = L.layerGroup().addTo(this.map);
-        // this.updateMarkers(this.props.markersData);
-        // this.clusters = {};
-    }
-
-    // updateClusters(clusterIndex, markersData) {
-    //     console.log("updateClusters", clusterIndex, markersData);
-    // }
-
-    // createCluster(devicesData) {
-    //     var markerList = [];
-    //     for (var i = 0; i < devicesData.length; i++) {
-    //         var dev = devicesData[i];
-    //         //   var marker = L.marker(L.latLng(a[0], a[1]), {
-    //         //       title: title
-    //         //   });
-    //         //   dev.lat, dev.lng
-    //         var marker = L.marker(L.latLng(dev.pos), {
-    //             title: dev.label
-    //         });
-    //         // marker.bindPopup(title);
-    //         markerList.push(marker);
-    //     }
-    //     return L.markerClusterGroup({
-    //         chunkedLoading: true
-    //     }).addLayers(markerList);
-    // }
-
-    // componentDidUpdate() {
-    //     console.log("componentDidUpdate: clustererData", this.props.clustererData);
-    //     //   let markerList = markersData;
-    //     //   if (markersData === undefined)
-    //     //   {
-    //     //   markerList = [];
-    //     //   }
-    //     //   clustererData
-    //     this.clusters = {};
-    //     this.props.clustererData.map((element, i1) => {
-    //         this.clusters[element.index] = this.createCluster(element.devices);
-    //         this.map.addLayer(this.clusters[element.index]);
-    //     })
-    //     // check if data has changed
-    //     // if (this.props.markersData !== markersData) {
-    //     //   this.updateMarkers(this.props.markersData);
-    //     // }
-    // }
-
-    //   updateMarkers(markersData) {
-    //     this.layer.clearLayers();
-    //     markersData.forEach(marker => {
-    //       L.marker(marker.latLng, { title: marker.title }).addTo(this.layer);
-    //     });
-    //   }
-
-
-    render() {
-        console.log("CustomMap - Render: ", this.props);
-        return <div id="map" />;
-    }
-}
-
 class SmallPositionRenderer extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isTerrain: true,
-            selectedPin: true,
             layers: [],
             loadedLayers: false,
             zoom: (this.props.zoom ? this.props.zoom : this.props.config.mapZoom ? this.props.config.mapZoom : 12),
@@ -518,8 +452,6 @@ class SmallPositionRenderer extends Component {
         //     }
         // }
 
-        console.log("this.state.zoom", this.state.zoom);
-     
         return <div className="fix-map-bug">
             <CustomMap toggleTracking={this.props.toggleTracking}  allowContextMenu={this.props.allowContextMenu} zoom={this.state.zoom} markersData={parsedEntries}/>
             <div className="col s12 layer-box">

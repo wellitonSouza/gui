@@ -4,14 +4,12 @@ import { Link } from 'react-router';
 import Script from 'react-load-script';
 import DivIcon from 'react-leaflet-div-icon';
 import Sidebar from '../../components/DeviceRightSidebar';
-import * as pins from '../../config'
 import { Filter } from "../utils/Manipulation";
 import { SmallPositionRenderer } from "../utils/Maps";
 import { Loading } from '../../components/Loading';
 
 import TrackingActions from '../../actions/TrackingActions';
 import MapPositionActions from "../../actions/MapPositionActions";
-import { ContentBlock } from 'material-ui';
 
 let activeTracks = [];
 

@@ -219,7 +219,6 @@ Old password
                                         name="password"
                                         className={getClass('password')}
                                         onChange={this.handleChange}
-                                        minLength={8}
                                         value={this.state.password}
                                     />
                                     <label
@@ -237,7 +236,6 @@ Password
                                         name="confirmPassword"
                                         className={getClass('confirm')}
                                         onChange={this.handleChange}
-                                        minLength={8}
                                         value={this.state.confirm}
                                     />
                                     <label

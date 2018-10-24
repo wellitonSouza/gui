@@ -75,7 +75,7 @@ class ListRender extends Component {
         }
         return (
             <div className="background-info valign-wrapper full-height">
-                <span className="horizontal-center">No configured devices</span>
+                <span className="horizontal-center">No data</span>
             </div>
         );
     }
@@ -102,8 +102,7 @@ class List extends Component {
             <div className="list-of-devices">
                 <div className="row device-list">
                     <div className="col s12 info-header">
-                        <div className="col s1 " />
-                        <div className="col s5 subtitle">{this.props.deviceInfo}</div>
+                        <div className="col s6 subtitle">{this.props.deviceInfo}</div>
                         <div className="col s6 device-list-actions">
                             <div className="col s6 action-hide">
                                 <a className="waves-effect waves-light" onClick={this.hideDevices}>

@@ -9,7 +9,6 @@ import MeasureStore from '../../stores/MeasureStore';
 import MapPositionStore from "../../stores/MapPositionStore";
 import MapPositionActions from "../../actions/MapPositionActions";
 import DeviceActions from '../../actions/DeviceActions';
-import MeasureActions from '../../actions/MeasureActions';
 import { NewPageHeader } from '../../containers/full/PageHeader';
 import { DojotBtnLink } from '../../components/DojotButton';
 import { DeviceMapWrapper } from './DeviceMap';
@@ -53,7 +52,7 @@ class MapWrapper extends Component {
         console.log("2.<MapWrapper>.render.", this.props);
 
         return <AltContainer stores={{ positions: MapPositionStore, measures: MeasureStore, configs: ConfigStore }}>
-            <DeviceMapWrapper devices={this.props.devices} showFilter={this.props.showFilter} dev_opex={this.props.dev_opex} />
+            <DeviceMapWrapper showFilter={this.props.showFilter} dev_opex={this.props.dev_opex} />
           </AltContainer>;
     }
 }

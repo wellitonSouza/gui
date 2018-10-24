@@ -299,7 +299,7 @@
 .fix-map-bug{
     height: 100%;
     width: 100%;
-    padding-top: 2px;
+    // padding-top: 2px;
     position: relative;
     .flex-wrapper
     {
@@ -530,7 +530,7 @@
   right: 0;
   display: inline-block;
   top: 0;
-  width: 400px;
+  width: 440px;
   box-shadow: 10px 0px 50px #000000;
 }
 
@@ -604,7 +604,7 @@
 
   .deviceCanvas {
     width: 100% !important;
-    height: calc(100% - 60px) !important;
+    height: calc(100% - 40px) !important;
 
     .background-info {
       float: left;
@@ -693,7 +693,7 @@
   z-index: 1001;
 
   &.push-left {
-    right: 386px;
+    right: 428px;
   }
 }
 

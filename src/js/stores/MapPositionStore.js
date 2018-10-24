@@ -43,6 +43,8 @@ class MapPositionStore {
           if (devices[deviceID].attrs[templateID][attrID].type === "dynamic") {
             if (devices[deviceID].attrs[templateID][attrID].value_type === "geo:point") {
               dev.has_dynamic_position = true;
+              dev.active_tracking = false;
+              dev.dy_positions = [];
               dev.dp_metadata = { id: devices[deviceID].id, attr_label: devices[deviceID].attrs[templateID][attrID].label };
             }
           }

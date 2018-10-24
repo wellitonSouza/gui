@@ -36,9 +36,6 @@ class DeviceMapWrapper extends Component {
 
         if (!this.didMount || this.props.positions.loading) {
           return <Loading />
-        //   return <div className="row full-height relative">
-        //       <Loading />
-        //     </div>;
         }
 
         return (
@@ -72,15 +69,14 @@ class DeviceMap extends Component {
         // this.toggleDisplay = this.toggleDisplay.bind(this);
         this.toggleVisibility = this.toggleVisibility.bind(this);
 
-        this.validDevices = [];
         this.staticDevices = [];
         this.dynamicDevices = [];
         this.didMount = false;
     }
 
-    countVisibleDevices() {
+    countVisibleDevices(devs) {
         let count = 0;
-        for (const k in this.props.devices) {
+        for (const k in devs) {
             if (this.state.displayMap[this.props.devices[k].id]) count++;
         }
         return count;
@@ -150,25 +146,57 @@ class DeviceMap extends Component {
  
 
     toggleTracking(device_id) {
-        console.log("3. toggleTracking");
-        if (!this.props.Measure.tracking.hasOwnProperty(device_id)) {
-          for (const k in this.props.devices[device_id].attrs) {
-            for (const j in this.props.devices[device_id].attrs[k]) {
-              if (this.props.devices[device_id].attrs[k][j].value_type === "geo:point") {
-                TrackingActions.fetch(device_id, this.props.devices[device_id].attrs[k][j].label);
-                this.props.devices[device_id].tracking = true;
-                  activeTracks.push(device_id);
-                }
-            }
-          }
-        } else {
-          TrackingActions.dismiss(device_id);
-          this.props.devices[device_id].tracking = false;
+        console.log("3. toggleTracking for ", device_id);
+        let device = null;
+        for (const k in this.props.devices) {
+            device = this.props.devices[k];
+            if (device.id == device_id)
+               break;
+        }
+
+        if (!device.active_tracking)
+        {
+            TrackingActions.fetch.defer(device.dp_metadata.id,
+                device.dp_metadata.attr_label, 50);
+            console.log("requested tracking info.");
+            device.active_tracking = true;
+            activeTracks.push(device_id);
+        }
+        else
+        {
+            // TrackingActions.dismiss(device_id);
+            device.active_tracking = false;
             activeTracks = activeTracks.filter(i => i !== device_id);
+            // this.dynamicDevices[k].dy_positions = [];
+            // let last = device.dy_positions[0];
+            // for (const y in device.dy_positions) {
+            //     device.dy_positions[y]
+
+            // device;
+            // updated.timestamp = e.timestamp;
+            TrackingActions.fetch.defer(device.dp_metadata.id,
+                device.dp_metadata.attr_label, 1);
 
         }
-        console.log("activeTracks", activeTracks);
-        console.log("this.props.devices[device_id]", this.props.devices[device_id]);
+
+        // if (!this.props.Measure.tracking.hasOwnProperty(device_id)) {
+        //   for (const k in this.props.devices[device_id].attrs) {
+        //     for (const j in this.props.devices[device_id].attrs[k]) {
+        //       if (this.props.devices[device_id].attrs[k][j].value_type === "geo:point") {
+        //         TrackingActions.fetch(device_id, this.props.devices[device_id].attrs[k][j].label);
+        //         this.props.devices[device_id].tracking = true;
+        //           activeTracks.push(device_id);
+        //         }
+        //     }
+        //   }
+        // } else {
+        //   TrackingActions.dismiss(device_id);
+        //   this.props.devices[device_id].tracking = false;
+        //     activeTracks = activeTracks.filter(i => i !== device_id);
+
+        // }
+        // console.log("activeTracks", activeTracks);
+        // console.log("this.props.devices[device_id]", this.props.devices[device_id]);
     }
 
     showSelected(device) {
@@ -198,11 +226,7 @@ class DeviceMap extends Component {
         if (!this.didMount) 
             return <Loading />
 
-        this.validDevices = this.props.devices;
-        const nVisibleDevices = this.countVisibleDevices();
-        const displayDevicesCount = `Showing ${nVisibleDevices} of ${this.props.devices.length} device(s)`;
-        console.log("displayDevicesCount.", displayDevicesCount);
-
+ 
         for (const k in this.dynamicDevices) {
             const device = this.dynamicDevices[k];
             if (this.props.trackedDevices.hasOwnProperty(device.id) && this.state.displayMap[device.id]) {
@@ -233,6 +257,12 @@ class DeviceMap extends Component {
             this.dynamicDevices[k].is_visible = this.state.displayMap[this.dynamicDevices[k].id];
         }
         
+        let deviceWithData = this.props.devices.filter(dev => dev.has_static_position || dev.dy_positions.length > 0);
+        const nVisibleDevices = this.countVisibleDevices(deviceWithData);
+        const displayDevicesCount = `Showing ${nVisibleDevices} of ${deviceWithData.length} device(s)`;
+        console.log("displayDevicesCount.", displayDevicesCount);
+        console.log("deviceWithData", deviceWithData);
+
         console.log("this.staticDevices", this.staticDevices);
         console.log("this.dynamicDevices", this.dynamicDevices);
 
@@ -244,7 +274,7 @@ class DeviceMap extends Component {
 
               <div className="deviceMapCanvas deviceMapCanvas-map col m12 s12 relative">
                 <SmallPositionRenderer showLayersIcons={true} staticDevices={this.staticDevices} dynamicDevices={this.dynamicDevices} toggleTracking={this.toggleTracking} allowContextMenu={true} showPolyline={true} config={this.props.Config} /> 
-                <Sidebar deviceInfo={displayDevicesCount} toggleVisibility={this.toggleVisibility} devices={this.props.devices} hideAll={this.hideAll} showAll={this.showAll} displayMap={this.state.displayMap} />
+                <Sidebar deviceInfo={displayDevicesCount} toggleVisibility={this.toggleVisibility} devices={deviceWithData} hideAll={this.hideAll} showAll={this.showAll} displayMap={this.state.displayMap} />
               </div>
             </div>
           </div>;

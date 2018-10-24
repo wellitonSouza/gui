@@ -175,8 +175,11 @@ class HandleGeoElements extends Component {
             for (const i in device.attrs[j]) {
                 if (device.attrs[j][i].type === 'static') {
                     if (device.attrs[j][i].value_type === 'geo:point') {
-                        device.position = parserPosition(device.attrs[j][i].static_value);
+                        const aux = parserPosition(device.attrs[j][i].static_value);
+                        const parsedPosition = aux.split(',');
+                        device.sp_value = [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
                     }
+
                 }
             }
         }
@@ -232,12 +235,12 @@ available
                         <label>{this.props.label}</label>
                         {!this.state.opened ? <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand" /> : <i onClick={this.toogleExpand.bind(this, false)} className="fa fa-compress" />}
                     </div>
-                    <SmallPositionRenderer showLayersIcons={false} devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false} config={geoconfs} />
+                    <SmallPositionRenderer showLayersIcons={false} staticDevices={validDevices} allowContextMenu={false} zoom={14} showPolyline={false} config={geoconfs} />
                 </div>;
             } else {
                 return <span>
-                    <SmallPositionRenderer showLayersIcons={false} devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false} config={this.props.Config} />
-                </span>;
+                    <SmallPositionRenderer showLayersIcons={false} dynamicDevices={validDevices} allowContextMenu={false} zoom={14} showPolyline={false} config={this.props.Config} />
+                  </span>;
             }
         }
     }

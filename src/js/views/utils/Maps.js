@@ -30,6 +30,11 @@ const Esri_WorldImagery = L.tileLayer(
 
 
  function getPin(device, config) {
+    if (device.active_tracking)
+    {
+      return pins.mapPinYellow;
+    }
+    
     let varToMeasure = "_" + config.measureAttribute;
 
     if (device.hasOwnProperty('unique_key')) {
@@ -468,7 +473,6 @@ class SmallPositionRenderer extends Component {
             {
                 parsedEntries.push({
                 id: device.id,
-                allow_tracking: device.allow_tracking,
                 pos: L.latLng(device.sp_value[0], device.sp_value[1]),
                 name: device.label,
                 pin: getPin(device, this.props.config),
@@ -480,11 +484,12 @@ class SmallPositionRenderer extends Component {
         }
 
         for (const k in this.props.dynamicDevices) {
-                       for (const y in device.dy_positions) {
-                if (device.is_visible)
-                {
-   let device = this.props.dynamicDevices[k];
-                let tmp = device.dy_positions[y];
+            let device = this.props.dynamicDevices[k];
+              for (const y in device.dy_positions) {
+              if (device.is_visible)
+              {
+                  let tmp = device.dy_positions[y];
+                  tmp.active_tracking = device.active_tracking;
                   parsedEntries.push({
                     id: tmp.id,
                     pos: L.latLng(
@@ -494,6 +499,7 @@ class SmallPositionRenderer extends Component {
                     name: tmp.label,
                     pin: getPin(tmp, this.props.config),
                     timestamp: tmp.timestamp,
+                    active_tracking: tmp.active_tracking,
                     allow_tracking: device.allow_tracking,
                     key: tmp.unique_key
                       ? tmp.unique_key

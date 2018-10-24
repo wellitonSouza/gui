@@ -39,11 +39,27 @@ class RecoveryPasswordModal extends Component {
         this.state = {
             username: '',
             modalSentEmail: false,
+            invalid: {},
         };
 
         this.dismiss = this.dismiss.bind(this);
         this.recoveryPassword = this.recoveryPassword.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.validate = this.validate.bind(this);
+    }
+
+    validate(user) {
+        const result = {};
+        const invalid = {};
+        const username = /^[a-z0-9_]+$/;
+        if (user.trim().length == 0) {
+            invalid.username = "This can't be empty";
+        } else if (username.test(user) == false) {
+            invalid.username = 'Please use only letters (a-z), numbers (0-9) and underscores (_).';
+        }
+        result.invalid = invalid;
+        // if (Object.keys(invalid).length > 0) { result['invalid'] = invalid; }
+        return result;
     }
 
     dismiss() {
@@ -51,15 +67,30 @@ class RecoveryPasswordModal extends Component {
     }
 
     handleChange(event) {
-        this.setState({ username: event.target.value });
+        const target = event.target;
+        const state = this.state;
+        state[target.name] = target.value;
+        const results = this.validate(state.username);
+        results.user = state;
+        this.setState(results);
     }
 
     recoveryPassword() {
+        const state = this.state
+        const results = this.validate(state.username);
+        if (Object.keys(results.invalid).length == 0) {
         LoginActions.resetPassword(this.state.username);
-        this.setState({ modalSentEmail: true });
+        state.modalSentEmail = true
+        }
+        results.user = state
+        this.setState(results);
     }
 
     render() {
+        const state = this.state;
+        function checkUsername() {
+            return state.invalid.hasOwnProperty('username');
+        }
         if (this.state.modalSentEmail) {
             return (
                 <div className="row">
@@ -90,14 +121,28 @@ class RecoveryPasswordModal extends Component {
                             </div>
                             <div className="input-field-username col s12 m6">
                                 <input name="username" type="text" value={this.state.username} onChange={this.handleChange} />
+                                <span
+                                            className={
+                                                `error-msgs-login ${
+                                                    checkUsername() ? 'visible'
+                                                        : 'not-visible'}`
+                                            }
+                                        >
+                                            {this.state.invalid.username}
+                                        </span>
                             </div>
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col s12 m1 offset-m7">
+                        <div className="col s6 m1 offset-m4">
+                            <button type="submit" className="waves-effect waves-dark grey btn-flat" onClick={this.dismiss}>
+                  dismiss
+                            </button>
+                        </div>
+                        <div className="col s6 m1 offset-m3">
                             <button type="submit" className="waves-effect waves-dark red btn-flat" onClick={this.recoveryPassword}>
                   Submit
-                            </button>
+                            </button>                            
                         </div>
                     </div>
                 </div>

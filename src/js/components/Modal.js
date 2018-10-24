@@ -39,27 +39,58 @@ class RecoveryPasswordModal extends Component {
         this.state = {
             username: '',
             modalSentEmail: false,
+            invalid: {},
         };
 
         this.dismiss = this.dismiss.bind(this);
         this.recoveryPassword = this.recoveryPassword.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.validate = this.validate.bind(this);
+    }
+
+    validate(user) {
+        const result = {};
+        const invalid = {};
+        const username = /^[a-z0-9_]+$/;
+        if (user.trim().length == 0) {
+            invalid.username = "This can't be empty";
+        } else if (username.test(user) == false) {
+            invalid.username = 'Please use only letters (a-z), numbers (0-9) and underscores (_).';
+        }
+        result.invalid = invalid;
+        // if (Object.keys(invalid).length > 0) { result['invalid'] = invalid; }
+        return result;
     }
 
     dismiss() {
         this.props.openPasswordModal(false);
     }
-
+    
     handleChange(event) {
-        this.setState({ username: event.target.value });
+        const target = event.target;
+        const state = this.state;
+        state[target.name] = target.value;
+        const results = this.validate(state.username);
+        results.user = state;
+        this.setState(results);
     }
 
     recoveryPassword() {
+        const state = this.state
+        const results = this.validate(state.username);
+        if (Object.keys(results.invalid).length == 0) {
         LoginActions.resetPassword(this.state.username);
-        this.setState({ modalSentEmail: true });
+        state.modalSentEmail = true
+        }
+        results.user = state
+        this.setState(results);
     }
 
     render() {
+        const state = this.state;
+        function checkUsername() {
+            return state.invalid.hasOwnProperty('username');
+        }
         if (this.state.modalSentEmail) {
             return (
                 <div className="row">
@@ -78,7 +109,7 @@ class RecoveryPasswordModal extends Component {
             );
         }
         return (
-            <div className="row">
+            <div className="login row">
                 <div className="recovery-password-modal">
                     <div className="row">
                         <div className="recovery-password-title">[&nbsp;&nbsp;Forgot your password?&nbsp;&nbsp;]</div>
@@ -90,15 +121,22 @@ class RecoveryPasswordModal extends Component {
                             </div>
                             <div className="input-field-username col s12 m6">
                                 <input name="username" type="text" value={this.state.username} onChange={this.handleChange} />
+                                <span
+                                    className={
+                                        `error-msgs-login ${
+                                            checkUsername() ? 'visible': 'not-visible'}`
+                                        }
+                                        >
+                                        {this.state.invalid.username}
+                                </span>
                             </div>
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col s12 m1 offset-m7">
-                            <button type="submit" className="waves-effect waves-dark red btn-flat" onClick={this.recoveryPassword}>
-                  Submit
-                            </button>
-                        </div>
+                    <div className="col s12 text-right">                      
+                        <DojotBtnClassic is_secondary={false} onClick={this.recoveryPassword} label="Submit" title="Submit" />
+                        <DojotBtnClassic is_secondary onClick={this.dismiss} label="Dismiss" title="Dismiss" />
+                    </div>
                     </div>
                 </div>
                 <div className="modal-background" onClick={this.dismiss} />

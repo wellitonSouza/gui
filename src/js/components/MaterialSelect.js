@@ -20,7 +20,8 @@ class MaterialSelect extends Component {
         return (
             <div className="card-select-2">
                 { this.props.label && (<label htmlFor={this.props.id}>{this.props.label}</label>)}
-                <select id={this.props.id} name={this.props.name} value={this.props.value} onChange={this._handler}>
+                <select id={this.props.id} name={this.props.name} value={this.props.value} 
+                        onChange={this._handler}  disabled ={this.props.isDisable}   >
                     {options}
                 </select>
             </div>);

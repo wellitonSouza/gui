@@ -252,7 +252,7 @@ Confirm your password
                   
                             <div className="col s12 text-right"> 
                                 <DojotBtnClassic is_secondary={false} onClick={this.sendUpdatePassword} label="Save" title="Save" />
-                                <DojotBtnClassic is_secondary onClick={this.dismiss} label="Dismiss" title="Dismiss" />
+                                <DojotBtnClassic is_secondary onClick={this.dismiss} label="Discard" title="Discard" />
                             </div>
                         </div>
                     </form>

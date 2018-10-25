@@ -327,6 +327,7 @@ class SideBar extends Component {
                                 name="profile"
                                 value={this.state.user.profile}
                                 onChange={this.handleChange}
+                                isDisable={this.props.edit}
                             >
                                 <option value="" disabled>
                   Choose your option

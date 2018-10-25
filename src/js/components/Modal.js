@@ -119,7 +119,7 @@ class ChangePasswordModal extends Component {
         };
 
         this.dismiss = this.dismiss.bind(this);
-        this.password = this.password.bind(this);
+        this.sendUpdatePassword = this.sendUpdatePassword.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.validate = this.validate.bind(this);
     }
@@ -155,7 +155,7 @@ class ChangePasswordModal extends Component {
         return true;
     }
 
-    password(e) {
+    sendUpdatePassword(e) {
         e.preventDefault();
         const errorMsg = this.state.invalid;
 
@@ -193,7 +193,7 @@ class ChangePasswordModal extends Component {
                     <div className="row">
                         <div className="confirm-password-title">[&nbsp;&nbsp;Change Password&nbsp;&nbsp;]</div>
                     </div>
-                    <form onSubmit={this.password}>
+                    <form>
                         <div className="row">
                             <div className="confirm-password-body">
                                 <div className="input-field col s12 m12">
@@ -249,12 +249,10 @@ Confirm your password
                                     </label>
                                 </div>
                             </div>
-                        </div>
-                        <div className="row">
-                            <div className="col s12 m1 offset-m7">
-                                <button type="submit" className="waves-effect waves-dark red btn-flat">
-                  Save
-                                </button>
+                  
+                            <div className="col s12 text-right"> 
+                                <DojotBtnClassic is_secondary={false} onClick={this.sendUpdatePassword} label="Save" title="Save" />
+                                <DojotBtnClassic is_secondary onClick={this.dismiss} label="Dismiss" title="Dismiss" />
                             </div>
                         </div>
                     </form>

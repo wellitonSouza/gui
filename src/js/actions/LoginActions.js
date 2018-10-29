@@ -46,7 +46,7 @@ class LoginActions {
                     toaster.success('Password updated');
                 })
                 .catch((error) => {
-                    toaster.error(error);
+                    toaster.error(error.message);
                 });
         };
     }

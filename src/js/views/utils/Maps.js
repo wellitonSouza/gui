@@ -131,7 +131,7 @@ class CustomMap extends Component {
 
     // reseting layer to the map
     // this.map.removeLayer(OpenStreetMap_Mapnik);
-    if (!this.maps.hasLayer(OpenStreetMap_Mapnik))
+    if (!this.map.hasLayer(OpenStreetMap_Mapnik))
       this.map.addLayer(OpenStreetMap_Mapnik);
 
 

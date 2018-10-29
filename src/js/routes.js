@@ -10,11 +10,14 @@ import { Flows, EditFlow } from './views/flows';
 import Alarms from './views/alarms';
 import Todo from './views/utils/todo';
 import NotFound from './views/utils/404';
+import PasswordRecovery from './containers/login/PasswordRecovery';
 
 import TemplatesRefactor from './views/templatesRefactor';
 
 export default (
     <Router history={hashHistory}>
+        <Route path="/passwordrecovery/(:link)" component={PasswordRecovery} />
+        <Route path="/setpassword/(:link)" component={PasswordRecovery} />
         <Route path="/" component={Full}>
             <IndexRoute component={Devices} />
             <Route name="Device manager">

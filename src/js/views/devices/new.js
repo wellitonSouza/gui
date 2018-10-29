@@ -14,8 +14,10 @@ import { DojotBtnCircle, DojotBtnClassic, DojotBtnRedCircle } from '../../compon
 
 import TemplateStore from '../../stores/TemplateStore';
 import TemplateActions from '../../actions/TemplateActions';
+import {TemplateTypes} from "../templates/Templates"
 
 import MaterialInput from '../../components/MaterialInput';
+import MaterialSelect from '../../components/MaterialSelect';
 import toaster from '../../comms/util/materialize';
 
 /*
@@ -120,14 +122,20 @@ class DeviceHandlerStore {
 }
 
 const DeviceFormStore = alt.createStore(DeviceHandlerStore, 'DeviceFormStore');
+const attrType = new TemplateTypes();
 
 class StaticAttributes extends Component {
     constructor(props) {
         super(props);
-
+        this.availableTypes = attrType.getConfigTypes();
         this.handleChange = this.handleChange.bind(this);
     }
-
+    componentWillMount(){ 
+        const st = this.props.attrs;
+        for (const k in st) {
+            st[k].validate = util.isTypeValid(st[k].value,st[k].value_type)
+        }
+    }
     handleChange(event) {
         event.preventDefault();
         const f = event.target.name;
@@ -169,7 +177,19 @@ class StaticAttributes extends Component {
                                 <div key={attr.label} className="col s6 attr-fields">
                                     <div className="attr-name truncate">{attr.label}</div>
                                     <div className="attr-type">{attr.value_type}</div>
-                                    <div className="attr-name input-field fix-inputs">
+                                    <div className={`${attr.label === 'protocol' ? '' : 'none'} attr-name input-field fix-select`}>
+                                        <MaterialSelect
+                                            className="mt0px"
+                                            id="fld_label"
+                                            value={attr.value||""}
+                                            name={attr.label}
+                                            onChange={this.handleChange}
+                                        > 
+                                            <option value="">Select type</option>
+                                            {this.availableTypes.map(opt => <option value={opt.label} key={opt.label}>{opt.label}</option>)}
+                                        </MaterialSelect>
+                                    </div>
+                                    <div className={`${attr.label === 'protocol' ? 'none' : ''} attr-name input-field fix-inputs`}>
                                         <MaterialInput
                                             className="mt0px"
                                             id="fld_label"
@@ -179,7 +199,16 @@ class StaticAttributes extends Component {
                                             maxLength={40}
                                         />
                                     </div>
-                                    <div className="attr-type fix-value ">Value</div>
+                                    <div className="attr-type fix-value ">Value
+                                    <span
+                                        className={
+                                            `error-msgs-attr ${
+                                                attr.validate.result === false ? 'visible' : 'not-visible'}`
+                                        }
+                                    >
+                                            {attr.validate.error}
+                                    </span>
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -205,13 +234,22 @@ class StaticAttributes extends Component {
                                             maxLength={40}
                                         />
                                     </div>
-                                    <div className="attr-type fix-value ">Value</div>
+                                    <div className="attr-type fix-value ">Value                                    
+                                    <span
+                                        className={
+                                            `error-msgs-attr ${
+                                                attr.validate.result === false ? 'visible' : 'not-visible'}`
+                                        }
+                                    >
+                                            {attr.validate.error}
+                                    </span>
+                                    </div>
                                 </div>
                             ))}
                         </div>
                     </div>
                 )}
-            </div>
+        </div>
         );
     }
 }
@@ -326,6 +364,13 @@ class DeviceForm extends Component {
     componentDidMount() {
         if (!this.props.edition) this.setState({ templateState: 1 });
     }
+    
+    componentWillMount(){ 
+        const st = this.state.staticAttrs
+        for (const k in st) {
+            st[k].validate = util.isTypeValid(st[k].value,st[k].value_type)
+        }
+    }
 
     componentDidUpdate() {
         const templates = this.props.templates.templates;
@@ -398,32 +443,38 @@ class DeviceForm extends Component {
 
         const to_be_checked = DeviceFormStore.getState().device;
         const ret = util.isNameValid(to_be_checked.label);
+        const st = this.state.staticAttrs
+        for (const k in st) {
+            if(!st[k].validate.result){
+                toaster.error(st[k].validate.error); 
+                return;      
+            }
+        }
         if (!ret.result) {
             toaster.error(ret.error);
             return;
         }else{
             DeviceFormStore.getState().device.label = ret.label
-        }
-
-        // templates describe all attributes that should be applied to device, so we only need set values related to static attributes.
-        AttrActions.update(this.state.staticAttrs);
-
-
-        // set templates used
-        const template_list = [];
-        for (const k in this.state.selectedTemplates) {
-            template_list.push(this.state.selectedTemplates[k].id);
-        }
-        FormActions.update({ f: 'templates', v: template_list });
-
-        // console.log('Object to be saved: ', JSON.parse(JSON.stringify(DeviceFormStore.getState().device)));
-
-        // Now, saves the device;
-        const ongoingOps = DeviceStore.getState().loading;
-        if (ongoingOps == false) {
-            //console.log('ongoingOps');
-            this.props.operator(JSON.parse(JSON.stringify(DeviceFormStore.getState().device)), this.props.deviceid);
-            hashHistory.goBack();
+            
+            // templates describe all attributes that should be applied to device, so we only need set values related to static attributes.
+            AttrActions.update(this.state.staticAttrs);
+            
+            // set templates used
+            const template_list = [];
+            for (const k in this.state.selectedTemplates) {
+                template_list.push(this.state.selectedTemplates[k].id);
+            }
+            FormActions.update({ f: 'templates', v: template_list });
+            
+            // console.log('Object to be saved: ', JSON.parse(JSON.stringify(DeviceFormStore.getState().device)));
+            
+            // Now, saves the device;
+            const ongoingOps = DeviceStore.getState().loading;
+            if (ongoingOps == false) {
+                //console.log('ongoingOps');
+                this.props.operator(JSON.parse(JSON.stringify(DeviceFormStore.getState().device)), this.props.deviceid);
+                hashHistory.goBack();
+            }
         }
     }
 
@@ -440,6 +491,13 @@ class DeviceForm extends Component {
         const selectedTemplate = this.state.selectedTemplates.filter(item => item.id === tmpt.id);
         let currentAttrs = this.state.staticAttrs;
         let list = [];
+        let st = tmpt.attrs
+
+        for (const k in st) {
+            if(st[k].type !== "actuator" || st[k].type !== "dynamic"){
+                st[k].validate = util.isTypeValid(st[k].static_value, st[k].value_type)
+            }
+        }
         if (selectedTemplate.length == 0) // adding new template
         {
             list = this.state.selectedTemplates;
@@ -464,9 +522,10 @@ class DeviceForm extends Component {
     }
 
     handleChangeAttr(label, val) {
-        const st = this.state.staticAttrs;
+        const st = this.state.staticAttrs
         for (const k in st) {
             if (st[k].label == label) st[k].value = val;
+                st[k].validate = util.isTypeValid(st[k].value,st[k].value_type) 
         }
         this.setState({ staticAttrs: st });
     }

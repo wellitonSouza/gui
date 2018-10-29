@@ -195,16 +195,12 @@ class ChangePasswordModal extends Component {
 
     password(e) {
         e.preventDefault();
-        const errorMsg = this.state.invalid;
 
         if (this.validate()) {
             const password = { passwd: this.state.password, token: this.state.token };
             const passwordData = { oldpasswd: this.state.oldPassword, newpasswd: this.state.password };
             LoginActions.updatePassword(passwordData);
             this.dismiss();
-        } else {
-            errorMsg.confirm = 'Password mismatch';
-            this.setState({ invalid: errorMsg });
         }
     }
 

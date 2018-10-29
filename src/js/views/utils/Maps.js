@@ -100,7 +100,7 @@ class CustomMap extends Component {
     this.closeContextMenu = this.closeContextMenu.bind(this);
   }
 
-    componentDidMount() {
+  componentDidMount() {
     console.log("5. CustomMap: componentDidMount");
     // create map
     this.map = L.map("map", {
@@ -109,8 +109,6 @@ class CustomMap extends Component {
       layers: [OpenStreetMap_Mapnik]
     });
 
-    // Adding layer to the map
-    // this.map.addLayer(OpenStreetMap_Mapnik);
 
     var overlays = { Map: OpenStreetMap_Mapnik, Satelite: Esri_WorldImagery };
     L.control.layers(overlays).addTo(this.map);
@@ -126,6 +124,24 @@ class CustomMap extends Component {
 
     this.updateMarkers();
   }
+
+  componentDidUpdate() {
+    console.log("5. componentDidUpdate ", this.props.markersData, this.subset);
+    console.log("5. map ", this.map);
+
+    // reseting layer to the map
+    // this.map.removeLayer(OpenStreetMap_Mapnik);
+    if (!this.maps.hasLayer(OpenStreetMap_Mapnik))
+      this.map.addLayer(OpenStreetMap_Mapnik);
+
+
+    // check if data has changed
+    if (JSON.stringify(this.props.markersData) != JSON.stringify(this.subset)) {
+      this.updateMarkers();
+    }
+  }
+
+
 
   handleContextMenu(e, device_id, tracking) {
     console.log("handleContextMenu");
@@ -172,6 +188,8 @@ class CustomMap extends Component {
 
   handleDyData(socket_data) {
     console.log("5. handleDyData", socket_data);
+    // MeasureActions.appendMeasures(data);
+    // DeviceActions.updateStatus(data);
   }
 
   updateMarkers() {
@@ -209,16 +227,6 @@ class CustomMap extends Component {
     // });
   }
 
-  componentDidUpdate() {
-    console.log("5. componentDidUpdate ", this.props.markersData, this.subset);
-    // check if data has changed
-    console.log(
-      JSON.stringify(this.props.markersData) == JSON.stringify(this.subset)
-    );
-    if (JSON.stringify(this.props.markersData) != JSON.stringify(this.subset)) {
-      this.updateMarkers();
-    }
-  }
 
   handleTracking(device_id) {
     console.log("5. handleTracking", device_id);
@@ -248,7 +256,7 @@ class CustomMap extends Component {
             metadata={this.state.contextMenuInfo}
           />
         ) : null}
-        {/* <MapSocket receivedSocketInfo={this.handleDyData}></MapSocket> */}
+        <MapSocket receivedSocketInfo={this.handleDyData}></MapSocket>
       </div>
     );
   }
@@ -338,8 +346,6 @@ class MapSocket extends Component {
       device_list_socket.on("all", data => {
         console.log("received socket information:", data);
         rsi(data);
-        // MeasureActions.appendMeasures(data);
-        // DeviceActions.updateStatus(data);
       });
 
       device_list_socket.on("error", data => {
@@ -454,17 +460,17 @@ class SmallPositionRenderer extends Component {
 
         return <div className="fix-map-bug">
             <CustomMap toggleTracking={this.props.toggleTracking}  allowContextMenu={this.props.allowContextMenu} zoom={this.state.zoom} markersData={parsedEntries}/>
-            <div className="col s12 layer-box">
-              {this.props.showLayersIcons && this.state.layers.length
-                ? this.state.layers.map(lyr => (
+              {(this.props.showLayersIcons && this.state.layers.length ) ?
+                <div className="col s12 layer-box">
+                 { this.state.layers.map(lyr => (
                     <LayerBox
                       key={lyr.id}
                       toggleLayer={this.toggleLayer}
                       config={lyr}
                     />
-                  ))
+                  )) }
+                </div>
                 : null}
-            </div>
             {/* {listLatLngs[k.id] && k.tracking && this.props.showPolyline ? <Polyline positions={listLatLngs[k.id]} color="#7fb2f9" dashArray="10,10" repeatMode={false} /> : null} */}
           </div>;
 

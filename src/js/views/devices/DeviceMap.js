@@ -52,9 +52,7 @@ class DeviceMap extends Component {
             isDisplayList: true,
             filter: '',
             displayMap: {},
-            selectedDevice: {},
-            listOfDevices: [],
-            mapquest: false,
+            selectedDevice: {}
         };
 
         this.handleViewChange = this.handleViewChange.bind(this);
@@ -176,25 +174,6 @@ class DeviceMap extends Component {
                 device.dp_metadata.attr_label, 1);
 
         }
-
-        // if (!this.props.Measure.tracking.hasOwnProperty(device_id)) {
-        //   for (const k in this.props.devices[device_id].attrs) {
-        //     for (const j in this.props.devices[device_id].attrs[k]) {
-        //       if (this.props.devices[device_id].attrs[k][j].value_type === "geo:point") {
-        //         TrackingActions.fetch(device_id, this.props.devices[device_id].attrs[k][j].label);
-        //         this.props.devices[device_id].tracking = true;
-        //           activeTracks.push(device_id);
-        //         }
-        //     }
-        //   }
-        // } else {
-        //   TrackingActions.dismiss(device_id);
-        //   this.props.devices[device_id].tracking = false;
-        //     activeTracks = activeTracks.filter(i => i !== device_id);
-
-        // }
-        // console.log("activeTracks", activeTracks);
-        // console.log("this.props.devices[device_id]", this.props.devices[device_id]);
     }
 
     showSelected(device) {

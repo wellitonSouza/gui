@@ -196,6 +196,8 @@ class Filter extends Component {
     }
 
     doSearch() {
+        //go to the first page when user search
+        this.props.ops.paginationParams.page_num = 1;
         this.props.ops.whenUpdateFilter(this.state.query);
     }
 

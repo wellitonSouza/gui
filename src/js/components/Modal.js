@@ -135,7 +135,7 @@ class RecoveryPasswordModal extends Component {
                     <div className="row">
                     <div className="col s12 text-right">                      
                         <DojotBtnClassic is_secondary={false} onClick={this.recoveryPassword} label="Submit" title="Submit" />
-                        <DojotBtnClassic is_secondary onClick={this.dismiss} label="Dismiss" title="Dismiss" />
+                        <DojotBtnClassic is_secondary onClick={this.dismiss} label="Discard" title="Discard" />
                     </div>
                     </div>
                 </div>
@@ -195,16 +195,12 @@ class ChangePasswordModal extends Component {
 
     sendUpdatePassword(e) {
         e.preventDefault();
-        const errorMsg = this.state.invalid;
 
         if (this.validate()) {
             const password = { passwd: this.state.password, token: this.state.token };
             const passwordData = { oldpasswd: this.state.oldPassword, newpasswd: this.state.password };
             LoginActions.updatePassword(passwordData);
             this.dismiss();
-        } else {
-            errorMsg.confirm = 'Password mismatch';
-            this.setState({ invalid: errorMsg });
         }
     }
 

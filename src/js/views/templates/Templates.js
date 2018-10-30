@@ -115,7 +115,7 @@ class ImageModal extends Component {
 }
 
 
-class TemplateTypes {
+export class TemplateTypes {
     constructor() {
         this.availableValueTypes = [
             { value: 'geo:point', label: 'Geo' },

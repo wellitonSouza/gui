@@ -165,26 +165,37 @@ class HandleGeoElements extends Component {
     }
 
     handleDevicePosition(device) {
-        function parserPosition(position) {
-            const parsedPosition = position.split(',');
-            return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
-        }
-
+        console.log("device",device);
         const validDevices = [];
         for (const j in device.attrs) {
             for (const i in device.attrs[j]) {
                 if (device.attrs[j][i].type === 'static') {
                     if (device.attrs[j][i].value_type === 'geo:point') {
-                        device.position = parserPosition(device.attrs[j][i].static_value);
+                        const aux = device.attrs[j][i].static_value;
+                        const parsedPosition = aux.split(',');
+                        device.sp_value = [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
                     }
+                }
+                else if (device.attrs[j][i].type === "dynamic") {
+                    device.has_dynamic_position = true;
+                    device.active_tracking = false;
+                    device.allow_tracking = false;
+                    device.dy_positions = [
+                        {
+                        id: device.id,
+                        unique_key: device.unique_key,
+                        position: device.position,
+                        label: device.label,
+                        timestamp: device.timestamp
+                    }];
                 }
             }
         }
-
-        device.select = true;
-        if (device.position !== null && device.position !== undefined) {
+        device.is_visible = true;
+        if (device.sp_value !== null || device.has_dynamic_position) {
             validDevices.push(device);
         }
+        console.log("validDevices",validDevices);
         return validDevices;
     }
 
@@ -232,12 +243,12 @@ available
                         <label>{this.props.label}</label>
                         {!this.state.opened ? <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand" /> : <i onClick={this.toogleExpand.bind(this, false)} className="fa fa-compress" />}
                     </div>
-                    <SmallPositionRenderer showLayersIcons={false} devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false} config={geoconfs} />
+                    <SmallPositionRenderer showLayersIcons={false} staticDevices={validDevices} allowContextMenu={false} zoom={14} showPolyline={false} config={geoconfs} />
                 </div>;
             } else {
                 return <span>
-                    <SmallPositionRenderer showLayersIcons={false} devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false} config={this.props.Config} />
-                </span>;
+                    <SmallPositionRenderer showLayersIcons={false} dynamicDevices={validDevices} allowContextMenu={false} zoom={14} showPolyline={false} config={geoconfs} />
+                  </span>;
             }
         }
     }

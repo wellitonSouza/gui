@@ -130,9 +130,9 @@ class CustomMap extends Component {
     console.log("5. map ", this.map);
 
     // reseting layer to the map
-    // this.map.removeLayer(OpenStreetMap_Mapnik);
+    this.map.removeLayer(OpenStreetMap_Mapnik);
     //if (!this.map.hasLayer(OpenStreetMap_Mapnik))
-      this.map.addLayer(OpenStreetMap_Mapnik);
+    this.map.addLayer(OpenStreetMap_Mapnik);
 
 
     // check if data has changed

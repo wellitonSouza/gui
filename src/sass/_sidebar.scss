@@ -534,13 +534,16 @@
   border-bottom: 1px solid #C2C2C2;
 }
 
-@media screen and (max-width: 800px){
+@media screen and (max-width: 900px){
   .logout-page {
     padding-top: 10% !important;
   }
 }
-
-
+@media screen and (min-width: 901px){
+  .logout-page {
+    padding-top: 10% !important;
+  }
+}
 // .logout-page .logout-page-buttons {
 //   margin-top: 30%;
 //   padding-left: 3%;

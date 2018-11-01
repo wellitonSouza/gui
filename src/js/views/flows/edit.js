@@ -244,7 +244,7 @@ class NameForm extends Component {
             <MaterialInput
                 id="fld_flowname"
                 name="name"
-                className="col s8"
+                className="col s6 l7 margin-input"
                 value={this.props.flowName}
                 onChange={(e) => {
                     e.preventDefault();
@@ -297,7 +297,7 @@ export class EditFlow extends Component {
         return (
             <ReactCSSTransitionGroup transitionName="first" transitionAppear transitionAppearTimeout={500} transitionEnterTimeout={500} transitionLeaveTimeout={500}>
                 <NewPageHeader title="flow manager" subtitle="Flow configuration" icon="flow">
-                    <div className="row valign-wrapper full-width no-margin top-minus-2">
+                    <div className="row valign-wrapper full-width no-margin top-minus-2 absolute-input">
                         <AltContainer store={FlowStore}>
                             <NameForm />
                         </AltContainer>

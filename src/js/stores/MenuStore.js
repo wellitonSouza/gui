@@ -4,7 +4,15 @@ const MenuActions = require('../actions/MenuActions');
 
 class MenuStore {
     constructor() {
-        this.leftSideBar = { open: true };
+    const width =
+        window.innerWidth ||
+        document.documentElement.clientWidth ||
+        document.body.clientWidth;
+        if (width>900) {
+            this.leftSideBar = { open: true }; 
+        } else {
+            this.leftSideBar = { open: false };
+        }       
 
         this.bindListeners({
             toggleLeftSideBar: MenuActions.TOGGLE_LEFT,

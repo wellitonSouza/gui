@@ -196,7 +196,19 @@
     padding-bottom: 10px;
   }
 }
+@media screen and (max-width: 900px){
+  .device-frame {
+    .img {
+      padding: 50px 0px 0px 0px;
 
+      img {
+        width: 70px;
+        height: 70px;
+      }
+    }
+  }
+}
+@media screen and (min-width: 901px){
 .device-frame {
   .img {
     padding: 40px 0px 0px 10px;
@@ -206,7 +218,7 @@
       height: 100px;
     }
   }
-
+}
   .header {
     padding: 20px 10px;
 
@@ -745,6 +757,18 @@
   display: inline-block;
 }
 
+@media screen and (max-width: 900px){
+  .box-sh {
+    padding: 0px;
+    padding-left: 20px;
+    width: auto;
+    position: relative;
+    height: 100%;
+    float: right;
+    grid-column: 3;
+  }
+}
+@media screen and (min-width: 901px){
 .box-sh {
   padding: 0px;
   padding-left: 20px;
@@ -752,6 +776,7 @@
   position: relative;
   height: 100%;
   float: right;
+}
 }
 
 .box-sh-item.active {

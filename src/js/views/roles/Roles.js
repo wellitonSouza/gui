@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import AltContainer from 'alt-container';
-import { FormattedMessage } from 'react-intl';
 import RoleStore from '../../stores/RoleStore';
 import RoleActions from '../../actions/RoleActions';
 import { NewPageHeader } from '../../containers/full/PageHeader';
 import { DojotBtnLink } from '../../components/DojotButton';
 
+
 function RoleCard(obj) {
     return (
         <div className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight">
             <div className="lst-entry-title col s12">
-                <img className="title-icon" src="images/icons/roles-wt.png" alt="Role" />
+                <img className="title-icon" src="images/roles-icon.png" alt="Role" />
                 <div className="title-text truncate" title={obj.group.name}>
                     <span className="text">
                         {obj.group.name}
@@ -24,13 +24,9 @@ function RoleCard(obj) {
                             <img src="images/info-icon.png" alt="Description" />
                         </div>
                         <div className="user-card attr-content" title={obj.group.description}>
-                            <input className="truncate" type="text" value={obj.group.description} disabled />
-                            <span>
-                                <FormattedMessage
-                                    id="Roles.description"
-                                    defaultMessage="Description"
-                                />
-                            </span>
+               {/*              <input  type="text" value={obj.group.description} disabled /> */}
+                            {obj.group.description}
+                            <span>Description</span>
                         </div>
                     </div>
 
@@ -45,7 +41,7 @@ function RolesList(param) {
     if (param.groups) {
         return (
             <div className="fill">
-                {param.groups.map(obj => <RoleCard group={obj} />)}
+                {param.groups.map(obj => <RoleCard group={obj} key={obj.id} />)}
             </div>);
     }
 }

@@ -1,6 +1,7 @@
 /* global document */
 import React from 'react';
 import { render } from 'react-dom';
+import { IntlProvider } from 'react-intl';
 import App from './App';
 
-render(<App />, document.getElementById('app'));
+render(<IntlProvider><App /></IntlProvider>, document.getElementById('app'));

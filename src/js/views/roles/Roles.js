@@ -1,50 +1,51 @@
 import React, { Component } from 'react';
 import AltContainer from 'alt-container';
+import { FormattedMessage } from 'react-intl';
 import RoleStore from '../../stores/RoleStore';
 import RoleActions from '../../actions/RoleActions';
 import { NewPageHeader } from '../../containers/full/PageHeader';
 import { DojotBtnLink } from '../../components/DojotButton';
 
-
-function SummaryItem(obj) {
+function RoleCard(obj) {
     return (
-        <div className="col s9 push-s1 m4 l3 card-size card-hover lst-entry-wrapper z-depth-2">
-            <div className="row lst-entry-title">
-                <div className="card-title">
-                    <img className="title-icon" src="images/generic-user-icon.png" alt="tt" width="100%" />
-                </div>
-                {/*  <i className="title-icon fas fa-user-lock  fa-fw horizontal-center" /> */}
-                <div className=" title-text truncate" title={obj.group.name}>
+        <div className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight">
+            <div className="lst-entry-title col s12">
+                <img className="title-icon" src="images/icons/roles-wt.png" alt="Role" />
+                <div className="title-text truncate" title={obj.group.name}>
                     <span className="text">
                         {obj.group.name}
                     </span>
                 </div>
             </div>
-            <div className="">
+            <div className="attr-list">
                 <div className="attr-area light-background">
-                    <div className="row">
-                        <div className="col s2">
-                            <img src="images/usr-icon.png" alt="tex" width="100%" />
-                            {/*         <i className="title-icon fas fa-info" /> */}
+                    <div className="attr-row">
+                        <div className="icon">
+                            <img src="images/info-icon.png" alt="Description" />
                         </div>
-                        <div className="col s10 truncate" title={obj.group.description}>
-                            <div className="">
-                                {obj.group.description}
-                            </div>
-                            <span>Description</span>
+                        <div className="user-card attr-content" title={obj.group.description}>
+                            <input className="truncate" type="text" value={obj.group.description} disabled />
+                            <span>
+                                <FormattedMessage
+                                    id="Roles.description"
+                                    defaultMessage="Description"
+                                />
+                            </span>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
+
     );
 }
 
-function ListT(param) {
+function RolesList(param) {
     if (param.groups) {
         return (
             <div className="fill">
-                {param.groups.map(obj => <SummaryItem group={obj} />)}
+                {param.groups.map(obj => <RoleCard group={obj} />)}
             </div>);
     }
 }
@@ -81,23 +82,22 @@ class Roles extends Component {
 
     }
 
+    newGroup() {
+    }
+
     componentDidCatch(error, info) {
         console.log('componentDidCatch 1', error);
         console.log('componentDidCatch 2', info);
-    }
-
-    newGroup(e) {
-        console.log('newGroup');
     }
 
     render() {
         return (
             <div id="roles-wrapper">
                 <AltContainer store={RoleStore}>
-                    <NewPageHeader title="Roles" subtitle="xxxx" icon="user">
+                    <NewPageHeader title="Roles" subtitle="xxxx" icon="roles">
                         <OperationsHeader newGroup={this.newGroup} />
                     </NewPageHeader>
-                    <ListT />
+                    <RolesList />
                 </AltContainer>
             </div>
         );

@@ -159,6 +159,16 @@
       background: url(/images/icons/auth-wt.png);
     }
 
+    .icon-roles
+    {
+      background: url(/images/icons/roles.png);
+    }
+
+    &:hover .icon-roles
+    {
+      background: url(/images/icons/roles-wt.png);
+    }
+
 }
 
 

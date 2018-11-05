@@ -217,10 +217,10 @@ class Util {
     if (dynamic === 'actuator' && value.length === 0) return ret;
 
     if(value == undefined || null){
-        ret.error = 'This is not undefined';
+        ret.error = 'This can not be undefined';
         return ret
     }
-    
+
     if (type.trim().length == 0) {
         ret.result = false;
         ret.error = 'You must set a type.';

@@ -653,7 +653,7 @@ class UserList extends Component {
 
 function UserFilter(props) {
     const filter = props.filter;
-
+    console.log('users f props',props);
     // parse the given field, searching for special selectors on the form <field name>:<value>
     const tokens = filter.match(/([a-z]+)\W*:\W*(\w+)\W*/g);
     let parsed;
@@ -733,6 +733,7 @@ class UsersContent extends Component {
 
     render() {
         console.log('entrou até aqui. ');
+        console.log('users this',this);
         if (this.props.user.profile === 'admin') {
             return (
                 <span id="userMain">
@@ -758,8 +759,9 @@ class Users extends Component {
     constructor(props) {
         super(props);
     }
-
+    
     render() {
+        
         return (
             <AltContainer store={LoginStore}>
                 <UsersContent />

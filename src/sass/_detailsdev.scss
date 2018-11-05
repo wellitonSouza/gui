@@ -512,6 +512,12 @@
     padding: 20px 38px !important;
 }
 
+@media screen and (max-width: 900px){
+  .extra-padding{
+    padding: 10px 0px 10px 20px !important;
+  }
+}
+
 .device-painel
 {
   position: absolute;
@@ -1445,15 +1451,15 @@ h1, h2, p {
 
   label
   {
-    font-family: 'Roboto';
-    font-weight: bold;
+    font-family: 'Roboto' !important;
+    font-weight: bold !important;
     line-height: 35px;
-    font-size: 11px;
+    font-size: 11px !important;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     padding-left: 30px;
     height: 100%;
-    color:#828282;
+    color:#828282 !important;
     top: 0;
     float: left;
   }
@@ -1627,4 +1633,21 @@ h1, h2, p {
   display: block;
   height: 0;
   clear: both;
+}
+
+@media screen and (max-width: 900px){
+  .first-col{
+    width: 240px;
+  }
+  .content-row {
+    width: calc(100% - 240px);
+  }
+
+  .second-col{
+    width: calc(100% - 150px);
+  }
+
+  .third-col{
+    width: 150px;
+  }
 }

@@ -39,6 +39,12 @@ $status: #0c343d;
   padding: 0 20px !important;
 }
 
+@media screen and (max-width: 900px){
+  .lst-wrapper {
+    padding: 0px 0px 0px 20px !important;
+  }
+}
+
 #user-wrapper{
   flex-wrap: wrap;
   padding-bottom: 30px !important;

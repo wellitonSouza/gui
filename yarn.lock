@@ -9290,6 +9290,11 @@ tough-cookie@~2.4.3:
     psl "^1.1.24"
     punycode "^1.4.1"
 
+transform-runtime@^0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/transform-runtime/-/transform-runtime-0.0.0.tgz#e714d9b69211dd9537939d50e3aa5788c442b85c"
+  integrity sha1-5xTZtpIR3ZU3k51Q46pXiMRCuFw=
+
 transmitter@3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/transmitter/-/transmitter-3.0.1.tgz#32e99e43d1321e49dc2e194fa75df4fe84a8b918"

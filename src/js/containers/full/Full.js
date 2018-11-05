@@ -245,19 +245,10 @@ class LeftSidebar extends Component {
                 image: 'bell', target: '/alarm', iconClass: 'fa fa-bell-o', label: 'alarms', desc: 'System events and alarms',
             },
             {
-                image: 'user',
-                target: '/auth',
-                iconClass: 'fa fa-unlock-alt',
-                label: 'auth',
-                desc: 'User and permissions management',
-                children: [
-                    {
-                        target: '/auth/user', iconClass: '', label: 'users', title: 'Users list',
-                    },
-                    {
-                        target: '/auth/permissions', iconClass: '', label: 'permissions', title: 'Permissions list',
-                    },
-                ],
+                image: 'user', target: '/auth', iconClass: 'fa fa-unlock-alt', label: 'Users', desc: 'Users list',
+            },
+            {
+                image: 'roles', target: '/roles', iconClass: 'fa fa-unlock-alt', label: 'Roles', desc: 'Roles list',
             },
         ];
 

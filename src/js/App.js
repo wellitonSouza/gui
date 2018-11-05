@@ -1,6 +1,5 @@
 import React from 'react';
 import { Router, hashHistory } from 'react-router';
-
 import PropTypes from 'prop-types';
 import createClass from 'create-react-class';
 import { hot } from 'react-hot-loader';
@@ -22,5 +21,6 @@ const App = () => (
         <Router routes={routes} history={hashHistory} />
     </Gatekeeper>
 );
+
 
 export default hot(module)(App);

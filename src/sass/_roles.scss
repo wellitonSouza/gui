@@ -1,0 +1,41 @@
+#roles-wrapper {
+  /* margin: 0 auto; */
+  /* transform: perspective(1px) translateX(50%); */
+  /*   flex-wrap: wrap;
+  padding-bottom: 30px !important;
+  display: flex; */
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  float: left;
+  .card-size {
+     margin: 20px !important;
+/*      margin-right: 1% !important;
+     margin-left: 1% !important; */
+   /*   margin-left: 3vmax !important; 
+     margin-right: 3vmax !important;  */
+     min-width: 220px;
+     max-width: 300px;
+  }
+
+  .card-size .attr-area {
+    height: 100px;
+  }
+
+}
+
+#roles-wrapper {
+  &.container {
+    left: 50%;
+    min-width: 95% !important;
+    max-width: 100% !important;
+  }
+}
+
+#roles-wrapper {
+  &.container {
+    margin: 0 auto;
+  }
+}
+

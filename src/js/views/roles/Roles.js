@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import AltContainer from 'alt-container';
+import TextTruncate from 'react-text-truncate';
 import RoleStore from '../../stores/RoleStore';
 import RoleActions from '../../actions/RoleActions';
 import { NewPageHeader } from '../../containers/full/PageHeader';
 import { DojotBtnLink } from '../../components/DojotButton';
 
-
 function RoleCard(obj) {
     return (
         <div className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight">
-            <div className="lst-entry-title col s12">
+            <div className="lst-entry-title col s12 ">
                 <img className="title-icon" src="images/roles-icon.png" alt="Role" />
                 <div className="title-text truncate" title={obj.group.name}>
                     <span className="text">
@@ -21,15 +21,18 @@ function RoleCard(obj) {
                 <div className="attr-area light-background">
                     <div className="attr-row">
                         <div className="icon">
-                            <img src="images/info-icon.png" alt="Description" />
+                            <img src="images/info-icon.png" alt={obj.group.description} />
                         </div>
                         <div className="user-card attr-content" title={obj.group.description}>
-               {/*              <input  type="text" value={obj.group.description} disabled /> */}
-                            {obj.group.description}
-                            <span>Description</span>
+                            <TextTruncate
+                                line={2}
+                                truncateText="…"
+                                text={obj.group.description}
+                                containerClassName="description-text"
+                            />
+                            <div className="subtitle">Description</div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -37,7 +40,7 @@ function RoleCard(obj) {
     );
 }
 
-function RolesList(param) {
+function RoleList(param) {
     if (param.groups) {
         return (
             <div className="fill">
@@ -79,6 +82,7 @@ class Roles extends Component {
     }
 
     newGroup() {
+        //TODO
     }
 
     componentDidCatch(error, info) {
@@ -93,7 +97,7 @@ class Roles extends Component {
                     <NewPageHeader title="Roles" subtitle="xxxx" icon="roles">
                         <OperationsHeader newGroup={this.newGroup} />
                     </NewPageHeader>
-                    <RolesList />
+                    <RoleList />
                 </AltContainer>
             </div>
         );

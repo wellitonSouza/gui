@@ -1,4 +1,3 @@
-/* eslint-disable */
 import util from '../util/util';
 
 class RoleManager {
@@ -9,10 +8,6 @@ class RoleManager {
     getGroups() {
         return util.GET(this.baseUrl);
     }
-
-/*     getGroups(name) {
-        return util.GET(`${this.baseUrl}?name=${name}`);
-    } */
 
     getGroup(id) {
         return util.GET(`${this.baseUrl}/${id}`);

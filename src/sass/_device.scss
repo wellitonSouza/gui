@@ -199,7 +199,7 @@
 @media screen and (max-width: 900px){
   .device-frame {
     .img {
-      padding: 50px 0px 0px 0px;
+      padding: 50px 0px 0px;
 
       img {
         width: 70px;
@@ -219,6 +219,7 @@
     }
   }
 }
+}
   .header {
     padding: 20px 10px;
 
@@ -230,7 +231,6 @@
       font-weight: 500;
     }
   }
-}
 
 .pb160px {
   padding-bottom: 160px;
@@ -757,18 +757,7 @@
   display: inline-block;
 }
 
-@media screen and (max-width: 900px){
-  .box-sh {
-    padding: 0px;
-    padding-left: 20px;
-    width: auto;
-    position: relative;
-    height: 100%;
-    float: right;
-    grid-column: 3;
-  }
-}
-@media screen and (min-width: 901px){
+
 .box-sh {
   padding: 0px;
   padding-left: 20px;
@@ -777,6 +766,11 @@
   height: 100%;
   float: right;
 }
+
+@media screen and (max-width: 900px){
+  .box-sh {
+    grid-column: 3;
+  }
 }
 
 .box-sh-item.active {

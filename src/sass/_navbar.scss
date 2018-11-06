@@ -9,7 +9,7 @@
     width: 100%;
     top: 0;
     float: left;
-  @media screen and (min-width: 901px){    
+  @media screen and (min-width: 901px){
   .second-bar{
     padding: 0 .75rem;
     display: block;
@@ -45,14 +45,14 @@
       padding: 10px 0 !important;
     }
   }
-
   .title-box{
+    @media screen and (min-width: 901px){
     position: fixed;
     top: 13px;
     width: 500px;
     z-index: 9992;
     padding-left: 39px;
-
+    }
     .title
     {
       text-transform: capitalize;
@@ -140,13 +140,14 @@
     width: 15%;
     height: 16%;
     z-index: 9992;
+    left: 100px;
     display: table-column;
 
     .title
     {
       display: table-row;
       font-size: 15px;
-      text-align: center;  
+      text-align: center;
       position: relative;
     }
 

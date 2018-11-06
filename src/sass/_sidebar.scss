@@ -225,6 +225,13 @@
         width: 57px;
       }
 
+      @media screen and (max-width: 900px){
+        .closed-logo
+        {
+          left: 0;
+        }
+      }
+
       .logo
       {
         position: absolute;

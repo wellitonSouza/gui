@@ -199,7 +199,7 @@
 @media screen and (max-width: 900px){
   .device-frame {
     .img {
-      padding: 50px 0px 0px;
+      padding: 50px 0 0;
 
       img {
         width: 70px;
@@ -211,7 +211,7 @@
 @media screen and (min-width: 901px){
 .device-frame {
   .img {
-    padding: 40px 0px 0px 10px;
+    padding: 40px 0 0 10px;
 
     img {
       width: 100px;

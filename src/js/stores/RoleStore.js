@@ -34,7 +34,6 @@ class RoleStore {
         for (let i = 0; i < this.groups.length; i += 1) {
             if (this.groups[i].id === group.id) {
                 const newGroup = JSON.parse(JSON.stringify(group));
-                /*  newGroup.password = ''; */
                 this.groups[i] = newGroup;
             }
         }
@@ -55,7 +54,6 @@ class RoleStore {
 
     handleRemoveSingle(id) {
         this.loading = false;
-        /*         this.users = this.users.filter(e => e.id !== id); */
         this.groups = this.groups.filter(e => e.id !== id);
     }
 

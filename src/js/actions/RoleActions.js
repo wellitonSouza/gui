@@ -1,47 +1,43 @@
-/* eslint-disable */
 import roleManager from '../comms/roles/RoleManager';
 import toaster from '../comms/util/materialize';
 
 const alt = require('../alt');
 
 class RoleActions {
-    updateGroups(list) {
-        return list;
+    constructor() {
+        this.groups = [];
+        this.group = null;
+        this.error = null;
+    }
+
+    updateGroups(groups) {
+        this.groups = groups;
+        return this.groups;
     }
 
     insertGroup(group) {
+        this.group = group;
         return group;
     }
 
-    addGroup(group, cb, error_cb) {
-        const newUser = user;
+    addGroup(group, cb, errorCb) {
+        const newGroup = group;
         return (dispatch) => {
-        dispatch();
-        roleManager.addGroup(newGroup)
-            .then((response) => {
-            // @bug: backend won't return full public record of the created user, so merge the
-            //       server-side data (id) with the known record of the user.
-/*             let updatedGroup = JSON.parse(JSON.stringify(newGroup));
-            updatedGroup['id'] = response[0].groups.id;
-            updatedGroup['passwd'] = ''; */
-            this.insertGroup(newGroup);
-            if(cb){
-                cb(response);
-            }
-            })
-            .catch((error) => {
-            if(error_cb) {
-                error_cb(newUser);
-            }
-            this.usersFailed(error);
-            // error.data.json()
-                // .then((data) => {
-                //   if (error_cb) {
-                //     error_cb(data);
-                //   }
-                // })
-            })
-        }
+            dispatch();
+            roleManager.addGroup(newGroup)
+                .then((response) => {
+                    this.insertGroup(newGroup);
+                    if (cb) {
+                        cb(response);
+                    }
+                })
+                .catch((error) => {
+                    if (errorCb) {
+                        errorCb(newGroup);
+                    }
+                    this.groupsFailed(error);
+                });
+        };
     }
 
     fetchGroups() {
@@ -57,29 +53,21 @@ class RoleActions {
         };
     }
 
-    triggerUpdate(user, cb, error_cb) {
+    triggerUpdate(group, cb, errorCb) {
         return (dispatch) => {
             dispatch();
-            // special case (for now): allow edits to not repeat the password
-            // if (user.passwd.trim().length === 0) {
-            //   delete user.passwd;
-            // }
-
-            roleManager.setGroup(grup)
+            roleManager.setGroup(group)
                 .then((response) => {
-                    this.updateSingle(grup);
+                    this.updateSingle(group);
                     if (cb) {
-                        cb();
+                        cb(response);
                     }
                 })
                 .catch((error) => {
+                    if (errorCb) {
+                        errorCb(group);
+                    }
                     this.groupsFailed(error);
-                    // error.data.json()
-                    //   .then((data) => {
-                    //     if (error_cb) {
-                    //       error_cb(data);
-                    //     }
-                    //   })
                 });
         };
     }
@@ -101,18 +89,21 @@ class RoleActions {
     }
 
     updateSingle(group) {
+        this.group = group;
         return group;
     }
 
     removeSingle(group) {
+        this.group = group;
         return group;
     }
 
     groupsFailed(error) {
-        toaster.error(error.message);
-        return error;
+        this.error = error;
+        toaster.error(this.error.message);
+        return this.error;
     }
 }
 
-const _role = alt.createActions(RoleActions, exports);
-export default _role;
+const roleAction = alt.createActions(RoleActions, exports);
+export default roleAction;

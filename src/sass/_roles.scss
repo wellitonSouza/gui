@@ -5,12 +5,15 @@
   height: 100%;
   overflow: hidden;
   float: left;
-  padding-left: 20px;
 
   .card-size {
     margin: 20px !important;
     min-width: 220px;
     max-width: 300px;
+  }
+
+  .fill {
+    padding-left: 20px;
   }
 
   .card-size .attr-area {

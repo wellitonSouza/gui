@@ -1,7 +1,24 @@
 {
-  "roles": {
-    "title": "Roles",
-    "description": "Descrição"
+  "menu": {
+    "roles": {
+      "text": "Permissões",
+      "alt": "Lista permissões"
+    }
   },
-  "test": "test"
+  "roles": {
+    "title": "Permissões",
+    "description": "Descrição",
+    "btn": {
+      "new": {
+        "text": "Novo papel",
+        "alt": "Criar novo papel"
+      }
+    },
+    "change": {
+      "title": {
+        "new": "Novo perfil",
+        "update": "Editar perfil"
+      }
+    }
+  }
 }

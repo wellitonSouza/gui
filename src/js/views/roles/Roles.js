@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import AltContainer from 'alt-container';
 import TextTruncate from 'react-text-truncate';
+import { translate, Trans } from 'react-i18next';
 import RoleStore from '../../stores/RoleStore';
 import RoleActions from '../../actions/RoleActions';
 import { NewPageHeader } from '../../containers/full/PageHeader';
 import { DojotBtnLink } from '../../components/DojotButton';
 
+
 function RoleCard(obj) {
+    console.log(translate);
     return (
         <div className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight">
             <div className="lst-entry-title col s12 ">
@@ -30,7 +33,7 @@ function RoleCard(obj) {
                                 text={obj.group.description}
                                 containerClassName="description-text"
                             />
-                            <div className="subtitle">Description</div>
+                            <div className="subtitle"><Trans i18nKey="roles.description" /></div>
                         </div>
                     </div>
                 </div>
@@ -94,7 +97,7 @@ class Roles extends Component {
         return (
             <div id="roles-wrapper">
                 <AltContainer store={RoleStore}>
-                    <NewPageHeader title="Roles" subtitle="xxxx" icon="roles">
+                    <NewPageHeader title={<Trans i18nKey="roles.title" />} icon="roles">
                         <OperationsHeader newGroup={this.newGroup} />
                     </NewPageHeader>
                     <RoleList />
@@ -105,4 +108,4 @@ class Roles extends Component {
 }
 
 
-export default Roles;
+export default translate('lang')(Roles);

@@ -9,6 +9,10 @@ class RoleManager {
         return util.GET(this.baseUrl);
     }
 
+/*     getGroups(name) {
+        return util.GET(`${this.baseUrl}?name=${name}`);
+    } */
+
     getGroup(id) {
         return util.GET(`${this.baseUrl}/${id}`);
     }

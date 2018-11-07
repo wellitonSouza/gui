@@ -216,7 +216,7 @@ class Util {
     const ret = { result: true, error: '' };
     if (dynamic === 'actuator' && value.length === 0) return ret;
 
-    if(value == undefined || null){
+    if(value === undefined || null){
         ret.error = 'This can not be undefined';
         return ret
     }

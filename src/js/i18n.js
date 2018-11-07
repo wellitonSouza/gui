@@ -17,9 +17,9 @@ i18n.use(LanguageDetector).init({
     debug: true,
 
     // have a common namespace used around the full app
-    ns: ['lang'],
-    defaultNS: 'lang',
-    keySeparator: '.',
+    ns: ['translations'],
+    defaultNS: 'translations',
+
     interpolation: {
         escapeValue: false, // not needed for react!!
         formatSeparator: ',',

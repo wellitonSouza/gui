@@ -108,4 +108,4 @@ class Roles extends Component {
 }
 
 
-export default translate('lang')(Roles);
+export default translate()(Roles);

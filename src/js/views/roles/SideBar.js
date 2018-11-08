@@ -21,9 +21,9 @@ function Btn(params) {
 }
 
 function SideBar(params) {
-    let body;
-    let header;
-    let btnsFooter;
+    let body = null;
+    let header = null;
+    let btnsFooter = null;
     if (params.visible) {
         header = (
             <div id="auth-title" className="title">
@@ -41,6 +41,7 @@ function SideBar(params) {
             <div id="sidebar" className="sidebar-auth visible">
                 {header}
                 <div className="fixed-height">
+                    {params.content}
                     <div id="edit-footer" className="action-footer">
                         {btnsFooter}
                     </div>

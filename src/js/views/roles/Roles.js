@@ -44,30 +44,9 @@ function RoleCard(obj) {
 }
 
 function RoleList(param) {
-    console.log(param);
     if (param.groups) {
-        const visible = true;
-        const buttonsFooter = [
-            {
-                label: 'save',
-                alt: 'clickToSave',
-                click: param.hadleSave,
-                color: 'red',
-                modalConfirm: true,
-                modalConfirmText: 'Ctz???',
-            },
-            {
-                label: 'discard',
-                alt: 'clickToSave',
-                click: param.hadleSave,
-                color: 'red',
-                modalConfirm: true,
-                modalConfirmText: 'Ctz???',
-            },
-        ];
         return (
             <div className="fill">
-                <SideBar title={<Trans i18nKey="roles.change.title.new" />} visible={visible} buttonsFooter={buttonsFooter} />
                 {param.groups.map(obj => <RoleCard group={obj} key={obj.id} />)}
             </div>);
     }
@@ -90,11 +69,76 @@ function OperationsHeader(param) {
     );
 }
 
+function Form(params) {
+    const { handleCharge, data } = params;
+    return (
+        <div>
+            <div id="auth-icon" className="user-icon">
+                <img src="images/generic-user-icon.png" />
+            </div>
+            <div id="auth-name" className="input-field icon-space">
+                <input
+                    value={data.roleName}
+                    name="roleName"
+                    /*      disabled={this.props.edit} */
+                    onChange={handleCharge}
+                    style={{ fontSize: '16px' }}
+                    /*              className={
+                                     `validate${this.state.isInvalid.username ? ' invalid' : ''}`
+                                 } */
+                    maxLength="40"
+                    placeholder="TESTEEEEEE"
+                />
+                <label
+                    htmlFor="roleName"
+                    data-error={<Trans i18nKey="roles.form.input.rolename.error" />}
+                    className="active"
+                >
+                    <Trans i18nKey="roles.form.input.rolename.label" />
+                </label>
+            </div>
+            <div id="auth-usr" className="input-field">
+                <input
+                    value={data.roleDescription}
+                    name="roleDescription"
+                    /*         onChange={this.handleChange} */
+                    style={{ fontSize: '16px' }}
+                    /*             className={
+                                    `validate${this.state.isInvalid.name ? ' invalid' : ''}`
+                                } */
+                    maxLength="40"
+                />
+                <label
+                    htmlFor="roleDescription"
+                    data-error="Invalid name"
+                    className="active"
+                >
+                    Descr
+        </label>
+            </div>
+        </div>
+    );
+}
+
 class Roles extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            showSideBar: false,
+            dataForm: {
+                roleId: ' ',
+                roleName: ' ',
+                roleDescription: ' ',
+            },
+        };
+
         this.newGroup = this.newGroup.bind(this);
-        this.state = {};
+        this.toggleSideBar = this.toggleSideBar.bind(this);
+        this.hideSideBar = this.hideSideBar.bind(this);
+        this.showSideBar = this.showSideBar.bind(this);
+        this.discard = this.discard.bind(this);
+        this.save = this.save.bind(this);
     }
 
     componentDidMount() {
@@ -106,40 +150,84 @@ class Roles extends Component {
     }
 
     newGroup() {
-        console.log('newGroup');
+        this.toggleSideBar();
     }
-
-    /*     newUser() {
-            const tmp = this.state;
-            tmp.createUser = true;
-            this.setState(tmp);
-            this.visibility(true, 'new');
-        }
-    
-        visibility(bool, operation) {
-            const tmp = this.state;
-            if (operation !== 'new') tmp.createUser = false;
-            tmp.visible = bool;
-            this.setState(tmp);
-        } */
 
     componentDidCatch(error, info) {
         console.log('componentDidCatch 1', error);
         console.log('componentDidCatch 2', info);
     }
 
+    toggleSideBar() {
+        this.setState(prevState => ({ showSideBar: !prevState.showSideBar }));
+    }
+
+    hideSideBar() {
+        this.setState({ showSideBar: false });
+    }
+
+    showSideBar() {
+        this.setState({ showSideBar: false });
+    }
+
+    handleInput(e) {
+        console.log(e);
+        let value = e.target.value;
+        let name = e.target.name;
+        this.setState(prevState => {
+            return {
+                dataForm: {
+                    ...prevState.dataForm, [name]: value
+                }
+            }
+        }, () => console.log(this.state.dataForm)
+        )
+    }
+
+    /**
+     * fdsfsdfsdfsdf
+     */
+    discard() {
+        //this.state
+        //limpa state com info do form
+        this.hideSideBar();
+    }
+
     save() {
         console.log('Oi Mundo');
+        this.hideSideBar();
     }
 
     render() {
+        const { showSideBar, dataForm } = this.state;
+
+        const buttonsFooter = [
+            {
+                label: 'save',
+                alt: 'clickToSave',
+                click: this.save,
+                color: 'red',
+                modalConfirm: true,
+                modalConfirmText: 'Ctz???',
+            },
+            {
+                label: 'discard',
+                alt: 'clickToSave',
+                click: this.discard,
+                color: 'red',
+                modalConfirm: true,
+                modalConfirmText: 'Ctz???',
+            },
+        ];
+
         return (
             <div id="roles-wrapper">
                 <AltContainer store={RoleStore}>
                     <NewPageHeader title={<Trans i18nKey="roles.title" />} icon="roles">
                         <OperationsHeader newGroup={this.newGroup} />
                     </NewPageHeader>
-                    <RoleList hadleSave={this.save} />
+                    <SideBar title={<Trans i18nKey="roles.form.title.new" />} content={<Form data={dataForm} handleCharge={this.handleInput} />} visible={showSideBar} buttonsFooter={buttonsFooter} />
+                    <RoleList />
                 </AltContainer>
             </div>
         );

@@ -14,10 +14,20 @@
         "alt": "Criar novo papel"
       }
     },
-    "change": {
+    "form": {
       "title": {
         "new": "Novo perfil",
         "update": "Editar perfil"
+      },
+      "input": {
+        "rolename": {
+          "label": "Profile name",
+          "errormsg": "Please use only letters (a-z) and numbers (0-9)"
+        },
+        "roledescription": {
+          "label": "Profile description",
+          "errormsg": "Please use only letters (a-z) and numbers (0-9)"
+        }
       }
     }
   }

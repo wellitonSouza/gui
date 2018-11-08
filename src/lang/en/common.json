@@ -13,6 +13,22 @@
         "text": "New role",
         "alt": "Create a new role"
       }
+    },
+    "form": {
+      "title": {
+        "new": "Novo perfil",
+        "update": "Editar perfil"
+      },
+      "input": {
+        "rolename": {
+          "label": "Profile name",
+          "error": "Please use only letters (a-z) and numbers (0-9)"
+        },
+        "roledescription": {
+          "label": "Profile description",
+          "error": "Please use only letters (a-z) and numbers (0-9)"
+        }
+      }
     }
   }
 }

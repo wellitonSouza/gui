@@ -423,7 +423,7 @@ class DeviceForm extends Component {
         e.preventDefault();
 
         const to_be_checked = DeviceFormStore.getState().device;
-        const ret = util.isLabelValid(to_be_checked.label);
+        const ret = util.isNameValid(to_be_checked.label);
         const st = this.state.staticAttrs
         for (const k in st) {
             if(!st[k].validate.result){

@@ -183,25 +183,12 @@ class Util {
         return moment(timestamp).format('DD/MM HH:mm');
     }
 
-
     isNameValid(name) {
-        const ret = { result: true, error: '', label: name };
-        if (name.length === 0) {
+        const ret = { result: true, error: '', label: name.trim() };
+        if (name.trim().length === 0) {
             ret.result = false;
             ret.error = "You can't leave the name empty.";
             return ret;
-        }
-
-        if (name.match(/^\S*\S$/) == null) {
-            ret.label = name.trim()
-            ret.result = true
-            if (ret.label.length === 0) {
-                console.log(ret);
-                ret.result = false;
-                ret.error = "You can't leave the name empty.";
-                return ret;
-            }
-            return ret
         }
 
         if (name.match(/^[_A-z0-9 ]*([_A-z0-9 ])*$/g) == null) {

@@ -133,7 +133,7 @@ function HistoryList(props) {
                     </div>
                 </div>
             );
-        }
+        } return "";
     } else {
         return (
             <div className="valign-wrapper full-height background-info">

@@ -101,7 +101,7 @@ function Form(params) {
                 <input
                     value={data.roleDescription}
                     name="roleDescription"
-                    /*         onChange={this.handleChange} */
+                    onChange={handleCharge}
                     style={{ fontSize: '16px' }}
                     /*             className={
                                     `validate${this.state.isInvalid.name ? ' invalid' : ''}`
@@ -137,6 +137,7 @@ class Roles extends Component {
         this.toggleSideBar = this.toggleSideBar.bind(this);
         this.hideSideBar = this.hideSideBar.bind(this);
         this.showSideBar = this.showSideBar.bind(this);
+        this.handleInput = this.handleInput.bind(this);
         this.discard = this.discard.bind(this);
         this.save = this.save.bind(this);
     }
@@ -167,21 +168,16 @@ class Roles extends Component {
     }
 
     showSideBar() {
-        this.setState({ showSideBar: false });
+        this.setState({ showSideBar: true });
     }
 
     handleInput(e) {
-        console.log(e);
-        let value = e.target.value;
-        let name = e.target.name;
-        this.setState(prevState => {
-            return {
-                dataForm: {
-                    ...prevState.dataForm, [name]: value
-                }
-            }
-        }, () => console.log(this.state.dataForm)
-        )
+        const { name, value } = e.target;
+        this.setState(prevState => ({
+            dataForm: {
+                ...prevState.dataForm, [name]: value,
+            },
+        }));
     }
 
     /**
@@ -194,7 +190,8 @@ class Roles extends Component {
     }
 
     save() {
-        console.log('Oi Mundo');
+        console.log('Save');
+        console.log(this.state);
         this.hideSideBar();
     }
 

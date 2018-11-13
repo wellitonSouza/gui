@@ -206,7 +206,10 @@ function SidebarItem(props) {
         </li>
     );
 }
-
+const width =
+window.innerWidth ||
+document.documentElement.clientWidth ||
+document.body.clientWidth;
 class LeftSidebar extends Component {
     constructor(props) {
         super(props);
@@ -214,11 +217,18 @@ class LeftSidebar extends Component {
     }
 
     handleClick(e) {
-        e.preventDefault();
-        MenuActions.toggleLeft();
+
+        if(width > 800){
+            e.preventDefault();
+            MenuActions.toggleLeft();
+        }else{
+            return
+        }
+
     }
 
     render() {
+
         const entries = [
             {
                 image: 'chip',
@@ -278,7 +288,7 @@ class LeftSidebar extends Component {
             && (
                 <div className="logo-n-bars">
                     <img className="closed-logo" src="images/logo-bl.png" />
-                    <div className="bars action waves-effect waves-light" onClick={this.handleClick}>
+                    <div className={`bars action waves-effect waves-light ${(width > 800) ? '' : 'hidden'} `} onClick={this.handleClick}>
                         <img className="img-bars" src="images/menu.png" />
                     </div>
                 </div>
@@ -298,7 +308,7 @@ class LeftSidebar extends Component {
 
 function Content(props) {
     return (
-        <div className={`app-body full-height ${props.leftSideBar.open ? ' open' : ' closed'}`}>
+        <div className={`app-body full-height ${(props.leftSideBar.open && width > 800) ? ' open' : ' closed'}`}>
             <LeftSidebar open={props.leftSideBar.open} router={props.router} />
             <div className="content expand relative">
                 {props.children}

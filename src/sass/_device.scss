@@ -196,17 +196,30 @@
     padding-bottom: 10px;
   }
 }
+@media screen and (max-width: 900px){
+  .device-frame {
+    .img {
+      padding: 50px 0 0;
 
+      img {
+        width: 70px;
+        height: 70px;
+      }
+    }
+  }
+}
+@media screen and (min-width: 901px){
 .device-frame {
   .img {
-    padding: 40px 0px 0px 10px;
+    padding: 40px 0 0 10px;
 
     img {
       width: 100px;
       height: 100px;
     }
   }
-
+}
+}
   .header {
     padding: 20px 10px;
 
@@ -218,7 +231,6 @@
       font-weight: 500;
     }
   }
-}
 
 .pb160px {
   padding-bottom: 160px;
@@ -745,6 +757,7 @@
   display: inline-block;
 }
 
+
 .box-sh {
   padding: 0px;
   padding-left: 20px;
@@ -752,6 +765,12 @@
   position: relative;
   height: 100%;
   float: right;
+}
+
+@media screen and (max-width: 900px){
+  .box-sh {
+    grid-column: 3;
+  }
 }
 
 .box-sh-item.active {

@@ -221,15 +221,7 @@
       {
         position: absolute;
         top: 21px;
-        left: 13px;
         width: 57px;
-      }
-
-      @media screen and (max-width: 900px){
-        .closed-logo
-        {
-          left: 0;
-        }
       }
 
       .logo
@@ -242,8 +234,8 @@
 
       .bars{
         position: absolute;
-        top: 80px;
-        right: 32px;
+        top: 65px;
+        right: 20px;
         width: 20px;
       }
 

@@ -1,32 +1,46 @@
 {
   "menu": {
     "roles": {
-      "text": "Permissões",
-      "alt": "Lista permissões"
+      "text": "Grupos",
+      "alt": "Lista de Grupos"
     }
   },
   "roles": {
-    "title": "Permissões",
+    "title": "Grupos",
     "description": "Descrição",
     "btn": {
       "new": {
-        "text": "Novo papel",
-        "alt": "Criar novo papel"
+        "text": "Novo grupo",
+        "alt": "Criar novo grupo"
       }
     },
     "form": {
       "title": {
-        "new": "Novo perfil",
-        "update": "Editar perfil"
+        "new": "Novo grupo",
+        "edit": "Editar grupo"
       },
       "input": {
         "rolename": {
-          "label": "Profile name",
-          "errormsg": "Please use only letters (a-z) and numbers (0-9)"
+          "label": "Nome do Grupo",
+          "errormsg": "Use somente letras (a-z) and números (0-9)"
         },
         "roledescription": {
-          "label": "Profile description",
-          "errormsg": "Please use only letters (a-z) and numbers (0-9)"
+          "label": "Descrição do grupo",
+          "errormsg": ""
+        }
+      },
+      "btn": {
+        "save": {
+          "label": "Salvar",
+          "alt": "Clique para Salvar"
+        },
+        "discard": {
+          "label": "Fechar",
+          "alt": "Clique para Fechar"
+        },
+        "remove": {
+          "label": "Remover",
+          "alt": "Clique para Remover"
         }
       }
     }

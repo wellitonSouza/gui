@@ -20,7 +20,7 @@ class RoleActions {
         return group;
     }
 
-    addGroup(group, cb, errorCb) {
+/*     addGroup(group, cb, errorCb) {
         const newGroup = group;
         return (dispatch) => {
             dispatch();
@@ -38,7 +38,7 @@ class RoleActions {
                     this.groupsFailed(error);
                 });
         };
-    }
+    } */
 
     fetchGroups() {
         return (dispatch) => {
@@ -53,7 +53,14 @@ class RoleActions {
         };
     }
 
-    triggerUpdate(group, cb, errorCb) {
+    getGroupById(groupId) {
+        const group = this.groups.find((g) => {
+            return g.id === Number(groupId);
+        });
+        return group;
+    }
+
+    triggerSave(group, cb, errorCb) {
         return (dispatch) => {
             dispatch();
             roleManager.setGroup(group)

@@ -1,18 +1,13 @@
-import React, { Component } from 'react';
-import { translate, Trans } from 'react-i18next';
-
+import React from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import MaterialSelect from '../../components/MaterialSelect';
-import UserActions from '../../actions/UserActions';
 import toaster from '../../comms/util/materialize';
-import { RemoveModal } from '../../components/Modal';
+import { GenericModal } from '../../components/Modal';
 
 function Btn(params) {
+/*     <GenericModal title={title} first_message={first_message} openModal={this.openModal} click={this.remove} op_type={op_type} btnLabel="Remove" />
+      */
     return (
-        /*         <div role="button" className="material-btn center-text-parent center-middle-flex" onClick={params.click} title={params.alt}>
-                    <span className="text center-text-child">{params.label}</span>
-                </div> */
-        <button type="button" title={params.alt} onClick={params.click} className="material-btn center-text-parent center-middle-flex">
+         <button type="button" title={params.alt} onClick={params.click} className="material-btn center-text-parent center-middle-flex">
             <span className="text center-text-child">
                 {params.label}
             </span>
@@ -38,19 +33,27 @@ function SideBar(params) {
         }
 
         body = (
-            <div id="sidebar" className="sidebar-auth visible">
-                {header}
-                <div className="fixed-height">
-                    {params.content}
-                    <div id="edit-footer" className="action-footer">
-                        {btnsFooter}
+            <ReactCSSTransitionGroup
+                transitionName="sidebar"
+                transitionAppear
+                transitionAppearTimeout={500}
+                transitionEnterTimeout={500}
+                transitionLeaveTimeout={500}
+            >
+                <div id="sidebar" className="sidebar-auth visible">
+                    {header}
+                    <div className="fixed-height">
+                        {params.content}
+                        <div id="edit-footer" className="action-footer">
+                            {btnsFooter}
+                        </div>
                     </div>
                 </div>
-            </div>);
+            </ReactCSSTransitionGroup>);
     }
 
     return body;
 }
 
 
-export default translate()(SideBar);
+export default (SideBar);

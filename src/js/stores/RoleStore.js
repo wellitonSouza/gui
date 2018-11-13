@@ -10,14 +10,13 @@ class RoleStore {
         this.bindListeners({
             handleUpdateGroupList: RoleActions.UPDATE_GROUPS,
 
-            handleAddGroup: RoleActions.ADD_GROUP,
-            handleInsertGroup: RoleActions.INSERT_GROUP,
+/*             handleAddGroup: RoleActions.ADD_GROUP,
+            handleInsertGroup: RoleActions.INSERT_GROUP, */
 
             handleFetchGroupList: RoleActions.FETCH_GROUPS,
             handleFailure: RoleActions.GROUPS_FAILED,
 
-            handleTriggerUpdate: RoleActions.TRIGGER_UPDATE,
-            handleUpdateSingle: RoleActions.UPDATE_SINGLE,
+            handleTriggerSave: RoleActions.TRIGGER_SAVE,
 
             handleTriggerRemoval: RoleActions.TRIGGER_REMOVAL,
             handleRemoveSingle: RoleActions.REMOVE_SINGLE,
@@ -30,7 +29,7 @@ class RoleStore {
         this.loading = false;
     }
 
-    handleUpdateSingle(group) {
+/*     handleUpdateSingle(group) {
         for (let i = 0; i < this.groups.length; i += 1) {
             if (this.groups[i].id === group.id) {
                 const newGroup = JSON.parse(JSON.stringify(group));
@@ -38,9 +37,9 @@ class RoleStore {
             }
         }
         this.loading = false;
-    }
+    } */
 
-    handleTriggerUpdate() {
+    handleTriggerSave() {
         // trigger handler for updateSingle
         this.error = null;
         this.loading = true;
@@ -63,10 +62,10 @@ class RoleStore {
         this.loading = false;
     }
 
-    handleAddGroup() {
+/*     handleAddGroup() {
         this.error = null;
         this.loading = true;
-    }
+    } */
 
     handleFetchGroupList() {
         this.groups = [];

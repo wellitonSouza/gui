@@ -111,7 +111,6 @@ function HistoryList(props) {
     }
 
     if (listValues.length > 0) {
-        if (listValues.length > 0) {
             listValues.reverse();
             return (
                 <div className="relative full-height">
@@ -124,7 +123,6 @@ function HistoryList(props) {
                     </div>
                 </div>
             );
-        } return "";
     } else {
         return (
             <div className="valign-wrapper full-height background-info">

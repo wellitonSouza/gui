@@ -16,149 +16,156 @@ import { DojotBtnLink } from '../../components/DojotButton';
 
 
 class SideBar extends Component {
-  constructor() {
-    super();
-    this.state = {
-      user:  {
-        name: '',
-        username: '',
-        email: '',
-        confirmEmail: '',
-        profile: '',
-        service: 'admin'
-      },
-      show_modal: false,
-      confirmEmail: "",
-      isInvalid: {
-        username: false,
-        name: false,
-        email: false,
-        confirmEmail: false,
-      },
-    };
+    constructor() {
+        super();
+        this.state = {
+            user: {
+                name: '',
+                username: '',
+                email: '',
+                confirmEmail: '',
+                profile: '',
+                service: 'admin'
+            },
+            show_modal: false,
+            confirmEmail: "",
+            isInvalid: {
+                username: false,
+                name: false,
+                email: false,
+                confirmEmail: false,
+            },
+        };
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleCreate = this.handleCreate.bind(this);
-    this.handleSave = this.handleSave.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
-    this.loadUsers = this.loadUsers.bind(this);
-    this.checkValidation = this.checkValidation.bind(this);
-    this.hideSideBar = this.hideSideBar.bind(this);
-    this.formUser = this.formUser.bind(this);
-    this.setModal = this.setModal.bind(this);
-    this.removeUser = this.removeUser.bind(this);
-    this.fieldValidation = this.fieldValidation.bind(this);
-  }
-
-  componentDidMount() {
-    this.loadUsers();
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    if (props.user !== state.user) {
-      return { user: props.user,
-               isInvalid : { username: false,
-                             name: false,
-                             email: false,
-                             confirmEmail: false } };
-    }
-    // Return null to indicate no change to state.
-    return null;
-  }
-
-  loadUsers() {
-    //if (this.props.user.profile === 'admin') {
-      UserActions.fetchUsers.defer();
-    //}
-  }
-
-  checkValidation() {
-    if (this.checkName(this.state.user.name)) {
-      toaster.warning('Invalid name.');
-      return false;
-    }
-    if (this.checkEmail(this.state.user.email)) {
-      toaster.warning('Invalid email.');
-      return false;
+        this.handleChange = this.handleChange.bind(this);
+        this.handleCreate = this.handleCreate.bind(this);
+        this.handleSave = this.handleSave.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
+        this.loadUsers = this.loadUsers.bind(this);
+        this.checkValidation = this.checkValidation.bind(this);
+        this.hideSideBar = this.hideSideBar.bind(this);
+        this.formUser = this.formUser.bind(this);
+        this.setModal = this.setModal.bind(this);
+        this.removeUser = this.removeUser.bind(this);
+        this.fieldValidation = this.fieldValidation.bind(this);
     }
 
-    if (this.checkUsername(this.state.user.username)) {
-      toaster.warning('Invalid username.');
-      return false;
+    componentDidMount() {
+        this.loadUsers();
     }
 
-    if (this.checkConfirmEmail(this.state.user.email, this.state.user.confirmEmail)) {
-      toaster.warning('Email address mismatch.');
-      return false;
+    static getDerivedStateFromProps(props, state) {
+        if (props.user !== state.user) {
+            return {
+                user: props.user,
+                isInvalid: {
+                    username: false,
+                    name: false,
+                    email: false,
+                    confirmEmail: false
+                }
+            };
+        }
+        // Return null to indicate no change to state.
+        return null;
     }
 
-    if (this.state.user.profile === '') {
-      toaster.warning('Missing profile.');
-      return false;
-    }
-    return true;
-  }
-
-  handleChange(event) {
-    const target = event.target;
-    const user = this.state.user;
-    user[target.name] = target.value;
-    this.fieldValidation(user, target.name);
-  }
-
-  handleSave() {
-    const tmp = JSON.parse(JSON.stringify(this.state.user));
-    delete tmp.created_by;
-    delete tmp.created_date;
-    delete tmp.passwd;
-    delete tmp.password;
-    if (this.checkValidation()) {
-      UserActions.triggerUpdate(
-        tmp,
-        () => {
-          toaster.success('User updated.');
-          this.hideSideBar();
-        },
-        () => {
-          toaster.error('Failed to update user.');
-        },
-      );
-    }
-  }
-
-  handleCreate() {
-    if (this.checkValidation()) {
-      const temp = this.state.user;
-      temp.email = String(temp.email).toLowerCase();
-      console.log('User to be created: ', temp);
-      UserActions.addUser(
-        temp,
-        () => {
-          toaster.success('User created.');
-          this.hideSideBar();
-        },
-        (user) => {
-          this.formUser(user);
-        },
-      )}
+    loadUsers() {
+        //if (this.props.user.profile === 'admin') {
+        UserActions.fetchUsers.defer();
+        //}
     }
 
+    checkValidation() {
+        if (this.checkName(this.state.user.name)) {
+            toaster.warning('Invalid name.');
+            return false;
+        }
+        if (this.checkEmail(this.state.user.email)) {
+            toaster.warning('Invalid email.');
+            return false;
+        }
 
-  formUser(user) {
-    this.props.formUser(user);
-  }
+        if (this.checkUsername(this.state.user.username)) {
+            toaster.warning('Invalid username.');
+            return false;
+        }
 
-  hideSideBar() {
-    this.props.formUser({ name: '',
-                          username: '',
-                          email: '',
-                          confirmEmail: '',
-                          profile: '',
-                          service: 'admin' });
-    this.props.hide();
-    this.loadUsers();
-  }
-    
+        if (this.checkConfirmEmail(this.state.user.email, this.state.user.confirmEmail)) {
+            toaster.warning('Email address mismatch.');
+            return false;
+        }
+
+        if (this.state.user.profile === '') {
+            toaster.warning('Missing profile.');
+            return false;
+        }
+        return true;
+    }
+
+    handleChange(event) {
+        const target = event.target;
+        const user = this.state.user;
+        user[target.name] = target.value;
+        this.fieldValidation(user, target.name);
+    }
+
+    handleSave() {
+        const tmp = JSON.parse(JSON.stringify(this.state.user));
+        delete tmp.created_by;
+        delete tmp.created_date;
+        delete tmp.passwd;
+        delete tmp.password;
+        if (this.checkValidation()) {
+            UserActions.triggerUpdate(
+                tmp,
+                () => {
+                    toaster.success('User updated.');
+                    this.hideSideBar();
+                },
+                () => {
+                    toaster.error('Failed to update user.');
+                },
+            );
+        }
+    }
+
+    handleCreate() {
+        if (this.checkValidation()) {
+            const temp = this.state.user;
+            temp.email = String(temp.email).toLowerCase();
+            console.log('User to be created: ', temp);
+            UserActions.addUser(
+                temp,
+                () => {
+                    toaster.success('User created.');
+                    this.hideSideBar();
+                },
+                (user) => {
+                    this.formUser(user);
+                },
+            )
+        }
+    }
+
+
+    formUser(user) {
+        this.props.formUser(user);
+    }
+
+    hideSideBar() {
+        this.props.formUser({
+            name: '',
+            username: '',
+            email: '',
+            confirmEmail: '',
+            profile: '',
+            service: 'admin'
+        });
+        this.props.hide();
+        this.loadUsers();
+    }
+
 
     handleDelete() {
         this.setState({ show_modal: true });
@@ -220,7 +227,7 @@ class SideBar extends Component {
                         className={`title${this.props.edit ? ' ' : ' hide'}`}
                     >
                         <span id="title-text" className="title-text">
-              Edit User
+                            Edit User
                         </span>
                     </div>
                     <div
@@ -228,7 +235,7 @@ class SideBar extends Component {
                         className={`title${this.props.edit ? ' hide' : ''}`}
                     >
                         <span id="title-text" className="title-text">
-              New User
+                            New User
                         </span>
                     </div>
                     <div className="fixed-height">
@@ -253,7 +260,7 @@ class SideBar extends Component {
                                 data-error="Please use only letters (a-z) and numbers (0-9)"
                                 className="active"
                             >
-                User Name
+                                User Name
                             </label>
                         </div>
                         <div id="auth-usr" className="input-field">
@@ -273,7 +280,7 @@ class SideBar extends Component {
                                 data-error="Invalid name"
                                 className="active"
                             >
-                Name
+                                Name
                             </label>
                         </div>
                         <div id="auth-email" className="input-field">
@@ -293,7 +300,7 @@ class SideBar extends Component {
                                 data-error="Please enter a valid email address."
                                 className="active"
                             >
-                Email
+                                Email
                             </label>
                         </div>
                         <div id="auth-confirm" className="input-field">
@@ -305,7 +312,7 @@ class SideBar extends Component {
                                 style={{ fontSize: '16px' }}
                                 className={
                                     `validate${
-                                        this.state.isInvalid.confirmEmail ? ' invalid' : ''}`
+                                    this.state.isInvalid.confirmEmail ? ' invalid' : ''}`
                                 }
                                 maxLength="40"
                             />
@@ -314,7 +321,7 @@ class SideBar extends Component {
                                 data-error="Email address mismatch"
                                 className="active"
                             >
-                Confirm Email
+                                Confirm Email
                             </label>
                         </div>
                         <div>
@@ -330,13 +337,13 @@ class SideBar extends Component {
                                 isDisable={this.props.edit}
                             >
                                 <option value="" disabled>
-                  Choose your option
+                                    Choose your option
                                 </option>
                                 <option value="admin" id="adm-option">
-                  Administrator
+                                    Administrator
                                 </option>
                                 <option value="user" id="user-option">
-                  User
+                                    User
                                 </option>
                             </MaterialSelect>
                         </div>
@@ -411,8 +418,8 @@ class SideBar extends Component {
                         openModal={this.setModal}
                     />
                 ) : (
-                    <div />
-                )}
+                        <div />
+                    )}
             </ReactCSSTransitionGroup>
         );
     }
@@ -538,14 +545,14 @@ class RemoveDialog extends Component {
                         className="btn-flat btn-ciano waves-effect waves-light"
                         onClick={this.dismiss}
                     >
-cancel
+                        cancel
                     </button>
                     <button
                         type="submit"
                         className="btn-flat btn-red waves-effect waves-light"
                         onClick={this.remove}
                     >
-remove
+                        remove
                     </button>
                 </div>
             </div>
@@ -561,12 +568,12 @@ class UserList extends Component {
             create: false,
             edit: false,
             user: {
-              name: '',
-              username: '',
-              email: '',
-              confirmEmail: '',
-              profile: '',
-              service: 'admin'
+                name: '',
+                username: '',
+                email: '',
+                confirmEmail: '',
+                profile: '',
+                service: 'admin'
             }
         };
 
@@ -578,27 +585,29 @@ class UserList extends Component {
 
     static getDerivedStateFromProps(props, state) {
         if (props.createUser && !state.create) {
-        return { create: true,
-                 edit: false,
-                 user: {
-                  name: '',
-                  username: '',
-                  email: '',
-                  confirmEmail: '',
-                  profile: '',
-                  service: 'admin' }
-                };
-      }
-      // Return null to indicate no change to state.
-      return null;
+            return {
+                create: true,
+                edit: false,
+                user: {
+                    name: '',
+                    username: '',
+                    email: '',
+                    confirmEmail: '',
+                    profile: '',
+                    service: 'admin'
+                }
+            };
+        }
+        // Return null to indicate no change to state.
+        return null;
     }
 
     formUser(user) {
-      let temp = this.state;
-      temp.create = true;
-      temp.edit = false;
-      temp.user = user;
-      this.setState(temp);
+        let temp = this.state;
+        temp.create = true;
+        temp.edit = false;
+        temp.user = user;
+        this.setState(temp);
 
     }
 
@@ -634,8 +643,8 @@ class UserList extends Component {
     render() {
         return (
             <div className="fill">
-                <SideBar {...this.state} hide={this.hideSideBar} visible={this.props.visible} formUser={this.formUser}/>
-                <RemoveDialog callback={this.deleteUser} target="confirmDiag"/>
+                <SideBar {...this.state} hide={this.hideSideBar} visible={this.props.visible} formUser={this.formUser} />
+                <RemoveDialog callback={this.deleteUser} target="confirmDiag" />
                 <div id="user-wrapper" className="col s12  lst-wrapper scroll-bar">
                     {this.props.values.map(user => (
                         <ListItem
@@ -653,7 +662,7 @@ class UserList extends Component {
 
 function UserFilter(props) {
     const filter = props.filter;
-    console.log('users f props',props);
+    console.log('users f props', props);
     // parse the given field, searching for special selectors on the form <field name>:<value>
     const tokens = filter.match(/([a-z]+)\W*:\W*(\w+)\W*/g);
     let parsed;
@@ -683,10 +692,10 @@ function UserFilter(props) {
         // to selected user fields.
         return (
             e.name.toLowerCase().includes(filter)
-                || e.name.includes(filter)
-                || e.username.toLowerCase().includes(filter)
-                || e.email.toLowerCase().includes(filter)
-                || e.profile.toLowerCase().includes(filter)
+            || e.name.includes(filter)
+            || e.username.toLowerCase().includes(filter)
+            || e.email.toLowerCase().includes(filter)
+            || e.profile.toLowerCase().includes(filter)
         );
     });
 
@@ -727,21 +736,21 @@ class UsersContent extends Component {
 
     componentDidMount() {
         //if (this.props.user.profile === 'admin') {
-            UserActions.fetchUsers.defer();
+        UserActions.fetchUsers.defer();
         //}
     }
 
     render() {
         console.log('entrou até aqui. ');
-        console.log('users this',this);
+        console.log('users this', this);
         if (this.props.user.profile === 'admin') {
             return (
                 <span id="userMain">
                     <AltContainer store={UserStore}>
-                      <NewPageHeader title="Auth" subtitle="Users" icon='user'>
-                        <OperationsHeader newUser={this.newUser}/>
-                      </NewPageHeader>
-                      <UserFilter filter={this.state.filter} {...this.state} visibility={this.visibility}/>
+                        <NewPageHeader title="Auth" subtitle="Users" icon='user'>
+                            <OperationsHeader newUser={this.newUser} />
+                        </NewPageHeader>
+                        <UserFilter filter={this.state.filter} {...this.state} visibility={this.visibility} />
                     </AltContainer>
                 </span>
             );
@@ -759,9 +768,9 @@ class Users extends Component {
     constructor(props) {
         super(props);
     }
-    
+
     render() {
-        
+
         return (
             <AltContainer store={LoginStore}>
                 <UsersContent />

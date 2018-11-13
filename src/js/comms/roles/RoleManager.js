@@ -9,21 +9,17 @@ class RoleManager {
         return util.GET(this.baseUrl);
     }
 
-/*     getGroups(name) {
-        return util.GET(`${this.baseUrl}?name=${name}`);
-    } */
 
     getGroup(id) {
         return util.GET(`${this.baseUrl}/${id}`);
     }
 
-    setGroup(detail) {
-        return util.PUT(`${this.baseUrl}/${detail.id}`, detail);
-    }
+    setGroup(group) {
+        // update
+        if (group.id) return util.PUT(`${this.baseUrl}/${group.id}`, group);
 
-    addGroup(d) {
-        d.id = util.guid();
-        return util.POST(this.baseUrl, d);
+        // create
+        return util.POST(this.baseUrl, group);
     }
 
     deleteGroup(id) {

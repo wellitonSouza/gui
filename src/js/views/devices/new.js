@@ -158,13 +158,6 @@ class StaticAttributes extends Component {
               statics[index].value = statics[index].static_value;
         }
 
-        for (const index in properties) {
-            if (properties[index].label === 'protocol') {
-                properties[index].static_value = (properties[index].value !== undefined ? properties[index].static_value.toUpperCase() : properties[index].static_value);
-                properties[index].value = (properties[index].value !== undefined ? properties[index].value.toUpperCase() : properties[index].value);
-            }
-        }
-
         return (
             <div className="attr-box specific-attr">
                 {properties.length > 0 && (
@@ -177,19 +170,7 @@ class StaticAttributes extends Component {
                                 <div key={attr.label} className="col s6 attr-fields">
                                     <div className="attr-name truncate">{attr.label}</div>
                                     <div className="attr-type">{attr.value_type}</div>
-                                    <div className={`${attr.label === 'protocol' ? '' : 'none'} attr-name input-field fix-select`}>
-                                        <MaterialSelect
-                                            className="mt0px"
-                                            id="fld_label"
-                                            value={attr.value||""}
-                                            name={attr.label}
-                                            onChange={this.handleChange}
-                                        > 
-                                            <option value="">Select type</option>
-                                            {this.availableTypes.map(opt => <option value={opt.label} key={opt.label}>{opt.label}</option>)}
-                                        </MaterialSelect>
-                                    </div>
-                                    <div className={`${attr.label === 'protocol' ? 'none' : ''} attr-name input-field fix-inputs`}>
+                                    <div className={`attr-name input-field fix-inputs`}>
                                         <MaterialInput
                                             className="mt0px"
                                             id="fld_label"

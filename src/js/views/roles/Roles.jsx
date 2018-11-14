@@ -86,9 +86,9 @@ function InputCheckbox(params) {
                     className="filled-in"
                     type="checkbox"
                 />
-                <label key={option.name} htmlFor={option.name}>
+/*                 <label key={option.name} htmlFor={option.name}>
                     {option.label}
-                </label> 
+                </label>  */
             ))}
         </div>
     );

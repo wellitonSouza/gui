@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import AltContainer from 'alt-container';
 import TemplateStore from 'Stores/TemplateStore';
 import { NewPageHeader } from 'Containers/full/PageHeader';
+import TemplateActions from 'Actions';
 import OperationsHeader from './OperationsHeader';
 import { Filter, Pagination, FilterLabel } from '../utils/Manipulation';
 import TemplateList from './TemplateList/index';
@@ -42,6 +43,7 @@ class Templates extends Component {
 
     componentDidMount() {
         this.temp_opex._fetch();
+        TemplateActions.toogleSidebar(false);
     }
 
     toggleSearchBar() {

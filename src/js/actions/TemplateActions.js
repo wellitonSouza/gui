@@ -1,16 +1,17 @@
 /* eslint-disable */
-import templateManager from '../comms/templates/TemplateManager';
-import toaster from '../comms/util/materialize';
+import templateManager from 'Comms/templates/TemplateManager';
+import toaster from 'Comms/util/materialize';
 
 const alt = require('../alt');
 const newTemplate = {
-    id: Math.floor(Math.random() * 100000),
+    id: `${Math.floor(Math.random() * 100000)}`,
     label: '',
     attrs: [],
     config_attrs: [],
     data_attrs: [],
     newTemplate: true,
-}
+};
+
 class TemplateActions {
     updateTemplates(list) {
         return list;
@@ -122,11 +123,9 @@ class TemplateActions {
         return JSON.parse(JSON.stringify(template)); // passing obj by value
     }
 
-    toogleSidebar(){
-        return (dispatch) => dispatch()
+    toogleSidebar(params){
+        return (dispatch) => dispatch(params)
     }
-    toogleSidebarAttribute(){}
-    toogleSidebarConfiguration(){}
 }
 
 const _action = alt.createActions(TemplateActions, exports);

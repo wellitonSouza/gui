@@ -33,7 +33,7 @@ const SidebarTemplate = ({
                             changeValue={changeValue}
                         />
                         <div className="footer">
-                            <DojotCustomButton label="discard" type="default" onClick={toogleSidebar} />
+                            <DojotCustomButton label="discard" type="default" onClick={() => toogleSidebar()} />
                             { isNewTemplate
                                 ? <DojotCustomButton label="add" type="primary" onClick={saveTemplate} />
                                 : (

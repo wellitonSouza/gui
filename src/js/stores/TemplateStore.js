@@ -38,8 +38,6 @@ class TemplateStore {
 
             handleSelectTemplate: TemplateActions.SELECT_TEMPLATE,
             toogleSidebar: TemplateActions.TOOGLE_SIDEBAR,
-            toogleSidebarAttribute: TemplateActions.TOOGLE_SIDEBAR_ATTRIBUTE,
-            toogleSidebarConfiguration: TemplateActions.TOOGLE_SIDEBAR_CONFIGURATION,
         });
     }
 
@@ -48,22 +46,15 @@ class TemplateStore {
         this.loading = true;
     }
 
-    toogleSidebar(){
-        this.showSidebar = !this.showSidebar;
-        this.showSidebarAtribute = false;
-        this.showSidebarConfiguration = false; 
-    }
-
-    toogleSidebarAttribute(){
-        this.showSidebar = true;
-        this.showSidebarAtribute = true;
-        this.showSidebarConfiguration = false; 
-    }
-
-    toogleSidebarConfiguration(){
-        this.showSidebar = true;
-        this.showSidebarAtribute = false;
-        this.showSidebarConfiguration = true; 
+    toogleSidebar(values){
+        console.log('toogleSidebar', values);
+        let showSidebar;
+        if(values !== undefined ) {
+            showSidebar = values;
+        } else {
+            showSidebar = !this.showSidebar;
+        }
+        this.showSidebar = showSidebar;
     }
 
     handleUpdateIcon(id) {

@@ -40,7 +40,8 @@
         },
         "remove": {
           "label": "Remover",
-          "alt": "Clique para Remover"
+          "alt": "Clique para Remover",
+          "modalmsg": "Você tem certeza que quer excluir esse grupo?"
         }
       }
     }

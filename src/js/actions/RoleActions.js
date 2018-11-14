@@ -20,25 +20,25 @@ class RoleActions {
         return group;
     }
 
-/*     addGroup(group, cb, errorCb) {
-        const newGroup = group;
-        return (dispatch) => {
-            dispatch();
-            roleManager.addGroup(newGroup)
-                .then((response) => {
-                    this.insertGroup(newGroup);
-                    if (cb) {
-                        cb(response);
-                    }
-                })
-                .catch((error) => {
-                    if (errorCb) {
-                        errorCb(newGroup);
-                    }
-                    this.groupsFailed(error);
-                });
-        };
-    } */
+    /*     addGroup(group, cb, errorCb) {
+            const newGroup = group;
+            return (dispatch) => {
+                dispatch();
+                roleManager.addGroup(newGroup)
+                    .then((response) => {
+                        this.insertGroup(newGroup);
+                        if (cb) {
+                            cb(response);
+                        }
+                    })
+                    .catch((error) => {
+                        if (errorCb) {
+                            errorCb(newGroup);
+                        }
+                        this.groupsFailed(error);
+                    });
+            };
+        } */
 
     fetchGroups() {
         return (dispatch) => {
@@ -79,12 +79,12 @@ class RoleActions {
         };
     }
 
-    triggerRemoval(group, cb) {
+    triggerRemoval(groupId, cb) {
         return (dispatch) => {
             dispatch();
-            roleManager.deleteGroup(group.id)
+            roleManager.deleteGroup(groupId)
                 .then((response) => {
-                    this.removeSingle(group.id);
+                    this.removeSingle(groupId);
                     if (cb) {
                         cb(response);
                     }

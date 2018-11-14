@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-
+//TODO use component
 function Btn(params) {
     console.log(params);
     return (
@@ -17,7 +17,7 @@ function Btn(params) {
         </button>
     );
 }
-
+//TODO move Component to folder Components 
 class SideBarRight extends Component {
     /*     constructor() {
             super();

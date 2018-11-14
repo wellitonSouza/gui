@@ -10,7 +10,7 @@ import { DojotBtnLink } from '../../components/DojotButton';
 import toaster from '../../comms/util/materialize';
 import { RemoveModal } from '../../components/Modal';
 
-
+//TODO - create a component
 function RoleCard(obj) {
     return (
         <div className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight" id={obj.group.id} onClick={obj.onclick} role="button" >
@@ -86,18 +86,15 @@ function InputCheckbox(params) {
                     className="filled-in"
                     type="checkbox"
                 />
-                /*                 <label key={option.name} htmlFor={option.name}>
-                                    {option.label}
-                                </label> */
+                <label key={option.name} htmlFor={option.name}>
+                    {option.label}
+                </label> 
             ))}
         </div>
     );
 }
 
 function InputText(params) {
-    console.log(params.name, params);
-    console.log(params.name, params.label);
-    console.log(params.name, params.errorMessage);
     return (
         <div className={`input-field ${params.class ? params.class : ''}`}>
             <label
@@ -203,7 +200,7 @@ class Roles extends Component {
 
     }
 
-
+    //TODO
     checkAlphaNumber(string) {
         const regex = /^([a-z0-9_])+$/;
         return !regex.test(string);

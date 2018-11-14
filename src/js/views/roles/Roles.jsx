@@ -86,9 +86,9 @@ function InputCheckbox(params) {
                     className="filled-in"
                     type="checkbox"
                 />
-/*                 <label key={option.name} htmlFor={option.name}>
-                    {option.label}
-                </label>  */
+                /*                 <label key={option.name} htmlFor={option.name}>
+                                    {option.label}
+                                </label>  */
             ))}
         </div>
     );
@@ -202,7 +202,7 @@ class Roles extends Component {
 
     //TODO
     checkAlphaNumber(string) {
-        const regex = /^([a-z0-9_])+$/;
+        const regex = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
         return !regex.test(string);
     }
 

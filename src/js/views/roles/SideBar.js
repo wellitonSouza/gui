@@ -1,21 +1,15 @@
 import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import toaster from '../../comms/util/materialize';
-import { GenericModal } from '../../components/Modal';
 
-
-function Modal(params) {
-    return (<GenericModal title={params.title} first_message={params.first_message} openModal={this.openModal} click={this.remove} op_type={op_type} btnLabel="Remove" />);
-}
 function Btn(params) {
-    // const showModal = params.modalConfirm ? params
-
+    console.log(params);
     return (
         <button
             type="button"
             title={params.alt}
             onClick={params.click}
-            className="material-btn center-text-parent center-middle-flex"
+            className={`material-btn center-text-parent center-middle-flex ${params.class}`}
+            id={params.modalId}
         >
             <span className="text center-text-child">
                 {params.label}
@@ -25,13 +19,41 @@ function Btn(params) {
 }
 
 class SideBarRight extends Component {
+    /*     constructor() {
+            super();
+             this.state = {
+                modal: {
+                    show: false,
+                    actionClick: null,
+                    modalTitle: '',
+                },
+            }; 
+            this.showModal = this.showModal.bind(this);
+        } */
+
+    /*     showModal(e) {
+            e.preventDefault();
+            const { id } = e.currentTarget;
+            const { buttonsFooter } = this.props;
+            const btn = buttonsFooter[id];
+    
+            this.setState({
+                modal: {
+                    show: true,
+                    actionClick: btn.click,
+                    modalTitle: btn.modalConfirmText,
+                },
+            });
+        } */
 
     render() {
         const { visible, title, buttonsFooter, content } = this.props;
-
+        /*         const { modal } = this.state;
+         */
         let body = null;
         let header = null;
         let btnsFooter = null;
+        /*         let modalContent = null; */
         if (visible) {
             header = (
                 <div id="auth-title" className="title">
@@ -40,14 +62,36 @@ class SideBarRight extends Component {
                     </span>
                 </div>);
 
+            /*             if (buttonsFooter !== null && buttonsFooter.length > 0) {
+                            btnsFooter = buttonsFooter.map((btn, index) => (
+                                <Btn
+                                    label={btn.label}
+                                    click={btn.modalConfirm ? this.showModal : btn.click}
+                                    alt={btn.alt}
+                                    color={btn.color}
+                                    modalId={index}
+                                />));
+                        } */
+
             if (buttonsFooter !== null && buttonsFooter.length > 0) {
                 btnsFooter = buttonsFooter.map(btn => (
-                    <Btn label={btn.label} click={btn.click} alt={btn.alt} color={btn.color} modalConfirm={btn.modalConfirm} modalConfirmText={btn.modalConfirmText} />));
+                    <Btn
+                        label={btn.label}
+                        click={btn.click}
+                        alt={btn.alt}
+                        color={btn.color}
+                        class=""
+                    />));
             }
 
+            /*             if (modal.show) {
+                            const op_type = { label: 'Remove' };
+                            modalContent = (<GenericModal title={'treee'} first_message={'test'} openModal={modal.show} click={modal.click} op_type={op_type} btnLabel="Remove" />);
+                        }
+             */
             body = (
                 <ReactCSSTransitionGroup
-                    transitionName="sidebar"
+                    transitionName="sidebarRight"
                     transitionAppear
                     transitionAppearTimeout={500}
                     transitionEnterTimeout={500}
@@ -67,8 +111,7 @@ class SideBarRight extends Component {
 
         return body;
     }
-
 }
 
 
-export default (SideBar);
+export default (SideBarRight);

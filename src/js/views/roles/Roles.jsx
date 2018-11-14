@@ -8,6 +8,7 @@ import SideBarRight from './SideBar';
 import { NewPageHeader } from '../../containers/full/PageHeader';
 import { DojotBtnLink } from '../../components/DojotButton';
 import toaster from '../../comms/util/materialize';
+import { RemoveModal } from '../../components/Modal';
 
 
 function RoleCard(obj) {
@@ -94,11 +95,14 @@ function InputCheckbox(params) {
 }
 
 function InputText(params) {
+    console.log(params.name, params);
+    console.log(params.name, params.label);
+    console.log(params.name, params.errorMessage);
     return (
-        <div className={`input-field ${params.class}`}>
+        <div className={`input-field ${params.class ? params.class : ''}`}>
             <label
                 htmlFor={params.name}
-                data-error={params.errorMsg ? params.errorMsg : null}
+                data-error={params.errorMessage ? params.errorMessage : ''}
                 className="active"
             >
                 {params.label}
@@ -117,11 +121,8 @@ function InputText(params) {
 
 
 function Form(params) {
-    console.log('Form', params);
 
     const { handleCharge, data } = params;
-
-    console.log('Form data', data);
 
     const options = [
         {
@@ -145,7 +146,7 @@ function Form(params) {
                 maxLength={30}
                 onChange={handleCharge}
                 value={data.name}
-                errorMsg={<Trans i18nKey="roles.form.input.rolename.error" />}
+                errorMessage={<Trans i18nKey="roles.form.input.rolename.error" />}
             />
             <InputText
                 label={<Trans i18nKey="roles.form.input.roledescription.label" />}
@@ -172,6 +173,7 @@ class Roles extends Component {
 
         this.state = {
             showSideBar: false,
+            showDeleteModal: false,
             dataForm: {
                 id: '',
                 name: '',
@@ -189,6 +191,7 @@ class Roles extends Component {
         this.discard = this.discard.bind(this);
         this.save = this.save.bind(this);
         this.delete = this.delete.bind(this);
+        this.handleModalDelete = this.handleModalDelete.bind(this);
         this.handleUpdate = this.handleUpdate.bind(this);
     }
 
@@ -198,6 +201,12 @@ class Roles extends Component {
 
     componentWillUnmount() {
 
+    }
+
+
+    checkAlphaNumber(string) {
+        const regex = /^([a-z0-9_])+$/;
+        return !regex.test(string);
     }
 
     cleanDataForm() {
@@ -274,22 +283,50 @@ class Roles extends Component {
         this.cleanDataForm();
     }
 
-    save() {
-        this.hideSideBar();
+    formDataValidate() {
         const { dataForm } = this.state;
-        RoleActions.triggerSave(
-            dataForm,
-            () => {
-                toaster.success('Group created.');
-                this.hideSideBar();
-            },
-            (group) => {
-                console.log(group);
-            },
-        );
 
-        this.cleanDataForm();
-        RoleActions.fetchGroups.defer();
+        if ((dataForm.name).trim().length <= 0) {
+            toaster.warning('empty Name');
+            return false;
+        }
+
+        if (this.checkAlphaNumber(dataForm.name)) {
+            toaster.warning('Invalid name.');
+            return false;
+        }
+
+        if ((dataForm.description).trim().length <= 0) {
+            toaster.warning('empty des');
+            return false;
+        }
+
+        return true;
+    }
+
+    save() {
+        if (this.formDataValidate()) {
+            this.hideSideBar();
+            const { dataForm } = this.state;
+            RoleActions.triggerSave(
+                dataForm,
+                () => {
+                    toaster.success('Group created.');
+                    this.hideSideBar();
+                },
+                (group) => {
+                    console.log(group);
+                },
+            );
+
+            this.cleanDataForm();
+            RoleActions.fetchGroups.defer();
+        }
+    }
+
+
+    handleModalDelete(status) {
+        this.setState({ showDeleteModal: status });
     }
 
 
@@ -308,12 +345,9 @@ class Roles extends Component {
             },
             edit: true,
         });
-
-        console.log(this.state);
     }
 
     delete() {
-        this.hideSideBar();
         const { dataForm } = this.state;
         RoleActions.triggerRemoval(
             dataForm.id,
@@ -327,11 +361,15 @@ class Roles extends Component {
         );
 
         this.cleanDataForm();
+        this.handleModalDelete(false);
         RoleActions.fetchGroups.defer();
+        this.hideSideBar();
     }
 
     render() {
-        const { showSideBar, dataForm, edit } = this.state;
+        const {
+            showSideBar, dataForm, edit, showDeleteModal,
+        } = this.state;
 
         const buttonsFooter = [
             {
@@ -352,13 +390,10 @@ class Roles extends Component {
             buttonsFooter.push({
                 label: <Trans i18nKey="roles.form.btn.remove.label" />,
                 alt: <Trans i18nKey="roles.form.btn.remove.alt" />,
-                click: this.delete,
+                click: this.handleModalDelete,
                 color: 'red',
-                modalConfirm: true,
-                modalConfirmText: <Trans i18nKey="roles.form.btn.remove.modalmsg" />,
             });
         }
-
         return (
             <div id="roles-wrapper">
                 <AltContainer store={RoleStore}>
@@ -372,6 +407,12 @@ class Roles extends Component {
                         buttonsFooter={buttonsFooter}
                     />
                     <RoleList handleUpdate={this.handleUpdate} />
+                    {showDeleteModal ? (
+                        <RemoveModal
+                            name="role"
+                            remove={this.delete}
+                            openModal={this.handleModalDelete}
+                        />) : <div />}
                 </AltContainer>
             </div>
         );

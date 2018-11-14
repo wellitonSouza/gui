@@ -21,12 +21,12 @@
       },
       "input": {
         "rolename": {
-          "label": "Nome do Grupo",
-          "errormsg": "Use somente letras (a-z) and números (0-9)"
+          "label": "Group name",
+          "error": "Please use only letters (a-z) and numbers (0-9)"
         },
         "roledescription": {
-          "label": "Descrição do grupo",
-          "errormsg": ""
+          "label": "Description",
+          "error": ""
         }
       },
       "btn": {
@@ -40,8 +40,7 @@
         },
         "remove": {
           "label": "Remover",
-          "alt": "Clique para Remover",
-          "modalmsg": "Você tem certeza que quer excluir esse grupo?"
+          "alt": "Clique para Remover"
         }
       }
     }

@@ -40,7 +40,8 @@
         },
         "remove": {
           "label": "Remove",
-          "alt": "Click to Remove"
+          "alt": "Click to Remove",
+          "modalmsg": "You are about to remove this ${this.props.name}. Are you sure?"
         }
       }
     }

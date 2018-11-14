@@ -4,7 +4,7 @@ import TextTruncate from 'react-text-truncate';
 import { translate, Trans } from 'react-i18next';
 import RoleStore from '../../stores/RoleStore';
 import RoleActions from '../../actions/RoleActions';
-import SideBar from './SideBar';
+import SideBarRight from './SideBar';
 import { NewPageHeader } from '../../containers/full/PageHeader';
 import { DojotBtnLink } from '../../components/DojotButton';
 import toaster from '../../comms/util/materialize';
@@ -99,6 +99,7 @@ function InputText(params) {
             <label
                 htmlFor={params.name}
                 data-error={params.errorMsg ? params.errorMsg : null}
+                className="active"
             >
                 {params.label}
             </label>
@@ -140,7 +141,6 @@ function Form(params) {
         <form action="#">
             <InputText
                 label={<Trans i18nKey="roles.form.input.rolename.label" />}
-                placeHolder={<Trans i18nKey="roles.form.input.rolename.label" />}
                 name="name"
                 maxLength={30}
                 onChange={handleCharge}
@@ -149,7 +149,6 @@ function Form(params) {
             />
             <InputText
                 label={<Trans i18nKey="roles.form.input.roledescription.label" />}
-                placeHolder={<Trans i18nKey="roles.form.input.roledescription.label" />}
                 name="description"
                 maxLength={254}
                 onChange={handleCharge}
@@ -276,7 +275,7 @@ class Roles extends Component {
     }
 
     save() {
-        //this.hideSideBar();
+        this.hideSideBar();
         const { dataForm } = this.state;
         RoleActions.triggerSave(
             dataForm,
@@ -315,7 +314,20 @@ class Roles extends Component {
 
     delete() {
         this.hideSideBar();
+        const { dataForm } = this.state;
+        RoleActions.triggerRemoval(
+            dataForm.id,
+            () => {
+                toaster.success('Group Del.');
+                this.hideSideBar();
+            },
+            (group) => {
+                console.log(group);
+            },
+        );
+
         this.cleanDataForm();
+        RoleActions.fetchGroups.defer();
     }
 
     render() {
@@ -340,10 +352,10 @@ class Roles extends Component {
             buttonsFooter.push({
                 label: <Trans i18nKey="roles.form.btn.remove.label" />,
                 alt: <Trans i18nKey="roles.form.btn.remove.alt" />,
-                click: this.save,
+                click: this.delete,
                 color: 'red',
                 modalConfirm: true,
-                modalConfirmText: 'Remove??',
+                modalConfirmText: <Trans i18nKey="roles.form.btn.remove.modalmsg" />,
             });
         }
 
@@ -353,7 +365,7 @@ class Roles extends Component {
                     <NewPageHeader title={<Trans i18nKey="roles.title" />} icon="roles">
                         <OperationsHeader newGroup={this.newGroup} />
                     </NewPageHeader>
-                    <SideBar
+                    <SideBarRight
                         title={edit ? <Trans i18nKey="roles.form.title.edit" /> : <Trans i18nKey="roles.form.title.new" />}
                         content={<Form data={dataForm} handleCharge={this.handleInput} />}
                         visible={showSideBar}

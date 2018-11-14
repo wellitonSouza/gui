@@ -73,10 +73,10 @@ class DeviceCardList extends Component {
     }
 
     convertDeviceList() {
-        this.filteredList = JSON.parse(JSON.stringify(this.props.deviceList))
-/*         for (const k in this.props.deviceList) {
+        this.filteredList = [];
+        for (const k in this.props.deviceList) {
             this.filteredList.push(this.props.deviceList[k]);
-        } */
+        }
     }
 
     render() {

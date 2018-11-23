@@ -200,96 +200,95 @@ class Util {
     }
 
     isTypeValid(value, type, dynamic) {
-    const ret = { result: true, error: '' };
-    if (dynamic === 'actuator' && value.length === 0) return ret;
+        const ret = { result: true, error: '' };
+        if (dynamic === 'actuator' && value.length === 0) return ret;
+        if (type.trim().length == 0) {
+            ret.result = false;
+            ret.error = 'You must set a type.';
+            return ret;
+        }
+        if (dynamic === 'dynamic' && value.length === 0) return ret;
+        const validator = {
+            string(value) {
+                ret.result = value.trim().length > 0;
+                ret.error = 'This text is not valid';
+                return ret;
+            },
+            'geo:point': function (value) {
+                return this.geo(value)
+            },
+            geo(value) {
+                const re = /^([+-]?\d+(\.\d+)?)([,]\s*)([+-]?\d+(\.\d+)?)$/;
+                ret.result = re.test(value);
+                if (ret.result === false) {
+                    ret.error = 'This is not a valid coordinate';
+                }
+                return ret; 
+            },
+            integer(value) {
+                const re = /^[+-]?\d+$/;
+                ret.result = re.test(value);
+                if (ret.result === false) {
+                    ret.error = 'This is not an integer';
+                }
+                return ret;
+            },
+            float(value) {
+                const re = /^[+-]?\d+(\.\d+)?$/;
+                ret.result = re.test(value);
+                if (ret.result === false) {
+                    ret.error = 'This is not a float';
+                }
+                return ret;
+            },
+            boolean(value) {
+                const re = /^0|1|true|false$/;
+                ret.result = re.test(value);
+                if (ret.result === false) {
+                    ret.error = 'This is not a boolean';
+                }
+                return ret;
+            },
+            bool(value) {
+                console.log('isTypeValid');
+                return this.boolean(value)
+            },
+            'protocol': function (value) {
+                ret.result = value.trim().length > 0;
+                ret.error = 'This protocol is not valid';
+                return ret;
+            },
+            'topic': function (value) {
+                ret.result = value.trim().length > 0;
+                ret.error = 'This topic is not valid';
+                return ret;
+            },
+            'translator': function (value) {
+                ret.result = value.trim().length > 0;
+                ret.error = 'This translator is not valid';
+                return ret;
+            },
+            'device_timeout': function (value) {
+                const re = /^[+-]?\d+$/;
+                ret.result = re.test(value);
+                if (ret.result === false) {
+                    ret.error = 'This device timeout is not an integer';
+                }
+                return ret;
+            },
+        };
+        console.log('isTypeValid');
+        if (validator.hasOwnProperty(type)) {
+            const result = validator[type](value);
+            return result;
+        }
 
-    if(value === undefined || null){
-        ret.error = 'This can not be undefined';
-        return ret
-    }
-
-    if (type.trim().length == 0) {
-        ret.result = false;
-        ret.error = 'You must set a type.';
+        // if (validator.hasOwnProperty(this.props.newAttr.type)) {
+        //   const result = validator[this.props.newAttr.type](value)
+        //   if (result) { ErrorActions.setField('value', ''); }
+        //   return result;
+        // }
         return ret;
-    }
-    if (dynamic === 'dynamic' && value.length === 0) return ret;
-
-    const validator = {
-        string(value) {     
-            ret.result = value.trim().length > 0;
-            ret.error = 'This text is not valid';
-            return ret;
-        },
-        'geo:point': function (value) {
-            const re = /^([+-]?\d+(\.\d+)?)([,]\s*)([+-]?\d+(\.\d+)?)$/;
-            ret.result = re.test(value);
-            if (ret.result === false) {
-                ret.error = 'This is not a valid coordinate';
-            }
-            return ret;
-        },
-        integer(value) {
-            const re = /^[+-]?\d+$/;
-            ret.result = re.test(value);
-            if (ret.result === false) {
-                ret.error = 'This is not an integer';
-            }
-            return ret;
-        },
-        float(value) {
-            const re = /^[+-]?\d+(\.\d+)?$/;
-            ret.result = re.test(value);
-            if (ret.result === false) {
-                ret.error = 'This is not a float';
-            }
-            return ret;
-        },
-        boolean(value) {
-            const re = /^0|1|true|false$/;
-            ret.result = re.test(value);
-            if (ret.result === false) {
-                ret.error = 'This is not a boolean';
-            }
-            return ret;
-        
-        },
-        'protocol': function (value) {
-            ret.result = value.trim().length > 0;
-            ret.error = 'This protocol is not valid';
-            return ret;
-        },
-        'topic': function (value) {
-            ret.result = value.trim().length > 0;
-            ret.error = 'This topic is not valid';
-            return ret;
-        },
-        'translator': function (value) {
-            ret.result = value.trim().length > 0;
-            ret.error = 'This translator is not valid';
-            return ret;
-        },
-        'device_timeout': function (value) {
-            const re = /^[+-]?\d+$/;
-            ret.result = re.test(value);
-            if (ret.result === false) {
-                ret.error = 'This device timeout is not an integer';
-            }
-            return ret;
-        },
-    };
-
-    if (validator.hasOwnProperty(type)) {
-        const result = validator[type](value);
-        return result;
-    }
-
-    // if (validator.hasOwnProperty(this.props.newAttr.type)) {
-    //   const result = validator[this.props.newAttr.type](value)
-    //   if (result) { ErrorActions.setField('value', ''); }
-    //   return result;
-    // }
-    return ret;
   }
 
   isDeviceTimeoutValid(device_timeout) {

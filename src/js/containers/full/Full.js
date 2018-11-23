@@ -350,7 +350,7 @@ class Full extends Component {
 
     render() {
         return (
-            <div className="full-height">
+            <div className="full-height overflow-x-hidden">
                 <AltContainer store={LoginStore}>
 
                     {

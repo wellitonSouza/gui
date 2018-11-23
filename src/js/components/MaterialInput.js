@@ -52,7 +52,6 @@ class MaterialInput extends Component {
         }
 
         const outerClass = `input-field ${this.props.className ? this.props.className : ''}`;
-        const labelClass =  'active'
 
         let inputType;
 
@@ -78,7 +77,7 @@ class MaterialInput extends Component {
                     htmlFor={this.props.id}
                     data-error={this.props.error}
                     data-success=""
-                    className={labelClass}
+                    className="active"
                 >
                     {this.props.children}
                 </label>

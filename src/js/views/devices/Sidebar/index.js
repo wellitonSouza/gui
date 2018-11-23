@@ -1,7 +1,7 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
 import Slide from 'react-reveal/Slide';
-import MaterialInput from '../../../components/MaterialInput';
+import MaterialInput from 'Components/MaterialInput';
 import TemplateBagde from './TemplateBadge';
 
 

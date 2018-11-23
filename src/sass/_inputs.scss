@@ -256,3 +256,36 @@ a.new-btn-flat
   //  border: 1px solid rgb(248, 146, 146);
   //}
 }
+
+.sidebar-button{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0 10px 20px;
+  cursor: pointer;
+  font-family: Roboto, sans-serif;
+  .button-icon{
+    display: flex;
+    align-items: center;
+    width: 180px;
+    .icon{
+      height: 30px;
+      width: 30px;
+      margin-right: 15px;
+    }
+    .title{
+      font-weight: 500;
+      font-size: 16px;
+      color: #555555;
+    }
+    .subtitle {
+
+    }
+  }
+  .arrow-icon {
+    padding-right: 25px;
+  }
+  &:hover{
+    background-color: rgba(153, 153, 153, 0.4);
+  }
+}

@@ -1,6 +1,7 @@
 import React from 'react';
 import Slide from 'react-reveal/Slide';
-import MaterialInput from '../../../../components/MaterialInput';
+import { DojotCustomButton } from 'Components/DojotButton';
+import MaterialInput from 'Components/MaterialInput';
 import TemplateItem from './TemplateItem';
 
 
@@ -45,7 +46,7 @@ const SidebarManageTemplates = () => (
             </div>
 
             <div className="footer">
-                {/* <DojotCustomButton label="back" /> */}
+                <DojotCustomButton label="back" />
             </div>
         </div>
     </Slide>

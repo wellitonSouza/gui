@@ -6,15 +6,12 @@ import L from 'leaflet';
 import DivIcon from 'react-leaflet-div-icon';
 import * as pins from '../../config'
 import util from "../../comms/util";
-import MaterialInput from '../../components/MaterialInput';
+import MapPositionActions from "../../actions/MapPositionActions";
 
 require('leaflet.markercluster');
 
 let device_list_socket = null;
 
-const trackingPin = <DivIcon className="icon-marker bg-tracking-marker" />;
-
-const listLatLngs = [];
 const OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 17,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -125,16 +122,23 @@ class CustomMap extends Component {
     this.updateMarkers();
   }
 
+  componentWillUnmount() {
+    // reseting layer to the map
+    this.map.removeLayer(OpenStreetMap_Mapnik);
+  }
+
+
   componentDidUpdate() {
     console.log("5. componentDidUpdate ", this.props.markersData, this.subset);
     console.log("5. map ", this.map);
 
     // reseting layer to the map
-    this.map.removeLayer(OpenStreetMap_Mapnik);
-    //if (!this.map.hasLayer(OpenStreetMap_Mapnik))
-    this.map.addLayer(OpenStreetMap_Mapnik);
-
-
+    // this.map.removeLayer(OpenStreetMap_Mapnik);
+    if (!this.map.hasLayer(OpenStreetMap_Mapnik))
+    {
+        console.log("Readding the tile layer");
+        this.map.addLayer(OpenStreetMap_Mapnik);
+    }
     // check if data has changed
     if (JSON.stringify(this.props.markersData) != JSON.stringify(this.subset)) {
       this.updateMarkers();
@@ -185,9 +189,9 @@ class CustomMap extends Component {
     }
   }
 
-
   handleDyData(socket_data) {
     console.log("5. handleDyData", socket_data);
+    // MapPositionActions.appendMeasures(socket_data);
     // MeasureActions.appendMeasures(data);
     // DeviceActions.updateStatus(data);
   }
@@ -449,14 +453,6 @@ class SmallPositionRenderer extends Component {
             }
         }
         console.log("parsedEntries (static and dynamics):", parsedEntries);
-
-        // Get list of positions for each device in dynamic state
-        // for (const k in this.props.listPositions) {
-        //     listLatLngs[k] = [];
-        //     for (const j in this.props.listPositions[k]) {
-        //         listLatLngs[k].push(this.props.listPositions[k][j].position);
-        //     }
-        // }
 
         return <div className="fix-map-bug">
             <CustomMap toggleTracking={this.props.toggleTracking}  allowContextMenu={this.props.allowContextMenu} zoom={this.state.zoom} markersData={parsedEntries}/>

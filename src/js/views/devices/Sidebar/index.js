@@ -1,63 +1,52 @@
-import React from 'react';
-// import PropTypes from 'prop-types';
-import Slide from 'react-reveal/Slide';
-import MaterialInput from 'Components/MaterialInput';
-import TemplateBagde from './TemplateBadge';
+import React, { Component, Fragment } from 'react';
+import SidebarDevice from './SidebarDevice';
+import SidebarManageTemplates from './SidebarManageTemplates';
+import SidebarDeviceAttrs from './SidebarDeviceAttrs';
 
 
-const Sidebar = () => (
-    <Slide right>
-        <div className="device-sidebar">
-            <div className="header">
-                <div className="title">
-                     new device
-                </div>
-                <div className="icon">
-                    <img src="images/icons/chip-cyan.png" alt="device-icon" />
-                </div>
-            </div>
-            <div className="body">
-                <div className="title">
-                    new device
-                </div>
+class Sidebar extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showSidebarDevice: true,
+            showManageTemplates: false,
+        };
 
-                <div className="device-name">
-                    <div className="label">1. Set a name</div>
-                    <div className="device-name-input">
-                        <MaterialInput
-                            name="name"
-                            maxLength={40}
-                        >
-                            Name
-                        </MaterialInput>
-                    </div>
-                </div>
+        this.handleShowDevice = this.handleShowDevice.bind(this);
+        this.handleShowManageTemplate = this.handleShowManageTemplate.bind(this);
+    }
 
-                <div className="device-templates">
-                    <div className="label">2. Add or Remove Templates</div>
-                    <div className="template-list">
-                        <div className="add-template-button">+</div>
-                        <div className="list">
-                            <TemplateBagde />
-                            <TemplateBagde />
-                            <TemplateBagde />
-                        </div>
-                    </div>
+    handleShowDevice() {
+        console.log('clicou');
+        this.setState(prevState => ({
+            showSidebarDevice: !prevState.showSidebarDevice,
+        }));
+    }
 
-                </div>
+    handleShowManageTemplate() {
+        console.log('clicou');
+        this.setState(prevState => ({
+            showManageTemplates: !prevState.showManageTemplates,
+        }));
+    }
 
-                <div className="device-attrs">
-                    <div className="label">3. Manage Attributes</div>
-                </div>
-
-            </div>
-
-            <div className="footer">
-                {/* <DojotCustomButton label="discard" /> */}
-                {/* <DojotCustomButton label="save" type="primary" /> */}
-            </div>
-        </div>
-    </Slide>
-);
+    render() {
+        const { showSidebarDevice, showManageTemplates } = this.state;
+        return (
+            <Fragment>
+                <SidebarDevice
+                    showSidebar={showSidebarDevice}
+                    handleShowDevice={this.handleShowDevice}
+                    handleShowManageTemplate={this.handleShowManageTemplate}
+                />
+                <SidebarManageTemplates
+                    showSidebar={showManageTemplates}
+                    handleShowManageTemplate={this.handleShowManageTemplate}
+                />
+                <SidebarDeviceAttrs/>
+            </Fragment>
+        );
+    }
+}
 
 export default Sidebar;

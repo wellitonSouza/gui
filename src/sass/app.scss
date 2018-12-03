@@ -423,6 +423,10 @@ order: 1;
   font-weight: 400;
 }
 
+.overflow-x-hidden{
+  overflow-x: hidden;
+}
+
 @import 'inputs';
 @import 'shadow';
 @import 'list';

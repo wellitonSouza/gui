@@ -95,7 +95,7 @@ module.exports = {
             { from: 'node_modules/i18next-xhr-backend/i18nextXHRBackend.min.js', to: 'js/i18nextXHRBackend.min.js' },
             { from: 'node_modules/i18next/i18next.min.js', to: 'js/i18next.min.js' },
             { from: 'src/img', to: 'images' },
-            { from: "src/fonts", to: "fonts" }
+            { from: 'src/fonts', to: 'fonts' },
         ]),
 
         new webpack.DefinePlugin({
@@ -106,4 +106,13 @@ module.exports = {
             },
         }),
     ],
+    resolve: {
+        alias: {
+            Components: path.resolve(__dirname, 'src/js/components'),
+            Comms: path.resolve(__dirname, 'src/js/comms'),
+            Actions: path.resolve(__dirname, 'src/js/actions'),
+            Stores: path.resolve(__dirname, 'src/js/stores'),
+            Containers: path.resolve(__dirname, 'src/js/containers'),
+        },
+    },
 };

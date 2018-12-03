@@ -1,10 +1,9 @@
-/* eslint-disable */
-import TemplateActions from '../../actions/TemplateActions';
+import TemplateActions from 'Actions/TemplateActions';
 import { GenericOperations } from '../utils/Manipulation';
 
 class TemplateOperations extends GenericOperations {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.filterParams = { sortBy: 'label' };
         this.paginationParams = {};
         this.setDefaultPaginationParams();
@@ -12,10 +11,7 @@ class TemplateOperations extends GenericOperations {
 
 
     whenUpdatePagination(config) {
-        for (const key in config) {
-            this.paginationParams[key] = config[key];
-        }
-                   
+        for (const key in config) this.paginationParams[key] = config[key];
         this._fetch();
     }
 
@@ -26,8 +22,15 @@ class TemplateOperations extends GenericOperations {
         this._fetch();
     }
 
+    whenRemoveItemFromLastPage() {
+        if (this.paginationParams.page_num > 0) {
+            this.paginationParams.page_num = this.paginationParams.page_num - 1;
+        }
+    }
+
     _fetch() {
         const res = Object.assign({}, this.paginationParams, this.filterParams);
+        // console.log('fetching: ', res);
         TemplateActions.fetchTemplates(res);
     }
 }

@@ -5,20 +5,19 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { hashHistory } from 'react-router';
 import AltContainer from 'alt-container';
 import alt from '../../alt';
-import { NewPageHeader } from '../../containers/full/PageHeader';
-import DeviceActions from '../../actions/DeviceActions';
-import deviceManager from '../../comms/devices/DeviceManager';
-import DeviceStore from '../../stores/DeviceStore';
-import util from '../../comms/util/util';
-import { DojotBtnCircle, DojotBtnClassic, DojotBtnRedCircle } from '../../components/DojotButton';
+import { NewPageHeader } from 'Containers/full/PageHeader';
+import DeviceActions from 'Actions/DeviceActions';
+import deviceManager from 'Comms/devices/DeviceManager';
+import DeviceStore from 'Stores/DeviceStore';
+import util from 'Comms/util/util';
+import { DojotBtnCircle, DojotBtnClassic, DojotBtnRedCircle } from 'Components/DojotButton';
 
-import TemplateStore from '../../stores/TemplateStore';
-import TemplateActions from '../../actions/TemplateActions';
-import {TemplateTypes} from "../templates/Templates"
+import TemplateStore from 'Stores/TemplateStore';
+import TemplateActions from 'Actions/TemplateActions';
+import TemplateTypes from "../templates/TemplateTypes";
 
-import MaterialInput from '../../components/MaterialInput';
-import MaterialSelect from '../../components/MaterialSelect';
-import toaster from '../../comms/util/materialize';
+import MaterialInput from 'Components/MaterialInput';
+import toaster from 'Comms/util/materialize';
 
 /*
  Below begins the React Flux's hell
@@ -158,13 +157,6 @@ class StaticAttributes extends Component {
               statics[index].value = statics[index].static_value;
         }
 
-        for (const index in properties) {
-            if (properties[index].label === 'protocol') {
-                properties[index].static_value = (properties[index].value !== undefined ? properties[index].static_value.toUpperCase() : properties[index].static_value);
-                properties[index].value = (properties[index].value !== undefined ? properties[index].value.toUpperCase() : properties[index].value);
-            }
-        }
-
         return (
             <div className="attr-box specific-attr">
                 {properties.length > 0 && (
@@ -177,19 +169,7 @@ class StaticAttributes extends Component {
                                 <div key={attr.label} className="col s6 attr-fields">
                                     <div className="attr-name truncate">{attr.label}</div>
                                     <div className="attr-type">{attr.value_type}</div>
-                                    <div className={`${attr.label === 'protocol' ? '' : 'none'} attr-name input-field fix-select`}>
-                                        <MaterialSelect
-                                            className="mt0px"
-                                            id="fld_label"
-                                            value={attr.value||""}
-                                            name={attr.label}
-                                            onChange={this.handleChange}
-                                        > 
-                                            <option value="">Select type</option>
-                                            {this.availableTypes.map(opt => <option value={opt.label} key={opt.label}>{opt.label}</option>)}
-                                        </MaterialSelect>
-                                    </div>
-                                    <div className={`${attr.label === 'protocol' ? 'none' : ''} attr-name input-field fix-inputs`}>
+                                    <div className={`attr-name input-field fix-inputs`}>
                                         <MaterialInput
                                             className="mt0px"
                                             id="fld_label"

@@ -128,6 +128,7 @@ Password
                                         <i className="material-icons prefix">lock</i>
                                     </div>
                                     <div className="input-field col s12 m6 l7 offset-m2">
+
                                         <input
                                             id="fld_confirmPassword"
                                             type="password"

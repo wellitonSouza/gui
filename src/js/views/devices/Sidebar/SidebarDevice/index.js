@@ -6,7 +6,9 @@ import SidebarButton from 'Components/SidebarButton';
 import MaterialInput from 'Components/MaterialInput';
 import TemplateBagde from '../TemplateBadge';
 
-const SidebarDevice = ({ showSidebar, handleShowDevice, handleShowManageTemplate }) => (
+const SidebarDevice = ({
+    showSidebar, handleShowDevice, handleShowManageTemplate, handleShowDeviceAttrs,
+}) => (
     <Slide right when={showSidebar} duration={300}>
         {
             showSidebar
@@ -61,25 +63,25 @@ const SidebarDevice = ({ showSidebar, handleShowDevice, handleShowManageTemplate
                             <div className="device-attrs">
                                 <div className="label">3. Manage Attributes</div>
                                 <SidebarButton
-                                    onClick={() => console.log('clicou')}
+                                    onClick={handleShowDeviceAttrs}
                                     icon="config_attrs"
                                     title="Configuration"
                                     subtitle="3 of 10 configured"
                                 />
                                 <SidebarButton
-                                    onClick={() => console.log('clicou')}
+                                    onClick={handleShowDeviceAttrs}
                                     icon="data_attrs"
                                     title="Static Values"
                                     subtitle="3 of 10 configured"
                                 />
                                 <SidebarButton
-                                    onClick={() => console.log('clicou')}
+                                    onClick={handleShowDeviceAttrs}
                                     icon="data_attrs"
                                     title="Dynamic Attributes"
                                     subtitle="3 of 10 configured"
                                 />
                                 <SidebarButton
-                                    onClick={() => console.log('clicou')}
+                                    onClick={handleShowDeviceAttrs}
                                     icon="config_attrs"
                                     title="Actuators"
                                     subtitle="3 of 10 configured"
@@ -108,5 +110,6 @@ SidebarDevice.propTypes = {
     showSidebar: PropTypes.bool,
     handleShowDevice: PropTypes.func.isRequired,
     handleShowManageTemplate: PropTypes.func.isRequired,
+    handleShowDeviceAttrs: PropTypes.func.isRequired,
 };
 export default SidebarDevice;

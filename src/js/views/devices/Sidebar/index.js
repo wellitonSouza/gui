@@ -2,7 +2,8 @@ import React, { Component, Fragment } from 'react';
 import SidebarDevice from './SidebarDevice';
 import SidebarManageTemplates from './SidebarManageTemplates';
 import SidebarDeviceAttrs from './SidebarDeviceAttrs';
-
+import TemplateStore from 'Stores/TemplateStore';
+import AltContainer from 'alt-container';
 
 class Sidebar extends Component {
     constructor(props) {
@@ -10,10 +11,12 @@ class Sidebar extends Component {
         this.state = {
             showSidebarDevice: true,
             showManageTemplates: false,
+            showDeviceAttrs: false,
         };
 
         this.handleShowDevice = this.handleShowDevice.bind(this);
         this.handleShowManageTemplate = this.handleShowManageTemplate.bind(this);
+        this.handleShowDeviceAttrs = this.handleShowDeviceAttrs.bind(this);
     }
 
     handleShowDevice() {
@@ -30,20 +33,33 @@ class Sidebar extends Component {
         }));
     }
 
+    handleShowDeviceAttrs() {
+        this.setState(prevState => ({
+            showDeviceAttrs: !prevState.showDeviceAttrs,
+        }));
+    }
+
     render() {
-        const { showSidebarDevice, showManageTemplates } = this.state;
+        const { showSidebarDevice, showManageTemplates, showDeviceAttrs } = this.state;
+        console.log('render sidebar', showManageTemplates);
         return (
             <Fragment>
                 <SidebarDevice
                     showSidebar={showSidebarDevice}
                     handleShowDevice={this.handleShowDevice}
                     handleShowManageTemplate={this.handleShowManageTemplate}
+                    handleShowDeviceAttrs={this.handleShowDeviceAttrs}
                 />
-                <SidebarManageTemplates
-                    showSidebar={showManageTemplates}
-                    handleShowManageTemplate={this.handleShowManageTemplate}
+                <AltContainer store={TemplateStore}>
+                    <SidebarManageTemplates
+                        showSidebar={showManageTemplates}
+                        handleShowManageTemplate={this.handleShowManageTemplate}
+                    />
+                </AltContainer>
+                <SidebarDeviceAttrs
+                    showSidebar={showDeviceAttrs}
+                    handleShowDeviceAttrs={this.handleShowDeviceAttrs}
                 />
-                <SidebarDeviceAttrs/>
             </Fragment>
         );
     }

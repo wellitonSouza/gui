@@ -211,13 +211,15 @@ class Devices extends Component {
         const show_pagination = this.state.displayList;
         return (
             <div className="full-device-area">
-                <AltContainer store={DeviceStore}>
+                <AltContainer store={DeviceStore} >
                     <NewPageHeader title="Devices" subtitle="" icon="device">
                         <FilterLabel ops={this.dev_opex} text="Filtering Devices" />
                         <Pagination show_pagination={show_pagination} ops={this.dev_opex} />
                         <OperationsHeader displayToggle={displayToggle} toggleSearchBar={this.toggleSearchBar.bind(this)} />
                     </NewPageHeader>
-                    {this.state.displayList ? <DeviceCardList deviceid={detail} toggle={displayToggle} dev_opex={this.dev_opex} showFilter={this.state.showFilter} /> : <MapWrapper toggle={displayToggle} showFilter={this.state.showFilter} dev_opex={this.dev_opex} />}
+                    {this.state.displayList
+                        ? <DeviceCardList deviceid={detail} toggle={displayToggle} dev_opex={this.dev_opex} showFilter={this.state.showFilter} />
+                        : <MapWrapper toggle={displayToggle} showFilter={this.state.showFilter} dev_opex={this.dev_opex} />}
                 </AltContainer>
             </div>
         );

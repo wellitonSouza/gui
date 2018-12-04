@@ -13,9 +13,10 @@ import { RemoveModal } from '../../components/Modal';
 //TODO - create a component
 function RoleCard(obj) {
     return (
-        <div className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight" id={obj.group.id} onClick={obj.onclick} role="button" >
+        <div className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight"
+             id={obj.group.id} onClick={obj.onclick} role="button">
             <div className="lst-entry-title col s12 ">
-                <img className="title-icon" src="images/roles-icon.png" alt="Role" />
+                <img className="title-icon" src="images/roles-icon.png" alt="Role"/>
                 <div className="title-text truncate" title={obj.group.name}>
                     <span className="text">
                         {obj.group.name}
@@ -26,7 +27,7 @@ function RoleCard(obj) {
                 <div className="attr-area light-background">
                     <div className="attr-row">
                         <div className="icon">
-                            <img src="images/info-icon.png" alt={obj.group.description} />
+                            <img src="images/info-icon.png" alt={obj.group.description}/>
                         </div>
                         <div className="user-card attr-content" title={obj.group.description}>
                             <TextTruncate
@@ -35,7 +36,7 @@ function RoleCard(obj) {
                                 text={obj.group.description}
                                 containerClassName="description-text"
                             />
-                            <div className="subtitle"><Trans i18nKey="roles.description" /></div>
+                            <div className="subtitle"><Trans i18nKey="roles.description"/></div>
                         </div>
                     </div>
                 </div>
@@ -49,11 +50,11 @@ function RoleList(param) {
     if (param.groups) {
         return (
             <div className="fill">
-                {param.groups.map(obj => <RoleCard group={obj} key={obj.id} onclick={param.handleUpdate} />)}
+                {param.groups.map(obj => <RoleCard group={obj} key={obj.id}
+                                                   onclick={param.handleUpdate}/>)}
             </div>);
     }
 }
-
 
 function OperationsHeader(param) {
     return (
@@ -61,7 +62,7 @@ function OperationsHeader(param) {
             <DojotBtnLink
                 responsive="true"
                 onClick={param.newGroup}
-                label={<Trans i18nKey="roles.btn.new.text" />}
+                label={<Trans i18nKey="roles.btn.new.text"/>}
                 alt="Create a new role"
                 icon="fa fa-plus"
                 className="w130px"
@@ -71,26 +72,28 @@ function OperationsHeader(param) {
     );
 }
 
+/**
+ *
+ * @param params
+ * @returns {*}
+ * @constructor
+ */
 function InputCheckbox(params) {
+    console.log('InputCheckbox', params);
+    const { handleChangeCheckbox } = params;
+    console.log('handleChangeCheckbox', handleChangeCheckbox);
     return (
-        <div className="col s12">
-            <label htmlFor={params.name}>
-                {params.label}
-            </label>
-            {params.options.map(option => (
-                <input
-                    name={option.name}
-                    id={option.name}
-                    onChange={option.onChange ? option.onChange : null}
-                    value={option.value}
-                    className="filled-in"
-                    type="checkbox"
-                />
-                /*                 <label key={option.name} htmlFor={option.name}>
-                                    {option.label}
-                                </label>  */
-            ))}
-        </div>
+        <span>
+            <input
+                name={params.name}
+                id={params.name}
+                onChange={handleChangeCheckbox}
+                value={params.name}
+                checked={!!params.checked}
+                type="checkbox"
+            />
+            <label htmlFor={params.name}>{params.label}</label>
+        </span>
     );
 }
 
@@ -116,50 +119,143 @@ function InputText(params) {
     );
 }
 
+function TableRolesPermiss(params) {
+
+    const { handleChangeCheckbox, permissionsForm } = params;
+
+    //console.log('permissionsForm[0]', permissionsForm[0].devices);
+    let map = permissionsForm.map((op, index) => {
+        console.log('op', op);
+
+        for (let [key, value] of Object.entries(op)) {
+            console.log('key, value', key, value);
+            /*          for (let [operation, status] of Object.entries(value)) {
+                          console.log('operation, status', operation, status);
+                      }*/
+        }
+        /*        for (key in op) {
+                    console.log('1key', key);
+                    console.log('1op[key]', op[key]);
+                }*/
+        return null;
+    });
+
+    /*        Object.keys(op)
+                .map((key, index2) => {
+
+                    console.log('key', key);
+                    console.log('index2', index2);
+                    console.log('op[key]', op[key]);
+                    op[key].map(opppp => {
+                        console.log('opppp', opppp);
+                    });
+
+                });
+            return key;*//*
+    });
+
+    return null;
+}
+
+)
+;*/
+
+    return (
+        <table className="striped">
+            <thead>
+            <tr>
+                <th>Feature</th>
+                <th>Modifier</th>
+                <th>Viewer</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {permissionsForm.map(op => (
+
+                <tr>
+                    <td>
+                        {op.feacture}
+                    </td>
+                    < td>
+                        < InputCheckbox
+                            label=""
+                            placeHolder="Place"
+                            name={op.feacture + '.modifier'}
+                            checked={op.options.modifier}
+                            handleChangeCheckbox={handleChangeCheckbox}
+                        />
+                    </td>
+                    < td>
+                        <InputCheckbox
+                            label=""
+                            placeHolder="Place"
+                            name={op.feacture + '.viewer'}
+                            checked={op.options.viewer}
+                            handleChangeCheckbox={handleChangeCheckbox}
+                        />
+                    </td>
+                </tr>
+            ))}
+
+            </tbody>
+        </table>
+    );
+}
 
 function Form(params) {
-
-    const { handleCharge, data } = params;
-
-    const options = [
+    console.log(params);
+    const { handleCharge, data, handleChangeCheckbox, permissionsForm } = params;
+    /*const typePermissions = [
         {
-            label: 'Modifer',
-            name: 'Modifer',
-            alt: 'Modifer',
-            value: 'full',
+            feacture: 'alarms',
+            options: {
+                modifier: true,
+                viewer: true,
+            },
         },
         {
-            label: 'Viewer',
-            name: 'Viewer',
-            alt: 'Viewer',
-            value: 'partial',
+            feacture: 'templates',
+            options: {
+                modifier: false,
+                viewer: true,
+            },
         },
-    ];
+        {
+            feacture: 'devices',
+            options: {
+                modifier: true,
+                viewer: true,
+            },
+        },
+        {
+            feacture: 'users',
+            options: {
+                modifier: true,
+                viewer: true,
+            },
+        },
+    ];*/
     return (
         <form action="#">
             <InputText
-                label={<Trans i18nKey="roles.form.input.rolename.label" />}
+                label={<Trans i18nKey="roles.form.input.rolename.label"/>}
                 name="name"
                 maxLength={30}
                 onChange={handleCharge}
                 value={data.name}
-                errorMessage={<Trans i18nKey="roles.form.input.rolename.error" />}
+                errorMessage={<Trans i18nKey="roles.form.input.rolename.error"/>}
             />
             <InputText
-                label={<Trans i18nKey="roles.form.input.roledescription.label" />}
+                label={<Trans i18nKey="roles.form.input.roledescription.label"/>}
                 name="description"
                 maxLength={254}
                 onChange={handleCharge}
                 value={data.description}
             />
-            {/*             <InputCheckbox
-                label={<Trans i18nKey="roles.form.input.roledescription.label" />}
-                placeHolder={<Trans i18nKey="roles.form.input.roledescription.label" />}
-                name="permissions.alarms"
-                options={options}
-             onChange={handleCharge} 
-                            value={data.roleDescription} 
-            /> */}
+            <TableRolesPermiss
+                permissionsForm={permissionsForm}
+                handleChangeCheckbox={handleChangeCheckbox}/>
         </form>
     );
 }
@@ -176,6 +272,20 @@ class Roles extends Component {
                 name: '',
                 description: '',
             },
+            permissionsForm: [
+                {
+                    devices: [
+                        { modifier: true },
+                        { viewer: true },
+                    ],
+                },
+                {
+                    alarms: [
+                        { modifier: true },
+                        { viewer: true },
+                    ],
+                },
+            ],
             edit: false,
         };
 
@@ -190,6 +300,10 @@ class Roles extends Component {
         this.delete = this.delete.bind(this);
         this.handleModalDelete = this.handleModalDelete.bind(this);
         this.handleUpdate = this.handleUpdate.bind(this);
+        this.handleCheckBox = this.handleCheckBox.bind(this);
+
+        console.log('state', this.state);
+
     }
 
     componentDidMount() {
@@ -207,14 +321,15 @@ class Roles extends Component {
     }
 
     cleanDataForm() {
-        this.setState({
+        this.setState(prevState => ({
+            ...prevState,
             dataForm: {
                 id: '',
                 name: '',
                 description: '',
             },
             edit: false,
-        });
+        }));
     }
 
     newGroup() {
@@ -228,52 +343,82 @@ class Roles extends Component {
     }
 
     toggleSideBar() {
-        this.setState(prevState => ({ showSideBar: !prevState.showSideBar }));
+        this.setState(prevState => ({
+            showSideBar: !prevState.showSideBar,
+        }));
     }
 
     hideSideBar() {
-        this.setState({ showSideBar: false });
+        this.setState({
+
+            showSideBar: false,
+        });
     }
 
     showSideBar() {
-        this.setState({ showSideBar: true });
+        this.setState({
+            showSideBar: true,
+        });
     }
 
     handleInput(e) {
 
         /**
          *     if re.match(r'^[a-zA-Z0-9]+$', group['name']) is None:
-            raise HTTPRequestError(400,
-            'Invalid group name, only alphanumeric allowed')
+         raise HTTPRequestError(400,
+         'Invalid group name, only alphanumeric allowed')
 
-            disable save
+         disable save
          */
         const { name, value } = e.target;
         this.setState(prevState => ({
+            ...prevState,
             dataForm: {
-                ...prevState.dataForm, [name]: value,
+                ...prevState.dataForm,
+                [name]: value,
             },
         }));
     }
-    /* 
-        handleCheckBox(e) {
-    
-            const newSelection = e.target.value;
-            let newSelectionArray;
-    
-            if (this.state.newUser.skills.indexOf(newSelection) > -1) {
-                newSelectionArray = this.state.newUser.skills.filter(s => s !== newSelection)
-            } else {
-                newSelectionArray = [...this.state.newUser.skills, newSelection];
-            }
-    
-            this.setState(prevState => ({
-                newUser:
-                    { ...prevState.newUser, skills: newSelectionArray }
-            })
-            )
-        }
-     */
+
+    handleCheckBox(e) {
+        const { name } = e.target;
+        const [action, typePermission] = name.split('.');
+
+        console.log('0', this.state); //!prevState.permissionsForm[action][typePermission]
+        //let obj = {};
+        //obj[action][typePermission] = !this.state['permissionsForm'][action][typePermission];
+        //this.setState((prevState) => ({ permissions: { ...prevState.permissions, alarm: { modifier: false } } }));
+        this.setState(prevState => ({
+            permissionsForm: {
+                ...prevState.permissionsForm,
+                [action]: {
+                    ...prevState.permissionsForm[action],
+                    [typePermission]: false,
+                },
+            },
+        }));
+
+        console.log('0', this.state);
+        //const { permissions } = this.state.dataForm;
+        // console.log('1', permissions);
+        // permissions[action][typePermission] = !prevPermissions[action][typePermission];
+        // console.log('2', permissions);
+        /*        this.setState({
+                    permissions,
+                });*/
+        /*      this.setState(prevState => ({
+                  dataForm.permissions.alarm: [...prevState.dataForm.permissions.alarm, false]
+              }));*/
+        /*        console.log('3', this.state);
+
+                       this.setState(prevState => ({
+                            dataForm[permissions]: {
+                                ...prevState.dataForm.permissions,
+                                [action][typePermission]: false,
+                            },
+                        }));*/
+
+    }
 
     discard() {
         this.hideSideBar();
@@ -323,7 +468,10 @@ class Roles extends Component {
 
 
     handleModalDelete(status) {
-        this.setState({ showDeleteModal: status });
+        this.setState(prevState => ({
+            ...prevState,
+            showDeleteModal: status,
+        }));
     }
 
 
@@ -334,14 +482,15 @@ class Roles extends Component {
         const { id } = e.currentTarget;
         const group = RoleActions.getGroupById(id);
 
-        this.setState({
+        this.setState(prevState => ({
+            ...prevState,
             dataForm: {
                 id: group.id,
                 name: group.name,
                 description: group.description,
             },
             edit: true,
-        });
+        }));
     }
 
     delete() {
@@ -365,19 +514,19 @@ class Roles extends Component {
 
     render() {
         const {
-            showSideBar, dataForm, edit, showDeleteModal,
+            showSideBar, dataForm, edit, showDeleteModal, permissionsForm
         } = this.state;
 
         const buttonsFooter = [
             {
-                label: <Trans i18nKey="roles.form.btn.discard.label" />,
-                alt: <Trans i18nKey="roles.form.btn.discard.alt" />,
+                label: <Trans i18nKey="roles.form.btn.discard.label"/>,
+                alt: <Trans i18nKey="roles.form.btn.discard.alt"/>,
                 click: this.discard,
                 color: 'gray',
             },
             {
-                label: <Trans i18nKey="roles.form.btn.save.label" />,
-                alt: <Trans i18nKey="roles.form.btn.save.alt" />,
+                label: <Trans i18nKey="roles.form.btn.save.label"/>,
+                alt: <Trans i18nKey="roles.form.btn.save.alt"/>,
                 click: this.save,
                 color: 'blue',
             },
@@ -385,8 +534,8 @@ class Roles extends Component {
 
         if (edit) {
             buttonsFooter.push({
-                label: <Trans i18nKey="roles.form.btn.remove.label" />,
-                alt: <Trans i18nKey="roles.form.btn.remove.alt" />,
+                label: <Trans i18nKey="roles.form.btn.remove.label"/>,
+                alt: <Trans i18nKey="roles.form.btn.remove.alt"/>,
                 click: this.handleModalDelete,
                 color: 'red',
             });
@@ -394,27 +543,34 @@ class Roles extends Component {
         return (
             <div id="roles-wrapper">
                 <AltContainer store={RoleStore}>
-                    <NewPageHeader title={<Trans i18nKey="roles.title" />} icon="roles">
-                        <OperationsHeader newGroup={this.newGroup} />
+                    <NewPageHeader title={<Trans i18nKey="roles.title"/>} icon="roles">
+                        <OperationsHeader newGroup={this.newGroup}/>
                     </NewPageHeader>
                     <SideBarRight
-                        title={edit ? <Trans i18nKey="roles.form.title.edit" /> : <Trans i18nKey="roles.form.title.new" />}
-                        content={<Form data={dataForm} handleCharge={this.handleInput} />}
+                        title={edit ? <Trans i18nKey="roles.form.title.edit"/> :
+                            <Trans i18nKey="roles.form.title.new"/>}
+                        content={(
+                            <Form
+                                data={dataForm}
+                                permissionsForm={permissionsForm}
+                                handleCharge={this.handleInput}
+                                handleChangeCheckbox={this.handleCheckBox}
+                            />
+                        )}
                         visible={showSideBar}
                         buttonsFooter={buttonsFooter}
                     />
-                    <RoleList handleUpdate={this.handleUpdate} />
+                    <RoleList handleUpdate={this.handleUpdate}/>
                     {showDeleteModal ? (
                         <RemoveModal
                             name="role"
                             remove={this.delete}
                             openModal={this.handleModalDelete}
-                        />) : <div />}
+                        />) : <div/>}
                 </AltContainer>
             </div>
         );
     }
 }
-
 
 export default translate()(Roles);

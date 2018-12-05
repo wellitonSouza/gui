@@ -17,35 +17,8 @@ function Btn(params) {
         </button>
     );
 }
-//TODO move Component to folder Components 
+//TODO move Component to folder Components
 class SideBarRight extends Component {
-    /*     constructor() {
-            super();
-             this.state = {
-                modal: {
-                    show: false,
-                    actionClick: null,
-                    modalTitle: '',
-                },
-            }; 
-            this.showModal = this.showModal.bind(this);
-        } */
-
-    /*     showModal(e) {
-            e.preventDefault();
-            const { id } = e.currentTarget;
-            const { buttonsFooter } = this.props;
-            const btn = buttonsFooter[id];
-    
-            this.setState({
-                modal: {
-                    show: true,
-                    actionClick: btn.click,
-                    modalTitle: btn.modalConfirmText,
-                },
-            });
-        } */
-
     render() {
         const { visible, title, buttonsFooter, content } = this.props;
         /*         const { modal } = this.state;

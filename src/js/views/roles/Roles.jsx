@@ -14,7 +14,9 @@ import { RemoveModal } from '../../components/Modal';
 function RoleCard(obj) {
     return (
         <div className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight"
-             id={obj.group.id} onClick={obj.onclick} role="button">
+             id={obj.group.id}
+             onClick={obj.onclick}
+             role="button">
             <div className="lst-entry-title col s12 ">
                 <img className="title-icon" src="images/roles-icon.png" alt="Role"/>
                 <div className="title-text truncate" title={obj.group.name}>
@@ -72,16 +74,8 @@ function OperationsHeader(param) {
     );
 }
 
-/**
- *
- * @param params
- * @returns {*}
- * @constructor
- */
 function InputCheckbox(params) {
-    console.log('InputCheckbox', params);
     const { handleChangeCheckbox } = params;
-    console.log('handleChangeCheckbox', handleChangeCheckbox);
     return (
         <span>
             <input
@@ -123,43 +117,6 @@ function TableRolesPermiss(params) {
 
     const { handleChangeCheckbox, permissionsForm } = params;
 
-    //console.log('permissionsForm[0]', permissionsForm[0].devices);
-    let map = permissionsForm.map((op, index) => {
-        console.log('op', op);
-
-        for (let [key, value] of Object.entries(op)) {
-            console.log('key, value', key, value);
-            /*          for (let [operation, status] of Object.entries(value)) {
-                          console.log('operation, status', operation, status);
-                      }*/
-        }
-        /*        for (key in op) {
-                    console.log('1key', key);
-                    console.log('1op[key]', op[key]);
-                }*/
-        return null;
-    });
-
-    /*        Object.keys(op)
-                .map((key, index2) => {
-
-                    console.log('key', key);
-                    console.log('index2', index2);
-                    console.log('op[key]', op[key]);
-                    op[key].map(opppp => {
-                        console.log('opppp', opppp);
-                    });
-
-                });
-            return key;*//*
-    });
-
-    return null;
-}
-
-)
-;*/
-
     return (
         <table className="striped">
             <thead>
@@ -170,72 +127,38 @@ function TableRolesPermiss(params) {
             </tr>
             </thead>
             <tbody>
+            {Object.keys(permissionsForm)
+                .map(action => (
+                    <tr>
+                        <td>
+                            {action}
+                        </td>
+                        {
+                            Object.keys(permissionsForm[action])
+                                .map(operation => (
+                                    <td>
+                                        <InputCheckbox
+                                            label=""
+                                            placeHolder=""
+                                            name={`${action}.${operation}`}
+                                            checked={permissionsForm[action][operation]}
+                                            handleChangeCheckbox={handleChangeCheckbox}
+                                        />
+                                    </td>
+                                ))
 
-            {permissionsForm.map(op => (
-
-                <tr>
-                    <td>
-                        {op.feacture}
-                    </td>
-                    < td>
-                        < InputCheckbox
-                            label=""
-                            placeHolder="Place"
-                            name={op.feacture + '.modifier'}
-                            checked={op.options.modifier}
-                            handleChangeCheckbox={handleChangeCheckbox}
-                        />
-                    </td>
-                    < td>
-                        <InputCheckbox
-                            label=""
-                            placeHolder="Place"
-                            name={op.feacture + '.viewer'}
-                            checked={op.options.viewer}
-                            handleChangeCheckbox={handleChangeCheckbox}
-                        />
-                    </td>
-                </tr>
-            ))}
-
+                        }
+                    </tr>
+                ))
+            }
             </tbody>
         </table>
     );
 }
 
 function Form(params) {
-    console.log(params);
+
     const { handleCharge, data, handleChangeCheckbox, permissionsForm } = params;
-    /*const typePermissions = [
-        {
-            feacture: 'alarms',
-            options: {
-                modifier: true,
-                viewer: true,
-            },
-        },
-        {
-            feacture: 'templates',
-            options: {
-                modifier: false,
-                viewer: true,
-            },
-        },
-        {
-            feacture: 'devices',
-            options: {
-                modifier: true,
-                viewer: true,
-            },
-        },
-        {
-            feacture: 'users',
-            options: {
-                modifier: true,
-                viewer: true,
-            },
-        },
-    ];*/
     return (
         <form action="#">
             <InputText
@@ -272,20 +195,16 @@ class Roles extends Component {
                 name: '',
                 description: '',
             },
-            permissionsForm: [
-                {
-                    devices: [
-                        { modifier: true },
-                        { viewer: true },
-                    ],
+            permissionsForm: {
+                devices: {
+                    modifier: true,
+                    viewer: true,
                 },
-                {
-                    alarms: [
-                        { modifier: true },
-                        { viewer: true },
-                    ],
+                alarms: {
+                    modifier: true,
+                    viewer: true,
                 },
-            ],
+            },
             edit: false,
         };
 
@@ -301,9 +220,6 @@ class Roles extends Component {
         this.handleModalDelete = this.handleModalDelete.bind(this);
         this.handleUpdate = this.handleUpdate.bind(this);
         this.handleCheckBox = this.handleCheckBox.bind(this);
-
-        console.log('state', this.state);
-
     }
 
     componentDidMount() {
@@ -362,14 +278,6 @@ class Roles extends Component {
     }
 
     handleInput(e) {
-
-        /**
-         *     if re.match(r'^[a-zA-Z0-9]+$', group['name']) is None:
-         raise HTTPRequestError(400,
-         'Invalid group name, only alphanumeric allowed')
-
-         disable save
-         */
         const { name, value } = e.target;
         this.setState(prevState => ({
             ...prevState,
@@ -383,41 +291,15 @@ class Roles extends Component {
     handleCheckBox(e) {
         const { name } = e.target;
         const [action, typePermission] = name.split('.');
-
-        console.log('0', this.state); //!prevState.permissionsForm[action][typePermission]
-        //let obj = {};
-        //obj[action][typePermission] = !this.state['permissionsForm'][action][typePermission];
-        //this.setState((prevState) => ({ permissions: { ...prevState.permissions, alarm: { modifier: false } } }));
         this.setState(prevState => ({
             permissionsForm: {
                 ...prevState.permissionsForm,
                 [action]: {
                     ...prevState.permissionsForm[action],
-                    [typePermission]: false,
+                    [typePermission]: !prevState.permissionsForm[action][typePermission],
                 },
             },
         }));
-
-        console.log('0', this.state);
-        //const { permissions } = this.state.dataForm;
-        // console.log('1', permissions);
-        // permissions[action][typePermission] = !prevPermissions[action][typePermission];
-        // console.log('2', permissions);
-        /*        this.setState({
-                    permissions,
-                });*/
-        /*      this.setState(prevState => ({
-                  dataForm.permissions.alarm: [...prevState.dataForm.permissions.alarm, false]
-              }));*/
-        /*        console.log('3', this.state);
-
-                       this.setState(prevState => ({
-                            dataForm[permissions]: {
-                                ...prevState.dataForm.permissions,
-                                [action][typePermission]: false,
-                            },
-                        }));*/
-
     }
 
     discard() {

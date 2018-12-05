@@ -10,7 +10,6 @@ import { DojotBtnLink } from '../../components/DojotButton';
 import toaster from '../../comms/util/materialize';
 import { RemoveModal } from '../../components/Modal';
 
-//TODO - create a component
 function RoleCard(obj) {
     return (
         <div className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight"
@@ -157,8 +156,12 @@ function TableRolesPermiss(params) {
 }
 
 function Form(params) {
-
-    const { handleCharge, data, handleChangeCheckbox, permissionsForm } = params;
+    const {
+        handleCharge,
+        data,
+        handleChangeCheckbox,
+        permissionsForm,
+    } = params;
     return (
         <form action="#">
             <InputText
@@ -402,24 +405,21 @@ class Roles extends Component {
         const buttonsFooter = [
             {
                 label: <Trans i18nKey="roles.form.btn.discard.label"/>,
-                alt: <Trans i18nKey="roles.form.btn.discard.alt"/>,
                 click: this.discard,
-                color: 'gray',
+                type: 'default',
             },
             {
                 label: <Trans i18nKey="roles.form.btn.save.label"/>,
-                alt: <Trans i18nKey="roles.form.btn.save.alt"/>,
                 click: this.save,
-                color: 'blue',
+                type: 'primary',
             },
         ];
 
         if (edit) {
             buttonsFooter.push({
                 label: <Trans i18nKey="roles.form.btn.remove.label"/>,
-                alt: <Trans i18nKey="roles.form.btn.remove.alt"/>,
                 click: this.handleModalDelete,
-                color: 'red',
+                type: 'secondary',
             });
         }
         return (

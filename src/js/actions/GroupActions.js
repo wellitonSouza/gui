@@ -20,26 +20,6 @@ class GroupActions {
         return group;
     }
 
-    /*     addGroup(group, cb, errorCb) {
-            const newGroup = group;
-            return (dispatch) => {
-                dispatch();
-                groupManager.addGroup(newGroup)
-                    .then((response) => {
-                        this.insertGroup(newGroup);
-                        if (cb) {
-                            cb(response);
-                        }
-                    })
-                    .catch((error) => {
-                        if (errorCb) {
-                            errorCb(newGroup);
-                        }
-                        this.groupsFailed(error);
-                    });
-            };
-        } */
-
     fetchGroups() {
         return (dispatch) => {
             dispatch();

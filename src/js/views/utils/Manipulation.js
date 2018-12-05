@@ -267,7 +267,7 @@ class SimpleFilter extends Component {
     render() {
         return (
             <div className="filter-wrapper relative-size">
-                <form group="form">
+                <form role="form">
                     {/* filter selection  */}
                     <div className="input-field">
                         {/* <i className="prefix fa fa-search"></i> */}

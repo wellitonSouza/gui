@@ -17,7 +17,7 @@ const MetadataList = ({ values, selectMetadata }) => {
                             onClick={() => selectMetadata(metadata)}
                             onKeyPress={() => selectMetadata(metadata)}
                             tabIndex="0"
-                            group="button"
+                            role="button"
                         >
                             <div className="metadata-icon">
                                 <img

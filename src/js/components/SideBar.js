@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import { DojotCustomButton } from '../../components/DojotButton';
+import { DojotCustomButton } from './DojotButton';
 
 //TODO move Component to folder Components
 class SideBarRight extends Component {

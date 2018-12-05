@@ -6,7 +6,7 @@ const SidebarButton = ({ onClick, icon, text }) => (
         className="body-actions--button"
         onClick={onClick}
         onKeyPress={onClick}
-        role="button"
+        group="button"
         tabIndex="0"
     >
         <div className="button-icon">

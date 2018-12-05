@@ -7,7 +7,7 @@ const SidebarProp = ({ attr, icon, toogleSidebarAttribute }) => (
         className="template-prop"
         onClick={() => toogleSidebarAttribute(icon, attr)}
         onKeyPress={() => toogleSidebarAttribute(icon, attr)}
-        role="button"
+        group="button"
         tabIndex="0"
     >
         <div className="button-icon">

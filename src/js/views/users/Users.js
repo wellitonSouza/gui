@@ -158,7 +158,7 @@ class SideBar extends Component {
     this.props.hide();
     this.loadUsers();
   }
-    
+
 
     handleDelete() {
         this.setState({ show_modal: true });
@@ -321,7 +321,7 @@ class SideBar extends Component {
                             <label htmlFor="profile">Profile</label>
                         </div>
 
-                        <div id="auth-select-role" className="input-field">
+                        <div id="auth-select-group" className="input-field">
                             <MaterialSelect
                                 id="flr_profiles"
                                 name="profile"

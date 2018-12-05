@@ -1,9 +1,9 @@
-import roleManager from '../comms/roles/RoleManager';
+import groupManager from '../comms/groups/GroupManager';
 import toaster from '../comms/util/materialize';
 
 const alt = require('../alt');
 
-class RoleActions {
+class GroupActions {
     constructor() {
         this.groups = [];
         this.group = null;
@@ -24,7 +24,7 @@ class RoleActions {
             const newGroup = group;
             return (dispatch) => {
                 dispatch();
-                roleManager.addGroup(newGroup)
+                groupManager.addGroup(newGroup)
                     .then((response) => {
                         this.insertGroup(newGroup);
                         if (cb) {
@@ -43,7 +43,7 @@ class RoleActions {
     fetchGroups() {
         return (dispatch) => {
             dispatch();
-            roleManager.getGroups()
+            groupManager.getGroups()
                 .then((groupList) => {
                     this.updateGroups(groupList.groups);
                 })
@@ -63,7 +63,7 @@ class RoleActions {
     triggerSave(group, cb, errorCb) {
         return (dispatch) => {
             dispatch();
-            roleManager.setGroup(group)
+            groupManager.setGroup(group)
                 .then((response) => {
                     this.updateSingle(group);
                     if (cb) {
@@ -82,7 +82,7 @@ class RoleActions {
     triggerRemoval(groupId, cb) {
         return (dispatch) => {
             dispatch();
-            roleManager.deleteGroup(groupId)
+            groupManager.deleteGroup(groupId)
                 .then((response) => {
                     this.removeSingle(groupId);
                     if (cb) {
@@ -112,5 +112,5 @@ class RoleActions {
     }
 }
 
-const roleAction = alt.createActions(RoleActions, exports);
-export default roleAction;
+const groupAction = alt.createActions(GroupActions, exports);
+export default groupAction;

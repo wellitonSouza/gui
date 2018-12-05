@@ -1,11 +1,11 @@
 {
   "menu": {
-    "roles": {
+    "groups": {
       "text": "Groups",
       "alt": "List of Groups"
     }
   },
-  "roles": {
+  "groups": {
     "title": "Groups",
     "description": "Description",
     "btn": {
@@ -20,11 +20,11 @@
         "edit": "Edit group"
       },
       "input": {
-        "rolename": {
+        "groupname": {
           "label": "Group name",
           "error": "Please use only letters (a-z) and numbers (0-9)"
         },
-        "roledescription": {
+        "groupdescription": {
           "label": "Description",
           "error": ""
         }

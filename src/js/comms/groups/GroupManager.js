@@ -1,6 +1,6 @@
 import util from '../util/util';
 
-class RoleManager {
+class GroupManager {
     constructor() {
         this.baseUrl = '/auth/pap/group';
     }
@@ -27,5 +27,5 @@ class RoleManager {
     }
 }
 
-const roleManager = new RoleManager();
-export default roleManager;
+const groupManager = new GroupManager();
+export default groupManager;

@@ -2,22 +2,22 @@ import React, { Component } from 'react';
 import AltContainer from 'alt-container';
 import TextTruncate from 'react-text-truncate';
 import { translate, Trans } from 'react-i18next';
-import RoleStore from '../../stores/RoleStore';
-import RoleActions from '../../actions/RoleActions';
-import SideBarRight from './SideBar';
+import Groupstore from '../../stores/GroupStore';
+import GroupActions from '../../actions/GroupActions';
+import SideBarRight from '../../components/SideBar';
 import { NewPageHeader } from '../../containers/full/PageHeader';
 import { DojotBtnLink } from '../../components/DojotButton';
 import toaster from '../../comms/util/materialize';
 import { RemoveModal } from '../../components/Modal';
 
-function RoleCard(obj) {
+function GroupCard(obj) {
     return (
         <div className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight"
              id={obj.group.id}
              onClick={obj.onclick}
-             role="button">
+             group="button">
             <div className="lst-entry-title col s12 ">
-                <img className="title-icon" src="images/roles-icon.png" alt="Role"/>
+                <img className="title-icon" src="images/groups-icon.png" alt="Group"/>
                 <div className="title-text truncate" title={obj.group.name}>
                     <span className="text">
                         {obj.group.name}
@@ -37,7 +37,7 @@ function RoleCard(obj) {
                                 text={obj.group.description}
                                 containerClassName="description-text"
                             />
-                            <div className="subtitle"><Trans i18nKey="roles.description"/></div>
+                            <div className="subtitle"><Trans i18nKey="groups.description"/></div>
                         </div>
                     </div>
                 </div>
@@ -47,11 +47,11 @@ function RoleCard(obj) {
     );
 }
 
-function RoleList(param) {
+function GroupList(param) {
     if (param.groups) {
         return (
             <div className="fill">
-                {param.groups.map(obj => <RoleCard group={obj} key={obj.id}
+                {param.groups.map(obj => <GroupCard group={obj} key={obj.id}
                                                    onclick={param.handleUpdate}/>)}
             </div>);
     }
@@ -63,8 +63,8 @@ function OperationsHeader(param) {
             <DojotBtnLink
                 responsive="true"
                 onClick={param.newGroup}
-                label={<Trans i18nKey="roles.btn.new.text"/>}
-                alt="Create a new role"
+                label={<Trans i18nKey="groups.btn.new.text"/>}
+                alt="Create a new group"
                 icon="fa fa-plus"
                 className="w130px"
             />
@@ -112,12 +112,12 @@ function InputText(params) {
     );
 }
 
-function TableRolesPermiss(params) {
+function TableGroupsPermiss(params) {
 
     const { handleChangeCheckbox, permissionsForm } = params;
 
     return (
-        <table className="striped">
+        <table className="striped centered">
             <thead>
             <tr>
                 <th>Feature</th>
@@ -165,35 +165,35 @@ function Form(params) {
     return (
         <form action="#">
             <InputText
-                label={<Trans i18nKey="roles.form.input.rolename.label"/>}
+                label={<Trans i18nKey="groups.form.input.groupname.label"/>}
                 name="name"
                 maxLength={30}
                 onChange={handleCharge}
                 value={data.name}
-                errorMessage={<Trans i18nKey="roles.form.input.rolename.error"/>}
+                errorMessage={<Trans i18nKey="groups.form.input.groupname.error"/>}
             />
             <InputText
-                label={<Trans i18nKey="roles.form.input.roledescription.label"/>}
+                label={<Trans i18nKey="groups.form.input.groupdescription.label"/>}
                 name="description"
                 maxLength={254}
                 onChange={handleCharge}
                 value={data.description}
             />
-            <TableRolesPermiss
+            <TableGroupsPermiss
                 permissionsForm={permissionsForm}
                 handleChangeCheckbox={handleChangeCheckbox}/>
         </form>
     );
 }
 
-class Roles extends Component {
+class Groups extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             showSideBar: false,
             showDeleteModal: false,
-            dataForm: {
+            groupsForm: {
                 id: '',
                 name: '',
                 description: '',
@@ -216,7 +216,7 @@ class Roles extends Component {
         this.hideSideBar = this.hideSideBar.bind(this);
         this.showSideBar = this.showSideBar.bind(this);
         this.handleInput = this.handleInput.bind(this);
-        this.cleanDataForm = this.cleanDataForm.bind(this);
+        this.cleangroupsForm = this.cleangroupsForm.bind(this);
         this.discard = this.discard.bind(this);
         this.save = this.save.bind(this);
         this.delete = this.delete.bind(this);
@@ -226,7 +226,7 @@ class Roles extends Component {
     }
 
     componentDidMount() {
-        RoleActions.fetchGroups.defer();
+        GroupActions.fetchGroups.defer();
     }
 
     componentWillUnmount() {
@@ -239,10 +239,10 @@ class Roles extends Component {
         return !regex.test(string);
     }
 
-    cleanDataForm() {
+    cleangroupsForm() {
         this.setState(prevState => ({
             ...prevState,
-            dataForm: {
+            groupsForm: {
                 id: '',
                 name: '',
                 description: '',
@@ -252,7 +252,7 @@ class Roles extends Component {
     }
 
     newGroup() {
-        this.cleanDataForm();
+        this.cleangroupsForm();
         this.showSideBar();
     }
 
@@ -284,8 +284,8 @@ class Roles extends Component {
         const { name, value } = e.target;
         this.setState(prevState => ({
             ...prevState,
-            dataForm: {
-                ...prevState.dataForm,
+            groupsForm: {
+                ...prevState.groupsForm,
                 [name]: value,
             },
         }));
@@ -307,23 +307,23 @@ class Roles extends Component {
 
     discard() {
         this.hideSideBar();
-        this.cleanDataForm();
+        this.cleangroupsForm();
     }
 
     formDataValidate() {
-        const { dataForm } = this.state;
+        const { groupsForm } = this.state;
 
-        if ((dataForm.name).trim().length <= 0) {
+        if ((groupsForm.name).trim().length <= 0) {
             toaster.warning('empty Name');
             return false;
         }
 
-        if (this.checkAlphaNumber(dataForm.name)) {
+        if (this.checkAlphaNumber(groupsForm.name)) {
             toaster.warning('Invalid name.');
             return false;
         }
 
-        if ((dataForm.description).trim().length <= 0) {
+        if ((groupsForm.description).trim().length <= 0) {
             toaster.warning('empty des');
             return false;
         }
@@ -334,9 +334,9 @@ class Roles extends Component {
     save() {
         if (this.formDataValidate()) {
             this.hideSideBar();
-            const { dataForm } = this.state;
-            RoleActions.triggerSave(
-                dataForm,
+            const { groupsForm } = this.state;
+            GroupActions.triggerSave(
+                groupsForm,
                 () => {
                     toaster.success('Group created.');
                     this.hideSideBar();
@@ -346,8 +346,8 @@ class Roles extends Component {
                 },
             );
 
-            this.cleanDataForm();
-            RoleActions.fetchGroups.defer();
+            this.cleangroupsForm();
+            GroupActions.fetchGroups.defer();
         }
     }
 
@@ -363,13 +363,13 @@ class Roles extends Component {
     handleUpdate(e) {
         e.preventDefault();
         this.showSideBar();
-        this.cleanDataForm();
+        this.cleangroupsForm();
         const { id } = e.currentTarget;
-        const group = RoleActions.getGroupById(id);
+        const group = GroupActions.getGroupById(id);
 
         this.setState(prevState => ({
             ...prevState,
-            dataForm: {
+            groupsForm: {
                 id: group.id,
                 name: group.name,
                 description: group.description,
@@ -379,9 +379,9 @@ class Roles extends Component {
     }
 
     delete() {
-        const { dataForm } = this.state;
-        RoleActions.triggerRemoval(
-            dataForm.id,
+        const { groupsForm } = this.state;
+        GroupActions.triggerRemoval(
+            groupsForm.id,
             () => {
                 toaster.success('Group Del.');
                 this.hideSideBar();
@@ -391,25 +391,25 @@ class Roles extends Component {
             },
         );
 
-        this.cleanDataForm();
+        this.cleangroupsForm();
         this.handleModalDelete(false);
-        RoleActions.fetchGroups.defer();
+        GroupActions.fetchGroups.defer();
         this.hideSideBar();
     }
 
     render() {
         const {
-            showSideBar, dataForm, edit, showDeleteModal, permissionsForm
+            showSideBar, groupsForm, edit, showDeleteModal, permissionsForm
         } = this.state;
 
         const buttonsFooter = [
             {
-                label: <Trans i18nKey="roles.form.btn.discard.label"/>,
+                label: <Trans i18nKey="groups.form.btn.discard.label"/>,
                 click: this.discard,
                 type: 'default',
             },
             {
-                label: <Trans i18nKey="roles.form.btn.save.label"/>,
+                label: <Trans i18nKey="groups.form.btn.save.label"/>,
                 click: this.save,
                 type: 'primary',
             },
@@ -417,23 +417,23 @@ class Roles extends Component {
 
         if (edit) {
             buttonsFooter.push({
-                label: <Trans i18nKey="roles.form.btn.remove.label"/>,
+                label: <Trans i18nKey="groups.form.btn.remove.label"/>,
                 click: this.handleModalDelete,
                 type: 'secondary',
             });
         }
         return (
-            <div id="roles-wrapper">
-                <AltContainer store={RoleStore}>
-                    <NewPageHeader title={<Trans i18nKey="roles.title"/>} icon="roles">
+            <div id="groups-wrapper">
+                <AltContainer store={Groupstore}>
+                    <NewPageHeader title={<Trans i18nKey="groups.title"/>} icon="groups">
                         <OperationsHeader newGroup={this.newGroup}/>
                     </NewPageHeader>
                     <SideBarRight
-                        title={edit ? <Trans i18nKey="roles.form.title.edit"/> :
-                            <Trans i18nKey="roles.form.title.new"/>}
+                        title={edit ? <Trans i18nKey="groups.form.title.edit"/> :
+                            <Trans i18nKey="groups.form.title.new"/>}
                         content={(
                             <Form
-                                data={dataForm}
+                                data={groupsForm}
                                 permissionsForm={permissionsForm}
                                 handleCharge={this.handleInput}
                                 handleChangeCheckbox={this.handleCheckBox}
@@ -442,10 +442,10 @@ class Roles extends Component {
                         visible={showSideBar}
                         buttonsFooter={buttonsFooter}
                     />
-                    <RoleList handleUpdate={this.handleUpdate}/>
+                    <GroupList handleUpdate={this.handleUpdate}/>
                     {showDeleteModal ? (
                         <RemoveModal
-                            name="role"
+                            name="group"
                             remove={this.delete}
                             openModal={this.handleModalDelete}
                         />) : <div/>}
@@ -455,4 +455,4 @@ class Roles extends Component {
     }
 }
 
-export default translate()(Roles);
+export default translate()(Groups);

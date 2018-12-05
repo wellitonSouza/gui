@@ -1,7 +1,7 @@
 /* import React from 'react';
 import { expect, test, renderer } from 'react-test-renderer';
 import {shallow} from 'enzyme';
-import RoleCard from './Roles';
+import GroupCard from './Groups';
 
 test('Link changes the class when hovered', () => {
     const group = {
@@ -11,7 +11,7 @@ test('Link changes the class when hovered', () => {
     };
 
     const component = renderer.create(
-        <RoleCard group={group} />,
+        <GroupCard group={group} />,
     ); */
 
 /*     expect(component.text()).toEqual('Off');
@@ -22,13 +22,13 @@ test('Link changes the class when hovered', () => {
 
     /*     let tree = component.toJSON();
         expect(tree).toMatchSnapshot();
-    
+
         // manually trigger the callback
         tree.props.onMouseEnter();
         // re-rendering
         tree = component.toJSON();
         expect(tree).toMatchSnapshot();
-    
+
         // manually trigger the callback
         tree.props.onMouseLeave();
         // re-rendering

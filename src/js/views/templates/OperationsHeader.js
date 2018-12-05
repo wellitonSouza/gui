@@ -11,7 +11,7 @@ const OperationsHeader = ({ toggleSearchBar }) => (
             title="Show search bar"
             onClick={toggleSearchBar}
             onKeyPress={toggleSearchBar}
-            role="button"
+            group="button"
             tabIndex="0"
         >
             <i className="fa fa-search" />

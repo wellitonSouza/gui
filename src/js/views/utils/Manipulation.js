@@ -89,7 +89,7 @@ class Pagination extends Component {
         const currentPage = this.props.pagination.page - 1;
 
         return (
-            <div className="col s12 l7 p0"> 
+            <div className="col s12 l7 p0">
                 <div className="pagination_div">
                     <ReactPaginate previousLabel="prev" nextLabel="next" pageCount={pageCount} marginPagesDisplayed={1} pageRangeDisplayed={3} forcePage={currentPage} onPageChange={this.handlePageClick} containerClassName="pagination" subContainerClassName="pages pagination" activeClassName="active" />
                 </div>
@@ -267,7 +267,7 @@ class SimpleFilter extends Component {
     render() {
         return (
             <div className="filter-wrapper relative-size">
-                <form role="form">
+                <form group="form">
                     {/* filter selection  */}
                     <div className="input-field">
                         {/* <i className="prefix fa fa-search"></i> */}

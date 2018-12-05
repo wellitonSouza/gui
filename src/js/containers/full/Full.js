@@ -259,7 +259,7 @@ class LeftSidebar extends Component {
                 image: 'user', target: '/auth', iconClass: 'fa fa-unlock-alt', label: 'Users', desc: 'Users list',
             },
             {
-                image: 'roles', target: '/roles', iconClass: 'fa fa-unlock-alt', label: <Trans i18nKey="menu.roles.text" />, desc: <Trans i18nKey="menu.roles.alt" />,
+                image: 'groups', target: '/groups', iconClass: 'fa fa-unlock-alt', label: <Trans i18nKey="menu.groups.text" />, desc: <Trans i18nKey="menu.groups.alt" />,
             },
         ];
 
@@ -335,7 +335,7 @@ class Full extends Component {
     componentDidMount() {
         ConfigActions.fetchCurrentConfig.defer(true);
     }
-    
+
     toggleUserSidebar() {
         this.setState({ user_sidebar: !this.state.user_sidebar });
     }

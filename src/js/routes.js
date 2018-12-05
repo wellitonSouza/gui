@@ -6,7 +6,7 @@ import Full from './containers/full';
 import { Devices, ViewDevice, NewDevice } from './views/devices';
 import Templates from './views/templates';
 import Users from './views/users';
-import Roles from './views/roles';
+import Groups from './views/groups/Groups';
 import { Flows, EditFlow } from './views/flows';
 import Alarms from './views/alarms';
 import Todo from './views/utils/todo';
@@ -49,9 +49,9 @@ export default (
                 <Route path="user" name="User detail" component={Users} />
             </Route>
 
-            <Route path="roles" name="Roles">
-                <IndexRoute component={Roles} />
-                <Route path="roles" name="Permissions" component={Roles} />
+            <Route path="groups" name="Groups">
+                <IndexRoute component={Groups} />
+                <Route path="groups" name="Groups" component={Groups} />
             </Route>
 
 

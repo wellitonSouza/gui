@@ -4,18 +4,26 @@ import toaster from '../comms/util/materialize';
 const alt = require('../alt');
 
 class GroupPermissionActions {
+
     constructor() {
-        this.permissions = [];
+        // Array of permissions of system
+        this.systemPermissions = [];
+
+        // Array of groups with your permissions
+        this.groupPermissions = [];
+
         this.error = null;
-        this.fetchPermissions();
+
+        // Load all system permissions
+        this.fetchAllSystemPermissions();
     }
 
-    fetchPermissions() {
+    fetchAllSystemPermissions() {
         return (dispatch) => {
             dispatch();
-            groupPermissionsManager.loadAvaliablesSystemPermissons()
+            groupPermissionsManager.loadSystemPermissions()
                 .then((response) => {
-                    this.permissions = response.permissions;
+                    this.systemPermissions = response.permissions;
                 })
                 .catch((error) => {
                     this.failed(error);
@@ -23,11 +31,62 @@ class GroupPermissionActions {
         };
     }
 
+    fetchPermissionsByGroups(groupName) {
+        return (dispatch) => {
+            dispatch();
+            groupPermissionsManager.getGroupPermissions(groupName)
+                .then((response) => {
+                    this.groupPermissions = response.permissions;
+                })
+                .catch((error) => {
+                    this.failed(error);
+                });
+        };
+    }
+
+    triggerSaveGroupPermissions(permission, groupId, cb, errorCb) {
+        return (dispatch) => {
+            dispatch();
+            groupPermissionsManager.createGroupPermission(permission, groupId)
+                .then((response) => {
+                    if (cb) {
+                        cb(response);
+                    }
+                })
+                .catch((error) => {
+                    if (errorCb) {
+                        errorCb(groupId);
+                    }
+                    this.failed(error);
+                });
+        };
+    }
+
+    triggerRemoveGroupPermissions(permission, groupId, cb, errorCb) {
+        return (dispatch) => {
+            dispatch();
+            groupPermissionsManager.deletePermission(permission, groupId)
+                .then((response) => {
+                    if (cb) {
+                        cb(response);
+                    }
+                })
+                .catch((error) => {
+                    if (errorCb) {
+                        errorCb(groupId);
+                    }
+                    this.failed(error);
+                });
+        };
+    }
+
+
     failed(error) {
         this.error = error;
         toaster.error(this.error.message);
         return this.error;
     }
+
 }
 
 const groupPermissionActions = alt.createActions(GroupPermissionActions, exports);

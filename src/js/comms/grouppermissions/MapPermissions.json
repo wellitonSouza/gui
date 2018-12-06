@@ -1,0 +1,52 @@
+{
+  "devices": {
+    "path": "/device/(.*)",
+    "modifier": "(.*)",
+    "viewer": "GET"
+  },
+  "template": {
+    "path": "/template/(.*)",
+    "modifier": "(.*)",
+    "viewer": "GET"
+  },
+  "flows": {
+    "path": "/flows/(.*)",
+    "modifier": "(.*)",
+    "viewer": "GET"
+  },
+  "history": {
+    "path": "/history/(.*)",
+    "modifier": "(.*)",
+    "viewer": "GET"
+  },
+  "metric": {
+    "path": "/metric/(.*)",
+    "modifier": "(.*)",
+    "viewer": "GET"
+  },
+  "mashup": {
+    "path": "/mashup/(.*)",
+    "modifier": "(.*)",
+    "viewer": "GET"
+  },
+  "ca": {
+    "path": "/ca/(.*)",
+    "modifier": "(.*)",
+    "viewer": "GET"
+  },
+  "sign": {
+    "path": "/sign/(.*)",
+    "modifier": "(.*)",
+    "viewer": "GET"
+  },
+  "alarmmanager": {
+    "path": "/alarmmanager/(.*)",
+    "modifier": "(.*)",
+    "viewer": "GET"
+  },
+  "socketio": {
+    "path": "/stream/socketio/",
+    "modifier": "(.*)",
+    "viewer": "GET"
+  }
+}

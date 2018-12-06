@@ -12,12 +12,14 @@ import { RemoveModal } from '../../components/Modal';
 
 function GroupCard(obj) {
     return (
-        <div className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight"
-             id={obj.group.id}
-             onClick={obj.onclick}
-             group="button">
+        <div
+            className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight"
+            id={obj.group.id}
+            onClick={obj.onclick}
+            group="button"
+        >
             <div className="lst-entry-title col s12 ">
-                <img className="title-icon" src="images/groups-icon.png" alt="Group"/>
+                <img className="title-icon" src="images/groups-icon.png" alt="Group" />
                 <div className="title-text truncate" title={obj.group.name}>
                     <span className="text">
                         {obj.group.name}
@@ -28,7 +30,7 @@ function GroupCard(obj) {
                 <div className="attr-area light-background">
                     <div className="attr-row">
                         <div className="icon">
-                            <img src="images/info-icon.png" alt={obj.group.description}/>
+                            <img src="images/info-icon.png" alt={obj.group.description} />
                         </div>
                         <div className="user-card attr-content" title={obj.group.description}>
                             <TextTruncate
@@ -37,7 +39,7 @@ function GroupCard(obj) {
                                 text={obj.group.description}
                                 containerClassName="description-text"
                             />
-                            <div className="subtitle"><Trans i18nKey="groups.description"/></div>
+                            <div className="subtitle"><Trans i18nKey="groups.description" /></div>
                         </div>
                     </div>
                 </div>
@@ -51,8 +53,13 @@ function GroupList(param) {
     if (param.groups) {
         return (
             <div className="fill">
-                {param.groups.map(obj => <GroupCard group={obj} key={obj.id}
-                                                   onclick={param.handleUpdate}/>)}
+                {param.groups.map(obj => (
+                    <GroupCard
+                        group={obj}
+                        key={obj.id}
+                        onclick={param.handleUpdate}
+                    />
+                ))}
             </div>);
     }
 }
@@ -63,7 +70,7 @@ function OperationsHeader(param) {
             <DojotBtnLink
                 responsive="true"
                 onClick={param.newGroup}
-                label={<Trans i18nKey="groups.btn.new.text"/>}
+                label={<Trans i18nKey="groups.btn.new.text" />}
                 alt="Create a new group"
                 icon="fa fa-plus"
                 className="w130px"
@@ -113,43 +120,42 @@ function InputText(params) {
 }
 
 function TableGroupsPermiss(params) {
-
     const { handleChangeCheckbox, permissionsForm } = params;
 
     return (
         <table className="striped centered">
             <thead>
-            <tr>
-                <th>Feature</th>
-                <th>Modifier</th>
-                <th>Viewer</th>
-            </tr>
+                <tr>
+                    <th>Feature</th>
+                    <th>Modifier</th>
+                    <th>Viewer</th>
+                </tr>
             </thead>
             <tbody>
-            {Object.keys(permissionsForm)
-                .map(action => (
-                    <tr>
-                        <td>
-                            {action}
-                        </td>
-                        {
-                            Object.keys(permissionsForm[action])
-                                .map(operation => (
-                                    <td>
-                                        <InputCheckbox
-                                            label=""
-                                            placeHolder=""
-                                            name={`${action}.${operation}`}
-                                            checked={permissionsForm[action][operation]}
-                                            handleChangeCheckbox={handleChangeCheckbox}
-                                        />
-                                    </td>
-                                ))
+                {Object.keys(permissionsForm)
+                    .map(action => (
+                        <tr>
+                            <td>
+                                {action}
+                            </td>
+                            {
+                                Object.keys(permissionsForm[action])
+                                    .map(operation => (
+                                        <td>
+                                            <InputCheckbox
+                                                label=""
+                                                placeHolder=""
+                                                name={`${action}.${operation}`}
+                                                checked={permissionsForm[action][operation]}
+                                                handleChangeCheckbox={handleChangeCheckbox}
+                                            />
+                                        </td>
+                                    ))
 
-                        }
-                    </tr>
-                ))
-            }
+                            }
+                        </tr>
+                    ))
+                }
             </tbody>
         </table>
     );
@@ -165,15 +171,15 @@ function Form(params) {
     return (
         <form action="#">
             <InputText
-                label={<Trans i18nKey="groups.form.input.groupname.label"/>}
+                label={<Trans i18nKey="groups.form.input.groupname.label" />}
                 name="name"
                 maxLength={30}
                 onChange={handleCharge}
                 value={data.name}
-                errorMessage={<Trans i18nKey="groups.form.input.groupname.error"/>}
+                errorMessage={<Trans i18nKey="groups.form.input.groupname.error" />}
             />
             <InputText
-                label={<Trans i18nKey="groups.form.input.groupdescription.label"/>}
+                label={<Trans i18nKey="groups.form.input.groupdescription.label" />}
                 name="description"
                 maxLength={254}
                 onChange={handleCharge}
@@ -181,7 +187,8 @@ function Form(params) {
             />
             <TableGroupsPermiss
                 permissionsForm={permissionsForm}
-                handleChangeCheckbox={handleChangeCheckbox}/>
+                handleChangeCheckbox={handleChangeCheckbox}
+            />
         </form>
     );
 }
@@ -233,7 +240,7 @@ class Groups extends Component {
 
     }
 
-    //TODO
+    // TODO
     checkAlphaNumber(string) {
         const regex = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
         return !regex.test(string);
@@ -399,17 +406,17 @@ class Groups extends Component {
 
     render() {
         const {
-            showSideBar, groupsForm, edit, showDeleteModal, permissionsForm
+            showSideBar, groupsForm, edit, showDeleteModal, permissionsForm,
         } = this.state;
 
         const buttonsFooter = [
             {
-                label: <Trans i18nKey="groups.form.btn.discard.label"/>,
+                label: <Trans i18nKey="groups.form.btn.discard.label" />,
                 click: this.discard,
                 type: 'default',
             },
             {
-                label: <Trans i18nKey="groups.form.btn.save.label"/>,
+                label: <Trans i18nKey="groups.form.btn.save.label" />,
                 click: this.save,
                 type: 'primary',
             },
@@ -417,7 +424,7 @@ class Groups extends Component {
 
         if (edit) {
             buttonsFooter.push({
-                label: <Trans i18nKey="groups.form.btn.remove.label"/>,
+                label: <Trans i18nKey="groups.form.btn.remove.label" />,
                 click: this.handleModalDelete,
                 type: 'secondary',
             });
@@ -425,12 +432,12 @@ class Groups extends Component {
         return (
             <div id="groups-wrapper">
                 <AltContainer store={Groupstore}>
-                    <NewPageHeader title={<Trans i18nKey="groups.title"/>} icon="groups">
-                        <OperationsHeader newGroup={this.newGroup}/>
+                    <NewPageHeader title={<Trans i18nKey="groups.title" />} icon="groups">
+                        <OperationsHeader newGroup={this.newGroup} />
                     </NewPageHeader>
                     <SideBarRight
-                        title={edit ? <Trans i18nKey="groups.form.title.edit"/> :
-                            <Trans i18nKey="groups.form.title.new"/>}
+                        title={edit ? <Trans i18nKey="groups.form.title.edit" />
+                            : <Trans i18nKey="groups.form.title.new" />}
                         content={(
                             <Form
                                 data={groupsForm}
@@ -442,13 +449,13 @@ class Groups extends Component {
                         visible={showSideBar}
                         buttonsFooter={buttonsFooter}
                     />
-                    <GroupList handleUpdate={this.handleUpdate}/>
+                    <GroupList handleUpdate={this.handleUpdate} />
                     {showDeleteModal ? (
                         <RemoveModal
                             name="group"
                             remove={this.delete}
                             openModal={this.handleModalDelete}
-                        />) : <div/>}
+                        />) : <div />}
                 </AltContainer>
             </div>
         );

@@ -1,22 +1,27 @@
 import util from '../util/util';
-import mapPermissions from './mapPermissions.json';
+import MapPermissions from './MapPermissions.json';
 
 class GroupPermissionsManager {
     constructor() {
-        this.baseUrl = '/pap/grouppermissions';
+        this.baseUrlPermissions = '/pap/permission';
+        this.baseUrlGroupPermissions = '/pap/grouppermissions';
     }
 
     createPermission(permission, groupId) {
-        const permissionId = mapPermissions[permission.action][permission.operation];
-
-        return util.POST(`${this.baseUrl}/${groupId}/${permissionId}`, '');
+        const permissionId = MapPermissions[permission.action][permission.operation];
+        return util.POST(`${this.baseUrlGroupPermissions}/${groupId}/${permissionId}`, '');
     }
 
     deletePermission(permission, groupId) {
-        const permissionId = mapPermissions[permission.action][permission.operation];
-        return util.DELETE(`${this.baseUrl}/${groupId}/${permissionId}`);
+        const permissionId = MapPermissions[permission.action][permission.operation];
+        return util.DELETE(`${this.baseUrlGroupPermissions}/${groupId}/${permissionId}`);
+    }
+
+    loadAvaliablesSystemPermissons() {
+        const typePermission = 'system';
+        return util.GET(`${this.baseUrlPermissions}?${typePermission}`);
     }
 }
 
-const groupPermissionsManager = new PermissionsManager();
+const groupPermissionsManager = new GroupPermissionsManager();
 export default groupPermissionsManager;

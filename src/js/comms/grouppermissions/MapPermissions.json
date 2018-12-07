@@ -1,35 +1,29 @@
 {
   "/device/(.*)": {
-    "alias_action": "device",
+    "action": "device",
     "(.*)": {
-      "method": "modifier",
-      "permissionId": ""
+      "method": "modifier"
     },
     "GET": {
-      "alias_method": "viewer",
-      "permissionId": ""
+      "method": "viewer"
     }
   },
   "/template/(.*)": {
-    "alias_action": "template",
+    "action": "template",
     "(.*)": {
-      "method": "modifier",
-      "permissionId": ""
+      "method": "modifier"
     },
     "GET": {
-      "alias_method": "viewer",
-      "permissionId": ""
+      "method": "viewer"
     }
   },
   "/flows/(.*)": {
-    "alias_action": "flows",
+    "action": "flows",
     "(.*)": {
-      "method": "modifier",
-      "permissionId": ""
+      "method": "modifier"
     },
     "GET": {
-      "alias_method": "viewer",
-      "permissionId": ""
+      "method": "viewer"
     }
   }
 }

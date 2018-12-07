@@ -7,7 +7,7 @@ class GroupPermissionActions {
 
     constructor() {
         // Array of permissions of system
-        this.systemPermissions = [];
+       // this.systemPermissions = [];
 
         // Array of groups with your permissions
         this.groupPermissions = [];
@@ -15,10 +15,10 @@ class GroupPermissionActions {
         this.error = null;
 
         // Load all system permissions
-        this.fetchAllSystemPermissions();
+       // this.fetchAllSystemPermissions();
     }
 
-    fetchAllSystemPermissions() {
+/*    fetchAllSystemPermissions() {
         return (dispatch) => {
             dispatch();
             groupPermissionsManager.loadSystemPermissions()
@@ -29,7 +29,20 @@ class GroupPermissionActions {
                     this.failed(error);
                 });
         };
-    }
+    }*/
+
+
+/*    permissionsForm: {
+        devices: {
+            modifier: true,
+            viewer: true,
+        },
+        alarms: {
+            modifier: true,
+            viewer: true,
+        },
+    },*/
+
 
     fetchPermissionsByGroups(groupName) {
         return (dispatch) => {

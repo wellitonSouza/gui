@@ -239,7 +239,7 @@ function OperationsHeader(props) {
             {props.displayToggle}
             <DojotBtnLink
                 responsive="true"
-                linkTo="/device/new"
+                onClick={() => DeviceActions.toggleSidebarDevice(true)}
                 label="New Device"
                 alt="Create a new device"
                 icon="fa fa-plus"

@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const SidebarButton = ({
-    onClick, icon, title, subtitle,
+    onClick, icon, title, disable,
 }) => (
     <div
-        className="sidebar-button"
-        onClick={onClick}
-        onKeyPress={onClick}
+        className={`sidebar-button${disable ? '-disable' : ''}`}
+        onClick={disable ? () => {} : onClick}
+        onKeyPress={disable ? () => {} : onClick}
         role="button"
         tabIndex="0"
     >
@@ -17,12 +17,7 @@ const SidebarButton = ({
                 src={`images/icons/${icon}-gray.png`}
                 alt="icon"
             />
-            <div className="labels">
-                <div className="button-title">{title}</div>
-                {
-                    subtitle.length > 0 && (<div className="button-subtitle">{subtitle}</div>)
-                }
-            </div>
+            <div className="button-title">{title}</div>
         </div>
         <div className="arrow-icon">
             <i className="fa fa-angle-right" />
@@ -31,14 +26,14 @@ const SidebarButton = ({
 );
 
 SidebarButton.defaultProps = {
-    subtitle: '',
+    disable: false,
 };
 
 SidebarButton.propTypes = {
     onClick: PropTypes.func.isRequired,
     icon: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
-    subtitle: PropTypes.string,
+    disable: PropTypes.bool,
 };
 
 export default SidebarButton;

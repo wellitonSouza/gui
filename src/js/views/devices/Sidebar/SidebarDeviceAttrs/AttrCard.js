@@ -1,12 +1,11 @@
 import React, { PureComponent } from 'react';
-import Slide from 'react-reveal/Slide';
 import MaterialInput from 'Components/MaterialInput';
 
 class AttrCard extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            showMetadata: true,
+            showMetadata: false,
         };
 
         this.handleShowMetadata = this.handleShowMetadata.bind(this);
@@ -20,6 +19,8 @@ class AttrCard extends PureComponent {
 
     render() {
         const { showMetadata } = this.state;
+        const { attr } = this.props;
+        console.log('attr', attr);
         return (
             <div className="attr-card">
                 <div className="attr-card-header">
@@ -29,8 +30,9 @@ class AttrCard extends PureComponent {
                             className="attr-card-input"
                             name="name"
                             maxLength={40}
+                            value={attr.static_value}
                         >
-                            {'Serial'}
+                            {attr.label}
                         </MaterialInput>
                         <div className="attr-card-type">{'string'}</div>
                     </div>

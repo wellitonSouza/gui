@@ -4,10 +4,10 @@ import Slide from 'react-reveal/Slide';
 import { DojotCustomButton } from 'Components/DojotButton';
 import AttrCard from './AttrCard';
 
-const SidebarDeviceAttrs = ({ showSidebar, handleShowDeviceAttrs }) => (
-    <Slide right when={showSidebar} duration={300}>
+const SidebarDeviceAttrs = ({ showDeviceAttrs, handleShowDeviceAttrs, selectAttr }) => (
+    <Slide right when={showDeviceAttrs} duration={300}>
         {
-            showSidebar
+            showDeviceAttrs
                 ? (
                     <div className="sidebar-device-attrs">
                         <div className="header">
@@ -26,7 +26,9 @@ const SidebarDeviceAttrs = ({ showSidebar, handleShowDeviceAttrs }) => (
                                 {'Static Value'}
                             </div>
                             <div className="attrs-list">
-                                <AttrCard />
+                                {
+                                    selectAttr.map(attr => <AttrCard attr={attr} key={attr.id} />)
+                                }
                             </div>
                         </div>
                         <div className="footer">
@@ -49,11 +51,11 @@ const SidebarDeviceAttrs = ({ showSidebar, handleShowDeviceAttrs }) => (
 );
 
 SidebarDeviceAttrs.defaultProps = {
-    showSidebar: false,
+    showDeviceAttrs: false,
 };
 
 SidebarDeviceAttrs.propTypes = {
-    showSidebar: PropTypes.bool,
+    showDeviceAttrs: PropTypes.bool,
     handleShowDeviceAttrs: PropTypes.func.isRequired,
 };
 

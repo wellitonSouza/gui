@@ -10,7 +10,7 @@ import MaterialSelect from '../../components/MaterialSelect';
 
 import { Filter } from '../utils/Manipulation';
 import Sidebar from './Sidebar';
-import SidebarManageTemplates from './Sidebar/SidebarManageTemplates';
+import DeviceActions from 'Actions/DeviceActions';
 
 function SummaryItem(props) {
     let attrs = 0;
@@ -92,11 +92,15 @@ class DeviceCardList extends Component {
         if (this.props.toggle.props.toggleState) {
             this.props.dev_opex.setFilterToCard();
         }
-
+        console.log('deviceList', this.props);
         return (
             <div className="device-card-area">
                 <Filter showPainel={this.props.showFilter} metaData={this.metaData} ops={this.props.dev_opex} fields={DevFilterFields}/>
-                <Sidebar />
+                <Sidebar
+                    device={this.props.device}
+                    showSidebarDevice={this.props.showSidebarDevice}
+                    toggleSidebarDevice={DeviceActions.toggleSidebarDevice}
+                />
                 {this.filteredList.length === 0 ? (
                     <div className="background-info valign-wrapper full-height">
                         <span className="horizontal-center">

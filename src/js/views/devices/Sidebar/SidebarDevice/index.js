@@ -4,112 +4,169 @@ import Slide from 'react-reveal/Slide';
 import { DojotCustomButton } from 'Components/DojotButton';
 import SidebarButton from 'Components/SidebarButton';
 import MaterialInput from 'Components/MaterialInput';
-import TemplateBagde from '../TemplateBadge';
 
 const SidebarDevice = ({
-    showSidebar, handleShowDevice, handleShowManageTemplate, handleShowDeviceAttrs,
-}) => (
-    <Slide right when={showSidebar} duration={300}>
-        {
-            showSidebar
-                ? (
-                    <div className="device-sidebar">
-                        <div className="header">
-                            <div className="title">
-                                new device
-                            </div>
-                            <div className="icon">
-                                <img src="images/icons/chip-cyan.png" alt="device-icon" />
-                            </div>
-                        </div>
-                        <div className="body">
-                            <div className="title">
-                                device
-                            </div>
+    showSidebarDevice,
+    handleShowDevice,
+    handleShowManageTemplate,
+    handleShowDeviceAttrs,
+    device,
+    handleChangeName,
+    selectedTemplates,
+}) => {
+    let config = [];
+    let staticAttr = [];
+    let dynamicAttr = [];
+    let actuator = [];
 
-                            <div className="device-name">
-                                <div className="label">1. Set a name</div>
-                                <div className="device-name-input">
-                                    <MaterialInput
-                                        name="name"
-                                        maxLength={40}
-                                    >
-                                        Name
-                                    </MaterialInput>
+    const getDeviceAttr = (type) => {
+        const list = [];
+        device.templates
+            .forEach(id => list.push(...device.attrs[id].filter(attr => attr.type === type)));
+        return list;
+    };
+
+    if (device.attrs !== undefined) {
+        config = getDeviceAttr('meta');
+        staticAttr = getDeviceAttr('static');
+        dynamicAttr = getDeviceAttr('dynamic');
+        actuator = getDeviceAttr('actuator');
+    }
+    return (
+        <Slide right when={showSidebarDevice} duration={300}>
+            {
+                showSidebarDevice
+                    ? (
+                        <div className="device-sidebar">
+                            <div className="header">
+                                <div className="title">
+                                    new device
+                                </div>
+                                <div className="icon">
+                                    <img src="images/icons/chip-cyan.png" alt="device-icon" />
                                 </div>
                             </div>
+                            <div className="body">
+                                <div className="title">
+                                    device
+                                </div>
 
-                            <div className="device-templates">
-                                <div className="label">2. Add or Remove Templates</div>
-                                <div className="template-list">
-                                    <div
-                                        className="add-template-button"
-                                        onClick={handleShowManageTemplate}
-                                        onKeyPress={handleShowManageTemplate}
-                                        tabIndex="0"
-                                        role="button"
-                                    >
-                                        +
+                                <div className="device-name">
+                                    <div className="label">1. Set a name</div>
+                                    <div className="device-name-input">
+                                        <MaterialInput
+                                            name="name"
+                                            maxLength={40}
+                                            value={device.label}
+                                            onChange={e => handleChangeName(e.target.value)}
+                                        >
+                                            Name
+                                        </MaterialInput>
                                     </div>
-                                    <div className="list">
-                                        <TemplateBagde />
-                                        <TemplateBagde />
-                                        <TemplateBagde />
+                                </div>
+
+                                <div className="device-templates">
+                                    <div className="label">2. Add or Remove Templates</div>
+                                    <div className="template-list">
+                                        <div
+                                            className="add-template-button"
+                                            onClick={handleShowManageTemplate}
+                                            onKeyPress={handleShowManageTemplate}
+                                            tabIndex="0"
+                                            role="button"
+                                        >
+                                            +
+                                        </div>
+                                        <div className="list">
+                                            <div className="template-bagde">
+                                                <div
+                                                    className="total-attrs"
+                                                >
+                                                    {selectedTemplates.length}
+                                                </div>
+                                                <div
+                                                    className="template-name"
+                                                >
+                                                    {'Templates Selecionados'}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
+
+                                </div>
+
+                                <div className="device-attrs">
+                                    <div className="label">3. Manage Attributes</div>
+                                    <SidebarButton
+                                        onClick={() => handleShowDeviceAttrs(config)}
+                                        icon="config_attrs"
+                                        title="Configuration"
+                                        disable={config.length === 0}
+                                    />
+                                    <SidebarButton
+                                        onClick={() => handleShowDeviceAttrs(staticAttr)}
+                                        icon="data_attrs"
+                                        title="Static Values"
+                                        disable={staticAttr.length === 0}
+                                    />
+                                    <SidebarButton
+                                        onClick={() => handleShowDeviceAttrs(dynamicAttr)}
+                                        icon="data_attrs"
+                                        title="Dynamic Attributes"
+                                        disable={dynamicAttr.length === 0}
+                                    />
+                                    <SidebarButton
+                                        onClick={() => handleShowDeviceAttrs(actuator)}
+                                        icon="config_attrs"
+                                        title="Actuators"
+                                        disable={actuator.length === 0}
+                                    />
                                 </div>
 
                             </div>
 
-                            <div className="device-attrs">
-                                <div className="label">3. Manage Attributes</div>
-                                <SidebarButton
-                                    onClick={handleShowDeviceAttrs}
-                                    icon="config_attrs"
-                                    title="Configuration"
-                                    subtitle="3 of 10 configured"
+                            <div className="footer">
+                                <DojotCustomButton
+                                    label="discard"
+                                    onClick={() => handleShowDevice(false)}
                                 />
-                                <SidebarButton
-                                    onClick={handleShowDeviceAttrs}
-                                    icon="data_attrs"
-                                    title="Static Values"
-                                    subtitle="3 of 10 configured"
-                                />
-                                <SidebarButton
-                                    onClick={handleShowDeviceAttrs}
-                                    icon="data_attrs"
-                                    title="Dynamic Attributes"
-                                    subtitle="3 of 10 configured"
-                                />
-                                <SidebarButton
-                                    onClick={handleShowDeviceAttrs}
-                                    icon="config_attrs"
-                                    title="Actuators"
-                                    subtitle="3 of 10 configured"
-                                />
+                                <DojotCustomButton label="save" type="primary" />
                             </div>
-
                         </div>
-
-                        <div className="footer">
-                            <DojotCustomButton label="discard" onClick={handleShowDevice} />
-                            <DojotCustomButton label="save" type="primary" />
-                        </div>
-                    </div>
-                )
-                : <div />
-        }
-    </Slide>
-);
-
+                    )
+                    : <div />
+            }
+        </Slide>
+    );
+};
 
 SidebarDevice.defaultProps = {
-    showSidebar: true,
+    showSidebarDevice: true,
+    device: {
+        label: '',
+        id: '',
+        protocol: 'MQTT',
+        templates: [],
+        tags: [],
+        attrs: {},
+    },
 };
 
 SidebarDevice.propTypes = {
-    showSidebar: PropTypes.bool,
+    showSidebarDevice: PropTypes.bool,
     handleShowDevice: PropTypes.func.isRequired,
     handleShowManageTemplate: PropTypes.func.isRequired,
     handleShowDeviceAttrs: PropTypes.func.isRequired,
+    device: PropTypes.shape({
+        attrs: PropTypes.object,
+        created: PropTypes.string,
+        id: PropTypes.string,
+        label: PropTypes.string,
+        static_attrs: PropTypes.array,
+        status: PropTypes.string,
+        tags: PropTypes.array,
+        templates: PropTypes.array,
+        updated: PropTypes.string,
+    }),
 };
 export default SidebarDevice;

@@ -1014,7 +1014,7 @@
           .template-bagde {
             display: flex;
             align-items: center;
-            min-width: 130px;
+            min-width: 140px;
             height: 30px;
             border-radius: 20px;
             background: #E3E3E3;
@@ -1037,7 +1037,7 @@
             }
 
             .template-name {
-              padding-left: 5px;
+              padding: 0 5px;
               font-family: Raleway, sans-serif;
               font-weight: bold;
               font-size: 12px;
@@ -1128,13 +1128,7 @@
           }
         }
         .select-template {
-          color: #28807E;
-        }
-        .unchecked {
-          height: 15px;
-          width: 15px;
-          border-radius: 2px;
-          border: 2px #8F8F8F solid;
+
         }
         &:hover {
           background: rgba(0, 0, 0, 0.1);
@@ -1173,6 +1167,7 @@
 .attr-card {
   display: flex;
   flex-direction: column;
+  padding-top: 10px;
   .attr-card-header {
     display: flex;
     margin-bottom: 15px;

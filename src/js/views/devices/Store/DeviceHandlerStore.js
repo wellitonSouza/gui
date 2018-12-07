@@ -5,10 +5,6 @@ class DeviceHandlerStore {
         this.device = {};
         this.usedTemplates = {};
 
-        this.attrNames = {};
-        this.attrError = '';
-        this.fieldError = {};
-
         this.bindListeners({
             set: FormActions.SET,
             updateDevice: FormActions.UPDATE,
@@ -16,25 +12,6 @@ class DeviceHandlerStore {
             setAttributes: AttrActions.UPDATE,
         });
         this.set(null);
-    }
-
-
-    loadAttrs() {
-        // TODO: it actually makes for sense in the long run to use (id, key) for attrs which
-        //       will allow name updates as well as better payload to event mapping.
-        this.attrNames = {};
-        if ((this.device === undefined) || (this.device === null)) {
-            return;
-        }
-
-        for (const tmp_id in this.device.attrs) {
-            for (const index in this.device.attrs[tmp_id]) {
-                const att = this.device.attrs[tmp_id][index];
-                if (String(att.type) === 'static') {
-                    this.attrNames[att.id] = att.static_value;
-                }
-            }
-        }
     }
 
     fetch(id) {

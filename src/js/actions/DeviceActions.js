@@ -134,6 +134,10 @@ class DeviceActions {
         toaster.error(error.message);
         return error;
     }
+
+    toggleSidebarDevice(value) {
+        return value;
+    }
 }
 
 alt.createActions(DeviceActions, exports);

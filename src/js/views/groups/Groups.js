@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import AltContainer from 'alt-container';
 import TextTruncate from 'react-text-truncate';
 import { translate, Trans } from 'react-i18next';
-import Groupstore from '../../stores/GroupStore';
+import GroupStore from '../../stores/GroupStore';
 import GroupActions from '../../actions/GroupActions';
+import GroupPermissionActions from '../../actions/GroupPermissionActions';
 import SideBarRight from '../../components/SideBar';
 import { NewPageHeader } from '../../containers/full/PageHeader';
 import { DojotBtnLink } from '../../components/DojotButton';
@@ -70,7 +71,7 @@ function OperationsHeader(param) {
             <DojotBtnLink
                 responsive="true"
                 onClick={param.newGroup}
-                label={<Trans i18nKey="groups.btn.new.text" />}
+                label={<Trans i18nKey="groups.btn.new.text"/>}
                 alt="Create a new group"
                 icon="fa fa-plus"
                 className="w130px"
@@ -234,6 +235,7 @@ class Groups extends Component {
 
     componentDidMount() {
         GroupActions.fetchGroups.defer();
+        GroupPermissionActions.loadSystemPermissions.defer();
     }
 
     componentWillUnmount() {
@@ -341,7 +343,7 @@ class Groups extends Component {
     save() {
         if (this.formDataValidate()) {
             this.hideSideBar();
-            const { groupsForm } = this.state;
+            const { groupsForm, permissionsForm } = this.state;
             GroupActions.triggerSave(
                 groupsForm,
                 () => {
@@ -352,6 +354,18 @@ class Groups extends Component {
                     console.log(group);
                 },
             );
+
+            GroupActions.triggerSaveGroupPermissions(
+                permissionsForm, groupsForm.id,
+                () => {
+                    toaster.success('Group created.');
+                    this.hideSideBar();
+                },
+                (group) => {
+                    console.log(group);
+                },
+            );
+
 
             this.cleangroupsForm();
             GroupActions.fetchGroups.defer();
@@ -371,8 +385,11 @@ class Groups extends Component {
         e.preventDefault();
         this.showSideBar();
         this.cleangroupsForm();
-        const { id } = e.currentTarget;
-        const group = GroupActions.getGroupById(id);
+        const { id: groupId } = e.currentTarget;
+        const group = GroupActions.getGroupById(groupId);
+        //const groupPermission =
+        GroupPermissionActions.fetchPermissionsForGroups(group.name);
+        console.log('group', group);
 
         this.setState(prevState => ({
             ...prevState,
@@ -382,6 +399,9 @@ class Groups extends Component {
                 description: group.description,
             },
             edit: true,
+            permissionsForm: {
+                groupPermission,
+            },
         }));
     }
 
@@ -431,7 +451,7 @@ class Groups extends Component {
         }
         return (
             <div id="groups-wrapper">
-                <AltContainer store={Groupstore}>
+                <AltContainer store={GroupStore}>
                     <NewPageHeader title={<Trans i18nKey="groups.title"/>} icon="groups">
                         <OperationsHeader newGroup={this.newGroup}/>
                     </NewPageHeader>

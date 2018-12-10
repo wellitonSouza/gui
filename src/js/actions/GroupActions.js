@@ -34,10 +34,7 @@ class GroupActions {
     }
 
     getGroupById(groupId) {
-        const group = this.groups.find((g) => {
-            return g.id === Number(groupId);
-        });
-        return group;
+        return this.groups.find(g => g.id === Number(groupId));
     }
 
     triggerSave(group, cb, errorCb) {

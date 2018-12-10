@@ -1,27 +1,35 @@
 const alt = require('../alt');
-const GroupActions = require('../actions/GroupActions');
+const GroupPermissionActions = require('../actions/GroupPermissionActions');
 
 class GroupPermissionStore {
     constructor() {
-        this.groups = [];
+        this.groupPermissions = {};
         this.loading = false;
         this.error = null;
 
         this.bindListeners({
-            handleUpdateGroupList: GroupActions.UPDATE_GROUPS,
+            handleUpdateGroupPermissions: GroupPermissionActions.UPDATE_GROUPS,
+            handleFetchGroupPermissions: GroupPermissionActions.FETCH_PERMISSIONS_FOR_GROUPS,
+            handleFailure: GroupPermissionActions.FAILED,
+            handleTriggerSave: GroupPermissionActions.TRIGGER_SAVE_GROUP_PERMISSIONS,
+            handleLoadTypeSystemPermissionsSave: GroupPermissionActions.LOAD_SYSTEM_PERMISSIONS,
 
-            handleFetchGroupList: GroupActions.FETCH_GROUPS,
-            handleFailure: GroupActions.GROUPS_FAILED,
 
-            handleTriggerSave: GroupActions.TRIGGER_SAVE,
-
-            handleTriggerRemoval: GroupActions.TRIGGER_REMOVAL,
-            handleRemoveSingle: GroupActions.REMOVE_SINGLE,
         });
     }
 
-    handleUpdateGroupList(groups) {
-        this.groups = groups;
+    handleLoadTypeSystemPermissionsSave() {
+        this.error = null;
+        this.loading = true;
+    }
+
+    handleFetchGroupPermissions() {
+        this.groupPermissions = {};
+        this.loading = true;
+    }
+
+    handleUpdateGroupPermissions(groupPermissions) {
+        this.groupPermissions = groupPermissions;
         this.error = null;
         this.loading = false;
     }
@@ -32,33 +40,14 @@ class GroupPermissionStore {
         this.loading = true;
     }
 
-    handleTriggerRemoval() {
-        // trigger handler for removeSingle
-        this.error = null;
-        this.loading = true;
-    }
-
-    handleRemoveSingle(id) {
-        this.loading = false;
-        this.groups = this.groups.filter(e => e.id !== id);
-    }
-
-    handleInsertGroup(group) {
-        this.groups.push(group);
-        this.error = null;
-        this.loading = false;
-    }
-
-    handleFetchGroupList() {
-        this.groups = [];
-        this.loading = true;
-    }
-
     handleFailure(error) {
         this.error = error;
         this.loading = false;
     }
 }
 
-const groupPermissionStore = alt.createStore(GroupPermissionStore, 'GroupPermissionStore');
-export default groupPermissionStore;
+/*
+const _store = alt.createStore(GroupPermissionStore, 'GroupPermissionStore');
+export default _store;
+*/
+

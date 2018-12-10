@@ -230,7 +230,7 @@ class Util {
                 if (ret.result === false) {
                     ret.error = 'This is not a valid coordinate';
                 }
-                return ret; 
+                return ret;
             },
             integer(value) {
                 const re = /^[+-]?\d+$/;
@@ -305,7 +305,7 @@ class Util {
           ret.error = "You can't leave the device timeout empty.";
           return ret;
       }
-      
+
       const re = /^[+-]?\d+$/;
       ret.result = re.test(device_timeout);
       if (ret.result === false) {

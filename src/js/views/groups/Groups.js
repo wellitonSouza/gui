@@ -122,11 +122,23 @@ function InputText(params) {
 
 function TableGroupsPermiss(params) {
     const { handleChangeCheckbox, permissionsForm } = params;
+    Object.keys(permissionsForm)
+        .forEach((item, index) => {
+                console.log('item ', item, index);
+            }
+        );
 
     /*    permissionsForm
-            .forEach((action) => {
-
-                console.log('test', action);
+            .forEach((item) => {
+                const action = Object.keys(item)[0];
+                console.log('action', action);/!*, Object
+                    .keys(item)[0]);*!/
+                console.log('item', item[action].modifier, item[action].viewer);
+                /!*            Object
+                                .keys(item)
+                                .forEach((item2, index) => {
+                                    console.log('item', item2, item[item2][index], index);
+                                });*!/
 
             });*/
 
@@ -140,29 +152,30 @@ function TableGroupsPermiss(params) {
             </tr>
             </thead>
             <tbody>
-            {Object
-                .keys(permissionsForm)
-                .map((action, index) => (
+            {Object.keys(permissionsForm)
+                .map(item => (
                     <tr>
                         <td>
-                            {action} {index}
+                            {item}
                         </td>
-                        {
-                            Object
-                                .keys(permissionsForm[action])
-                                .map(operation => (
-                                    <td>
-                                        <InputCheckbox
-                                            label=""
-                                            placeHolder=""
-                                            name={`${action}.${operation}`}
-                                            checked={permissionsForm[action][operation]}
-                                            handleChangeCheckbox={handleChangeCheckbox}
-                                        />
-                                    </td>
-                                ))
-
-                        }
+                        <td>
+                            <InputCheckbox
+                                label=""
+                                placeHolder=""
+                                name={`${item}.viewer`}
+                                checked={permissionsForm[item].viewer}
+                                handleChangeCheckbox={handleChangeCheckbox}
+                            />
+                        </td>
+                        <td>
+                            <InputCheckbox
+                                label=""
+                                placeHolder=""
+                                name={`${item}.modifier`}
+                                checked={permissionsForm[item].modifier}
+                                handleChangeCheckbox={handleChangeCheckbox}
+                            />
+                        </td>
                     </tr>
                 ))
             }
@@ -172,7 +185,6 @@ function TableGroupsPermiss(params) {
 }
 
 function Form(params) {
-    console.log('params form', params);
     const {
         handleCharge,
         data,
@@ -207,7 +219,6 @@ function Form(params) {
 class Groups extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             showSideBar: false,
             showDeleteModal: false,
@@ -216,16 +227,7 @@ class Groups extends Component {
                 name: '',
                 description: '',
             },
-            permissionsForm: {
-                /*                devices: {
-                                    modifier: true,
-                                    viewer: true,
-                                },
-                                alarms: {
-                                    modifier: true,
-                                    viewer: true,
-                                },*/
-            },
+            permissionsForm: {},
             edit: false,
         };
 

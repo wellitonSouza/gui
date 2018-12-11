@@ -123,6 +123,13 @@ function InputText(params) {
 function TableGroupsPermiss(params) {
     const { handleChangeCheckbox, permissionsForm } = params;
 
+    /*    permissionsForm
+            .forEach((action) => {
+
+                console.log('test', action);
+
+            });*/
+
     return (
         <table className="striped centered">
             <thead>
@@ -133,14 +140,16 @@ function TableGroupsPermiss(params) {
             </tr>
             </thead>
             <tbody>
-            {Object.keys(permissionsForm)
-                .map(action => (
+            {Object
+                .keys(permissionsForm)
+                .map((action, index) => (
                     <tr>
                         <td>
-                            {action}
+                            {action} {index}
                         </td>
                         {
-                            Object.keys(permissionsForm[action])
+                            Object
+                                .keys(permissionsForm[action])
                                 .map(operation => (
                                     <td>
                                         <InputCheckbox
@@ -163,6 +172,7 @@ function TableGroupsPermiss(params) {
 }
 
 function Form(params) {
+    console.log('params form', params);
     const {
         handleCharge,
         data,
@@ -207,14 +217,14 @@ class Groups extends Component {
                 description: '',
             },
             permissionsForm: {
-                devices: {
-                    modifier: true,
-                    viewer: true,
-                },
-                alarms: {
-                    modifier: true,
-                    viewer: true,
-                },
+                /*                devices: {
+                                    modifier: true,
+                                    viewer: true,
+                                },
+                                alarms: {
+                                    modifier: true,
+                                    viewer: true,
+                                },*/
             },
             edit: false,
         };
@@ -260,6 +270,14 @@ class Groups extends Component {
         }));
     }
 
+
+    cleanGroupsPermissions() {
+        this.setState(prevState => ({
+            ...prevState,
+            permissionsForm: {},
+        }));
+    }
+
     newGroup() {
         this.cleangroupsForm();
         this.showSideBar();
@@ -278,7 +296,6 @@ class Groups extends Component {
 
     hideSideBar() {
         this.setState({
-
             showSideBar: false,
         });
     }
@@ -347,7 +364,7 @@ class Groups extends Component {
             GroupActions.triggerSave(
                 groupsForm,
                 () => {
-                    toaster.success('Group created.');
+                    toaster.success('Group Save');
                     this.hideSideBar();
                 },
                 (group) => {
@@ -355,10 +372,10 @@ class Groups extends Component {
                 },
             );
 
-            GroupActions.triggerSaveGroupPermissions(
+            GroupPermissionActions.triggerSaveGroupPermissions(
                 permissionsForm, groupsForm.id,
                 () => {
-                    toaster.success('Group created.');
+                    toaster.success('Permission Associate.');
                     this.hideSideBar();
                 },
                 (group) => {
@@ -366,7 +383,7 @@ class Groups extends Component {
                 },
             );
 
-
+            this.cleanGroupsPermissions();
             this.cleangroupsForm();
             GroupActions.fetchGroups.defer();
         }
@@ -387,10 +404,7 @@ class Groups extends Component {
         this.cleangroupsForm();
         const { id: groupId } = e.currentTarget;
         const group = GroupActions.getGroupById(groupId);
-        //const groupPermission =
-        GroupPermissionActions.fetchPermissionsForGroups(group.name);
-        console.log('group', group);
-
+        const groupPermission = GroupPermissionActions.fetchSystemPermissions();
         this.setState(prevState => ({
             ...prevState,
             groupsForm: {
@@ -399,9 +413,7 @@ class Groups extends Component {
                 description: group.description,
             },
             edit: true,
-            permissionsForm: {
-                groupPermission,
-            },
+            permissionsForm: groupPermission,
         }));
     }
 

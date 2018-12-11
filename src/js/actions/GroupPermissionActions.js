@@ -7,46 +7,30 @@ const alt = require('../alt');
 class GroupPermissionActions {
     constructor() {
         // Array of groups with your permissions
-        this.groupPermissions = {};
-        this.groupId = null;
+        this.groupPermissions = [];
+        // Array of permissions
+        this.systemPermissions = [];
         this.error = null;
 
         // Maps between alias, action-method, to id of permission.
         this.mapAliasPermissionsToId = new Map();
         this.mapAliasIdToPermissions = new Map();
 
-        // Obj for keep state  before update
-        this.groupPermissionBefore = {};
-
-        console.log('1_loadSystemPermissions');
+        // Array for keep state before update
+        this.groupPermissionBefore = [];
 
         // load the system default permissions of system
         this.loadSystemPermissions();
     }
 
-    updateGroups(groupPermissions) {
+    updateGroupPermissions(groupPermissions) {
         this.groupPermissions = groupPermissions;
         return this.groupPermissions;
     }
 
-    /**
-     * Search permissions associate with a group
-     * @returns {*}
-     * @param permissions
-     */
-    _associateGroupPermissions(permissions) {
-        console.log('mapAliasIdToPermissions', this.mapAliasIdToPermissions);
-        console.log('mapAliasPermissionsToId', this.mapAliasPermissionsToId);
-        console.log('_associateGroupPermissions', permissions);
-        const groupPermission = {};
-        this.mapAliasIdToPermissions.forEach((item, key) => {
-            console.log('item key', item, key);
-            const existPermission = (!!permissions[key] && permissions.permission === 'permit');
-            groupPermission[item.action][item.method] = existPermission;
-            this.groupPermissionBefore[item.action][item.method] = existPermission;
-        });
-        this.updateGroups(groupPermission);
-        console.log('groupPermission', groupPermission);
+    updateSystemPermissions(systemPermissions) {
+        this.systemPermissions = systemPermissions;
+        return this.systemPermissions;
     }
 
     /**
@@ -55,13 +39,26 @@ class GroupPermissionActions {
      * @returns {Function}
      */
     fetchPermissionsForGroups(groupId) {
-        console.log('fetchPermissionsForGroups');
         return (dispatch) => {
             dispatch();
             groupPermissionsManager.getGroupPermissions(groupId)
-                .then((response) => {
-               /*     const { permissions } = response;*/
-                    this._associateGroupPermissions(response);
+                .then((permissions) => {
+                    const groupPermission2 = [];
+                    // Search permissions associate with a group
+                    this.mapAliasIdToPermissions.forEach((item, key) => {
+
+                        const existPermission = (!!permissions[key] && permissions.permission === 'permit');
+                        const actionT = item.action;
+                        const methodT = item.method;
+
+                        const actionMethod = {
+                            [actionT]: { [methodT]: existPermission },
+                        };
+                        groupPermission2.push(actionMethod);
+                        this.groupPermissionBefore.push(actionMethod);
+                    });
+
+                    this.updateGroupPermissions(groupPermission2);
                 })
                 .catch((error) => {
                     this.failed(error);
@@ -69,30 +66,30 @@ class GroupPermissionActions {
         };
     }
 
+    getSystemPermissions() {
+        return this.systemPermissions;
+    }
+
     /**
      *
-     * @param listPermissions
      */
-    _createMapIdToPermission(listPermissions) {
-        console.log(listPermissions);
-        this.mapAliasIdToPermissions = new Map();
-        this.mapAliasPermissionsToId = new Map();
-
-        listPermissions.forEach((perm) => {
-            console.log('perm ', perm);
-            const aliasAction = mapPermissions[perm.path].action;
-            const aliasMethod = mapPermissions[perm.path][perm.method].method;
-            console.log('aliasAction aliasMethod ', aliasAction, aliasMethod);
+    fetchSystemPermissions() {
+        const systemPermissions = [];
+        this.mapAliasPermissionsToId.forEach((item, key) => {
+            console.log('item key', item, key);
+            const actionT = key.action;
+            const methodT = key.method;
             const actionMethod = {
-                action: aliasAction,
-                method: aliasMethod,
+                [actionT]: { [methodT]: true },
             };
-            this.mapAliasIdToPermissions.set(perm.id, actionMethod);
-            this.mapAliasPermissionsToId.set(actionMethod, perm.id);
+            const method = {
+                [methodT]: true,
+            };
+            systemPermissions.push(actionMethod);
         });
-
-        console.log('1mapAliasIdToPermissions', this.mapAliasIdToPermissions);
-        console.log('1mapAliasPermissionsToId', this.mapAliasPermissionsToId);
+        console.log('fetchSystemPermissions', systemPermissions);
+        this.updateSystemPermissions(systemPermissions);
+        return systemPermissions;
     }
 
     /**
@@ -188,13 +185,43 @@ class GroupPermissionActions {
      * @returns {Function}
      */
     loadSystemPermissions() {
-        console.log('loadSystemPermissions');
         return (dispatch) => {
             dispatch();
             groupPermissionsManager.loadSystemPermissions()
                 .then((response) => {
                     const { permissions } = response;
-                    this._createMapIdToPermission(permissions);
+
+                    this.mapAliasIdToPermissions = new Map();
+
+                    this.mapAliasPermissionsToId = new Map();
+
+                    permissions.forEach((perm) => {
+                        const aliasAction = mapPermissions[perm.path].action;
+                        const aliasMethod = mapPermissions[perm.path][perm.method].method;
+
+                        const actionMethod1 = {
+                            action: aliasAction,
+                            method: [aliasMethod],
+                        };
+/*                        if (this.mapAliasIdToPermissions.get(perm.id)) {
+                           const actionMethodAct =  this.mapAliasIdToPermissions.get(perm.id);
+                        }*/
+                        this.mapAliasIdToPermissions.set(perm.id, actionMethod1);
+
+                        const actionMethod = {
+                            action: aliasAction,
+                            method: aliasMethod,
+                        };
+                        this.mapAliasPermissionsToId.set(actionMethod, perm.id);
+                    });
+
+                    const actionMethod1 = {
+                        action: 'device',
+                        method: 'viewer',
+                    };
+                    this.mapAliasIdToPermissions.set(2, actionMethod1);
+                    this.mapAliasPermissionsToId.set(actionMethod1, 2);
+
                 })
                 .catch((error) => {
                     this.failed(error);

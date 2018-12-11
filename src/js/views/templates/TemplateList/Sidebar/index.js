@@ -128,7 +128,10 @@ class Sidebar extends Component {
         const { template } = this.state;
         const [type, values] = [attrs.attrType, { ...attrs }];
 
-        if (type === 'config_attrs') values.value_type = 'string';
+        if (type === 'config_attrs') {
+            values.value_type = 'string';
+            values.type = 'meta';
+        }
         if (values.type === 'dynamic') values.static_value = '';
 
         template[type] = template[type].map((item) => {
@@ -151,7 +154,10 @@ class Sidebar extends Component {
         const { template } = this.state;
         const [type, values] = [attrs.attrType, { ...attrs }];
 
-        if (type === 'config_attrs') values.value_type = 'string';
+        if (type === 'config_attrs') {
+            values.value_type = 'string';
+            values.type = 'meta';
+        }
         if (values.type === 'dynamic') values.static_value = '';
 
         delete values.attrType;

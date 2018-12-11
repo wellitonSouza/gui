@@ -20,9 +20,12 @@ const SidebarDevice = ({
     let actuator = [];
 
     const getDeviceAttr = (type) => {
-        const list = [];
+        let list = [];
         device.templates
-            .forEach(id => list.push(...device.attrs[id].filter(attr => attr.type === type)));
+            .forEach((id) => {
+                const arr = device.attrs[id].filter(attr => attr.type === type)
+                list = list.concat(arr);
+            });
         return list;
     };
 

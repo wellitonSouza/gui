@@ -1214,6 +1214,8 @@
     }
     .attr-card-metadata-body {
       display: flex;
+      flex-direction: column;
+      flex: 1;
       padding-top: 10px;
       .attr-card-input-wrapper {
         margin-left: 20px;

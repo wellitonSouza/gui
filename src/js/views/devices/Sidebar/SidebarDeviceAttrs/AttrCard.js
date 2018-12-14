@@ -7,16 +7,28 @@ class AttrCard extends PureComponent {
         this.state = {
             showMetadata: false,
             attr: {},
+            metadata: [],
         };
 
         this.handleShowMetadata = this.handleShowMetadata.bind(this);
-        this.handleChangeMetadata = this.handleChangeMetadata.bind(this);
     }
 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.metadata !== prevState.metadata) {
+            return {
+                ...prevState,
+                metadata: nextProps.metadata,
+            };
+        }
+        return null;
+    }
+
+
     componentDidMount() {
-        const { attr } = this.props;
+        const { attr, metadata } = this.props;
         this.setState({
             attr,
+            metadata,
         });
     }
 
@@ -26,24 +38,10 @@ class AttrCard extends PureComponent {
         }));
     }
 
-    handleChangeMetadata(event) {
-        const { attr } = this.state;
-        const metadata = attr.metadata.map(meta => (
-            meta.label === event.target.name
-                ? { ...meta, static_value: event.target.value }
-                : meta
-        ));
-
-        this.setState({
-            attr: { ...attr, metadata },
-        });
-    }
-
     render() {
-        const { showMetadata, attr } = this.state;
-        console.log(attr);
-        const metaLength = Object.prototype.hasOwnProperty.call(attr, 'metadata')
-            ? attr.metadata.length
+        const { showMetadata, attr, metadata } = this.state;
+        const metaLength = metadata !== undefined
+            ? metadata.length
             : 0;
         const isDynamic = attr.type === 'dynamic';
         return (
@@ -84,15 +82,15 @@ class AttrCard extends PureComponent {
                     </div>
                     <div className="attr-card-metadata-body">
                         {
-                            showMetadata && Object.prototype.hasOwnProperty.call(attr, 'metadata')
-                                ? (attr.metadata.map(meta => (
+                            showMetadata && metadata !== undefined
+                                ? (metadata.map(meta => (
                                     <div key={meta.id} className="attr-card-input-wrapper">
                                         <MaterialInput
                                             className="attr-card-input"
                                             name={meta.label}
                                             maxLength={40}
                                             value={meta.static_value}
-                                            onChange={e => this.handleChangeMetadata(e)}
+                                            onChange={(e) => this.props.handleChangeMetadata(e, attr.id)}
                                         >
                                             {meta.label}
                                         </MaterialInput>

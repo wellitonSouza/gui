@@ -13,6 +13,14 @@ class DeviceHandlerActions {
                 .catch((error) => { console.error('Failed to get device', error); });
         };
     }
+
+    toggleSidebarDevice(value) {
+        return value;
+    }
+
+    selectTemplate(template) {
+        return template;
+    }
 }
 
 export default DeviceHandlerActions;

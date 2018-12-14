@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { FormActions } from '../../Actions';
 
 const InputCheckbox = ({
      name, onChange, checked, label

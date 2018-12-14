@@ -16,6 +16,7 @@ import { DeviceCardList } from './DeviceCard';
 import {
     Pagination, FilterLabel, GenericOperations,
 } from '../utils/Manipulation';
+import { FormActions } from './Actions';
 
 
 // UI elements
@@ -239,7 +240,7 @@ function OperationsHeader(props) {
             {props.displayToggle}
             <DojotBtnLink
                 responsive="true"
-                onClick={() => DeviceActions.toggleSidebarDevice(true)}
+                onClick={() => FormActions.toggleSidebarDevice(true)}
                 label="New Device"
                 alt="Create a new device"
                 icon="fa fa-plus"

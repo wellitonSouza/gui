@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
 import TemplateStore from 'Stores/TemplateStore';
 import AltContainer from 'alt-container';
 import SidebarDevice from './SidebarDevice';
@@ -13,7 +12,7 @@ class Sidebar extends Component {
             showSidebarDevice: false,
             showManageTemplates: false,
             showDeviceAttrs: false,
-            selectedTemplates: [],
+            usedTemplates: [],
             device: {},
             selectAttr: [],
         };
@@ -22,6 +21,8 @@ class Sidebar extends Component {
         this.handleShowDeviceAttrs = this.handleShowDeviceAttrs.bind(this);
         this.handleSelectTemplate = this.handleSelectTemplate.bind(this);
         this.handleChangeName = this.handleChangeName.bind(this);
+        this.handleChangeMetadata = this.handleChangeMetadata.bind(this);
+        this.saveAttr = this.saveAttr.bind(this);
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -38,7 +39,7 @@ class Sidebar extends Component {
         const { showSidebarDevice, device } = this.props;
         this.setState({
             showSidebarDevice,
-            selectedTemplates: device.templates,
+            usedTemplates: device.templates,
             device,
         });
     }
@@ -50,21 +51,29 @@ class Sidebar extends Component {
     }
 
     handleSelectTemplate(checked, template) {
-        const { selectedTemplates, device } = this.state;
-        let list;
+        const { device } = this.state;
         if (checked) {
-            list = selectedTemplates.filter(id => id !== template.id);
-            delete device.attrs[template.id];
+            device.templates = device.templates.filter(id => id !== template.id);
+            device.attrs = device.attrs.filter(attr => +attr.template_id !== template.id);
         } else {
-            list = [...selectedTemplates, template.id];
-            device.attrs[template.id] = [...template.attrs];
+            device.templates.push(template.id);
+            device.attrs = device.attrs.concat(template.attrs);
         }
-        device.templates = list;
-        this.setState(prevState => ({
-            ...prevState,
-            selectedTemplates: list,
+        device.configValues = device.attrs.filter(item => item.type === 'meta');
+        device.dynamicValues = device.attrs.filter(item => item.type === 'dynamic');
+        device.staticValues = device.attrs.filter(item => item.type === 'static');
+        device.actuatorValues = device.attrs.filter(item => item.type === 'actuator');
+        device.metadata = {};
+        device.attrs.forEach((item) => {
+            if (Object.prototype.hasOwnProperty.call(item, 'metadata')) {
+                device.metadata[item.id] = [...item.metadata];
+            }
+        });
+
+        this.setState({
             device,
-        }));
+            usedTemplates: device.templates,
+        });
     }
 
     handleChangeName(value) {
@@ -83,23 +92,39 @@ class Sidebar extends Component {
         }));
     }
 
+    handleChangeMetadata(event, id) {
+        const { device } = this.state;
+        device.metadata[id] = device.metadata[id].map(meta => (meta.label === event.target.name
+            ? { ...meta, static_value: event.target.value }
+            : meta
+        ));
+
+        this.setState({
+            device,
+        });
+    }
+
+    saveAttr() {
+        const { device } = this.state;
+        console.log(device)
+    }
+
+
     render() {
         const {
             showSidebarDevice,
             showManageTemplates,
             showDeviceAttrs,
-            selectedTemplates,
+            usedTemplates,
             device,
             selectAttr,
         } = this.state;
-        const { toggleSidebarDevice } = this.props;
-        console.log('Sidebar', device);
+        const { metadata } = device;
         return (
             <Fragment>
                 <SidebarDevice
                     showSidebarDevice={showSidebarDevice}
-                    handleShowDevice={toggleSidebarDevice}
-                    selectedTemplates={selectedTemplates}
+                    selectedTemplates={usedTemplates}
                     device={device}
                     handleChangeName={this.handleChangeName}
                     handleShowManageTemplate={this.handleShowManageTemplate}
@@ -108,7 +133,7 @@ class Sidebar extends Component {
                 <AltContainer store={TemplateStore}>
                     <SidebarManageTemplates
                         showManageTemplates={showManageTemplates}
-                        selectedTemplates={selectedTemplates}
+                        selectedTemplates={usedTemplates}
                         handleShowManageTemplate={this.handleShowManageTemplate}
                         handleSelectTemplate={this.handleSelectTemplate}
                     />
@@ -116,38 +141,13 @@ class Sidebar extends Component {
                 <SidebarDeviceAttrs
                     showDeviceAttrs={showDeviceAttrs}
                     selectAttr={selectAttr}
+                    metadata={metadata}
                     handleShowDeviceAttrs={this.handleShowDeviceAttrs}
+                    handleChangeMetadata={this.handleChangeMetadata}
                 />
             </Fragment>
         );
     }
 }
-
-Sidebar.defaultProps = {
-    device: {
-        label: '',
-        id: '',
-        protocol: 'MQTT',
-        templates: [],
-        tags: [],
-        attrs: {},
-    },
-};
-
-Sidebar.propTypes = {
-    showSidebarDevice: PropTypes.bool.isRequired,
-    toggleSidebarDevice: PropTypes.func.isRequired,
-    device: PropTypes.shape({
-        attrs: PropTypes.object,
-        created: PropTypes.string,
-        id: PropTypes.string,
-        label: PropTypes.string,
-        static_attrs: PropTypes.array,
-        status: PropTypes.string,
-        tags: PropTypes.array,
-        templates: PropTypes.array,
-        updated: PropTypes.string,
-    }),
-};
 
 export default Sidebar;

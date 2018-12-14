@@ -4,7 +4,9 @@ import Slide from 'react-reveal/Slide';
 import { DojotCustomButton } from 'Components/DojotButton';
 import AttrCard from './AttrCard';
 
-const SidebarDeviceAttrs = ({ showDeviceAttrs, handleShowDeviceAttrs, selectAttr }) => (
+const SidebarDeviceAttrs = ({
+    showDeviceAttrs, handleShowDeviceAttrs, selectAttr, metadata, handleChangeMetadata
+}) => (
     <Slide right when={showDeviceAttrs} duration={300}>
         {
             showDeviceAttrs
@@ -31,6 +33,8 @@ const SidebarDeviceAttrs = ({ showDeviceAttrs, handleShowDeviceAttrs, selectAttr
                                         <AttrCard
                                             attr={attr}
                                             key={attr.id}
+                                            metadata={metadata[attr.id]}
+                                            handleChangeMetadata={handleChangeMetadata}
                                         />)
                                 }
                             </div>

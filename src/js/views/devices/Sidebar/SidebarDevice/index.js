@@ -4,37 +4,19 @@ import Slide from 'react-reveal/Slide';
 import { DojotCustomButton } from 'Components/DojotButton';
 import SidebarButton from 'Components/SidebarButton';
 import MaterialInput from 'Components/MaterialInput';
+import { FormActions } from '../../Actions';
 
 const SidebarDevice = ({
     showSidebarDevice,
-    handleShowDevice,
     handleShowManageTemplate,
     handleShowDeviceAttrs,
     device,
     handleChangeName,
     selectedTemplates,
 }) => {
-    let config = [];
-    let staticAttr = [];
-    let dynamicAttr = [];
-    let actuator = [];
-
-    const getDeviceAttr = (type) => {
-        let list = [];
-        device.templates
-            .forEach((id) => {
-                const arr = device.attrs[id].filter(attr => attr.type === type)
-                list = list.concat(arr);
-            });
-        return list;
-    };
-
-    if (device.attrs !== undefined) {
-        config = getDeviceAttr('meta');
-        staticAttr = getDeviceAttr('static');
-        dynamicAttr = getDeviceAttr('dynamic');
-        actuator = getDeviceAttr('actuator');
-    }
+    const {
+        configValues, dynamicValues, staticValues, actuatorValues,
+    } = device;
     return (
         <Slide right when={showSidebarDevice} duration={300}>
             {
@@ -101,28 +83,28 @@ const SidebarDevice = ({
                                 <div className="device-attrs">
                                     <div className="label">3. Manage Attributes</div>
                                     <SidebarButton
-                                        onClick={() => handleShowDeviceAttrs(config)}
+                                        onClick={() => handleShowDeviceAttrs(configValues)}
                                         icon="config_attrs"
                                         title="Configuration"
-                                        disable={config.length === 0}
+                                        disable={configValues.length === 0}
                                     />
                                     <SidebarButton
-                                        onClick={() => handleShowDeviceAttrs(staticAttr)}
+                                        onClick={() => handleShowDeviceAttrs(staticValues)}
                                         icon="data_attrs"
                                         title="Static Values"
-                                        disable={staticAttr.length === 0}
+                                        disable={staticValues.length === 0}
                                     />
                                     <SidebarButton
-                                        onClick={() => handleShowDeviceAttrs(dynamicAttr)}
+                                        onClick={() => handleShowDeviceAttrs(dynamicValues)}
                                         icon="data_attrs"
                                         title="Dynamic Attributes"
-                                        disable={dynamicAttr.length === 0}
+                                        disable={dynamicValues.length === 0}
                                     />
                                     <SidebarButton
-                                        onClick={() => handleShowDeviceAttrs(actuator)}
+                                        onClick={() => handleShowDeviceAttrs(actuatorValues)}
                                         icon="config_attrs"
                                         title="Actuators"
-                                        disable={actuator.length === 0}
+                                        disable={actuatorValues.length === 0}
                                     />
                                 </div>
 
@@ -131,7 +113,7 @@ const SidebarDevice = ({
                             <div className="footer">
                                 <DojotCustomButton
                                     label="discard"
-                                    onClick={() => handleShowDevice(false)}
+                                    onClick={() => FormActions.toggleSidebarDevice(false)}
                                 />
                                 <DojotCustomButton label="save" type="primary" />
                             </div>
@@ -157,7 +139,6 @@ SidebarDevice.defaultProps = {
 
 SidebarDevice.propTypes = {
     showSidebarDevice: PropTypes.bool,
-    handleShowDevice: PropTypes.func.isRequired,
     handleShowManageTemplate: PropTypes.func.isRequired,
     handleShowDeviceAttrs: PropTypes.func.isRequired,
     device: PropTypes.shape({

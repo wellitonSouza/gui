@@ -120,28 +120,8 @@ function InputText(params) {
     );
 }
 
-function TableGroupsPermiss(params) {
+function TableGroupsPermissions(params) {
     const { handleChangeCheckbox, permissionsForm } = params;
-    Object.keys(permissionsForm)
-        .forEach((item, index) => {
-                console.log('item ', item, index);
-            }
-        );
-
-    /*    permissionsForm
-            .forEach((item) => {
-                const action = Object.keys(item)[0];
-                console.log('action', action);/!*, Object
-                    .keys(item)[0]);*!/
-                console.log('item', item[action].modifier, item[action].viewer);
-                /!*            Object
-                                .keys(item)
-                                .forEach((item2, index) => {
-                                    console.log('item', item2, item[item2][index], index);
-                                });*!/
-
-            });*/
-
     return (
         <table className="striped centered">
             <thead>
@@ -208,7 +188,7 @@ function Form(params) {
                 onChange={handleCharge}
                 value={data.description}
             />
-            <TableGroupsPermiss
+            <TableGroupsPermissions
                 permissionsForm={permissionsForm}
                 handleChangeCheckbox={handleChangeCheckbox}
             />
@@ -236,7 +216,7 @@ class Groups extends Component {
         this.hideSideBar = this.hideSideBar.bind(this);
         this.showSideBar = this.showSideBar.bind(this);
         this.handleInput = this.handleInput.bind(this);
-        this.cleangroupsForm = this.cleangroupsForm.bind(this);
+        this.cleanGroupsForm = this.cleanGroupsForm.bind(this);
         this.discard = this.discard.bind(this);
         this.save = this.save.bind(this);
         this.delete = this.delete.bind(this);
@@ -247,7 +227,8 @@ class Groups extends Component {
 
     componentDidMount() {
         GroupActions.fetchGroups.defer();
-        GroupPermissionActions.loadSystemPermissions.defer();
+        GroupPermissionActions._loadSystemPermissions.defer();
+        //GroupPermissionActions.fetchSystemPermissions.defer();
     }
 
     componentWillUnmount() {
@@ -260,7 +241,7 @@ class Groups extends Component {
         return !regex.test(string);
     }
 
-    cleangroupsForm() {
+    cleanGroupsForm() {
         this.setState(prevState => ({
             ...prevState,
             groupsForm: {
@@ -281,7 +262,14 @@ class Groups extends Component {
     }
 
     newGroup() {
-        this.cleangroupsForm();
+        this.cleanGroupsForm();
+        const groupPermission = GroupPermissionActions.fetchSystemPermissions();
+        console.log('newGroup hd up groupPermission', groupPermission);
+        this.setState(prevState => ({
+            ...prevState,
+            edit: false,
+            permissionsForm: groupPermission,
+        }));
         this.showSideBar();
     }
 
@@ -335,7 +323,7 @@ class Groups extends Component {
 
     discard() {
         this.hideSideBar();
-        this.cleangroupsForm();
+        this.cleanGroupsForm();
     }
 
     formDataValidate() {
@@ -363,30 +351,43 @@ class Groups extends Component {
         if (this.formDataValidate()) {
             this.hideSideBar();
             const { groupsForm, permissionsForm } = this.state;
+            let groupIdNew = null;
             GroupActions.triggerSave(
                 groupsForm,
-                () => {
-                    toaster.success('Group Save');
-                    this.hideSideBar();
-                },
-                (group) => {
-                    console.log(group);
-                },
-            );
+                (response) => {
 
-            GroupPermissionActions.triggerSaveGroupPermissions(
-                permissionsForm, groupsForm.id,
-                () => {
-                    toaster.success('Permission Associate.');
+                    toaster.success('Group Save');
+                    // groupIdNew = response.id;
+                    // console.log('groupIdNew', groupIdNew);
+                    GroupPermissionActions.triggerSaveGroupPermissions(
+                        permissionsForm, response.id,
+                        () => {
+                            toaster.success('Permission Associate.');
+                            //this.hideSideBar();
+                        }, (group) => {
+                            console.log(group);
+                        });
+
                     this.hideSideBar();
                 },
                 (group) => {
                     console.log(group);
                 },
             );
+            console.log('groupIdNew2', groupIdNew);
+            if (groupIdNew != null) {
+                GroupPermissionActions.triggerSaveGroupPermissions(
+                    permissionsForm, groupIdNew,
+                    () => {
+                        toaster.success('Permission Associate.');
+                        this.hideSideBar();
+                    }, (group) => {
+                        console.log(group);
+                    });
+            }
 
             this.cleanGroupsPermissions();
-            this.cleangroupsForm();
+            this.cleanGroupsForm();
             GroupActions.fetchGroups.defer();
         }
     }
@@ -403,10 +404,13 @@ class Groups extends Component {
     handleUpdate(e) {
         e.preventDefault();
         this.showSideBar();
-        this.cleangroupsForm();
+        this.cleanGroupsForm();
+
         const { id: groupId } = e.currentTarget;
         const group = GroupActions.getGroupById(groupId);
-        const groupPermission = GroupPermissionActions.fetchSystemPermissions();
+        GroupPermissionActions.fetchPermissionsForGroups(groupId);
+        const groupPermission = GroupPermissionActions.getGroupPermissions();
+
         this.setState(prevState => ({
             ...prevState,
             groupsForm: {
@@ -432,7 +436,7 @@ class Groups extends Component {
             },
         );
 
-        this.cleangroupsForm();
+        this.cleanGroupsForm();
         this.handleModalDelete(false);
         GroupActions.fetchGroups.defer();
         this.hideSideBar();

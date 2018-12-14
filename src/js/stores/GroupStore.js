@@ -7,6 +7,7 @@ class GroupStore {
         this.groups = [];
         this.grouppermissions = [];
         this.systempermissions = [];
+        this.groupId = null;
         this.loading = false;
         this.error = null;
 
@@ -23,9 +24,14 @@ class GroupStore {
             handleFetchSystemPermissions: GroupPermissionActions.fetchSystemPermissions,
             handleTriggerSaveGroupPermissions: GroupPermissionActions.triggerSaveGroupPermissions,
             handleFailureGroupPermissions: GroupPermissionActions.failed,
-            handleLoadSystemPermissions: GroupPermissionActions.loadSystemPermissions,
+            handleGetGroupPermissions: GroupPermissionActions.getGroupPermissions,
+            handleLoadSystemPermissions: GroupPermissionActions._loadSystemPermissions,
 
         });
+    }
+
+    handleGetGroupPermissions() {
+
     }
 
     handleUpdateGroupList(groups) {
@@ -72,7 +78,8 @@ class GroupStore {
         this.loading = false;
     }
 
-    handleFetchGroupPermissions() {
+    handleFetchGroupPermissions(groupId) {
+        this.groupId = groupId;
         this.grouppermissions = [];
         this.loading = true;
     }

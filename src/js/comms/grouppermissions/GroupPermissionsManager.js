@@ -5,24 +5,20 @@ class GroupPermissionsManager {
         this.baseUrlPermissions = '/auth/pap/permission';
         this.baseUrlManagerGroupPermissions = '/auth/pap/grouppermissions';
         this.baseUrlListGroupPermissions = '/auth/pap/group';
-
-        this.loadSystemPermissions();
     }
 
     /**
      * Search permissions associate with a group
-     * @param groupName
+     * @param groupId
      * @returns {*}
      */
-    getGroupPermissions(groupName) {
-        ///groupName will be groupId
-        return util.GET(`${this.baseUrlListGroupPermissions}/${groupName}/permissions`);
+    getGroupPermissions(groupId) {
+        return util.GET(`${this.baseUrlListGroupPermissions}/${groupId}/permissions`);
     }
 
 
     /**
      * Create a group associate between group and permission
-     *
      * @param permissionId
      * @param groupId
      * @returns {*}
@@ -39,7 +35,6 @@ class GroupPermissionsManager {
      * @returns {*}
      */
     deleteGroupPermission(permissionId, groupId) {
-
         return util.DELETE(`${this.baseUrlManagerGroupPermissions}/${groupId}/${permissionId}`);
     }
 
@@ -49,11 +44,8 @@ class GroupPermissionsManager {
      * @returns {WeakMap<object, any>} Map between alias, action.method, to id of permission.
      */
     loadSystemPermissions() {
-        // const typePermission = 'system';
-        // const listPermissions = util.GET(`${this.baseUrlPermissions}?${typePermission}`);
-        return util.GET('http://localhost:8000/auth/pap/permission?path=/device/(.*)&method=(.*)&permission=permit');
+        return util.GET(`${this.baseUrlPermissions}?type=system`);
     }
-
 }
 
 const groupPermissionsManager = new GroupPermissionsManager();

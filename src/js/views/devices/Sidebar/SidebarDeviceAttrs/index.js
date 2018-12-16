@@ -42,13 +42,8 @@ const SidebarDeviceAttrs = ({
                         <div className="footer">
                             <DojotCustomButton
                                 onClick={handleShowDeviceAttrs}
-                                label="discard"
+                                label="back"
                                 type="default"
-                            />
-                            <DojotCustomButton
-                                onClick={console.log('teste')}
-                                label="save"
-                                type="primary"
                             />
                         </div>
                     </div>

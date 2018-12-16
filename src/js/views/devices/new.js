@@ -42,9 +42,9 @@ const AttrActions = alt.generateActions('update');
 
 class DeviceHandlerStore {
     constructor() {
-        this.device = {}; this.set();
+        this.device = {};
         this.usedTemplates = {};
-        
+
         this.attrNames = {};
         this.attrError = '';
         this.fieldError = {};
@@ -55,7 +55,7 @@ class DeviceHandlerStore {
             fetch: FormActions.FETCH,
             setAttributes: AttrActions.UPDATE,
         });
-        this.set(null);
+        // this.set(null);
     }
 
 
@@ -129,7 +129,7 @@ class StaticAttributes extends Component {
         this.availableTypes = attrType.getConfigTypes();
         this.handleChange = this.handleChange.bind(this);
     }
-    componentWillMount(){ 
+    componentWillMount(){
         const st = this.props.attrs;
         for (const k in st) {
             st[k].validate = util.isTypeValid(st[k].value,st[k].value_type)
@@ -214,7 +214,7 @@ class StaticAttributes extends Component {
                                             maxLength={40}
                                         />
                                     </div>
-                                    <div className="attr-type fix-value ">Value                                    
+                                    <div className="attr-type fix-value ">Value
                                     <span
                                         className={
                                             `error-msgs-attr ${
@@ -344,8 +344,8 @@ class DeviceForm extends Component {
     componentDidMount() {
         if (!this.props.edition) this.setState({ templateState: 1 });
     }
-    
-    componentWillMount(){ 
+
+    componentWillMount(){
         const st = this.state.staticAttrs
         for (const k in st) {
             st[k].validate = util.isTypeValid(st[k].value,st[k].value_type)
@@ -426,8 +426,8 @@ class DeviceForm extends Component {
         const st = this.state.staticAttrs
         for (const k in st) {
             if(!st[k].validate.result){
-                toaster.error(st[k].validate.error); 
-                return;      
+                toaster.error(st[k].validate.error);
+                return;
             }
         }
         if (!ret.result) {
@@ -435,19 +435,19 @@ class DeviceForm extends Component {
             return;
         }else{
             DeviceFormStore.getState().device.label = ret.label
-            
+
             // templates describe all attributes that should be applied to device, so we only need set values related to static attributes.
             AttrActions.update(this.state.staticAttrs);
-            
+
             // set templates used
             const template_list = [];
             for (const k in this.state.selectedTemplates) {
                 template_list.push(this.state.selectedTemplates[k].id);
             }
             FormActions.update({ f: 'templates', v: template_list });
-            
+
             // console.log('Object to be saved: ', JSON.parse(JSON.stringify(DeviceFormStore.getState().device)));
-            
+
             // Now, saves the device;
             const ongoingOps = DeviceStore.getState().loading;
             if (ongoingOps == false) {
@@ -459,7 +459,7 @@ class DeviceForm extends Component {
     }
 
     componentWillUnmount() {
-        FormActions.set(null);
+        // FormActions.set(null);
     }
 
     setTemplateState(state) {
@@ -505,7 +505,7 @@ class DeviceForm extends Component {
         const st = this.state.staticAttrs
         for (const k in st) {
             if (st[k].label == label) st[k].value = val;
-                st[k].validate = util.isTypeValid(st[k].value,st[k].value_type) 
+                st[k].validate = util.isTypeValid(st[k].value,st[k].value_type)
         }
         this.setState({ staticAttrs: st });
     }
@@ -714,7 +714,7 @@ class NewDevice extends Component {
     }
 
     componentDidMount() {
-        FormActions.set(null);
+        // FormActions.set(null);
         const edit = this.props.params.device;
         if (edit) {
             FormActions.fetch(edit);

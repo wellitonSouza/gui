@@ -4,6 +4,8 @@ import AltContainer from 'alt-container';
 import SidebarDevice from './SidebarDevice';
 import SidebarManageTemplates from './SidebarManageTemplates';
 import SidebarDeviceAttrs from './SidebarDeviceAttrs';
+import toaster from "Comms/util/materialize";
+import {FormActions} from "../Actions";
 
 class Sidebar extends Component {
     constructor(props) {
@@ -22,14 +24,21 @@ class Sidebar extends Component {
         this.handleSelectTemplate = this.handleSelectTemplate.bind(this);
         this.handleChangeName = this.handleChangeName.bind(this);
         this.handleChangeMetadata = this.handleChangeMetadata.bind(this);
-        this.saveAttr = this.saveAttr.bind(this);
+        this.save = this.save.bind(this);
     }
 
     static getDerivedStateFromProps(props, state) {
         if (props.showSidebarDevice !== state.showSidebarDevice) {
             return {
                 ...state,
+                device: props.device,
                 showSidebarDevice: props.showSidebarDevice,
+            };
+        }
+        if (props.device !== state.device) {
+            return {
+                ...state,
+                device: props.device,
             };
         }
         return null;
@@ -37,10 +46,11 @@ class Sidebar extends Component {
 
     componentDidMount() {
         const { showSidebarDevice, device } = this.props;
+        console.log('componentDidMount', device)
         this.setState({
             showSidebarDevice,
-            usedTemplates: device.templates,
             device,
+            usedTemplates: device.templates,
         });
     }
 
@@ -54,21 +64,29 @@ class Sidebar extends Component {
         const { device } = this.state;
         if (checked) {
             device.templates = device.templates.filter(id => id !== template.id);
-            device.attrs = device.attrs.filter(attr => +attr.template_id !== template.id);
+            delete device.attrs[template.id];
         } else {
             device.templates.push(template.id);
-            device.attrs = device.attrs.concat(template.attrs);
+            device.attrs[template.id] = template.attrs;
         }
-        device.configValues = device.attrs.filter(item => item.type === 'meta');
-        device.dynamicValues = device.attrs.filter(item => item.type === 'dynamic');
-        device.staticValues = device.attrs.filter(item => item.type === 'static');
-        device.actuatorValues = device.attrs.filter(item => item.type === 'actuator');
+
+        device.configValues = [];
+        device.dynamicValues = [];
+        device.staticValues = [];
+        device.actuatorValues = [];
         device.metadata = {};
-        device.attrs.forEach((item) => {
-            if (Object.prototype.hasOwnProperty.call(item, 'metadata')) {
-                device.metadata[item.id] = [...item.metadata];
-            }
-        });
+
+        device.templates.forEach((id) => {
+            device.configValues = device.configValues.concat(device.attrs[id].filter(item => item.type === 'meta'));
+            device.dynamicValues = device.dynamicValues.concat(device.attrs[id].filter(item => item.type === 'dynamic'));
+            device.staticValues = device.staticValues.concat(device.attrs[id].filter(item => item.type === 'static'));
+            device.actuatorValues = device.actuatorValues.concat(device.attrs[id].filter(item => item.type === 'actuator'));
+            device.attrs[id].forEach((item) => {
+                if (Object.prototype.hasOwnProperty.call(item, 'metadata')) {
+                    device.metadata[item.id] = [...item.metadata];
+                }
+            });
+        })
 
         this.setState({
             device,
@@ -104,9 +122,31 @@ class Sidebar extends Component {
         });
     }
 
-    saveAttr() {
+    save() {
         const { device } = this.state;
-        console.log(device)
+        const saveDevice = { ...device };
+
+        saveDevice.templates.forEach((id) => {
+            saveDevice.attrs[id] = saveDevice.attrs[id].map((attr) => {
+                if (saveDevice.metadata[attr.id]) {
+                    return {
+                        ...attr,
+                        metadata: saveDevice.metadata[attr.id],
+                    };
+                }
+                return attr;
+            });
+        })
+
+        delete saveDevice.configValues;
+        delete saveDevice.dynamicValues;
+        delete saveDevice.staticValues;
+        delete saveDevice.actuatorValues;
+        delete saveDevice.metadata;
+        FormActions.triggerUpdate(saveDevice, () => {
+            toaster.success('Device updated');
+            // hashHistory.push('/device/list');
+        });
     }
 
 
@@ -119,6 +159,7 @@ class Sidebar extends Component {
             device,
             selectAttr,
         } = this.state;
+        if (!Object.prototype.hasOwnProperty.call(device, 'attrs')) return <div />;
         const { metadata } = device;
         return (
             <Fragment>
@@ -129,6 +170,7 @@ class Sidebar extends Component {
                     handleChangeName={this.handleChangeName}
                     handleShowManageTemplate={this.handleShowManageTemplate}
                     handleShowDeviceAttrs={this.handleShowDeviceAttrs}
+                    save={this.save}
                 />
                 <AltContainer store={TemplateStore}>
                     <SidebarManageTemplates

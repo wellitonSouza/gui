@@ -8,14 +8,19 @@ class DeviceHandlerStore {
 
         this.bindListeners({
             set: FormActions.SET,
-            // updateDevice: FormActions.UPDATE,
             fetch: FormActions.FETCH,
-            // setAttributes: AttrActions.UPDATE,
+
             handleToggleSidebarDevice: FormActions.TOGGLE_SIDEBAR_DEVICE,
 
             handleSelectTemplate: FormActions.SELECT_TEMPLATE,
+
+            // handleInsertDevice: FormActions.INSERT_DEVICE,
+            // handleTriggerInsertion: FormActions.ADD_DEVICE,
+
+            handleTriggerUpdate: FormActions.TRIGGER_UPDATE,
+            handleUpdateSingle: FormActions.UPDATE_SINGLE,
         });
-        this.set(null);
+        // this.set(null);
     }
 
     fetch(id) {
@@ -29,7 +34,7 @@ class DeviceHandlerStore {
                 protocol: 'MQTT',
                 templates: [],
                 tags: [],
-                attrs: [],
+                attrs: {},
                 configValues: [],
                 dynamicValues: [],
                 staticValues: [],
@@ -37,23 +42,36 @@ class DeviceHandlerStore {
                 metadata: {},
             };
             this.usedTemplates = {};
+            this.showSidebarDevice = true;
         } else {
             const customDevice = { ...device };
-            customDevice.configValues = device.attrs.filter(item => item.type === 'meta');
-            customDevice.dynamicValues = device.attrs.filter(item => item.type === 'dynamic');
-            customDevice.staticValues = device.attrs.filter(item => item.type === 'static');
-            customDevice.actuatorValues = device.attrs.filter(item => item.type === 'actuator');
-            customDevice.metadata = {};
-            device.attrs.forEach((item) => {
-                if (Object.prototype.hasOwnProperty.call(item, 'metadata')) {
-                    customDevice.metadata[item.id] = [...item.metadata];
-                }
+            device.templates.forEach((id) => {
+                customDevice.configValues = device.attrs[id].filter(item => item.type === 'meta');
+                customDevice.dynamicValues = device.attrs[id].filter(item => item.type === 'dynamic');
+                customDevice.staticValues = device.attrs[id].filter(item => item.type === 'static');
+                customDevice.actuatorValues = device.attrs[id].filter(item => item.type === 'actuator');
+                customDevice.metadata = {};
+                device.attrs[id].forEach((item) => {
+                    if (Object.prototype.hasOwnProperty.call(item, 'metadata')) {
+                        customDevice.metadata[item.id] = [...item.metadata];
+                    }
+                });
             });
 
             this.device = customDevice;
             this.usedTemplates = device.templates;
-            // this.loadAttrs();
+            this.showSidebarDevice = true;
         }
+    }
+
+    handleTriggerUpdate(device) {
+        this.device = device;
+        this.showSidebarDevice = false;
+    }
+
+    handleUpdateSingle(device) {
+        this.device = device;
+        this.showSidebarDevice = false;
     }
 
     handleToggleSidebarDevice(value) {

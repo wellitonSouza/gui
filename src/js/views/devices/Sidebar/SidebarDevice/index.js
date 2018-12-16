@@ -13,6 +13,7 @@ const SidebarDevice = ({
     device,
     handleChangeName,
     selectedTemplates,
+    save,
 }) => {
     const {
         configValues, dynamicValues, staticValues, actuatorValues,
@@ -115,7 +116,11 @@ const SidebarDevice = ({
                                     label="discard"
                                     onClick={() => FormActions.toggleSidebarDevice(false)}
                                 />
-                                <DojotCustomButton label="save" type="primary" />
+                                <DojotCustomButton
+                                    label="save"
+                                    type="primary"
+                                    onClick={save}
+                                />
                             </div>
                         </div>
                     )
@@ -133,7 +138,12 @@ SidebarDevice.defaultProps = {
         protocol: 'MQTT',
         templates: [],
         tags: [],
-        attrs: {},
+        attrs: [],
+        configValues: [],
+        dynamicValues: [],
+        staticValues: [],
+        actuatorValues: [],
+        metadata: {},
     },
 };
 

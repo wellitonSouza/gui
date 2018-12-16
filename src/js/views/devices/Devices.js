@@ -106,11 +106,11 @@ class DeviceOperations extends GenericOperations {
         }
         console.log('fetching using: ', res);
         if (this.paginationParams.page_size !== 5000) {
-            DeviceActions.fetchDevices.defer(res, cb); 
+            DeviceActions.fetchDevices.defer(res, cb);
         }
         else
         {
-            MapPositionActions.fetchDevices.defer(res, cb); 
+            MapPositionActions.fetchDevices.defer(res, cb);
         }
     }
 }
@@ -134,7 +134,7 @@ class Devices extends Component {
     // DeviceActions.fetchDevices.defer();
         // console.log('devices: componentDidMount');
         this.dev_opex._fetch();
- 
+
  /*
         // Realtime
         const socketio = require('socket.io-client');
@@ -240,7 +240,7 @@ function OperationsHeader(props) {
             {props.displayToggle}
             <DojotBtnLink
                 responsive="true"
-                onClick={() => FormActions.toggleSidebarDevice(true)}
+                onClick={() => FormActions.set(null)}
                 label="New Device"
                 alt="Create a new device"
                 icon="fa fa-plus"

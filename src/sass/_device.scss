@@ -1,7 +1,7 @@
 /* The CSS */
 .card-select-2 {
   position:relative;
-    
+
   select {
     z-index:20;
     padding: 0px;
@@ -607,8 +607,8 @@
     width: 100%;
     float: left;
     font-weight: bold;
-    padding-bottom: 10px; 
-    
+    padding-bottom: 10px;
+
     .title {
       font-family: "Roboto", sans-serif;
       color: #a2a2a2;
@@ -681,7 +681,7 @@
             font-size: 11px;
         }
         */
-        
+
         .img {
           width: 58px;
           padding: 10px;
@@ -849,7 +849,7 @@
     overflow: auto;
     top: 117px;
     margin: 0;
-    
+
     &>div
     {
       width: 100%;
@@ -1161,6 +1161,10 @@
       overflow-y: auto;
       font-family: Raleway, sans-serif;
     }
+  }
+  .footer {
+    justify-content: flex-start;
+    padding-left: 50px;
   }
 }
 

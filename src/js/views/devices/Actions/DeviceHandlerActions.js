@@ -21,6 +21,27 @@ class DeviceHandlerActions {
     selectTemplate(template) {
         return template;
     }
+
+    triggerUpdate(device, cb) {
+        return (dispatch) => {
+            dispatch();
+            deviceManager
+                .setDevice(device)
+                .then(() => {
+                    this.updateSingle(device);
+                    if (cb) {
+                        cb(device);
+                    }
+                })
+                .catch((error) => {
+                    this.devicesFailed(error);
+                });
+        };
+    }
+
+    updateSingle(device) {
+        return device;
+    }
 }
 
 export default DeviceHandlerActions;

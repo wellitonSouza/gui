@@ -168,12 +168,11 @@ $status: #0c343d;
   &.disabled { background-color: $disabled; }
 
   .lst-entry-title {
-    position: relative;
     height: 75px;
     padding: 0;
-
     color: #fff;
     font-weight: bold;
+    display: flex;
 
     > div.img {
       float: left;
@@ -714,7 +713,7 @@ $status: #0c343d;
   {
     padding-top: 50px;
   }
-  
+
   i.material-icons {
     font-size: 5em;
   }
@@ -895,7 +894,7 @@ $action-area-width: 200px;
 
   .title-text {
     height: 100%;
-    width: calc(100% - 75px);
+    width: calc(100% - 100px);
     float: left;
     display: inline;
     font-size: 18px;
@@ -909,6 +908,13 @@ $action-area-width: 200px;
       height: 62px;
       margin: 6.5px 0;
     }
+  }
+
+  .title-edit {
+    display: flex;
+    align-items: center;
+    width: 50px;
+    padding: 0 10px;
   }
 
   .card-footer {

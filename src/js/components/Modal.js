@@ -4,6 +4,7 @@ import {
     DojotBtnClassic,
 } from './DojotButton';
 import LoginActions from '../actions/LoginActions';
+import toaster from '../comms/util/materialize';
 
 class RemoveModal extends Component {
     constructor(props) {
@@ -205,6 +206,8 @@ class ChangePasswordModal extends Component {
         } else {
             errorMsg.confirm = 'Password mismatch';
             this.setState({ invalid: errorMsg });
+            toaster.error(this.state.invalid.password)
+            toaster.error(this.state.invalid.confirm)
         }
     }
 

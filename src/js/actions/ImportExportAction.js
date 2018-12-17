@@ -22,7 +22,7 @@ class ImportExportActions {
                     this.importFile(response);
                 })
                 .catch((error) => {
-                    console.log(error);
+                    this.importFailed(error);
                 });
         };
     }
@@ -32,8 +32,8 @@ class ImportExportActions {
             dispatch();
             ExportManager.export()
                 .then((file) => {
-                    const text = new Blob([JSON.stringify(file)], { type: 'text/json' });
-                    const atag = document.createElement('a');
+                    const text = new global.Blob([JSON.stringify(file)], { type: 'text/json' });
+                    const atag = global.document.createElement('a');
                     atag.href = URL.createObjectURL(text);
                     atag.download = 'DojotData.json';
                     atag.click();

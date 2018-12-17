@@ -65,11 +65,9 @@ export default class Import extends Component {
                 let json = '';
                 try {
                     json = JSON.parse(evt.target.result);
-                    console.log('Json :', json);
                     ImportExportAction.import(json);
                     this.success(true);
                 } catch (err) {
-                    console.log('err :', err);
                     toaster.error('Error reading file');
                 }
             };

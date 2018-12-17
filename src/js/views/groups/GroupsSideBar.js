@@ -203,15 +203,27 @@ class Groups extends Component {
         this.state = {
             showSideBar: false,
             showDeleteModal: false,
+            groupsForm: {
+                id: '',
+                name: '',
+                description: '',
+            },
+            permissionsForm: {},
             edit: false,
         };
 
         this.newGroup = this.newGroup.bind(this);
         this.toggleSideBar = this.toggleSideBar.bind(this);
         this.hideSideBar = this.hideSideBar.bind(this);
-        this.showSideBar = this.showSideBar.bind(this);;
+        this.showSideBar = this.showSideBar.bind(this);
+        this.handleInput = this.handleInput.bind(this);
+        this.cleanGroupsForm = this.cleanGroupsForm.bind(this);
+        this.discard = this.discard.bind(this);
+        this.save = this.save.bind(this);
+        this.delete = this.delete.bind(this);
         this.handleModalDelete = this.handleModalDelete.bind(this);
         this.handleUpdate = this.handleUpdate.bind(this);
+        this.handleCheckBox = this.handleCheckBox.bind(this);
     }
 
 
@@ -269,7 +281,20 @@ class Groups extends Component {
         const regex = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
         return !regex.test(string);
     }
-    
+
+    cleanGroupsForm() {
+        this.setState(prevState => ({
+            ...prevState,
+            groupsForm: {
+                id: '',
+                name: '',
+                description: '',
+            },
+            edit: false,
+        }));
+    }
+
+
     cleanGroupsPermissions() {
         this.setState(prevState => ({
             ...prevState,

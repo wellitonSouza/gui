@@ -5,7 +5,7 @@ const GroupPermissionActions = require('../actions/GroupPermissionActions');
 class GroupStore {
     constructor() {
         this.groups = [];
-        this.grouppermissions = [];
+        this.grouppermissions = {};
         this.systempermissions = [];
         this.groupId = null;
         this.loading = false;
@@ -67,6 +67,7 @@ class GroupStore {
      * */
 
     handleUpdateGroupPermissions(groupPermissions) {
+        console.log('handleUpdateGroupPermissions',groupPermissions);
         this.grouppermissions = groupPermissions;
         this.error = null;
         this.loading = false;
@@ -79,8 +80,9 @@ class GroupStore {
     }
 
     handleFetchGroupPermissions(groupId) {
+        console.log('handleFetchGroupPermissions',groupId);
         this.groupId = groupId;
-        this.grouppermissions = [];
+        this.grouppermissions = {};
         this.loading = true;
     }
 

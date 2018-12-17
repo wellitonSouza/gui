@@ -47,7 +47,7 @@ class GroupPermissionActions {
     fetchPermissionsForGroups(groupId) {
         console.log('fetchPermissionsForGroups groupId', groupId);
         return (dispatch) => {
-            dispatch();
+
             groupPermissionsManager.getGroupPermissions(groupId)
                 .then((response) => {
                     const { permissions } = response;
@@ -65,11 +65,14 @@ class GroupPermissionActions {
                             }
                         }
                     });
+                    this.updateGroupPermissions(this.groupPermissions);
+                    console.log('fetchPermissionsForGroups this.groupPermissions',this.groupPermissions);
                     this._auxGroupPermissionBefore = JSON.parse(JSON.stringify(this.groupPermissions));
                 })
                 .catch((error) => {
                     this.failed(error);
                 });
+            dispatch();
         };
     }
 

@@ -5,7 +5,8 @@ import { DojotCustomButton } from './DojotButton';
 //TODO move Component to folder Components
 class SideBarRight extends Component {
     render() {
-        const { visible, title, buttonsFooter, content } = this.props;
+        console.log('SideBarRight', this.props);
+        const { visible, title, buttonsFooter, content,  } = this.props;
         let body = null;
         let header = null;
         let btnsFooter = null;

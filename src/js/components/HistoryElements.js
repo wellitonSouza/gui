@@ -30,10 +30,10 @@ class Graph extends Component {
         }
 
         this.props.MeasureStore.data[this.props.device.id][`_${this.props.attr}`].map(
-          i => {
-            labels.push(util.iso_to_date_hour(i.ts));
-            values.push(i.value);
-          }
+            i => {
+                labels.push(util.iso_to_date_hour(i.ts));
+                values.push(i.value);
+            }
         );
 
         if (values.length === 0) {
@@ -105,42 +105,31 @@ class Graph extends Component {
 
 function HistoryList(props) {
     // handle values
-    const value = [];
+    const listValues = [];
     for (const k in props.MeasureStore.data[props.device.id][`_${props.attr}`]) {
-        value[k] = props.MeasureStore.data[props.device.id][`_${props.attr}`][k];
+        listValues[k] = props.MeasureStore.data[props.device.id][`_${props.attr}`][k];
     }
 
-    if (value.length > 0) {
-        const trimmedList = value.filter((i) => {
-            if (i.value !== null && i.value.length != undefined) {
-                return i.value.length > 0;
-            } else {
-                return true;
-            };
-          
-         });
-         
-        if (trimmedList.length > 0) {
-            trimmedList.reverse();
+    if (listValues.length > 0) {
+            listValues.reverse();
             return (
                 <div className="relative full-height">
                     <div className="full-height full-width history-list">
-                        {trimmedList.map((i, k) => (<div className={`history-row ${k % 2 ? 'alt-row' : ''}`} key={i.ts}>
-                            <div className="value">{i.value !==null ? i.value.toString(): <span className="red-text"> <em>Invalid data </em></span> }</div>
+                        {listValues.map((i, k) => (<div className={`history-row ${k % 2 ? 'alt-row' : ''}`} key={i.ts}>
+                            <div className="value">{i.value !== null && (i.value.length != undefined && i.value.length > 0) ? i.value.toString() : <span className="red-text"> <em>Invalid data </em></span>}</div>
                             <div className="label">{util.iso_to_date(i.ts)}</div>
                         </div>
                         ))}
                     </div>
                 </div>
             );
-        }
     } else {
         return (
             <div className="valign-wrapper full-height background-info">
                 <div className="full-width center">
-No data
+                    No data
                     <br />
-available
+                    available
                 </div>
             </div>
         );
@@ -165,26 +154,37 @@ class HandleGeoElements extends Component {
     }
 
     handleDevicePosition(device) {
-        function parserPosition(position) {
-            const parsedPosition = position.split(',');
-            return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
-        }
-
+        console.log("device", device);
         const validDevices = [];
         for (const j in device.attrs) {
             for (const i in device.attrs[j]) {
                 if (device.attrs[j][i].type === 'static') {
                     if (device.attrs[j][i].value_type === 'geo:point') {
-                        device.position = parserPosition(device.attrs[j][i].static_value);
+                        const aux = device.attrs[j][i].static_value;
+                        const parsedPosition = aux.split(',');
+                        device.sp_value = [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
                     }
+                }
+                else if (device.attrs[j][i].type === "dynamic") {
+                    device.has_dynamic_position = true;
+                    device.active_tracking = false;
+                    device.allow_tracking = false;
+                    device.dy_positions = [
+                        {
+                            id: device.id,
+                            unique_key: device.unique_key,
+                            position: device.position,
+                            label: device.label,
+                            timestamp: device.timestamp
+                        }];
                 }
             }
         }
-
-        device.select = true;
-        if (device.position !== null && device.position !== undefined) {
+        device.is_visible = true;
+        if (device.sp_value !== null || device.has_dynamic_position) {
             validDevices.push(device);
         }
+        console.log("validDevices", validDevices);
         return validDevices;
     }
 
@@ -193,9 +193,9 @@ class HandleGeoElements extends Component {
             return (
                 <div className="valign-wrapper full-height background-info">
                     <div className="full-width center">
-No position
+                        No position
                         <br />
-available
+                        available
                     </div>
                 </div>
             );
@@ -218,25 +218,24 @@ available
         if (geoconfs == undefined)
             geoconfs = {}
 
-            
+
         let opened = util.checkWidthToStateOpen(this.state.opened);
-            
+
         if (validDevices.length == 0) {
             return <NoData />;
         }
-        else
-        {
+        else {
             if (this.props.isStatic) {
                 return <div className={"attributeBox " + (opened ? "expanded" : "compressed")}>
                     <div className="header">
                         <label>{this.props.label}</label>
                         {!this.state.opened ? <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand" /> : <i onClick={this.toogleExpand.bind(this, false)} className="fa fa-compress" />}
                     </div>
-                    <SmallPositionRenderer showLayersIcons={false} devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false} config={geoconfs} />
+                    <SmallPositionRenderer showLayersIcons={false} staticDevices={validDevices} allowContextMenu={false} zoom={14} showPolyline={false} config={geoconfs} />
                 </div>;
             } else {
                 return <span>
-                    <SmallPositionRenderer showLayersIcons={false} devices={validDevices} allowContextMenu={false} center={validDevices[0].position} zoom={14} showPolyline={false} config={this.props.Config} />
+                    <SmallPositionRenderer showLayersIcons={false} dynamicDevices={validDevices} allowContextMenu={false} zoom={14} showPolyline={false} config={geoconfs} />
                 </span>;
             }
         }
@@ -272,11 +271,11 @@ function Attr(props) {
     }
 
     if (props.MeasureStore.data[props.device.id] === undefined) {
-      return <NoData />;
+        return <NoData />;
     }
 
     if (props.MeasureStore.data[props.device.id][`_${props.attr}`] == undefined) {
-      return <NoDataAv />;
+        return <NoDataAv />;
     }
 
 

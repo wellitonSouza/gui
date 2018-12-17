@@ -1,5 +1,14 @@
-from nginx
+FROM node:9.11.2-alpine AS basis
 
-copy dist /usr/share/nginx/html
+RUN mkdir /data
+WORKDIR /data
 
-expose 80
+COPY . .
+RUN yarn install && yarn run build
+
+
+FROM nginx:1.15.7-alpine
+
+COPY --from=basis /data/dist /usr/share/nginx/html
+
+EXPOSE 80

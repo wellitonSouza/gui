@@ -221,7 +221,6 @@
       {
         position: absolute;
         top: 21px;
-        left: 13px;
         width: 57px;
       }
 
@@ -235,8 +234,8 @@
 
       .bars{
         position: absolute;
-        top: 80px;
-        right: 32px;
+        top: 65px;
+        right: 20px;
         width: 20px;
       }
 
@@ -534,26 +533,9 @@
   border-bottom: 1px solid #C2C2C2;
 }
 
-@media screen and (max-width: 800px){
-  .logout-page {
+.logout-page {
     padding-top: 10% !important;
-  }
 }
-
-
-// .logout-page .logout-page-buttons {
-//   margin-top: 30%;
-//   padding-left: 3%;
-// }
-
-// .logout-page .logout-page-buttons a {
-//   font-size: 100%;
-// }
-
-// .logout-page .logout-page-photo {
-//   padding-left: 35%;
-//   margin-bottom: 5%;
-// }
 
 @media only screen and (min-width: 601px) {
 
@@ -566,12 +548,13 @@
   }
 
 }
+
 .sidebar-auth {
   height: 100%;
   width: 350px;
   float: left;
   background: #F3F3F2;
-  position: absolute;
+  position: fixed;
   right: 0;
   z-index: 200;
   padding: 50px 25px 15px 25px;
@@ -608,14 +591,16 @@
     color: #828282;
     font-size: 12px;
   }
+
   .action-footer {
-    position: absolute;
+    position: fixed;
     bottom: 15px;
     right: 25px;
     left: 25px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
   }
+
   input {
     font-size: 16px !important;
   }

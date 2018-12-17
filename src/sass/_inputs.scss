@@ -9,8 +9,7 @@
     color: white !important;
   }
 }
-
-.searchBtn{
+  .searchBtn{
 
     margin-right: 19px;
     color: #2c3e50;
@@ -28,7 +27,7 @@
         box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.25);
     }
 
-  }
+}
 
 .btn-red
 {
@@ -205,4 +204,55 @@ a.new-btn-flat
 .input-field
 {
   bottom: 0px !important;
+}
+
+.custom-button {
+  padding: 5px 10px;
+  text-transform: uppercase;
+  font-weight: 500;
+  height: 36px;
+  border-radius: 2px;
+  border: none;
+  background: #F3F3F2;
+  color: #555555;
+  transition: all .2s ease;
+}
+.custom-button-default {
+  @extend .custom-button;
+  &:hover {
+    background-color: rgba(153, 153, 153, 0.4);
+  }
+  //&:active {
+  //  background-color: rgba(175, 175, 175, 0.4);
+  //}
+}
+
+.custom-button-primary {
+  @extend .custom-button;
+  color: #2CA58E;
+  &:hover {
+    color: #F3F3F2;
+    background: #2CA58E;
+    border: 1px solid #2CA58E ;
+  }
+  //&:active {
+  //  color: #F3F3F2;
+  //  background: rgb(97, 163, 151);
+  //  border: 1px solid rgb(97, 163, 151);
+  //}
+}
+
+.custom-button-secondary {
+  @extend .custom-button;
+  color: #F26F6F;
+  &:hover {
+    color: #F3F3F2;
+    background: #F26F6F;
+    border: 1px solid #F26F6F ;
+  }
+  //&:active {
+  //  color: #F3F3F2;
+  //  background: rgb(248, 146, 146);
+  //  border: 1px solid rgb(248, 146, 146);
+  //}
 }

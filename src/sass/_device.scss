@@ -139,12 +139,37 @@
     width: 100%;
   }
 
+  .error-msgs-attr{
+      font-family: 'Open Sans', sans-serif;
+      font-style: italic;
+      font-weight: bold;
+      line-height: normal;
+      text-align: right;
+      font-size: 10px;
+      position: relative;
+      left: 30%;
+      color: red;
+    }
+
   .fix-inputs {
     margin: 0px !important;
     margin-top: -15px !important;
   }
+  .fix-select {
+    margin: 3px 0px 8px !important;
+  }
   .fix-value {
     margin-top: -15px;
+  }
+
+  .visible
+  {
+    display: inline;
+  }
+
+  .not-visible
+  {
+    visibility: hidden
   }
 
   .attr-title {
@@ -171,17 +196,30 @@
     padding-bottom: 10px;
   }
 }
+@media screen and (max-width: 900px){
+  .device-frame {
+    .img {
+      padding: 50px 0 0;
 
+      img {
+        width: 70px;
+        height: 70px;
+      }
+    }
+  }
+}
+@media screen and (min-width: 901px){
 .device-frame {
   .img {
-    padding: 40px 0px 0px 10px;
+    padding: 40px 0 0 10px;
 
     img {
       width: 100px;
       height: 100px;
     }
   }
-
+}
+}
   .header {
     padding: 20px 10px;
 
@@ -193,7 +231,6 @@
       font-weight: 500;
     }
   }
-}
 
 .pb160px {
   padding-bottom: 160px;
@@ -299,7 +336,7 @@
 .fix-map-bug{
     height: 100%;
     width: 100%;
-    padding-top: 2px;
+    // padding-top: 2px;
     position: relative;
     .flex-wrapper
     {
@@ -339,6 +376,7 @@
     color:#2c3e50;
     text-transform: uppercase;
     font-weight: 500;
+    position: relative;
     font-family: Ubuntu, sans-serif;
     font-size: 11px;
     &:hover {
@@ -530,7 +568,7 @@
   right: 0;
   display: inline-block;
   top: 0;
-  width: 400px;
+  width: 440px;
   box-shadow: 10px 0px 50px #000000;
 }
 
@@ -604,7 +642,7 @@
 
   .deviceCanvas {
     width: 100% !important;
-    height: calc(100% - 60px) !important;
+    height: calc(100% - 40px) !important;
 
     .background-info {
       float: left;
@@ -693,7 +731,7 @@
   z-index: 1001;
 
   &.push-left {
-    right: 386px;
+    right: 428px;
   }
 }
 
@@ -719,6 +757,7 @@
   display: inline-block;
 }
 
+
 .box-sh {
   padding: 0px;
   padding-left: 20px;
@@ -726,6 +765,12 @@
   position: relative;
   height: 100%;
   float: right;
+}
+
+@media screen and (max-width: 900px){
+  .box-sh {
+    grid-column: 3;
+  }
 }
 
 .box-sh-item.active {

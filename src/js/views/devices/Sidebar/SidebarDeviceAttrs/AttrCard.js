@@ -20,6 +20,12 @@ class AttrCard extends PureComponent {
                 metadata: nextProps.metadata,
             };
         }
+        if (nextProps.attr !== prevState.attr) {
+            return {
+                ...prevState,
+                attr: nextProps.attr,
+            };
+        }
         return null;
     }
 
@@ -40,6 +46,7 @@ class AttrCard extends PureComponent {
 
     render() {
         const { showMetadata, attr, metadata } = this.state;
+        const { handleChangeAttr, handleChangeMetadata } = this.props;
         const metaLength = metadata !== undefined
             ? metadata.length
             : 0;
@@ -58,6 +65,7 @@ class AttrCard extends PureComponent {
                                         name="name"
                                         maxLength={40}
                                         value={attr.static_value}
+                                        onChange={e => handleChangeAttr(e, attr)}
                                     >
                                         {attr.label}
                                     </MaterialInput>
@@ -90,7 +98,7 @@ class AttrCard extends PureComponent {
                                             name={meta.label}
                                             maxLength={40}
                                             value={meta.static_value}
-                                            onChange={(e) => this.props.handleChangeMetadata(e, attr.id)}
+                                            onChange={e => handleChangeMetadata(e, attr.id)}
                                         >
                                             {meta.label}
                                         </MaterialInput>

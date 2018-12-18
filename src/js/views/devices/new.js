@@ -399,7 +399,7 @@ class DeviceForm extends Component {
                 for (const index in deviceAttrs[tmp]) {
                     if (deviceAttrs[tmp][index].type == 'static' || deviceAttrs[tmp][index].type == 'meta') {
                         configAttrs = configAttrs.concat(deviceAttrs[tmp][index]);
-                        console.log('handleStaticsAttributes', deviceAttrs[tmp][index]);
+                        // console.log('handleStaticsAttributes', deviceAttrs[tmp][index]);
                     }
                 }
             }

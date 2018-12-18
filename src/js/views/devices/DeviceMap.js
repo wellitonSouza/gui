@@ -30,7 +30,7 @@ class DeviceMapWrapper extends Component {
     }
 
     render() {
-        console.log("2.5. <DeviceMapWrapper>.render.", this.props);
+        // console.log("2.5. <DeviceMapWrapper>.render.", this.props);
 
         if (!this.didMount || this.props.positions.loading) {
           return <Loading />
@@ -80,7 +80,7 @@ class DeviceMap extends Component {
 
     componentDidMount() {
 
-        console.log("3.c.componentDidMount");
+        // console.log("3.c.componentDidMount");
         this.showAll();
 
         this.staticDevices = [];
@@ -142,7 +142,7 @@ class DeviceMap extends Component {
  
 
     toggleTracking(device_id) {
-        console.log("3. toggleTracking for ", device_id);
+        // console.log("3. toggleTracking for ", device_id);
         let device = null;
         for (const k in this.props.devices) {
             device = this.props.devices[k];
@@ -154,7 +154,7 @@ class DeviceMap extends Component {
         {
             TrackingActions.fetch.defer(device.dp_metadata.id,
                 device.dp_metadata.attr_label, 50);
-            console.log("requested tracking info.");
+            // console.log("requested tracking info.");
             device.active_tracking = true;
             activeTracks.push(device_id);
         }
@@ -195,9 +195,9 @@ class DeviceMap extends Component {
 
 
     render() {
-        console.log("3. <DeviceMap>. Render. ");
-        console.log(" 3.a  this.props.Measure.tracking.", this.props.trackedDevices);
-        console.log(" 3.b  this.props.devices", this.props.devices);
+        // console.log("3. <DeviceMap>. Render. ");
+        // console.log(" 3.a  this.props.Measure.tracking.", this.props.trackedDevices);
+        // console.log(" 3.b  this.props.devices", this.props.devices);
         
 
         if (!this.didMount) 
@@ -237,11 +237,11 @@ class DeviceMap extends Component {
         let deviceWithData = this.props.devices.filter(dev => dev.has_static_position || dev.dy_positions.length > 0);
         const nVisibleDevices = this.countVisibleDevices(deviceWithData);
         const displayDevicesCount = `Showing ${nVisibleDevices} of ${deviceWithData.length} device(s)`;
-        console.log("displayDevicesCount.", displayDevicesCount);
-        console.log("deviceWithData", deviceWithData);
+        // console.log("displayDevicesCount.", displayDevicesCount);
+        // console.log("deviceWithData", deviceWithData);
 
-        console.log("this.staticDevices", this.staticDevices);
-        console.log("this.dynamicDevices", this.dynamicDevices);
+        // console.log("this.staticDevices", this.staticDevices);
+        // console.log("this.dynamicDevices", this.dynamicDevices);
 
         return <div className="fix-map-bug">
             <div className="flex-wrapper">
@@ -297,7 +297,7 @@ class DevFilterFields extends Component {
     }
     
     render() {
-        console.log("DevFilterFields - DeviceMaps", this.props);
+        // console.log("DevFilterFields - DeviceMaps", this.props);
         return <div className="col s12 m12">
         <div className="col s5 m5">
             <div className="dev_field_filter">

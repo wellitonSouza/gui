@@ -11,7 +11,7 @@ class MapPositionActions {
             deviceManager
                 .getDevices(params)
                 .then((result) => {
-                    console.log("Received devices");
+                    // console.log("Received devices");
                     this.updateDevices(result);
                     if (cb) {
                         cb(result);

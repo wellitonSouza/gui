@@ -50,7 +50,7 @@ class MapWrapper extends Component {
     }
 
     render() {
-        console.log("2.<MapWrapper>.render.", this.props);
+        // console.log("2.<MapWrapper>.render.", this.props);
 
         return <AltContainer stores={{ positions: MapPositionStore, measures: MeasureStore, configs: ConfigStore }}>
             <DeviceMapWrapper showFilter={this.props.showFilter} dev_opex={this.props.dev_opex} />
@@ -104,7 +104,7 @@ class DeviceOperations extends GenericOperations {
             delete res.templates;
             res.template = this.filterParams.templates;
         }
-        console.log('fetching using: ', res);
+        // console.log('fetching using: ', res);
         if (this.paginationParams.page_size !== 5000) {
             DeviceActions.fetchDevices.defer(res, cb);
         }
@@ -186,7 +186,7 @@ class Devices extends Component {
     toggleDisplay() {
         const newDisplay = !this.state.displayList;
         // console.log(' toggleDisplay', newDisplay);
-        // reload devices for maps
+        //  devices for maps
         if (!newDisplay) this.dev_opex.setFilterToMap();
         else this.dev_opex.setDefaultFilter();
 
@@ -196,7 +196,7 @@ class Devices extends Component {
     }
 
     render() {
-        console.info('1. <Devices>.render.');
+        // console.info('1. <Devices>.render.');
 
         const detail = 'detail' in this.props.location.query
             ? this.props.location.query.detail

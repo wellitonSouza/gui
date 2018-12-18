@@ -22,7 +22,7 @@ var ConfigActions = require('../actions/ConfigActions');
         this.error = '';
     }
      handleUpdateConfigList(configList) {
-        console.log(configList);
+        // console.log(configList);
         this.mapImage = configList.mapImage;
         this.measureAttribute = configList.measureAttribute;
         this.mapOpacity = configList.mapOpacity;

@@ -24,7 +24,7 @@ class MapPositionStore {
 //   handleUpdateSingle(device) {
 
   handleUpdateDeviceList(res) {
-    console.log('receiving raw device list: ', res);
+    // console.log('receiving raw device list: ', res);
     const devices = res.devices;
     this.devicesPos = [];
     this.allDevices = [];
@@ -67,7 +67,7 @@ class MapPositionStore {
     }
 
 
-    console.log("devicesPos", this.devicesPos);
+    // console.log("devicesPos", this.devicesPos);
     this.error = null;
     this.loading = false;
 

@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { DojotCustomButton } from './DojotButton';
 
-//TODO move Component to folder Components
 class SideBarRight extends Component {
     render() {
-        console.log('SideBarRight', this.props);
-        const { visible, title, buttonsFooter, content,  } = this.props;
+        const { visible, title, buttonsFooter, content } = this.props;
         let body = null;
         let header = null;
         let btnsFooter = null;
@@ -45,6 +43,5 @@ class SideBarRight extends Component {
         return body;
     }
 }
-
-
 export default (SideBarRight);
+

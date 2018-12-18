@@ -83,6 +83,7 @@ class Groups extends Component {
         super(props);
         this.state = {
             showSideBar: false,
+            edit: false,
         };
 
         this.newGroup = this.newGroup.bind(this);
@@ -92,22 +93,9 @@ class Groups extends Component {
         this.handleUpdate = this.handleUpdate.bind(this);
     }
 
-
-    componentWillMount() {
-        //console.log('Component WILL MOUNT!');
-
-    }
-
     componentDidMount() {
-        //console.log('Component DID MOUNT!');
         GroupActions.fetchGroups.defer();
         GroupPermissionActions.fetchPermissionsForGroups(null);
-        //GroupPermissionActions.loadSystemPermissions.defer();
-    }
-
-    componentDidCatch(error, info) {
-        //console.log('componentDidCatch 1', error);
-        //console.log('componentDidCatch 1', info);
     }
 
     toggleSideBar() {
@@ -119,6 +107,7 @@ class Groups extends Component {
     hideSideBar() {
         this.setState({
             showSideBar: false,
+            edit: false,
         });
         GroupActions.fetchGroups.defer();
     }
@@ -132,9 +121,10 @@ class Groups extends Component {
     newGroup() {
         GroupActions.getGroupById(null);
         GroupPermissionActions.fetchPermissionsForGroups(null);
-        this.setState(prevState => ({
+        this.setState({
             showSideBar: true,
-        }));
+            edit: false,
+        });
     }
 
     handleUpdate(e) {
@@ -143,15 +133,16 @@ class Groups extends Component {
         GroupActions.getGroupById(groupIdClick);
         GroupPermissionActions.fetchPermissionsForGroups(groupIdClick);
         console.log(groupIdClick);
-        this.setState(prevState => ({
+        this.setState({
             showSideBar: true,
-        }));
+            edit: true,
+        });
     }
 
     render() {
-        console.log('render groups');
         const {
             showSideBar,
+            edit,
         } = this.state;
 
         return (
@@ -165,6 +156,7 @@ class Groups extends Component {
                         <GroupsSideBar
                             handleShowSideBar={this.showSideBar}
                             handleHideSideBar={this.hideSideBar}
+                            edit={edit}
                         />
                     ) : <div/>}
                 </AltContainer>

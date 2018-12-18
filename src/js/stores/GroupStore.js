@@ -30,7 +30,7 @@ class GroupStore {
             handleFetchGroupPermissions: GroupPermissionActions.fetchPermissionsForGroups,
             handleTriggerSaveGroupPermissions: GroupPermissionActions.triggerSaveGroupPermissions,
             handleFailureGroupPermissions: GroupPermissionActions.failed,
-            handleUpdateGroupPerm: GroupPermissionActions.updateGroupPerm,
+            handleUpdateGroupPerm: GroupPermissionActions.updateGroupPermission,
 
         });
     }
@@ -77,29 +77,9 @@ class GroupStore {
     /* *
      *  Permissions
      * */
-
-    handleUpdateGroupPermissions(groupPermissions) {
-        console.log('handleUpdateGroupPermissions', groupPermissions);
-        this.grouppermissions = groupPermissions;
-        this.error = null;
-        this.loading = false;
-    }
-
-    handleUpdateSystemPermissions(systemPermissions) {
-        this.systempermissions = systemPermissions;
-        this.error = null;
-        this.loading = false;
-    }
-
     handleFetchGroupPermissions(groupId) {
-        console.log('handleFetchGroupPermissions', groupId);
         this.groupId = groupId;
         this.grouppermissions = {};
-        this.loading = true;
-    }
-
-    handleFetchSystemPermissions() {
-        this.systempermissions = [];
         this.loading = true;
     }
 
@@ -112,11 +92,6 @@ class GroupStore {
     handleFailureGroupPermissions(error) {
         this.error = error;
         this.loading = false;
-    }
-
-    handleLoadSystemPermissions() {
-        this.error = null;
-        this.loading = true;
     }
 
     handleUpdateGroupPerm(grouppermissions) {

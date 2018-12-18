@@ -72,8 +72,8 @@ function TableGroupsPermissions(params) {
                             <InputCheckbox
                                 label=""
                                 placeHolder=""
-                                name={`${item}.viewer`}
-                                checked={permissionsForm[item].viewer}
+                                name={`${item}.modifier`}
+                                checked={permissionsForm[item].modifier}
                                 handleChangeCheckbox={handleChangeCheckbox}
                             />
                         </td>
@@ -81,8 +81,8 @@ function TableGroupsPermissions(params) {
                             <InputCheckbox
                                 label=""
                                 placeHolder=""
-                                name={`${item}.modifier`}
-                                checked={permissionsForm[item].modifier}
+                                name={`${item}.viewer`}
+                                checked={permissionsForm[item].viewer}
                                 handleChangeCheckbox={handleChangeCheckbox}
                             />
                         </td>
@@ -161,6 +161,9 @@ class GroupsSideBar extends Component {
         if ((this.props.group && !this.state.group) || prevProps.group !== this.props.group) {
             this.setState({ group: this.props.group });
         }
+        if ((this.props.edit && !this.state.edit) || prevProps.edit !== this.props.edit) {
+            this.setState({ edit: this.props.edit });
+        }
     }
 
     componentWillUnmount() {
@@ -236,18 +239,20 @@ class GroupsSideBar extends Component {
 
     save() {
         if (this.formDataValidate()) {
-            const { group, grouppermissions } = this.state;
+            const { group, grouppermissions, edit } = this.state;
+            const err = null;
+            const e = null;
             GroupActions.triggerSave(
                 group,
                 (response) => {
                     GroupPermissionActions.triggerSaveGroupPermissions(
-                        grouppermissions, response.id,
+                        grouppermissions, response.id, err, e, edit,
                         () => {
                             toaster.success('Permission Associate.');
                             // this.hideSideBar();
                         }, (group) => {
                             console.log(group);
-                        }
+                        },
                     );
                     this.hideSideBar();
                 },
@@ -269,11 +274,11 @@ class GroupsSideBar extends Component {
 
 
     delete() {
-        const { groupsForm } = this.state;
+        const { group } = this.state;
         GroupActions.triggerRemoval(
-            groupsForm.id,
+            group.id,
             () => {
-                toaster.success('Group Del.');
+                toaster.success('Group Removed');
                 this.hideSideBar();
             },
             (group) => {
@@ -287,12 +292,9 @@ class GroupsSideBar extends Component {
 
     render() {
         console.log('render groupssideBar', this.props, this.state);
-        console.log('render prop grouppermission', this.props.grouppermissions);
-        console.log('render state grouppermission', this.state.grouppermissions);
         const {
             group, edit, showDeleteModal, grouppermissions,
         } = this.state;
-
         const buttonsFooter = [
             {
                 label: <Trans i18nKey="groups.form.btn.discard.label"/>,

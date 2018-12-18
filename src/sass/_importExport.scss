@@ -12,6 +12,9 @@
 
 .confirm-modal-import {
     position: fixed;
+    @media screen and (max-width: 900px){
+        left: 15% !important;
+        }
     left: 35%;
     top: 160px;
     z-index: 10002 !important;
@@ -84,6 +87,9 @@
 .import-export {
     position: fixed;
     left: 35%;
+    @media screen and (max-width: 900px){
+        left: 15% !important;
+        }
     top: 160px;
     z-index: 10002 !important;
     width: 590px;

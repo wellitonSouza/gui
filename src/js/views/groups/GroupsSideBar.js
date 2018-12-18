@@ -1,85 +1,10 @@
 import React, { Component } from 'react';
-import AltContainer from 'alt-container';
-import TextTruncate from 'react-text-truncate';
 import { translate, Trans } from 'react-i18next';
-import GroupStore from '../../stores/GroupStore';
 import GroupActions from '../../actions/GroupActions';
 import GroupPermissionActions from '../../actions/GroupPermissionActions';
 import SideBarRight from '../../components/SideBar';
-import { NewPageHeader } from '../../containers/full/PageHeader';
-import { DojotBtnLink } from '../../components/DojotButton';
 import toaster from '../../comms/util/materialize';
 import { RemoveModal } from '../../components/Modal';
-
-function GroupCard(obj) {
-    return (
-        <div
-            className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight"
-            id={obj.group.id}
-            onClick={obj.onclick}
-            group="button"
-        >
-            <div className="lst-entry-title col s12 ">
-                <img className="title-icon" src="images/groups-icon.png" alt="Group"/>
-                <div className="title-text truncate" title={obj.group.name}>
-                    <span className="text">
-                        {obj.group.name}
-                    </span>
-                </div>
-            </div>
-            <div className="attr-list">
-                <div className="attr-area light-background">
-                    <div className="attr-row">
-                        <div className="icon">
-                            <img src="images/info-icon.png" alt={obj.group.description}/>
-                        </div>
-                        <div className="user-card attr-content" title={obj.group.description}>
-                            <TextTruncate
-                                line={2}
-                                truncateText="…"
-                                text={obj.group.description}
-                                containerClassName="description-text"
-                            />
-                            <div className="subtitle"><Trans i18nKey="groups.description"/></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    );
-}
-
-function GroupList(param) {
-    if (param.groups) {
-        return (
-            <div className="fill">
-                {param.groups.map(obj => (
-                    <GroupCard
-                        group={obj}
-                        key={obj.id}
-                        onclick={param.handleUpdate}
-                    />
-                ))}
-            </div>);
-    }
-}
-
-function OperationsHeader(param) {
-    return (
-        <div className="col s12 pull-right pt10">
-            <DojotBtnLink
-                responsive="true"
-                onClick={param.newGroup}
-                label={<Trans i18nKey="groups.btn.new.text"/>}
-                alt="Create a new group"
-                icon="fa fa-plus"
-                className="w130px"
-            />
-        </div>
-
-    );
-}
 
 function InputCheckbox(params) {
     const { handleChangeCheckbox } = params;
@@ -122,6 +47,11 @@ function InputText(params) {
 
 function TableGroupsPermissions(params) {
     const { handleChangeCheckbox, permissionsForm } = params;
+
+    if (!permissionsForm) {
+        return (<div/>);
+    }
+
     return (
         <table className="striped centered">
             <thead>
@@ -165,13 +95,18 @@ function TableGroupsPermissions(params) {
 }
 
 function Form(params) {
-    console.log(params, 'params');
+
     const {
         handleCharge,
-        data,
+        dataGroup,
         handleChangeCheckbox,
-        permissionsForm,
+        dataPermissions,
     } = params;
+
+    if (!dataGroup) {
+        return (<div/>);
+    }
+
     return (
         <form action="#">
             <InputText
@@ -179,7 +114,7 @@ function Form(params) {
                 name="name"
                 maxLength={30}
                 onChange={handleCharge}
-                value={data.name}
+                value={dataGroup.name ? dataGroup.name : ''}
                 errorMessage={<Trans i18nKey="groups.form.input.groupname.error"/>}
             />
             <InputText
@@ -187,93 +122,48 @@ function Form(params) {
                 name="description"
                 maxLength={254}
                 onChange={handleCharge}
-                value={data.description}
+                value={dataGroup.description ? dataGroup.description : ''}
             />
             <TableGroupsPermissions
-                permissionsForm={permissionsForm}
+                permissionsForm={dataPermissions}
                 handleChangeCheckbox={handleChangeCheckbox}
             />
         </form>
     );
 }
 
-class Groups extends Component {
+class GroupsSideBar extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
-            showSideBar: false,
             showDeleteModal: false,
-            groupsForm: {
-                id: '',
-                name: '',
-                description: '',
-            },
+            group: undefined,
+            grouppermissions: undefined,
             permissionsForm: {},
             edit: false,
         };
 
-        this.newGroup = this.newGroup.bind(this);
-        this.toggleSideBar = this.toggleSideBar.bind(this);
-        this.hideSideBar = this.hideSideBar.bind(this);
-        this.showSideBar = this.showSideBar.bind(this);
         this.handleInput = this.handleInput.bind(this);
-        this.cleanGroupsForm = this.cleanGroupsForm.bind(this);
         this.discard = this.discard.bind(this);
         this.save = this.save.bind(this);
         this.delete = this.delete.bind(this);
         this.handleModalDelete = this.handleModalDelete.bind(this);
-        this.handleUpdate = this.handleUpdate.bind(this);
         this.handleCheckBox = this.handleCheckBox.bind(this);
     }
 
-
-    componentWillMount() {
-        console.log('Component WILL MOUNT!');
-    }
-
-    componentDidMount() {
-        console.log('Component DID MOUNT!');
-        GroupActions.fetchGroups.defer();
-        GroupPermissionActions._loadSystemPermissions.defer();
-        //GroupPermissionActions.fetchSystemPermissions.defer();
-    }
-
-    componentWillReceiveProps(newProps) {
-        console.log('Component WILL RECIEVE PROPS!');
-    }
-
-    shouldComponentUpdate(newProps, newState) {
-        console.log('t shouldComponentUpdate!', this.state);
-        console.log('t shouldComponentUpdate!', newState);
-
-        console.log('t shouldComponentUpdate!', newState.groupsForm.id);
-        console.log('t shouldComponentUpdate!', this.state.groupsForm.id);
-        return true;
-    }
-
-    componentWillUpdate(nextProps, nextState) {
-        console.log('t Component WILL UPDATE!', this.state);
-        console.log('t Component WILL UPDATE!', nextState);
-        console.log('t Component WILL UPDATE!', nextState.groupsForm.id);
-        console.log('t Component WILL UPDATE!', this.state.groupsForm.id);
-    }
-
     componentDidUpdate(prevProps, prevState) {
-
-        if (prevState.groupsForm.id !== this.state.groupsForm.id) {
-            //this.setState(prevState);
+        if ((this.props.grouppermissions && !this.state.grouppermissions)
+            || prevProps.grouppermissions !== this.props.grouppermissions) {
+            this.setState({ grouppermissions: this.props.grouppermissions });
         }
-        console.log('t Component DID UPDATE!', prevState);
-        console.log('t Component DID UPDATE!', this.state);
-        console.log('t Component DID UPDATE!', prevState.groupsForm.id);
-        console.log('t Component DID UPDATE!', this.state.groupsForm.id);
-        if (this.state.edit) {
-            // GroupPermissionActions.fetchPermissionsForGroups(this.state.groupsForm.id);
+
+        if ((this.props.group && !this.state.group) || prevProps.group !== this.props.group) {
+            this.setState({ group: this.props.group });
         }
     }
 
     componentWillUnmount() {
-        console.log('Component WILL UNMOUNT!');
     }
 
     // TODO
@@ -282,67 +172,17 @@ class Groups extends Component {
         return !regex.test(string);
     }
 
-    cleanGroupsForm() {
-        this.setState(prevState => ({
-            ...prevState,
-            groupsForm: {
-                id: '',
-                name: '',
-                description: '',
-            },
-            edit: false,
-        }));
-    }
-
-
-    cleanGroupsPermissions() {
-        this.setState(prevState => ({
-            ...prevState,
-            permissionsForm: {},
-        }));
-    }
-
-    newGroup() {
-        this.cleanGroupsForm();
-        const groupPermission = GroupPermissionActions.fetchSystemPermissions();
-        console.log('newGroup hd up groupPermission', groupPermission);
-        this.setState(prevState => ({
-            ...prevState,
-            edit: false,
-            permissionsForm: groupPermission,
-        }));
-        this.showSideBar();
-    }
-
     componentDidCatch(error, info) {
-        console.log('componentDidCatch 1', error);
+        console.log('componentDidCatch 2', error);
         console.log('componentDidCatch 2', info);
-    }
-
-    toggleSideBar() {
-        this.setState(prevState => ({
-            showSideBar: !prevState.showSideBar,
-        }));
-    }
-
-    hideSideBar() {
-        this.setState({
-            showSideBar: false,
-        });
-    }
-
-    showSideBar() {
-        this.setState({
-            showSideBar: true,
-        });
     }
 
     handleInput(e) {
         const { name, value } = e.target;
         this.setState(prevState => ({
             ...prevState,
-            groupsForm: {
-                ...prevState.groupsForm,
+            group: {
+                ...prevState.group,
                 [name]: value,
             },
         }));
@@ -352,14 +192,22 @@ class Groups extends Component {
         const { name } = e.target;
         const [action, typePermission] = name.split('.');
         this.setState(prevState => ({
-            permissionsForm: {
-                ...prevState.permissionsForm,
+            grouppermissions: {
+                ...prevState.grouppermissions,
                 [action]: {
-                    ...prevState.permissionsForm[action],
-                    [typePermission]: !prevState.permissionsForm[action][typePermission],
+                    ...prevState.grouppermissions[action],
+                    [typePermission]: !prevState.grouppermissions[action][typePermission],
                 },
             },
         }));
+    }
+
+    hideSideBar() {
+        this.props.handleHideSideBar();
+    }
+
+    showSideBar() {
+        this.props.handleShowSideBar();
     }
 
     discard() {
@@ -368,37 +216,32 @@ class Groups extends Component {
     }
 
     formDataValidate() {
-        const { groupsForm } = this.state;
-
-        if ((groupsForm.name).trim().length <= 0) {
+        const { group } = this.state;
+        if ((group.name).trim().length <= 0) {
             toaster.warning('empty Name');
             return false;
         }
 
-        if (this.checkAlphaNumber(groupsForm.name)) {
+        if (this.checkAlphaNumber(group.name)) {
             toaster.warning('Invalid name.');
             return false;
         }
 
-        if ((groupsForm.description).trim().length <= 0) {
+        if ((group.description).trim().length <= 0) {
             toaster.warning('empty des');
             return false;
         }
-
         return true;
     }
 
     save() {
         if (this.formDataValidate()) {
-            const { groupsForm, permissionsForm } = this.state;
+            const { group, grouppermissions } = this.state;
             GroupActions.triggerSave(
-                groupsForm,
+                group,
                 (response) => {
-                    toaster.success('Group Save');
-                    // groupIdNew = response.id;
-                    // console.log('groupIdNew', groupIdNew);
                     GroupPermissionActions.triggerSaveGroupPermissions(
-                        permissionsForm, response.id,
+                        grouppermissions, response.id,
                         () => {
                             toaster.success('Permission Associate.');
                             // this.hideSideBar();
@@ -412,9 +255,6 @@ class Groups extends Component {
                     console.log(group);
                 },
             );
-
-            this.cleanGroupsPermissions();
-            this.cleanGroupsForm();
             GroupActions.fetchGroups.defer();
         }
     }
@@ -427,33 +267,6 @@ class Groups extends Component {
         }));
     }
 
-
-    handleUpdate(e) {
-        console.log('handleUpdate begin');
-
-        e.preventDefault();
-        this.showSideBar();
-        this.cleanGroupsForm();
-
-        const { id: groupId } = e.currentTarget;
-        const group = GroupActions.getGroupById(groupId);
-        GroupPermissionActions.fetchPermissionsForGroups(groupId);
-        const groupPermission = GroupPermissionActions.getGroupPermissions();
-
-        console.log('handleUpdate groupPermission', groupPermission);
-        this.setState(prevState => ({
-            ...prevState,
-            groupsForm: {
-                id: group.id,
-                name: group.name,
-                description: group.description,
-            },
-            edit: true,
-            permissionsForm: groupPermission,
-        }));
-
-        console.log('handleUpdate end');
-    }
 
     delete() {
         const { groupsForm } = this.state;
@@ -468,15 +281,16 @@ class Groups extends Component {
             },
         );
 
-        this.cleanGroupsForm();
         this.handleModalDelete(false);
-        GroupActions.fetchGroups.defer();
         this.hideSideBar();
     }
 
     render() {
+        console.log('render groupssideBar', this.props, this.state);
+        console.log('render prop grouppermission', this.props.grouppermissions);
+        console.log('render state grouppermission', this.state.grouppermissions);
         const {
-            showSideBar, groupsForm, edit, showDeleteModal, permissionsForm,
+            group, edit, showDeleteModal, grouppermissions,
         } = this.state;
 
         const buttonsFooter = [
@@ -499,40 +313,32 @@ class Groups extends Component {
                 type: 'secondary',
             });
         }
-        console.log('render');
+
         return (
-            <div id="groups-wrapper">
-                <AltContainer store={GroupStore}>
-                    <NewPageHeader title={<Trans i18nKey="groups.title"/>} icon="groups">
-                        <OperationsHeader newGroup={this.newGroup}/>
-                    </NewPageHeader>
-                    <SideBarRight
-                        title={edit ? <Trans i18nKey="groups.form.title.edit"/>
-                            : <Trans i18nKey="groups.form.title.new"/>}
-                        content={(
-                            <AltContainer store={GroupStore}>
-                                <Form
-                                    data={groupsForm}
-                                    permissionsForm={permissionsForm}
-                                    handleCharge={this.handleInput}
-                                    handleChangeCheckbox={this.handleCheckBox}
-                                />
-                            </AltContainer>
-                        )}
-                        visible={showSideBar}
-                        buttonsFooter={buttonsFooter}
-                    />
-                    <GroupList handleUpdate={this.handleUpdate}/>
-                    {showDeleteModal ? (
-                        <RemoveModal
-                            name="group"
-                            remove={this.delete}
-                            openModal={this.handleModalDelete}
-                        />) : <div/>}
-                </AltContainer>
+            <div>
+                <SideBarRight
+                    title={edit ? <Trans i18nKey="groups.form.title.edit"/>
+                        : <Trans i18nKey="groups.form.title.new"/>}
+                    content={(
+                        <Form
+                            dataGroup={group}
+                            dataPermissions={grouppermissions}
+                            handleCharge={this.handleInput}
+                            handleChangeCheckbox={this.handleCheckBox}
+                        />
+                    )}
+                    visible
+                    buttonsFooter={buttonsFooter}
+                />
+                {showDeleteModal ? (
+                    <RemoveModal
+                        name="group"
+                        remove={this.delete}
+                        openModal={this.handleModalDelete}
+                    />) : <div/>}
             </div>
         );
     }
 }
 
-export default translate()(Groups);
+export default translate()(GroupsSideBar);

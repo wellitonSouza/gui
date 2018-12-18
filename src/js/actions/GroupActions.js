@@ -15,11 +15,6 @@ class GroupActions {
         return this.groups;
     }
 
-    insertGroup(group) {
-        this.group = group;
-        return group;
-    }
-
     fetchGroups() {
         return (dispatch) => {
             dispatch();
@@ -34,7 +29,7 @@ class GroupActions {
     }
 
     getGroupById(groupId) {
-        return this.groups.find(g => g.id === Number(groupId));
+        return groupId;
     }
 
     triggerSave(group, cb, errorCb) {

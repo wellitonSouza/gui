@@ -2,12 +2,20 @@ const alt = require('../alt');
 const GroupActions = require('../actions/GroupActions');
 const GroupPermissionActions = require('../actions/GroupPermissionActions');
 
+const groupEmpty = ({
+    name: '',
+    description: '',
+    id: null,
+});
+
 class GroupStore {
     constructor() {
         this.groups = [];
+        this.group = groupEmpty;
+
         this.grouppermissions = {};
-        this.systempermissions = [];
-        this.groupId = null;
+        this.systempermissions = {};
+
         this.loading = false;
         this.error = null;
 
@@ -17,21 +25,25 @@ class GroupStore {
             handleFailure: GroupActions.GROUPS_FAILED,
             handleTriggerSave: GroupActions.TRIGGER_SAVE,
             handleTriggerRemoval: GroupActions.TRIGGER_REMOVAL,
+            handleGetGroup: GroupActions.getGroupById,
 
-            handleUpdateGroupPermissions: GroupPermissionActions.updateGroupPermissions,
-            handleUpdateSystemPermissions: GroupPermissionActions.updateSystemPermissions,
             handleFetchGroupPermissions: GroupPermissionActions.fetchPermissionsForGroups,
-            handleFetchSystemPermissions: GroupPermissionActions.fetchSystemPermissions,
             handleTriggerSaveGroupPermissions: GroupPermissionActions.triggerSaveGroupPermissions,
             handleFailureGroupPermissions: GroupPermissionActions.failed,
-            handleGetGroupPermissions: GroupPermissionActions.getGroupPermissions,
-            handleLoadSystemPermissions: GroupPermissionActions._loadSystemPermissions,
+            handleUpdateGroupPerm: GroupPermissionActions.updateGroupPerm,
 
         });
     }
 
-    handleGetGroupPermissions() {
+    handleGetGroup(groupId) {
+        if (groupId) {
+            this.group = this.groups.find(g => g.id === Number(groupId));
+        } else {
+            this.group = groupEmpty;
+        }
+    }
 
+    handleGetGroupPermissions(groupId) {
     }
 
     handleUpdateGroupList(groups) {
@@ -67,7 +79,7 @@ class GroupStore {
      * */
 
     handleUpdateGroupPermissions(groupPermissions) {
-        console.log('handleUpdateGroupPermissions',groupPermissions);
+        console.log('handleUpdateGroupPermissions', groupPermissions);
         this.grouppermissions = groupPermissions;
         this.error = null;
         this.loading = false;
@@ -80,7 +92,7 @@ class GroupStore {
     }
 
     handleFetchGroupPermissions(groupId) {
-        console.log('handleFetchGroupPermissions',groupId);
+        console.log('handleFetchGroupPermissions', groupId);
         this.groupId = groupId;
         this.grouppermissions = {};
         this.loading = true;
@@ -105,6 +117,12 @@ class GroupStore {
     handleLoadSystemPermissions() {
         this.error = null;
         this.loading = true;
+    }
+
+    handleUpdateGroupPerm(grouppermissions) {
+        this.grouppermissions = grouppermissions;
+        this.error = null;
+        this.loading = false;
     }
 }
 

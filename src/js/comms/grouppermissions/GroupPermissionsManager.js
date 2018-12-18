@@ -13,7 +13,10 @@ class GroupPermissionsManager {
      * @returns {*}
      */
     getGroupPermissions(groupId) {
-        return util.GET(`${this.baseUrlListGroupPermissions}/${groupId}/permissions`);
+        if (groupId) {
+            return util.GET(`${this.baseUrlListGroupPermissions}/${groupId}/permissions`);
+        }
+        return null;
     }
 
 

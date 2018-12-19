@@ -4110,7 +4110,7 @@ RED.tabs = (function() {
                 this.uiSelect.width(this.uiWidth);
                 }
                 else {
-                    this.uiSelect.width(this.uiWidth + '%'); 
+                    this.uiSelect.width(this.uiWidth + '%');
                 }
             }
             ["Right","Left"].forEach(function(d) {

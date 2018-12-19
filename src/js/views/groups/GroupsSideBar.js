@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { translate, Trans } from 'react-i18next';
+import PropTypes from 'prop-types';
 import GroupActions from '../../actions/GroupActions';
 import GroupPermissionActions from '../../actions/GroupPermissionActions';
 import SideBarRight from '../../components/SideBar';
 import toaster from '../../comms/util/materialize';
 import { RemoveModal } from '../../components/Modal';
-import { InputCheckbox, InputText } from '../../components/DojotInput';
+import { InputCheckbox, InputText } from '../../components/DojotIn';
 
 function TableGroupsPermissions(params) {
     const { handleChangeCheckbox, permissionsForm } = params;
@@ -57,7 +58,6 @@ function TableGroupsPermissions(params) {
 }
 
 function Form(params) {
-
     const {
         handleCharge,
         dataGroup,
@@ -114,24 +114,31 @@ class GroupsSideBar extends Component {
         this.handleCheckBox = this.handleCheckBox.bind(this);
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if ((this.props.grouppermissions && !this.state.grouppermissions)
-            || prevProps.grouppermissions !== this.props.grouppermissions) {
-            this.setState({ grouppermissions: this.props.grouppermissions });
-        }
+    componentDidUpdate(prevProps) {
+        const {
+            grouppermissions: grouppermissionsProp,
+            group: groupProp,
+            edit: editProp,
+        } = this.props;
 
-        if ((this.props.group && !this.state.group) || prevProps.group !== this.props.group) {
-            this.setState({ group: this.props.group });
+        const {
+            grouppermissions: grouppermissionsState,
+            group: groupState,
+            edit: editState,
+        } = this.state;
+
+        if ((grouppermissionsProp && !grouppermissionsState)
+            || prevProps.grouppermissions !== grouppermissionsProp) {
+            this.setState({ grouppermissions: grouppermissionsProp });
         }
-        if ((this.props.edit && !this.state.edit) || prevProps.edit !== this.props.edit) {
-            this.setState({ edit: this.props.edit });
+        if ((groupProp && !groupState) || prevProps.group !== groupProp) {
+            this.setState({ group: groupProp });
+        }
+        if ((editProp && !editState) || prevProps.edit !== editProp) {
+            this.setState({ edit: editProp });
         }
     }
 
-    componentWillUnmount() {
-    }
-
-    // TODO
     checkAlphaNumber(string) {
         const regex = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
         return !regex.test(string);
@@ -168,16 +175,17 @@ class GroupsSideBar extends Component {
     }
 
     hideSideBar() {
-        this.props.handleHideSideBar();
+        const { handleHideSideBar } = this.props;
+        handleHideSideBar();
     }
 
     showSideBar() {
-        this.props.handleShowSideBar();
+        const { handleShowSideBar } = this.props;
+        handleShowSideBar();
     }
 
     discard() {
         this.hideSideBar();
-        this.cleanGroupsForm();
     }
 
     formDataValidate() {
@@ -208,18 +216,17 @@ class GroupsSideBar extends Component {
                 group,
                 (response) => {
                     GroupPermissionActions.triggerSaveGroupPermissions(
-                        grouppermissions, response.id, err, e, edit,
+                        grouppermissions, group.id ? group.id : response.id, err, e, edit,
                         () => {
                             toaster.success('Permission Associate.');
-                            // this.hideSideBar();
-                        }, (group) => {
-                            console.log(group);
+                        }, (groupR) => {
+                            console.log(groupR);
                         },
                     );
                     this.hideSideBar();
                 },
-                (group) => {
-                    console.log(group);
+                (groupR) => {
+                    console.log(groupR);
                 },
             );
             GroupActions.fetchGroups.defer();
@@ -243,8 +250,8 @@ class GroupsSideBar extends Component {
                 toaster.success('Group Removed');
                 this.hideSideBar();
             },
-            (group) => {
-                console.log(group);
+            (groupR) => {
+                console.log(groupR);
             },
         );
 
@@ -253,7 +260,6 @@ class GroupsSideBar extends Component {
     }
 
     render() {
-        console.log('render groupssideBar', this.props, this.state);
         const {
             group, edit, showDeleteModal, grouppermissions,
         } = this.state;
@@ -305,4 +311,15 @@ class GroupsSideBar extends Component {
     }
 }
 
+GroupsSideBar.propTypes = {
+    grouppermissions: PropTypes.shape.isRequired,
+    group: PropTypes.shape.isRequired,
+    edit: PropTypes.bool,
+    handleHideSideBar: PropTypes.func.isRequired,
+    handleShowSideBar: PropTypes.func.isRequired,
+};
+
+GroupsSideBar.defaultProps = {
+    edit: false,
+};
 export default translate()(GroupsSideBar);

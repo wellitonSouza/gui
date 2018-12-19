@@ -43,9 +43,6 @@ class GroupStore {
         }
     }
 
-    handleGetGroupPermissions(groupId) {
-    }
-
     handleUpdateGroupList(groups) {
         this.groups = groups;
         this.error = null;
@@ -77,6 +74,7 @@ class GroupStore {
     /* *
      *  Permissions
      * */
+
     handleFetchGroupPermissions(groupId) {
         this.groupId = groupId;
         this.grouppermissions = {};

@@ -132,7 +132,6 @@ class Groups extends Component {
         const { id: groupIdClick } = e.currentTarget;
         GroupActions.getGroupById(groupIdClick);
         GroupPermissionActions.fetchPermissionsForGroups(groupIdClick);
-        console.log(groupIdClick);
         this.setState({
             showSideBar: true,
             edit: true,

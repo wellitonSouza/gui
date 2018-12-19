@@ -5,7 +5,7 @@ import GroupPermissionActions from '../../actions/GroupPermissionActions';
 import SideBarRight from '../../components/SideBar';
 import toaster from '../../comms/util/materialize';
 import { RemoveModal } from '../../components/Modal';
-import { InputCheckbox, InputText } from '../../components/DojotIn';
+import { InputCheckbox, InputText } from '../../components/DojotInput';
 
 function TableGroupsPermissions(params) {
     const { handleChangeCheckbox, permissionsForm } = params;

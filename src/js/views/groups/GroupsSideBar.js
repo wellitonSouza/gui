@@ -5,45 +5,7 @@ import GroupPermissionActions from '../../actions/GroupPermissionActions';
 import SideBarRight from '../../components/SideBar';
 import toaster from '../../comms/util/materialize';
 import { RemoveModal } from '../../components/Modal';
-
-function InputCheckbox(params) {
-    const { handleChangeCheckbox } = params;
-    return (
-        <span>
-            <input
-                name={params.name}
-                id={params.name}
-                onChange={handleChangeCheckbox}
-                value={params.name}
-                checked={!!params.checked}
-                type="checkbox"
-            />
-            <label htmlFor={params.name}>{params.label}</label>
-        </span>
-    );
-}
-
-function InputText(params) {
-    return (
-        <div className={`input-field ${params.class ? params.class : ''}`}>
-            <label
-                htmlFor={params.name}
-                data-error={params.errorMessage ? params.errorMessage : ''}
-                className="active"
-            >
-                {params.label}
-            </label>
-            <input
-                value={params.value}
-                name={params.name}
-                onChange={params.onChange ? params.onChange : null}
-                maxLength={params.maxLength ? params.maxLength : 40}
-                placeholder={params.placeHolder ? params.placeHolder : ''}
-                type="text"
-            />
-        </div>
-    );
-}
+import { InputCheckbox, InputText } from '../../components/DojotIn';
 
 function TableGroupsPermissions(params) {
     const { handleChangeCheckbox, permissionsForm } = params;
@@ -302,7 +264,7 @@ class GroupsSideBar extends Component {
                 type: 'default',
             },
             {
-                label: <Trans i18nKey="groups.form.btn.save.label" />,
+                label: <Trans i18nKey="groups.form.btn.save.label"/>,
                 click: this.save,
                 type: 'primary',
             },
@@ -310,7 +272,7 @@ class GroupsSideBar extends Component {
 
         if (edit) {
             buttonsFooter.push({
-                label: <Trans i18nKey="groups.form.btn.remove.label" />,
+                label: <Trans i18nKey="groups.form.btn.remove.label"/>,
                 click: this.handleModalDelete,
                 type: 'secondary',
             });

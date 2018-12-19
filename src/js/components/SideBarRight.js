@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import PropTypes from 'prop-types';
 import { DojotCustomButton } from './DojotButton';
 
 class SideBarRight extends Component {
     render() {
-        const { visible, title, buttonsFooter, content } = this.props;
+        const {
+            visible, title, buttonsFooter, content,
+        } = this.props;
         let body = null;
         let header = null;
-        let btnsFooter = null;
+        let btnFooter = null;
         if (visible) {
             header = (
                 <div id="auth-title" className="title">
@@ -16,8 +19,8 @@ class SideBarRight extends Component {
                     </span>
                 </div>);
             if (buttonsFooter !== null && buttonsFooter.length > 0) {
-                btnsFooter = buttonsFooter.map(btn => (
-                    <DojotCustomButton label={btn.label} onClick={btn.click} type={btn.type}/>
+                btnFooter = buttonsFooter.map(btn => (
+                    <DojotCustomButton label={btn.label} onClick={btn.click} type={btn.type} />
                 ));
             }
             body = (
@@ -33,7 +36,7 @@ class SideBarRight extends Component {
                         <div className="fixed-height">
                             {content}
                             <div id="edit-footer" className="action-footer">
-                                {btnsFooter}
+                                {btnFooter}
                             </div>
                         </div>
                     </div>
@@ -43,5 +46,15 @@ class SideBarRight extends Component {
         return body;
     }
 }
-export default (SideBarRight);
 
+SideBarRight.propTypes = {
+    visible: PropTypes.bool,
+    title: PropTypes.string.isRequired,
+    buttonsFooter: PropTypes.shape.isRequired,
+    content: PropTypes.shape.isRequired,
+};
+
+SideBarRight.defaultProps = {
+    visible: true,
+};
+export default (SideBarRight);

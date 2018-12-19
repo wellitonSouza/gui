@@ -15,10 +15,11 @@ function GroupCard(obj) {
             className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight"
             id={obj.group.id}
             onClick={obj.onclick}
-            group="button"
+            role="none"
+            tabIndex={obj.group.id}
         >
             <div className="lst-entry-title col s12 ">
-                <img className="title-icon" src="images/groups-icon.png" alt="Group"/>
+                <img className="title-icon" src="images/groups-icon.png" alt="Group" />
                 <div className="title-text truncate" title={obj.group.name}>
                     <span className="text">
                         {obj.group.name}
@@ -29,7 +30,7 @@ function GroupCard(obj) {
                 <div className="attr-area light-background">
                     <div className="attr-row">
                         <div className="icon">
-                            <img src="images/info-icon.png" alt={obj.group.description}/>
+                            <img src="images/info-icon.png" alt={obj.group.description} />
                         </div>
                         <div className="user-card attr-content" title={obj.group.description}>
                             <TextTruncate
@@ -38,7 +39,7 @@ function GroupCard(obj) {
                                 text={obj.group.description}
                                 containerClassName="description-text"
                             />
-                            <div className="subtitle"><Trans i18nKey="groups.description"/></div>
+                            <div className="subtitle"><Trans i18nKey="groups.description" /></div>
                         </div>
                     </div>
                 </div>
@@ -69,7 +70,7 @@ function OperationsHeader(param) {
             <DojotBtnLink
                 responsive="true"
                 onClick={param.newGroup}
-                label={<Trans i18nKey="groups.btn.new.text"/>}
+                label={<Trans i18nKey="groups.btn.new.text" />}
                 alt="Create a new group"
                 icon="fa fa-plus"
                 className="w130px"
@@ -147,17 +148,17 @@ class Groups extends Component {
         return (
             <div id="groups-wrapper">
                 <AltContainer store={GroupStore}>
-                    <NewPageHeader title={<Trans i18nKey="groups.title"/>} icon="groups">
-                        <OperationsHeader newGroup={this.newGroup}/>
+                    <NewPageHeader title={<Trans i18nKey="groups.title" />} icon="groups">
+                        <OperationsHeader newGroup={this.newGroup} />
                     </NewPageHeader>
-                    <GroupList handleUpdate={this.handleUpdate}/>
+                    <GroupList handleUpdate={this.handleUpdate} />
                     {showSideBar ? (
                         <GroupsSideBar
                             handleShowSideBar={this.showSideBar}
                             handleHideSideBar={this.hideSideBar}
                             edit={edit}
                         />
-                    ) : <div/>}
+                    ) : <div />}
                 </AltContainer>
             </div>
         );

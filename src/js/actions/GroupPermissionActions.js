@@ -7,24 +7,39 @@ const alt = require('../alt');
 class GroupPermissionActions {
     constructor() {
         // Obj of permissions in a group
+        // {template: {viewer: true, modifier: false}, device: {viewer: true, modifier: true}}
         this.groupPermissions = {};
+
         // Obj of permissions type system
         this.systemPermissions = {};
         // Aux Obj  of permissions in a group for keep state before update
         this._auxGroupPermissionBefore = {};
-        // Aux Maps between alias, alias [action.method], to id of permission.
+
+        // Aux Map when key is ID of permission and value is action.method
         this._auxMapPermIdToAlias = null;
+        // Aux Map when key is action.method and value is ID of permission
         this._auxMapPermAliasToId = null;
+        // Aux Map when key is a object with action and method, value is ID of permission
+        // and this map is group by action
         this._auxMapPermMergAliasToId = null;
+
         this.error = null;
     }
 
+    /**
+     * Update de obj permissions
+     * Works like a trigger for Store keep to update
+     *
+     * @param groupPermissions
+     * @returns {*}
+     */
     updateGroupPermission(groupPermissions) {
         this.groupPermissions = groupPermissions;
         return this.groupPermissions;
     }
 
     /**
+     *  This method groups all steps to get  permission associate with a group
      *
      * @param groupId
      * @returns {Function}
@@ -35,12 +50,12 @@ class GroupPermissionActions {
             groupPermissionsManager.loadSystemPermissions()
                 .then((response) => {
                     this._loadSystemPermissions(response);
-                    this._mapSystemPermissionsForUi();
+                    this._fillSystemPermissionsForUi();
                     this.groupPermissions = this.systemPermissions;
                     if (groupId) {
                         groupPermissionsManager.getGroupPermissions(groupId)
                             .then((response2) => {
-                                this._mapGroupPermissionsForUi(response2);
+                                this._fillGroupPermissionsForUi(response2);
                                 this.updateGroupPermission(this.groupPermissions);
                                 this._auxGroupPermissionBefore = JSON.parse(JSON.stringify(this.groupPermissions));
                             })
@@ -56,7 +71,53 @@ class GroupPermissionActions {
         };
     }
 
-    _mapGroupPermissionsForUi(response) {
+    /**
+     * Create and exclude associations between group and permission
+     * If its a edition compare with before state
+     *
+     * @param groupPermission
+     * @param groupId
+     * @param cb
+     * @param errorCb
+     * @param edit
+     * @returns {Function}
+     */
+    triggerSaveGroupPermissions(groupPermission, groupId, cb, errorCb, edit = false) {
+        Object.keys(groupPermission)
+            .forEach((action) => {
+                Object.keys(groupPermission[action])
+                    .forEach((method) => {
+                        if (!edit || (groupPermission[action][method] !== this._auxGroupPermissionBefore[action][method])) {
+                            if (groupPermission[action][method]) {
+                                this._createGroupPermission(action, method, groupId, cb, errorCb);
+                            } else if (edit) {
+                                this._deleteGroupPermission(action, method, groupId, cb, errorCb);
+                            }
+                        }
+                    });
+            });
+    }
+
+    /**
+     * Just toast a error message
+     * @param error
+     * @returns {null}
+     */
+    failed(error) {
+        this.error = error;
+        toaster.error(this.error.message);
+        return this.error;
+    }
+
+    /**
+     * Create a obj parsed for ui with all  permissions for a group expected for UI
+     * eg: {template: {viewer: true, modifier: false}, device: {viewer: true, modifier: true}}
+     *
+     * @param response
+     * @returns {Function}
+     * @private
+     */
+    _fillGroupPermissionsForUi(response) {
         return (dispatch) => {
             const { permissions } = response;
             permissions.forEach((item) => {
@@ -74,11 +135,12 @@ class GroupPermissionActions {
     }
 
     /**
-     *
+     * Create a obj parsed for ui with all system permissions expected for UI, and all with false
+     * eg: {template: {viewer: false, modifier: false}, device: {viewer: false, modifier: false}}
      * @returns {Function}
      * @private
      */
-    _mapSystemPermissionsForUi() {
+    _fillSystemPermissionsForUi() {
         return (dispatch) => {
             dispatch();
             let systemPermissions = {};
@@ -94,10 +156,10 @@ class GroupPermissionActions {
             });
             this.systemPermissions = systemPermissions;
         };
-
     }
 
     /**
+     * Get permission id by action and method
      *
      * @param action
      * @param method
@@ -108,7 +170,7 @@ class GroupPermissionActions {
     }
 
     /**
-     *
+     * Create a associate between a permission and a group
      * @param action
      * @param method
      * @param groupId
@@ -136,7 +198,7 @@ class GroupPermissionActions {
     }
 
     /**
-     *
+     * Delete a associate between a permission and a group
      * @param action
      * @param method
      * @param groupId
@@ -163,32 +225,10 @@ class GroupPermissionActions {
         };
     }
 
-    /**
-     *
-     * @param groupPermission
-     * @param groupId
-     * @param cb
-     * @param errorCb
-     * @param edit
-     * @returns {Function}
-     */
-    triggerSaveGroupPermissions(groupPermission, groupId, cb, errorCb, edit = false) {
-        Object.keys(groupPermission)
-            .forEach((action) => {
-                Object.keys(groupPermission[action])
-                    .forEach((method) => {
-                        if (!edit || (groupPermission[action][method] !== this._auxGroupPermissionBefore[action][method])) {
-                            if (groupPermission[action][method]) {
-                                this._createGroupPermission(action, method, groupId, cb, errorCb);
-                            } else if (edit) {
-                                this._deleteGroupPermission(action, method, groupId, cb, errorCb);
-                            }
-                        }
-                    });
-            });
-    }
 
     /**
+     * Find all permission with type system
+     * and create maps between id and alias
      *
      * @param response
      * @returns {Function}
@@ -222,12 +262,6 @@ class GroupPermissionActions {
                 }
             });
         };
-    }
-
-    failed(error) {
-        this.error = error;
-        toaster.error(this.error.message);
-        return this.error;
     }
 }
 

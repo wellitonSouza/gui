@@ -302,7 +302,7 @@ class GroupsSideBar extends Component {
                 type: 'default',
             },
             {
-                label: <Trans i18nKey="groups.form.btn.save.label"/>,
+                label: <Trans i18nKey="groups.form.btn.save.label" />,
                 click: this.save,
                 type: 'primary',
             },
@@ -310,7 +310,7 @@ class GroupsSideBar extends Component {
 
         if (edit) {
             buttonsFooter.push({
-                label: <Trans i18nKey="groups.form.btn.remove.label"/>,
+                label: <Trans i18nKey="groups.form.btn.remove.label" />,
                 click: this.handleModalDelete,
                 type: 'secondary',
             });

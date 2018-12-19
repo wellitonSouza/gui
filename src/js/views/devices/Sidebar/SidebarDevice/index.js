@@ -13,7 +13,6 @@ const SidebarDevice = ({
     handleShowDeviceAttrs,
     device,
     handleChangeName,
-    selectedTemplates,
     save,
     update,
     remove,
@@ -24,7 +23,7 @@ const SidebarDevice = ({
     const {
         configValues, dynamicValues, staticValues, actuatorValues,
     } = device;
-    const total = selectedTemplates.length ? selectedTemplates.length : 0;
+    const total = device.templates.length ? device.templates.length : 0;
     return (
         <Fragment>
             <Slide right when={showSidebarDevice} duration={300}>

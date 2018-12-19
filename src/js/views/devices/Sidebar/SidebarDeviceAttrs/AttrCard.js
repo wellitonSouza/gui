@@ -65,7 +65,7 @@ class AttrCard extends PureComponent {
                                         name="name"
                                         maxLength={40}
                                         value={attr.static_value}
-                                        onChange={e => handleChangeAttr(e, attr)}
+                                        onChange={e => handleChangeAttr(e, attr.id)}
                                     >
                                         {attr.label}
                                     </MaterialInput>

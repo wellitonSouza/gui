@@ -35,7 +35,7 @@ class DeviceHandlerStore {
                 protocol: 'MQTT',
                 templates: [],
                 tags: [],
-                attrs: {},
+                attrs: [],
                 configValues: [],
                 dynamicValues: [],
                 staticValues: [],
@@ -46,17 +46,19 @@ class DeviceHandlerStore {
             this.isNewDevice = true;
         } else {
             const customDevice = { ...device };
+            customDevice.attrs = [];
             device.templates.forEach((id) => {
-                customDevice.configValues = device.attrs[id].filter(item => item.type === 'meta');
-                customDevice.dynamicValues = device.attrs[id].filter(item => item.type === 'dynamic');
-                customDevice.staticValues = device.attrs[id].filter(item => item.type === 'static');
-                customDevice.actuatorValues = device.attrs[id].filter(item => item.type === 'actuator');
-                customDevice.metadata = {};
-                device.attrs[id].forEach((item) => {
-                    if (Object.prototype.hasOwnProperty.call(item, 'metadata')) {
-                        customDevice.metadata[item.id] = [...item.metadata];
-                    }
-                });
+                customDevice.attrs = customDevice.attrs.concat(device.attrs[id]);
+            });
+            customDevice.configValues = customDevice.attrs.filter(item => item.type === 'meta');
+            customDevice.dynamicValues = customDevice.attrs.filter(item => item.type === 'dynamic');
+            customDevice.staticValues = customDevice.attrs.filter(item => item.type === 'static');
+            customDevice.actuatorValues = customDevice.attrs.filter(item => item.type === 'actuator');
+            customDevice.metadata = {};
+            customDevice.attrs.forEach((item) => {
+                if (Object.prototype.hasOwnProperty.call(item, 'metadata')) {
+                    customDevice.metadata[item.id] = [...item.metadata];
+                }
             });
 
             this.device = customDevice;

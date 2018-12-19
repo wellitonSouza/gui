@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import TemplateStore from 'Stores/TemplateStore';
 import AltContainer from 'alt-container';
-// import {  } from 'react-router';
+import { hashHistory } from 'react-router';
 import toaster from 'Comms/util/materialize';
 import SidebarDevice from './SidebarDevice';
 import SidebarManageTemplates from './SidebarManageTemplates';
@@ -58,7 +58,6 @@ class Sidebar extends Component {
         this.setState({
             showSidebarDevice,
             device,
-            usedTemplates: device.templates,
             isNewDevice,
         });
     }
@@ -73,10 +72,10 @@ class Sidebar extends Component {
         const { device } = this.state;
         if (checked) {
             device.templates = device.templates.filter(id => id !== template.id);
-            delete device.attrs[template.id];
+            device.attrs = device.attrs.filter(item => +item.template_id !== template.id);
         } else {
             device.templates.push(template.id);
-            device.attrs[template.id] = template.attrs;
+            device.attrs = device.attrs.concat(template.attrs);
         }
 
         device.configValues = [];
@@ -85,17 +84,16 @@ class Sidebar extends Component {
         device.actuatorValues = [];
         device.metadata = {};
 
-        device.templates.forEach((id) => {
-            device.configValues = device.configValues.concat(device.attrs[id].filter(item => item.type === 'meta'));
-            device.dynamicValues = device.dynamicValues.concat(device.attrs[id].filter(item => item.type === 'dynamic'));
-            device.staticValues = device.staticValues.concat(device.attrs[id].filter(item => item.type === 'static'));
-            device.actuatorValues = device.actuatorValues.concat(device.attrs[id].filter(item => item.type === 'actuator'));
-            device.attrs[id].forEach((item) => {
-                if (Object.prototype.hasOwnProperty.call(item, 'metadata')) {
-                    device.metadata[item.id] = [...item.metadata];
-                }
-            });
+        device.configValues = device.configValues.concat(device.attrs.filter(item => item.type === 'meta'));
+        device.dynamicValues = device.dynamicValues.concat(device.attrs.filter(item => item.type === 'dynamic'));
+        device.staticValues = device.staticValues.concat(device.attrs.filter(item => item.type === 'static'));
+        device.actuatorValues = device.actuatorValues.concat(device.attrs.filter(item => item.type === 'actuator'));
+        device.attrs.forEach((item) => {
+            if (Object.prototype.hasOwnProperty.call(item, 'metadata')) {
+                device.metadata[item.id] = [...item.metadata];
+            }
         });
+
 
         this.setState({
             device,
@@ -112,21 +110,18 @@ class Sidebar extends Component {
         }));
     }
 
-    handleShowDeviceAttrs(selectAttr) {
-        if (selectAttr === undefined) {
-
-        }
+    handleShowDeviceAttrs(attr) {
         this.setState(prevState => ({
             showDeviceAttrs: !prevState.showDeviceAttrs,
-            selectAttr,
+            selectAttr: attr,
         }));
     }
 
-    handleChangeAttr(event, attr) {
-        const { selectAttr } = this.state;
+    handleChangeAttr(event, id) {
+        const { selectAttr, device } = this.state;
         const { value } = event.target;
         const updateAttr = selectAttr.map((item) => {
-            if (item.id === attr.id) {
+            if (item.id === id) {
                 return {
                     ...item,
                     static_value: value,
@@ -134,9 +129,18 @@ class Sidebar extends Component {
             }
             return item;
         });
-        console.log(updateAttr);
+        device.attrs = device.attrs.map((item) => {
+            if (item.id === id) {
+                return {
+                    ...item,
+                    static_value: value,
+                };
+            }
+            return item;
+        });
         this.setState({
             selectAttr: updateAttr,
+            device,
         });
     }
 
@@ -165,7 +169,7 @@ class Sidebar extends Component {
 
         FormActions.addDevice(saveDevice, () => {
             toaster.success('Device created');
-            window.location.reload();
+            hashHistory.push('/device/list');
         });
     }
 
@@ -175,7 +179,7 @@ class Sidebar extends Component {
 
         FormActions.triggerUpdate(updateDevice, () => {
             toaster.success('Device updated');
-            window.location.reload();
+            hashHistory.push('/device/list');
         });
     }
 
@@ -186,25 +190,21 @@ class Sidebar extends Component {
             this.setState({
                 isShowSidebarDelete: false,
                 showSidebarDevice: false,
-            });
+            }, () => hashHistory.reload());
         });
     }
 
     formatDevice(device) {
         const formatDevice = { ...device };
-        let attrsList = [];
-        formatDevice.templates.forEach((id) => {
-            attrsList = attrsList.concat(formatDevice.attrs[id].map((attr) => {
-                if (formatDevice.metadata[attr.id]) {
-                    return {
-                        ...attr,
-                        metadata: formatDevice.metadata[attr.id],
-                    };
-                }
-                return attr;
-            }));
+        formatDevice.attrs = formatDevice.attrs.map((attr) => {
+            if (formatDevice.metadata[attr.id]) {
+                return {
+                    ...attr,
+                    metadata: formatDevice.metadata[attr.id],
+                };
+            }
+            return attr;
         });
-        formatDevice.attrs = attrsList;
         delete formatDevice.configValues;
         delete formatDevice.dynamicValues;
         delete formatDevice.staticValues;
@@ -219,7 +219,6 @@ class Sidebar extends Component {
             showSidebarDevice,
             showManageTemplates,
             showDeviceAttrs,
-            usedTemplates,
             device,
             selectAttr,
             isNewDevice,
@@ -231,7 +230,6 @@ class Sidebar extends Component {
             <Fragment>
                 <SidebarDevice
                     showSidebarDevice={showSidebarDevice}
-                    selectedTemplates={usedTemplates}
                     device={device}
                     isNewDevice={isNewDevice}
                     isShowSidebarDelete={isShowSidebarDelete}
@@ -246,7 +244,7 @@ class Sidebar extends Component {
                 <AltContainer store={TemplateStore}>
                     <SidebarManageTemplates
                         showManageTemplates={showManageTemplates}
-                        selectedTemplates={usedTemplates}
+                        selectedTemplates={device.templates}
                         handleShowManageTemplate={this.handleShowManageTemplate}
                         handleSelectTemplate={this.handleSelectTemplate}
                     />

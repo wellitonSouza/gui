@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import AltContainer from 'alt-container';
 import TextTruncate from 'react-text-truncate';
 import { translate, Trans } from 'react-i18next';
+import PropTypes from 'prop-types';
 import GroupStore from '../../stores/GroupStore';
 import GroupActions from '../../actions/GroupActions';
 import GroupPermissionActions from '../../actions/GroupPermissionActions';
@@ -131,10 +132,11 @@ class Groups extends Component {
 
     handleUpdate(e) {
         e.preventDefault();
+        const { t } = this.props;
         const { id: groupIdClick } = e.currentTarget;
         // this condition  will be change/removed
         if (groupIdClick === '1') {
-            toaster.warning('This group can not be change');
+            toaster.warning(t('groups.alerts.admin_not_remove'));
         } else {
             GroupActions.getGroupById(groupIdClick);
             GroupPermissionActions.fetchPermissionsForGroups(groupIdClick);
@@ -171,4 +173,7 @@ class Groups extends Component {
     }
 }
 
+Groups.propTypes = {
+    t: PropTypes.shape.isRequired,
+};
 export default translate()(Groups);

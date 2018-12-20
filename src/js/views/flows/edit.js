@@ -206,7 +206,7 @@ function handleSave(flowid) {
         flow = fData.newFlow;
     }
     // update flow's actual configuration data
-    flow.name = fData.flowName;
+    flow.name = fData.flowName; 
     flow.flow = RED.nodes.createCompleteNodeSet();
     let ret = util.isNameValid(flow.name);
     if (flowid) {
@@ -225,11 +225,11 @@ function handleSave(flowid) {
             return;
         }else{
             flow.name = ret.label
-            FlowActions.triggerCreate(flow, (flow) => {
+            FlowActions.triggerCreate(flow, (flow) => {          
                 toaster.success('Flow created');
                 hashHistory.push(`/flows/id/${flow.id}`);
-            });
-        }
+            });             
+        }         
     }
 }
 

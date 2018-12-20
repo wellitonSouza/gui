@@ -8,6 +8,15 @@
   "groups": {
     "title": "Groups",
     "description": "Description",
+    "alerts": {
+      "empty_name": "Empty Group name.",
+      "invalid_name": "Invalid Group name.",
+      "empty_desc": "Empty Group description.",
+      "group_create": "Group created.",
+      "group_modify": "Group modify.",
+      "group_remove": "Group removed",
+      "admin_not_remove": "This group can not be change"
+    },
     "btn": {
       "new": {
         "text": "New group",

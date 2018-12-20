@@ -12,9 +12,7 @@ class GroupStore {
     constructor() {
         this.groups = [];
         this.group = groupEmpty;
-
         this.grouppermissions = {};
-        this.systempermissions = {};
 
         this.loading = false;
         this.error = null;
@@ -76,7 +74,6 @@ class GroupStore {
      * */
 
     handleFetchGroupPermissions(groupId) {
-        this.groupId = groupId;
         this.grouppermissions = {};
         this.loading = true;
     }

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import PropTypes from 'prop-types';
-import { DojotCustomButton } from './DojotButton';
+import { DojotCustomButton } from '../../components/DojotButton';
 
 class SideBarRight extends Component {
     render() {
@@ -13,8 +12,8 @@ class SideBarRight extends Component {
         let btnFooter = null;
         if (visible) {
             header = (
-                <div id="auth-title" className="title">
-                    <span id="title-text" className="title-text">
+                <div id="" className="header">
+                    <span id="" className="header-path">
                         {title}
                     </span>
                 </div>);
@@ -24,23 +23,27 @@ class SideBarRight extends Component {
                 ));
             }
             body = (
-                <ReactCSSTransitionGroup
-                    transitionName="sidebarRight"
-                    transitionAppear
-                    transitionAppearTimeout={500}
-                    transitionEnterTimeout={500}
-                    transitionLeaveTimeout={500}
-                >
-                    <div id="sidebar" className="sidebar-auth visible">
-                        {header}
-                        <div className="fixed-height">
-                            {content}
-                            <div id="edit-footer" className="action-footer">
-                                {btnFooter}
+                <div className="template-sidebar">
+                    {header}
+                    <div className="body">
+                        {/*                        <div className="body-template-name">
+                            <div className="body-icon">
+                                <img
+                                    className="title-icon template"
+                                    src="images/icons/template-gray.png"
+                                    alt=""
+                                />
                             </div>
+                        </div> */}
+                        <div className="body-form">
+                            {content}
                         </div>
                     </div>
-                </ReactCSSTransitionGroup>);
+                    <div className="footer">
+                        {btnFooter}
+                    </div>
+                </div>
+            );
         }
 
         return body;

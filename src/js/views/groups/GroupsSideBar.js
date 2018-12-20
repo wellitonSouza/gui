@@ -3,57 +3,60 @@ import { translate, Trans } from 'react-i18next';
 import PropTypes from 'prop-types';
 import GroupActions from '../../actions/GroupActions';
 import GroupPermissionActions from '../../actions/GroupPermissionActions';
-import SideBarRight from '../../components/SideBarRight';
+import SideBarRight from './SideBarRight';
 import toaster from '../../comms/util/materialize';
 import { RemoveModal } from '../../components/Modal';
 import { InputCheckbox, InputText } from '../../components/DojotIn';
 
 function TableGroupsPermissions(params) {
     const { handleChangeCheckbox, permissionsForm } = params;
-
     if (!permissionsForm) {
         return (<div />);
     }
 
     return (
-        <table className="striped centered">
-            <thead>
-                <tr>
-                    <th>Feature</th>
-                    <th>Modifier</th>
-                    <th>Viewer</th>
-                </tr>
-            </thead>
-            <tbody>
-                {Object.keys(permissionsForm)
-                    .map(item => (
-                        <tr>
-                            <td>
-                                {item}
-                            </td>
-                            <td>
-                                <InputCheckbox
-                                    label=""
-                                    placeHolder=""
-                                    name={`${item}.modifier`}
-                                    checked={permissionsForm[item].modifier}
-                                    handleChangeCheckbox={handleChangeCheckbox}
-                                />
-                            </td>
-                            <td>
-                                <InputCheckbox
-                                    label=""
-                                    placeHolder=""
-                                    name={`${item}.viewer`}
-                                    checked={permissionsForm[item].viewer}
-                                    handleChangeCheckbox={handleChangeCheckbox}
-                                />
-                            </td>
-                        </tr>
-                    ))
-                }
-            </tbody>
-        </table>
+        <div className="bodyForm">
+            <table className="striped centered">
+                <thead>
+                    <tr>
+                        <th><Trans i18nKey="groups.form.table_label.feature" /></th>
+                        <th><Trans i18nKey="groups.form.table_label.modifier" /></th>
+                        <th>
+                            <Trans i18nKey="groups.form.table_label.viewer" />
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {Object.keys(permissionsForm)
+                        .map(item => (
+                            <tr>
+                                <td>
+                                    <Trans i18nKey={`groups.form.feature.${item}`} />
+                                </td>
+                                <td>
+                                    <InputCheckbox
+                                        label=""
+                                        placeHolder=""
+                                        name={`${item}.modifier`}
+                                        checked={permissionsForm[item].modifier}
+                                        handleChangeCheckbox={handleChangeCheckbox}
+                                    />
+                                </td>
+                                <td>
+                                    <InputCheckbox
+                                        label=""
+                                        placeHolder=""
+                                        name={`${item}.viewer`}
+                                        checked={permissionsForm[item].viewer}
+                                        handleChangeCheckbox={handleChangeCheckbox}
+                                    />
+                                </td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
+        </div>
     );
 }
 
@@ -140,6 +143,7 @@ class GroupsSideBar extends Component {
     }
 
     checkAlphaNumber(string) {
+        // will be change - regex dont should be here
         const regex = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
         return !regex.test(string);
     }
@@ -189,19 +193,20 @@ class GroupsSideBar extends Component {
     }
 
     formDataValidate() {
+        // will be change - validation dont should be in toaster
         const { group } = this.state;
         if ((group.name).trim().length <= 0) {
-            toaster.warning('empty Name');
+            toaster.warning('Empty Group name.');
             return false;
         }
 
         if (this.checkAlphaNumber(group.name)) {
-            toaster.warning('Invalid name.');
+            toaster.warning('Invalid Group name.');
             return false;
         }
 
         if ((group.description).trim().length <= 0) {
-            toaster.warning('empty des');
+            toaster.warning('Empty Group description.');
             return false;
         }
         return true;
@@ -218,7 +223,7 @@ class GroupsSideBar extends Component {
                     GroupPermissionActions.triggerSaveGroupPermissions(
                         grouppermissions, group.id ? group.id : response.id, err, e, edit,
                         () => {
-                            toaster.success('Permission Associate.');
+                            toaster.success('Group created.');
                         }, (groupR) => {
                             console.log(groupR);
                         },
@@ -247,7 +252,7 @@ class GroupsSideBar extends Component {
         GroupActions.triggerRemoval(
             group.id,
             () => {
-                toaster.success('Group Removed');
+                toaster.success('Group removed.');
                 this.hideSideBar();
             },
             (groupR) => {

@@ -8,6 +8,7 @@ import GroupPermissionActions from '../../actions/GroupPermissionActions';
 import { NewPageHeader } from '../../containers/full/PageHeader';
 import { DojotBtnLink } from '../../components/DojotButton';
 import GroupsSideBar from './GroupsSideBar';
+import toaster from '../../comms/util/materialize';
 
 function GroupCard(obj) {
     return (
@@ -131,12 +132,17 @@ class Groups extends Component {
     handleUpdate(e) {
         e.preventDefault();
         const { id: groupIdClick } = e.currentTarget;
-        GroupActions.getGroupById(groupIdClick);
-        GroupPermissionActions.fetchPermissionsForGroups(groupIdClick);
-        this.setState({
-            showSideBar: true,
-            edit: true,
-        });
+        // this condition  will be change/removed
+        if (groupIdClick === '1') {
+            toaster.warning('This group can not be change');
+        } else {
+            GroupActions.getGroupById(groupIdClick);
+            GroupPermissionActions.fetchPermissionsForGroups(groupIdClick);
+            this.setState({
+                showSideBar: true,
+                edit: true,
+            });
+        }
     }
 
     render() {

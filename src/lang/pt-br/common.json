@@ -21,11 +21,11 @@
       },
       "input": {
         "groupname": {
-          "label": "Group name",
-          "error": "Please use only letters (a-z) and numbers (0-9)"
+          "label": "Nome do grupo",
+          "error": "Por favor use somente letras (a-z)"
         },
         "groupdescription": {
-          "label": "Description",
+          "label": "Descrição",
           "error": ""
         }
       },
@@ -42,6 +42,21 @@
           "label": "Remover",
           "alt": "Clique para Remover"
         }
+      },
+      "feature": {
+        "template": "Template",
+        "device": "Dispostivos",
+        "flows": "Flows",
+        "history": "Histórico",
+        "metric": "Metricas",
+        "mashup": "Mashup",
+        "user": "Usuários",
+        "permission": "Permissões"
+      },
+      "table_label": {
+        "feature": "Features",
+        "modifier": "Modificar",
+        "viewer": "Visualizar"
       }
     }
   }

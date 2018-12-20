@@ -6,6 +6,20 @@
   overflow: hidden;
   float: left;
 
+  //will be remove - begin
+  .template-sidebar {
+    height: 100%;
+  }
+  .input-field{
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .input-field label{
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  //end
+
   .card-size {
     margin: 20px !important;
     min-width: 220px;

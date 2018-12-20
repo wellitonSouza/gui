@@ -42,6 +42,21 @@
           "label": "Remove",
           "alt": "Click to Remove"
         }
+      },
+      "feature": {
+        "template": "Template",
+        "device": "Device",
+        "flows": "Flows",
+        "history": "History",
+        "metric": "Metric",
+        "mashup": "Mashup",
+        "user": "User",
+        "permission": "Permission"
+      },
+      "table_label": {
+        "feature": "Features",
+        "modifier": "Modifier",
+        "viewer": "Viewer"
       }
     }
   }

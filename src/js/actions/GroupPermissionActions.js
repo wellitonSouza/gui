@@ -83,19 +83,22 @@ class GroupPermissionActions {
      * @returns {Function}
      */
     triggerSaveGroupPermissions(groupPermission, groupId, cb, errorCb, edit = false) {
-        Object.keys(groupPermission)
-            .forEach((action) => {
-                Object.keys(groupPermission[action])
-                    .forEach((method) => {
-                        if (!edit || (groupPermission[action][method] !== this._auxGroupPermissionBefore[action][method])) {
-                            if (groupPermission[action][method]) {
-                                this._createGroupPermission(action, method, groupId, cb, errorCb);
-                            } else if (edit) {
-                                this._deleteGroupPermission(action, method, groupId, cb, errorCb);
+        return (dispatch) => {
+            Object.keys(groupPermission)
+                .forEach((action) => {
+                    Object.keys(groupPermission[action])
+                        .forEach((method) => {
+                            if (!edit || (groupPermission[action][method] !== this._auxGroupPermissionBefore[action][method])) {
+                                if (groupPermission[action][method]) {
+                                    this._createGroupPermission(action, method, groupId, cb, errorCb);
+                                } else if (edit) {
+                                    this._deleteGroupPermission(action, method, groupId, cb, errorCb);
+                                }
                             }
-                        }
-                    });
-            });
+                        });
+                });
+            dispatch();
+        };
     }
 
     /**
@@ -124,9 +127,9 @@ class GroupPermissionActions {
                 const alias = this._auxMapPermIdToAlias.get(item.id);
                 if (alias) {
                     this.groupPermissions[alias.action][alias.method] = true;
-                    if (alias.method === 'modifier') {
-                        this.groupPermissions[alias.action].viewer = true;
-                    }
+                    // if (alias.method === 'modifier') {
+                    //   this.groupPermissions[alias.action].viewer = true;
+                    // }
                 }
             });
             this._auxGroupPermissionBefore = JSON.parse(JSON.stringify(this.groupPermissions));

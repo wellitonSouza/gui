@@ -5,7 +5,14 @@ import { DojotCustomButton } from 'Components/DojotButton';
 import AttrCard from './AttrCard';
 
 const SidebarDeviceAttrs = ({
-    showDeviceAttrs, handleShowDeviceAttrs, selectAttr, metadata, handleChangeMetadata, handleChangeAttr,
+    showDeviceAttrs,
+    validAttrs,
+    handleShowDeviceAttrs,
+    selectAttr,
+    metadata,
+    handleChangeMetadata,
+    handleChangeAttr,
+    errors,
 }) => (
     <Slide right when={showDeviceAttrs} duration={300}>
         {
@@ -42,9 +49,14 @@ const SidebarDeviceAttrs = ({
                         </div>
                         <div className="footer">
                             <DojotCustomButton
-                                onClick={handleShowDeviceAttrs}
-                                label="back"
+                                onClick={() => handleShowDeviceAttrs()}
+                                label="discard"
                                 type="default"
+                            />
+                            <DojotCustomButton
+                                onClick={() => validAttrs(selectAttr)}
+                                label="save"
+                                type="primary"
                             />
                         </div>
                     </div>
@@ -60,7 +72,7 @@ SidebarDeviceAttrs.defaultProps = {
 
 SidebarDeviceAttrs.propTypes = {
     showDeviceAttrs: PropTypes.bool,
-    handleShowDeviceAttrs: PropTypes.func.isRequired,
+    validAttrs: PropTypes.func.isRequired,
 };
 
 export default SidebarDeviceAttrs;

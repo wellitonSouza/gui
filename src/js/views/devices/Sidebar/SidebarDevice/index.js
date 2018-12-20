@@ -151,23 +151,6 @@ const SidebarDevice = ({
     );
 };
 
-SidebarDevice.defaultProps = {
-    showSidebarDevice: true,
-    device: {
-        label: '',
-        id: '',
-        protocol: 'MQTT',
-        templates: [],
-        tags: [],
-        attrs: [],
-        configValues: [],
-        dynamicValues: [],
-        staticValues: [],
-        actuatorValues: [],
-        metadata: {},
-    },
-};
-
 SidebarDevice.propTypes = {
     showSidebarDevice: PropTypes.bool,
     handleShowManageTemplate: PropTypes.func.isRequired,
@@ -182,6 +165,6 @@ SidebarDevice.propTypes = {
         tags: PropTypes.array,
         templates: PropTypes.array,
         updated: PropTypes.string,
-    }),
+    }).isRequired,
 };
 export default SidebarDevice;

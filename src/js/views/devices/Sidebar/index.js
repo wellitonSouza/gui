@@ -3,6 +3,7 @@ import TemplateStore from 'Stores/TemplateStore';
 import AltContainer from 'alt-container';
 import { hashHistory } from 'react-router';
 import toaster from 'Comms/util/materialize';
+import util from 'Comms/util/util';
 import SidebarDevice from './SidebarDevice';
 import SidebarManageTemplates from './SidebarManageTemplates';
 import SidebarDeviceAttrs from './SidebarDeviceAttrs';
@@ -19,6 +20,7 @@ class Sidebar extends Component {
             usedTemplates: [],
             device: {},
             selectAttr: [],
+            errors: {},
             isShowSidebarDelete: false,
         };
 
@@ -29,6 +31,7 @@ class Sidebar extends Component {
         this.handleChangeMetadata = this.handleChangeMetadata.bind(this);
         this.handleChangeAttr = this.handleChangeAttr.bind(this);
         this.toogleSidebarDelete = this.toogleSidebarDelete.bind(this);
+        this.validAttrs = this.validAttrs.bind(this);
         this.save = this.save.bind(this);
         this.update = this.update.bind(this);
         this.remove = this.remove.bind(this);
@@ -94,7 +97,6 @@ class Sidebar extends Component {
             }
         });
 
-
         this.setState({
             device,
             usedTemplates: device.templates,
@@ -117,8 +119,39 @@ class Sidebar extends Component {
         }));
     }
 
+    validAttrs(attrs) {
+        const newAttrs = {};
+        const errors = {};
+        attrs.forEach((item) => {
+            newAttrs[item.id] = item;
+            const isValid = util.isTypeValid(item.static_value, item.value_type, item.type);
+            if (!isValid.result) {
+                errors[item.id] = [isValid.error];
+            }
+        });
+
+        const hasError = Object.keys(errors).length === 0;
+        if (hasError) {
+            this.setState({
+                errors,
+                showDeviceAttrs: false,
+            });
+        } else {
+            const { device } = this.state;
+            device.attrs = device.attrs.map((item) => {
+                if (newAttrs[item.id] !== undefined) return newAttrs[item.id];
+                return item;
+            });
+
+            this.setState({
+                showDeviceAttrs: false,
+                device,
+            });
+        }
+    }
+
     handleChangeAttr(event, id) {
-        const { selectAttr, device } = this.state;
+        const { selectAttr } = this.state;
         const { value } = event.target;
         const updateAttr = selectAttr.map((item) => {
             if (item.id === id) {
@@ -129,18 +162,9 @@ class Sidebar extends Component {
             }
             return item;
         });
-        device.attrs = device.attrs.map((item) => {
-            if (item.id === id) {
-                return {
-                    ...item,
-                    static_value: value,
-                };
-            }
-            return item;
-        });
+
         this.setState({
             selectAttr: updateAttr,
-            device,
         });
     }
 
@@ -166,21 +190,27 @@ class Sidebar extends Component {
     save() {
         const { device } = this.state;
         const saveDevice = this.formatDevice(device);
+        const isValid = this.validDevice(saveDevice);
 
-        FormActions.addDevice(saveDevice, () => {
-            toaster.success('Device created');
-            hashHistory.push('/device/list');
-        });
+        if (isValid) {
+            FormActions.addDevice(saveDevice, () => {
+                toaster.success('Device created');
+                hashHistory.push('/device/list');
+            });
+        }
     }
 
     update() {
         const { device } = this.state;
         const updateDevice = this.formatDevice(device);
+        const isValid = this.validDevice(updateDevice);
 
-        FormActions.triggerUpdate(updateDevice, () => {
-            toaster.success('Device updated');
-            hashHistory.push('/device/list');
-        });
+        if (isValid) {
+            FormActions.triggerUpdate(updateDevice, () => {
+                toaster.success('Device updated');
+                hashHistory.push('/device/list');
+            });
+        }
     }
 
     remove() {
@@ -214,6 +244,10 @@ class Sidebar extends Component {
         return formatDevice;
     }
 
+    validDevice(device) {
+        return true;
+    }
+
     render() {
         const {
             showSidebarDevice,
@@ -222,6 +256,7 @@ class Sidebar extends Component {
             device,
             selectAttr,
             isNewDevice,
+            errors,
             isShowSidebarDelete,
         } = this.state;
         if (!Object.prototype.hasOwnProperty.call(device, 'attrs')) return <div />;
@@ -253,13 +288,32 @@ class Sidebar extends Component {
                     showDeviceAttrs={showDeviceAttrs}
                     selectAttr={selectAttr}
                     metadata={metadata}
-                    handleShowDeviceAttrs={this.handleShowDeviceAttrs}
+                    validAttrs={this.validAttrs}
                     handleChangeMetadata={this.handleChangeMetadata}
                     handleChangeAttr={this.handleChangeAttr}
+                    handleShowDeviceAttrs={this.handleShowDeviceAttrs}
+                    errors={errors}
                 />
             </Fragment>
         );
     }
 }
+
+Sidebar.defaultProps = {
+    showSidebarDevice: true,
+    device: {
+        label: '',
+        id: '',
+        protocol: 'MQTT',
+        templates: [],
+        tags: [],
+        attrs: [],
+        configValues: [],
+        dynamicValues: [],
+        staticValues: [],
+        actuatorValues: [],
+        metadata: {},
+    },
+};
 
 export default Sidebar;

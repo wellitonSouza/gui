@@ -130,7 +130,7 @@ class SideBar extends Component {
     if (this.checkValidation()) {
       const temp = this.state.user;
       temp.email = String(temp.email).toLowerCase();
-      console.log('User to be created: ', temp);
+      // console.log('User to be created: ', temp);
       UserActions.addUser(
         temp,
         () => {
@@ -732,7 +732,7 @@ class UsersContent extends Component {
     }
 
     render() {
-        console.log('entrou até aqui. ');
+        // console.log('entrou até aqui. ');
         if (this.props.user.profile === 'admin') {
             return (
                 <span id="userMain">

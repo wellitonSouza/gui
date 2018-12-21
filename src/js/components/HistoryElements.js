@@ -154,7 +154,7 @@ class HandleGeoElements extends Component {
     }
 
     handleDevicePosition(device) {
-        console.log("device", device);
+        // console.log("device", device);
         const validDevices = [];
         for (const j in device.attrs) {
             for (const i in device.attrs[j]) {
@@ -184,7 +184,7 @@ class HandleGeoElements extends Component {
         if (device.sp_value !== null || device.has_dynamic_position) {
             validDevices.push(device);
         }
-        console.log("validDevices", validDevices);
+        // console.log("validDevices", validDevices);
         return validDevices;
     }
 

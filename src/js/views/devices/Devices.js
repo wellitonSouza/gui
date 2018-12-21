@@ -16,6 +16,7 @@ import { DeviceCardList } from './DeviceCard';
 import {
     Pagination, FilterLabel, GenericOperations,
 } from '../utils/Manipulation';
+import { FormActions } from './Actions';
 
 
 // UI elements
@@ -49,7 +50,7 @@ class MapWrapper extends Component {
     }
 
     render() {
-        console.log("2.<MapWrapper>.render.", this.props);
+        // console.log("2.<MapWrapper>.render.", this.props);
 
         return <AltContainer stores={{ positions: MapPositionStore, measures: MeasureStore, configs: ConfigStore }}>
             <DeviceMapWrapper showFilter={this.props.showFilter} dev_opex={this.props.dev_opex} />
@@ -105,13 +106,13 @@ class DeviceOperations extends GenericOperations {
             delete res.templates;
             res.template = this.filterParams.templates;
         }
-        console.log('fetching using: ', res);
+        // console.log('fetching using: ', res);
         if (this.paginationParams.page_size !== 5000) {
-            DeviceActions.fetchDevices.defer(res, cb); 
+            DeviceActions.fetchDevices.defer(res, cb);
         }
         else
         {
-            MapPositionActions.fetchDevices.defer(res, cb); 
+            MapPositionActions.fetchDevices.defer(res, cb);
         }
     }
 }
@@ -134,6 +135,7 @@ class Devices extends Component {
     // DeviceActions.fetchDevices.defer();
         // console.log('devices: componentDidMount');
         this.dev_opex._fetch();
+        FormActions.toggleSidebarDevice(false);
  
  /*
         // Realtime
@@ -192,7 +194,7 @@ class Devices extends Component {
     }
 
     render() {
-        console.info('1. <Devices>.render.');
+        // console.info('1. <Devices>.render.');
 
         const detail = 'detail' in this.props.location.query
             ? this.props.location.query.detail
@@ -207,13 +209,15 @@ class Devices extends Component {
         const show_pagination = this.state.displayList;
         return (
             <div className="full-device-area">
-                <AltContainer store={DeviceStore}>
+                <AltContainer store={DeviceStore} >
                     <NewPageHeader title="Devices" subtitle="" icon="device">
                         <FilterLabel ops={this.dev_opex} text="Filtering Devices" />
                         <Pagination show_pagination={show_pagination} ops={this.dev_opex} />
                         <OperationsHeader displayToggle={displayToggle} toggleSearchBar={this.toggleSearchBar.bind(this)} />
                     </NewPageHeader>
-                    {this.state.displayList ? <DeviceCardList deviceid={detail} toggle={displayToggle} dev_opex={this.dev_opex} showFilter={this.state.showFilter} /> : <MapWrapper toggle={displayToggle} showFilter={this.state.showFilter} dev_opex={this.dev_opex} />}
+                    {this.state.displayList
+                        ? <DeviceCardList deviceid={detail} toggle={displayToggle} dev_opex={this.dev_opex} showFilter={this.state.showFilter} />
+                        : <MapWrapper toggle={displayToggle} showFilter={this.state.showFilter} dev_opex={this.dev_opex} />}
                 </AltContainer>
             </div>
         );
@@ -233,7 +237,7 @@ function OperationsHeader(props) {
             {props.displayToggle}
             <DojotBtnLink
                 responsive="true"
-                linkTo="/device/new"
+                onClick={() => FormActions.set(null)}
                 label="New Device"
                 alt="Create a new device"
                 icon="fa fa-plus"

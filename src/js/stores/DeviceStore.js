@@ -9,6 +9,7 @@ class DeviceStore {
         this.tracking = {};
         this.error = null;
         this.loading = false;
+        this.showSidebarDevice = false;
 
         this.bindListeners({
             handleUpdateDeviceList: DeviceActions.UPDATE_DEVICES,
@@ -30,6 +31,8 @@ class DeviceStore {
             fetchDevicesByTemplate: DeviceActions.FETCH_DEVICES_BY_TEMPLATE,
 
             handleUpdateStatus: DeviceActions.UPDATE_STATUS,
+
+            handleToggleSidebarDevice: DeviceActions.TOGGLE_SIDEBAR_DEVICE,
         });
     }
 
@@ -153,6 +156,13 @@ class DeviceStore {
     handleFailure(error) {
         this.error = error;
         this.loading = false;
+    }
+
+    handleToggleSidebarDevice(value) {
+        if (value) {
+
+        }
+        this.showSidebarDevice = value;
     }
 }
 

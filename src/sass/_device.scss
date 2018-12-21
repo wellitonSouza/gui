@@ -1,7 +1,7 @@
 /* The CSS */
 .card-select-2 {
   position:relative;
-    
+
   select {
     z-index:20;
     padding: 0px;
@@ -127,7 +127,7 @@
 
 .attr-box {
   border-bottom: 1px solid $gray;
-  padding: 8px 0px 19px 0px;
+  padding: 8px 0 19px 0;
   margin-left: 10%;
   display: inline-block;
   width: 80%;
@@ -607,8 +607,8 @@
     width: 100%;
     float: left;
     font-weight: bold;
-    padding-bottom: 10px; 
-    
+    padding-bottom: 10px;
+
     .title {
       font-family: "Roboto", sans-serif;
       color: #a2a2a2;
@@ -681,7 +681,7 @@
             font-size: 11px;
         }
         */
-        
+
         .img {
           width: 58px;
           padding: 10px;
@@ -849,7 +849,7 @@
     overflow: auto;
     top: 117px;
     margin: 0;
-    
+
     &>div
     {
       width: 100%;
@@ -883,4 +883,354 @@
 
 .leaflet-control-layers-base label{
   cursor:pointer;
+}
+
+.generic-sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: absolute;
+  z-index: 1000;
+  height: calc(100% - 115px);
+  right: 0;
+  width: 375px;
+  background: #FCFCFC;
+  font-size: 16px;
+  .header {
+    display: flex;
+    justify-content: space-around;
+    background: linear-gradient(97.26deg, #28807E 0%, #16A085 99.09%);
+    height: 52px;
+    .title {
+      font-family: Roboto, sans-serif;
+      font-size: 13px;
+      text-align: center;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #FFFFFF;
+    }
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #FCFCFC;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+      img {
+        height: 30px;
+        width: 30px;
+      }
+    }
+  }
+  .body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin-top: 5px;
+
+    .title {
+      font-family: Roboto, sans-serif;
+      font-weight: bold;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6A6A6A;
+      margin-bottom: 20px;
+      padding-left: 20px;
+    }
+  }
+  .footer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 10px;
+    height: 50px;
+  }
+}
+
+.device-sidebar {
+  @extend .generic-sidebar;
+  box-shadow: -3px 0px 8px 0 rgba(0, 0, 0, 0.2);
+  .body {
+    .device-name {
+      display: flex;
+      flex-direction: column;
+      padding: 0 20px;
+
+      .label {
+        font-family: Raleway, sans-serif;
+        font-weight: 500;
+        font-size: 17px;
+        color: #7C7C7C;
+      }
+
+      .device-name-input {
+        padding-left: 20px;
+      }
+
+    }
+
+    .device-templates {
+      display: flex;
+      flex-direction: column;
+      padding: 0 20px;
+      .label {
+        font-family: Raleway, sans-serif;
+        font-weight: 500;
+        font-size: 17px;
+        color: #7C7C7C;
+      }
+
+      .template-list {
+        display: flex;
+        align-items: center;
+        .add-template-button {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-width: 26px;
+          height: 26px;
+          border-radius: 50%;
+          font-family: Raleway, sans-serif;
+          font-weight: bold;
+          font-size: 24px;
+          color: #000000;
+          background: #FFFFFF;
+          opacity: 0.5;
+          margin-right: 10px;
+          box-shadow: 0 0 4px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.25);
+        &:hover {
+            cursor: pointer;
+          }
+        }
+
+        .list {
+          display: flex;
+          padding: 10px 0;
+          overflow-x: auto;
+          width: auto;
+          .template-bagde {
+            display: flex;
+            align-items: center;
+            min-width: 140px;
+            height: 30px;
+            border-radius: 20px;
+            background: #E3E3E3;
+            margin: 0 5px;
+            box-sizing: border-box;
+
+            .total-attrs {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              width: 26px;
+              height: 26px;
+              border-radius: 50%;
+              font-family: Raleway, sans-serif;
+              font-weight: bold;
+              font-size: 12px;
+              color: #FFFFFF;
+              background: #6D6D8B;
+              margin-left: 3px;
+            }
+
+            .template-name {
+              padding: 0 5px;
+              font-family: Raleway, sans-serif;
+              font-weight: bold;
+              font-size: 12px;
+              color: #465062;
+            }
+
+          }
+        }
+
+      }
+    }
+    .device-attrs {
+      display: flex;
+      flex-direction: column;
+      margin-top: 15px;
+      .label {
+        font-family: Raleway, sans-serif;
+        font-weight: 500;
+        font-size: 17px;
+        color: #7C7C7C;
+        padding-left: 20px;
+      }
+      .sidebar-button {
+        padding: 0 20px;
+      }
+    }
+  }
+}
+
+.manage-templates {
+  @extend .generic-sidebar;
+
+  .body {
+    .template-filter {
+      display: flex;
+      flex-direction: column;
+      padding-left: 20px;
+      .label {
+        font-family: Raleway, sans-serif;
+        font-weight: 500;
+        font-size: 17px;
+      }
+
+      .template-filter-input {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding-left: 20px;
+        .filter {
+          width: 80%;
+          margin-right: 10px;
+        }
+        .template-filter-button {
+          color: rgba(0,0,0, 0.3);
+          background: inherit;
+          border: none;
+          height: 35px;
+        }
+
+      }
+    }
+
+    .divider {
+      margin: 0 auto;
+      width: 90%;
+    }
+
+    .template-list {
+      display: flex;
+      flex-direction: column;
+      .template-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 65px;
+        padding: 0 20px;
+        .template-labels {
+          font-family: Raleway, sans-serif;
+          .template-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #565656;
+          }
+          .total-attrs {
+            font-weight: 500;
+            font-size: 12px;
+            color: #7C7C7C;
+          }
+        }
+        .select-template {
+
+        }
+        &:hover {
+          background: rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+  }
+
+  .footer {
+    justify-content: flex-start;
+    padding-left: 50px;
+  }
+}
+
+.sidebar-device-attrs {
+  @extend .generic-sidebar;
+  .body {
+    .attr-type {
+      font-weight: 500;
+      font-size: 17px;
+      color: #7C7C7C;
+      padding-left: 20px;
+      margin-bottom: 10px;
+    }
+    .attrs-list {
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow-y: auto;
+      font-family: Raleway, sans-serif;
+    }
+  }
+}
+
+.attr-card {
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+  .attr-card-header {
+    display: flex;
+    margin-bottom: 15px;
+    img {
+      width: 45px;
+      height: 45px;
+    }
+    .attr-card-input-wrapper {
+      margin-left: 10px;
+      .attr-card-input {
+        width: 270px;
+        .react-validate {
+          margin: 0;
+        }
+      }
+      .attr-card-type {
+        font-family: Roboto, sans-serif;
+        font-size: 10px;
+        color: rgba(79, 79, 79, 0.63);
+      }
+    }
+  }
+  .attr-card-metadata {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    .attr-card-metadata-header {
+      display: flex;
+      align-items: center;
+      font-family: Raleway, sans-serif;
+      font-size: 14px;
+      color: #555555;
+      margin-left: 12px;
+      img{
+        height: 30px;
+        width: 30px;
+      }
+      .attr-card-metadata-label {
+        margin-left: 15px;
+      }
+      .attr-card-metadata-arrow {
+        margin-left: 10px;
+      }
+    }
+    .attr-card-metadata-body {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      padding-top: 10px;
+      .attr-card-input-wrapper {
+        margin-left: 20px;
+        .attr-card-input {
+          width: 270px;
+          .react-validate {
+            margin: 0;
+          }
+        }
+        .attr-card-type {
+          font-family: Roboto, sans-serif;
+          font-size: 10px;
+          color: rgba(79, 79, 79, 0.63);
+        }
+      }
+    }
+  }
 }

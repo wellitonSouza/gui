@@ -25,7 +25,7 @@ class Util {
     }
 
     checkWidthToStateOpen(opened){
-        console.log("checkWidthToStateOpen");
+        // console.log("checkWidthToStateOpen");
         const width =
             window.innerWidth ||
             document.documentElement.clientWidth ||
@@ -257,7 +257,7 @@ class Util {
                 return ret;
             },
             bool(value) {
-                console.log('isTypeValid');
+                // console.log('isTypeValid');
                 return this.boolean(value)
             },
             'protocol': function (value) {
@@ -284,7 +284,7 @@ class Util {
                 return ret;
             },
         };
-        console.log('isTypeValid');
+        // console.log('isTypeValid');
         if (validator.hasOwnProperty(type)) {
             const result = validator[type](value);
             return result;

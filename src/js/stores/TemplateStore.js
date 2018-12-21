@@ -47,7 +47,7 @@ class TemplateStore {
     }
 
     toogleSidebar(values){
-        console.log('toogleSidebar', values);
+        // console.log('toogleSidebar', values);
         let showSidebar;
         if(values !== undefined ) {
             showSidebar = values;

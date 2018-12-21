@@ -6,7 +6,7 @@ import MaterialSelect from '../../components/MaterialSelect';
 
 class GenericOperations {
     constructor() {
-        console.log('GenericOperations loaded.');
+        // console.log('GenericOperations loaded.');
     }
 
     setDefaultPageNumber() {
@@ -79,7 +79,7 @@ class Pagination extends Component {
     }
 
     render() {
-        console.log('Render Pagination Component ', this.props);
+        // console.log('Render Pagination Component ', this.props);
 
         if (!this.props.pagination || !this.props.show_pagination || !this.props.pagination.total) {
             return <div className="col s7 p0" />;
@@ -211,7 +211,7 @@ class Filter extends Component {
     componentDidMount() {
         if (this.props.ops.hasFilter()) {
             const qry = this.props.ops.getCurrentQuery();
-            console.log('Getting current query: ', qry);
+            // console.log('Getting current query: ', qry);
             this.setState({ query: qry });
         }
     }
@@ -223,7 +223,7 @@ class Filter extends Component {
     }
 
     render() {
-        console.log('Render Filter Component ', this.props, this.state);
+        // console.log('Render Filter Component ', this.props, this.state);
 
         // if (this.props.showPainel) {
         //   return null;

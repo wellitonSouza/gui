@@ -38,11 +38,11 @@ class FStore {
                 static_attrs: [],
             };
         } else {
-            if (device.attrs == null || device.attrs === undefined) {
+            if (device.attrs === null || device.attrs === undefined) {
                 device.attrs = [];
             }
 
-            if (device.static_attrs == null || device.static_attrs === undefined) {
+            if (device.static_attrs === null || device.static_attrs === undefined) {
                 device.static_attrs = [];
             }
 

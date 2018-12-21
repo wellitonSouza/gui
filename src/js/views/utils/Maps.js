@@ -54,11 +54,11 @@ const Esri_WorldImagery = L.tileLayer(
 
 class ContextMenu {
     constructor() {
-        console.log("ContextMenu loaded.");
+        // console.log("ContextMenu loaded.");
     }
     // context menu based at: https://codepen.io/devhamsters/pen/yMProm
     updateCurrentContextMenu(event,root) {
-        console.log("updateCurrentContextMenu");
+        // console.log("updateCurrentContextMenu");
         const clickX = event.clientX;
         const clickY = event.clientY;
         const screenW = window.innerWidth;
@@ -100,7 +100,7 @@ class CustomMap extends Component {
   }
 
   componentDidMount() {
-    console.log("5. CustomMap: componentDidMount");
+    // console.log("5. CustomMap: componentDidMount");
     // create map
     this.map = L.map("map", {
       zoom: this.props.zoom,
@@ -129,13 +129,13 @@ class CustomMap extends Component {
   }
 
   componentDidUpdate() {
-    console.log("5. componentDidUpdate ", this.props.markersData, this.subset);
-    console.log("5. map ", this.map);
+    // console.log("5. componentDidUpdate ", this.props.markersData, this.subset);
+    // console.log("5. map ", this.map);
 
     // reseting layer to the map
     // this.map.removeLayer(OpenStreetMap_Mapnik);
     if (!this.map.hasLayer(OpenStreetMap_Mapnik)) {
-      console.log("Readding the tile layer");
+      // console.log("Readding the tile layer");
       this.map.addLayer(OpenStreetMap_Mapnik);
     }
     // check if data has changed
@@ -145,7 +145,7 @@ class CustomMap extends Component {
   }
 
   handleContextMenu(e, device_id, tracking) {
-    console.log("handleContextMenu");
+    // console.log("handleContextMenu");
     if (!this.props.allowContextMenu) return false;
 
     e.originalEvent.preventDefault();
@@ -172,7 +172,7 @@ class CustomMap extends Component {
       positionList.push(element.pos);
     });
 
-    console.log("5. this.state.bounds", this.state.bounds);
+    // console.log("5. this.state.bounds", this.state.bounds);
 
     if (positionList.length == 0) {
       let temporaryCenter = [-20.90974, -48.83651];
@@ -231,7 +231,7 @@ class CustomMap extends Component {
   }
 
   updateMarkers() {
-    console.log("5. this.props.markersData");
+    // console.log("5. this.props.markersData");
     this.subset = JSON.parse(JSON.stringify(this.props.markersData));
     this.markers.clearLayers();
     this.mkrHelper = {};
@@ -248,7 +248,7 @@ class CustomMap extends Component {
       else mkr.bindPopup(marker.name);
 
       mkr.on("click", function(a) {
-        console.log("a", a);
+        // console.log("a", a);
         hcm(a, a.target.options.id, a.target.options.allow_tracking);
         a.originalEvent.preventDefault();
       });
@@ -269,14 +269,14 @@ class CustomMap extends Component {
   }
 
   handleTracking(device_id) {
-    console.log("5. handleTracking", device_id);
+    // console.log("5. handleTracking", device_id);
     this.props.toggleTracking(device_id);
 
     this.setState({ cm_visible: false });
   }
 
   handleMapClick(e) {
-    console.log("handleMapClick");
+    // console.log("handleMapClick");
     if (!this.props.allowContextMenu) {
       return false;
     }
@@ -285,7 +285,7 @@ class CustomMap extends Component {
   }
 
   render() {
-    console.log("5. CustomMap - Render: ", this.props);
+    // console.log("5. CustomMap - Render: ", this.props);
     return (
       <div className="fix-map-bug">
         <div onClick={this.handleMapClick} id="map" />
@@ -313,7 +313,7 @@ class ContextMenuComponent extends Component {
     }
     
      handleTracking(device_id) {
-        console.log("6. handleTracking", device_id);
+        // console.log("6. handleTracking", device_id);
         this.props.handleTracking(device_id);
     }
     
@@ -327,7 +327,7 @@ class ContextMenuComponent extends Component {
 
     render() {
 
-        console.log("6. ContextMenuComponent - Render: ", this.props);
+        // console.log("6. ContextMenuComponent - Render: ", this.props);
         const md = this.props.metadata;
         
         return <div ref={(ref) => {
@@ -361,7 +361,7 @@ class MapSocket extends Component {
   }
    
   componentDidMount() {
-    console.log("MapSocket: componentDidMount:");
+    // console.log("MapSocket: componentDidMount:");
     let rsi = this.props.receivedSocketInfo
     const socketio = require("socket.io-client");
     const target = `${window.location.protocol}//${window.location.host}`;
@@ -384,12 +384,12 @@ class MapSocket extends Component {
         transports: ["polling"]
       });
       device_list_socket.on("all", data => {
-        console.log("received socket information:", data);
+        // console.log("received socket information:", data);
         rsi(data);
       });
 
       device_list_socket.on("error", data => {
-        console.log("socket error", data);
+        // console.log("socket error", data);
         if (device_list_socket !== null) device_list_socket.close();
         // getWsToken();
       });
@@ -402,7 +402,7 @@ class MapSocket extends Component {
   }
 
   render() {
-    console.log("MapSocket - Render: ", this.props);
+    // console.log("MapSocket - Render: ", this.props);
     return null;
   }
 }
@@ -425,7 +425,7 @@ class SmallPositionRenderer extends Component {
     componentDidMount() {
         if (!this.state.loadedLayers) {
             let layers = this.props.config.mapObj;
-            console.log("I got my layers! ", layers);
+            // console.log("I got my layers! ", layers);
             for (let index in layers) {
                 layers[index].isVisible = true;
             }
@@ -444,7 +444,7 @@ class SmallPositionRenderer extends Component {
 
 
     render() {
-        console.log('4. <PropsSmallPositionRenderer>. Render. ', this.props);
+        // console.log('4. <PropsSmallPositionRenderer>. Render. ', this.props);
 
         let parsedEntries = [];
         for (const k in this.props.staticDevices) {
@@ -493,7 +493,7 @@ class SmallPositionRenderer extends Component {
                 }
             }
         }
-        console.log("parsedEntries (static and dynamics):", parsedEntries);
+        // console.log("parsedEntries (static and dynamics):", parsedEntries);
 
         return <div className="fix-map-bug">
             <CustomMap toggleTracking={this.props.toggleTracking}  allowContextMenu={this.props.allowContextMenu} zoom={this.state.zoom} markersData={parsedEntries}/>

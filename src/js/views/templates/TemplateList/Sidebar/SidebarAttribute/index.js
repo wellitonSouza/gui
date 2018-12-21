@@ -51,8 +51,8 @@ const SidebarAttribute = ({
                                 <div className="body-actions--divider" />
                                 <SidebarButton
                                     onClick={() => toogleSidebarMetadata()}
-                                    icon={'metadata'}
-                                    text={'New Metadata'}
+                                    icon="metadata"
+                                    text="New Metadata"
                                 />
                             </div>
                         </div>

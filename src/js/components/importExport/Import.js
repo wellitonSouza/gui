@@ -105,7 +105,7 @@ export default class Import extends Component {
                         allowFileTypeValidation
                         acceptedFileTypes={['application/json']}
                         allowFileSizeValidation
-                        maxTotalFileSize={10000}
+                        maxTotalFileSize={314572800}
                     >
                         {file.map(files => (
                             <File

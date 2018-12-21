@@ -135,6 +135,7 @@ class Devices extends Component {
     // DeviceActions.fetchDevices.defer();
         // console.log('devices: componentDidMount');
         this.dev_opex._fetch();
+        FormActions.toggleSidebarDevice(false);
  
  /*
         // Realtime

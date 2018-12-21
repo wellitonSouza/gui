@@ -12,6 +12,7 @@ const SidebarDeviceAttrs = ({
     metadata,
     handleChangeMetadata,
     handleChangeAttr,
+    deviceAttrsTitle,
     errors,
 }) => (
     <Slide right when={showDeviceAttrs} duration={300}>
@@ -32,7 +33,7 @@ const SidebarDeviceAttrs = ({
                                 {'device > attribute'}
                             </div>
                             <div className="attr-type">
-                                {'Static Value'}
+                                {deviceAttrsTitle}
                             </div>
                             <div className="attrs-list">
                                 {

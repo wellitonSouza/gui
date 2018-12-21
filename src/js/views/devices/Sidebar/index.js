@@ -22,6 +22,7 @@ class Sidebar extends Component {
             selectAttr: [],
             errors: {},
             isShowSidebarDelete: false,
+            deviceAttrsTitle: '',
         };
 
         this.handleShowManageTemplate = this.handleShowManageTemplate.bind(this);
@@ -112,10 +113,11 @@ class Sidebar extends Component {
         }));
     }
 
-    handleShowDeviceAttrs(attr) {
+    handleShowDeviceAttrs(attr, title) {
         this.setState(prevState => ({
             showDeviceAttrs: !prevState.showDeviceAttrs,
             selectAttr: attr,
+            deviceAttrsTitle: title,
         }));
     }
 
@@ -280,6 +282,7 @@ class Sidebar extends Component {
             isNewDevice,
             errors,
             isShowSidebarDelete,
+            deviceAttrsTitle
         } = this.state;
         if (!Object.prototype.hasOwnProperty.call(device, 'attrs')) return <div />;
         const { metadata } = device;
@@ -310,6 +313,7 @@ class Sidebar extends Component {
                     showDeviceAttrs={showDeviceAttrs}
                     selectAttr={selectAttr}
                     metadata={metadata}
+                    deviceAttrsTitle={deviceAttrsTitle}
                     validAttrs={this.validAttrs}
                     handleChangeMetadata={this.handleChangeMetadata}
                     handleChangeAttr={this.handleChangeAttr}

@@ -91,25 +91,25 @@ const SidebarDevice = ({
                                     <div className="device-attrs">
                                         <div className="label">3. Manage Attributes</div>
                                         <SidebarButton
-                                            onClick={() => handleShowDeviceAttrs(configValues)}
+                                            onClick={() => handleShowDeviceAttrs(configValues, 'Configuration')}
                                             icon="config_attrs"
                                             title="Configuration"
                                             disable={configValues.length === 0}
                                         />
                                         <SidebarButton
-                                            onClick={() => handleShowDeviceAttrs(staticValues)}
+                                            onClick={() => handleShowDeviceAttrs(staticValues, 'Static Values')}
                                             icon="data_attrs"
                                             title="Static Values"
                                             disable={staticValues.length === 0}
                                         />
                                         <SidebarButton
-                                            onClick={() => handleShowDeviceAttrs(dynamicValues)}
+                                            onClick={() => handleShowDeviceAttrs(dynamicValues, 'Dynamic Attributes')}
                                             icon="data_attrs"
                                             title="Dynamic Attributes"
                                             disable={dynamicValues.length === 0}
                                         />
                                         <SidebarButton
-                                            onClick={() => handleShowDeviceAttrs(actuatorValues)}
+                                            onClick={() => handleShowDeviceAttrs(actuatorValues, 'Actuators')}
                                             icon="config_attrs"
                                             title="Actuators"
                                             disable={actuatorValues.length === 0}

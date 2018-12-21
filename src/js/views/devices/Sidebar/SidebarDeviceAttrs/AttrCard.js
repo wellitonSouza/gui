@@ -46,11 +46,15 @@ class AttrCard extends PureComponent {
 
     render() {
         const { showMetadata, attr, metadata } = this.state;
-        const { handleChangeAttr, handleChangeMetadata } = this.props;
+        const { handleChangeAttr, handleChangeMetadata, errors} = this.props;
         const metaLength = metadata !== undefined
             ? metadata.length
             : 0;
+        const errorMessage = errors ? errors.message : '';
+        console.log(errorMessage)
+        const valid = errors ? Object.keys(errors).length === 0 : true;
         const isDynamic = attr.type === 'dynamic';
+        if (Object.keys(attr).length === 0) return <div />
         return (
             <div className="attr-card">
                 <div className="attr-card-header">
@@ -66,6 +70,8 @@ class AttrCard extends PureComponent {
                                         maxLength={40}
                                         value={attr.static_value}
                                         onChange={e => handleChangeAttr(e, attr.id)}
+                                        valid={valid}
+                                        error={errorMessage}
                                     >
                                         {attr.label}
                                     </MaterialInput>
@@ -74,41 +80,43 @@ class AttrCard extends PureComponent {
                         <div className="attr-card-type">{attr.value_type}</div>
                     </div>
                 </div>
-                <div className="attr-card-metadata">
-                    <div className="attr-card-metadata-header">
-                        <img src="images/icons/metadata-gray.png" alt="attrs-icon" />
-                        <div className="attr-card-metadata-label">{`Meta attributes(${metaLength})`}</div>
-                        <div
-                            className="attr-card-metadata-arrow"
-                            onClick={() => this.handleShowMetadata()}
-                            onKeyPress={() => this.handleShowMetadata()}
-                            role="button"
-                            tabIndex="0"
-                        >
-                            <i className={`fa fa-angle-${showMetadata ? 'up' : 'down'}`} aria-hidden="true" />
+                {metaLength > 0 && (
+                    <div className="attr-card-metadata">
+                        <div className="attr-card-metadata-header">
+                            <img src="images/icons/metadata-gray.png" alt="attrs-icon"/>
+                            <div className="attr-card-metadata-label">{`Meta attributes(${metaLength})`}</div>
+                            <div
+                                className="attr-card-metadata-arrow"
+                                onClick={() => this.handleShowMetadata()}
+                                onKeyPress={() => this.handleShowMetadata()}
+                                role="button"
+                                tabIndex="0"
+                            >
+                                <i className={`fa fa-angle-${showMetadata ? 'up' : 'down'}`} aria-hidden="true"/>
+                            </div>
                         </div>
-                    </div>
-                    <div className="attr-card-metadata-body">
-                        {
-                            showMetadata && metadata !== undefined
-                                ? (metadata.map(meta => (
-                                    <div key={meta.id} className="attr-card-input-wrapper">
-                                        <MaterialInput
-                                            className="attr-card-input"
-                                            name={meta.label}
-                                            maxLength={40}
-                                            value={meta.static_value}
-                                            onChange={e => handleChangeMetadata(e, attr.id)}
-                                        >
-                                            {meta.label}
-                                        </MaterialInput>
-                                        <div className="attr-card-type">{meta.value_type}</div>
-                                    </div>
-                                )))
-                                : <div />
-                        }
-                    </div>
-                </div>
+                        <div className="attr-card-metadata-body">
+                            {
+                                showMetadata
+                                    ? (metadata.map(meta => (
+                                        <div key={meta.id} className="attr-card-input-wrapper">
+                                            <MaterialInput
+                                                className="attr-card-input"
+                                                name={meta.label}
+                                                maxLength={40}
+                                                value={meta.static_value}
+                                                onChange={e => handleChangeMetadata(e, attr.id)}
+                                            >
+                                                {meta.label}
+                                            </MaterialInput>
+                                            <div className="attr-card-type">{meta.value_type}</div>
+                                        </div>
+                                    )))
+                                    : <div />
+                            }
+                        </div>
+                    </div>)
+                }
                 <div className="divider" />
             </div>
         );

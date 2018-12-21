@@ -100,7 +100,7 @@ class DeviceCardList extends Component {
             <div className="device-card-area">
                 <Filter showPainel={this.props.showFilter} metaData={this.metaData} ops={this.props.dev_opex} fields={DevFilterFields}/>
                 <AltContainer store={DeviceFormStore}>
-                    <Sidebar />
+                    <Sidebar ops={this.props.dev_opex} />
                 </AltContainer>
                 {this.filteredList.length === 0 ? (
                     <div className="background-info valign-wrapper full-height">

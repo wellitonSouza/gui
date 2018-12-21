@@ -126,15 +126,18 @@ class Sidebar extends Component {
             newAttrs[item.id] = item;
             const isValid = util.isTypeValid(item.static_value, item.value_type, item.type);
             if (!isValid.result) {
-                errors[item.id] = [isValid.error];
+                errors[item.id] = {
+                    message: isValid.error,
+                    metadata: [],
+                };
             }
         });
 
-        const hasError = Object.keys(errors).length === 0;
+        const hasError = Object.keys(errors).length > 0
         if (hasError) {
             this.setState({
                 errors,
-                showDeviceAttrs: false,
+                showDeviceAttrs: true,
             });
         } else {
             const { device } = this.state;
@@ -192,11 +195,13 @@ class Sidebar extends Component {
         const saveDevice = this.formatDevice(device);
         const isValid = this.validDevice(saveDevice);
 
-        if (isValid) {
+        if (isValid.result) {
             FormActions.addDevice(saveDevice, () => {
                 toaster.success('Device created');
-                hashHistory.push('/device/list');
+                this.props.ops._fetch();
             });
+        } else {
+            toaster.error(isValid.error);
         }
     }
 
@@ -205,11 +210,13 @@ class Sidebar extends Component {
         const updateDevice = this.formatDevice(device);
         const isValid = this.validDevice(updateDevice);
 
-        if (isValid) {
+        if (isValid.result) {
             FormActions.triggerUpdate(updateDevice, () => {
                 toaster.success('Device updated');
-                hashHistory.push('/device/list');
+                this.props.ops._fetch();
             });
+        } else {
+            toaster.error(isValid.error);
         }
     }
 
@@ -245,7 +252,22 @@ class Sidebar extends Component {
     }
 
     validDevice(device) {
-        return true;
+        if (device.templates.length < 1) {
+            return {
+                result: false,
+                error: 'Select a template',
+            };
+        }
+
+        const isValidName = util.isNameValid(device.label)
+        if (!isValidName.result) {
+            return isValidName;
+        }
+
+        return {
+            result: true,
+            error: '',
+        };
     }
 
     render() {

@@ -43,6 +43,7 @@ const SidebarDeviceAttrs = ({
                                             metadata={metadata[attr.id]}
                                             handleChangeAttr={handleChangeAttr}
                                             handleChangeMetadata={handleChangeMetadata}
+                                            errors={errors[attr.id]}
                                         />)
                                 }
                             </div>

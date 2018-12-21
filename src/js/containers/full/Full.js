@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Link, browserHistory } from 'react-router';
 import AltContainer from 'alt-container';
 import MenuActions from '../../actions/MenuActions';
+import { translate, Trans } from 'react-i18next';
 import MenuStore from '../../stores/MenuStore';
 import LoginStore from '../../stores/LoginStore';
 import LoginActions from '../../actions/LoginActions';
@@ -252,19 +253,13 @@ class LeftSidebar extends Component {
                 image: 'graph', target: '/flows', iconClass: 'material-icons mi-device-hub', label: 'data flows', desc: 'Processing flows to be executed',
             },
             {
-                image: 'user',
-                target: '/auth',
-                iconClass: 'fa fa-unlock-alt',
-                label: 'auth',
-                desc: 'User and permissions management',
-                children: [
-                    {
-                        target: '/auth/user', iconClass: '', label: 'users', title: 'Users list',
-                    },
-                    {
-                        target: '/auth/permissions', iconClass: '', label: 'permissions', title: 'Permissions list',
-                    },
-                ],
+                image: 'bell', target: '/alarm', iconClass: 'fa fa-bell-o', label: 'alarms', desc: 'System events and alarms',
+            },
+            {
+                image: 'user', target: '/auth', iconClass: 'fa fa-unlock-alt', label: 'Users', desc: 'Users list',
+            },
+            {
+                image: 'groups', target: '/groups', iconClass: 'fa fa-unlock-alt', label: <Trans i18nKey="menu.groups.text" />, desc: <Trans i18nKey="menu.groups.alt" />,
             },
         ];
 
@@ -340,7 +335,7 @@ class Full extends Component {
     componentDidMount() {
         ConfigActions.fetchCurrentConfig.defer(true);
     }
-    
+
     toggleUserSidebar() {
         this.setState({ user_sidebar: !this.state.user_sidebar });
     }
@@ -366,4 +361,4 @@ class Full extends Component {
     }
 }
 
-export default Full;
+export default translate()(Full);

@@ -1,0 +1,74 @@
+#groups-wrapper {
+  font-family: Roboto, sans-serif;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  float: left;
+
+  //will be remove - begin
+  .template-sidebar {
+    height: 100%;
+  }
+  .input-field{
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .input-field label{
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  //end
+
+  .card-size {
+    margin: 20px !important;
+    min-width: 220px;
+    max-width: 300px;
+  }
+
+  .fill {
+    padding-left: 20px;
+  }
+
+  .card-size .attr-area {
+    font-weight: 500;
+    color: #4F4F4F;
+    font-size: 14px;
+  }
+
+  .card-size .attr-area .attr-row .attr-content {
+    height: 75px;
+  }
+
+  .card-size .attr-area .attr-row .subtitle {
+    font-size: 12px;
+    font-weight: 400;
+    color: #888888;
+  }
+
+  .card-size .attr-area .attr-row .description-text {
+    height: 43px;
+  }
+
+  .card-size .attr-area .attr-row span {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    float: inherit;
+    color: inherit;
+  }
+}
+
+#groups-wrapper {
+  &.container {
+    left: 50%;
+    min-width: 95% !important;
+    max-width: 100% !important;
+  }
+}
+
+#groups-wrapper {
+  &.container {
+    margin: 0 auto;
+  }
+}

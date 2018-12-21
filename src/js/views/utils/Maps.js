@@ -6,15 +6,12 @@ import L from 'leaflet';
 import DivIcon from 'react-leaflet-div-icon';
 import * as pins from '../../config'
 import util from "../../comms/util";
-import MaterialInput from '../../components/MaterialInput';
+import MapPositionActions from "../../actions/MapPositionActions";
 
 require('leaflet.markercluster');
 
 let device_list_socket = null;
 
-const trackingPin = <DivIcon className="icon-marker bg-tracking-marker" />;
-
-const listLatLngs = [];
 const OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 17,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -91,6 +88,7 @@ class CustomMap extends Component {
     this.map = null;
     this.markers = null;
     this.subset = [];
+    this.mkrHelper = {};
     this.handleBounds = this.handleBounds.bind(this);
     this.updateMarkers = this.updateMarkers.bind(this);
     this.handleDyData = this.handleDyData.bind(this);
@@ -98,6 +96,7 @@ class CustomMap extends Component {
     this.handleMapClick = this.handleMapClick.bind(this);
     this.handleContextMenu = this.handleContextMenu.bind(this);
     this.closeContextMenu = this.closeContextMenu.bind(this);
+    this.creatingDynamicPoint = this.creatingDynamicPoint.bind(this);
   }
 
   componentDidMount() {
@@ -108,7 +107,6 @@ class CustomMap extends Component {
       center: [51.505, -0.09],
       layers: [OpenStreetMap_Mapnik]
     });
-
 
     var overlays = { Map: OpenStreetMap_Mapnik, Satelite: Esri_WorldImagery };
     L.control.layers(overlays).addTo(this.map);
@@ -125,23 +123,26 @@ class CustomMap extends Component {
     this.updateMarkers();
   }
 
+  componentWillUnmount() {
+    // reseting layer to the map
+    this.map.removeLayer(OpenStreetMap_Mapnik);
+  }
+
   componentDidUpdate() {
     // console.log("5. componentDidUpdate ", this.props.markersData, this.subset);
     // console.log("5. map ", this.map);
 
     // reseting layer to the map
-    this.map.removeLayer(OpenStreetMap_Mapnik);
-    //if (!this.map.hasLayer(OpenStreetMap_Mapnik))
-    this.map.addLayer(OpenStreetMap_Mapnik);
-
-
+    // this.map.removeLayer(OpenStreetMap_Mapnik);
+    if (!this.map.hasLayer(OpenStreetMap_Mapnik)) {
+      // console.log("Readding the tile layer");
+      this.map.addLayer(OpenStreetMap_Mapnik);
+    }
     // check if data has changed
     if (JSON.stringify(this.props.markersData) != JSON.stringify(this.subset)) {
       this.updateMarkers();
     }
   }
-
-
 
   handleContextMenu(e, device_id, tracking) {
     // console.log("handleContextMenu");
@@ -156,9 +157,8 @@ class CustomMap extends Component {
     };
     this.setState({ cm_visible: true, contextMenuInfo: this.contextMenuInfo });
   }
-  
-  closeContextMenu()
-  {
+
+  closeContextMenu() {
     this.setState({
       cm_visible: false
     });
@@ -185,17 +185,56 @@ class CustomMap extends Component {
     }
   }
 
-
   handleDyData(socket_data) {
-    // console.log("5. handleDyData", socket_data);
+    this.creatingDynamicPoint(socket_data);
     // MeasureActions.appendMeasures(data);
-    // DeviceActions.updateStatus(data);
+  }
+
+  creatingDynamicPoint(measureData) {
+    // 1. get device data
+    let dev = null;
+    const now = measureData.metadata.timestamp;
+    const deviceID = measureData.metadata.deviceid;
+
+    for (const index in this.props.markersData) {
+      if (this.props.markersData[index].id == deviceID) {
+        dev = this.props.markersData[index];
+      }
+    }
+    if (dev == null) return;
+
+    let myPoint = dev;
+
+    // 2. trying to find the dynamic geo-point
+    let geoLabel = null;
+    for (const label in measureData.attrs) {
+      if (dev.attr_label == label)
+        geoLabel = label;
+    }
+
+    if (geoLabel == null) return; //no attribute with position
+
+    let position = util.parserPosition(measureData.attrs[geoLabel]);
+    myPoint.pos = L.latLng(position[0], position[1]);
+    myPoint.timestamp = util.iso_to_date(now);
+
+    // 3. change Marker point
+    let hcm = this.handleContextMenu;
+    let mkr = this.mkrHelper[myPoint.id];
+    console.log("mkr", mkr);
+    mkr.setLatLng(myPoint.pos);
+    mkr.bindPopup(myPoint.name + " : " + myPoint.timestamp);
+    mkr.on("click", function (a) {
+      hcm(a, a.target.options.id, a.target.options.allow_tracking);
+      a.originalEvent.preventDefault();
+    });
   }
 
   updateMarkers() {
     // console.log("5. this.props.markersData");
     this.subset = JSON.parse(JSON.stringify(this.props.markersData));
     this.markers.clearLayers();
+    this.mkrHelper = {};
     let hcm = this.handleContextMenu;
     this.props.markersData.forEach(marker => {
       let mkr = L.marker(marker.pos, {
@@ -204,10 +243,9 @@ class CustomMap extends Component {
         id: marker.id,
         icon: marker.pin
       });
-        if (marker.timestamp)
-          mkr.bindPopup(marker.name + " : " + marker.timestamp);
-        else
-          mkr.bindPopup(marker.name);
+      if (marker.timestamp)
+        mkr.bindPopup(marker.name + " : " + marker.timestamp);
+      else mkr.bindPopup(marker.name);
 
       mkr.on("click", function(a) {
         // console.log("a", a);
@@ -216,6 +254,9 @@ class CustomMap extends Component {
       });
 
       this.markers.addLayer(mkr);
+
+      // creating a map to helps find the device
+      this.mkrHelper[marker.id] = mkr;
     });
     this.markers.addTo(this.map);
 
@@ -226,7 +267,6 @@ class CustomMap extends Component {
     //     console.log('marker ',a);
     // });
   }
-
 
   handleTracking(device_id) {
     // console.log("5. handleTracking", device_id);
@@ -250,13 +290,13 @@ class CustomMap extends Component {
       <div className="fix-map-bug">
         <div onClick={this.handleMapClick} id="map" />
         {this.state.cm_visible ? (
-          <ContextMenuComponent 
+          <ContextMenuComponent
             closeContextMenu={this.closeContextMenu}
             handleTracking={this.handleTracking}
             metadata={this.state.contextMenuInfo}
           />
         ) : null}
-        <MapSocket receivedSocketInfo={this.handleDyData}></MapSocket>
+        <MapSocket receivedSocketInfo={this.handleDyData} />
       </div>
     );
   }
@@ -425,6 +465,10 @@ class SmallPositionRenderer extends Component {
 
         for (const k in this.props.dynamicDevices) {
             let device = this.props.dynamicDevices[k];
+            let attr_label = "";
+            if (device.dp_metadata)
+              attr_label = device.dp_metadata.attr_label;
+
               for (const y in device.dy_positions) {
               if (device.is_visible)
               {
@@ -436,6 +480,7 @@ class SmallPositionRenderer extends Component {
                       tmp.position[0],
                       tmp.position[1]
                     ),
+                    attr_label: attr_label,
                     name: tmp.label,
                     pin: getPin(tmp, this.props.config),
                     timestamp: tmp.timestamp,
@@ -449,14 +494,6 @@ class SmallPositionRenderer extends Component {
             }
         }
         // console.log("parsedEntries (static and dynamics):", parsedEntries);
-
-        // Get list of positions for each device in dynamic state
-        // for (const k in this.props.listPositions) {
-        //     listLatLngs[k] = [];
-        //     for (const j in this.props.listPositions[k]) {
-        //         listLatLngs[k].push(this.props.listPositions[k][j].position);
-        //     }
-        // }
 
         return <div className="fix-map-bug">
             <CustomMap toggleTracking={this.props.toggleTracking}  allowContextMenu={this.props.allowContextMenu} zoom={this.state.zoom} markersData={parsedEntries}/>

@@ -68,7 +68,9 @@ class DeviceOperations extends GenericOperations {
     }
 
     whenUpdatePagination(config) {
-        for (const key in config) this.paginationParams[key] = config[key];
+        for (const key in config)
+            this.paginationParams[key] = config[key];
+        this.filterParams = { sortBy: 'label' };
         this._fetch();
     }
 
@@ -126,7 +128,6 @@ class Devices extends Component {
 
         this.toggleSearchBar = this.toggleSearchBar.bind(this);
         this.toggleDisplay = this.toggleDisplay.bind(this);
-        this.setDisplay = this.setDisplay.bind(this);
         this.dev_opex = new DeviceOperations();
     }
 
@@ -134,7 +135,7 @@ class Devices extends Component {
     // DeviceActions.fetchDevices.defer();
         // console.log('devices: componentDidMount');
         this.dev_opex._fetch();
-
+ 
  /*
         // Realtime
         const socketio = require('socket.io-client');
@@ -179,14 +180,10 @@ class Devices extends Component {
         this.setState({ showFilter: !this.state.showFilter });
     }
 
-    setDisplay(state) {
-        this.setState({ displayList: state });
-    }
 
     toggleDisplay() {
         const newDisplay = !this.state.displayList;
-        // console.log(' toggleDisplay', newDisplay);
-        //  devices for maps
+        // reload devices for maps
         if (!newDisplay) this.dev_opex.setFilterToMap();
         else this.dev_opex.setDefaultFilter();
 
@@ -205,7 +202,6 @@ class Devices extends Component {
             <ToggleWidget
                 toggleState={this.state.displayList}
                 toggle={this.toggleDisplay}
-                setState={this.setDisplay}
             />
         );
 

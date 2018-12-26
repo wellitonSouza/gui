@@ -9,6 +9,7 @@ import LoginStore from '../../stores/LoginStore';
 import LoginActions from '../../actions/LoginActions';
 import { ChangePasswordModal } from '../../components/Modal';
 import ConfigActions from "../../actions/ConfigActions";
+import ImportExportMain from '../../components/importExport/ImportExportMain';
 
 class Navbar extends Component {
     // TODO: header widgets should be received as children to this (Navbar) node
@@ -68,6 +69,8 @@ class RightSideBar extends Component {
         this.dismiss = this.dismiss.bind(this);
         this.openChangePasswordModal = this.openChangePasswordModal.bind(this);
         this.handleChangePasswordModal = this.handleChangePasswordModal.bind(this);
+        this.openImportExportMain = this.openImportExportMain.bind(this);
+        this.handleImportExport = this.handleImportExport.bind(this);
     }
 
     logout(event) {
@@ -79,6 +82,14 @@ class RightSideBar extends Component {
     dismiss(event) {
         event.preventDefault();
         this.props.toggleSidebar();
+    }
+
+    openImportExportMain(status) {
+        this.setState({ openImportExportMain: status });
+    }
+
+    handleImportExport() {
+        this.setState({ openImportExportMain: true });
     }
 
     openChangePasswordModal(status) {
@@ -147,6 +158,14 @@ class RightSideBar extends Component {
 
                     <div className="horizontal-line" />
 
+                    <div className="logout-page-settings">
+                        <div className="logout-page-changePassword col s12 m12" onClick={this.handleImportExport}>
+                            Import/Export
+                        </div>
+                    </div>
+
+                    <div className="horizontal-line" />
+
                     <div className="logout-page-buttons">
                         <div className="btn-logout" onClick={this.logout}>
               Logout
@@ -154,6 +173,13 @@ class RightSideBar extends Component {
                     </div>
                 </div>
                 {this.state.open_change_password_modal ? <ChangePasswordModal openChangePasswordModal={this.openChangePasswordModal} toggleSidebar={this.props.toggleSidebar} /> : <div />}
+                {this.state.openImportExportMain ? 
+                    <ImportExportMain
+                    type='main'
+                    openModal={this.openImportExportMain}
+                    toggleSidebar={this.props.toggleSidebar}/>
+                 : <div />
+                }
             </div>
         );
     }

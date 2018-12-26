@@ -6,6 +6,7 @@ import createClass from 'create-react-class';
 import { hot } from 'react-hot-loader';
 import Gatekeeper from './containers/login/Gatekeeper';
 import routes from './routes';
+import 'filepond/dist/filepond.min.css';
 
 Object.assign(React, {
     PropTypes,

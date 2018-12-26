@@ -1,5 +1,6 @@
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
+import { translate } from 'react-i18next';
 import { FilePond, File, registerPlugin } from 'react-filepond';
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
 import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
@@ -11,7 +12,7 @@ import ImportExportAction from '../../actions/ImportExportAction';
 
 registerPlugin(FilePondPluginFileValidateType, FilePondPluginFileValidateSize);
 
-export default class Import extends Component {
+class Import extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -26,19 +27,19 @@ export default class Import extends Component {
         this.uploadFile = this.uploadFile.bind(this);
     }
 
-
     dismiss() {
         const { openModal } = this.props;
         openModal(false);
     }
 
     handleOpenModal() {
+        const { t } = this.props;
         const { file } = this.state;
         if (file.length === 0) {
-            return toaster.error('Select a file!');
+            return toaster.error(t('importExport.import.error.file'));
         }
         if (file[0].type !== 'application/json') {
-            return toaster.error('Wrong type, only accept application!');
+            return toaster.error(t('importExport.import.error.type'));
         }
         return this.setState({ showModal: true });
     }
@@ -56,6 +57,7 @@ export default class Import extends Component {
     }
 
     uploadFile() {
+        const { t } = this.props;
         const { file } = this.state;
         const text = file[0];
         if (file.length > 0) {
@@ -68,33 +70,33 @@ export default class Import extends Component {
                     ImportExportAction.import(json);
                     this.success(true);
                 } catch (err) {
-                    toaster.error('Error reading file');
+                    toaster.error(t('importExport.import.error.read'));
                 }
             };
             reader.onerror = () => {
-                toaster.error('Error reading file');
+                toaster.error(t('importExport.import.error.read'));
             };
         } else {
-            toaster.error('Select one file!');
+            toaster.error(t('importExport.import.error.file'));
         }
     }
 
     render() {
-        const label = 'Save';
-        const title = 'Import new datas';
-        const firstMessage = 'You will remove all data. Are you sure?';
         const { showModal, file, success } = this.state;
-        const { openModal } = this.props;
+        const { t, openModal } = this.props;
+        const label = t('importExport.import.btnModal');
+        const title = t('importExport.import.titleModal');
+        const firstMessage = t('importExport.import.subtitleModal');
         return (
             <div>
                 <ImportExport
                     openModal={openModal}
                     toggleSidebar={this.dismiss}
                     save
-                    label="Import"
+                    label={t('importExport.import.title')}
                     handleClick={this.handleOpenModal}
                 >
-                    <HeadImportExport main icon="import-icon" title="Import" firstMessage="Drag the a file JSON to restore your data." />
+                    <HeadImportExport main icon="import-icon" title={t('importExport.import.titleMain')} firstMessage={t('importExport.import.subtitle')} />
                     <FilePond
                         ref={this.pond}
                         onupdatefiles={(fileItems) => {
@@ -127,9 +129,9 @@ export default class Import extends Component {
                     />
                     ) : null }
                     {success ? (<ModalAlert
-                        title="Success"
+                        title={t('importExport.import.titleSuccess')}
                         openModal={this.openModal}
-                        firstMessage="All datas imported"
+                        firstMessage={t('importExport.import.subtitleSuccess')}
                         label={label}
                         click={this.handleSuccess}
                         img="check-circle"
@@ -144,4 +146,7 @@ export default class Import extends Component {
 
 Import.propTypes = {
     openModal: PropTypes.func.isRequired,
+    t: PropTypes.shape.isRequired,
 };
+
+export default translate()(Import);

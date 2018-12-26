@@ -68,5 +68,29 @@
         "viewer": "Visualizar"
       }
     }
+  },
+  "importExport":{
+    "title": "Gerenciamento de Importação/Exportação",
+    "import":{
+      "titleMain": "Importação",
+      "subtitleMain": "Envie seus dados anteriores no portal.",
+      "title": "Importar",
+      "subtitle": "Selecione o arquivo JSON para restaurar seus dados.",
+      "titleModal": "Importar novos dados",
+      "subtitleModal": "Você removerá todos os dados. Você tem certeza?",
+      "titleSuccess": "Sucesso",
+      "subtitleSuccess": "Todos dados importados.",
+      "btnModal": "Ok",
+      "btnCancel": "Cancelar",
+      "error":{ 
+        "type": "Tipo errado, aceita-se somente JSON!",
+        "read": "Erro ao ler arquivo",
+        "file": "Selecione um arquivo"
+      }
+    },
+    "export":{
+      "title": "Exportação",
+      "subtitle": "Exporte um JSON contendo todos os seus dados."
+    }
   }
 }

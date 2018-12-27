@@ -115,11 +115,14 @@ function HistoryList(props) {
             return (
                 <div className="relative full-height">
                     <div className="full-height full-width history-list">
-                        {listValues.map((i, k) => (<div className={`history-row ${k % 2 ? 'alt-row' : ''}`} key={i.ts}>
-                            <div className="value">{i.value !== null && (i.value.length != undefined && i.value.length > 0) ? i.value.toString() : <span className="red-text"> <em>Invalid data </em></span>}</div>
+                    {listValues.map((i, k) => (<div className={`history-row ${k % 2 ? 'alt-row' : ''}`} key={i.ts}>
+                            {typeof i.value === "boolean" ?
+                            <div className="value">{i.value!== null ? i.value.toString() : <span className="red-text"> <em>Invalid data </em></span>}</div>: 
+                            <div className="value">{i.value!== null && (i.value.length != undefined && i.value.length > 0) ? i.value : <span className="red-text"> <em>Invalid data </em></span>}</div>
+                            }
                             <div className="label">{util.iso_to_date(i.ts)}</div>
                         </div>
-                        ))}
+                        ))}                    
                     </div>
                 </div>
             );

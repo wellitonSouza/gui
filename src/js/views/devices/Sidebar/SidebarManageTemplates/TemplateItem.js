@@ -29,7 +29,7 @@ const TemplateItem = ({ template, checked, handleSelectTemplate }) => (
                 <InputCheckbox
                     name={template.id}
                     checked={checked}
-                    onChange={() => handleSelectTemplate(checked, template)}
+                    onChange={() => handleSelectTemplate(!checked, template)}
                 />
             </div>
         </div>

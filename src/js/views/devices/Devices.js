@@ -135,8 +135,7 @@ class Devices extends Component {
     // DeviceActions.fetchDevices.defer();
         // console.log('devices: componentDidMount');
         this.dev_opex._fetch();
-        FormActions.toggleSidebarDevice(false);
- 
+        FormActions.toggleSidebarDevice.defer(false);
  /*
         // Realtime
         const socketio = require('socket.io-client');

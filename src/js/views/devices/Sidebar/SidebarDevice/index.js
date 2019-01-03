@@ -156,7 +156,7 @@ SidebarDevice.propTypes = {
     handleShowManageTemplate: PropTypes.func.isRequired,
     handleShowDeviceAttrs: PropTypes.func.isRequired,
     device: PropTypes.shape({
-        attrs: PropTypes.object,
+        attrs: PropTypes.array,
         created: PropTypes.string,
         id: PropTypes.string,
         label: PropTypes.string,

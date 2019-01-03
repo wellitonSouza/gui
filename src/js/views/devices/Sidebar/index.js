@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
 import TemplateStore from 'Stores/TemplateStore';
 import AltContainer from 'alt-container';
 import { hashHistory } from 'react-router';
@@ -282,7 +283,7 @@ class Sidebar extends Component {
             isNewDevice,
             errors,
             isShowSidebarDelete,
-            deviceAttrsTitle
+            deviceAttrsTitle,
         } = this.state;
         if (!Object.prototype.hasOwnProperty.call(device, 'attrs')) return <div />;
         const { metadata } = device;
@@ -340,6 +341,25 @@ Sidebar.defaultProps = {
         actuatorValues: [],
         metadata: {},
     },
+    isNewDevice: false,
+};
+
+Sidebar.propsTypes = {
+    showSidebarDevice: PropTypes.bool,
+    device: PropTypes.shape({
+        label: PropTypes.string,
+        id: PropTypes.string,
+        protocol: PropTypes.string,
+        templates: PropTypes.array,
+        tags: PropTypes.array,
+        attrs: PropTypes.array,
+        configValues: PropTypes.array,
+        dynamicValues: PropTypes.array,
+        staticValues: PropTypes.array,
+        actuatorValues: PropTypes.array,
+        metadata: PropTypes.object,
+    }),
+    isNewDevice: PropTypes.bool,
 };
 
 export default Sidebar;

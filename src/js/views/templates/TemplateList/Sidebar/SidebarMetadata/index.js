@@ -30,7 +30,7 @@ const SidebarMetadata = ({
                                 <img src="images/icons/template-cyan.png" alt="device-icon" />
                             </div>
                             <div className="header-path">
-                               template > new attribute > meta 
+                                {'template > new attribute > meta'}
                             </div>
                         </div>
                         <div className="body">

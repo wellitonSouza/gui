@@ -48,34 +48,6 @@ const DojotBtnClassic = ({ type = "secondary", color = 'none', title, onClick, l
     );
 }
 
-/*
-class DojotBtnClassic extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        let is_secondary = 'main';
-        if (this.props.is_secondary) is_secondary = 'secondary';
-
-        let color = 'clr-none';
-        if (this.props.color) color = this.props.color;
-
-        if (this.props.to) {
-            return (
-                <Link to={this.props.to} title={this.props.title} className={`new-btn-flat style-2 ${color} ${is_secondary}`}>
-                    {this.props.label}
-                </Link>
-            );
-        }
-        return (
-            <button type="button" title={this.props.title} onClick={this.props.onClick} className={`new-btn-flat style-2 ${color} ${is_secondary}`}>
-                {this.props.label}
-            </button>
-        );
-    }
-}
-*/
 
 class DojotButton extends Component {
     constructor(props) {

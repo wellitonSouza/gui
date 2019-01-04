@@ -890,9 +890,9 @@
 .-sidebar{
   display: block;
   position: absolute;
-  top: 0px;
+  top: 0;
   right: 0;
-  height: 100%;
+  height: calc(100% - 2px);
   min-height: 450px;
 
   .body{

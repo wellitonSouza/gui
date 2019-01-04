@@ -30,7 +30,7 @@ const SidebarDevice = ({
                 {
                     showSidebarDevice
                         ? (
-                            <div className="device-sidebar">
+                            <div className="-sidebar device-sidebar">
                                 <div className="header">
                                     <div className="title">
                                         new device

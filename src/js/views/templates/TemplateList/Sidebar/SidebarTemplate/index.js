@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Slide from 'react-reveal/Slide';
-import { DojotCustomButton } from 'Components/DojotButton';
+import { DojotBtnClassic } from 'Components/DojotButton';
 import SidebarForm from './SidebarForm';
 import SidebarDelete from '../SidebarDelete';
 import { templateType } from '../../../TemplatePropTypes';
@@ -23,9 +23,15 @@ const SidebarTemplate = ({
         <Slide right when={showSidebar} duration={300}>
             { showSidebar
                 ? (
-                    <div className="template-sidebar">
+                    <div className="-sidebar template-sidebar">
                         <div className="header">
-                            <span className="header-path">template</span>
+                            <div className="title">manage template</div>
+                            <div className="icon">
+                                <img src="images/icons/template-cyan.png" alt="device-icon" />
+                            </div>
+                            <div className="header-path">
+                                {'template'}
+                            </div>
                         </div>
                         <SidebarForm
                             template={template}
@@ -33,18 +39,19 @@ const SidebarTemplate = ({
                             changeValue={changeValue}
                         />
                         <div className="footer">
-                            <DojotCustomButton label="discard" type="default" onClick={() => toogleSidebar()} />
+                            <DojotBtnClassic type="secondary" label="discard" onClick={() => toogleSidebar()} />
                             { isNewTemplate
-                                ? <DojotCustomButton label="add" type="primary" onClick={saveTemplate} />
+                                ? <DojotBtnClassic color="blue" type="primary" label="add"  onClick={saveTemplate} />
                                 : (
                                     <Fragment>
-                                        <DojotCustomButton label="delete" type="secondary" onClick={() => toogleSidebarDelete('showDeleteTemplate')} />
-                                        <DojotCustomButton label="save" type="primary" onClick={updateTemplate} />
+                                        <DojotBtnClassic label="delete" type="secondary" onClick={() => toogleSidebarDelete('showDeleteTemplate')} />
+                                        <DojotBtnClassic color="red" label="save" type="primary" onClick={updateTemplate} />
                                     </Fragment>
                                 )
                             }
                         </div>
-                    </div>)
+                    </div>
+)
                 : <div />
             }
         </Slide>

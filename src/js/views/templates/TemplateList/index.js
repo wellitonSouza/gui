@@ -48,7 +48,7 @@ const TemplateList = ({
         }
     }
     return (
-        <div className="full-height flex-container">
+        <div className="full-height flex-container pos-relative overflow-hidden">
             {filteredList.length > 0 ? (
                 <div className="col s12 lst-wrapper w100">
                     {filteredList.map(item => (

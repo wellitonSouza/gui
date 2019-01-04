@@ -287,7 +287,7 @@ Confirm your password
                                     </label>
                                 </div>
                             </div>
-                  
+                
                             <div className="col s12 text-right"> 
                                 <DojotBtnClassic is_secondary={false} onClick={this.sendUpdatePassword} label="Save" title="Save" />
                                 <DojotBtnClassic is_secondary onClick={this.dismiss} label="Discard" title="Discard" />
@@ -332,8 +332,8 @@ class GenericModal extends Component {
                         </div>
                     </div>
                     <div className="col s12 text-right">
-                        <DojotBtnClassic is_secondary onClick={this.dismiss} label="Cancel" title="Cancel" />
-                        <DojotBtnClassic is_secondary={false} onClick={this.primary_click} label={this.props.op_type.label} title={this.props.op_type.label} />
+                        <DojotBtnClassic type="secondary" onClick={this.dismiss} label="Cancel" title="Cancel" />
+                        <DojotBtnClassic color="blue" type="primary" onClick={this.primary_click} label={this.props.op_type.label} title={this.props.op_type.label} />
                     </div>
                 </div>
                 <div className="modal-background" onClick={this.dismiss} />

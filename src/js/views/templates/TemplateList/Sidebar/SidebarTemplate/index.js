@@ -23,7 +23,7 @@ const SidebarTemplate = ({
         <Slide right when={showSidebar} duration={300}>
             { showSidebar
                 ? (
-                    <div className="-sidebar template-sidebar">
+                    <div className="template-sidebar">
                         <div className="header">
                             <div className="title">manage template</div>
                             <div className="icon">

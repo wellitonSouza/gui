@@ -98,7 +98,7 @@ class FlowCanvas extends Component {
         RED.i18n.init(`Bearer: ${util.getToken()}`, () => {
             RED.palette.init();
             RED.workspaces.init();
-            RED.view.init(this.cannotEdit);
+            RED.view.init();
             RED.keyboard.init();
             RED.editor.init();
             RED.typeSearch.init();

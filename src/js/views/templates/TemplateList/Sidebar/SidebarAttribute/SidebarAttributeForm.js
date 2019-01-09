@@ -2,7 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import MaterialInput from 'Components/MaterialInput';
 import MaterialSelect from 'Components/MaterialSelect';
+import ability from 'Components/permissions/ability';
+import Can from 'Components/permissions/Can';
 import { attrsType } from '../../../TemplatePropTypes';
+
 
 const SidebarAttributeForm = ({
     selectAttr,
@@ -23,6 +26,7 @@ const SidebarAttributeForm = ({
                 maxLength={40}
                 value={selectAttr.label}
                 onChange={e => changeAttrValue(e, selectAttr)}
+                disabled={!ability.can('modifier', 'template')}
             >
                 Attribute Name
             </MaterialInput>
@@ -34,6 +38,7 @@ const SidebarAttributeForm = ({
                 className="attribute-type"
                 value={selectAttr.type}
                 onChange={e => changeAttrValue(e, selectAttr)}
+                isDisable={!ability.can('modifier', 'template')}
             >
                 <option value="" disabled>
                     Select type
@@ -55,6 +60,7 @@ const SidebarAttributeForm = ({
                 className="value-type"
                 value={selectAttr.value_type}
                 onChange={e => changeAttrValue(e, selectAttr)}
+                isDisable={!ability.can('modifier', 'template')}
             >
                 <option value="" disabled>
                     Select type
@@ -85,6 +91,7 @@ const SidebarAttributeForm = ({
                             maxLength={40}
                             value={selectAttr.static_value}
                             onChange={e => changeAttrValue(e, selectAttr)}
+                            disabled={!ability.can('modifier', 'template')}
                         >
                             Value
                         </MaterialInput>

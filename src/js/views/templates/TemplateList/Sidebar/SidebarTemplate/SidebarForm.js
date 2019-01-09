@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import MaterialInput from 'Components/MaterialInput';
+import Can from 'Components/permissions/Can';
+import ability from 'Components/permissions/ability';
 import SidebarProp from './SidebarProp';
 import SidebarButton from '../SidebarButton';
 import { templateType } from '../../../TemplatePropTypes';
@@ -46,6 +48,8 @@ const SidebarForm = ({ changeValue, toogleSidebarAttribute, template }) => {
         data = template.data_attrs.length !== 0
             || template.config_attrs.length !== 0 ? '' : '-nodata';
     }
+
+    const cannotEdit = !ability.can('modifier', 'template');
     return (
         <div className="body">
             <div className="body-template-name">
@@ -62,6 +66,7 @@ const SidebarForm = ({ changeValue, toogleSidebarAttribute, template }) => {
                     maxLength={40}
                     value={template.label}
                     onChange={e => changeValue('label', e)}
+                    disabled={cannotEdit}
                 />
             </div>
             <div className={`body-form${data}`}>
@@ -69,18 +74,18 @@ const SidebarForm = ({ changeValue, toogleSidebarAttribute, template }) => {
             </div>
             <div className="body-actions">
                 <div className="body-actions--divider" />
-                <SidebarButton
-                    onClick={() => toogleSidebarAttribute('data_attrs')}
-                    icon={'data_attrs'}
-                    text={'New Attribute'}
-                />
-
-                <SidebarButton
-                    onClick={() => toogleSidebarAttribute('config_attrs')}
-                    icon={'config_attrs'}
-                    text={'New Configuration'}
-                />
-
+                <Can do="modifier" on="template">
+                    <SidebarButton
+                        onClick={() => toogleSidebarAttribute('data_attrs')}
+                        icon="data_attrs"
+                        text="New Attribute"
+                    />
+                    <SidebarButton
+                        onClick={() => toogleSidebarAttribute('config_attrs')}
+                        icon="config_attrs"
+                        text="New Configuration"
+                    />
+                </Can>
             </div>
         </div>
     );

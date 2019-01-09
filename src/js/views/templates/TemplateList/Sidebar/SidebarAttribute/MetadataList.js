@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Can from 'Components/permissions/Can';
 import { attrsType } from '../../../TemplatePropTypes';
 
 const MetadataList = ({ values, selectMetadata }) => {
@@ -36,9 +37,11 @@ const MetadataList = ({ values, selectMetadata }) => {
         );
     }
     return (
-        <div className="metadata-list-nodata">
-            Select an option below to add a metadata
-        </div>
+        <Can do="modifier" on="template">
+            <div className="metadata-list-nodata">
+                Select an option below to add a metadata
+            </div>
+        </Can>
     );
 };
 

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { DojotBtnLink } from 'Components/DojotButton';
 import TemplateActions from 'Actions/TemplateActions';
-
+import Can from '../../components/permissions/Can';
 
 const OperationsHeader = ({ toggleSearchBar }) => (
     <div className="col s5 pull-right pt10">
@@ -16,14 +16,16 @@ const OperationsHeader = ({ toggleSearchBar }) => (
         >
             <i className="fa fa-search" />
         </div>
-        <DojotBtnLink
-            responsive="true"
-            onClick={() => TemplateActions.selectTemplate()}
-            label="New Template"
-            alt="Create a new template"
-            icon="fa fa-plus"
-            className="w130px"
-        />
+        <Can do="modifier" on="template">
+            <DojotBtnLink
+                responsive="true"
+                onClick={() => TemplateActions.selectTemplate()}
+                label="New Template"
+                alt="Create a new template"
+                icon="fa fa-plus"
+                className="w130px"
+            />
+        </Can>
     </div>
 );
 

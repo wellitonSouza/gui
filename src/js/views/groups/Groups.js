@@ -10,6 +10,8 @@ import { NewPageHeader } from '../../containers/full/PageHeader';
 import { DojotBtnLink } from '../../components/DojotButton';
 import GroupsSideBar from './GroupsSideBar';
 import toaster from '../../comms/util/materialize';
+import ability from '../../components/permissions/ability';
+import Can from '../../components/permissions/Can';
 
 function GroupCard(obj) {
     return (
@@ -148,6 +150,7 @@ class Groups extends Component {
     }
 
     render() {
+        console.log('Groups ability', ability);
         const {
             showSideBar,
             edit,

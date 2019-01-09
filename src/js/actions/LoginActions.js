@@ -2,6 +2,7 @@
 import { browserHistory } from 'react-router';
 import loginManager from '../comms/login/LoginManager';
 import toaster from '../comms/util/materialize';
+import {AbilityUtil} from '../components/permissions/ability';
 
 const alt = require('../alt');
 
@@ -12,7 +13,8 @@ class LoginActions {
             loginManager.authenticate(login)
                 .then((response) => {
                     browserHistory.push('/#/');
-                    this.loginSuccess(response);
+                    this.loginPermissions(response.data.login.user.permissions);
+                    this.loginSuccess(response.data.login);
                 })
                 .catch((error) => {
                     this.loginFailed(error);
@@ -21,6 +23,7 @@ class LoginActions {
     }
 
     logout() {
+        AbilityUtil.logoff();
         return true;
     }
 
@@ -62,6 +65,11 @@ class LoginActions {
         return token;
     }
 
+    loginPermissions(permissions) {
+        AbilityUtil.loginPermissions(permissions);
+        return permissions;
+    }
+
     loginFailed(error) {
         // console.error('auth failed', error, error.data);
         if (error instanceof TypeError) {
@@ -72,7 +80,8 @@ class LoginActions {
         const data = error.data;
         if ((data.status === 401) || (data.status === 403)) {
             return 'Authentication failed.';
-        } if (data.status === 500) {
+        }
+        if (data.status === 500) {
             return 'Internal error. Please try again later.';
         }
         return 'No connection to server.';

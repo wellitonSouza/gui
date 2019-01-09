@@ -2,11 +2,13 @@
 import LoginActions from '../actions/LoginActions';
 import Util from '../comms/util/util';
 
+
 const alt = require('../alt');
 
 class LoginStore {
     constructor() {
         this.authenticated = false;
+        //this.permissionsLogged = [];
         const token = Util.getToken();
         if (token) {
             this.set(token);
@@ -18,7 +20,7 @@ class LoginStore {
             handleAuthenticate: LoginActions.AUTHENTICATE,
             handleFailure: LoginActions.LOGIN_FAILED,
             handleSuccess: LoginActions.LOGIN_SUCCESS,
-            handleLogout: LoginActions.LOGOUT,
+            handleLogout: LoginActions.LOGOUT
         });
     }
 
@@ -51,6 +53,13 @@ class LoginStore {
         this.error = undefined;
         this.set(login.jwt);
     }
+
+/*    handlePermissions(permissions){
+        console.log('handlePermissions',permissions );
+        this.error = undefined;
+        Util.setToken(permissions);
+        this.permissionsLogged = permissions;
+    }*/
 
     handleFailure(error) {
         this.error = error;

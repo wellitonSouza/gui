@@ -46,6 +46,18 @@
   dependencies:
     regenerator-runtime "^0.12.0"
 
+"@casl/ability@^2.5.1":
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/@casl/ability/-/ability-2.5.1.tgz#53f12af45295793472c65b539204226372904594"
+  integrity sha512-Ju1cl1R4xgPiiYxmjUAoO+rhNxp0ximyKZzWuw4/DLKHnbQNqbSVyDkRSVHuAuL+BWyeBsaD/sVSwxUitYlDyA==
+  dependencies:
+    sift "^7.0.1"
+
+"@casl/react@^0.8.1":
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/@casl/react/-/react-0.8.1.tgz#a14c7f5467835617c797d06ea44bb7ef5b8667b7"
+  integrity sha512-YotoU25ElMMwByb3RqkKkFeB6BwgWp24QXKBj8pzBPtwbIW/sn35sZdYEZY1mzZqMBaystMp7yMihDv54ytt8w==
+
 "@material-ui/core@^1.4.0":
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-1.5.1.tgz#cb00cb934447ae688e08129f1dab55f54d29d87a"
@@ -7543,6 +7555,11 @@ shebang-regex@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/shebang-regex/-/shebang-regex-1.0.0.tgz#da42f49740c0b42db2ca9728571cb190c98efea3"
   integrity sha1-2kL0l0DAtC2yypcoVxyxkMmO/qM=
+
+sift@^7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/sift/-/sift-7.0.1.tgz#47d62c50b159d316f1372f8b53f9c10cd21a4b08"
+  integrity sha512-oqD7PMJ+uO6jV9EQCl0LrRw1OwsiPsiFQR5AR30heR+4Dl7jBBbDLnNvWiak20tzZlSE1H7RB30SX/1j/YYT7g==
 
 sigmund@~1.0.0:
   version "1.0.1"

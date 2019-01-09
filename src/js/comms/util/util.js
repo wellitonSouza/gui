@@ -58,6 +58,27 @@ class Util {
         }
     }
 
+    getPermissions() {
+        return JSON.parse(window.localStorage.getItem('roles'));
+    }
+
+    setPermissions(permissions) {
+        const objPermStr = JSON.stringify(permissions);
+        try {
+            // Test webstorage existence.
+            if (!window.localStorage || !window.sessionStorage) throw 'exception';
+            // Test webstorage accessibility - Needed for Safari private browsing.
+            if (objPermStr === null || objPermStr === undefined) {
+                window.localStorage.removeItem('roles');
+            } else {
+                console.log('setPermissions', objPermStr);
+                window.localStorage.setItem('roles',objPermStr);
+            }
+        } catch (e) {
+            localStoragePolyFill();
+        }
+    }
+
     GET(url) {
         return this._runFetch(url, {
             method: 'get',
@@ -230,7 +251,7 @@ class Util {
                 if (ret.result === false) {
                     ret.error = 'This is not a valid coordinate';
                 }
-                return ret; 
+                return ret;
             },
             integer(value) {
                 const re = /^[+-]?\d+$/;
@@ -305,7 +326,7 @@ class Util {
           ret.error = "You can't leave the device timeout empty.";
           return ret;
       }
-      
+
       const re = /^[+-]?\d+$/;
       ret.result = re.test(device_timeout);
       if (ret.result === false) {

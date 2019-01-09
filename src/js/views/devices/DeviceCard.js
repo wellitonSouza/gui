@@ -31,7 +31,7 @@ function SummaryItem(props) {
                         </span>
                     </div>
                     <div className="title-edit" >
-                        <Can do="modifier" on="template">
+                        <Can do="modifier" on="device">
                             <i className="fa fa-edit fa-2x" onClick={() => FormActions.set(props.device)} />
                         </Can>
                     </div>

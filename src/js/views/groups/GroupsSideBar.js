@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { translate, Trans } from 'react-i18next';
 import PropTypes from 'prop-types';
+import ability from 'Components/permissions/ability';
 import GroupActions from '../../actions/GroupActions';
 import GroupPermissionActions from '../../actions/GroupPermissionActions';
 import SideBarRight from './SideBarRight';
@@ -9,51 +10,53 @@ import { RemoveModal } from '../../components/Modal';
 import { InputCheckbox, InputText } from '../../components/DojotIn';
 
 function TableGroupsPermissions(params) {
-    const { handleChangeCheckbox, permissionsForm } = params;
+    const { handleChangeCheckbox, permissionsForm, cannotEdit } = params;
     if (!permissionsForm) {
-        return (<div/>);
+        return (<div />);
     }
 
     return (
         <div className="bodyForm">
             <table className="striped centered">
                 <thead>
-                <tr>
-                    <th><Trans i18nKey="groups.form.table_label.feature"/></th>
-                    <th><Trans i18nKey="groups.form.table_label.modifier"/></th>
-                    <th>
-                        <Trans i18nKey="groups.form.table_label.viewer"/>
-                    </th>
-                </tr>
+                    <tr>
+                        <th><Trans i18nKey="groups.form.table_label.feature" /></th>
+                        <th><Trans i18nKey="groups.form.table_label.modifier" /></th>
+                        <th>
+                            <Trans i18nKey="groups.form.table_label.viewer" />
+                        </th>
+                    </tr>
                 </thead>
                 <tbody>
-                {Object.keys(permissionsForm)
-                    .map(item => (
-                        <tr>
-                            <td>
-                                <Trans i18nKey={`groups.form.feature.${item}`}/>
-                            </td>
-                            <td>
-                                <InputCheckbox
-                                    label=""
-                                    placeHolder=""
-                                    name={`${item}.modifier`}
-                                    checked={permissionsForm[item].modifier}
-                                    handleChangeCheckbox={handleChangeCheckbox}
-                                />
-                            </td>
-                            <td>
-                                <InputCheckbox
-                                    label=""
-                                    placeHolder=""
-                                    name={`${item}.viewer`}
-                                    checked={permissionsForm[item].viewer}
-                                    handleChangeCheckbox={handleChangeCheckbox}
-                                />
-                            </td>
-                        </tr>
-                    ))
-                }
+                    {Object.keys(permissionsForm)
+                        .map(item => (
+                            <tr>
+                                <td>
+                                    <Trans i18nKey={`groups.form.feature.${item}`} />
+                                </td>
+                                <td>
+                                    <InputCheckbox
+                                        label=""
+                                        placeHolder=""
+                                        name={`${item}.modifier`}
+                                        checked={permissionsForm[item].modifier}
+                                        handleChangeCheckbox={handleChangeCheckbox}
+                                        disabled={cannotEdit}
+                                    />
+                                </td>
+                                <td>
+                                    <InputCheckbox
+                                        label=""
+                                        placeHolder=""
+                                        name={`${item}.viewer`}
+                                        checked={permissionsForm[item].viewer}
+                                        handleChangeCheckbox={handleChangeCheckbox}
+                                        disabled={cannotEdit}
+                                    />
+                                </td>
+                            </tr>
+                        ))
+                    }
                 </tbody>
             </table>
         </div>
@@ -66,32 +69,36 @@ function Form(params) {
         dataGroup,
         handleChangeCheckbox,
         dataPermissions,
+        cannotEdit,
     } = params;
 
     if (!dataGroup) {
-        return (<div/>);
+        return (<div />);
     }
 
     return (
         <form action="#">
             <InputText
-                label={<Trans i18nKey="groups.form.input.groupname.label"/>}
+                label={<Trans i18nKey="groups.form.input.groupname.label" />}
                 name="name"
                 maxLength={30}
                 onChange={handleCharge}
                 value={dataGroup.name ? dataGroup.name : ''}
-                errorMessage={<Trans i18nKey="groups.form.input.groupname.error"/>}
+                disabled={cannotEdit}
+                errorMessage={<Trans i18nKey="groups.form.input.groupname.error" />}
             />
             <InputText
-                label={<Trans i18nKey="groups.form.input.groupdescription.label"/>}
+                label={<Trans i18nKey="groups.form.input.groupdescription.label" />}
                 name="description"
                 maxLength={254}
                 onChange={handleCharge}
+                disabled={cannotEdit}
                 value={dataGroup.description ? dataGroup.description : ''}
             />
             <TableGroupsPermissions
                 permissionsForm={dataPermissions}
                 handleChangeCheckbox={handleChangeCheckbox}
+                cannotEdit={cannotEdit}
             />
         </form>
     );
@@ -275,38 +282,45 @@ class GroupsSideBar extends Component {
         const {
             group, edit, showDeleteModal, grouppermissions,
         } = this.state;
+
+        const cannotEdit = !ability.can('modifier', 'permission');
+
         const buttonsFooter = [
             {
-                label: <Trans i18nKey="groups.form.btn.discard.label"/>,
+                label: <Trans i18nKey="groups.form.btn.discard.label" />,
                 click: this.discard,
                 type: 'default',
             },
-            {
-                label: <Trans i18nKey="groups.form.btn.save.label"/>,
-                click: this.save,
-                type: 'primary',
-            },
         ];
 
-        if (edit) {
+        if (!cannotEdit) {
             buttonsFooter.push({
-                label: <Trans i18nKey="groups.form.btn.remove.label"/>,
-                click: this.handleModalDelete,
-                type: 'secondary',
+                label: <Trans i18nKey="groups.form.btn.save.label" />,
+                click: this.save,
+                type: 'primary',
             });
+            if (edit) {
+                buttonsFooter.push({
+                    label: <Trans i18nKey="groups.form.btn.remove.label" />,
+                    click: this.handleModalDelete,
+                    type: 'secondary',
+                });
+            }
         }
+
 
         return (
             <div>
                 <SideBarRight
-                    title={edit ? <Trans i18nKey="groups.form.title.edit"/>
-                        : <Trans i18nKey="groups.form.title.new"/>}
+                    title={edit ? <Trans i18nKey="groups.form.title.edit" />
+                        : <Trans i18nKey="groups.form.title.new" />}
                     content={(
                         <Form
                             dataGroup={group}
                             dataPermissions={grouppermissions}
                             handleCharge={this.handleInput}
                             handleChangeCheckbox={this.handleCheckBox}
+                            cannotEdit={cannotEdit}
                         />
                     )}
                     visible
@@ -317,7 +331,7 @@ class GroupsSideBar extends Component {
                         name="group"
                         remove={this.delete}
                         openModal={this.handleModalDelete}
-                    />) : <div/>}
+                    />) : <div />}
             </div>
         );
     }

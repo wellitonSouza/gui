@@ -10,7 +10,6 @@ import { NewPageHeader } from '../../containers/full/PageHeader';
 import { DojotBtnLink } from '../../components/DojotButton';
 import GroupsSideBar from './GroupsSideBar';
 import toaster from '../../comms/util/materialize';
-import ability from '../../components/permissions/ability';
 import Can from '../../components/permissions/Can';
 
 function GroupCard(obj) {
@@ -71,14 +70,16 @@ function GroupList(param) {
 function OperationsHeader(param) {
     return (
         <div className="col s12 pull-right pt10">
-            <DojotBtnLink
-                responsive="true"
-                onClick={param.newGroup}
-                label={<Trans i18nKey="groups.btn.new.text" />}
-                alt="Create a new group"
-                icon="fa fa-plus"
-                className="w130px"
-            />
+            <Can do="modifier" on="permission">
+                <DojotBtnLink
+                    responsive="true"
+                    onClick={param.newGroup}
+                    label={<Trans i18nKey="groups.btn.new.text"/>}
+                    alt="Create a new group"
+                    icon="fa fa-plus"
+                    className="w130px"
+                />
+            </Can>
         </div>
     );
 }
@@ -150,7 +151,6 @@ class Groups extends Component {
     }
 
     render() {
-        console.log('Groups ability', ability);
         const {
             showSideBar,
             edit,

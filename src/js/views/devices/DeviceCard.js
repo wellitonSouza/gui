@@ -14,6 +14,8 @@ import AltContainer from 'alt-container';
 import DeviceFormStore from './Store';
 import { FormActions } from "./Actions";
 
+import Can from 'Components/permissions/Can';
+
 function SummaryItem(props) {
     let attrs = 0;
 
@@ -25,13 +27,13 @@ function SummaryItem(props) {
                     <img className="title-icon" src="images/icons/chip-wt.png"/>
                     <div className="title-text truncate">
                         <span className="text" title={props.device.label}>
-                            {' '}
                             {props.device.label}
-                            {' '}
                         </span>
                     </div>
                     <div className="title-edit" >
-                        <i className="fa fa-edit fa-2x" onClick={() => FormActions.set(props.device)} />
+                        <Can do="modifier" on="template">
+                            <i className="fa fa-edit fa-2x" onClick={() => FormActions.set(props.device)} />
+                        </Can>
                     </div>
                 </div>
                 <Link to={`/device/id/${props.device.id}/detail`}>

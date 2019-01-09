@@ -70,11 +70,11 @@ function GroupList(param) {
 function OperationsHeader(param) {
     return (
         <div className="col s12 pull-right pt10">
-            <Can do="modifier" on="permission">
+            <Can do="modifier" on="flows">
                 <DojotBtnLink
                     responsive="true"
                     onClick={param.newGroup}
-                    label={<Trans i18nKey="groups.btn.new.text"/>}
+                    label={<Trans i18nKey="groups.btn.new.text" />}
                     alt="Create a new group"
                     icon="fa fa-plus"
                     className="w130px"

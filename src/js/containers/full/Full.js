@@ -315,16 +315,6 @@ class LeftSidebar extends Component {
             });
         }
 
-        if (ability.can('viewer', 'alarm') || ability.can( 'modifier', 'alarm')) {
-            entriesLocal.push({
-                image: 'bell',
-                target: '/alarm',
-                iconClass: 'fa fa-bell-o',
-                label: 'alarms',
-                desc: 'System events and alarms',
-            });
-        }
-
         if (ability.can('viewer', 'user') || ability.can( 'modifier', 'user')) {
             entriesLocal.push({
                 image: 'user',

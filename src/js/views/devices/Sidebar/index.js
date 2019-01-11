@@ -344,7 +344,7 @@ Sidebar.defaultProps = {
     isNewDevice: false,
 };
 
-Sidebar.propsTypes = {
+Sidebar.propTypes = {
     showSidebarDevice: PropTypes.bool,
     device: PropTypes.shape({
         label: PropTypes.string,

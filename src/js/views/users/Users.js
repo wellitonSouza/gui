@@ -8,6 +8,7 @@ import { SimpleFilter } from '../utils/Manipulation';
 import MaterialSelect from '../../components/MaterialSelect';
 import LoginStore from '../../stores/LoginStore';
 import UserActions from '../../actions/UserActions';
+import GroupActions from '../../actions/GroupActions';
 import toaster from '../../comms/util/materialize';
 import { RemoveModal } from '../../components/Modal';
 import UserStore from '../../stores/UserStore';
@@ -71,9 +72,7 @@ class SideBar extends Component {
     }
 
     loadUsers() {
-        //if (this.props.user.profile === 'admin') {
         UserActions.fetchUsers.defer();
-        //}
     }
 
     checkValidation() {
@@ -133,6 +132,7 @@ class SideBar extends Component {
     handleCreate() {
         if (this.checkValidation()) {
             const temp = this.state.user;
+            console.log('temp', temp);
             temp.email = String(temp.email)
                 .toLowerCase();
             // console.log('User to be created: ', temp);
@@ -221,7 +221,8 @@ class SideBar extends Component {
 
     render() {
         let sideBar;
-        const cannotEdit = !ability.can('modifier', 'user') ;
+        const cannotEdit = !ability.can('modifier', 'user');
+        console.log('Render Users this.state.user.profile', this.state.user.profile);
         if (this.props.visible) {
             sideBar = (
                 <div id="sidebar" className="sidebar-auth visible">
@@ -339,19 +340,17 @@ class SideBar extends Component {
                                 id="flr_profiles"
                                 name="profile"
                                 value={this.state.user.profile}
-
                                 onChange={this.handleChange}
-                                isDisable={cannotEdit || this.state.user.username==='admin'}
+                                isDisable={cannotEdit || this.state.user.username === 'admin'}
                             >
                                 <option value="" disabled>
                                     Choose your option
                                 </option>
-                                <option value="admin" id="adm-option">
-                                    Administrator
-                                </option>
-                                <option value="user" id="user-option">
-                                    User
-                                </option>
+                                {this.props.groups.map(obj => (
+                                    <option value={obj.name} id={obj.name + '-option'}>
+                                        {obj.name}
+                                    </option>
+                                ))}
                             </MaterialSelect>
                         </div>
                     </div>
@@ -383,7 +382,7 @@ class SideBar extends Component {
                             onClick={this.handleDelete}
                         >
                             <span className="text center-text-child"
-                                  style={cannotEdit || this.state.user.username==='admin'? { display: 'none' } : {}}>delete</span>
+                                  style={cannotEdit || this.state.user.username === 'admin' ? { display: 'none' } : {}}>delete</span>
                         </div>
                     </div>
 
@@ -478,7 +477,7 @@ function SummaryItem(props) {
                             <input
                                 className="truncate"
                                 type="text"
-                                value={props.user.profile === 'admin' ? 'Administrator' : 'User'}
+                                value={props.user.profile}
                                 disabled
                             />
                             <span>Profile</span>
@@ -660,8 +659,10 @@ class UserList extends Component {
     render() {
         return (
             <div className="fill">
-                <SideBar {...this.state} hide={this.hideSideBar} visible={this.props.visible}
-                         formUser={this.formUser}/>
+                <AltContainer store={UserStore}>
+                    <SideBar {...this.state} hide={this.hideSideBar} visible={this.props.visible}
+                             formUser={this.formUser}/>
+                </AltContainer>
                 <RemoveDialog callback={this.deleteUser} target="confirmDiag"/>
                 <div id="user-wrapper" className="col s12  lst-wrapper scroll-bar">
                     {this.props.values.map(user => (
@@ -765,9 +766,8 @@ class UsersContent extends Component {
     }
 
     componentDidMount() {
-        //if (this.props.user.profile === 'admin') {
         UserActions.fetchUsers.defer();
-        //}
+        GroupActions.fetchGroups.defer();
     }
 
     render() {

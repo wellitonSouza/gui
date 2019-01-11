@@ -8,7 +8,6 @@ const alt = require('../alt');
 class LoginStore {
     constructor() {
         this.authenticated = false;
-        //this.permissionsLogged = [];
         const token = Util.getToken();
         if (token) {
             this.set(token);
@@ -53,13 +52,6 @@ class LoginStore {
         this.error = undefined;
         this.set(login.jwt);
     }
-
-/*    handlePermissions(permissions){
-        console.log('handlePermissions',permissions );
-        this.error = undefined;
-        Util.setToken(permissions);
-        this.permissionsLogged = permissions;
-    }*/
 
     handleFailure(error) {
         this.error = error;

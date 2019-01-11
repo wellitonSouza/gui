@@ -17,6 +17,7 @@ import {
     Pagination, FilterLabel, GenericOperations,
 } from '../utils/Manipulation';
 import { FormActions } from './Actions';
+import Can from '../../components/permissions/Can';
 
 
 // UI elements
@@ -235,14 +236,16 @@ function OperationsHeader(props) {
                 <i className="fa fa-search" />
             </div>
             {props.displayToggle}
-            <DojotBtnLink
-                responsive="true"
-                onClick={() => FormActions.set(null)}
-                label="New Device"
-                alt="Create a new device"
-                icon="fa fa-plus"
-                className="w130px"
-            />
+            <Can do="modifier" on="device">
+                <DojotBtnLink
+                    responsive="true"
+                    onClick={() => FormActions.set(null)}
+                    label="New Device"
+                    alt="Create a new device"
+                    icon="fa fa-plus"
+                    className="w130px"
+                />
+            </Can>
         </div>
     );
 }

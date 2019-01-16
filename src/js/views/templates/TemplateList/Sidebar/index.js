@@ -198,6 +198,11 @@ class Sidebar extends Component {
             }
         }
 
+        if (values.value_type.trim().length === 0) {
+            toaster.error('You must set a type.');
+            return false;
+        }
+
         const resp = util.isTypeValid(values.static_value, values.value_type, values.type);
         if (!resp.result) {
             toaster.error(resp.error);

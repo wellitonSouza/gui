@@ -62,7 +62,7 @@ const SidebarAttributeForm = ({
                 <option value="bool" id="adm-option">
                     Boolean
                 </option>
-                <option value="geo" id="adm-option">
+                <option value="geo:point" id="adm-option">
                     Geo
                 </option>
                 <option value="float" id="adm-option">

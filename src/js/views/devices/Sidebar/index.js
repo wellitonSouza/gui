@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import TemplateStore from 'Stores/TemplateStore';
 import AltContainer from 'alt-container';
-import { hashHistory } from 'react-router';
 import toaster from 'Comms/util/materialize';
 import util from 'Comms/util/util';
 import SidebarDevice from './SidebarDevice';

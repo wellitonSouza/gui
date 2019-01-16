@@ -123,7 +123,7 @@ class Sidebar extends Component {
     }
 
     updateTemplateAttr(attrs) {
-        if (!this.validateAttrs(attrs)) return;
+        if (!this.validateAttrs(attrs, false)) return;
 
         const { template } = this.state;
         const [type, values] = [attrs.attrType, { ...attrs }];
@@ -149,7 +149,7 @@ class Sidebar extends Component {
     }
 
     addTemplateAttr(attrs) {
-        if (!this.validateAttrs(attrs)) return;
+        if (!this.validateAttrs(attrs, true)) return;
 
         const { template } = this.state;
         const [type, values] = [attrs.attrType, { ...attrs }];
@@ -169,7 +169,7 @@ class Sidebar extends Component {
         });
     }
 
-    validateAttrs(attrs) {
+    validateAttrs(attrs, isNew = false) {
         const { template } = this.state;
         const [type, values] = [attrs.attrType, { ...attrs }];
 
@@ -192,10 +192,15 @@ class Sidebar extends Component {
         if (values.type === 'dynamic') values.static_value = '';
 
         if (type === 'config_attrs') {
-            if (template[type].some(item => item.label === values.label)) {
+            if (template[type].some(item => item.label === values.label && isNew)) {
                 toaster.warning(`Configuration ${values.label} already exists`);
                 return false;
             }
+        }
+
+        if (values.value_type.trim().length === 0) {
+            toaster.error('You must set a type.');
+            return false;
         }
 
         const resp = util.isTypeValid(values.static_value, values.value_type, values.type);
@@ -267,6 +272,7 @@ class Sidebar extends Component {
     updateMetadata() {
         const { metadata, selectAttr, showMetadata } = this.state;
         if (!Object.prototype.hasOwnProperty.call(selectAttr, 'metadata')) selectAttr.metadata = [];
+        if (!this.validateMetadata(metadata)) return;
 
         selectAttr.metadata = selectAttr.metadata.map((item) => {
             if (item.id === metadata.id) return metadata;
@@ -292,6 +298,16 @@ class Sidebar extends Component {
         );
         if (existName) {
             toaster.warning(`The label '${metadata.label}' is already created.`);
+            return false;
+        }
+
+        if (metadata.type.trim().length === 0) {
+            toaster.error('The Attribute Type is required.');
+            return false;
+        }
+
+        if (metadata.type.match(/^[_A-z0-9 ]*([_A-z0-9 ])*$/g) == null) {
+            toaster.error('Please use only letters (a-z), numbers (0-9) and underscores (_) in Attribute Type');
             return false;
         }
 

@@ -118,6 +118,7 @@ class Sidebar extends Component {
             showDeviceAttrs: !prevState.showDeviceAttrs,
             selectAttr: attr,
             deviceAttrsTitle: title,
+            errors: [],
         }));
     }
 
@@ -151,6 +152,7 @@ class Sidebar extends Component {
             this.setState({
                 showDeviceAttrs: false,
                 device,
+                errors: [],
             });
         }
     }
@@ -170,6 +172,7 @@ class Sidebar extends Component {
 
         this.setState({
             selectAttr: updateAttr,
+            errors: [],
         });
     }
 

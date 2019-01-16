@@ -192,10 +192,15 @@ class Sidebar extends Component {
         if (values.type === 'dynamic') values.static_value = '';
 
         if (type === 'config_attrs') {
-            if (template[type].some(item => item.label === values.label)) {
+            if (template[type].some(item => item.label === values.label && values.id !== item.id)) {
                 toaster.warning(`Configuration ${values.label} already exists`);
                 return false;
             }
+        }
+
+        if (values.static_value.trim().length === 0) {
+            toaster.error('You can not leave configuration attribute value empty');
+            return false;
         }
 
         const resp = util.isTypeValid(values.static_value, values.value_type, values.type);

@@ -44,7 +44,8 @@ const SidebarTemplate = ({
                                 )
                             }
                         </div>
-                    </div>)
+                    </div>
+                )
                 : <div />
             }
         </Slide>

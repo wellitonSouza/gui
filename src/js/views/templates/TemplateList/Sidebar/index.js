@@ -123,7 +123,7 @@ class Sidebar extends Component {
     }
 
     updateTemplateAttr(attrs) {
-        if (!this.validateAttrs(attrs, false)) return;
+        if (!this.validateAttrs(attrs)) return;
 
         const { template } = this.state;
         const [type, values] = [attrs.attrType, { ...attrs }];
@@ -149,7 +149,7 @@ class Sidebar extends Component {
     }
 
     addTemplateAttr(attrs) {
-        if (!this.validateAttrs(attrs, true)) return;
+        if (!this.validateAttrs(attrs)) return;
 
         const { template } = this.state;
         const [type, values] = [attrs.attrType, { ...attrs }];
@@ -169,7 +169,7 @@ class Sidebar extends Component {
         });
     }
 
-    validateAttrs(attrs, isNew = false) {
+    validateAttrs(attrs) {
         const { template } = this.state;
         const [type, values] = [attrs.attrType, { ...attrs }];
 
@@ -192,7 +192,12 @@ class Sidebar extends Component {
         if (values.type === 'dynamic') values.static_value = '';
 
         if (type === 'config_attrs') {
-            if (template[type].some(item => item.label === values.label && isNew)) {
+            if (values.static_value.trim().length === 0) {
+                toaster.error('You can not leave configuration attribute value empty');
+                return false;
+            }
+
+            if (template[type].some(item => item.label === values.label && values.id !== item.id)) {
                 toaster.warning(`Configuration ${values.label} already exists`);
                 return false;
             }

@@ -230,7 +230,7 @@ class Sidebar extends Component {
             this.setState({
                 isShowSidebarDelete: false,
                 showSidebarDevice: false,
-            }, () => hashHistory.reload());
+            }, this.props.ops._fetch());
         });
     }
 

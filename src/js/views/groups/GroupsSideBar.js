@@ -9,9 +9,28 @@ import toaster from '../../comms/util/materialize';
 import { RemoveModal } from '../../components/Modal';
 import { InputCheckbox, InputText } from '../../components/DojotIn';
 
+const groupHasSubject = (subject, groupPermissions) => {
+    if (groupPermissions) {
+        const singlePermission = groupPermissions.filter(n1 => subject === n1.subject);
+        return (singlePermission.length > 0);
+    }
+    return false;
+};
+
+const groupHasPermission = (subject, action, groupPermissions) => {
+    const singlePermission = groupPermissions.filter(n1 => subject === n1.subject);
+    if (singlePermission[0] && singlePermission[0].actions && singlePermission[0].actions.length > 0) {
+        return singlePermission[0].actions.filter(n1 => n1 === action).length > 0;
+    }
+    return false;
+};
+
 function TableGroupsPermissions(params) {
-    const { handleChangeCheckbox, permissionsForm, cannotEdit } = params;
-    if (!permissionsForm) {
+    const {
+        handleChangeCheckbox, groupPermissions, systemPermissions, cannotEdit,
+    } = params;
+
+    if (!systemPermissions) {
         return (<div />);
     }
 
@@ -28,18 +47,18 @@ function TableGroupsPermissions(params) {
                     </tr>
                 </thead>
                 <tbody>
-                    {Object.keys(permissionsForm)
+                    {systemPermissions
                         .map(item => (
                             <tr>
                                 <td>
-                                    <Trans i18nKey={`groups.form.feature.${item}`} />
+                                    <Trans i18nKey={`groups.form.feature.${item.subject}`} />
                                 </td>
                                 <td>
                                     <InputCheckbox
                                         label=""
                                         placeHolder=""
-                                        name={`${item}.modifier`}
-                                        checked={permissionsForm[item].modifier}
+                                        name={`${item.subject}.modifier`}
+                                        checked={groupHasPermission(item.subject, 'modifier', groupPermissions)}
                                         handleChangeCheckbox={handleChangeCheckbox}
                                         disabled={cannotEdit}
                                     />
@@ -48,15 +67,14 @@ function TableGroupsPermissions(params) {
                                     <InputCheckbox
                                         label=""
                                         placeHolder=""
-                                        name={`${item}.viewer`}
-                                        checked={permissionsForm[item].viewer}
+                                        name={`${item.subject}.viewer`}
+                                        checked={groupHasPermission(item.subject, 'viewer', groupPermissions)}
                                         handleChangeCheckbox={handleChangeCheckbox}
                                         disabled={cannotEdit}
                                     />
                                 </td>
                             </tr>
-                        ))
-                    }
+                        ))}
                 </tbody>
             </table>
         </div>
@@ -68,7 +86,8 @@ function Form(params) {
         handleCharge,
         dataGroup,
         handleChangeCheckbox,
-        dataPermissions,
+        groupPermissions,
+        systemPermissions,
         cannotEdit,
     } = params;
 
@@ -96,7 +115,8 @@ function Form(params) {
                 value={dataGroup.description ? dataGroup.description : ''}
             />
             <TableGroupsPermissions
-                permissionsForm={dataPermissions}
+                groupPermissions={groupPermissions}
+                systemPermissions={systemPermissions}
                 handleChangeCheckbox={handleChangeCheckbox}
                 cannotEdit={cannotEdit}
             />
@@ -112,7 +132,7 @@ class GroupsSideBar extends Component {
             showDeleteModal: false,
             group: undefined,
             grouppermissions: undefined,
-            permissionsForm: {},
+            systempermissions: undefined,
             edit: false,
         };
 
@@ -124,33 +144,21 @@ class GroupsSideBar extends Component {
         this.handleCheckBox = this.handleCheckBox.bind(this);
     }
 
-    componentDidUpdate(prevProps) {
-        const {
-            grouppermissions: grouppermissionsProp,
-            group: groupProp,
-            edit: editProp,
-        } = this.props;
-
-        const {
-            grouppermissions: grouppermissionsState,
-            group: groupState,
-            edit: editState,
-        } = this.state;
-
-        if ((grouppermissionsProp && !grouppermissionsState)
-            || prevProps.grouppermissions !== grouppermissionsProp) {
-            this.setState({ grouppermissions: grouppermissionsProp });
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.grouppermissions !== prevState.grouppermissions) {
+            return {
+                ...prevState,
+                systempermissions: nextProps.systempermissions,
+                grouppermissions: nextProps.grouppermissions,
+                group: nextProps.group,
+                edit: nextProps.edit,
+            };
         }
-        if ((groupProp && !groupState) || prevProps.group !== groupProp) {
-            this.setState({ group: groupProp });
-        }
-        if ((editProp && !editState) || prevProps.edit !== editProp) {
-            this.setState({ edit: editProp });
-        }
+        return null;
     }
 
-    checkAlphaNumber(string) {
-        // will be change - regex dont should be here
+    static checkAlphaNumber(string) {
+        // will be change - regex doesnt should be here
         const regex = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
         return !regex.test(string);
     }
@@ -173,16 +181,35 @@ class GroupsSideBar extends Component {
 
     handleCheckBox(e) {
         const { name } = e.target;
-        const [action, typePermission] = name.split('.');
-        this.setState(prevState => ({
-            grouppermissions: {
-                ...prevState.grouppermissions,
-                [action]: {
-                    ...prevState.grouppermissions[action],
-                    [typePermission]: !prevState.grouppermissions[action][typePermission],
-                },
-            },
-        }));
+        const [subject, action] = name.split('.');
+        const { grouppermissions } = this.state;
+        if (groupHasSubject(subject, grouppermissions)) {
+            const hasPermission = groupHasPermission(subject, action, grouppermissions);
+            grouppermissions.forEach((item, index1) => {
+                if (item.subject === subject) {
+                    if (hasPermission) {
+                        (item.actions).forEach((item2, index2) => {
+                            if (item2 === action) {
+                                grouppermissions[index1].actions[index2] = '';
+                            }
+                        });
+                    } else {
+                        if (!grouppermissions[index1].actions) {
+                            grouppermissions[index1].actions = [];
+                        }
+                        grouppermissions[index1].actions.push(action);
+                    }
+                }
+            });
+        } else {
+            grouppermissions.push({
+                subject,
+                actions: [action],
+            });
+        }
+        this.setState({
+            grouppermissions,
+        });
     }
 
     hideSideBar() {
@@ -208,7 +235,7 @@ class GroupsSideBar extends Component {
             return false;
         }
 
-        if (this.checkAlphaNumber(group.name)) {
+        if (GroupsSideBar.checkAlphaNumber(group.name)) {
             toaster.warning(t('groups.alerts.invalid_name'));
             return false;
         }
@@ -230,7 +257,7 @@ class GroupsSideBar extends Component {
                 group,
                 (response) => {
                     GroupPermissionActions.triggerSaveGroupPermissions(
-                        grouppermissions, group.id ? group.id : response.id, err, e, edit,
+                        group.name ? group.name : response.name, grouppermissions, err, e,
                         () => {
                         }, (groupR) => {
                             console.log(groupR);
@@ -280,7 +307,7 @@ class GroupsSideBar extends Component {
 
     render() {
         const {
-            group, edit, showDeleteModal, grouppermissions,
+            group, edit, showDeleteModal, grouppermissions, systempermissions,
         } = this.state;
 
         const cannotEdit = !ability.can('modifier', 'permission');
@@ -317,7 +344,8 @@ class GroupsSideBar extends Component {
                     content={(
                         <Form
                             dataGroup={group}
-                            dataPermissions={grouppermissions}
+                            groupPermissions={grouppermissions}
+                            systemPermissions={systempermissions}
                             handleCharge={this.handleInput}
                             handleChangeCheckbox={this.handleCheckBox}
                             cannotEdit={cannotEdit}

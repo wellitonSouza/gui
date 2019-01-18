@@ -12,7 +12,8 @@ class GroupStore {
     constructor() {
         this.groups = [];
         this.group = groupEmpty;
-        this.grouppermissions = {};
+        this.grouppermissions = [];
+        this.systempermissions = [];
 
         this.loading = false;
         this.error = null;
@@ -25,10 +26,12 @@ class GroupStore {
             handleTriggerRemoval: GroupActions.TRIGGER_REMOVAL,
             handleGetGroup: GroupActions.getGroupById,
 
-            handleFetchGroupPermissions: GroupPermissionActions.fetchPermissionsForGroups,
+            handleFetchGroupPermissions: GroupPermissionActions.fetchGroupPermissions,
+            handleFetchSystemPermissions: GroupPermissionActions.fetchSystemPermissions,
             handleTriggerSaveGroupPermissions: GroupPermissionActions.triggerSaveGroupPermissions,
             handleFailureGroupPermissions: GroupPermissionActions.failed,
             handleUpdateGroupPerm: GroupPermissionActions.updateGroupPermission,
+            handleUpdateSystemPerm: GroupPermissionActions.updateSystemPermission,
 
         });
     }
@@ -73,13 +76,17 @@ class GroupStore {
      *  Permissions
      * */
 
-    handleFetchGroupPermissions(groupId) {
-        this.grouppermissions = {};
+    handleFetchGroupPermissions(groupName) {
+        this.grouppermissions = [];
+        this.loading = true;
+    }
+
+    handleFetchSystemPermissions(groupName) {
+        this.systempermissions = [];
         this.loading = true;
     }
 
     handleTriggerSaveGroupPermissions() {
-        // trigger handler for updateSingle
         this.error = null;
         this.loading = true;
     }
@@ -91,6 +98,13 @@ class GroupStore {
 
     handleUpdateGroupPerm(grouppermissions) {
         this.grouppermissions = grouppermissions;
+        this.error = null;
+        this.loading = false;
+        console.log('handleUpdateGroupPerm');
+    }
+
+    handleUpdateSystemPerm(systempermissions) {
+        this.systempermissions = systempermissions;
         this.error = null;
         this.loading = false;
     }

@@ -26,7 +26,7 @@ class LoginManager {
         const req = {
             query: GQL_LOGIN(login.username, login.passwd),
         };
-        return util.POST(this.baseUrl+'/auth/graphql', req);
+        return util.POST(this.baseUrl+'graphql/auth/', req);
     }
 
     setNewPassword(token) {

@@ -59,7 +59,7 @@ function GroupList(param) {
                 {param.groups.map(obj => (
                     <GroupCard
                         group={obj}
-                        key={obj.id}
+                        key={obj.name}
                         onclick={param.handleUpdate}
                     />
                 ))}
@@ -101,7 +101,8 @@ class Groups extends Component {
 
     componentDidMount() {
         GroupActions.fetchGroups.defer();
-        GroupPermissionActions.fetchPermissionsForGroups(null);
+        GroupPermissionActions.fetchGroupPermissions(null);
+        GroupPermissionActions.fetchSystemPermissions();
     }
 
     toggleSideBar() {
@@ -115,6 +116,7 @@ class Groups extends Component {
             showSideBar: false,
             edit: false,
         });
+        GroupPermissionActions.fetchSystemPermissions();
         GroupActions.fetchGroups.defer();
     }
 
@@ -126,7 +128,7 @@ class Groups extends Component {
 
     newGroup() {
         GroupActions.getGroupById(null);
-        GroupPermissionActions.fetchPermissionsForGroups(null);
+        GroupPermissionActions.fetchGroupPermissions();
         this.setState({
             showSideBar: true,
             edit: false,
@@ -142,7 +144,7 @@ class Groups extends Component {
             toaster.warning(t('groups.alerts.admin_not_remove'));
         } else {
             GroupActions.getGroupById(groupIdClick);
-            GroupPermissionActions.fetchPermissionsForGroups(groupIdClick);
+            GroupPermissionActions.fetchGroupPermissions(groupIdClick);
             this.setState({
                 showSideBar: true,
                 edit: true,

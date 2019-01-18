@@ -16,7 +16,7 @@ function GroupCard(obj) {
     return (
         <div
             className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight"
-            id={obj.group.id}
+            id={obj.group.name}
             onClick={obj.onclick}
             role="none"
             tabIndex={obj.group.id}
@@ -138,13 +138,12 @@ class Groups extends Component {
     handleUpdate(e) {
         e.preventDefault();
         const { t } = this.props;
-        const { id: groupIdClick } = e.currentTarget;
-        // this condition  will be change/removed
-        if (groupIdClick === '1') {
+        const { id: groupClick } = e.currentTarget;
+        if (groupClick === 'admin') {
             toaster.warning(t('groups.alerts.admin_not_remove'));
         } else {
-            GroupActions.getGroupById(groupIdClick);
-            GroupPermissionActions.fetchGroupPermissions(groupIdClick);
+            GroupActions.getGroupByName(groupClick);
+            GroupPermissionActions.fetchGroupPermissions(groupClick);
             this.setState({
                 showSideBar: true,
                 edit: true,

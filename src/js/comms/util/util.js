@@ -39,8 +39,13 @@ class Util {
         return sha1(data);
     }
 
+
     getToken() {
         return window.localStorage.getItem('jwt');
+    }
+
+    getUserLoggedInfo(){
+        return JSON.parse(atob(this.getToken().split('.')[1]));
     }
 
     setToken(token) {

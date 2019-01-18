@@ -24,7 +24,7 @@ class GroupStore {
             handleFailure: GroupActions.GROUPS_FAILED,
             handleTriggerSave: GroupActions.TRIGGER_SAVE,
             handleTriggerRemoval: GroupActions.TRIGGER_REMOVAL,
-            handleGetGroup: GroupActions.getGroupById,
+            handleGetGroup: GroupActions.getGroupByName,
 
             handleFetchGroupPermissions: GroupPermissionActions.fetchGroupPermissions,
             handleFetchSystemPermissions: GroupPermissionActions.fetchSystemPermissions,
@@ -36,9 +36,9 @@ class GroupStore {
         });
     }
 
-    handleGetGroup(groupId) {
-        if (groupId) {
-            this.group = this.groups.find(g => g.id === Number(groupId));
+    handleGetGroup(groupName) {
+        if (groupName) {
+            this.group = this.groups.find(g => g.name === groupName);
         } else {
             this.group = groupEmpty;
         }
@@ -100,7 +100,6 @@ class GroupStore {
         this.grouppermissions = grouppermissions;
         this.error = null;
         this.loading = false;
-        console.log('handleUpdateGroupPerm');
     }
 
     handleUpdateSystemPerm(systempermissions) {

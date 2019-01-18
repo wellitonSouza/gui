@@ -1,5 +1,7 @@
+import { AbilityUtil } from 'Components/permissions/ability';
 import groupPermissionsManager from '../comms/grouppermissions/GroupPermissionsManager';
 import toaster from '../comms/util/materialize';
+import Util from '../comms/util/util';
 
 const alt = require('../alt');
 
@@ -75,7 +77,12 @@ class GroupPermissionActions {
             dispatch();
             groupPermissionsManager.saveGroupPermission(groupName, permissions)
                 .then((response) => {
+                    console.log('Util.getUserLoggedInfo().profile', Util.getUserLoggedInfo().profile);
+                    console.log('groupName', groupName);
                     // if is the same user logged, update permissions on casl
+                    if (Util.getUserLoggedInfo().profile === groupName) {
+                        AbilityUtil.loginPermissions(permissions);
+                    }
                     if (cb) {
                         cb(response);
                     }

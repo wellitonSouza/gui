@@ -145,7 +145,8 @@ class GroupsSideBar extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.grouppermissions !== prevState.grouppermissions) {
+        if (nextProps.grouppermissions !== prevState.grouppermissions
+            || nextProps.group !== prevState.group) {
             return {
                 ...prevState,
                 systempermissions: nextProps.systempermissions,
@@ -164,8 +165,7 @@ class GroupsSideBar extends Component {
     }
 
     componentDidCatch(error, info) {
-        console.log('componentDidCatch 2', error);
-        console.log('componentDidCatch 2', info);
+        console.log(error, info);
     }
 
     handleInput(e) {
@@ -183,6 +183,7 @@ class GroupsSideBar extends Component {
         const { name } = e.target;
         const [subject, action] = name.split('.');
         const { grouppermissions } = this.state;
+        // i dont like that block of code, i will improve
         if (groupHasSubject(subject, grouppermissions)) {
             const hasPermission = groupHasPermission(subject, action, grouppermissions);
             grouppermissions.forEach((item, index1) => {

@@ -28,7 +28,7 @@ class GroupActions {
         };
     }
 
-    getGroupById(groupId) {
+    getGroupByName(groupId) {
         return groupId;
     }
 

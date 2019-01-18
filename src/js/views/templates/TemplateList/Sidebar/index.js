@@ -175,7 +175,11 @@ class Sidebar extends Component {
 
         const ret = util.isNameValid(values.label);
         if (!ret.result) {
-            toaster.error(ret.error);
+            if (type === 'config_attrs') {
+                toaster.error('You must set a type.');
+            } else {
+                toaster.error(ret.error);
+            }
             return false;
         }
 
@@ -188,10 +192,10 @@ class Sidebar extends Component {
             return false;
         }
 
-        if (type === 'config_attrs') values.value_type = 'string';
         if (values.type === 'dynamic') values.static_value = '';
 
         if (type === 'config_attrs') {
+            values.value_type = 'string';
             if (values.static_value.trim().length === 0) {
                 toaster.error('You can not leave configuration attribute value empty');
                 return false;

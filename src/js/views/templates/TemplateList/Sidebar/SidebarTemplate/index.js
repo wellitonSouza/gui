@@ -35,7 +35,7 @@ const SidebarTemplate = ({
                         <div className="footer">
                             <DojotCustomButton label="discard" type="default" onClick={() => toogleSidebar()} />
                             { isNewTemplate
-                                ? <DojotCustomButton label="add" type="primary" onClick={saveTemplate} />
+                                ? <DojotCustomButton label="save" type="primary" onClick={saveTemplate} />
                                 : (
                                     <Fragment>
                                         <DojotCustomButton label="delete" type="secondary" onClick={() => toogleSidebarDelete('showDeleteTemplate')} />
@@ -44,7 +44,8 @@ const SidebarTemplate = ({
                                 )
                             }
                         </div>
-                    </div>)
+                    </div>
+                )
                 : <div />
             }
         </Slide>

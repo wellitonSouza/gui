@@ -7,7 +7,7 @@ import SidebarProp from './SidebarProp';
 import SidebarButton from '../SidebarButton';
 import { templateType } from '../../../TemplatePropTypes';
 
-const SidebarForm = ({ changeValue, toogleSidebarAttribute, template }) => {
+const SidebarForm = ({ changeValue, toogleSidebarAttribute, toogleSidebarFirmware, template }) => {
     const renderTemplateProps = () => {
         const templateProps = [];
         if (Object.prototype.hasOwnProperty.call(template, 'data_attrs')) {
@@ -83,6 +83,11 @@ const SidebarForm = ({ changeValue, toogleSidebarAttribute, template }) => {
                         icon="config_attrs"
                         text="New Configuration"
                     />
+                    <SidebarButton
+                        onClick={() => toogleSidebarFirmware()}
+                        icon="firmware"
+                        text="Manage Firmware"
+                    />
                 </Can>
             </div>
         </div>
@@ -92,6 +97,7 @@ const SidebarForm = ({ changeValue, toogleSidebarAttribute, template }) => {
 SidebarForm.propTypes = {
     changeValue: PropTypes.func.isRequired,
     toogleSidebarAttribute: PropTypes.func.isRequired,
+    toogleSidebarFirmware: PropTypes.func.isRequired,
     template: PropTypes.shape(templateType).isRequired,
 };
 

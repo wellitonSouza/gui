@@ -25,7 +25,6 @@ class Util {
     }
 
     checkWidthToStateOpen(opened){
-        // console.log("checkWidthToStateOpen");
         const width =
             window.innerWidth ||
             document.documentElement.clientWidth ||
@@ -76,7 +75,6 @@ class Util {
             if (objPermStr === null || objPermStr === undefined) {
                 window.localStorage.removeItem('roles');
             } else {
-                console.log('setPermissions', objPermStr);
                 window.localStorage.setItem('roles',objPermStr);
             }
         } catch (e) {
@@ -99,7 +97,6 @@ class Util {
     }
 
     POST_MULTIPART(url, payload) {
-        // console.log('POST_MULTIPART', payload);
         const data = new FormData();
         data.append('sha1', payload.sha1);
         data.append('image', payload.binary);
@@ -283,7 +280,6 @@ class Util {
                 return ret;
             },
             bool(value) {
-                // console.log('isTypeValid');
                 return this.boolean(value)
             },
             'protocol': function (value) {

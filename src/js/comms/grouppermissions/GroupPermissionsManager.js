@@ -1,20 +1,5 @@
 import util from '../util/util';
 
-const permissionToString = (perm) => {
-    let str = '[';
-    perm.map((i1) => {
-        str += `{ subject:"${i1.subject}" ,`;
-        str += ' actions: [';
-        i1.actions.map((i2) => {
-            str += `"${i2}"`;
-        });
-        str += '  }] ,';
-    });
-    str += ']';
-    return str;
-};
-
-
 const GQL_SAVE_PERMISSIONS = `
 mutation ($permissions: [PermissionRequest]!, $group: String!) {
   permissions(group: $group, permissions: $permissions ) {
@@ -59,12 +44,10 @@ class GroupPermissionsManager {
      * @returns {*}
      */
     saveGroupPermission(groupName, permissions1) {
-        console.log('permissions1', permissions1);
         const variablesConver = {
             permissions: permissions1,
             group: `${groupName}`,
         };
-        console.log('variablesConver', variablesConver);
         const req = {
             query: GQL_SAVE_PERMISSIONS,
             variables: JSON.stringify(variablesConver),

@@ -71,7 +71,6 @@ class LoginActions {
     }
 
     loginFailed(error) {
-        // console.error('auth failed', error, error.data);
         if (error instanceof TypeError) {
             return 'No connection to server.';
         }

@@ -257,14 +257,10 @@ class LeftSidebar extends Component {
 
     }
     componentDidUpdate(){
-
-        console.log('componentDidUpdate ability', ability);
         LeftSidebar.createMenu();
     }
 
     componentDidMount(){
-
-        console.log('componentDidMount ability', ability);
         LeftSidebar.createMenu();
     }
 

@@ -132,10 +132,8 @@ class SideBar extends Component {
     handleCreate() {
         if (this.checkValidation()) {
             const temp = this.state.user;
-            console.log('temp', temp);
             temp.email = String(temp.email)
                 .toLowerCase();
-            // console.log('User to be created: ', temp);
             UserActions.addUser(
                 temp,
                 () => {
@@ -222,7 +220,6 @@ class SideBar extends Component {
     render() {
         let sideBar;
         const cannotEdit = !ability.can('modifier', 'user');
-        console.log('Render Users this.state.user.profile', this.state.user.profile);
         if (this.props.visible) {
             sideBar = (
                 <div id="sidebar" className="sidebar-auth visible">

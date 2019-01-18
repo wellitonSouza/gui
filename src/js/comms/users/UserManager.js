@@ -15,7 +15,6 @@ class UserManager {
     }
 
     setUser(detail) {
-        console.log('detail', detail);
         return util.PUT(`${this.baseUrl}/${detail.id}`, detail);
     }
 

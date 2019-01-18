@@ -5,9 +5,11 @@ import AltContainer from 'alt-container';
 import toaster from 'Comms/util/materialize';
 import util from 'Comms/util/util';
 import { withNamespaces } from 'react-i18next';
+import ImageStore from 'Stores/ImageStore';
 import SidebarDevice from './SidebarDevice';
 import SidebarManageTemplates from './SidebarManageTemplates';
 import SidebarDeviceAttrs from './SidebarDeviceAttrs';
+import SidebarImage from './SidebarImage/index';
 import { FormActions } from '../Actions';
 
 class Sidebar extends Component {
@@ -17,6 +19,7 @@ class Sidebar extends Component {
             showSidebarDevice: false,
             showManageTemplates: false,
             showDeviceAttrs: false,
+            showSidebarImage: false,
             isNewDevice: false,
             usedTemplates: [],
             device: {},
@@ -26,7 +29,7 @@ class Sidebar extends Component {
             deviceAttrsTitle: '',
         };
 
-        this.toogleSidebarFirmware = this.toogleSidebarFirmware.bind(this);
+        this.toogleSidebarImages = this.toogleSidebarImages.bind(this);
         this.handleShowManageTemplate = this.handleShowManageTemplate.bind(this);
         this.handleShowDeviceAttrs = this.handleShowDeviceAttrs.bind(this);
         this.handleSelectTemplate = this.handleSelectTemplate.bind(this);
@@ -68,8 +71,16 @@ class Sidebar extends Component {
         });
     }
 
-    toogleSidebarFirmware() {
-        console.log("toogleSidebarFirmware");
+    toogleSidebarImages()
+    {
+        const { showSidebarImage, isNewDevice } = this.state;
+        console.log("toogleSidebarImages",isNewDevice);
+        if (!isNewDevice)
+        {
+            this.setState({
+                showSidebarImage: !showSidebarImage,
+            });
+        }
     }
 
     handleShowManageTemplate() {
@@ -309,6 +320,7 @@ class Sidebar extends Component {
             showSidebarDevice,
             showManageTemplates,
             showDeviceAttrs,
+            showSidebarImage,
             device,
             selectAttr,
             isNewDevice,
@@ -327,7 +339,7 @@ class Sidebar extends Component {
                     isShowSidebarDelete={isShowSidebarDelete}
                     handleChangeName={this.handleChangeName}
                     handleShowManageTemplate={this.handleShowManageTemplate}
-                    toogleSidebarFirmware={this.toogleSidebarFirmware}
+                    toogleSidebarImages={this.toogleSidebarImages}
                     handleShowDeviceAttrs={this.handleShowDeviceAttrs}
                     toogleSidebarDelete={this.toogleSidebarDelete}
                     save={this.save}
@@ -353,6 +365,14 @@ class Sidebar extends Component {
                     handleShowDeviceAttrs={this.handleShowDeviceAttrs}
                     errors={errors}
                 />
+                <AltContainer store={ImageStore}>
+                    <SidebarImage
+                        device={device}
+                        showSidebarImage={showSidebarImage}
+                        selectedTemplates={device.templates}
+                        toogleSidebarImages={this.toogleSidebarImages}
+                    />
+                </AltContainer>
             </Fragment>
         );
     }

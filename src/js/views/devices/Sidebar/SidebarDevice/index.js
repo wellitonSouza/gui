@@ -12,7 +12,7 @@ const SidebarDevice = ({
     showSidebarDevice,
     handleShowManageTemplate,
     handleShowDeviceAttrs,
-    toogleSidebarFirmware,
+    toogleSidebarImages,
     device,
     handleChangeName,
     save,
@@ -42,6 +42,10 @@ const SidebarDevice = ({
                                     <div className="icon">
                                         <img src="images/icons/chip-cyan.png" alt="device-icon" />
                                     </div>
+                                    <div className="device-firmware-icon" >
+                                        <img src="images/icons/firmware-wt.png" text="Manage Images" role="button" onClick={() => toogleSidebarImages()} alt="firmware-icon" />
+                                    </div>
+                                    
                                 </div>
                                 <div className="body">
                                     <div className="title">
@@ -123,16 +127,8 @@ const SidebarDevice = ({
                                             icon="config_attrs"
                                             title={t('text.actuators')}
                                             disable={actuatorValues.length === 0}
-                                        />
-                                        {!hasImageAvailable
-                                        ? (
-                                            <SidebarButton
-                                                onClick={() => toogleSidebarFirmware()}
-                                                icon="firmware"
-                                                text="Manage Firmware"
-                                            />
-                                        ) : null}
-
+                                        /> 
+                                        
                                     </div>
 
                                 </div>
@@ -194,7 +190,7 @@ SidebarDevice.propTypes = {
     showSidebarDevice: PropTypes.bool,
     handleShowManageTemplate: PropTypes.func.isRequired,
     handleShowDeviceAttrs: PropTypes.func.isRequired,
-    toogleSidebarFirmware: PropTypes.func.isRequired,
+    toogleSidebarImages: PropTypes.func.isRequired,
     device: PropTypes.shape({
         attrs: PropTypes.array,
         created: PropTypes.string,

@@ -902,6 +902,23 @@
     padding: 15px 0 !important;
     margin-top: 15px;
 
+    .body-actions
+    {
+      .body-actions--button:hover {
+        background-color: rgba(218, 218, 218, 0.4) !important;
+        transition: 300ms;
+      }
+    }
+
+    .body-form{
+      height: 100%;
+      font-family: Roboto;
+      font-size: 18px;
+      color: rgba(0, 0, 0, 0.4);
+      margin-top: 15px;
+      overflow-y: auto;
+    }
+
     .body-form-nodata{
       font-family: Raleway !important;
       font-weight: normal !important;
@@ -913,6 +930,8 @@
   }
 
   .header {
+    text-transform: uppercase;
+    font-family: Raleway;
     display: flex;
     justify-content: space-around;
     position: relative;
@@ -929,7 +948,7 @@
       align-items: center;
       justify-content: center;
       width: 52px;
-      height: 52px;
+      height: 50px;
       border-radius: 50%;
       background: #FCFCFC;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
@@ -959,11 +978,12 @@
 
 .generic-sidebar {
   @extend .-sidebar;
-  z-index: 1000;
+  z-index: 100;
   width: 375px;
   background: #FCFCFC;
   font-size: 16px;
   .header{
+  
     background: linear-gradient(97.26deg, #28807E 0%, #16A085 99.09%);
   }
   .body {
@@ -1274,5 +1294,23 @@
         }
       }
     }
+  }
+}
+
+
+
+.device-firmware-icon
+{
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+
+  img{
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
   }
 }

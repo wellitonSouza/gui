@@ -8,9 +8,9 @@ import { withNamespaces } from 'react-i18next';
 import SidebarTemplate from './SidebarTemplate/index';
 import SidebarAttribute from './SidebarAttribute/index';
 import SidebarMetadata from './SidebarMetadata/index';
-import SidebarFirmware from './SidebarFirmware/index';
+import SidebarFirmConfig from './SidebarFirmware/SidebarFirmConfig';
 import { templateType, tempOpxType } from '../../TemplatePropTypes';
-import ImageStore from '../../../../stores/ImageStore';
+import ImageStore from 'Stores/ImageStore';
 
 class Sidebar extends Component {
     static createAttribute() {
@@ -87,7 +87,6 @@ class Sidebar extends Component {
     }
 
     toogleSidebarFirmware() {
-        console.log('toogleSidebarFirmware');
         const { showFirmware } = this.state;
         this.setState({
             showFirmware: !showFirmware,
@@ -445,18 +444,14 @@ class Sidebar extends Component {
                     toogleSidebarDelete={this.toogleSidebarDelete}
                     deleteTemplate={this.deleteTemplate}
                 />
-                {showFirmware
-                    ? (
-                        <AltContainer store={ImageStore}>
-                            <SidebarFirmware
-                                showFirmware={showFirmware}
-                                isNewTemplate={isNewTemplate}
-                                template={template}
-                                toogleSidebarFirmware={this.toogleSidebarFirmware}
-                            />
-                        </AltContainer>
-)
-                    : null }
+                <AltContainer store={ImageStore}>
+                    <SidebarFirmConfig
+                        showFirmware={showFirmware}
+                        isNewTemplate={isNewTemplate}
+                        template={template}
+                        toogleSidebarFirmware={this.toogleSidebarFirmware}
+                    />
+                </AltContainer>
                 {/* @To check: attr template isn't used */}
                 <SidebarAttribute
                     showAttribute={showAttribute}

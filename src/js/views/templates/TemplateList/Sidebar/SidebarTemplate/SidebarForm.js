@@ -11,7 +11,6 @@ import { templateType } from '../../../TemplatePropTypes';
 const SidebarForm = ({
     isNewTemplate, changeValue, toogleSidebarAttribute, toogleSidebarFirmware, template,
 }) => {
-    console.log("isNewTemplate ", isNewTemplate);
     const renderTemplateProps = () => {
         const templateProps = [];
         if (Object.prototype.hasOwnProperty.call(template, 'data_attrs')) {

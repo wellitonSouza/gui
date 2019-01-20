@@ -37,15 +37,12 @@ const SidebarForm = ({ changeValue, toogleSidebarAttribute, template }) => {
         return templateProps.length > 0
             ? templateProps
             : (
-                <span>Select an option below</span>
+                <div className="body-form-nodata">
+                    <span>Select an option below</span>
+                </div>
             );
     };
 
-    let data = '';
-    if (template.data_attrs && template.config_attrs) {
-        data = template.data_attrs.length !== 0
-            || template.config_attrs.length !== 0 ? '' : '-nodata';
-    }
     return (
         <div className="body">
             <div className="body-template-name">
@@ -64,7 +61,7 @@ const SidebarForm = ({ changeValue, toogleSidebarAttribute, template }) => {
                     onChange={e => changeValue('label', e)}
                 />
             </div>
-            <div className={`body-form${data}`}>
+            <div className={`body-form`}>
                 { renderTemplateProps() }
             </div>
             <div className="body-actions">

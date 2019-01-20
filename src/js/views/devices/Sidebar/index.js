@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
 import TemplateStore from 'Stores/TemplateStore';
 import AltContainer from 'alt-container';
-import { hashHistory } from 'react-router';
 import toaster from 'Comms/util/materialize';
 import util from 'Comms/util/util';
 import SidebarDevice from './SidebarDevice';
@@ -118,6 +118,7 @@ class Sidebar extends Component {
             showDeviceAttrs: !prevState.showDeviceAttrs,
             selectAttr: attr,
             deviceAttrsTitle: title,
+            errors: [],
         }));
     }
 
@@ -135,7 +136,7 @@ class Sidebar extends Component {
             }
         });
 
-        const hasError = Object.keys(errors).length > 0
+        const hasError = Object.keys(errors).length > 0;
         if (hasError) {
             this.setState({
                 errors,
@@ -151,6 +152,7 @@ class Sidebar extends Component {
             this.setState({
                 showDeviceAttrs: false,
                 device,
+                errors: [],
             });
         }
     }
@@ -170,6 +172,7 @@ class Sidebar extends Component {
 
         this.setState({
             selectAttr: updateAttr,
+            errors: [],
         });
     }
 
@@ -194,13 +197,14 @@ class Sidebar extends Component {
 
     save() {
         const { device } = this.state;
+        const { ops } = this.props;
         const saveDevice = this.formatDevice(device);
         const isValid = this.validDevice(saveDevice);
 
         if (isValid.result) {
             FormActions.addDevice(saveDevice, () => {
                 toaster.success('Device created');
-                this.props.ops._fetch();
+                ops._fetch();
             });
         } else {
             toaster.error(isValid.error);
@@ -209,13 +213,14 @@ class Sidebar extends Component {
 
     update() {
         const { device } = this.state;
+        const { ops } = this.props;
         const updateDevice = this.formatDevice(device);
         const isValid = this.validDevice(updateDevice);
 
         if (isValid.result) {
             FormActions.triggerUpdate(updateDevice, () => {
                 toaster.success('Device updated');
-                this.props.ops._fetch();
+                ops._fetch();
             });
         } else {
             toaster.error(isValid.error);
@@ -224,12 +229,13 @@ class Sidebar extends Component {
 
     remove() {
         const { device } = this.state;
+        const { ops } = this.props;
         FormActions.triggerRemoval(device, () => {
             toaster.success('Device removed');
             this.setState({
                 isShowSidebarDelete: false,
                 showSidebarDevice: false,
-            }, () => hashHistory.reload());
+            }, ops._fetch());
         });
     }
 
@@ -261,7 +267,7 @@ class Sidebar extends Component {
             };
         }
 
-        const isValidName = util.isNameValid(device.label)
+        const isValidName = util.isNameValid(device.label);
         if (!isValidName.result) {
             return isValidName;
         }
@@ -282,7 +288,7 @@ class Sidebar extends Component {
             isNewDevice,
             errors,
             isShowSidebarDelete,
-            deviceAttrsTitle
+            deviceAttrsTitle,
         } = this.state;
         if (!Object.prototype.hasOwnProperty.call(device, 'attrs')) return <div />;
         const { metadata } = device;
@@ -340,6 +346,28 @@ Sidebar.defaultProps = {
         actuatorValues: [],
         metadata: {},
     },
+    isNewDevice: false,
+};
+
+Sidebar.propTypes = {
+    showSidebarDevice: PropTypes.bool,
+    device: PropTypes.shape({
+        label: PropTypes.string,
+        id: PropTypes.string,
+        protocol: PropTypes.string,
+        templates: PropTypes.array,
+        tags: PropTypes.array,
+        attrs: PropTypes.array,
+        configValues: PropTypes.array,
+        dynamicValues: PropTypes.array,
+        staticValues: PropTypes.array,
+        actuatorValues: PropTypes.array,
+        metadata: PropTypes.object,
+    }),
+    isNewDevice: PropTypes.bool,
+    ops: PropTypes.shape({
+        _fetch: PropTypes.func,
+    }).isRequired,
 };
 
 export default Sidebar;

@@ -54,13 +54,17 @@
       },
       "feature": {
         "template": "Template",
-        "device": "Dispostivos",
+        "device": "Dispositivos",
         "flows": "Flows",
         "history": "Histórico",
         "metric": "Metricas",
-        "mashup": "Mashup",
         "user": "Usuários",
-        "permission": "Permissões"
+        "permission": "Permissões",
+        "socketio": "Socket IO",
+        "export": "Exportar",
+        "ca-sign": "Certificado Acesso",
+        "ca": "Certificado",
+        "import": "Importar"
       },
       "table_label": {
         "feature": "Features",
@@ -82,7 +86,7 @@
       "subtitleSuccess": "Todos dados importados.",
       "btnModal": "Ok",
       "btnCancel": "Cancelar",
-      "error":{ 
+      "error":{
         "type": "Tipo errado, aceita-se somente JSON!",
         "read": "Erro ao ler arquivo",
         "file": "Selecione um arquivo"

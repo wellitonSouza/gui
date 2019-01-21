@@ -54,24 +54,27 @@ function TableGroupsPermissions(params) {
                                     <Trans i18nKey={`groups.form.feature.${item.subject}`} />
                                 </td>
                                 <td>
-                                    <InputCheckbox
-                                        label=""
-                                        placeHolder=""
-                                        name={`${item.subject}.modifier`}
-                                        checked={groupHasPermission(item.subject, 'modifier', groupPermissions)}
-                                        handleChangeCheckbox={handleChangeCheckbox}
-                                        disabled={cannotEdit}
-                                    />
+                                    {groupHasPermission(item.subject, 'modifier', systemPermissions) ? (
+                                        <InputCheckbox
+                                            label=""
+                                            placeHolder=""
+                                            name={`${item.subject}.modifier`}
+                                            checked={groupHasPermission(item.subject, 'modifier', groupPermissions)}
+                                            handleChangeCheckbox={handleChangeCheckbox}
+                                            disabled={cannotEdit}
+                                        />) : <div />}
                                 </td>
                                 <td>
-                                    <InputCheckbox
-                                        label=""
-                                        placeHolder=""
-                                        name={`${item.subject}.viewer`}
-                                        checked={groupHasPermission(item.subject, 'viewer', groupPermissions)}
-                                        handleChangeCheckbox={handleChangeCheckbox}
-                                        disabled={cannotEdit}
-                                    />
+                                    {groupHasPermission(item.subject, 'viewer', systemPermissions) ? (
+                                        <InputCheckbox
+                                            label=""
+                                            placeHolder=""
+                                            name={`${item.subject}.viewer`}
+                                            checked={groupHasPermission(item.subject, 'viewer', groupPermissions)}
+                                            handleChangeCheckbox={handleChangeCheckbox}
+                                            disabled={cannotEdit}
+                                        />
+                                    ) : <div />}
                                 </td>
                             </tr>
                         ))}
@@ -145,8 +148,7 @@ class GroupsSideBar extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.grouppermissions !== prevState.grouppermissions
-            || nextProps.group !== prevState.group) {
+        if (nextProps.grouppermissions !== prevState.grouppermissions) {
             return {
                 ...prevState,
                 systempermissions: nextProps.systempermissions,

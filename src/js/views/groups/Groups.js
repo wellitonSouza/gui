@@ -127,7 +127,7 @@ class Groups extends Component {
     }
 
     newGroup() {
-        GroupActions.getGroupById(null);
+        GroupActions.getGroupByName(null);
         GroupPermissionActions.fetchGroupPermissions();
         this.setState({
             showSideBar: true,

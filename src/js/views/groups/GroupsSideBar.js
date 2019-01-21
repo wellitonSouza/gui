@@ -183,7 +183,7 @@ class GroupsSideBar extends Component {
         const { name } = e.target;
         const [subject, action] = name.split('.');
         const { grouppermissions } = this.state;
-        // i dont like that block of code, i will improve
+        // i dont like this block of code, i will improve
         if (groupHasSubject(subject, grouppermissions)) {
             const hasPermission = groupHasPermission(subject, action, grouppermissions);
             grouppermissions.forEach((item, index1) => {

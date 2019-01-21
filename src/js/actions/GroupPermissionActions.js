@@ -8,13 +8,15 @@ const alt = require('../alt');
 class GroupPermissionActions {
     constructor() {
         this.error = null;
+        // Permissions for a group
         this.groupPermissions = [];
+        // System Permissions are the permissions default of the system, that will be available for user in gui
         this.systemPermissions = [];
     }
 
     /**
      * Update de obj permissions
-     * Works like a trigger for Store keep to update
+     * Works like a trigger for Store keep to updated
      *
      * @param groupPermissions
      * @returns {*}
@@ -24,13 +26,20 @@ class GroupPermissionActions {
         return this.groupPermissions;
     }
 
+    /**
+     * Update de obj system permissions
+     * Works like a trigger for Store keep to updated
+     *
+     * @returns {*}
+     * @param systemPermissions
+     */
     updateSystemPermission(systemPermissions) {
         this.systemPermissions = systemPermissions;
         return this.systemPermissions;
     }
 
     /**
-     *
+     * Search permissions for a group
      * @param groupName
      * @returns {Function}
      */
@@ -51,6 +60,12 @@ class GroupPermissionActions {
         };
     }
 
+    /**
+     *  Search System Permissions
+     *  The system permissions are the permissions default of the system,
+     *  that will be available for user in gui
+     * @returns {Function}
+     */
     fetchSystemPermissions() {
         return (dispatch) => {
             dispatch();
@@ -65,7 +80,7 @@ class GroupPermissionActions {
     }
 
     /**
-     *
+     * Save a change in permissions for a group
      * @param groupName
      * @param permissions
      * @param cb

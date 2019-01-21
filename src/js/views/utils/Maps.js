@@ -140,6 +140,7 @@ class CustomMap extends Component {
     }
     // check if data has changed
     if (JSON.stringify(this.props.markersData) != JSON.stringify(this.subset)) {
+      console.log("data has changed", this.props.markersData,this.subset);
       this.updateMarkers();
     }
   }

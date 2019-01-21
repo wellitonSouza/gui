@@ -82,6 +82,7 @@ a.new-btn-flat
   position: relative;
   float: right;
   cursor: pointer;
+
   user-select: none;
   &.red{
     background: linear-gradient(269.31deg, #F88383 9.21%, #F26F6F 42.78%, #EB5757 84.23%);
@@ -89,41 +90,69 @@ a.new-btn-flat
   
   &.style-2
   {
-    text-transform: uppercase;
-    box-shadow: none;
     width: 102px;
     text-align: center;
-    padding: 0px;
+    text-transform: uppercase;
+    box-shadow: none;
+    background: transparent;
+    font-weight: 600;
+    letter-spacing: 1px;
+    font-family: Raleway;
+    padding: 7px;
+    font-size: 13px;
+    height: auto;
+  
+    &:hover{
+        background: rgba(255, 255, 255, 0.72);
+        border-radius: 6px;
+        border-color: #dedede;
+        border-width: 2px;
+    }
+
+    &.clr-red
+    {
+      border-color:red;
+      color:red;
+    }
+    
+    &.clr-blue
+    {
+      border-color: #4D7BB9;
+      color: #4D7BB9;
+    }
+
+    &.primary
+    {
+      border-radius: 6px;
+      border-width: 2px;
+    }
+
+    &.secondary
+    {
+      border: none;
+      color: #757575;
+      width: 120px;
+    }
+  
   }
 
-  &.main:hover {
+
+
+
+  &.style-3:hover {
       background: #d2413f;
       color: #ffffff;
       border: 2px solid #eb5757;
       border-radius: 4px;
   }
 
-  &.main {
+  &.style-3 {
       background: #eb5757;
       color: #ffffff;
       border: 2px solid #ce1515;
       border-radius: 4px;
   }
 
-  &.secondary
-  {
-    background: white;
-    color: #757575;
-    border: 2px solid #a7a7a7;
-    border-radius: 4px;  }
-
-  &.secondary:hover
-  {
-      background: #d2413f;
-      color: #ffffff;
-      border: 2px solid #eb5757;
-      border-radius: 4px;
-  }
 
   &.red:hover {
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2) !important;

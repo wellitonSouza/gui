@@ -36,7 +36,7 @@ const MetadataList = ({ values, selectMetadata }) => {
         );
     }
     return (
-        <div className="metadata-list-nodata">
+        <div className="body-form-nodata">
             Select an option below to add a metadata
         </div>
     );

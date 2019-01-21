@@ -11,7 +11,6 @@ import { ChangePasswordModal } from '../../components/Modal';
 import ConfigActions from "../../actions/ConfigActions";
 import ImportExportMain from '../../components/importExport/ImportExportMain';
 import ability from '../../components/permissions/ability';
-import Can from '../../components/permissions/Can';
 
 class Navbar extends Component {
     // TODO: header widgets should be received as children to this (Navbar) node

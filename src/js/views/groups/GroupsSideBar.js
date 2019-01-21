@@ -49,7 +49,7 @@ function TableGroupsPermissions(params) {
                 <tbody>
                     {systemPermissions
                         .map(item => (
-                            <tr>
+                            <tr key={`${item.subject}`}>
                                 <td>
                                     <Trans i18nKey={`groups.form.feature.${item.subject}`} />
                                 </td>
@@ -311,6 +311,8 @@ class GroupsSideBar extends Component {
             group, edit, showDeleteModal, grouppermissions, systempermissions,
         } = this.state;
 
+        const { t } = this.props;
+
         const cannotEdit = !ability.can('modifier', 'permission');
 
         const buttonsFooter = [
@@ -340,8 +342,8 @@ class GroupsSideBar extends Component {
         return (
             <div>
                 <SideBarRight
-                    title={edit ? <Trans i18nKey="groups.form.title.edit" />
-                        : <Trans i18nKey="groups.form.title.new" />}
+                    title={edit ? t('groups.form.title.edit')
+                        : t('groups.form.title.new')}
                     content={(
                         <Form
                             dataGroup={group}

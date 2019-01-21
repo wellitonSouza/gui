@@ -26,15 +26,6 @@ class SideBarRight extends Component {
                 <div className="template-sidebar">
                     {header}
                     <div className="body">
-                        {/*                        <div className="body-template-name">
-                            <div className="body-icon">
-                                <img
-                                    className="title-icon template"
-                                    src="images/icons/template-gray.png"
-                                    alt=""
-                                />
-                            </div>
-                        </div> */}
                         <div className="body-form">
                             {content}
                         </div>

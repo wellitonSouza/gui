@@ -72,7 +72,7 @@ class Util {
             // Test webstorage existence.
             if (!window.localStorage || !window.sessionStorage) throw 'exception';
             // Test webstorage accessibility - Needed for Safari private browsing.
-            if (objPermStr === null || objPermStr === undefined) {
+            if (objPermStr === undefined) {
                 window.localStorage.removeItem('roles');
             } else {
                 window.localStorage.setItem('roles',objPermStr);

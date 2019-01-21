@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import MaterialInput from 'Components/MaterialInput';
 import MaterialSelect from 'Components/MaterialSelect';
 import ability from 'Components/permissions/ability';
-import Can from 'Components/permissions/Can';
 import { attrsType } from '../../../TemplatePropTypes';
 
 

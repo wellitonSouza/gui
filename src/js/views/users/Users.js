@@ -344,7 +344,7 @@ class SideBar extends Component {
                                     Choose your option
                                 </option>
                                 {this.props.groups.map(obj => (
-                                    <option value={obj.name} id={obj.name + '-option'}>
+                                    <option value={obj.name} id={obj.name + '-option'} key={obj.name + '-option'}>
                                         {obj.name}
                                     </option>
                                 ))}

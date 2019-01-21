@@ -7,10 +7,8 @@ import util from 'Comms/util';
 import Dropzone from 'react-dropzone';
 
 const ImageList = ({
-    list, changeAttrValue, removeBinary, removeImage, onDrop
-}) => {
-    console.log("rendering ImageList - list:",list);
-    return (
+    list, changeAttrValue, removeBinary, removeImage, onDrop,
+}) => (
         <div className="body-actions">
             {Object.entries(list).map(([key,element]) => (
                 <div className="image-block">
@@ -38,13 +36,14 @@ const ImageList = ({
                             {(element.image_hash == null) ?
                                 <Fragment>
                                         {(element.file != undefined) ? 
-                                    <span className="value">{element.file.name}  {' '}
-                                    {element.file.size} </span> :                                        <span className="value"> No binary yet.</span>}
-                                <div className="dropzone">
+                                    <span className="value">{element.file[0].name}  {' '}
+                                    {element.file[0].size} </span> :    <div>                                    <span className="value"> No binary yet.</span>
+                                    <div className="dropzone">
                                     <Dropzone multiple={false} onDrop={file => onDrop(file, element)}>
                                         <p>Drop the file here or click to select image to upload.</p>
                                     </Dropzone>
-                                    </div>
+                                    </div></div>
+                                    }
                                 </Fragment>
                                 : 
                                 <Fragment>
@@ -73,10 +72,17 @@ const ImageList = ({
             }
         </div>
     );
+
+ImageList.defaultProps = {
+    list: {},
 };
 
-// ImageList.propTypes = {
-//     list: PropTypes.shape(attrsType).isRequired,
-// };
+ImageList.propTypes = {
+    list: PropTypes.object,
+    changeAttrValue: PropTypes.func.isRequired,
+    removeBinary: PropTypes.func.isRequired,
+    removeImage: PropTypes.func.isRequired,
+    onDrop: PropTypes.func.isRequired,
+};
 
 export default ImageList;

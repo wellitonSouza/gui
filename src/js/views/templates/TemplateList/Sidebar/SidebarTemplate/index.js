@@ -36,6 +36,7 @@ const SidebarTemplate = ({
                             </div>
                         </div>
                         <SidebarForm
+                            isNewTemplate={isNewTemplate}
                             template={template}
                             toogleSidebarAttribute={toogleSidebarAttribute}
                             toogleSidebarFirmware={toogleSidebarFirmware}

@@ -25,6 +25,7 @@ class Sidebar extends Component {
             deviceAttrsTitle: '',
         };
 
+        this.toogleSidebarFirmware = this.toogleSidebarFirmware.bind(this);
         this.handleShowManageTemplate = this.handleShowManageTemplate.bind(this);
         this.handleShowDeviceAttrs = this.handleShowDeviceAttrs.bind(this);
         this.handleSelectTemplate = this.handleSelectTemplate.bind(this);
@@ -64,6 +65,11 @@ class Sidebar extends Component {
             device,
             isNewDevice,
         });
+    }
+
+    toogleSidebarFirmware()
+    {
+        console.log("toogleSidebarFirmware");
     }
 
     handleShowManageTemplate() {
@@ -317,6 +323,7 @@ class Sidebar extends Component {
                     isShowSidebarDelete={isShowSidebarDelete}
                     handleChangeName={this.handleChangeName}
                     handleShowManageTemplate={this.handleShowManageTemplate}
+                    toogleSidebarFirmware={this.toogleSidebarFirmware}
                     handleShowDeviceAttrs={this.handleShowDeviceAttrs}
                     toogleSidebarDelete={this.toogleSidebarDelete}
                     save={this.save}

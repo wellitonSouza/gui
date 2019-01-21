@@ -8,6 +8,11 @@ class ImageActions {
         return images;
     }
 
+    updateImageData(id, label, value) {
+        console.log("updateImageData",id, label, value);
+        return {id, label, value};
+    }
+
     fetchImages(template_id) {
       return (dispatch) => {
         dispatch();

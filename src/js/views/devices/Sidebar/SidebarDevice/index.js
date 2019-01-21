@@ -11,6 +11,7 @@ const SidebarDevice = ({
     showSidebarDevice,
     handleShowManageTemplate,
     handleShowDeviceAttrs,
+    toogleSidebarFirmware,
     device,
     handleChangeName,
     save,
@@ -23,6 +24,7 @@ const SidebarDevice = ({
     const {
         configValues, dynamicValues, staticValues, actuatorValues,
     } = device;
+    const hasImageAvailable = true;
     const total = device.templates.length ? device.templates.length : 0;
     return (
         <Fragment>
@@ -114,6 +116,15 @@ const SidebarDevice = ({
                                             title="Actuators"
                                             disable={actuatorValues.length === 0}
                                         />
+                                        {!hasImageAvailable
+                                        ? (
+                                            <SidebarButton
+                                                onClick={() => toogleSidebarFirmware()}
+                                                icon="firmware"
+                                                text="Manage Firmware"
+                                            />
+                                        ) : null}
+                                        
                                     </div>
 
                                 </div>
@@ -155,6 +166,7 @@ SidebarDevice.propTypes = {
     showSidebarDevice: PropTypes.bool,
     handleShowManageTemplate: PropTypes.func.isRequired,
     handleShowDeviceAttrs: PropTypes.func.isRequired,
+    toogleSidebarFirmware: PropTypes.func.isRequired,
     device: PropTypes.shape({
         attrs: PropTypes.array,
         created: PropTypes.string,

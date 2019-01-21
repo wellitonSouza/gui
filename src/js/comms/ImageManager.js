@@ -21,7 +21,7 @@ class ImageManager {
     }
 
     setBinary(image) {
-        return util.POST_MULTIPART(`${this.baseUrl}/fw-image/image/${image.image_id}/binary`, image);
+        return util.POST_MULTIPART(`${this.baseUrl}/fw-image/image/${image.id}/binary`, image);
     }
 
     deleteBinary(id) {

@@ -7,7 +7,10 @@ import SidebarProp from './SidebarProp';
 import SidebarButton from '../SidebarButton';
 import { templateType } from '../../../TemplatePropTypes';
 
-const SidebarForm = ({ changeValue, toogleSidebarAttribute, toogleSidebarFirmware, template }) => {
+const SidebarForm = ({
+    isNewTemplate, changeValue, toogleSidebarAttribute, toogleSidebarFirmware, template,
+}) => {
+    console.log("isNewTemplate ", isNewTemplate);
     const renderTemplateProps = () => {
         const templateProps = [];
         if (Object.prototype.hasOwnProperty.call(template, 'data_attrs')) {
@@ -71,7 +74,6 @@ const SidebarForm = ({ changeValue, toogleSidebarAttribute, toogleSidebarFirmwar
             </div>
             <div className="body-actions">
                 <div className="body-actions--divider" />
-
                 <Can do="modifier" on="template">
                     <SidebarButton
                         onClick={() => toogleSidebarAttribute('data_attrs')}
@@ -83,11 +85,14 @@ const SidebarForm = ({ changeValue, toogleSidebarAttribute, toogleSidebarFirmwar
                         icon="config_attrs"
                         text="New Configuration"
                     />
-                    <SidebarButton
-                        onClick={() => toogleSidebarFirmware()}
-                        icon="firmware"
-                        text="Manage Firmware"
-                    />
+                    {!isNewTemplate
+                        ? (
+                            <SidebarButton
+                                onClick={() => toogleSidebarFirmware()}
+                                icon="firmware"
+                                text="Manage Firmware"
+                            />
+                        ) : null}
                 </Can>
             </div>
         </div>
@@ -95,6 +100,7 @@ const SidebarForm = ({ changeValue, toogleSidebarAttribute, toogleSidebarFirmwar
 };
 
 SidebarForm.propTypes = {
+    isNewTemplate: PropTypes.bool.isRequired,
     changeValue: PropTypes.func.isRequired,
     toogleSidebarAttribute: PropTypes.func.isRequired,
     toogleSidebarFirmware: PropTypes.func.isRequired,

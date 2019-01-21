@@ -23,62 +23,66 @@ class SidebarFirmware extends Component {
     }
 
     componentDidMount() {
-        console.log('componentDidMount', this.props.template, this.props.isNewTemplate);
-        if (this.props.isNewTemplate) {
-            console.log('Is a new template. ');
-        } else {
+        if (!this.props.isNewTemplate) {
             ImageActions.fetchImages.defer(this.props.template.id);
         }
     }
 
-    onDrop(files, element) {
-        console.log('onDrop', files, element);
-        this.images[element.id].file = files;
-        this.images[element.id].saved = false;
+    onDrop(files, image) {
+        ImageActions.updateImageData(image.id, 'file', files);
     }
 
     createNewImage() {
-        console.log('createNewImage');
         if (!this.state.new_image) {
             ImageActions.insertEmptyImage({
-                id: 'x111', image_version: '', created: null, new: true, saved: false, image_hash: null,
+                id: util.guid(), image_version: '', created: null, new: true, saved: false, image_hash: null,
             });
             this.setState({ new_image: true });
         }
-        console.log("this.props.images", this.props.images);
     }
 
     saveImages(e) {
         e.preventDefault();
 
-        this.props.images.forEach((image) => {
+        Object.entries(this.props.images).map(([key, image]) => {
+            console.log('Saving image: ', image);
             if (!image.saved) {
                 // for each non saved image,
                 // 1. update or create image
                 // 2. upload binary
                 // 3. set as saved image
-
                 const json_img = {
-                    template_id: this.props.template.id,
+                    label: String(this.props.template.id),
                     fw_version: image.image_version,
-                    sha1: '',
+                    sha1: null,
                 };
                 ImageActions.triggerInsert(json_img, (img) => {
-                    toaster.success('Image created.');
+                    let id_to_be_used = image.id;
+                    if (image.new) {
+                        toaster.success('Image created.'); // @Todo we should split it in 2 methods;
+                        id_to_be_used = img.id;
+                    } else {
+                        toaster.success('Image updated.');
+                    }
                     console.log('img', img);
-                    console.log('image.files', image.files);
-                    if (image.files) {
+                    console.log('image.file', image.file);
+
+                    if (image.file) {
                         const img_binary = {
-                            id: img.id,
-                            binary: image.files[0],
+                            id: id_to_be_used,
+                            binary: image.file[0],
                         };
                         ImageActions.triggerUpdate(img_binary, () => {
                             toaster.success('Image added.');
                         });
                     }
-                    this.props.images[img].saved = true; // we should use an action..
+                    ImageActions.updateImageData(id_to_be_used, 'saved', true);
+                    if (image.new) {
+                        this.setState({ new_image: false });
+                    }
                 });
             }
+            return null;
         });
     }
 
@@ -95,12 +99,10 @@ class SidebarFirmware extends Component {
         e.preventDefault();
         // this.images = this.images.filter(el => el.id !== image.id);
 
-        if (image.new)
-        {
+        if (image.new) {
             ImageActions.removeSingle(image.id);
             this.setState({ new_image: false });
-        }
-        else {
+        } else {
             ImageActions.triggerRemoval(image, () => {
                 toaster.error('Image removed.');
             });
@@ -108,17 +110,22 @@ class SidebarFirmware extends Component {
     }
 
     changeAttrValue(event, attr) {
+        event.preventDefault();
+        const name = event.target.name;
+        const value = event.target.value;
         // FirmwareActions.update({ f: f, v: v });
         //    this.setState({ fw_version: event.target.value });
         // const values = { ...attr };
-        console.log(event, attr);
+        console.log(name, value, attr);
         // values[event.target.name] = event.target.value;
         this.props.images[attr.id].saved = false;
-        this.props.images[attr.id][attr.name] = attr.value;
+        this.props.images[attr.id][name] = value;
+        console.log('this.props.images[attr.id]', this.props.images[attr.id]);
+        ImageActions.updateImageData(attr.id, name, value);
     }
 
     render() {
-        console.log("SidebarFirmware. render", this.props.images);
+        console.log('SidebarFirmware. render', this.props.images);
         const { showFirmware, toogleSidebarFirmware } = this.props;
 
         return (
@@ -141,10 +148,10 @@ class SidebarFirmware extends Component {
                                     <ImageList list={this.props.images} changeAttrValue={this.changeAttrValue} removeImage={this.removeImage} removeBinary={this.removeBinary} onDrop={this.onDrop} />
                                     {(!this.state.new_image)
                                         ? (
-<div className="body-form-nodata clickable" onClick={this.createNewImage}>
+                                                                                        <div className="body-form-nodata clickable" onClick={this.createNewImage}>
                                         Click here to add a new image
-                                        </div>
-)
+                                            </div>
+                                        )
                                         : null }
                                 </div>
                                 <div className="footer">

@@ -4,13 +4,7 @@ const ImageActions = require('../actions/ImageActions');
 
 class ImageStore {
     constructor() {
-        this.new_image = {};
         this.images = {};
-
-        this.images[1] = {
-            id: 1, image_version: '1.1 aplha', created: 1547221430000, saved: true, image_hash: 'AFB1231BA21',
-        };
-
         this.error = null;
         this.loading = false;
 
@@ -25,20 +19,28 @@ class ImageStore {
             handleTriggerUpdate: ImageActions.TRIGGER_UPDATE,
             handleUpdateSingle: ImageActions.UPDATE_SINGLE,
 
-
             handleTriggerRemovalBinary: ImageActions.TRIGGER_REMOVAL_BINARY,
             handleRemoveSingleBinary: ImageActions.REMOVE_SINGLE_BINARY,
 
-
-
             handleTriggerRemoval: ImageActions.TRIGGER_REMOVAL,
             handleRemoveSingle: ImageActions.REMOVE_SINGLE,
+
+            handleUpdateImageData: ImageActions.UPDATE_IMAGE_DATA,
 
             fetchSingle: ImageActions.FETCH_SINGLE,
 
             handleFailure: ImageActions.IMAGES_FAILED,
 
         });
+    }
+
+
+    handleUpdateImageData(fields)
+    {
+        console.log("handleUpdateImageData",fields);
+        this.images[fields.id].saved = false;
+        this.images[fields.id][fields.label] = fields.value;
+        console.log("this.images", this.images);
     }
 
 
@@ -53,8 +55,13 @@ class ImageStore {
         // let images = images;
         this.images = {};
         for (let idx = 0; idx < images.length; idx++) {
-            this.images[images[idx].id] = JSON.parse(JSON.stringify(images[idx]));
-            this.images[images[idx].id].has_image = this.images[images[idx].id].confirmed;
+            let aux_id = images[idx].id;
+            this.images[aux_id] = JSON.parse(JSON.stringify(images[idx]));
+            this.images[aux_id].has_image = this.images[aux_id].confirmed;
+            if (!this.images[aux_id].has_image)
+            this.images[aux_id].image_hash = null;
+            this.images[aux_id].image_version = this.images[aux_id].fw_version;
+            this.images[aux_id].saved = true;
         }
         console.log('handleUpdateImageList', this.images);
         // this.images = images;
@@ -66,7 +73,6 @@ class ImageStore {
         this.images = {};
         this.loading = true;
     }
-
 
 
 
@@ -128,21 +134,6 @@ class ImageStore {
         this.loading = false;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-    fetchImagesByTemplate() {
-        this.images = {};
-        this.loading = false;
-    }
 
     fetchSingle(id) {
         this.images = { loading: true };

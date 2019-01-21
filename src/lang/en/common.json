@@ -79,7 +79,7 @@
       "subtitleModal": "You will remove all data. Are you sure?",
       "titleSuccess": "Success",
       "subtitleSuccess": "All datas imported",
-      "btnOk": "Ok",
+      "btnModal": "Ok",
       "btnCancel": "Cancel",
       "error":{ 
         "type": "Wrong type, only accept JSON!",

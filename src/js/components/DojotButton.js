@@ -29,32 +29,25 @@ class DojotBtnLink extends Component {
     }
 }
 
-class DojotBtnClassic extends Component {
-    constructor(props) {
-        super(props);
-    }
+const DojotBtnClassic = ({ type = "secondary", color = 'none', title, onClick, label, to }) => {
+    let auxTitle = title;
+    if (auxTitle == undefined)
+        auxTitle = label;
 
-    render() {
-        let is_secondary = 'main';
-        if (this.props.is_secondary) is_secondary = 'secondary';
-
-        let color = 'clr-none';
-        if (this.props.color) color = this.props.color;
-
-        if (this.props.to) {
-            return (
-                <Link to={this.props.to} title={this.props.title} className={`new-btn-flat style-2 ${color} ${is_secondary}`}>
-                    {this.props.label}
-                </Link>
-            );
-        }
+    if (to) {
         return (
-            <button type="button" title={this.props.title} onClick={this.props.onClick} className={`new-btn-flat style-2 ${color} ${is_secondary}`}>
-                {this.props.label}
-            </button>
+            <Link to={to} title={auxTitle} className={'new-btn-flat style-2 ${type} clr-${color}'}>
+                {label}
+            </Link>
         );
     }
+    return (
+        <button type="button" title={auxTitle} onClick={onClick} className={`new-btn-flat style-2 ${type} clr-${color}`}>
+            {label}
+        </button>
+    );
 }
+
 
 class DojotButton extends Component {
     constructor(props) {

@@ -175,7 +175,11 @@ class Sidebar extends Component {
 
         const ret = util.isNameValid(values.label);
         if (!ret.result) {
-            toaster.error(ret.error);
+            if (type === 'config_attrs') {
+                toaster.error('You must set a type.');
+            } else {
+                toaster.error(ret.error);
+            }
             return false;
         }
 
@@ -188,14 +192,24 @@ class Sidebar extends Component {
             return false;
         }
 
-        if (type === 'config_attrs') values.value_type = 'string';
         if (values.type === 'dynamic') values.static_value = '';
 
         if (type === 'config_attrs') {
-            if (template[type].some(item => item.label === values.label)) {
+            values.value_type = 'string';
+            if (values.static_value.trim().length === 0) {
+                toaster.error('You can not leave configuration attribute value empty');
+                return false;
+            }
+
+            if (template[type].some(item => item.label === values.label && values.id !== item.id)) {
                 toaster.warning(`Configuration ${values.label} already exists`);
                 return false;
             }
+        }
+
+        if (values.value_type.trim().length === 0) {
+            toaster.error('You must set a type.');
+            return false;
         }
 
         const resp = util.isTypeValid(values.static_value, values.value_type, values.type);
@@ -267,6 +281,7 @@ class Sidebar extends Component {
     updateMetadata() {
         const { metadata, selectAttr, showMetadata } = this.state;
         if (!Object.prototype.hasOwnProperty.call(selectAttr, 'metadata')) selectAttr.metadata = [];
+        if (!this.validateMetadata(metadata)) return;
 
         selectAttr.metadata = selectAttr.metadata.map((item) => {
             if (item.id === metadata.id) return metadata;
@@ -292,6 +307,16 @@ class Sidebar extends Component {
         );
         if (existName) {
             toaster.warning(`The label '${metadata.label}' is already created.`);
+            return false;
+        }
+
+        if (metadata.type.trim().length === 0) {
+            toaster.error('The Attribute Type is required.');
+            return false;
+        }
+
+        if (metadata.type.match(/^[_A-z0-9 ]*([_A-z0-9 ])*$/g) == null) {
+            toaster.error('Please use only letters (a-z), numbers (0-9) and underscores (_) in Attribute Type');
             return false;
         }
 

@@ -26,40 +26,26 @@
   cursor: pointer;
 }
 
+
+
 .template-sidebar{
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: absolute;
+  @extend .-sidebar;
   z-index: 100;
-  right: 0;
-  height: calc(100% - 115px);
   background: #F3F3F2;
   color: #555555;
   font-size: 16px;
   width: 375px;
   box-shadow: -3px 0px 8px 0 rgba(0, 0, 0, 0.2);
+
   .header{
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding-right: 10px;
-    height: 40px;
-    background: linear-gradient(270deg, rgba(0, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0) 100%);
-    .header-path{
-      font-family: Roboto;
-      font-weight: 500;
-      font-size: 12px;
-      text-align: right;
-      text-transform: uppercase;
-      color: #828282;
-    }
+    background: linear-gradient(96.69deg, #4BA0C4 0%, #12BDBA 99.09%);
   }
 
   .body{
     display: flex;
     flex-direction: column;
     flex:1;
+
     padding: 10px 0;
     .body-template-name{
       display: flex;
@@ -76,12 +62,10 @@
     }
     .body-form-nodata{
       display: flex;
-      height: 100%;
+      // height: 100%;
+      min-height: 150px;
       justify-content: center;
       align-items: center;
-      font-family: Roboto;
-      font-size: 18px;
-      color: rgba(0, 0, 0, 0.4);
     }
     .body-form{
       height: 100%;
@@ -131,7 +115,6 @@
     .body-actions{
       display: flex;
       flex-direction: column;
-      height: 130px;
       .body-actions--divider{
         display: flex;
         width: 310px;
@@ -143,6 +126,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        min-height: 56px;
         padding: 10px 0 10px 20px;
         cursor: pointer;
         .button-icon{
@@ -182,32 +166,15 @@
 }
 
 .sidebar-attribute{
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: absolute;
+  @extend .-sidebar;
   z-index: 100;
-  right: 0;
-  height: calc(100% - 115px);
   background: #F3F3F2;
   color: #555555;
   font-size: 16px;
   width: 375px;
+
   .header{
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding-right: 10px;
-    height: 40px;
-    background: linear-gradient(270deg, rgba(0, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0) 100%);
-    .header-path{
-      font-family: Roboto;
-      font-weight: 500;
-      font-size: 12px;
-      text-align: right;
-      text-transform: uppercase;
-      color: #828282;
-    }
+    background: linear-gradient(96.69deg, #4BA0C4 0%, #12BDBA 99.09%);
   }
 
   .body{
@@ -295,15 +262,15 @@
         } 
       }
     }
-    .metadata-list-nodata {
-      display: flex;
-      height: 100%;
-      justify-content: center;
-      align-items: center;
-      font-family: Roboto;
-      font-size: 18px;
-      color: rgba(0, 0, 0, 0.4);
-    }
+    // .metadata-list-nodata {
+    //   display: flex;
+    //   height: 100%;
+    //   justify-content: center;
+    //   align-items: center;
+    //   font-family: Roboto;
+    //   font-size: 18px;
+    //   color: rgba(0, 0, 0, 0.4);
+    // }
     .body-actions{
       width: 100%;
       .body-actions--divider{
@@ -356,32 +323,17 @@
 }
 
 .sidebar-metadata{
-  display: flex;
-  flex-direction: column;
-  position: absolute;
+  @extend .-sidebar;
   z-index: 100;
-  right: 0;
-  height: calc(100% - 115px);
   background: #F3F3F2;
   color: #555555;
   font-size: 16px;
   width: 375px;
+
   .header{
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding-right: 10px;
-    height: 40px;
-    background: linear-gradient(270deg, rgba(0, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0) 100%);
-    .header-path{
-      font-family: Roboto;
-      font-weight: 500;
-      font-size: 12px;
-      text-align: right;
-      text-transform: uppercase;
-      color: #828282;
-    }
+    background: linear-gradient(96.69deg, #4BA0C4 0%, #12BDBA 99.09%);
   }
+
   .body{
     display: flex;
     flex-direction: column;
@@ -445,33 +397,15 @@
 }
 
 .sidebar-delete {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  position: absolute;
+  @extend .-sidebar;
   z-index: 10000;
   right: 0;
-  height: calc(100% - 115px);
   background: #F3F3F2;
   width: 375px;
   justify-content: center;
   align-items: center;
   .header {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding-right: 10px;
-    height: 40px;
-    width: 100%;
-    background: linear-gradient(270deg, rgba(0, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0) 100%);
-    .header-path {
-      font-family: Roboto;
-      font-weight: 500;
-      font-size: 12px;
-      text-align: right;
-      text-transform: uppercase;
-      color: #828282;
-    }
+    background: linear-gradient(96.69deg, #4BA0C4 0%, #12BDBA 99.09%);
   }
   .body {
     display: flex;

@@ -109,7 +109,7 @@ class SidebarManageTemplates extends Component {
             </Slide>
         );
     }
-};
+}
 
 SidebarManageTemplates.defaultProps = {
     showManageTemplates: false,
@@ -119,7 +119,7 @@ SidebarManageTemplates.defaultProps = {
 SidebarManageTemplates.propTypes = {
     showManageTemplates: PropTypes.bool,
     handleShowManageTemplate: PropTypes.func.isRequired,
-    templates: PropTypes.arrayOf(templateType),
+    templates: PropTypes.arrayOf(PropTypes.shape(templateType)),
 };
 
 

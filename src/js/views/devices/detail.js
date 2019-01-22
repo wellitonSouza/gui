@@ -191,9 +191,9 @@ class GenericList extends Component {
                         attr.isGeo ? (
                             <div key={attr.label} className="line col s12 pl30" id="static-geo-attribute" onClick={this.openMap}>
                                 <div className="display-flex-column flex-1">
-                                    <div className={this.state.truncate ? 
-                                        'name-value display-flex flex-1 space-between truncate' : 
-                                        'name-value display-flex flex-1 space-between'} 
+                                    <div className={this.state.truncate ?
+                                        'name-value display-flex flex-1 space-between truncate' :
+                                        'name-value display-flex flex-1 space-between'}
                                         title={attr.label}
                                     >
                                         {attr.label}
@@ -219,7 +219,7 @@ class GenericList extends Component {
                                     <div className="display-flex-no-wrap space-between">
                                         <div className={this.state.truncate ? 'value-value  truncate' : 'value-value '} title={attr.static_value}>
                                             {(attr.static_value !== undefined && attr.static_value.length > 25) ?
-                                                attr.static_value.substr(1, 22) + '...' : 
+                                                attr.static_value.substr(1, 22) + '...' :
                                                 attr.static_value
                                             }
                                         </div>
@@ -417,16 +417,6 @@ class DeviceUserActions extends Component {
     render() {
         return (
             <div>
-                <DojotBtnRedCircle
-                    to={`/device/id/${this.props.deviceid}/edit`}
-                    icon="fa fa-pencil"
-                    tooltip="Edit device"
-                />
-                <DojotBtnRedCircle
-                    icon=" fa fa-trash"
-                    tooltip="Remove device"
-                    click={this.removeDevice}
-                />
                 <DojotBtnRedCircle
                     to="/device/list"
                     icon="fa fa-arrow-left"

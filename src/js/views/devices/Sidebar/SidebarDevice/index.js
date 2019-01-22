@@ -30,10 +30,10 @@ const SidebarDevice = ({
                 {
                     showSidebarDevice
                         ? (
-                            <div className="device-sidebar">
+                            <div className="-sidebar device-sidebar">
                                 <div className="header">
                                     <div className="title">
-                                        new device
+                                        { isNewDevice ? 'NEW DEVICE' : device.label }
                                     </div>
                                     <div className="icon">
                                         <img src="images/icons/chip-cyan.png" alt="device-icon" />
@@ -156,7 +156,7 @@ SidebarDevice.propTypes = {
     handleShowManageTemplate: PropTypes.func.isRequired,
     handleShowDeviceAttrs: PropTypes.func.isRequired,
     device: PropTypes.shape({
-        attrs: PropTypes.object,
+        attrs: PropTypes.array,
         created: PropTypes.string,
         id: PropTypes.string,
         label: PropTypes.string,

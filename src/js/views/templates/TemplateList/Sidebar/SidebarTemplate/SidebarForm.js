@@ -39,7 +39,9 @@ const SidebarForm = ({ changeValue, toogleSidebarAttribute, template }) => {
         return templateProps.length > 0
             ? templateProps
             : (
-                <span>Select an option below</span>
+                <div className="body-form-nodata">
+                    <span>Select an option below</span>
+                </div>
             );
     };
 
@@ -50,6 +52,7 @@ const SidebarForm = ({ changeValue, toogleSidebarAttribute, template }) => {
     }
 
     const cannotEdit = !ability.can('modifier', 'template');
+
     return (
         <div className="body">
             <div className="body-template-name">
@@ -69,22 +72,30 @@ const SidebarForm = ({ changeValue, toogleSidebarAttribute, template }) => {
                     disabled={cannotEdit}
                 />
             </div>
-            <div className={`body-form${data}`}>
+            <div className={`body-form`}>
                 { renderTemplateProps() }
             </div>
             <div className="body-actions">
                 <div className="body-actions--divider" />
-                <Can do="modifier" on="template">
+
+                 <Can do="modifier" on="template">      
                     <SidebarButton
                         onClick={() => toogleSidebarAttribute('data_attrs')}
                         icon="data_attrs"
                         text="New Attribute"
                     />
+
                     <SidebarButton
                         onClick={() => toogleSidebarAttribute('config_attrs')}
                         icon="config_attrs"
                         text="New Configuration"
                     />
+
+                    {/* <SidebarButton
+                        onClick={() => toogleSidebarAttribute('firmware')}
+                        icon="firmware_icon"
+                        text="Manage Firmware"
+                    /> */}
                 </Can>
             </div>
         </div>

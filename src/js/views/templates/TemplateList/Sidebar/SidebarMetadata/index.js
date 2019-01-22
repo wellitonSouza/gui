@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Slide from 'react-reveal/Slide';
-import { DojotCustomButton } from 'Components/DojotButton';
+import { DojotBtnClassic } from 'Components/DojotButton';
 import Can from 'Components/permissions/Can';
 import MetadataCard from './MetadataCard';
 import SidebarDelete from '../SidebarDelete';
@@ -24,9 +24,15 @@ const SidebarMetadata = ({
             { !showMetadata
                 ? <div />
                 : (
-                    <div className="sidebar-metadata">
+                    <div className="-sidebar sidebar-metadata">
                         <div className="header">
-                            <span className="header-path">{'template>new attribute>meta'}</span>
+                            <div className="title">meta attributes</div>
+                            <div className="icon">
+                                <img src="images/icons/template-cyan.png" alt="device-icon" />
+                            </div>
+                            <div className="header-path">
+                                {'template > new attribute > meta'}
+                            </div>
                         </div>
                         <div className="body">
                             <MetadataCard
@@ -35,19 +41,20 @@ const SidebarMetadata = ({
                             />
                         </div>
                         <div className="footer">
-                            <DojotCustomButton label="discard" type="default" onClick={() => toogleSidebarMetadata()} />
+                            <DojotBtnClassic label="discard" type="secondary" onClick={() => toogleSidebarMetadata()} />
                             {
                                 isNewMetadata
+
                                     ? (
                                         <Can do="modifier" on="template">
-                                            <DojotCustomButton label="add" type="primary" onClick={addMetadata} />
+                                            <DojotBtnClassic color="blue" label="add" type="primary" onClick={addMetadata} />
                                         </Can>
                                     )
                                     : (
                                         <Fragment>
                                             <Can do="modifier" on="template">
-                                                <DojotCustomButton label="remove" type="secondary" onClick={() => toogleSidebarDelete('showDeleteMeta')} />
-                                                <DojotCustomButton label="save" type="primary" onClick={updateMetadata} />
+                                              <DojotBtnClassic label="remove" type="secondary" onClick={() => toogleSidebarDelete('showDeleteMeta')} />
+                                              <DojotBtnClassic color="red" label="save" type="primary" onClick={updateMetadata} />
                                             </Can>
                                         </Fragment>
                                     )

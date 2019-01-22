@@ -40,10 +40,10 @@ function TableGroupsPermissions(params) {
                 <thead>
                     <tr>
                         <th><Trans i18nKey="groups.form.table_label.feature" /></th>
-                        <th><Trans i18nKey="groups.form.table_label.modifier" /></th>
                         <th>
                             <Trans i18nKey="groups.form.table_label.viewer" />
                         </th>
+                        <th><Trans i18nKey="groups.form.table_label.modifier" /></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -52,17 +52,6 @@ function TableGroupsPermissions(params) {
                             <tr key={`${item.subject}`}>
                                 <td>
                                     <Trans i18nKey={`groups.form.feature.${item.subject}`} />
-                                </td>
-                                <td>
-                                    {groupHasPermission(item.subject, 'modifier', systemPermissions) ? (
-                                        <InputCheckbox
-                                            label=""
-                                            placeHolder=""
-                                            name={`${item.subject}.modifier`}
-                                            checked={groupHasPermission(item.subject, 'modifier', groupPermissions)}
-                                            handleChangeCheckbox={handleChangeCheckbox}
-                                            disabled={cannotEdit}
-                                        />) : <div />}
                                 </td>
                                 <td>
                                     {groupHasPermission(item.subject, 'viewer', systemPermissions) ? (
@@ -75,6 +64,17 @@ function TableGroupsPermissions(params) {
                                             disabled={cannotEdit}
                                         />
                                     ) : <div />}
+                                </td>
+                                <td>
+                                    {groupHasPermission(item.subject, 'modifier', systemPermissions) ? (
+                                        <InputCheckbox
+                                            label=""
+                                            placeHolder=""
+                                            name={`${item.subject}.modifier`}
+                                            checked={groupHasPermission(item.subject, 'modifier', groupPermissions)}
+                                            handleChangeCheckbox={handleChangeCheckbox}
+                                            disabled={cannotEdit}
+                                        />) : <div />}
                                 </td>
                             </tr>
                         ))}

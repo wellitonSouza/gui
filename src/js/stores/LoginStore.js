@@ -2,6 +2,7 @@
 import LoginActions from '../actions/LoginActions';
 import Util from '../comms/util/util';
 
+
 const alt = require('../alt');
 
 class LoginStore {
@@ -18,7 +19,7 @@ class LoginStore {
             handleAuthenticate: LoginActions.AUTHENTICATE,
             handleFailure: LoginActions.LOGIN_FAILED,
             handleSuccess: LoginActions.LOGIN_SUCCESS,
-            handleLogout: LoginActions.LOGOUT,
+            handleLogout: LoginActions.LOGOUT
         });
     }
 

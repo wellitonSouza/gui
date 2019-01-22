@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Slide from 'react-reveal/Slide';
 import { DojotCustomButton } from 'Components/DojotButton';
+import Can from 'Components/permissions/Can';
 import SidebarAttributeForm from './SidebarAttributeForm';
 import SidebarConfigurationForm from './SidebarConfigurationForm';
 import MetadataList from './MetadataList';
@@ -46,24 +47,32 @@ const SidebarAttribute = ({
                                     />
                                 )
                             }
-                            <MetadataList values={selectAttr} selectMetadata={selectMetadata}/>
+                            <MetadataList values={selectAttr} selectMetadata={selectMetadata} />
                             <div className="body-actions">
                                 <div className="body-actions--divider" />
-                                <SidebarButton
-                                    onClick={() => toogleSidebarMetadata()}
-                                    icon="metadata"
-                                    text="New Metadata"
-                                />
+                                <Can do="modifier" on="template">
+                                    <SidebarButton
+                                        onClick={() => toogleSidebarMetadata()}
+                                        icon="metadata"
+                                        text="New Metadata"
+                                    />
+                                </Can>
                             </div>
                         </div>
                         <div className="footer">
                             <DojotCustomButton label="discard" type="default" onClick={toogleSidebarAttribute} />
                             { newAttr
-                                ? (<DojotCustomButton label="add" type="primary" onClick={() => addTemplateAttr(selectAttr)} />)
+                                ? (
+                                    <Can do="modifier" on="template">
+                                        <DojotCustomButton label="add" type="primary" onClick={() => addTemplateAttr(selectAttr)} />
+                                    </Can>
+                                )
                                 : (
                                     <Fragment>
-                                        <DojotCustomButton label="remove" type="secondary" onClick={() => toogleSidebarDelete('showDeleteAttr')} />
-                                        <DojotCustomButton label="save" type="primary" onClick={() => updateTemplateAttr(selectAttr)} />
+                                        <Can do="modifier" on="template">
+                                            <DojotCustomButton label="remove" type="secondary" onClick={() => toogleSidebarDelete('showDeleteAttr')} />
+                                            <DojotCustomButton label="save" type="primary" onClick={() => updateTemplateAttr(selectAttr)} />
+                                        </Can>
                                     </Fragment>
                                 )
                             }

@@ -1,10 +1,12 @@
 /* eslint-disable */
 const alt = require('../alt');
 const UserActions = require('../actions/UserActions');
+import GroupActions from '../actions/GroupActions';
 
 class UserStore {
     constructor() {
         this.users = [];
+        this.groups = [];
         this.loading = false;
         this.error = null;
 
@@ -22,7 +24,15 @@ class UserStore {
 
             handleTriggerRemoval: UserActions.TRIGGER_REMOVAL,
             handleRemoveSingle: UserActions.REMOVE_SINGLE,
+
+            handleFetchGroups: GroupActions.updateGroups,
         });
+    }
+    
+    handleFetchGroups(groups) {
+        this.groups = groups;
+        this.error = null;
+        this.loading = false;
     }
 
     handleUpdateUserList(users) {

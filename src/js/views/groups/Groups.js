@@ -10,12 +10,13 @@ import { NewPageHeader } from '../../containers/full/PageHeader';
 import { DojotBtnLink } from '../../components/DojotButton';
 import GroupsSideBar from './GroupsSideBar';
 import toaster from '../../comms/util/materialize';
+import Can from '../../components/permissions/Can';
 
 function GroupCard(obj) {
     return (
         <div
             className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight"
-            id={obj.group.id}
+            id={obj.group.name}
             onClick={obj.onclick}
             role="none"
             tabIndex={obj.group.id}
@@ -58,7 +59,7 @@ function GroupList(param) {
                 {param.groups.map(obj => (
                     <GroupCard
                         group={obj}
-                        key={obj.id}
+                        key={obj.name}
                         onclick={param.handleUpdate}
                     />
                 ))}
@@ -69,14 +70,16 @@ function GroupList(param) {
 function OperationsHeader(param) {
     return (
         <div className="col s12 pull-right pt10">
-            <DojotBtnLink
-                responsive="true"
-                onClick={param.newGroup}
-                label={<Trans i18nKey="groups.btn.new.text" />}
-                alt="Create a new group"
-                icon="fa fa-plus"
-                className="w130px"
-            />
+            <Can do="modifier" on="flows">
+                <DojotBtnLink
+                    responsive="true"
+                    onClick={param.newGroup}
+                    label={<Trans i18nKey="groups.btn.new.text" />}
+                    alt="Create a new group"
+                    icon="fa fa-plus"
+                    className="w130px"
+                />
+            </Can>
         </div>
     );
 }
@@ -98,7 +101,8 @@ class Groups extends Component {
 
     componentDidMount() {
         GroupActions.fetchGroups.defer();
-        GroupPermissionActions.fetchPermissionsForGroups(null);
+        GroupPermissionActions.fetchGroupPermissions(null);
+        GroupPermissionActions.fetchSystemPermissions();
     }
 
     toggleSideBar() {
@@ -112,6 +116,7 @@ class Groups extends Component {
             showSideBar: false,
             edit: false,
         });
+        GroupPermissionActions.fetchSystemPermissions();
         GroupActions.fetchGroups.defer();
     }
 
@@ -122,8 +127,8 @@ class Groups extends Component {
     }
 
     newGroup() {
-        GroupActions.getGroupById(null);
-        GroupPermissionActions.fetchPermissionsForGroups(null);
+        GroupActions.getGroupByName(null);
+        GroupPermissionActions.fetchGroupPermissions();
         this.setState({
             showSideBar: true,
             edit: false,
@@ -133,13 +138,12 @@ class Groups extends Component {
     handleUpdate(e) {
         e.preventDefault();
         const { t } = this.props;
-        const { id: groupIdClick } = e.currentTarget;
-        // this condition  will be change/removed
-        if (groupIdClick === '1') {
+        const { id: groupClick } = e.currentTarget;
+        if (groupClick === 'admin') {
             toaster.warning(t('groups.alerts.admin_not_remove'));
         } else {
-            GroupActions.getGroupById(groupIdClick);
-            GroupPermissionActions.fetchPermissionsForGroups(groupIdClick);
+            GroupActions.getGroupByName(groupClick);
+            GroupPermissionActions.fetchGroupPermissions(groupClick);
             this.setState({
                 showSideBar: true,
                 edit: true,

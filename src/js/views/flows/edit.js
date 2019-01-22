@@ -13,6 +13,8 @@ import MaterialInput from '../../components/MaterialInput';
 import { DojotBtnRedCircle } from '../../components/DojotButton';
 import toaster from '../../comms/util/materialize';
 import { RemoveModal } from '../../components/Modal';
+import ability from 'Components/permissions/ability';
+import Can from '../../components/permissions/Can';
 
 class FlowCanvas extends Component {
     constructor(props) {
@@ -20,6 +22,9 @@ class FlowCanvas extends Component {
 
         this.state = { done: false };
         this.__updateCanvas = this.__updateCanvas.bind(this);
+
+        //When cannotEdit is true, the flow is just for viewer
+        this.cannotEdit = !ability.can('modifier', 'flows');
     }
 
     componentDidMount() {
@@ -150,7 +155,6 @@ class FlowCanvas extends Component {
         if ((this.props.canvasLoading == false) && RED) {
             this.__updateCanvas();
         }
-
         return (
             <div className="flows-wrapper">
                 <div id="main-container">
@@ -161,7 +165,7 @@ class FlowCanvas extends Component {
                     </div>
                     <div id="editor-stack" />
 
-                    <div id="palette">
+                    <div id="palette" style={this.cannotEdit? {display:'none'}:{}}>
                         {/* This gets updated on didMount */}
                         <img src="mashup/red/images/spin.svg" className="palette-spinner hide" />
                         {/* This gets updated on didMount */}
@@ -206,7 +210,7 @@ function handleSave(flowid) {
         flow = fData.newFlow;
     }
     // update flow's actual configuration data
-    flow.name = fData.flowName; 
+    flow.name = fData.flowName;
     flow.flow = RED.nodes.createCompleteNodeSet();
     let ret = util.isNameValid(flow.name);
     if (flowid) {
@@ -225,11 +229,11 @@ function handleSave(flowid) {
             return;
         }else{
             flow.name = ret.label
-            FlowActions.triggerCreate(flow, (flow) => {          
+            FlowActions.triggerCreate(flow, (flow) => {
                 toaster.success('Flow created');
                 hashHistory.push(`/flows/id/${flow.id}`);
-            });             
-        }         
+            });
+        }
     }
 }
 
@@ -237,24 +241,31 @@ function handleSave(flowid) {
 class NameForm extends Component {
     constructor(props) {
         super(props);
+        //When cannotEdit is true, the flow is just for viewer
+        this.cannotEdit = !ability.can('modifier', 'flows');
     }
 
     render() {
-        return (
-            <MaterialInput
-                id="fld_flowname"
-                name="name"
-                className="col s6 l7 margin-input"
-                value={this.props.flowName}
-                onChange={(e) => {
-                    e.preventDefault();
-                    FlowActions.setName(e.target.value);
-                }}
-                maxLength={45}
-            >
-        Flow name
-            </MaterialInput>
-        );
+        if(this.cannotEdit ){
+            return (<div className="col s6 l7 margin-input">{this.props.flowName}</div>);
+        }else{
+            return (
+                <MaterialInput
+                    id="fld_flowname"
+                    name="name"
+                    className="col s6 l7 margin-input"
+                    value={this.props.flowName}
+                    onChange={(e) => {
+                        e.preventDefault();
+                        FlowActions.setName(e.target.value);
+                    }}
+                    maxLength={45}
+
+                >
+                    Flow name
+                </MaterialInput>
+            );
+        }
     }
 }
 
@@ -301,14 +312,16 @@ export class EditFlow extends Component {
                         <AltContainer store={FlowStore}>
                             <NameForm />
                         </AltContainer>
-                        <DojotBtnRedCircle
-                            icon=" fa fa-save"
-                            tooltip="Save Flow"
-                            click={() => {
-                                handleSave(this.props.params.flowid);
-                            }}
-                        />
-                        {this.props.params.flowid && <DojotBtnRedCircle icon="fa fa-trash" tooltip="Remove Flow" click={this.openRemoveModal} />}
+                        <Can do="modifier" on="flows">
+                            <DojotBtnRedCircle
+                                icon=" fa fa-save"
+                                tooltip="Save Flow"
+                                click={() => {
+                                    handleSave(this.props.params.flowid);
+                                }}
+                            />
+                            {this.props.params.flowid && <DojotBtnRedCircle icon="fa fa-trash" tooltip="Remove Flow" click={this.openRemoveModal} />}
+                        </Can>
                         <DojotBtnRedCircle to="/flows" icon="fa fa-arrow-left" tooltip="Return to Flow list" />
                     </div>
                 </NewPageHeader>

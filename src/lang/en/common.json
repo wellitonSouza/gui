@@ -58,9 +58,14 @@
         "flows": "Flows",
         "history": "History",
         "metric": "Metric",
-        "mashup": "Mashup",
         "user": "User",
-        "permission": "Permission"
+        "permission": "Permission",
+        "socketio": "Socket IO",
+        "export": "Export",
+        "ca-sign": "Certificate Sign",
+        "ca": "Certificate",
+        "import": "Import",
+        "fw-image": "Firmware Image"
       },
       "table_label": {
         "feature": "Features",
@@ -79,9 +84,9 @@
       "subtitleModal": "You will remove all data. Are you sure?",
       "titleSuccess": "Success",
       "subtitleSuccess": "All datas imported",
-      "btnOk": "Ok",
+      "btnModal": "Ok",
       "btnCancel": "Cancel",
-      "error":{ 
+      "error":{
         "type": "Wrong type, only accept JSON!",
         "read": "Error reading file",
         "file": "Select a file"

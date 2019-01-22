@@ -64,7 +64,8 @@
         "export": "Export",
         "ca-sign": "Certificate Sign",
         "ca": "Certificate",
-        "import": "Import"
+        "import": "Import",
+        "fw-image": "Firmware Image"
       },
       "table_label": {
         "feature": "Features",

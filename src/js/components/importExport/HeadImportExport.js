@@ -15,7 +15,7 @@ const HeadImportExport = (props) => {
                 onKeyPress={handleClick}
             >
                 <div className="head-icon">
-                    <img src={`src/img/icons/${icon}.png`} alt="src/img/alarm/warning.png" />
+                    <img src={`images/icons/${icon}.png`} alt="images/alarm/warning.png" />
                 </div>
                 <div className="head-text">
                     <div className="title">{title}</div>
@@ -27,7 +27,7 @@ const HeadImportExport = (props) => {
     return (
         <div className="head">
             <div className="head-icon">
-                <img src={`src/img/icons/${icon}.png`} alt="src/img/alarm/warning.png" />
+                <img src={`images/icons/${icon}.png`} alt="images/alarm/warning.png" />
             </div>
             <div className="head-text">
                 <div className="title">{title}</div>

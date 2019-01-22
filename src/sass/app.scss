@@ -400,6 +400,11 @@ order: 2;
 order: 1;
 }
 
+.overflow-x-hidden
+{
+  overflow-x:hidden;
+}
+
 .height-auto
 {
   height: auto !important;
@@ -417,6 +422,19 @@ order: 1;
   margin:0px !important;
 }
 
+.overflow-hidden{
+  overflow: hidden;
+}
+
+.pos-relative
+{
+  position:relative;
+}
+
+.pos-absolute
+{
+  position: absolute;
+}
 
 .noBold
 {

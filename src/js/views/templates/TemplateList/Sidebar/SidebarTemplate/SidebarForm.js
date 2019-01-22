@@ -45,12 +45,6 @@ const SidebarForm = ({ changeValue, toogleSidebarAttribute, template }) => {
             );
     };
 
-    let data = '';
-    if (template.data_attrs && template.config_attrs) {
-        data = template.data_attrs.length !== 0
-            || template.config_attrs.length !== 0 ? '' : '-nodata';
-    }
-
     const cannotEdit = !ability.can('modifier', 'template');
 
     return (

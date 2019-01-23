@@ -180,4 +180,5 @@ class Groups extends Component {
 Groups.propTypes = {
     t: PropTypes.func.isRequired,
 };
+
 export default translate()(Groups);

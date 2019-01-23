@@ -19,7 +19,7 @@ class SideBarRight extends Component {
                 </div>);
             if (buttonsFooter !== null && buttonsFooter.length > 0) {
                 btnFooter = buttonsFooter.map(btn => (
-                    <DojotCustomButton label={btn.label} onClick={btn.click} type={btn.type} />
+                    <DojotCustomButton label={btn.label} onClick={btn.click} type={btn.type} key={btn.label + btn.type} />
                 ));
             }
             body = (
@@ -44,11 +44,12 @@ class SideBarRight extends Component {
 SideBarRight.propTypes = {
     visible: PropTypes.bool,
     title: PropTypes.string.isRequired,
-    buttonsFooter: PropTypes.shape.isRequired,
-    content: PropTypes.shape.isRequired,
+    buttonsFooter: PropTypes.arrayOf(PropTypes.object),
+    content: PropTypes.instanceOf(Object).isRequired,
 };
 
 SideBarRight.defaultProps = {
     visible: true,
+    buttonsFooter: [],
 };
 export default (SideBarRight);

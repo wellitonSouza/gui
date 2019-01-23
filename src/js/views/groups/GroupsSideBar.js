@@ -371,12 +371,12 @@ class GroupsSideBar extends Component {
 }
 
 GroupsSideBar.propTypes = {
-    grouppermissions: PropTypes.shape.isRequired,
-    group: PropTypes.shape.isRequired,
+    grouppermissions: PropTypes.arrayOf(PropTypes.object).isRequired,
+    group: PropTypes.instanceOf(Object).isRequired,
     edit: PropTypes.bool,
     handleHideSideBar: PropTypes.func.isRequired,
     handleShowSideBar: PropTypes.func.isRequired,
-    t: PropTypes.shape.isRequired,
+    t: PropTypes.func.isRequired,
 };
 
 GroupsSideBar.defaultProps = {

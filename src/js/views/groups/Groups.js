@@ -178,6 +178,6 @@ class Groups extends Component {
 }
 
 Groups.propTypes = {
-    t: PropTypes.shape.isRequired,
+    t: PropTypes.func.isRequired,
 };
 export default translate()(Groups);

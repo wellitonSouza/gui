@@ -5,6 +5,7 @@ import { DojotBtnClassic } from 'Components/DojotButton';
 import ImageActions from 'Actions/ImageActions';
 import util from 'Comms/util';
 import toaster from 'Comms/util/materialize';
+import { templateType } from '../../../TemplatePropTypes';
 import ImageList from './ImageList';
 
 class SidebarFirmware extends Component {
@@ -173,12 +174,13 @@ class SidebarFirmware extends Component {
 
 SidebarFirmware.defaultProps = {
     showFirmware: false,
-    newImage: false,
+    isNewTemplate: false,
 };
 
 SidebarFirmware.propTypes = {
     showFirmware: PropTypes.bool,
-    newImage: PropTypes.bool,
+    isNewTemplate: PropTypes.bool,
+    template: PropTypes.shape(templateType).isRequired,
     toogleSidebarFirmware: PropTypes.func.isRequired,
 
 };

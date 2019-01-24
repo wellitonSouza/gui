@@ -37,22 +37,17 @@ class ImageStore {
 
     handleUpdateImageData(fields)
     {
-        console.log("handleUpdateImageData",fields);
         this.images[fields.id].saved = false;
         this.images[fields.id][fields.label] = fields.value;
-        console.log("this.images", this.images);
     }
 
 
     handleInsertEmptyImage(image)
     {
         this.images[image.id] = JSON.parse(JSON.stringify(image));
-        console.log("this.images",this.images);
     }
 
     handleUpdateImageList(images) {
-        console.log('images', images);
-        // let images = images;
         this.images = {};
         for (let idx = 0; idx < images.length; idx++) {
             let aux_id = images[idx].id;
@@ -82,10 +77,10 @@ class ImageStore {
         this.loading = true;
     }
 
-    handleInsertImage(image, oldimage) {
-        console.log("handleInsertImage: image", image, oldimage);
-        delete this.images[oldimage.id];
-        this.images[image.id] = image; 
+    handleInsertImage(imgs) {
+        console.log("handleInsertImage: image", imgs.image, imgs.oldimage);
+        delete this.images[imgs.oldimage.id];
+        this.images[imgs.image.id] = imgs.image; 
         this.error = null;
         this.loading = false;
     }

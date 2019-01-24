@@ -113,8 +113,8 @@
       }
     }
     .body-actions{
-      display: flex;
-      flex-direction: column;
+      display: inline-block;
+
       .body-actions--divider{
         display: flex;
         width: 310px;

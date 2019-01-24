@@ -9,8 +9,7 @@ class ImageActions {
     }
 
     updateImageData(id, label, value) {
-        console.log("updateImageData",id, label, value);
-        return {id, label, value};
+        return { id, label, value };
     }
 
     fetchImages(template_id) {
@@ -18,7 +17,6 @@ class ImageActions {
         dispatch();
 
         imageManager.getImages(template_id).then((imageList) => {
-          console.log("imageManager.getImages()",imageList);
           this.updateImages(imageList);
         })
         .catch((error) => {
@@ -33,7 +31,6 @@ class ImageActions {
             dispatch();
             imageManager.setBinary(image)
                 .then((response) => {
-                    // console.log('imageManager.setBinary', response);
                     this.updateSingle(response.image);
                     if (cb) {
                         cb(response.image);
@@ -74,7 +71,7 @@ class ImageActions {
 
 
     insertImage(image, oldimage) {
-        return image, oldimage;
+        return { image, oldimage };
     }
 
     triggerInsert(image, cb) {
@@ -99,7 +96,6 @@ class ImageActions {
             dispatch();
             imageManager.deleteBinary(image_id)
                 .then((response) => {
-                    console.log('response', response);
                     if (response.result == 'ok') {
                         this.removeSingleBinary(image_id);
                         if (cb) {

@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Slide from 'react-reveal/Slide';
 import { DojotBtnClassic } from 'Components/DojotButton';
+import Can from 'Components/permissions/Can';
 import MetadataCard from './MetadataCard';
 import SidebarDelete from '../SidebarDelete';
 import { metadataType } from '../../../TemplatePropTypes';
@@ -43,11 +44,18 @@ const SidebarMetadata = ({
                             <DojotBtnClassic label="discard" type="secondary" onClick={() => toogleSidebarMetadata()} />
                             {
                                 isNewMetadata
-                                    ? (<DojotBtnClassic color="blue" label="add" type="primary" onClick={addMetadata} />)
+
+                                    ? (
+                                        <Can do="modifier" on="template">
+                                            <DojotBtnClassic color="blue" label="add" type="primary" onClick={addMetadata} />
+                                        </Can>
+                                    )
                                     : (
                                         <Fragment>
-                                            <DojotBtnClassic label="remove" type="secondary" onClick={() => toogleSidebarDelete('showDeleteMeta')} />
-                                            <DojotBtnClassic color="red" label="save" type="primary" onClick={updateMetadata} />
+                                            <Can do="modifier" on="template">
+                                              <DojotBtnClassic label="remove" type="secondary" onClick={() => toogleSidebarDelete('showDeleteMeta')} />
+                                              <DojotBtnClassic color="red" label="save" type="primary" onClick={updateMetadata} />
+                                            </Can>
                                         </Fragment>
                                     )
                             }

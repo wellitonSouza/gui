@@ -4110,7 +4110,7 @@ RED.tabs = (function() {
                 this.uiSelect.width(this.uiWidth);
                 }
                 else {
-                    this.uiSelect.width(this.uiWidth + '%'); 
+                    this.uiSelect.width(this.uiWidth + '%');
                 }
             }
             ["Right","Left"].forEach(function(d) {
@@ -4991,7 +4991,6 @@ RED.workspaces = (function() {
             }
         });
     }
-
     function init() {
         createWorkspaceTabs();
         RED.events.on("sidebar:resize",workspace_tabs.resize);
@@ -5140,12 +5139,16 @@ RED.view = (function() {
         dragGroup = null;
 
 
-    function domInit() {
+    /**
+     *
+     * @param cannotEdit When this param is true, the flow is just for viewer
+     */
+    function domInit(cannotEdit=false) {
       outer = d3.select("#chart")
           .append("svg:svg")
           .attr("width", space_width)
           .attr("height", space_height)
-          .attr("pointer-events", "all")
+          .attr("pointer-events", cannotEdit ? "none": "all")
           .style("cursor","crosshair")
           .on("mousedown", function() {
               focusView();
@@ -5336,8 +5339,12 @@ RED.view = (function() {
         });
     }
 
-    function init() {
-        domInit();
+    /**
+     *
+     * @param cannotEdit When this param is true, the flow is just for viewer
+     */
+    function init(cannotEdit=false) {
+        domInit(cannotEdit);
         RED.events.on("workspace:change",function(event) {
             var chart = $("#chart");
             if (event.old !== 0) {

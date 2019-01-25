@@ -11,6 +11,7 @@ import FlowActions from '../../actions/FlowActions';
 import { NewPageHeader } from '../../containers/full/PageHeader';
 import util from '../../comms/util/util';
 import { DojotBtnLink } from "../../components/DojotButton";
+import Can from '../../components/permissions/Can';
 
 
 function SummaryItem(props) {
@@ -307,6 +308,8 @@ export class Flows extends Component {
 
 function OperationsHeader() {
     return <div className="col s12 pull-right pt10">
-        <DojotBtnLink responsive="true" linkTo="/flows/new" label="New Flow" alt="Create a new data flow" icon="fa fa-plus" className="w130px" />
+        <Can do="modifier" on="flows">
+            <DojotBtnLink responsive="true" linkTo="/flows/new" label="New Flow" alt="Create a new data flow" icon="fa fa-plus" className="w130px" />
+        </Can>
       </div>;
 }

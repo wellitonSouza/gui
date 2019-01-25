@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 function InputCheckbox(params) {
     const { handleChangeCheckbox } = params;
@@ -11,6 +11,7 @@ function InputCheckbox(params) {
                 value={params.name}
                 checked={!!params.checked}
                 type="checkbox"
+                disabled={params.disabled ? params.disabled : false}
             />
             <label htmlFor={params.name}>{params.label}</label>
         </span>
@@ -34,6 +35,7 @@ function InputText(params) {
                 maxLength={params.maxLength ? params.maxLength : 40}
                 placeholder={params.placeHolder ? params.placeHolder : ''}
                 type="text"
+                disabled={params.disabled ? params.disabled : false}
             />
         </div>
     );

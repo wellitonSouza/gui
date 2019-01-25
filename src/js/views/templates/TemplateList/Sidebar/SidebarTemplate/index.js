@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Slide from 'react-reveal/Slide';
 import { DojotBtnClassic } from 'Components/DojotButton';
+import Can from 'Components/permissions/Can';
 import SidebarForm from './SidebarForm';
 import SidebarDelete from '../SidebarDelete';
 import { templateType } from '../../../TemplatePropTypes';
@@ -41,11 +42,17 @@ const SidebarTemplate = ({
                         <div className="footer">
                             <DojotBtnClassic type="secondary" label="discard" onClick={() => toogleSidebar()} />
                             { isNewTemplate
-                                ? <DojotBtnClassic color="blue" type="primary" label="save" onClick={saveTemplate} />
+                                ? (
+                                    <Can do="modifier" on="template">
+                                        <DojotBtnClassic color="blue" type="primary" label="save" onClick={saveTemplate} />
+                                    </Can>
+                                )
                                 : (
                                     <Fragment>
-                                        <DojotBtnClassic label="delete" type="secondary" onClick={() => toogleSidebarDelete('showDeleteTemplate')} />
+                                        <Can do="modifier" on="template">
+                                                     <DojotBtnClassic label="delete" type="secondary" onClick={() => toogleSidebarDelete('showDeleteTemplate')} />
                                         <DojotBtnClassic color="red" label="save" type="primary" onClick={updateTemplate} />
+                                        </Can>
                                     </Fragment>
                                 )
                             }

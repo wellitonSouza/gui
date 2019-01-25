@@ -72,6 +72,7 @@ class MaterialInput extends Component {
                     value={this.props.value}
                     onChange={this.props.onChange}
                     maxLength={this.props.maxLength}
+                    disabled={this.props.disabled ? this.props.disabled : false}
                 />
                 <label
                     htmlFor={this.props.id}

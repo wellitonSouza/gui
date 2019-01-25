@@ -28,8 +28,8 @@ class GroupActions {
         };
     }
 
-    getGroupById(groupId) {
-        return groupId;
+    getGroupByName(group) {
+        return group;
     }
 
     triggerSave(group, cb, errorCb) {

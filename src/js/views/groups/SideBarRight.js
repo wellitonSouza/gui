@@ -19,22 +19,13 @@ class SideBarRight extends Component {
                 </div>);
             if (buttonsFooter !== null && buttonsFooter.length > 0) {
                 btnFooter = buttonsFooter.map(btn => (
-                    <DojotCustomButton label={btn.label} onClick={btn.click} type={btn.type} />
+                    <DojotCustomButton label={btn.label} onClick={btn.click} type={btn.type} key={btn.label + btn.type} />
                 ));
             }
             body = (
                 <div className="template-sidebar">
                     {header}
                     <div className="body">
-                        {/*                        <div className="body-template-name">
-                            <div className="body-icon">
-                                <img
-                                    className="title-icon template"
-                                    src="images/icons/template-gray.png"
-                                    alt=""
-                                />
-                            </div>
-                        </div> */}
                         <div className="body-form">
                             {content}
                         </div>
@@ -53,11 +44,12 @@ class SideBarRight extends Component {
 SideBarRight.propTypes = {
     visible: PropTypes.bool,
     title: PropTypes.string.isRequired,
-    buttonsFooter: PropTypes.shape.isRequired,
-    content: PropTypes.shape.isRequired,
+    buttonsFooter: PropTypes.arrayOf(PropTypes.object),
+    content: PropTypes.instanceOf(Object).isRequired,
 };
 
 SideBarRight.defaultProps = {
     visible: true,
+    buttonsFooter: [],
 };
 export default (SideBarRight);

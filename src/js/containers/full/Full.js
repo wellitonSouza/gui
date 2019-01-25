@@ -10,6 +10,7 @@ import LoginActions from '../../actions/LoginActions';
 import { ChangePasswordModal } from '../../components/Modal';
 import ConfigActions from "../../actions/ConfigActions";
 import ImportExportMain from '../../components/importExport/ImportExportMain';
+import ability from '../../components/permissions/ability';
 
 class Navbar extends Component {
     // TODO: header widgets should be received as children to this (Navbar) node
@@ -106,6 +107,7 @@ class RightSideBar extends Component {
             return null;
         }
 
+
         const gravatar = `https://www.gravatar.com/avatar/${btoa(this.props.user.username)}?d=identicon`;
 
         return (
@@ -173,7 +175,7 @@ class RightSideBar extends Component {
                     </div>
                 </div>
                 {this.state.open_change_password_modal ? <ChangePasswordModal openChangePasswordModal={this.openChangePasswordModal} toggleSidebar={this.props.toggleSidebar} /> : <div />}
-                {this.state.openImportExportMain ? 
+                {this.state.openImportExportMain ?
                     <ImportExportMain
                     type='main'
                     openModal={this.openImportExportMain}
@@ -253,11 +255,18 @@ class LeftSidebar extends Component {
         }
 
     }
+    componentDidUpdate(){
+        LeftSidebar.createMenu();
+    }
 
-    render() {
+    componentDidMount(){
+        LeftSidebar.createMenu();
+    }
 
-        const entries = [
-            {
+    static createMenu() {
+        const entriesLocal = [];
+        if (ability.can('viewer', 'device') || ability.can( 'modifier', 'device')) {
+            entriesLocal.push({
                 image: 'chip',
                 target: '/device',
                 iconClass: 'material-icons mi-ic-memory',
@@ -265,27 +274,66 @@ class LeftSidebar extends Component {
                 desc: 'Known devices and configuration',
                 children: [
                     {
-                        target: '/device/list', iconClass: '', label: 'device', title: 'Devices list', siblings: ['/device/id', '/device/new'],
+                        target: '/device/list',
+                        iconClass: '',
+                        label: 'device',
+                        title: 'Devices list',
+                        siblings: ['/device/id', '/device/new'],
                     },
                     {
-                        target: '/alarm?q=device', iconClass: '', label: 'alarm', title: 'Alarms list',
+                        target: '/alarm?q=device',
+                        iconClass: '',
+                        label: 'alarm',
+                        title: 'Alarms list',
                     },
                 ],
-            },
-            {
-                image: 'template', target: '/template/list', iconClass: 'fa fa-cubes', label: 'Templates ', desc: 'Template management',
-            },
-            {
-                image: 'graph', target: '/flows', iconClass: 'material-icons mi-device-hub', label: 'data flows', desc: 'Processing flows to be executed',
-            },
-            {
-                image: 'user', target: '/auth', iconClass: 'fa fa-unlock-alt', label: 'Users', desc: 'Users list',
-            },
-            {
-                image: 'groups', target: '/groups', iconClass: 'fa fa-unlock-alt', label: <Trans i18nKey="menu.groups.text" />, desc: <Trans i18nKey="menu.groups.alt" />,
-            },
-        ];
+            });
+        }
 
+        if (ability.can('viewer', 'template') || ability.can( 'modifier', 'template')) {
+            entriesLocal.push({
+                image: 'template',
+                target: '/template/list',
+                iconClass: 'fa fa-cubes',
+                label: 'Templates ',
+                desc: 'Template management',
+            });
+        }
+
+        if (ability.can('viewer', 'flows') || ability.can( 'modifier', 'flows')) {
+            entriesLocal.push({
+                image: 'graph',
+                target: '/flows',
+                iconClass: 'material-icons mi-device-hub',
+                label: 'data flows',
+                desc: 'Processing flows to be executed',
+            });
+        }
+
+        if (ability.can('viewer', 'user') || ability.can( 'modifier', 'user')) {
+            entriesLocal.push({
+                image: 'user',
+                target: '/auth',
+                iconClass: 'fa fa-unlock-alt',
+                label: 'Users',
+                desc: 'Users list',
+            });
+        }
+
+        if (ability.can( 'viewer', 'permission') || ability.can( 'modifier', 'permission')) {
+            entriesLocal.push({
+                image: 'groups',
+                target: '/groups',
+                iconClass: 'fa fa-unlock-alt',
+                label: <Trans i18nKey="menu.groups.text"/>,
+                desc: <Trans i18nKey="menu.groups.alt"/>,
+            });
+        }
+        return entriesLocal;
+    }
+
+    render() {
+        const entries= LeftSidebar.createMenu();
         return (
             <div className="sidebar expand z-depth-5" tabIndex="-1">
                 <div className="header">
@@ -324,7 +372,9 @@ class LeftSidebar extends Component {
 function Content(props) {
     return (
         <div className={`app-body full-height ${(props.leftSideBar.open && width > 800) ? ' open' : ' closed'}`}>
-            <LeftSidebar open={props.leftSideBar.open} router={props.router} />
+            <AltContainer store={LoginStore}>
+                <LeftSidebar open={props.leftSideBar.open} router={props.router} />
+            </AltContainer>
             <div className="content expand relative">
                 {props.children}
             </div>

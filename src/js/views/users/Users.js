@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import AltContainer from 'alt-container';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { NewPageHeader } from '../../containers/full/PageHeader';
-import { SimpleFilter } from '../utils/Manipulation';
 import MaterialSelect from '../../components/MaterialSelect';
 import LoginStore from '../../stores/LoginStore';
 import UserActions from '../../actions/UserActions';
@@ -338,7 +337,7 @@ class SideBar extends Component {
                                 name="profile"
                                 value={this.state.user.profile}
                                 onChange={this.handleChange}
-                                isDisable={cannotEdit || this.state.user.username === 'admin'}
+                                isDisable={cannotEdit || this.props.edit ||this.state.user.username === 'admin'}
                             >
                                 <option value="" disabled>
                                     Choose your option

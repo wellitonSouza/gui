@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import AltContainer from 'alt-container';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { NewPageHeader } from '../../containers/full/PageHeader';
-import { SimpleFilter } from '../utils/Manipulation';
 import MaterialSelect from '../../components/MaterialSelect';
 import LoginStore from '../../stores/LoginStore';
 import UserActions from '../../actions/UserActions';

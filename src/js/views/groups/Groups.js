@@ -76,7 +76,7 @@ function OperationsHeader(param) {
                     onClick={param.newGroup}
                     label={param.i18n('groups.btn.new.text')}
                     alt={param.i18n('groups.btn.new.alt')}
-                    icon="fa  fa-plus"
+                    icon="fa fa-plus"
                     className="w130px"
                 />
             </Can>

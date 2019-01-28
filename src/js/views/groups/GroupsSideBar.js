@@ -18,9 +18,11 @@ const groupHasSubject = (subject, groupPermissions) => {
 };
 
 const groupHasPermission = (subject, action, groupPermissions) => {
-    const singlePermission = groupPermissions.filter(n1 => subject === n1.subject);
-    if (singlePermission[0] && singlePermission[0].actions && singlePermission[0].actions.length > 0) {
-        return singlePermission[0].actions.filter(n1 => n1 === action).length > 0;
+    if (groupPermissions) {
+        const singlePermission = groupPermissions.filter(n1 => subject === n1.subject);
+        if (singlePermission[0] && singlePermission[0].actions && singlePermission[0].actions.length > 0) {
+            return singlePermission[0].actions.filter(n1 => n1 === action).length > 0;
+        }
     }
     return false;
 };

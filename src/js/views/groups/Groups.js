@@ -158,7 +158,7 @@ class Groups extends Component {
         } = this.state;
         const { t } = this.props;
         return (
-            <div id="groups-wrapper">
+            <span id="groups-wrapper">
                 <AltContainer store={GroupStore}>
                     <NewPageHeader title={<Trans i18nKey="groups.title" />} icon="groups">
                         <OperationsHeader newGroup={this.newGroup} i18n={t} />
@@ -172,7 +172,7 @@ class Groups extends Component {
                         />
                     ) : <div />}
                 </AltContainer>
-            </div>
+            </span>
         );
     }
 }

@@ -40,13 +40,13 @@ class ImportExportMain extends Component {
                     save={false}
                 >
                     <div className="">
-                        <HeadImportExport main icon="import-export-icon" title={t('importExport.title')} firstMessage="" />
+                        <HeadImportExport main icon="import-export-icon" title={t('importExport:title')} firstMessage="" />
                     </div>
                     <div className="">
-                        <HeadImportExport handleClick={this.handleImport} icon="import-icon" title={t('importExport.import.titleMain')} firstMessage={t('importExport.import.subtitleMain')} />
+                        <HeadImportExport handleClick={this.handleImport} icon="import-icon" title={t('importExport:import.titleMain')} firstMessage={t('importExport:import.subtitleMain')} />
                     </div>
                     <div className="">
-                        <HeadImportExport handleClick={this.handleExport} icon="export-icon" title={t('importExport.export.title')} firstMessage={t('importExport.export.subtitle')} />
+                        <HeadImportExport handleClick={this.handleExport} icon="export-icon" title={t('importExport:export.title')} firstMessage={t('importExport:export.subtitle')} />
                     </div>
                 </ImportExport>
                 {openImport ? <Import openModal={this.openImport} /> : null}

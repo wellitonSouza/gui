@@ -41,11 +41,11 @@ function TableGroupsPermissions(params) {
             <table className="striped centered">
                 <thead>
                     <tr>
-                        <th><Trans i18nKey="groups.form.table_label.feature" /></th>
+                        <th><Trans i18nKey="form.table_label.feature" /></th>
                         <th>
-                            <Trans i18nKey="groups.form.table_label.viewer" />
+                            <Trans i18nKey="form.table_label.viewer" />
                         </th>
-                        <th><Trans i18nKey="groups.form.table_label.modifier" /></th>
+                        <th><Trans i18nKey="form.table_label.modifier" /></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,7 +53,7 @@ function TableGroupsPermissions(params) {
                         .map(item => (
                             <tr key={`${item.subject}`}>
                                 <td>
-                                    <Trans i18nKey={`groups.form.feature.${item.subject}`} />
+                                    <Trans i18nKey={`form.feature.${item.subject}`} />
                                 </td>
                                 <td>
                                     {groupHasPermission(item.subject, 'viewer', systemPermissions) ? (
@@ -104,16 +104,16 @@ function Form(params) {
     return (
         <form action="#">
             <InputText
-                label={<Trans i18nKey="groups.form.input.groupname.label" />}
+                label={<Trans i18nKey="form.input.groupname.label" />}
                 name="name"
                 maxLength={30}
                 onChange={handleCharge}
                 value={dataGroup.name ? dataGroup.name : ''}
                 disabled={cannotEdit}
-                errorMessage={<Trans i18nKey="groups.form.input.groupname.error" />}
+                errorMessage={<Trans i18nKey="form.input.groupname.error" />}
             />
             <InputText
-                label={<Trans i18nKey="groups.form.input.groupdescription.label" />}
+                label={<Trans i18nKey="form.input.groupdescription.label" />}
                 name="description"
                 maxLength={254}
                 onChange={handleCharge}
@@ -237,17 +237,17 @@ class GroupsSideBar extends Component {
         const { group } = this.state;
         const { t } = this.props;
         if ((group.name).trim().length <= 0) {
-            toaster.warning(t('groups.alerts.empty_name'));
+            toaster.warning(t('alerts.empty_name'));
             return false;
         }
 
         if (GroupsSideBar.checkAlphaNumber(group.name)) {
-            toaster.warning(t('groups.alerts.invalid_name'));
+            toaster.warning(t('alerts.invalid_name'));
             return false;
         }
 
         if ((group.description).trim().length <= 0) {
-            toaster.warning(t('groups.alerts.empty_desc'));
+            toaster.warning(t('alerts.empty_desc'));
             return false;
         }
         return true;
@@ -270,9 +270,9 @@ class GroupsSideBar extends Component {
                         },
                     );
                     if (edit) {
-                        toaster.success(t('groups.alerts.group_modify'));
+                        toaster.success(t('alerts.group_modify'));
                     } else {
-                        toaster.success(t('groups.alerts.group_create'));
+                        toaster.success(t('alerts.group_create'));
                     }
                     this.hideSideBar();
                 },
@@ -299,7 +299,7 @@ class GroupsSideBar extends Component {
         GroupActions.triggerRemoval(
             group.id,
             () => {
-                toaster.success(t('groups.alerts.group_remove'));
+                toaster.success(t('alerts.group_remove'));
                 this.hideSideBar();
             },
             (groupR) => {
@@ -322,7 +322,7 @@ class GroupsSideBar extends Component {
 
         const buttonsFooter = [
             {
-                label: <Trans i18nKey="groups.form.btn.discard.label" />,
+                label: <Trans i18nKey="common:btn.discard.label" />,
                 click: this.discard,
                 type: 'default',
             },
@@ -330,13 +330,13 @@ class GroupsSideBar extends Component {
 
         if (!cannotEdit) {
             buttonsFooter.push({
-                label: <Trans i18nKey="groups.form.btn.save.label" />,
+                label: <Trans i18nKey="common:btn.save.label" />,
                 click: this.save,
                 type: 'primary',
             });
             if (edit) {
                 buttonsFooter.push({
-                    label: <Trans i18nKey="groups.form.btn.remove.label" />,
+                    label: <Trans i18nKey="common:btn.remove.label" />,
                     click: this.handleModalDelete,
                     type: 'secondary',
                 });
@@ -347,8 +347,8 @@ class GroupsSideBar extends Component {
         return (
             <div>
                 <SideBarRight
-                    title={edit ? t('groups.form.title.edit')
-                        : t('groups.form.title.new')}
+                    title={edit ? t('groups:form.title.edit')
+                        : t('groups:form.title.new')}
                     content={(
                         <Form
                             dataGroup={group}

@@ -1,0 +1,16 @@
+{
+  "btn": {
+    "save": {
+      "label": "Salvar",
+      "alt": "Clique para Salvar"
+    },
+    "discard": {
+      "label": "Fechar",
+      "alt": "Clique para Fechar"
+    },
+    "remove": {
+      "label": "Remover",
+      "alt": "Clique para Remover"
+    }
+  }
+}

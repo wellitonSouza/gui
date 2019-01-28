@@ -36,10 +36,10 @@ class Import extends Component {
         const { t } = this.props;
         const { file } = this.state;
         if (file.length === 0) {
-            return toaster.error(t('importExport.import.error.file'));
+            return toaster.error(t('importExport:import.error.file'));
         }
         if (file[0].type !== 'application/json') {
-            return toaster.error(t('importExport.import.error.type'));
+            return toaster.error(t('importExport:import.error.type'));
         }
         return this.setState({ showModal: true });
     }
@@ -70,33 +70,38 @@ class Import extends Component {
                     ImportExportAction.import(json);
                     this.success(true);
                 } catch (err) {
-                    toaster.error(t('importExport.import.error.read'));
+                    toaster.error(t('importExport:import.error.read'));
                 }
             };
             reader.onerror = () => {
-                toaster.error(t('importExport.import.error.read'));
+                toaster.error(t('importExport:import.error.read'));
             };
         } else {
-            toaster.error(t('importExport.import.error.file'));
+            toaster.error(t('importExport:import.error.file'));
         }
     }
 
     render() {
         const { showModal, file, success } = this.state;
         const { t, openModal } = this.props;
-        const label = t('importExport.import.btnModal');
-        const title = t('importExport.import.titleModal');
-        const firstMessage = t('importExport.import.subtitleModal');
+        const label = t('importExport:import.btnModal');
+        const title = t('importExport:import.titleModal');
+        const firstMessage = t('importExport:import.subtitleModal');
         return (
             <div>
                 <ImportExport
                     openModal={openModal}
                     toggleSidebar={this.dismiss}
                     save
-                    label={t('importExport.import.title')}
+                    label={t('importExport:import.title')}
                     handleClick={this.handleOpenModal}
                 >
-                    <HeadImportExport main icon="import-icon" title={t('importExport.import.titleMain')} firstMessage={t('importExport.import.subtitle')} />
+                    <HeadImportExport
+                        main
+                        icon="import-icon"
+                        title={t('importExport:import.titleMain')}
+                        firstMessage={t('importExport:import.subtitle')}
+                    />
                     <FilePond
                         ref={this.pond}
                         onupdatefiles={(fileItems) => {
@@ -117,7 +122,7 @@ class Import extends Component {
                             />
                         ))}
                     </FilePond>
-                    { showModal ? (
+                    {showModal ? (
                         <ModalAlert
                             title={title}
                             openModal={this.openModal}
@@ -128,12 +133,12 @@ class Import extends Component {
                             cancel
                             back={this.dismiss}
                         />
-                    ) : null }
+                    ) : null}
                     {success ? (
                         <ModalAlert
-                            title={t('importExport.import.titleSuccess')}
+                            title={t('importExport:import.titleSuccess')}
                             openModal={this.openModal}
-                            firstMessage={t('importExport.import.subtitleSuccess')}
+                            firstMessage={t('importExport:import.subtitleSuccess')}
                             label={label}
                             click={this.handleSuccess}
                             img="check-circle"

@@ -325,8 +325,8 @@ class LeftSidebar extends Component {
                 image: 'groups',
                 target: '/groups',
                 iconClass: 'fa fa-unlock-alt',
-                label: <Trans i18nKey="menu.groups.text"/>,
-                desc: <Trans i18nKey="menu.groups.alt"/>,
+                label: <Trans i18nKey="menu:groups.text"/>,
+                desc: <Trans i18nKey="menu:groups.alt"/>,
             });
         }
         return entriesLocal;

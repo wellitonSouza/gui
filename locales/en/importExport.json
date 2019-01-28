@@ -1,0 +1,23 @@
+{
+  "title": "Import/Export Management",
+  "import": {
+    "subtitleMain": "Upload your previous data on portal.",
+    "title": "Import",
+    "subtitle": "Select the a file JSON to restore your data",
+    "titleModal": "Import new datas",
+    "subtitleModal": "You will remove all data. Are you sure?",
+    "titleSuccess": "Success",
+    "subtitleSuccess": "All datas imported",
+    "btnModal": "Ok",
+    "btnCancel": "Cancel",
+    "error": {
+      "type": "Wrong type, only accept JSON!",
+      "read": "Error reading file",
+      "file": "Select a file"
+    },
+    "export": {
+      "title": "Export",
+      "subtitle": "Export a JSON containing all your data."
+    }
+  }
+}

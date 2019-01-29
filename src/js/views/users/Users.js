@@ -4,6 +4,9 @@ import ReactDOM from 'react-dom';
 import AltContainer from 'alt-container';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { NewPageHeader } from '../../containers/full/PageHeader';
+import {
+    Trans, translate
+} from 'react-i18next';
 import MaterialSelect from '../../components/MaterialSelect';
 import LoginStore from '../../stores/LoginStore';
 import UserActions from '../../actions/UserActions';
@@ -75,27 +78,28 @@ class SideBar extends Component {
     }
 
     checkValidation() {
+        const { t } = this.props;
         if (this.checkName(this.state.user.name)) {
-            toaster.warning('Invalid name.');
+            toaster.warning(t('users:name.error'));
             return false;
         }
         if (this.checkEmail(this.state.user.email)) {
-            toaster.warning('Invalid email.');
+            toaster.warning(t('users:email.error'));
             return false;
         }
 
         if (this.checkUsername(this.state.user.username)) {
-            toaster.warning('Invalid username.');
+            toaster.warning(t('users:username.error'));
             return false;
         }
 
         if (this.checkConfirmEmail(this.state.user.email, this.state.user.confirmEmail)) {
-            toaster.warning('Email address mismatch.');
+            toaster.warning(t('users:confirm_email.error'));
             return false;
         }
 
         if (this.state.user.profile === '') {
-            toaster.warning('Missing profile.');
+            toaster.warning(t('users:profile.error'));
             return false;
         }
         return true;
@@ -114,15 +118,16 @@ class SideBar extends Component {
         delete tmp.created_date;
         delete tmp.passwd;
         delete tmp.password;
+        const { t } = this.props;
         if (this.checkValidation()) {
             UserActions.triggerUpdate(
                 tmp,
                 () => {
-                    toaster.success('User updated.');
+                    toaster.success(t('users:alerts.user_update'));
                     this.hideSideBar();
                 },
                 () => {
-                    toaster.error('Failed to update user.');
+                    toaster.error(t('users:alerts.user_update_err'));
                 },
             );
         }
@@ -133,10 +138,11 @@ class SideBar extends Component {
             const temp = this.state.user;
             temp.email = String(temp.email)
                 .toLowerCase();
+            const { t } = this.props;
             UserActions.addUser(
                 temp,
                 () => {
-                    toaster.success('User created.');
+                    toaster.success(t('users:alerts.user_create'));
                     this.hideSideBar();
                 },
                 (user) => {
@@ -174,9 +180,10 @@ class SideBar extends Component {
     }
 
     removeUser() {
+        const { t } = this.props;
         UserActions.triggerRemoval(this.state.user, () => {
             this.hideSideBar();
-            toaster.success('User removed', 4000);
+            toaster.success(t('users:alerts.user_remove'), 4000);
             this.setState({ show_modal: false });
         });
     }
@@ -219,6 +226,7 @@ class SideBar extends Component {
     render() {
         let sideBar;
         const cannotEdit = !ability.can('modifier', 'user');
+        const { t } = this.props;
         if (this.props.visible) {
             sideBar = (
                 <div id="sidebar" className="sidebar-auth visible">
@@ -227,7 +235,7 @@ class SideBar extends Component {
                         className={`title${this.props.edit ? ' ' : ' hide'}`}
                     >
                         <span id="title-text" className="title-text">
-              Edit User
+                            <Trans i18nKey="users:title_sidebar.edit"/>
                         </span>
                     </div>
                     <div
@@ -235,7 +243,7 @@ class SideBar extends Component {
                         className={`title${this.props.edit ? ' hide' : ''}`}
                     >
                         <span id="title-text" className="title-text">
-              New User
+              <Trans i18nKey="users:title_sidebar.new"/>
                         </span>
                     </div>
                     <div className="fixed-height">
@@ -257,10 +265,10 @@ class SideBar extends Component {
                             />
                             <label
                                 htmlFor="userName"
-                                data-error="Please use only letters (a-z) and numbers (0-9)"
+                                data-error={t('users:username.error')}
                                 className="active"
                             >
-                                User Name
+                                {t('users:username.label')}
                             </label>
                         </div>
                         <div id="auth-usr" className="input-field">
@@ -278,10 +286,10 @@ class SideBar extends Component {
                             />
                             <label
                                 htmlFor="name"
-                                data-error="Invalid name"
+                                data-error={t('users:name.error')}
                                 className="active"
                             >
-                                Name
+                                {t('users:name.label')}
                             </label>
                         </div>
                         <div id="auth-email" className="input-field">
@@ -299,10 +307,10 @@ class SideBar extends Component {
                             />
                             <label
                                 htmlFor="email"
-                                data-error="Please enter a valid email address."
+                                data-error={t('users:email.error')}
                                 className="active"
                             >
-                                Email
+                                {t('users:email.label')}
                             </label>
                         </div>
                         <div id="auth-confirm" className="input-field">
@@ -321,14 +329,14 @@ class SideBar extends Component {
                             />
                             <label
                                 htmlFor="confirm-email"
-                                data-error="Email address mismatch"
+                                data-error={t('users:confirm_email.error')}
                                 className="active"
                             >
-                                Confirm Email
+                                {t('users:confirm_email.label')}
                             </label>
                         </div>
                         <div>
-                            <label htmlFor="profile">Profile</label>
+                            <label htmlFor="profile">{t('users:profile.label')}</label>
                         </div>
 
                         <div id="auth-select-role" className="input-field">
@@ -337,10 +345,10 @@ class SideBar extends Component {
                                 name="profile"
                                 value={this.state.user.profile}
                                 onChange={this.handleChange}
-                                isDisable={cannotEdit || this.props.edit ||this.state.user.username === 'admin'}
+                                isDisable={cannotEdit || this.props.edit || this.state.user.username === 'admin'}
                             >
                                 <option value="" disabled>
-                                    Choose your option
+                                    {t('users:profile.alt')}
                                 </option>
                                 {this.props.groups.map(obj => (
                                     <option value={obj.name} id={obj.name + '-option'}
@@ -358,28 +366,28 @@ class SideBar extends Component {
                         <div
                             id="auth-save"
                             className="material-btn center-text-parent center-middle-flex"
-                            title="Save Changes"
+                            title={t('save.alt')}
                             onClick={this.handleSave}
                         >
                             <span className="text center-text-child"
-                                  style={cannotEdit ? { display: 'none' } : {}}>save</span>
+                                  style={cannotEdit ? { display: 'none' } : {}}>{t('save.label')}</span>
                         </div>
                         <div
                             id="auth-cancel"
                             className="material-btn center-text-parent center-middle-flex"
-                            title="Discard Changes"
+                            title={t('discard.alt')}
                             onClick={this.hideSideBar}
                         >
-                            <span className="text center-text-child">discard</span>
+                            <span className="text center-text-child">{t('discard.label')}</span>
                         </div>
                         <div
                             id="auth-delete"
                             className="material-btn center-text-parent center-middle-flex"
-                            title="Delete User"
+                            title={t('remove.alt')}
                             onClick={this.handleDelete}
                         >
                             <span className="text center-text-child"
-                                  style={cannotEdit || this.state.user.username === 'admin' ? { display: 'none' } : {}}>delete</span>
+                                  style={cannotEdit || this.state.user.username === 'admin' ? { display: 'none' } : {}}>{t('remove.label')}</span>
                         </div>
                     </div>
 
@@ -390,19 +398,19 @@ class SideBar extends Component {
                         <div
                             id="auth-save"
                             className="material-btn center-text-parent center-middle-flex"
-                            title="Create a new user"
+                            title={t('save.alt')}
                             onClick={this.handleCreate}
                         >
                             <span className="text center-text-child"
-                                  style={cannotEdit ? { display: 'none' } : {}}>create</span>
+                                  style={cannotEdit ? { display: 'none' } : {}}>{t('save.label')}</span>
                         </div>
                         <div
                             id="auth-cancel"
                             className="material-btn center-text-parent center-middle-flex"
-                            title="Discard changes"
+                            title={t('discard.alt')}
                             onClick={this.hideSideBar}
                         >
-                            <span className="text center-text-child">discard</span>
+                            <span className="text center-text-child">{t('discard.label')}</span>
                         </div>
                     </div>
                 </div>
@@ -438,9 +446,7 @@ function SummaryItem(props) {
                 <img className="title-icon" src="images/generic-user-icon.png"/>
                 <div className="title-text truncate" title={props.user.name}>
                     <span className="text">
-                        {' '}
                         {props.user.name}
-                        {' '}
                     </span>
                 </div>
             </div>
@@ -453,7 +459,9 @@ function SummaryItem(props) {
                         <div className="user-card attr-content" title={props.user.username}>
                             <input className="truncate" type="text" value={props.user.username}
                                    disabled/>
-                            <span>User Name</span>
+                            <span>
+                                <Trans i18nKey="users:username.label"/>
+                            </span>
                         </div>
                     </div>
                     <div className="attr-row">
@@ -463,7 +471,9 @@ function SummaryItem(props) {
                         <div className="user-card attr-content" title={props.user.email}>
                             <input className="truncate" type="text" value={props.user.email}
                                    disabled/>
-                            <span>Email</span>
+                            <span>
+                                <Trans i18nKey="users:email.label"/>
+                            </span>
                         </div>
                     </div>
                     <div className="attr-row">
@@ -477,7 +487,9 @@ function SummaryItem(props) {
                                 value={props.user.profile}
                                 disabled
                             />
-                            <span>Profile</span>
+                            <span>
+                                <Trans i18nKey="users:profile.label"/>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -548,8 +560,8 @@ class RemoveDialog extends Component {
                 <div className="modal-content full">
                     <div className="row center background-info">
                         <div><i className="fa fa-exclamation-triangle fa-4x"/></div>
-                        <div>You are about to remove this user.</div>
-                        <div>Are you sure?</div>
+                        <div><Trans i18nKey="users:alerts.qst_remove"/></div>
+                        <div><Trans i18nKey="users:alerts.qst_confirm_remove"/></div>
                     </div>
                 </div>
                 <div className="modal-footer right">
@@ -558,14 +570,14 @@ class RemoveDialog extends Component {
                         className="btn-flat btn-ciano waves-effect waves-light"
                         onClick={this.dismiss}
                     >
-                        cancel
+                        <Trans i18nKey="discard.label"/>
                     </button>
                     <button
                         type="submit"
                         className="btn-flat btn-red waves-effect waves-light"
                         onClick={this.remove}
                     >
-                        remove
+                        <Trans i18nKey="remove.label"/>
                     </button>
                 </div>
             </div>
@@ -654,10 +666,12 @@ class UserList extends Component {
     }
 
     render() {
+        const {t} = this.props;
         return (
             <div className="fill">
                 <AltContainer store={UserStore}>
-                    <SideBar {...this.state} hide={this.hideSideBar} visible={this.props.visible}
+                    <SideBar {...this.state} t={t} hide={this.hideSideBar}
+                             visible={this.props.visible}
                              formUser={this.formUser}/>
                 </AltContainer>
                 <RemoveDialog callback={this.deleteUser} target="confirmDiag"/>
@@ -768,14 +782,15 @@ class UsersContent extends Component {
     }
 
     render() {
-
+        const { t } = this.props;
         return (
             <span id="userMain">
                     <AltContainer store={UserStore}>
-                      <NewPageHeader title="Auth" subtitle="Users" icon='user'>
-                        <OperationsHeader newUser={this.newUser}/>
+                      <NewPageHeader title={t('users:title')} subtitle={t('users:title')}
+                                     icon='user'>
+                        <OperationsHeader newUser={this.newUser} {...this.props}/>
                       </NewPageHeader>
-                      <UserFilter filter={this.state.filter} {...this.state}
+                      <UserFilter filter={this.state.filter} {...this.state} {...this.props}
                                   visibility={this.visibility}/>
                     </AltContainer>
                 </span>
@@ -793,7 +808,7 @@ class Users extends Component {
     render() {
         return (
             <AltContainer store={LoginStore}>
-                <UsersContent/>
+                <UsersContent {...this.props}/>
             </AltContainer>
         );
     }
@@ -801,14 +816,15 @@ class Users extends Component {
 
 
 function OperationsHeader(props) {
+    const { t } = props;
     return (
         <div className="col s12 pull-right pt10">
             <Can do="modifier" on="user">
                 <DojotBtnLink
                     responsive="true"
                     onClick={props.newUser}
-                    label="New User"
-                    alt="Create a new user"
+                    label={t('users:header_btn_new.label')}
+                    alt={t('users:header_btn_new.alt')}
                     icon="fa fa-plus"
                     className="w130px"
                 />
@@ -818,4 +834,4 @@ function OperationsHeader(props) {
     );
 }
 
-export default Users;
+export default translate()(Users);

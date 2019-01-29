@@ -1,16 +1,17 @@
 {
-  "btn": {
-    "save": {
-      "label": "Save",
-      "alt": "Click to Save"
-    },
-    "discard": {
-      "label": "Discard",
-      "alt": "Click to close"
-    },
-    "remove": {
-      "label": "Remove",
-      "alt": "Click to Remove"
-    }
+  "save": {
+    "label": "Save",
+    "alt": "Click to Save"
+  },
+  "discard": {
+    "label": "Discard",
+    "alt": "Click to close"
+  },
+  "remove": {
+    "label": "Remove",
+    "alt": "Click to Remove"
+  },
+  "description": {
+    "label": "Description"
   }
 }

@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /usr/share/yarn/bin/yarn.js add i18next-xhr-backend --save
+  /usr/local/bin/node /usr/share/yarn/bin/yarn.js install
 
 PATH: 
   /home/mprevide/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin

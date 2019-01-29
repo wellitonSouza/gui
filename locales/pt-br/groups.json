@@ -1,6 +1,5 @@
 {
   "title": "Grupos",
-  "description": "Descrição",
   "alerts": {
     "empty_name": "Nome do grupo vazio",
     "invalid_name": "Nome do grupo inválido",
@@ -29,20 +28,6 @@
       "groupdescription": {
         "label": "Descrição",
         "error": ""
-      }
-    },
-    "btn": {
-      "save": {
-        "label": "Salvar",
-        "alt": "Clique para Salvar"
-      },
-      "discard": {
-        "label": "Fechar",
-        "alt": "Clique para Fechar"
-      },
-      "remove": {
-        "label": "Remover",
-        "alt": "Clique para Remover"
       }
     },
     "feature": {

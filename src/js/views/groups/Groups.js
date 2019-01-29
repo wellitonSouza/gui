@@ -45,7 +45,7 @@ function GroupCard(obj) {
                                 text={obj.group.description}
                                 containerClassName="description-text"
                             />
-                            <div className="subtitle"><Trans i18nKey="description" /></div>
+                            <div className="subtitle"><Trans i18nKey="description.label" /></div>
                         </div>
                     </div>
                 </div>

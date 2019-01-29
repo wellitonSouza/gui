@@ -113,7 +113,7 @@ function Form(params) {
                 errorMessage={<Trans i18nKey="form.input.groupname.error" />}
             />
             <InputText
-                label={<Trans i18nKey="form.input.groupdescription.label" />}
+                label={<Trans i18nKey="description.label" />}
                 name="description"
                 maxLength={254}
                 onChange={handleCharge}
@@ -322,7 +322,7 @@ class GroupsSideBar extends Component {
 
         const buttonsFooter = [
             {
-                label: <Trans i18nKey="common:btn.discard.label" />,
+                label: <Trans i18nKey="discard.label" />,
                 click: this.discard,
                 type: 'default',
             },
@@ -330,13 +330,13 @@ class GroupsSideBar extends Component {
 
         if (!cannotEdit) {
             buttonsFooter.push({
-                label: <Trans i18nKey="common:btn.save.label" />,
+                label: <Trans i18nKey="save.label" />,
                 click: this.save,
                 type: 'primary',
             });
             if (edit) {
                 buttonsFooter.push({
-                    label: <Trans i18nKey="common:btn.remove.label" />,
+                    label: <Trans i18nKey="remove.label" />,
                     click: this.handleModalDelete,
                     type: 'secondary',
                 });

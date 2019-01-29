@@ -270,8 +270,8 @@ class LeftSidebar extends Component {
                 image: 'chip',
                 target: '/device',
                 iconClass: 'material-icons mi-ic-memory',
-                label: 'Devices',
-                desc: 'Known devices and configuration',
+                label: <Trans i18nKey="menu:devices.text"/>,
+                desc: <Trans i18nKey="menu:devices.alt"/>,
                 children: [
                     {
                         target: '/device/list',
@@ -295,8 +295,8 @@ class LeftSidebar extends Component {
                 image: 'template',
                 target: '/template/list',
                 iconClass: 'fa fa-cubes',
-                label: 'Templates ',
-                desc: 'Template management',
+                label: <Trans i18nKey="menu:templates.text"/>,
+                desc: <Trans i18nKey="menu:templates.alt"/>,
             });
         }
 
@@ -305,8 +305,8 @@ class LeftSidebar extends Component {
                 image: 'graph',
                 target: '/flows',
                 iconClass: 'material-icons mi-device-hub',
-                label: 'data flows',
-                desc: 'Processing flows to be executed',
+                label: <Trans i18nKey="menu:flows.text"/>,
+                desc: <Trans i18nKey="menu:flows.alt"/>,
             });
         }
 
@@ -315,8 +315,8 @@ class LeftSidebar extends Component {
                 image: 'user',
                 target: '/auth',
                 iconClass: 'fa fa-unlock-alt',
-                label: 'Users',
-                desc: 'Users list',
+                label: <Trans i18nKey="menu:users.text"/>,
+                desc: <Trans i18nKey="menu:users.alt"/>,
             });
         }
 

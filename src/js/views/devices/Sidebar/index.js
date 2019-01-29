@@ -275,28 +275,6 @@ class Sidebar extends Component {
         return formatDevice;
     }
 
-    formatDeviceAttr(device) {
-        const newDevice = { ...device };
-        console.log(newDevice)
-        newDevice.configValues = [];
-        newDevice.dynamicValues = [];
-        newDevice.staticValues = [];
-        newDevice.actuatorValues = [];
-        newDevice.metadata = {};
-
-        newDevice.configValues = device.configValues.concat(device.attrs.filter(item => item.type === 'meta'));
-        newDevice.dynamicValues = device.dynamicValues.concat(device.attrs.filter(item => item.type === 'dynamic'));
-        newDevice.staticValues = device.staticValues.concat(device.attrs.filter(item => item.type === 'static'));
-        newDevice.actuatorValues = device.actuatorValues.concat(device.attrs.filter(item => item.type === 'actuator'));
-        newDevice.attrs.forEach((item) => {
-            if (Object.prototype.hasOwnProperty.call(item, 'metadata')) {
-                newDevice.metadata[item.id] = [...item.metadata];
-            }
-        });
-
-        return newDevice;
-    }
-
     validDevice(device) {
         if (device.templates.length < 1) {
             return {

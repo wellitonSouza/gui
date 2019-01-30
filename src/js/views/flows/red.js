@@ -4555,18 +4555,27 @@ RED.keyboard = (function() {
     }
 
     function init() {
-        $.getJSON("flows/red/keymap.json",function(data) {
-            for (var scope in data) {
-                if (data.hasOwnProperty(scope)) {
-                    var keys = data[scope];
-                    for (var key in keys) {
-                        if (keys.hasOwnProperty(key)) {
-                            addHandler(scope,key,keys[key]);
+
+        $.getJSON({
+            url: 'flows/red/keymap.json',
+            type: 'GET',
+            headers: {
+                "authorization": `Bearer ${util.getToken()}`,
+            },
+            success: function(data) {
+                for (var scope in data) {
+                    if (data.hasOwnProperty(scope)) {
+                        var keys = data[scope];
+                        for (var key in keys) {
+                            if (keys.hasOwnProperty(key)) {
+                                addHandler(scope,key,keys[key]);
+                            }
                         }
                     }
                 }
-            }
-        })
+            },
+        });
+
         RED.actions.add("core:show-help", showKeyboardHelp);
 
     }

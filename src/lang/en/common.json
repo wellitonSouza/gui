@@ -13,7 +13,7 @@
       "invalid_name": "Invalid Group name.",
       "empty_desc": "Empty Group description.",
       "group_create": "Group created.",
-      "group_modify": "Group modify.",
+      "group_modify": "Group updated.",
       "group_remove": "Group removed",
       "admin_not_remove": "This group can not be change"
     },
@@ -31,7 +31,7 @@
       "input": {
         "groupname": {
           "label": "Group name",
-          "error": "Please use only letters (a-z) and numbers (0-9)"
+          "error": "Please use only letters (a-z)"
         },
         "groupdescription": {
           "label": "Description",

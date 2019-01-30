@@ -7,23 +7,26 @@ i18n.use(LanguageDetector)
     .init({
         resGetPath: '__ns__-__lng__.json',
         load: 'All',
-        fallbackLng: {
-            pt: ['pt-br'],
-            'pt-pt': ['pt-br'],
-            default: ['en'],
-        },
+        /*       fallbackLng: {
+                   pt: ['pt-br'],
+                   'pt-pt': ['pt-br'],
+                   default: ['en'],
+               }, */
         lowerCaseLng: true,
         debug: true,
         nsSeparator: ':',
-        ns: ['common', 'menu', 'groups', 'importExport', 'users'],
+        ns: ['common', 'menu', 'groups', 'importExport', 'users', 'flows', 'templates', 'devices', 'login'],
         fallbackNS: 'common',
         interpolation: {
             escapeValue: false, // not needed for react
             formatSeparator: ',',
         },
         react: {
-            wait: true,
-
+            wait: false,
+            withRef: false,
+            bindI18n: 'languageChanged loaded',
+            bindStore: 'added removed',
+            nsMode: 'default',
         },
     });
 

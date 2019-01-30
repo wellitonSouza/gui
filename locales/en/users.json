@@ -35,7 +35,8 @@
     "label": "Profile",
     "alt": "Choose your option",
     "error": "Missing profile."
-  }
+  },
+  "user": "user"
 }
 
 

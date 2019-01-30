@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Slide from 'react-reveal/Slide';
 import { DojotCustomButton } from 'Components/DojotButton';
 import MaterialInput from 'Components/MaterialInput';
+import { withNamespaces } from 'react-i18next';
 import TemplateItem from './TemplateItem';
 import { templateType } from '../../../templates/TemplatePropTypes';
 
@@ -38,7 +39,7 @@ class SidebarManageTemplates extends Component {
 
     render() {
         const {
-            showManageTemplates, handleShowManageTemplate, handleSelectTemplate, selectedTemplates,
+            showManageTemplates, handleShowManageTemplate, handleSelectTemplate, selectedTemplates, t,
         } = this.props;
         const {
             templateList,
@@ -67,7 +68,7 @@ class SidebarManageTemplates extends Component {
                             <div className="manage-templates">
                                 <div className="header">
                                     <div className="title">
-                                        manage template
+                                        {t('devices:manage_template')}
                                     </div>
                                     <div className="icon">
                                         <img src="images/icons/template-cyan.png" alt="template-icon" />
@@ -75,10 +76,12 @@ class SidebarManageTemplates extends Component {
                                 </div>
                                 <div className="body">
                                     <div className="title">
-                                        {'new device > set template'}
+                                        {`${t('text.new')}  ${t('devices:device')}  > ${t('text.set')} ${t('templates:template')} `}
                                     </div>
                                     <div className="template-filter">
-                                        <div className="label">Select any templates</div>
+                                        <div className="label">
+                                            {`${t('text.select')}  ${t('text.any')}  ${t('templates:title')}`}
+                                        </div>
                                         <div className="template-filter-input">
                                             <MaterialInput
                                                 className="filter"
@@ -87,7 +90,7 @@ class SidebarManageTemplates extends Component {
                                                 value={filter}
                                                 onChange={e => this.handleFilter(e.target.value)}
                                             >
-                                                Filter By Name
+                                                {`${t('text.filter')}  ${t('text.by')}  ${t('text.name')}`}
                                             </MaterialInput>
                                             <button type="button" className="template-filter-button">
                                                 <i className="fa fa-search" aria-hidden="true" />
@@ -100,7 +103,7 @@ class SidebarManageTemplates extends Component {
                                     </div>
                                 </div>
                                 <div className="footer">
-                                    <DojotCustomButton label="back" onClick={handleShowManageTemplate} />
+                                    <DojotCustomButton label={t('back.label')} onClick={handleShowManageTemplate} />
                                 </div>
                             </div>
                         )
@@ -120,7 +123,8 @@ SidebarManageTemplates.propTypes = {
     showManageTemplates: PropTypes.bool,
     handleShowManageTemplate: PropTypes.func.isRequired,
     templates: PropTypes.arrayOf(PropTypes.shape(templateType)),
+    t: PropTypes.func.isRequired,
 };
 
 
-export default SidebarManageTemplates;
+export default withNamespaces()(SidebarManageTemplates);

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withNamespaces } from 'react-i18next';
 import TemplateTypes from '../../TemplateTypes';
 
 const attrType = new TemplateTypes();
@@ -47,7 +48,7 @@ class ConfigList extends Component {
         }
 
         const staticValue = this.props.attributes.static_value || '';
-
+        const { t } = this.props;
         return (
             <div className={`attr-area ${this.state.isSuppressed ? 'suppressed' : ''}`}>
                 <div className="attr-row">
@@ -64,11 +65,21 @@ class ConfigList extends Component {
                             onChange={this.handleChange}
                         >
                             <option value="">Select type</option>
-                            {this.availableValueTypes.map(opt => <option value={opt.value} key={opt.label}>{opt.label}</option>)}
+                            {this.availableValueTypes.map(opt => (
+                                <option
+                                    value={opt.value}
+                                    key={opt.label}
+                                >
+                                    {opt.label}
+                                </option>
+                            ))}
                         </select>
                         <span>Type</span>
                     </div>
-                    <div className="center-text-parent material-btn right-side" onClick={this.suppress}>
+                    <div
+                        className="center-text-parent material-btn right-side"
+                        onClick={this.suppress}
+                    >
                         <i className={`${this.state.isSuppressed ? 'fa fa-angle-down' : 'fa fa-angle-up'} center-text-child text`} />
                     </div>
                 </div>
@@ -94,13 +105,20 @@ class ConfigList extends Component {
                             onChange={this.handleChange}
                         >
                             <option value="">Select type</option>
-                            {this.availableTypes.map(opt => <option value={opt.value} key={opt.label}>{opt.label}</option>)}
+                            {this.availableTypes.map(opt => (
+                                <option
+                                    value={opt.value}
+                                    key={opt.label}
+                                >
+                                    {opt.label}
+                                </option>
+                            ))}
                         </select>
                         <span>Meta Value</span>
                     </div>
                     <div
                         className={`${this.props.editable ? '' : 'none'} center-text-parent material-btn right-side raised-btn`}
-                        title="Remove Attribute"
+                        title={`${t('remove')} ${t('templates:template')} `}
                         onClick={this.removeAttribute.bind(this, this.props.index)}
                     >
                         <i className="fa fa-trash center-text-child icon-remove" />
@@ -111,4 +129,4 @@ class ConfigList extends Component {
     }
 }
 
-export default ConfigList;
+export default withNamespaces()(ConfigList);

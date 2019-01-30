@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import AltContainer from 'alt-container';
 import TemplateStore from 'Stores/TemplateStore';
 import { NewPageHeader } from 'Containers/full/PageHeader';
+import {
+    withNamespaces,
+} from 'react-i18next';
 import TemplateActions from 'Actions';
 import OperationsHeader from './OperationsHeader';
 import { Filter, Pagination, FilterLabel } from '../utils/Manipulation';
@@ -28,6 +31,7 @@ FilterFields.propTypes = {
         sortBy: PropTypes.string,
     }).isRequired,
     onChange: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
 };
 
 class Templates extends Component {
@@ -52,18 +56,23 @@ class Templates extends Component {
     }
 
     render() {
+        const { t } = this.props;
         const { showFilter } = this.state;
         return (
             <div className="full-device-area">
                 <AltContainer store={TemplateStore}>
-                    <NewPageHeader title="Templates" subtitle="Templates" icon="template">
-                        <FilterLabel ops={this.temp_opex} text="Filtering Templates" />
+                    <NewPageHeader
+                        title={t('templates:title')}
+                        subtitle={t('templates:title')}
+                        icon="template"
+                    >
+                        <FilterLabel ops={this.temp_opex} text={t('templates:header.filter.alt')} />
                         <Pagination show_pagination ops={this.temp_opex} />
                         <OperationsHeader toggleSearchBar={this.toggleSearchBar} />
                     </NewPageHeader>
                     <Filter
                         showPainel={showFilter}
-                        metaData={{ alias: 'template' }}
+                        metaData={{ alias: t('templates:template') }}
                         ops={this.temp_opex}
                         fields={FilterFields}
                     />
@@ -75,4 +84,4 @@ class Templates extends Component {
 }
 
 
-export default Templates;
+export default withNamespaces()(Templates);

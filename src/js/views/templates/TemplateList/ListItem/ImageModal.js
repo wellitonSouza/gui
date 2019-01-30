@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { withNamespaces } from 'react-i18next';
 import { ImageCard, NewImageCard } from '../../../firmware/elements';
 
 // this component is pretty similar to FirmwareCardImpl
@@ -46,6 +47,7 @@ class ImageModal extends Component {
         )[0];
         if (default_version) default_version = default_version.static_value;
         // console.log("default fw_version: ", default_version);
+        const { t } = this.props;
 
         return (
 
@@ -59,7 +61,7 @@ class ImageModal extends Component {
                                 <div className="icon-firmware" />
 
                                 <label className="title truncate" title={this.props.template.label}>{this.props.template.label}</label>
-                                <label className="subtitle">Firmware Management</label>
+                                <label className="subtitle">{`${t('templates:firmware.title')} ${t('text:management')}`}</label>
                             </div>
                         </div>
 
@@ -88,4 +90,4 @@ class ImageModal extends Component {
     }
 }
 
-export default ImageModal;
+export default withNamespaces()(ImageModal);

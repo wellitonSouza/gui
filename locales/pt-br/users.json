@@ -3,9 +3,7 @@
   "alerts": {
     "user_update": "Usuário atualizado.",
     "user_update_err": "Falha ao atualizar o usuário.",
-    "user_create": "Usuário criado",
-    "modal_qst_remove": "Você irá apagar o usuário.",
-    "modal_qst_confirm_remove": "Você tem certeza?"
+    "user_create": "Usuário criado"
   },
   "header_btn_new": {
     "label": "Novo usuário",
@@ -16,7 +14,7 @@
     "edit": "Editar usuário"
   },
   "username": {
-    "label": "User Name",
+    "label": "Nome de usuário",
     "error": "Username inválido."
   },
   "name": {
@@ -35,5 +33,6 @@
     "label": "Perfil",
     "alt": "-",
     "error": "Selecione um perfil."
-  }
+  },
+  "user": "usuário"
 }

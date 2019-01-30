@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import ReactPaginate from 'react-paginate';
 import { DojotBtnCircle } from '../../components/DojotButton';
 import MaterialSelect from '../../components/MaterialSelect';
+import { withNamespaces } from 'react-i18next';
 
 class GenericOperations {
     constructor() {
@@ -41,18 +42,18 @@ class FilterLabel extends Component {
         if (this.props.ops.hasFilter()) {
             return (
                 <div className="col s2 p0 filter-information">
-                    <i className="fa fa-info-circle " />
+                    <i className="fa fa-info-circle "/>
                     {' '}
-Filtering
+                    Filtering
                 </div>
             );
         }
-        return <div className="col s2 p0 filter-information" />;
+        return <div className="col s2 p0 filter-information"/>;
     }
 }
 
 
-class Pagination extends Component {
+class PaginationComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -79,36 +80,44 @@ class Pagination extends Component {
     }
 
     render() {
-        // console.log('Render Pagination Component ', this.props);
+        const { t } = this.props;
 
         if (!this.props.pagination || !this.props.show_pagination || !this.props.pagination.total) {
-            return <div className="col s7 p0" />;
+            return <div className="col s7 p0"/>;
         }
 
         const pageCount = this.props.pagination.total;
         const currentPage = this.props.pagination.page - 1;
 
         return (
-            <div className="col s12 l7 p0"> 
+            <div className="col s12 l7 p0">
                 <div className="pagination_div">
-                    <ReactPaginate previousLabel="prev" nextLabel="next" pageCount={pageCount} marginPagesDisplayed={1} pageRangeDisplayed={3} forcePage={currentPage} onPageChange={this.handlePageClick} containerClassName="pagination" subContainerClassName="pages pagination" activeClassName="active" />
+                    <ReactPaginate previousLabel={t('text.prev')} nextLabel={t('text.next')}
+                                   pageCount={pageCount}
+                                   marginPagesDisplayed={1} pageRangeDisplayed={3}
+                                   forcePage={currentPage} onPageChange={this.handlePageClick}
+                                   containerClassName="pagination"
+                                   subContainerClassName="pages pagination"
+                                   activeClassName="active"/>
                 </div>
                 <div className="elements_page_div">
-                    <MaterialSelect new_style label="# per page" value={this.state.elements_page} onChange={this.changeNelements}>
+                    <MaterialSelect new_style label={`# ${t('text.per_page')}`}
+                                    value={this.state.elements_page}
+                                    onChange={this.changeNelements}>
                         <option key="six" value="6">
-                6
+                            6
                         </option>
                         <option key="twelve" value="12">
-                12
+                            12
                         </option>
                         <option key="eighteen" value="18">
-                18
+                            18
                         </option>
                         <option key="thirtysix" value="36">
-                36
+                            36
                         </option>
                         <option key="sixtyfour" value="64">
-                64
+                            64
                         </option>
                     </MaterialSelect>
                 </div>
@@ -117,7 +126,7 @@ class Pagination extends Component {
     }
 }
 
-class NewPagination extends Component {
+class NewPaginationComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -144,8 +153,9 @@ class NewPagination extends Component {
     }
 
     render() {
+        const { t } = this.props;
         if (!this.props.pagination || !this.props.show_pagination || !this.props.pagination.total) {
-            return <div className="pagination-wrapper" />;
+            return <div className="pagination-wrapper"/>;
         }
 
         const pageCount = this.props.pagination.total;
@@ -154,7 +164,9 @@ class NewPagination extends Component {
         return (
             <div className="pagination-wrapper">
                 <div className="elements_page_div">
-                    <MaterialSelect new_style label="# per page" value={this.state.elements_page} onChange={this.changeNelements}>
+                    <MaterialSelect new_style label={`# ${t('text.per_page')}`}
+                                    value={this.state.elements_page}
+                                    onChange={this.changeNelements}>
                         <option key="six" value="6">6</option>
                         <option key="twelve" value="12">12</option>
                         <option key="eighteen" value="18">18</option>
@@ -163,7 +175,13 @@ class NewPagination extends Component {
                     </MaterialSelect>
                 </div>
                 <div className="pagination_div">
-                    <ReactPaginate previousLabel="previous" nextLabel="next" pageCount={pageCount} marginPagesDisplayed={1} pageRangeDisplayed={3} forcePage={currentPage} onPageChange={this.handlePageClick} containerClassName="pagination" subContainerClassName="pages pagination" activeClassName="active" />
+                    <ReactPaginate previousLabel={t('text.previous')} nextLabel={t('text.next_full')}
+                                   pageCount={pageCount}
+                                   marginPagesDisplayed={1} pageRangeDisplayed={3}
+                                   forcePage={currentPage} onPageChange={this.handlePageClick}
+                                   containerClassName="pagination"
+                                   subContainerClassName="pages pagination"
+                                   activeClassName="active"/>
                 </div>
             </div>
         );
@@ -171,7 +189,7 @@ class NewPagination extends Component {
 }
 
 
-class Filter extends Component {
+class FilterComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -187,8 +205,6 @@ class Filter extends Component {
     }
 
     updateQuery(element) {
-    // console.log("Update query...");
-    // console.log(element);
         const qy = this.state.query;
         qy[element.label] = element.value;
         if (element.value.trim() == '') delete qy[element.label];
@@ -205,46 +221,43 @@ class Filter extends Component {
         event.preventDefault();
         const f = event.target.name;
         const v = event.target.value;
-        this.updateQuery({ label: f, value: v });
+        this.updateQuery({
+            label: f,
+            value: v
+        });
     }
 
     componentDidMount() {
         if (this.props.ops.hasFilter()) {
             const qry = this.props.ops.getCurrentQuery();
-            // console.log('Getting current query: ', qry);
             this.setState({ query: qry });
         }
     }
 
-    handleKey(e){
-        if(e.key ==='Enter'){
-          this.doSearch()
+    handleKey(e) {
+        if (e.key === 'Enter') {
+            this.doSearch();
         }
     }
 
     render() {
-        // console.log('Render Filter Component ', this.props, this.state);
 
-        // if (this.props.showPainel) {
-        //   return null;
-        // }
         const Fields = this.props.fields;
+        const { t } = this.props;
 
         return (
-            <div className={`row z-depth-2 templatesSubHeader ${this.props.showPainel ? 'show-dy' : 'hide-dy'}`} id="inner-header">
+            <div
+                className={`row z-depth-2 templatesSubHeader ${this.props.showPainel ? 'show-dy' : 'hide-dy'}`}
+                id="inner-header">
                 <div className="col s3 m3 main-title">
-          Filtering
-                    {' '}
-                    {this.props.metaData.alias}
-(s)
-                    {/* Showing {this.state.nElements}  {this.metaData.alias}(s) */}
+                    {`${t('text.filtering')} ${this.props.metaData.alias}(s)`}
                 </div>
-                {/* <div className="col s1 m1 header-info" /> */}
                 <div className="col s6 m6">
-                    <Fields fields={this.state.query} onChange={this.handleChange} KeyUp={this.handleKey.bind(this)} />
+                    <Fields fields={this.state.query} onChange={this.handleChange}
+                            KeyUp={this.handleKey.bind(this)}/>
                 </div>
                 <div className="col s1 m1 pt10">
-                    <DojotBtnCircle click={this.doSearch} icon="fa fa-search" />
+                    <DojotBtnCircle click={this.doSearch} icon="fa fa-search"/>
                 </div>
             </div>
         );
@@ -272,7 +285,7 @@ class SimpleFilter extends Component {
                     <div className="input-field">
                         {/* <i className="prefix fa fa-search"></i> */}
                         <label htmlFor="deviceFiltering">Filter</label>
-                        <input id="deviceFiltering" type="text" onChange={this.handleChange} />
+                        <input id="deviceFiltering" type="text" onChange={this.handleChange}/>
                     </div>
                 </form>
             </div>
@@ -280,7 +293,10 @@ class SimpleFilter extends Component {
     }
 }
 
-// export default Filter;
+const Filter = withNamespaces()(FilterComponent);
+const Pagination = withNamespaces()(PaginationComponent);
+const NewPagination = withNamespaces()(NewPaginationComponent);
+
 export {
     SimpleFilter, Filter, Pagination, FilterLabel, GenericOperations, NewPagination,
 };

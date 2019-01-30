@@ -5,7 +5,7 @@ import AltContainer from 'alt-container';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { NewPageHeader } from '../../containers/full/PageHeader';
 import {
-    Trans, translate
+    Trans,  withNamespaces
 } from 'react-i18next';
 import MaterialSelect from '../../components/MaterialSelect';
 import LoginStore from '../../stores/LoginStore';
@@ -427,7 +427,7 @@ class SideBar extends Component {
                 {sideBar}
                 {this.state.show_modal ? (
                     <RemoveModal
-                        name="user"
+                        name={t('users:user')}
                         remove={this.removeUser}
                         openModal={this.setModal}
                     />
@@ -834,4 +834,4 @@ function OperationsHeader(props) {
     );
 }
 
-export default translate()(Users);
+export default withNamespaces()(Users);

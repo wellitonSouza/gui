@@ -1,6 +1,7 @@
 /* eslint-disable */
 import React, { Component } from 'react';
 import TemplateTypes from '../../TemplateTypes';
+import { withNamespaces } from 'react-i18next';
 
 const attrType = new TemplateTypes();
 
@@ -46,11 +47,12 @@ class AttributeList extends Component {
 
     render() {
         const staticValue = this.props.attributes.static_value || '';
+        const { t } = this.props;
         return (
             <div className={`attr-area ${this.state.isSuppressed ? 'suppressed' : ''}`}>
                 <div className="attr-row">
                     <div className="icon">
-                        <img src="images/tag.png" />
+                        <img src="images/tag.png"/>
                     </div>
                     <div className="attr-content">
                         <input
@@ -65,12 +67,13 @@ class AttributeList extends Component {
                         />
                         <span>Name</span>
                     </div>
-                    <div className="center-text-parent material-btn right-side" onClick={this.suppress}>
-                        <i className={`${this.state.isSuppressed ? 'fa fa-angle-down' : 'fa fa-angle-up'} center-text-child text`} />
+                    <div className="center-text-parent material-btn right-side"
+                         onClick={this.suppress}>
+                        <i className={`${this.state.isSuppressed ? 'fa fa-angle-down' : 'fa fa-angle-up'} center-text-child text`}/>
                     </div>
                 </div>
                 <div className="attr-row">
-                    <div className="icon" />
+                    <div className="icon"/>
                     <div className="attr-content">
                         <select
                             id="select_attribute_type"
@@ -80,22 +83,23 @@ class AttributeList extends Component {
                             disabled={!this.props.editable}
                             onChange={this.handleChange}
                         >
-                            <option value="">Select type</option>
-                            {this.availableValueTypes.map(opt => <option value={opt.value} key={opt.label}>{opt.label}</option>)}
+                            <option value="">{t('text.select_type')}</option>
+                            {this.availableValueTypes.map(opt => <option value={opt.value}
+                                                                         key={opt.label}>{opt.label}</option>)}
                         </select>
 
                         <span>Type</span>
                     </div>
                     <div
                         className={`${this.props.editable ? '' : 'none'} center-text-parent material-btn right-side raised-btn`}
-                        title="Remove Attribute"
+                        title={`${t('remove')} ${t('templates:template')} `}
                         onClick={this.removeAttribute.bind(this, this.props.index)}
                     >
-                        <i className="fa fa-trash center-text-child icon-remove" />
+                        <i className="fa fa-trash center-text-child icon-remove"/>
                     </div>
                 </div>
                 <div className="attr-row">
-                    <div className="icon" />
+                    <div className="icon"/>
                     <div className="attr-content">
                         <input
                             className={this.state.fieldSizeStaticAttrStatus ? 'truncate' : ''}
@@ -116,7 +120,8 @@ class AttributeList extends Component {
                             onChange={this.handleChange}
                         >
                             <option value="">Select type</option>
-                            {this.availableTypes.map(opt => <option value={opt.value} key={opt.label}>{opt.label}</option>)}
+                            {this.availableTypes.map(opt => <option value={opt.value}
+                                                                    key={opt.label}>{opt.label}</option>)}
                         </select>
                     </div>
                 </div>
@@ -125,4 +130,4 @@ class AttributeList extends Component {
     }
 }
 
-export default AttributeList;
+export default withNamespaces()(AttributeList);

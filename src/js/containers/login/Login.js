@@ -7,6 +7,7 @@ import LoginActions from '../../actions/LoginActions';
 import LoginStore from '../../stores/LoginStore';
 
 import { RecoveryPasswordModal } from '../../components/Modal';
+import { withNamespaces } from 'react-i18next';
 
 class Content extends Component {
     constructor(props) {
@@ -44,7 +45,7 @@ class Content extends Component {
             invalid.passwd = "This can't be empty";
         }
         result.invalid = invalid;
-        // if (Object.keys(invalid).length > 0) { result['invalid'] = invalid; }
+
         return result;
     }
 
@@ -80,14 +81,6 @@ class Content extends Component {
         const error = this.props.error;
         const try_login = this.try_login;
 
-        // function getClass(field) {
-        //   if (state.invalid.hasOwnProperty(field)) {
-        //     return "react-validate invalid";
-        //   } else {
-        //     return "react-validate";
-        //   }
-        // }
-
         function checkUsername() {
             return state.invalid.hasOwnProperty('username') && try_login;
         }
@@ -99,7 +92,7 @@ class Content extends Component {
         function getError() {
             return state.error.length > 0 ? state.error : error;
         }
-
+        const { t }  =this.props;
         return (
             <div className="row m0">
                 <div className="login col s12 p0 bg-left">
@@ -109,14 +102,14 @@ class Content extends Component {
                             <div className="row">
                                 <div className="col s12  offset-m1">
                                     <div className="login-page-title">
-                    [&nbsp;&nbsp;Login&nbsp;&nbsp;]
+                    [&nbsp;&nbsp;{t('login:title')}&nbsp;&nbsp;]
                                     </div>
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col s12  offset-m2">
                                     <div className="login-page-subtitle">
-                    Sign in to start your session
+                                        {t('login:sign_in_desc')}
                                     </div>
                                 </div>
                             </div>
@@ -133,7 +126,7 @@ class Content extends Component {
                                 <div className="row">
                                     <div className="input-field col s12 m6 offset-m2">
                                         <input id="fld_user" type="text" name="username" onChange={this.handleChange} value={this.state.login.user} />
-                                        <label htmlFor="fld_user" id="user_label">Username</label>
+                                        <label htmlFor="fld_user" id="user_label">{t('username.label')}</label>
                                         <span
                                             className={
                                                 `error-msgs-login ${
@@ -146,7 +139,7 @@ class Content extends Component {
                                     </div>
                                     <div className="input-field col s12 m6 offset-m2">
                                         <input id="fld_password" type="password" name="passwd" onChange={this.handleChange} value={this.state.login.password} />
-                                        <label htmlFor="fld_password" id="pass_label">Password</label>
+                                        <label htmlFor="fld_password" id="pass_label">{t('login:password.label')}</label>
                                         <span
                                             className={
                                                 `error-msgs-login ${
@@ -162,7 +155,7 @@ class Content extends Component {
                                 <div className="row">
                                     <div className="forget-password col s12 m6 offset-m3">
                                         <label onClick={this.handlePasswordModal}>
-                      Forgot Password?
+                                            {t('login:forgot_password')}
                                         </label>
                                     </div>
                                 </div>
@@ -174,7 +167,7 @@ class Content extends Component {
                                             </button>
                                         ) : (
                                             <button type="submit" className="red btn-flat">
-                        Login
+                                                {t('login:title')}
                                             </button>
                                         )}
                                     </div>
@@ -210,6 +203,7 @@ class Login extends Component {
     }
 
     render() {
+        const  { t } = this.props;
         return (
             <ReactCSSTransitionGroup
                 transitionName="first"
@@ -219,11 +213,11 @@ class Login extends Component {
                 transitionLeaveTimeout={500}
             >
                 <AltContainer store={LoginStore}>
-                    <Content />
+                    <Content t={t} />
                 </AltContainer>
             </ReactCSSTransitionGroup>
         );
     }
 }
 
-export default Login;
+export default withNamespaces()(Login);

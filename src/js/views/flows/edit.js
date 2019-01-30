@@ -45,7 +45,7 @@ class FlowCanvas extends Component {
                     authorization: `Bearer: ${util.getToken()}`,
                 },
             };
-            fetch('mashup/nodes', config)
+            fetch('flows/nodes', config)
                 .then(response => response.json())
                 .then((nodes) => {
                     RED.nodes.setNodeList(nodes);
@@ -82,7 +82,7 @@ class FlowCanvas extends Component {
                     authorization: `Bearer: ${util.getToken()}`,
                 },
             };
-            fetch('mashup/nodes', config)
+            fetch('flows/nodes', config)
                 .then(response => response.text())
                 .then((dom) => {
                     // this makes me *VERY* sad
@@ -167,7 +167,7 @@ class FlowCanvas extends Component {
 
                     <div id="palette" style={this.cannotEdit? {display:'none'}:{}}>
                         {/* This gets updated on didMount */}
-                        <img src="mashup/red/images/spin.svg" className="palette-spinner hide" />
+                        <img src="flows/red/images/spin.svg" className="palette-spinner hide" />
                         {/* This gets updated on didMount */}
                         {/* <div id="palette-search" className="palette-search hide">
               <input type="text" data-i18n="[placeholder]palette.filter"></input>

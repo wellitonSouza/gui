@@ -37,7 +37,7 @@ class FlowCanvas extends Component {
             const config = {
                 headers: {
                     accept: 'application/json',
-                    authorization: `Bearer: ${util.getToken()}`,
+                    authorization: `Bearer ${util.getToken()}`,
                 },
             };
             fetch('flows/nodes', config)
@@ -74,7 +74,7 @@ class FlowCanvas extends Component {
             const config = {
                 headers: {
                     accept: 'text/html',
-                    authorization: `Bearer: ${util.getToken()}`,
+                    authorization: `Bearer ${util.getToken()}`,
                 },
             };
             fetch('flows/nodes', config)
@@ -90,7 +90,7 @@ class FlowCanvas extends Component {
                 .catch((error) => { console.error('failed to fetch nodes dom', error); });
         }
 
-        RED.i18n.init(`Bearer: ${util.getToken()}`, () => {
+        RED.i18n.init(`Bearer ${util.getToken()}`, () => {
             RED.palette.init();
             RED.workspaces.init();
             RED.view.init();

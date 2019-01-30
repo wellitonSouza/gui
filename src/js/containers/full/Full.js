@@ -252,9 +252,6 @@ class LeftSidebar extends Component {
                 image: 'graph', target: '/flows', iconClass: 'material-icons mi-device-hub', label: 'data flows', desc: 'Processing flows to be executed',
             },
             {
-                image: 'bell', target: '/alarm', iconClass: 'fa fa-bell-o', label: 'alarms', desc: 'System events and alarms',
-            },
-            {
                 image: 'user',
                 target: '/auth',
                 iconClass: 'fa fa-unlock-alt',
@@ -343,7 +340,7 @@ class Full extends Component {
     componentDidMount() {
         ConfigActions.fetchCurrentConfig.defer(true);
     }
-    
+
     toggleUserSidebar() {
         this.setState({ user_sidebar: !this.state.user_sidebar });
     }

@@ -42,10 +42,10 @@ class FlowCanvas extends Component {
             const config = {
                 headers: {
                     accept: 'application/json',
-                    authorization: `Bearer: ${util.getToken()}`,
+                    authorization: `Bearer ${util.getToken()}`,
                 },
             };
-            fetch('mashup/nodes', config)
+            fetch('flows/nodes', config)
                 .then(response => response.json())
                 .then((nodes) => {
                     RED.nodes.setNodeList(nodes);
@@ -79,10 +79,10 @@ class FlowCanvas extends Component {
             const config = {
                 headers: {
                     accept: 'text/html',
-                    authorization: `Bearer: ${util.getToken()}`,
+                    authorization: `Bearer ${util.getToken()}`,
                 },
             };
-            fetch('mashup/nodes', config)
+            fetch('flows/nodes', config)
                 .then(response => response.text())
                 .then((dom) => {
                     // this makes me *VERY* sad
@@ -95,7 +95,7 @@ class FlowCanvas extends Component {
                 .catch((error) => { console.error('failed to fetch nodes dom', error); });
         }
 
-        RED.i18n.init(`Bearer: ${util.getToken()}`, () => {
+        RED.i18n.init(`Bearer ${util.getToken()}`, () => {
             RED.palette.init();
             RED.workspaces.init();
             RED.view.init();
@@ -167,7 +167,7 @@ class FlowCanvas extends Component {
 
                     <div id="palette" style={this.cannotEdit? {display:'none'}:{}}>
                         {/* This gets updated on didMount */}
-                        <img src="mashup/red/images/spin.svg" className="palette-spinner hide" />
+                        <img src="flows/red/images/spin.svg" className="palette-spinner hide" />
                         {/* This gets updated on didMount */}
                         {/* <div id="palette-search" className="palette-search hide">
               <input type="text" data-i18n="[placeholder]palette.filter"></input>

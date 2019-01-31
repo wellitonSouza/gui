@@ -135,8 +135,8 @@ export class TemplateTypes {
         this.configValueTypes = [
             // {"value": "fw_version", "label": "Firmware Version" },
             { value: 'protocol', label: 'Protocol' },
-            { value: 'topic', label: 'Topic' },
-            { value: 'translator', label: 'Translator' },
+            // { value: 'topic', label: 'Topic' },
+            // { value: 'translator', label: 'Translator' },
             { value: 'device_timeout', label: 'Device Timeout' },
         ];
     }
@@ -219,7 +219,7 @@ class AttributeList extends Component {
         }
         this.props.onChangeValue(event, this.props.index);
     }
- 
+
     removeAttribute(attribute) {
         this.props.removeAttribute(attribute, false);
     }
@@ -1418,7 +1418,7 @@ function OperationsHeader(props) {
             </div>
             <DojotBtnLink
                 responsive="true"
-                onClick={props.addTemplate} 
+                onClick={props.addTemplate}
                 label="New Template"
                 alt="Create a new template"
                 icon="fa fa-plus"

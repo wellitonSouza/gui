@@ -25,9 +25,7 @@
     box-sizing: border-box;
     overflow:hidden;
     position: relative;
-    @media screen and (max-width: 900px){
     width: 70% !important;
-    }
     .red-ui-typedInput-input {
         position: absolute;
         left:0;

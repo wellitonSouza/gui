@@ -8701,7 +8701,7 @@ RED.palette.editor = (function() {
                     var enableButton = $('<a href="#" class="editor-button editor-button-small"></a>').html(RED._('palette.editor.disableall')).appendTo(buttonGroup);
 
                     var contentRow = $('<div>',{class:"palette-module-content"}).appendTo(container);
-                    var shade = $('<div class="palette-module-shade hide"><img src="mashupflows/red/images/spin.svg" class="palette-spinner"/></div>').appendTo(container);
+                    var shade = $('<div class="palette-module-shade hide"><img src="flows/red/images/spin.svg" class="palette-spinner"/></div>').appendTo(container);
 
                     object.elements = {
                         updateButton: updateButton,
@@ -8876,7 +8876,7 @@ RED.palette.editor = (function() {
                     $('<span class="palette-module-updated"><i class="fa fa-calendar"></i> '+formatUpdatedAt(entry.updated_at)+'</span>').appendTo(metaRow);
                     var buttonRow = $('<div>',{class:"palette-module-meta"}).appendTo(headerRow);
                     var buttonGroup = $('<div>',{class:"palette-module-button-group"}).appendTo(buttonRow);
-                    var shade = $('<div class="palette-module-shade hide"><img src="mashupflows/red/images/spin.svg" class="palette-spinner"/></div>').appendTo(container);
+                    var shade = $('<div class="palette-module-shade hide"><img src="flows/red/images/spin.svg" class="palette-spinner"/></div>').appendTo(container);
                     var installButton = $('<a href="#" class="editor-button editor-button-small"></a>').html(RED._('palette.editor.install')).appendTo(buttonGroup);
                     installButton.click(function(e) {
                         e.preventDefault();

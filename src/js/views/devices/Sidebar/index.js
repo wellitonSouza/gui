@@ -149,6 +149,22 @@ class Sidebar extends Component {
                 return item;
             });
 
+            device.configValues = [];
+            device.dynamicValues = [];
+            device.staticValues = [];
+            device.actuatorValues = [];
+            device.metadata = {};
+
+            device.configValues = device.configValues.concat(device.attrs.filter(item => item.type === 'meta'));
+            device.dynamicValues = device.dynamicValues.concat(device.attrs.filter(item => item.type === 'dynamic'));
+            device.staticValues = device.staticValues.concat(device.attrs.filter(item => item.type === 'static'));
+            device.actuatorValues = device.actuatorValues.concat(device.attrs.filter(item => item.type === 'actuator'));
+            device.attrs.forEach((item) => {
+                if (Object.prototype.hasOwnProperty.call(item, 'metadata')) {
+                    device.metadata[item.id] = [...item.metadata];
+                }
+            });
+
             this.setState({
                 showDeviceAttrs: false,
                 device,

@@ -7,7 +7,7 @@ import SidebarConfigurationForm from './SidebarConfigurationForm';
 import MetadataList from './MetadataList';
 import SidebarButton from '../SidebarButton';
 import SidebarDelete from '../SidebarDelete';
-import { attrsType } from '../../../TemplatePropTypes';
+import { attrsType, templateType } from '../../../TemplatePropTypes';
 
 const SidebarAttribute = ({
     showAttribute,
@@ -22,6 +22,7 @@ const SidebarAttribute = ({
     toogleSidebarDelete,
     showDeleteAttr,
     selectMetadata,
+    template,
 }) => (
     <Fragment>
         <Slide right when={showAttribute} duration={300}>
@@ -29,7 +30,7 @@ const SidebarAttribute = ({
                 ? (
                     <div className="-sidebar sidebar-attribute">
                         <div className="header">
-                            <div className="title">{`${newAttr ? 'new atribute' : 'edit atribute'}`}</div>
+                            <div className="title">{`${newAttr ? 'new atribute' : template.label}`}</div>
                             <div className="icon">
                                 <img src="images/icons/template-cyan.png" alt="device-icon" />
                             </div>
@@ -53,7 +54,7 @@ const SidebarAttribute = ({
                                     />
                                 )
                             }
-                            <MetadataList values={selectAttr} selectMetadata={selectMetadata}/>
+                            <MetadataList values={selectAttr} selectMetadata={selectMetadata} />
                             <div className="body-actions">
                                 <div className="body-actions--divider" />
                                 <SidebarButton
@@ -96,6 +97,7 @@ SidebarAttribute.defaultProps = {
 };
 
 SidebarAttribute.propTypes = {
+    template: PropTypes.shape(templateType).isRequired,
     showAttribute: PropTypes.bool,
     changeAttrValue: PropTypes.func.isRequired,
     toogleSidebarAttribute: PropTypes.func.isRequired,

@@ -442,6 +442,7 @@ class Sidebar extends Component {
                     metadata={metadata}
                     showDeleteMeta={showDeleteMeta}
                     isNewMetadata={isNewMetadata}
+                    selectAttr={selectAttr}
                     toogleSidebarMetadata={this.toogleSidebarMetadata}
                     addMetadata={this.addMetadata}
                     updateMetadata={this.updateMetadata}

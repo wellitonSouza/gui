@@ -25,7 +25,7 @@ const SidebarTemplate = ({
                 ? (
                     <div className="template-sidebar">
                         <div className="header">
-                            <div className="title">manage template</div>
+                            <div className="title">{isNewTemplate ? 'manage template' : template.label}</div>
                             <div className="icon">
                                 <img src="images/icons/template-cyan.png" alt="device-icon" />
                             </div>

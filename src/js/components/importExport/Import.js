@@ -117,26 +117,28 @@ class Import extends Component {
                             />
                         ))}
                     </FilePond>
-                    { showModal ? (<ModalAlert
-                        title={title}
-                        openModal={this.openModal}
-                        firstMessage={firstMessage}
-                        label={label}
-                        click={this.uploadFile}
-                        img="warning"
-                        cancel
-                        back={this.dismiss}
-                    />
+                    { showModal ? (
+                        <ModalAlert
+                            title={title}
+                            openModal={this.openModal}
+                            firstMessage={firstMessage}
+                            label={label}
+                            click={this.uploadFile}
+                            img="warning"
+                            cancel
+                            back={this.dismiss}
+                        />
                     ) : null }
-                    {success ? (<ModalAlert
-                        title={t('importExport.import.titleSuccess')}
-                        openModal={this.openModal}
-                        firstMessage={t('importExport.import.subtitleSuccess')}
-                        label={label}
-                        click={this.handleSuccess}
-                        img="check-circle"
-                        back={this.handleSuccess}
-                    />
+                    {success ? (
+                        <ModalAlert
+                            title={t('importExport.import.titleSuccess')}
+                            openModal={this.openModal}
+                            firstMessage={t('importExport.import.subtitleSuccess')}
+                            label={label}
+                            click={this.handleSuccess}
+                            img="check-circle"
+                            back={this.handleSuccess}
+                        />
                     ) : null}
                 </ImportExport>
             </div>

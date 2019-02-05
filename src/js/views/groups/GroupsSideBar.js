@@ -76,7 +76,8 @@ function TableGroupsPermissions(params) {
                                             checked={groupHasPermission(item.subject, 'modifier', groupPermissions)}
                                             handleChangeCheckbox={handleChangeCheckbox}
                                             disabled={cannotEdit}
-                                        />) : <div />}
+                                        />
+) : <div />}
                                 </td>
                             </tr>
                         ))}
@@ -366,7 +367,8 @@ class GroupsSideBar extends Component {
                         name="group"
                         remove={this.delete}
                         openModal={this.handleModalDelete}
-                    />) : <div />}
+                    />
+) : <div />}
             </div>
         );
     }

@@ -16,7 +16,8 @@ class SideBarRight extends Component {
                     <span id="" className="header-path">
                         {title}
                     </span>
-                </div>);
+                </div>
+);
             if (buttonsFooter !== null && buttonsFooter.length > 0) {
                 btnFooter = buttonsFooter.map(btn => (
                     <DojotCustomButton label={btn.label} onClick={btn.click} type={btn.type} key={btn.label + btn.type} />

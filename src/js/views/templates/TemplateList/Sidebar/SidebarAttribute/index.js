@@ -78,8 +78,8 @@ const SidebarAttribute = ({
                                 : (
                                     <Fragment>
                                         <Can do="modifier" on="template">
-                                          <DojotBtnClassic label="remove" type="secondary" onClick={() => toogleSidebarDelete('showDeleteAttr')} />
-                                          <DojotBtnClassic color="red" label="save" type="primary" onClick={() => updateTemplateAttr(selectAttr)} />
+                                            <DojotBtnClassic label="remove" type="secondary" onClick={() => toogleSidebarDelete('showDeleteAttr')} />
+                                            <DojotBtnClassic color="red" label="save" type="primary" onClick={() => updateTemplateAttr(selectAttr)} />
                                         </Can>
                                     </Fragment>
                                 )

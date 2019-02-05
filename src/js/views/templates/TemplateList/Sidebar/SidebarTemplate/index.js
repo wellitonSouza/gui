@@ -50,8 +50,8 @@ const SidebarTemplate = ({
                                 : (
                                     <Fragment>
                                         <Can do="modifier" on="template">
-                                                     <DojotBtnClassic label="delete" type="secondary" onClick={() => toogleSidebarDelete('showDeleteTemplate')} />
-                                        <DojotBtnClassic color="red" label="save" type="primary" onClick={updateTemplate} />
+                                            <DojotBtnClassic label="delete" type="secondary" onClick={() => toogleSidebarDelete('showDeleteTemplate')} />
+                                            <DojotBtnClassic color="red" label="save" type="primary" onClick={updateTemplate} />
                                         </Can>
                                     </Fragment>
                                 )

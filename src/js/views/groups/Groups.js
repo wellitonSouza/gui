@@ -63,7 +63,8 @@ function GroupList(param) {
                         onclick={param.handleUpdate}
                     />
                 ))}
-            </div>);
+            </div>
+);
     }
 }
 

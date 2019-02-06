@@ -22,7 +22,7 @@ class ImageActions {
         .catch((error) => {
           this.imagesFailed(error);
         });
-      }
+      };
     }
 
 

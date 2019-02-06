@@ -67,8 +67,7 @@ class Sidebar extends Component {
         });
     }
 
-    toogleSidebarFirmware()
-    {
+    toogleSidebarFirmware() {
         console.log("toogleSidebarFirmware");
     }
 

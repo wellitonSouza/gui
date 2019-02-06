@@ -149,7 +149,7 @@ class SidebarFirmware extends Component {
                                     <ImageList list={this.props.images} changeAttrValue={this.changeAttrValue} removeImage={this.removeImage} removeBinary={this.removeBinary} onDrop={this.onDrop} />
                                     {(!this.state.new_image)
                                         ? (
-                                                                                        <div className="body-form-nodata clickable" onClick={this.createNewImage}>
+                                            <div className="body-form-nodata clickable" onClick={this.createNewImage}>
                                         Click here to add a new image
                                             </div>
                                         )

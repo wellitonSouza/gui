@@ -124,7 +124,7 @@ const SidebarDevice = ({
                                                 text="Manage Firmware"
                                             />
                                         ) : null}
-                                        
+
                                     </div>
 
                                 </div>

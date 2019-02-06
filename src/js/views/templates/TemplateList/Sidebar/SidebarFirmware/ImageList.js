@@ -36,13 +36,15 @@ const ImageList = ({
                         {(element.image_hash == null)
                             ? (
                                 <Fragment>
-                                    {(element.file != undefined) 
+                                    {(element.file != undefined)
                                         ? (
                                             <span className="value">
                                                 {element.file[0].name}
                                             </span>
                                         ) : (
-                                            <div>                                    <span className="value"> No binary yet.</span>
+                                            <div>
+                                                {' '}
+                                                <span className="value"> No binary yet.</span>
                                                 <div className="dropzone">
                                                     <Dropzone multiple={false} onDrop={file => onDrop(file, element)}>
                                                         <p>Drop the file here or click to select image to upload.</p>
@@ -53,9 +55,9 @@ const ImageList = ({
                                     }
                                 </Fragment>
                             )
-                            :                                 (
+                            : (
                                 <Fragment>
-                                    <span className="value"> 
+                                    <span className="value">
                                         {' '}
                                         {element.image_hash}
                                     </span>

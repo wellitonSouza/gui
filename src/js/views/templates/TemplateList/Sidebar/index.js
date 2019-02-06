@@ -440,15 +440,17 @@ class Sidebar extends Component {
                     toogleSidebarDelete={this.toogleSidebarDelete}
                     deleteTemplate={this.deleteTemplate}
                 />
-                {showFirmware 
-                    ? <AltContainer store={ImageStore}>
-                        <SidebarFirmware
-                            showFirmware={showFirmware}
-                            isNewTemplate={isNewTemplate}
-                            template={template}
-                            toogleSidebarFirmware={this.toogleSidebarFirmware}
-                        />
-                    </AltContainer>
+                {showFirmware
+                    ? (
+                        <AltContainer store={ImageStore}>
+                            <SidebarFirmware
+                                showFirmware={showFirmware}
+                                isNewTemplate={isNewTemplate}
+                                template={template}
+                                toogleSidebarFirmware={this.toogleSidebarFirmware}
+                            />
+                        </AltContainer>
+)
                     : null }
                 {/* @To check: attr template isn't used */}
                 <SidebarAttribute

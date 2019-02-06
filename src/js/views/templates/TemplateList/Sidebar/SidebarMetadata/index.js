@@ -5,7 +5,7 @@ import { DojotBtnClassic } from 'Components/DojotButton';
 import Can from 'Components/permissions/Can';
 import MetadataCard from './MetadataCard';
 import SidebarDelete from '../SidebarDelete';
-import { metadataType } from '../../../TemplatePropTypes';
+import { attrsType, metadataType } from '../../../TemplatePropTypes';
 
 const SidebarMetadata = ({
     showMetadata,
@@ -18,6 +18,7 @@ const SidebarMetadata = ({
     removeSelectMeta,
     toogleSidebarDelete,
     isNewMetadata,
+    selectAttr,
 }) => (
     <Fragment>
         <Slide right when={showMetadata} duration={300}>
@@ -26,7 +27,7 @@ const SidebarMetadata = ({
                 : (
                     <div className="-sidebar sidebar-metadata">
                         <div className="header">
-                            <div className="title">meta attributes</div>
+                            <div className="title">{isNewMetadata ? 'meta attributes' : selectAttr.label}</div>
                             <div className="icon">
                                 <img src="images/icons/template-cyan.png" alt="device-icon" />
                             </div>
@@ -80,6 +81,7 @@ SidebarMetadata.defaultProps = {
 };
 
 SidebarMetadata.propTypes = {
+    selectAttr: PropTypes.shape(attrsType).isRequired,
     showMetadata: PropTypes.bool,
     toogleSidebarMetadata: PropTypes.func.isRequired,
     addMetadata: PropTypes.func.isRequired,

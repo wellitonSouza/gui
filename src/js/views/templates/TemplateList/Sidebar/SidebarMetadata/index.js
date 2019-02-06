@@ -53,8 +53,8 @@ const SidebarMetadata = ({
                                     : (
                                         <Fragment>
                                             <Can do="modifier" on="template">
-                                              <DojotBtnClassic label="remove" type="secondary" onClick={() => toogleSidebarDelete('showDeleteMeta')} />
-                                              <DojotBtnClassic color="red" label="save" type="primary" onClick={updateMetadata} />
+                                                <DojotBtnClassic label="remove" type="secondary" onClick={() => toogleSidebarDelete('showDeleteMeta')} />
+                                                <DojotBtnClassic color="red" label="save" type="primary" onClick={updateMetadata} />
                                             </Can>
                                         </Fragment>
                                     )

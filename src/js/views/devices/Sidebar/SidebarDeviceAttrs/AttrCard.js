@@ -114,7 +114,8 @@ class AttrCard extends PureComponent {
                                     : <div />
                             }
                         </div>
-                    </div>)
+                    </div>
+)
                 }
                 <div className="divider" />
             </div>

@@ -41,12 +41,13 @@ export default class ImportExport extends Component {
                     </div>
                     <div className="footer">
                         <DojotBtnClassic is_secondary onClick={this.dismiss} label="Cancel" title="Cancel" />
-                        {save ? (<DojotBtnClassic
-                            is_secondary={false}
-                            onClick={handleClick}
-                            label={label}
-                            title={label}
-                        />
+                        {save ? (
+                            <DojotBtnClassic
+                                is_secondary={false}
+                                onClick={handleClick}
+                                label={label}
+                                title={label}
+                            />
                         )
                             : null }
                     </div>

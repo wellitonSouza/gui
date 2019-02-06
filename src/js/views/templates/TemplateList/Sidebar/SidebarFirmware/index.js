@@ -46,7 +46,6 @@ class SidebarFirmware extends Component {
         e.preventDefault();
 
         Object.entries(this.props.images).map(([key, image]) => {
-            console.log('Saving image: ', image);
             if (!image.saved) {
                 // for each non saved image,
                 // 1. update or create image
@@ -65,8 +64,6 @@ class SidebarFirmware extends Component {
                     } else {
                         toaster.success('Image updated.');
                     }
-                    console.log('img', img);
-                    console.log('image.file', image.file);
 
                     if (image.file) {
                         const img_binary = {
@@ -88,7 +85,6 @@ class SidebarFirmware extends Component {
     }
 
     removeBinary(e, image) {
-        console.log('removeBinary', image);
         e.preventDefault();
 
         ImageActions.triggerRemovalBinary(image.id, () => {
@@ -117,16 +113,13 @@ class SidebarFirmware extends Component {
         // FirmwareActions.update({ f: f, v: v });
         //    this.setState({ fw_version: event.target.value });
         // const values = { ...attr };
-        console.log(name, value, attr);
         // values[event.target.name] = event.target.value;
         this.props.images[attr.id].saved = false;
         this.props.images[attr.id][name] = value;
-        console.log('this.props.images[attr.id]', this.props.images[attr.id]);
         ImageActions.updateImageData(attr.id, name, value);
     }
 
     render() {
-        console.log('SidebarFirmware. render', this.props.images);
         const { showFirmware, toogleSidebarFirmware } = this.props;
 
         return (

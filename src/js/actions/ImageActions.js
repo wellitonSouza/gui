@@ -12,11 +12,11 @@ class ImageActions {
         return { id, label, value };
     }
 
-    fetchImages(template_id) {
+    fetchImages(templateId) {
       return (dispatch) => {
         dispatch();
 
-        imageManager.getImages(template_id).then((imageList) => {
+        imageManager.getImages(templateId).then((imageList) => {
           this.updateImages(imageList);
         })
         .catch((error) => {
@@ -42,8 +42,8 @@ class ImageActions {
         };
     }
 
-    updateSingle(image_id) {
-        return image_id;
+    updateSingle(imageId) {
+        return imageId;
     }
 
     fetchSingle(label, callback) {
@@ -91,13 +91,13 @@ class ImageActions {
         };
     }
 
-    triggerRemovalBinary(image_id, cb) {
+    triggerRemovalBinary(imageId, cb) {
         return (dispatch) => {
             dispatch();
-            imageManager.deleteBinary(image_id)
+            imageManager.deleteBinary(imageId)
                 .then((response) => {
-                    if (response.result == 'ok') {
-                        this.removeSingleBinary(image_id);
+                    if (response.result === 'ok') {
+                        this.removeSingleBinary(imageId);
                         if (cb) {
                             cb(response);
                         }
@@ -120,9 +120,9 @@ class ImageActions {
             dispatch();
             imageManager.deleteImage(image.id)
                 .then((response) => {
-                    const resp_json = JSON.parse(response);
-                    if (resp_json.result == 'ok') {
-                        this.removeSingle(resp_json.removed_image.id);
+                    const respJson = JSON.parse(response);
+                    if (respJson.result === 'ok') {
+                        this.removeSingle(respJson.removed_image.id);
                         if (cb) {
                             cb(response);
                         }

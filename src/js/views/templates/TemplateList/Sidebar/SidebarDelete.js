@@ -57,6 +57,6 @@ SidebarDelete.propTypes = {
     message: PropTypes.string.isRequired,
     cancel: PropTypes.func.isRequired,
     confirm: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
 };
-
 export default withNamespaces()(SidebarDelete);

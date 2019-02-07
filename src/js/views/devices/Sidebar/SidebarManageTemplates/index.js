@@ -39,7 +39,11 @@ class SidebarManageTemplates extends Component {
 
     render() {
         const {
-            showManageTemplates, handleShowManageTemplate, handleSelectTemplate, selectedTemplates, t,
+            showManageTemplates,
+            handleShowManageTemplate,
+            handleSelectTemplate,
+            selectedTemplates,
+            t,
         } = this.props;
         const {
             templateList,
@@ -103,7 +107,10 @@ class SidebarManageTemplates extends Component {
                                     </div>
                                 </div>
                                 <div className="footer">
-                                    <DojotCustomButton label={t('back.label')} onClick={handleShowManageTemplate} />
+                                    <DojotCustomButton
+                                        label={t('back.label')}
+                                        onClick={handleShowManageTemplate}
+                                    />
                                 </div>
                             </div>
                         )
@@ -123,7 +130,9 @@ SidebarManageTemplates.propTypes = {
     showManageTemplates: PropTypes.bool,
     handleShowManageTemplate: PropTypes.func.isRequired,
     templates: PropTypes.arrayOf(PropTypes.shape(templateType)),
+    handleSelectTemplate: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
+    selectedTemplates: PropTypes.instanceOf(Object).isRequired,
 };
 
 

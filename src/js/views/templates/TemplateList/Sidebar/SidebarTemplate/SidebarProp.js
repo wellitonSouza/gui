@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { attrsType } from '../../../TemplatePropTypes';
 import { withNamespaces } from 'react-i18next';
+import { attrsType } from '../../../TemplatePropTypes';
 
-const SidebarProp = ({ attr, icon, toogleSidebarAttribute, t }) => (
+const SidebarProp = ({
+    attr, icon, toogleSidebarAttribute, t,
+}) => (
     <div
         className="template-prop"
         onClick={() => toogleSidebarAttribute(icon, attr)}

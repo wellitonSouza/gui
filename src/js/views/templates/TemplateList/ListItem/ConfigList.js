@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withNamespaces } from 'react-i18next';
+import PropTypes from 'prop-types';
 import TemplateTypes from '../../TemplateTypes';
 
 const attrType = new TemplateTypes();
@@ -120,6 +121,7 @@ class ConfigList extends Component {
                         className={`${this.props.editable ? '' : 'none'} center-text-parent material-btn right-side raised-btn`}
                         title={`${t('remove')} ${t('templates:template')} `}
                         onClick={this.removeAttribute.bind(this, this.props.index)}
+                        role="button"
                     >
                         <i className="fa fa-trash center-text-child icon-remove" />
                     </div>
@@ -128,5 +130,9 @@ class ConfigList extends Component {
         );
     }
 }
+
+ConfigList.propTypes = {
+    t: PropTypes.func.isRequired,
+};
 
 export default withNamespaces()(ConfigList);

@@ -14,7 +14,7 @@ const TemplateList = ({
     isNewTemplate,
     showSidebar,
     temp_opex,
-    t
+    t,
 }) => {
     if (loading) {
         return (

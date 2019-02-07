@@ -8,10 +8,10 @@ import { attrsType } from '../../../TemplatePropTypes';
 
 
 const SidebarAttributeForm = ({
-                                  selectAttr,
-                                  changeAttrValue,
-                                  t,
-                              }) => (
+    selectAttr,
+    changeAttrValue,
+    t,
+}) => (
     <div>
         <div className="body-attribute-name">
             <div className="body-icon">

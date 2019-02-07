@@ -31,7 +31,6 @@ FilterFields.propTypes = {
         sortBy: PropTypes.string,
     }).isRequired,
     onChange: PropTypes.func.isRequired,
-    t: PropTypes.func.isRequired,
 };
 
 class Templates extends Component {
@@ -83,5 +82,8 @@ class Templates extends Component {
     }
 }
 
+Templates.propTypes = {
+    t: PropTypes.func.isRequired,
+};
 
 export default withNamespaces()(Templates);

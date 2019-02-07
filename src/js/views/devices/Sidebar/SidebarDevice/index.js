@@ -132,7 +132,9 @@ const SidebarDevice = ({
                                             <Fragment>
                                                 <DojotCustomButton
                                                     label={t('discard.label')}
-                                                    onClick={() => FormActions.toggleSidebarDevice(false)}
+                                                    onClick={() => {
+                                                        FormActions.toggleSidebarDevice(false);
+                                                    }}
                                                 />
                                                 <DojotCustomButton
                                                     label={t('save.label')}
@@ -144,7 +146,9 @@ const SidebarDevice = ({
                                             <Fragment>
                                                 <DojotCustomButton
                                                     label={t('discard.label')}
-                                                    onClick={() => FormActions.toggleSidebarDevice(false)}
+                                                    onClick={() => {
+                                                        FormActions.toggleSidebarDevice(false);
+                                                    }}
                                                 />
                                                 <DojotCustomButton
                                                     label={t('remove.label')}

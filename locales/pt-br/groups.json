@@ -1,5 +1,6 @@
 {
   "title": "Grupos",
+  "description": "Descrição",
   "alerts": {
     "empty_name": "Nome do grupo vazio",
     "invalid_name": "Nome do grupo inválido",

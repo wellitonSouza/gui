@@ -97,7 +97,7 @@ class AttrCard extends PureComponent {
                             <div
                                 className="attr-card-metadata-label"
                             >
-                                {`${t('devices:meta_attributes')}(${metaLength})`}
+                                {`${t('devices:meta_attributes')} (${metaLength})`}
                             </div>
                             <div
                                 className="attr-card-metadata-arrow"
@@ -110,7 +110,6 @@ class AttrCard extends PureComponent {
                                     className={`fa fa-angle-${showMetadata ? 'up' : 'down'}`}
                                     aria-hidden="true"
                                 />
-                                metaLength
                             </div>
                         </div>
                         <div className="attr-card-metadata-body">

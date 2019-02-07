@@ -32,7 +32,10 @@
   "select_template": "Selecione um modelo",
   "attributes": "atributo",
   "dynamic_attributes": "Atributos dinâmicos",
-  "select_attribute": "Selecione um atributo a ser exibido"
+  "select_attribute": "Selecione um atributo a ser exibido",
+  "meta_attributes": "Meta Atributos",
+  "no_devices_shown": "Nenhum dispositivo a ser mostrado",
+  "no_configured_devices": "Nenhum dispositivo configurado"
 }
 
 

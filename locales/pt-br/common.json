@@ -43,7 +43,8 @@
     "geo": "Geo",
     "float": "Ponto Flutuante",
     "integer": "Inteiro",
-    "string": "Texto"
+    "string": "Texto",
+    "geo:point'": "Geo:Ponto'"
   },
   "options": {
     "attr_name": {

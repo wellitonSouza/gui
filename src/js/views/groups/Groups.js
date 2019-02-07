@@ -78,8 +78,8 @@ function OperationsHeader(param) {
                 <DojotBtnLink
                     responsive="true"
                     onClick={param.newGroup}
-                    label={param.i18n('groups.btn.new.text')}
-                    alt={param.i18n('groups.btn.new.alt')}
+                    label={param.i18n('btn.new.text')}
+                    alt={param.i18n('btn.new.alt')}
                     icon="fa fa-plus"
                     className="w130px"
                 />
@@ -164,7 +164,7 @@ class Groups extends Component {
         return (
             <span id="groups-wrapper">
                 <AltContainer store={GroupStore}>
-                    <NewPageHeader title={<Trans i18nKey="groups.title" />} icon="groups">
+                    <NewPageHeader title={<Trans i18nKey="title" />} icon="groups">
                         <OperationsHeader newGroup={this.newGroup} i18n={t} />
                     </NewPageHeader>
                     <GroupList handleUpdate={this.handleUpdate} />

@@ -100,7 +100,7 @@ class DeviceCardListComponent extends Component {
         if (this.props.toggle.props.toggleState) {
             this.props.dev_opex.setFilterToCard();
         }
-        // console.log('deviceList', this.props);
+
         return (
             <div className="device-card-area">
                 <Filter showPainel={this.props.showFilter} metaData={this.metaData} ops={this.props.dev_opex} fields={withNamespaces()(DevFilterFields)}/>
@@ -111,8 +111,8 @@ class DeviceCardListComponent extends Component {
                     <div className="background-info valign-wrapper full-height">
                         <span className="horizontal-center">
                             {this.props.dev_opex.hasFilter()
-                                ? <b className="noBold">No devices to be shown</b>
-                                : <b className="noBold">No configured devices</b>
+                                ? <b className="noBold">{t('devices:no_devices_shown')}</b>
+                                : <b className="noBold">{t('devices:no_configured_devices')}</b>
                             }
                         </span>
                     </div>

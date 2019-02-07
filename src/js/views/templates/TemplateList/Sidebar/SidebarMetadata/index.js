@@ -29,7 +29,7 @@ const SidebarMetadata = ({
                 : (
                     <div className="-sidebar sidebar-metadata">
                         <div className="header">
-                            <div className="title">{isNewMetadata ?{`${t('templates:meta')} ${t('templates:attributes')}`} : selectAttr.label}</div>
+                            <div className="title">{isNewMetadata ? `${t('templates:meta')} ${t('templates:attributes')}` : selectAttr.label}</div>
                             <div className="icon">
                                 <img src="images/icons/template-cyan.png" alt="device-icon" />
                             </div>

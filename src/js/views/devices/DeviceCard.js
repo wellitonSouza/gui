@@ -165,8 +165,7 @@ class DevFilterFields extends Component {
     }
 
     render() {
-        // console.log('DevFilterFields', this.props);
-        if (this.templates.length == 0) this.convertTemplateList();
+        if (this.templates.length === 0) this.convertTemplateList();
         const { t } = this.props;
         this.opts = this.createSelectTemplates();
         return (

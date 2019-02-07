@@ -174,13 +174,7 @@ class FlowCanvas extends Component {
                     <div id="editor-stack"/>
 
                     <div id="palette" style={this.cannotEdit ? { display: 'none' } : {}}>
-                        {/* This gets updated on didMount */}
-                        <img src="mashup/red/images/spin.svg" className="palette-spinner hide"/>
-                        {/* This gets updated on didMount */}
-                        {/* <div id="palette-search" className="palette-search hide">
-              <input type="text" data-i18n="[placeholder]palette.filter"></input>
-            </div> */}
-                        {/* This gets updated on didMount */}
+                        <img src="flows/red/images/spin.svg" className="palette-spinner hide" />
                         <div id="palette-container" className="palette-scroll"/>
                         <div id="palette-footer">
                             <a className="palette-button" id="palette-collapse-all" href="#"><i
@@ -193,10 +187,6 @@ class FlowCanvas extends Component {
                 </div>
 
                 <div id="flows-node-scripts" ref={elem => (this.scriptHolder = elem)}>
-                    {/*
-              This will actually hold a number of scripts that handle the individual node's
-              configuration forms and client-side validations.
-          */}
                 </div>
 
             </div>
@@ -226,7 +216,6 @@ function handleSave(flowid, i18n) {
     if (flowid) {
         if (!ret.result) {
             toaster.error(ret.error);
-            return;
         } else {
             flow.name = ret.label;
             FlowActions.triggerUpdate(flowid, flow, (flow) => {

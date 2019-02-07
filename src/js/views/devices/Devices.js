@@ -52,8 +52,6 @@ class MapWrapper extends Component {
     }
 
     render() {
-        // console.log("2.<MapWrapper>.render.", this.props);
-
         return <AltContainer stores={{
             positions: MapPositionStore,
             measures: MeasureStore,
@@ -113,7 +111,7 @@ class DeviceOperations extends GenericOperations {
             delete res.templates;
             res.template = this.filterParams.templates;
         }
-        // console.log('fetching using: ', res);
+
         if (this.paginationParams.page_size !== 5000) {
             DeviceActions.fetchDevices.defer(res, cb);
         } else {
@@ -140,8 +138,6 @@ class DevicesComponent extends Component {
     }
 
     componentDidMount() {
-        // DeviceActions.fetchDevices.defer();
-        // console.log('devices: componentDidMount');
         this.dev_opex._fetch();
         FormActions.toggleSidebarDevice.defer(false);
         /*

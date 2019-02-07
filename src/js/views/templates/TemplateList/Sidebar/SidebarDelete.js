@@ -49,13 +49,12 @@ const SidebarDelete = ({
 );
 
 SidebarDelete.defaultProps = {
-    message: '?Do you really want to remove it??????',
     showSidebar: false,
 };
 
 SidebarDelete.propTypes = {
     showSidebar: PropTypes.bool,
-    message: PropTypes.string,
+    message: PropTypes.string.isRequired,
     cancel: PropTypes.func.isRequired,
     confirm: PropTypes.func.isRequired,
 };

@@ -7,7 +7,6 @@ import { withNamespaces } from 'react-i18next';
 
 class GenericOperations {
     constructor() {
-        // console.log('GenericOperations loaded.');
     }
 
     setDefaultPageNumber() {
@@ -33,18 +32,18 @@ class GenericOperations {
     }
 }
 
-class FilterLabel extends Component {
+class FilterLabelComponent extends Component {
     constructor(props) {
         super(props);
     }
 
     render() {
+        const { t } = this.props;
         if (this.props.ops.hasFilter()) {
             return (
                 <div className="col s2 p0 filter-information">
                     <i className="fa fa-info-circle "/>
-                    {' '}
-                    Filtering
+                    {t('text.filtering')}
                 </div>
             );
         }
@@ -175,7 +174,8 @@ class NewPaginationComponent extends Component {
                     </MaterialSelect>
                 </div>
                 <div className="pagination_div">
-                    <ReactPaginate previousLabel={t('text.previous')} nextLabel={t('text.next_full')}
+                    <ReactPaginate previousLabel={t('text.previous')}
+                                   nextLabel={t('text.next_full')}
                                    pageCount={pageCount}
                                    marginPagesDisplayed={1} pageRangeDisplayed={3}
                                    forcePage={currentPage} onPageChange={this.handlePageClick}
@@ -281,9 +281,7 @@ class SimpleFilter extends Component {
         return (
             <div className="filter-wrapper relative-size">
                 <form role="form">
-                    {/* filter selection  */}
                     <div className="input-field">
-                        {/* <i className="prefix fa fa-search"></i> */}
                         <label htmlFor="deviceFiltering">Filter</label>
                         <input id="deviceFiltering" type="text" onChange={this.handleChange}/>
                     </div>
@@ -296,7 +294,7 @@ class SimpleFilter extends Component {
 const Filter = withNamespaces()(FilterComponent);
 const Pagination = withNamespaces()(PaginationComponent);
 const NewPagination = withNamespaces()(NewPaginationComponent);
-
+const FilterLabel = withNamespaces()(FilterLabelComponent);
 export {
     SimpleFilter, Filter, Pagination, FilterLabel, GenericOperations, NewPagination,
 };

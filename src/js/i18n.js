@@ -7,11 +7,11 @@ i18n.use(LanguageDetector)
     .init({
         resGetPath: '__ns__-__lng__.json',
         load: 'All',
-        /*       fallbackLng: {
-                   pt: ['pt-br'],
-                   'pt-pt': ['pt-br'],
-                   default: ['en'],
-               }, */
+        fallbackLng: {
+            pt: ['pt-br'],
+            'pt-pt': ['pt-br'],
+            default: ['en'],
+        },
         lowerCaseLng: true,
         debug: true,
         nsSeparator: ':',

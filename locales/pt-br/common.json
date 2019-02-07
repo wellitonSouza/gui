@@ -102,7 +102,7 @@
     "per_page": "exibir",
     "logged_as": "Acessando como",
     "tenant": "Tenant",
-    "import_export": " Import,/Exportação",
+    "import_export": " Import./Exportação",
     "change_password": "Alterar Senha",
     "logout": "Sair"
   },

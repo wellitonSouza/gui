@@ -3,7 +3,9 @@
   "alerts": {
     "user_update": "Usuário atualizado.",
     "user_update_err": "Falha ao atualizar o usuário.",
-    "user_create": "Usuário criado"
+    "user_create": "Usuário criado",
+    "modal_qst_remove": "Você irá apagar o usuário.",
+    "modal_qst_confirm_remove": "Você tem certeza?"
   },
   "header_btn_new": {
     "label": "Novo usuário",

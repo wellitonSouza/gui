@@ -16,7 +16,6 @@ import { RemoveModal } from '../../components/Modal';
 import ConfigStore from '../../stores/ConfigStore';
 import { withNamespaces } from 'react-i18next';
 import * as i18next from 'i18next';
-import MaterialInput from 'Components/MaterialInput';
 
 const DeviceHeader = ({ device, t }) => (
     <div className="row devicesSubHeader p0 device-details-header">

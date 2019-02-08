@@ -44,7 +44,7 @@
     "float": "Ponto Flutuante",
     "integer": "Inteiro",
     "string": "Texto",
-    "geo:point'": "Geo:Ponto'"
+    "geo:point": "Geo:Ponto'"
   },
   "options": {
     "attr_name": {

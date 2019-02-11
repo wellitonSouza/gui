@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Can from 'Components/permissions/Can';
+import { withNamespaces } from 'react-i18next';
 import { attrsType } from '../../../TemplatePropTypes';
 
-const MetadataList = ({ values, selectMetadata }) => {
+const MetadataList = ({ values, selectMetadata, t }) => {
     if (Object.prototype.hasOwnProperty.call(values, 'metadata')) {
         return (
             <div className="metadata-list-wrapper">
@@ -39,7 +40,7 @@ const MetadataList = ({ values, selectMetadata }) => {
     return (
         <Can do="modifier" on="template">
             <div className="body-form-nodata">
-                Select an option below to add a metadata
+                {t('templates:alerts.select_to_add')}
             </div>
         </Can>
     );
@@ -47,6 +48,8 @@ const MetadataList = ({ values, selectMetadata }) => {
 
 MetadataList.propTypes = {
     values: PropTypes.shape(attrsType).isRequired,
+    selectMetadata: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
 };
 
-export default MetadataList;
+export default withNamespaces()(MetadataList);

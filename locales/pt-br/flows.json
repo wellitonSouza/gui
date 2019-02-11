@@ -1,0 +1,35 @@
+{
+  "title": "Fluxos",
+  "title_edit": "Gerenciamento de Fluxo",
+  "subtitle_edit": "Configuração de Fluxo",
+  "element_name": "fluxo",
+  "alerts": {
+    "no_configured": "Não há fluxos configurados.",
+    "update": "Fluxo alterado.",
+    "create": "Fluxo criado.",
+    "remove": "Fluxo removido.",
+    "failed_find_ctx": "falha ao procurar o contexto do fluxo."
+  },
+  "last_update": "Ultima atualização",
+  "nodes": "Nós",
+  "header": {
+    "new": {
+      "label": "Novo Fluxo",
+      "alt": "Criar um fluxo"
+    },
+    "return": {
+      "label": "Voltar a lista de fluxos"
+    },
+    "remove": {
+      "label": "Remover fluxo"
+    },
+    "save": {
+      "label": "Salvar fluxo"
+    },
+    "name": {
+      "label": "Nome do fluxo"
+    }
+  }
+}
+
+

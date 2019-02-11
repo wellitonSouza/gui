@@ -13,17 +13,17 @@ import { Attr, HandleGeoElements } from '../../components/HistoryElements';
 import toaster from '../../comms/util/materialize';
 import { DojotBtnRedCircle } from '../../components/DojotButton';
 import { RemoveModal } from '../../components/Modal';
-import ConfigStore from "../../stores/ConfigStore";
+import ConfigStore from '../../stores/ConfigStore';
+import { withNamespaces } from 'react-i18next';
+import * as i18next from 'i18next';
 
-
-const DeviceHeader = ({device}) => (
+const DeviceHeader = ({ device, t }) => (
     <div className="row devicesSubHeader p0 device-details-header">
         <div className="col s8 m8">
             <label className="col s12 device-label truncate" title={device.label}>
-                {' '}
                 {device.label}
             </label>
-            <div className="col s12 device-label-name">Name</div>
+            <div className="col s12 device-label-name">{t('text.name')}</div>
         </div>
     </div>
 );
@@ -39,7 +39,7 @@ class Attribute extends Component {
     }
 
     componentDidMount() {
-    //  MeasureActions.fetchMeasure(this.props.device, this.props.device.id, this.props.device.templates, this.props.attr.id, 250);
+        //  MeasureActions.fetchMeasure(this.props.device, this.props.device.id, this.props.device.templates, this.props.attr.id, 250);
     }
 
     toogleExpand(state) {
@@ -47,18 +47,20 @@ class Attribute extends Component {
     }
 
     render() {
-    // check the current window, if less then 1024px, blocks compressed state
+        // check the current window, if less then 1024px, blocks compressed state
         let opened = util.checkWidthToStateOpen(this.state.opened);
         return (
             <div className={`attributeBox ${opened ? 'expanded' : 'compressed'}`}>
                 <div className="header">
                     <label>{this.props.attr.label}</label>
-                    {!opened ? <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand" /> : <i onClick={this.toogleExpand.bind(this, false)} className="fa fa-compress" />}
+                    {!opened ?
+                        <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand"/> :
+                        <i onClick={this.toogleExpand.bind(this, false)}
+                           className="fa fa-compress"/>}
                 </div>
-
-                {/* <AttributeBox attrs={this.state.selected_attributes} /> */}
                 <div className="details-card-content">
-                    <AttrHistory device={this.props.device} type={this.props.attr.value_type} attr={this.props.attr.label} />
+                    <AttrHistory device={this.props.device} type={this.props.attr.value_type}
+                                 attr={this.props.attr.label}/>
                 </div>
             </div>
         );
@@ -72,9 +74,11 @@ class Configurations extends Component {
     }
 
     render() {
+        const { t } = this.props;
         return (
             <div>
-                <GenericList img="images/gear-dark.png" attrs={this.props.attrs} box_title="Configurations" device={this.props.device} />
+                <GenericList img="images/gear-dark.png" attrs={this.props.attrs}
+                             box_title={t('text.configuration')} device={this.props.device} t={ t }/>
             </div>
         );
     }
@@ -92,9 +96,12 @@ class StaticAttributes extends Component {
     }
 
     render() {
+        const { t } = this.props;
         return (
             <div>
-                <GenericList img="images/tag.png" attrs={this.props.attrs} box_title="Static Attributes" device={this.props.device} openStaticMap={this.openStaticMap} />
+                <GenericList img="images/tag.png" attrs={this.props.attrs}
+                             box_title={t('text.static_attributes')} device={this.props.device}
+                             openStaticMap={this.openStaticMap} t={t}/>
             </div>
         );
     }
@@ -103,7 +110,11 @@ class StaticAttributes extends Component {
 class GenericList extends Component {
     constructor(props) {
         super(props);
-        this.state = { openStaticMap: true, visible_static_map: false, truncate: false };
+        this.state = {
+            openStaticMap: true,
+            visible_static_map: false,
+            truncate: false
+        };
 
         this.openMap = this.openMap.bind(this);
         this.verifyIsGeo = this.verifyIsGeo.bind(this);
@@ -163,12 +174,13 @@ class GenericList extends Component {
     }
 
     render() {
+        const { t } = this.props;
         this.verifyIsGeo(this.props.attrs);
         return (
             <div className="row stt-attributes">
                 <div className="col s12 header">
                     <div className="icon">
-                        <img src={this.props.img} />
+                        <img src={this.props.img}/>
                     </div>
                     <label>{this.props.box_title}</label>
                 </div>
@@ -189,41 +201,54 @@ class GenericList extends Component {
                     ) : ('')}
                     {this.props.attrs.map(attr => (
                         attr.isGeo ? (
-                            <div key={attr.label} className="line col s12 pl30" id="static-geo-attribute" onClick={this.openMap}>
+                            <div key={attr.label} className="line col s12 pl30"
+                                 id="static-geo-attribute" onClick={this.openMap}>
                                 <div className="display-flex-column flex-1">
                                     <div className={this.state.truncate ?
                                         'name-value display-flex flex-1 space-between truncate' :
                                         'name-value display-flex flex-1 space-between'}
-                                        title={attr.label}
+                                         title= {i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}
                                     >
-                                        {attr.label}
+                                        {i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}
                                         <div className="star">
-                                            <i className={`fa ${this.state.visible_static_map ? 'fa-star' : 'fa-star-o'}`} />
+                                            <i className={`fa ${this.state.visible_static_map ? 'fa-star' : 'fa-star-o'}`}/>
                                         </div>
                                     </div>
                                     <div className="display-flex-no-wrap space-between">
-                                        <div className={this.state.truncate ? 'value-value truncate' : 'value-value'} title={attr.static_value}>
+                                        <div
+                                            className={this.state.truncate ? 'value-value truncate' : 'value-value'}
+                                            title={attr.static_value}>
                                             {attr.static_value.length > 25 ?
                                                 attr.static_value.substr(1, 22) + '...' :
                                                 attr.static_value
                                             }
                                         </div>
-                                        <div className="value-label" title={attr.value_type}>{attr.value_type}</div>
+                                        <div className="value-label"
+                                             title={attr.value_type}>
+                                            {i18next.exists(`types.${attr.value_type}`) ? t(`types.${attr.value_type}`) : attr.value_type}
+                                            </div>
                                     </div>
                                 </div>
                             </div>
                         ) : (
                             <div key={attr.label} className="line col s12 pl30">
                                 <div className="display-flex-column flex-1">
-                                    <div className={this.state.truncate ? 'name-value  truncate' : 'name-value '} title={attr.label}>{attr.label}</div>
+                                    <div
+                                        className={this.state.truncate ? 'name-value  truncate' : 'name-value '}
+                                        title= {i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}>{i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}</div>
                                     <div className="display-flex-no-wrap space-between">
-                                        <div className={this.state.truncate ? 'value-value  truncate' : 'value-value '} title={attr.static_value}>
+                                        <div
+                                            className={this.state.truncate ? 'value-value  truncate' : 'value-value '}
+                                            title={attr.static_value}>
                                             {(attr.static_value !== undefined && attr.static_value.length > 25) ?
                                                 attr.static_value.substr(1, 22) + '...' :
                                                 attr.static_value
                                             }
                                         </div>
-                                        <div className="value-label" title={attr.value_type}>{attr.value_type}</div>
+                                        <div className="value-label"
+                                             title={attr.value_type}>
+                                            {i18next.exists(`types.${attr.value_type}`) ? t(`types.${attr.value_type}`) : attr.value_type}
+                                            </div>
                                     </div>
                                 </div>
                             </div>
@@ -239,12 +264,16 @@ class GenericList extends Component {
 class DyAttributeArea extends Component {
     constructor(props) {
         super(props);
-        this.state = { selected_attributes: [], visible_attributes: {}, static_geo_attr_label: '' };
+        this.state = {
+            selected_attributes: [],
+            visible_attributes: {},
+            static_geo_attr_label: ''
+        };
         this.toggleAttribute = this.toggleAttribute.bind(this);
     }
 
     componentWillMount() {
-    // Get static geo attr label
+        // Get static geo attr label
         for (const k in this.props.device.attrs) {
             for (const j in this.props.device.attrs[k]) {
                 if (this.props.device.attrs[k][j].isGeo) {
@@ -277,28 +306,36 @@ class DyAttributeArea extends Component {
     render() {
         const lista = this.props.attrs;
         for (const index in lista) {
-            if (this.state.visible_attributes[lista[index].id]) lista[index].visible = true;
-            else lista[index].visible = false;
+            if (this.state.visible_attributes[lista[index].id]) {
+                lista[index].visible = true;
+            } else {
+                lista[index].visible = false;
+            }
         }
 
+        const { t } = this.props;
         return (
             <div className="content-row">
                 <div className="second-col">
                     {this.state.selected_attributes.length == 0 && this.props.openStaticMap == false
-                        ? (<div className="second-col-label center-align">Select an attribute to be displayed.</div>)
+                        ? (<div
+                            className="second-col-label center-align">{t('devices:select_attribute')}</div>)
                         : null
                     }
-                    {this.props.openStaticMap ? <HandleGeoElements device={this.props.device} label={this.state.static_geo_attr_label} isStatic /> : null}
+                    {this.props.openStaticMap ? <HandleGeoElements device={this.props.device}
+                                                                   label={this.state.static_geo_attr_label}
+                                                                   isStatic/> : null}
                     {this.state.selected_attributes.map(at => (
-                        <Attribute key={at.id} device={this.props.device} attr={at} />
+                        <Attribute key={at.id} device={this.props.device} attr={at}/>
                     ))}
                 </div>
                 <div className="third-col">
                     <div className="row">
-                        <DynamicAttributeList device={this.props.device} attrs={lista} change_attr={this.toggleAttribute} />
+                        <DynamicAttributeList device={this.props.device} attrs={lista}
+                                              change_attr={this.toggleAttribute} t={t}/>
                     </div>
                     <div className="row">
-                        <ActuatorsArea actuators={this.props.actuators} />
+                        <ActuatorsArea actuators={this.props.actuators} t={t}/>
                     </div>
                 </div>
             </div>
@@ -312,18 +349,19 @@ class ActuatorsArea extends Component {
     }
 
     render() {
+        const { t } = this.props;
         return (
             <div className=" dy_attributes">
                 <div className="col s12 header">
-                    <div className="col s2" />
-                    <label className="col s8">Actuators</label>
+                    <div className="col s2"/>
+                    <label className="col s8">{t('text.actuators')}</label>
                 </div>
                 <div className="col s12 body">
                     {this.props.actuators.map(actuator => (
                         <div key={actuator.label} className="line">
                             <div className="col offset-s2 s8">
-                                <div className="label truncate" title={actuator.label}>{actuator.label}</div>
-                                {/* <div className="value-label">{attr.value_type}</div> */}
+                                <div className="label truncate"
+                                     title={actuator.label}>{actuator.label}</div>
                             </div>
                         </div>
                     ))}
@@ -372,27 +410,27 @@ class DynamicAttributeList extends Component {
     }
 
     render() {
+        const { t } = this.props;
         return (
             <div className=" dy_attributes">
                 <div className="col s12 header">
                     <div className="col s2 filter-icon">
-                        {/* <i className="fa fa-filter" /> */}
                     </div>
-                    <label className="col s10">Dynamic attributes</label>
-                    {/* <div className="col s2 search-icon">
-            <i className="fa fa-search" />
-          </div> */}
+                    <label className="col s10">{t('devices:dynamic_attributes')}</label>
                 </div>
                 <div className="col s12 body">
                     {this.props.attrs.map(attr => (
-                        <div key={attr.label} className="line" onClick={this.clickAttr.bind(this, attr)}>
+                        <div key={attr.label} className="line"
+                             onClick={this.clickAttr.bind(this, attr)}>
                             <div className="col offset-s2 s8">
-                                <div className={this.state.truncate ? 'label truncate' : 'label'} title={attr.label}>{attr.label}</div>
-                                <div className="value-label">{attr.value_type}</div>
+                                <div className={this.state.truncate ? 'label truncate' : 'label'}
+                                     title= {i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}>  {i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}</div>
+                                <div
+                                    className="value-label">{i18next.exists(`types.${attr.value_type}`) ? t(`types.${attr.value_type}`) : attr.value_type}</div>
                             </div>
                             <div className="col s2">
                                 <div className="star">
-                                    <i className={`fa ${attr.visible ? 'fa-star' : 'fa-star-o'}`} />
+                                    <i className={`fa ${attr.visible ? 'fa-star' : 'fa-star-o'}`}/>
                                 </div>
                             </div>
                         </div>
@@ -415,12 +453,13 @@ class DeviceUserActions extends Component {
     }
 
     render() {
+        const { t } = this.props;
         return (
             <div>
                 <DojotBtnRedCircle
                     to="/device/list"
                     icon="fa fa-arrow-left"
-                    tooltip="Return to device list"
+                    tooltip={t('devices:return_list')}
                 />
             </div>
         );
@@ -436,8 +475,12 @@ class AttrHistory extends Component {
     render() {
         return (
             <div className="graphLarge">
-                <AltContainer stores={{MeasureStore: MeasureStore, Config: ConfigStore}}>
-                    <Attr device={this.props.device} type={this.props.type} attr={this.props.attr} label={this.props.attr} isStatic={false} />
+                <AltContainer stores={{
+                    MeasureStore: MeasureStore,
+                    Config: ConfigStore
+                }}>
+                    <Attr device={this.props.device} type={this.props.type} attr={this.props.attr}
+                          label={this.props.attr} isStatic={false}/>
                 </AltContainer>
             </div>
         );
@@ -470,7 +513,8 @@ function StatusDisplay(props) {
             </div>
             <div className="metric">
                 <span className="label">Protocol</span>
-                <span className="value">{props.device.protocol ? props.device.protocol : 'MQTT'}</span>
+                <span
+                    className="value">{props.device.protocol ? props.device.protocol : 'MQTT'}</span>
             </div>
         </div>
     );
@@ -495,8 +539,9 @@ class DeviceDetail extends Component {
         let config_list = [];
         for (const index in this.props.device.attrs) {
             let tmp = this.props.device.attrs[index];
-            if (!Array.isArray(tmp))
+            if (!Array.isArray(tmp)) {
                 tmp = this.props.device.attrs;
+            }
 
             attr_list = attr_list.concat(tmp.filter(i => String(i.type) === 'static'));
             dal = dal.concat(tmp.filter((i) => {
@@ -509,15 +554,17 @@ class DeviceDetail extends Component {
             }));
             config_list = config_list.concat(tmp.filter(i => String(i.type) === 'meta'));
         }
-
+        const { t } = this.props;
         // console.log('attrs: ', dal);
         return (
             <div className="row detail-body">
                 <div className="first-col">
-                    <Configurations device={this.props.device} attrs={config_list} />
-                    <StaticAttributes device={this.props.device} attrs={attr_list} openStaticMap={this.openStaticMap} />
+                    <Configurations device={this.props.device} attrs={config_list} t={t}/>
+                    <StaticAttributes device={this.props.device} attrs={attr_list}
+                                      openStaticMap={this.openStaticMap} t={t}/>
                 </div>
-                <DyAttributeArea device={this.props.device} actuators={actuators} attrs={dal} openStaticMap={this.state.openStaticMap} />
+                <DyAttributeArea device={this.props.device} actuators={actuators} attrs={dal}
+                                 openStaticMap={this.state.openStaticMap} t={t}/>
             </div>
         );
     }
@@ -548,11 +595,12 @@ class ViewDeviceImpl extends Component {
     }
 
     remove(e) {
-    // This should be on DeviceUserActions -
-    // this is not good, but will have to make do because of z-index on the action header
+        // This should be on DeviceUserActions -
+        // this is not good, but will have to make do because of z-index on the action header
+        const { t } = this.props;
         e.preventDefault();
         DeviceActions.triggerRemoval({ id: this.props.device_id }, (response) => {
-            toaster.success('Device removed.');
+            toaster.success(t('devices:alerts.remove'));
             hashHistory.push('/device/list');
         });
     }
@@ -572,19 +620,24 @@ class ViewDeviceImpl extends Component {
         }
 
         if (device === undefined) {
-            return (<Loading />);
+            return (<Loading/>);
         }
-
+        const { t } = this.props;
         return (
             <div className="full-height bg-light-gray">
-                <NewPageHeader title="Devices" subtitle="device manager" icon="device">
+                <NewPageHeader title={t('devices:title')} subtitle={t('devices:subtitle')}
+                               icon="device">
                     <div className="box-sh">
-                        <DeviceUserActions devices={this.props.devices} deviceid={device.id} setModal={this.setModal} />
+                        <DeviceUserActions devices={this.props.devices} deviceid={device.id}
+                                           setModal={this.setModal} t={t}/>
                     </div>
                 </NewPageHeader>
-                <DeviceHeader device={device} />
-                <DeviceDetail deviceid={device.id} device={device} />
-                {this.state.show_modal ? <RemoveModal name="device" remove={this.remove} openModal={this.setModal} /> : <div />}
+                <DeviceHeader device={device} t={t}/>
+                <DeviceDetail deviceid={device.id} device={device} t={t}/>
+                {this.state.show_modal ?
+                    <RemoveModal name={t('devices:device')} remove={this.remove}
+                                 openModal={this.setModal}/> :
+                    <div/>}
             </div>
         );
     }
@@ -593,7 +646,7 @@ class ViewDeviceImpl extends Component {
 // TODO: this is an awful quick hack - this should be better scoped.
 let device_detail_socket = null;
 
-class ViewDevice extends Component {
+class ViewDeviceComponent extends Component {
     constructor(props) {
         super(props);
     }
@@ -620,14 +673,17 @@ class ViewDevice extends Component {
         }
 
         function init(token) {
-            device_detail_socket = socketio(target, { query: `token=${token}`, transports: ['polling'] });
+            device_detail_socket = socketio(target, {
+                query: `token=${token}`,
+                transports: ['polling']
+            });
 
             device_detail_socket.on('all', (data) => {
                 MeasureActions.appendMeasures(data);
             });
 
             // console.log('socket error', data);
-                device_detail_socket.on('error', (data) => {
+            device_detail_socket.on('error', (data) => {
                 if (device_detail_socket) device_detail_socket.close();
                 // getWsToken();
             });
@@ -644,11 +700,12 @@ class ViewDevice extends Component {
         return (
             <div className="full-width full-height">
                 <AltContainer store={DeviceStore}>
-                    <ViewDeviceImpl device_id={this.props.params.device} />
+                    <ViewDeviceImpl device_id={this.props.params.device} t={this.props.t}/>
                 </AltContainer>
             </div>
         );
     }
 }
 
+const ViewDevice = withNamespaces()(ViewDeviceComponent);
 export { ViewDevice };

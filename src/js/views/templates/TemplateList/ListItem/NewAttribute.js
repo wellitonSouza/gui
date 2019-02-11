@@ -1,8 +1,9 @@
-/* eslint-disable */ 
+/* eslint-disable */
 import React, { Component } from 'react';
 import TemplateTypes from '../../TemplateTypes';
 import util from '../../../../comms/util/util';
 import toaster from '../../../../comms/util/materialize';
+import { withNamespaces } from 'react-i18next';
 
 
 const attrType = new TemplateTypes();
@@ -43,7 +44,11 @@ class NewAttribute extends Component {
         const state = this.state;
         state.isSuppressed = !state.isSuppressed;
         state.isConfiguration = property;
-        state.newAttr = { value_type: '', value: '', label: '' };
+        state.newAttr = {
+            value_type: '',
+            value: '',
+            label: ''
+        };
         property === true ? state.newAttr.type = 'meta' : state.newAttr.type = 'dynamic';
         this.setState(state);
         this.handleChangeStatus(property);
@@ -62,6 +67,8 @@ class NewAttribute extends Component {
     }
 
     addAttribute(attribute) {
+        const { t } = this.props;
+
         let ret = util.isNameValid(attribute.label);
         if (!ret.result && !this.state.isConfiguration) {
             toaster.error(ret.error);
@@ -76,7 +83,7 @@ class NewAttribute extends Component {
 
         // type of attribute can't be empty
         if (attribute.value_type == '') {
-            toaster.error("You can't leave type empty");
+            toaster.error(t('templates:alerts.leave_empty'));
             return;
         }
 
@@ -97,17 +104,21 @@ class NewAttribute extends Component {
     }
 
     render() {
-        return (
-            <div className={`new-attr-area attr-area ${this.state.isSuppressed ? 'suppressed-shadow' : ''}`}>
+        const { t } = this.props;
 
-                <div className={`add-row ${this.state.isSuppressed ? '' : 'invisible zero-height'}`}>
+        return (
+            <div
+                className={`new-attr-area attr-area ${this.state.isSuppressed ? 'suppressed-shadow' : ''}`}>
+
+                <div
+                    className={`add-row ${this.state.isSuppressed ? '' : 'invisible zero-height'}`}>
                     <div
                         className="add-btn add-config"
                         onClick={this.suppress.bind(this, true)}
-                        title="Add New Configuration"
+                        title={`${t('add.label')} ${t('templates:btn.new_conf.label')}`}
                     >
                         <div className="icon">
-                            <img src="images/add-gear.png" />
+                            <img src="images/add-gear.png"/>
                         </div>
                         <div className="text">
                             <span>configuration</span>
@@ -116,22 +127,22 @@ class NewAttribute extends Component {
                     <div
                         className="add-btn add-attr"
                         onClick={this.suppress.bind(this, false)}
-                        title="Add New Attribute"
+                        title={`${t('add.label')} ${t('templates:btn.new_attr.label')}`}
                     >
                         <div className="icon">
-                            <img src="images/add-tag.png" />
+                            <img src="images/add-tag.png"/>
                         </div>
                         <div className="text">
                             <span>attribute</span>
                         </div>
                     </div>
-                    <div className="middle-line" />
+                    <div className="middle-line"/>
                 </div>
 
                 <div className={(this.state.isSuppressed ? 'invisible' : 'padding5')}>
                     <div className={`attr-row ${this.state.isConfiguration ? 'none' : ''}`}>
                         <div className="icon">
-                            <img src="images/add-tag.png" />
+                            <img src="images/add-tag.png"/>
                         </div>
 
                         <div className="attr-content ">
@@ -142,13 +153,14 @@ class NewAttribute extends Component {
                                 onChange={this.handleChange}
                                 name="label"
                             />
-                            <span>Name</span>
+                            <span>{t('name.label')}</span>
                         </div>
                     </div>
 
                     <div className="attr-row">
                         <div className="icon">
-                            <img className={(this.state.isConfiguration ? '' : 'none')} src="images/add-gear.png" />
+                            <img className={(this.state.isConfiguration ? '' : 'none')}
+                                 src="images/add-gear.png"/>
                         </div>
                         <div className="attr-content">
                             <select
@@ -159,13 +171,17 @@ class NewAttribute extends Component {
                                 onChange={this.handleChange}
                             >
                                 <option value="">Select type</option>
-                                {this.state.isConfiguration ? (this.configValueTypes.map(opt => <option value={opt.value} key={opt.label}>{opt.label}</option>)) : (this.availableValueTypes.map(opt => <option value={opt.value} key={opt.label}>{opt.label}</option>))}
+                                {this.state.isConfiguration ? (this.configValueTypes.map(opt =>
+                                    <option value={opt.value}
+                                            key={opt.label}>{opt.label}</option>)) : (this.availableValueTypes.map(opt =>
+                                    <option value={opt.value}
+                                            key={opt.label}>{opt.label}</option>))}
                             </select>
                             <span>Type</span>
                         </div>
                     </div>
                     <div className="attr-row">
-                        <div className="icon" />
+                        <div className="icon"/>
                         <div className="attr-content">
                             {this.state.isActuator ? null
                                 : (
@@ -187,10 +203,12 @@ class NewAttribute extends Component {
                                 onChange={this.handleChange}
                             >
                                 <option value="">Select type</option>
-                                {this.configTypes.map(opt => <option value={opt.value} key={opt.label}>{opt.label}</option>)}
+                                {this.configTypes.map(opt => <option value={opt.value}
+                                                                     key={opt.label}>{opt.label}</option>)}
                             </select>
 
-                            <span className={(this.state.isConfiguration ? '' : 'none')}>Value</span>
+                            <span
+                                className={(this.state.isConfiguration ? '' : 'none')}>Value</span>
 
                             <select
                                 id="select_attribute_type"
@@ -200,23 +218,24 @@ class NewAttribute extends Component {
                                 onChange={this.handleChange}
                             >
                                 <option value="">Select type</option>
-                                {this.availableTypes.map(opt => <option value={opt.value} key={opt.label}>{opt.label}</option>)}
+                                {this.availableTypes.map(opt => <option value={opt.value}
+                                                                        key={opt.label}>{opt.label}</option>)}
                             </select>
                         </div>
                     </div>
                     <div
                         className="material-btn center-text-parent"
-                        title="Add a new Attribute"
+                        title={`${t('add.label')} ${t('templates:btn.new_attr.label')}`}
                         onClick={this.addAttribute.bind(this, this.state.newAttr)}
                     >
                         <span className="text center-text-child light-text">add</span>
                     </div>
                     <div
                         className="material-btn center-text-parent"
-                        title="Discard Changes"
+                        title={t('discard.label')}
                         onClick={this.discardAttribute}
                     >
-                        <span className="text center-text-child light-text">discard</span>
+                        <span className="text center-text-child light-text">{t('discard.text')}</span>
                     </div>
                 </div>
             </div>
@@ -225,4 +244,4 @@ class NewAttribute extends Component {
     }
 }
 
-export default NewAttribute;
+export default withNamespaces()(NewAttribute);

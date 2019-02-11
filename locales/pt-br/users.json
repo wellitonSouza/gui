@@ -1,0 +1,40 @@
+{
+  "title": "Usuários",
+  "alerts": {
+    "user_update": "Usuário atualizado.",
+    "user_update_err": "Falha ao atualizar o usuário.",
+    "user_create": "Usuário criado",
+    "modal_qst_remove": "Você irá apagar o usuário.",
+    "modal_qst_confirm_remove": "Você tem certeza?"
+  },
+  "header_btn_new": {
+    "label": "Novo usuário",
+    "alt": "Cria um novo usuário"
+  },
+  "title_sidebar": {
+    "new": "Novo usuário",
+    "edit": "Editar usuário"
+  },
+  "username": {
+    "label": "Nome de usuário",
+    "error": "Username inválido."
+  },
+  "name": {
+    "label": "Nome",
+    "error": "Nome inválido."
+  },
+  "email": {
+    "label": "Email",
+    "error": "E-mail inválido."
+  },
+  "confirm_email": {
+    "label": "Confirmação de Email",
+    "error": "E-mails diferentes."
+  },
+  "profile": {
+    "label": "Perfil",
+    "alt": "-",
+    "error": "Selecione um perfil."
+  },
+  "user": "usuário"
+}

@@ -2,9 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { DojotBtnLink } from 'Components/DojotButton';
 import TemplateActions from 'Actions/TemplateActions';
+import {
+    withNamespaces,
+} from 'react-i18next';
 import Can from '../../components/permissions/Can';
 
-const OperationsHeader = ({ toggleSearchBar }) => (
+const OperationsHeader = ({ toggleSearchBar, t }) => (
     <div className="col s5 pull-right pt10">
         <div
             className="searchBtn"
@@ -20,8 +23,8 @@ const OperationsHeader = ({ toggleSearchBar }) => (
             <DojotBtnLink
                 responsive="true"
                 onClick={() => TemplateActions.selectTemplate()}
-                label="New Template"
-                alt="Create a new template"
+                label={t('templates:header.new.label')}
+                alt={t('templates:header.new.alt')}
                 icon="fa fa-plus"
                 className="w130px"
             />
@@ -31,6 +34,7 @@ const OperationsHeader = ({ toggleSearchBar }) => (
 
 OperationsHeader.propTypes = {
     toggleSearchBar: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
 };
 
-export default OperationsHeader;
+export default withNamespaces()(OperationsHeader);

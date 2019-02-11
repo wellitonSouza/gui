@@ -3,6 +3,7 @@ import AltContainer from 'alt-container';
 import TextTruncate from 'react-text-truncate';
 import { translate, Trans } from 'react-i18next';
 import PropTypes from 'prop-types';
+import * as i18next from 'i18next';
 import GroupStore from '../../stores/GroupStore';
 import GroupActions from '../../actions/GroupActions';
 import GroupPermissionActions from '../../actions/GroupPermissionActions';
@@ -11,6 +12,8 @@ import { DojotBtnLink } from '../../components/DojotButton';
 import GroupsSideBar from './GroupsSideBar';
 import toaster from '../../comms/util/materialize';
 import Can from '../../components/permissions/Can';
+
+i18next.setDefaultNamespace('groups');
 
 function GroupCard(obj) {
     return (
@@ -42,7 +45,7 @@ function GroupCard(obj) {
                                 text={obj.group.description}
                                 containerClassName="description-text"
                             />
-                            <div className="subtitle"><Trans i18nKey="groups.description" /></div>
+                            <div className="subtitle"><Trans i18nKey="description.label" /></div>
                         </div>
                     </div>
                 </div>
@@ -64,7 +67,7 @@ function GroupList(param) {
                     />
                 ))}
             </div>
-);
+        );
     }
 }
 
@@ -75,8 +78,8 @@ function OperationsHeader(param) {
                 <DojotBtnLink
                     responsive="true"
                     onClick={param.newGroup}
-                    label={param.i18n('groups.btn.new.text')}
-                    alt={param.i18n('groups.btn.new.alt')}
+                    label={param.i18n('btn.new.text')}
+                    alt={param.i18n('btn.new.alt')}
                     icon="fa fa-plus"
                     className="w130px"
                 />
@@ -141,7 +144,7 @@ class Groups extends Component {
         const { t } = this.props;
         const { id: groupClick } = e.currentTarget;
         if (groupClick === 'admin') {
-            toaster.warning(t('groups.alerts.admin_not_remove'));
+            toaster.warning(t('alerts.admin_not_remove'));
         } else {
             GroupActions.getGroupByName(groupClick);
             GroupPermissionActions.fetchGroupPermissions(groupClick);
@@ -161,7 +164,7 @@ class Groups extends Component {
         return (
             <span id="groups-wrapper">
                 <AltContainer store={GroupStore}>
-                    <NewPageHeader title={<Trans i18nKey="groups.title" />} icon="groups">
+                    <NewPageHeader title={<Trans i18nKey="title" />} icon="groups">
                         <OperationsHeader newGroup={this.newGroup} i18n={t} />
                     </NewPageHeader>
                     <GroupList handleUpdate={this.handleUpdate} />

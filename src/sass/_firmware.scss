@@ -21,12 +21,14 @@
 .body-form
 {
     .header2{
+        padding: 20px 0px;
         font-family: Raleway;
         font-style: normal;
         font-weight: 500;
         line-height: normal;
         font-size: 17px;
         color: #7C7C7C;
+        display: block;
     }
 }
 
@@ -34,37 +36,64 @@
 {
     .info
     {
-
-    }
-
-    .description
-    {
-        .line
-        {
-            height: 150px;
-            display: inline-block;
-            width: 100%;
-
-            .label
+        .icon
+        {   
+            display: block;
+            width: 90px;
+            float: left;
+            padding-top: 25px;
+            padding-left: 20px;
+            
+            img
             {
-                font-family: Raleway;
-                font-style: normal;
-                font-weight: 500;
-                line-height: normal;
-                font-size: 12px;
-                text-align: right;
-                color: #7C7C7C;
+                height: 38px;
             }
+        }
+    
+        .desc
+        {
+            display: inline-block;
+            width: calc(100% - 100px);
 
-            .value
+            .line
             {
-                font-family: Raleway;
-                font-style: normal;
-                font-weight: bold;
-                line-height: normal;
-                font-size: 13px;
-                color: #4F4F4F;
+                display: inline-block;
+                width: 100%;
+                padding-bottom: 9px;
+
+                .label
+                {
+                    display: inline-block;
+                    font-family: "Raleway";
+                    font-weight: 500;
+                    font-size: 14px;
+                    padding-right: 5px;
+                    text-align: right;
+                    color: #7C7C7C;
+                }
+
+                .value
+                {
+                    display: inline-block;
+                    font-family: "Raleway";
+                    font-weight: bold;
+                    font-size: 15px;
+                    color: #4F4F4F;
+                }
             }
         }
     }
+}
+
+
+.cid_upload_button
+{
+    display: inline-block;
+}
+
+
+.cid_select
+{
+    width: calc(100% - 108px);
+    display: inline-block;
 }

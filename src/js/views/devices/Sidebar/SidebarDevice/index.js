@@ -9,6 +9,7 @@ import { FormActions } from '../../Actions';
 import SidebarDelete from '../../../templates/TemplateList/Sidebar/SidebarDelete';
 
 const SidebarDevice = ({
+    hasTemplateWithImages,
     showSidebarDevice,
     handleShowManageTemplate,
     handleShowDeviceAttrs,
@@ -26,7 +27,6 @@ const SidebarDevice = ({
     const {
         configValues, dynamicValues, staticValues, actuatorValues,
     } = device;
-    const hasImageAvailable = true;
     const total = device.templates.length ? device.templates.length : 0;
     return (
         <Fragment>
@@ -42,10 +42,6 @@ const SidebarDevice = ({
                                     <div className="icon">
                                         <img src="images/icons/chip-cyan.png" alt="device-icon" />
                                     </div>
-                                    <div className="device-firmware-icon" >
-                                        <img src="images/icons/firmware-wt.png" text="Manage Images" role="button" onClick={() => toogleSidebarImages()} alt="firmware-icon" />
-                                    </div>
-                                    
                                 </div>
                                 <div className="body">
                                     <div className="title">
@@ -127,12 +123,17 @@ const SidebarDevice = ({
                                             icon="config_attrs"
                                             title={t('text.actuators')}
                                             disable={actuatorValues.length === 0}
-                                        /> 
-                                        
+                                        />
+
                                     </div>
-
+                                    { hasTemplateWithImages ? (
+                                        <SidebarButton
+                                            onClick={() => toogleSidebarImages()}
+                                            icon="firmware"
+                                            text="Manage Firmware"
+                                        />
+                                    ) : null}
                                 </div>
-
                                 <div className="footer">
                                     {
                                         isNewDevice ? (

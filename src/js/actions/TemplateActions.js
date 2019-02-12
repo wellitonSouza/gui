@@ -1,8 +1,9 @@
-/* eslint-disable */
+// /* eslint-disable */
 import templateManager from 'Comms/templates/TemplateManager';
 import toaster from 'Comms/util/materialize';
 
 const alt = require('../alt');
+
 const newTemplate = {
     id: `${Math.floor(Math.random() * 100000)}`,
     label: '',
@@ -38,6 +39,27 @@ class TemplateActions {
         };
     }
 
+
+    fetchSingle(templateId, cb) {
+        return (dispatch) => {
+            dispatch();
+            templateManager
+                .getTemplateGQL(templateId)
+                .then((result) => {
+                    console.log('fetchSingle', result);
+                    this.updateAndSetSingle(result.data);
+                    if (cb) {
+                        cb(result);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Failed to fetch single template', error);
+                    this.templatesFailed(error);
+                });
+        };
+    }
+
+
     fetchTemplates(params = null, cb) {
         return (dispatch) => {
             templateManager.getTemplates(params)
@@ -57,7 +79,7 @@ class TemplateActions {
 
     triggerUpdate(template, cb) {
         return (dispatch) => {
-            // console.log('triggerUpdate', template);
+            console.log('triggerUpdate', template);
             templateManager.setTemplate(template)
                 .then((response) => {
                     this.updateSingle(template);
@@ -106,6 +128,10 @@ class TemplateActions {
         };
     }
 
+    updateAndSetSingle(template) {
+        return template;
+    }
+
     updateSingle(template) {
         return template;
     }
@@ -119,12 +145,16 @@ class TemplateActions {
         return error;
     }
 
-    selectTemplate(template = newTemplate){
+    selectTemplate(template = newTemplate) {
+        console.log("selectTemplate",template);
+        if (!template.newTemplate) {
+            this.fetchSingle(template.id);
+        }
         return JSON.parse(JSON.stringify(template)); // passing obj by value
     }
 
-    toogleSidebar(params){
-        return (dispatch) => dispatch(params)
+    toogleSidebar(params) {
+        return dispatch => dispatch(params);
     }
 }
 

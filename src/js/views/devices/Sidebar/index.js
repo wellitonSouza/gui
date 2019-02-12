@@ -6,11 +6,29 @@ import toaster from 'Comms/util/materialize';
 import util from 'Comms/util/util';
 import { withNamespaces } from 'react-i18next';
 import ImageStore from 'Stores/ImageStore';
+import DeviceStore from 'Stores/DeviceStore';
+import MeasureStore from 'Stores/MeasureStore';
 import SidebarDevice from './SidebarDevice';
 import SidebarManageTemplates from './SidebarManageTemplates';
 import SidebarDeviceAttrs from './SidebarDeviceAttrs';
 import SidebarImage from './SidebarImage/index';
 import { FormActions } from '../Actions';
+
+
+// function handleTemplateWithImages(device) {
+//     console.log('Templates', device.templates);
+//     // create a code here to check if template is a template allowed to receive images;
+//     if (device.templates) {
+//         return {
+//             templateIdAllowedImage: device.templates[0],
+//             hasTemplateWithImages: true,
+//         };
+//     }
+//     return {
+//         templateIdAllowedImage: '',
+//         hasTemplateWithImages: false,
+//     };
+// }
 
 class Sidebar extends Component {
     constructor(props) {
@@ -44,6 +62,8 @@ class Sidebar extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
+        // const tempWithImages = handleTemplateWithImages(props.device);
+        // ...tempWithImages,
         if (props.showSidebarDevice !== state.showSidebarDevice) {
             return {
                 ...state,
@@ -71,12 +91,10 @@ class Sidebar extends Component {
         });
     }
 
-    toogleSidebarImages()
-    {
+    toogleSidebarImages() {
         const { showSidebarImage, isNewDevice } = this.state;
-        console.log("toogleSidebarImages",isNewDevice);
-        if (!isNewDevice)
-        {
+        console.log('toogleSidebarImages', isNewDevice);
+        if (!isNewDevice) {
             this.setState({
                 showSidebarImage: !showSidebarImage,
             });
@@ -88,6 +106,7 @@ class Sidebar extends Component {
             showManageTemplates: !prevState.showManageTemplates,
         }));
     }
+
 
     handleSelectTemplate(checked, template) {
         const { device } = this.state;
@@ -328,11 +347,19 @@ class Sidebar extends Component {
             isShowSidebarDelete,
             deviceAttrsTitle,
         } = this.state;
+        const {
+            templateIdAllowedImage,
+            hasTemplateWithImages,
+        } = this.props;
+
+
+        console.log('hasTemplateWithImages', hasTemplateWithImages);
         if (!Object.prototype.hasOwnProperty.call(device, 'attrs')) return <div />;
         const { metadata } = device;
         return (
             <Fragment>
                 <SidebarDevice
+                    hasTemplateWithImages={hasTemplateWithImages}
                     showSidebarDevice={showSidebarDevice}
                     device={device}
                     isNewDevice={isNewDevice}
@@ -365,11 +392,12 @@ class Sidebar extends Component {
                     handleShowDeviceAttrs={this.handleShowDeviceAttrs}
                     errors={errors}
                 />
-                <AltContainer store={ImageStore}>
+                <AltContainer store={[ImageStore, DeviceStore, MeasureStore]}>
                     <SidebarImage
-                        device={device}
+                        deviceId={device.id}
+                        hasTemplateWithImages={hasTemplateWithImages}
+                        templateIdAllowedImage={templateIdAllowedImage}
                         showSidebarImage={showSidebarImage}
-                        selectedTemplates={device.templates}
                         toogleSidebarImages={this.toogleSidebarImages}
                     />
                 </AltContainer>

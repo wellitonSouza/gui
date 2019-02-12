@@ -901,9 +901,13 @@
     overflow: auto;
     padding: 15px 0 !important;
     margin-top: 15px;
+    position: relative;
 
     .body-actions
     {
+      position: absolute;
+      width:100%;
+      bottom:0px;
       .body-actions--button:hover {
         background-color: rgba(218, 218, 218, 0.4) !important;
         transition: 300ms;

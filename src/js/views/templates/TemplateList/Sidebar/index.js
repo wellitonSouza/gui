@@ -5,12 +5,12 @@ import toaster from 'Comms/util/materialize';
 import TemplateActions from 'Actions/TemplateActions';
 import util from 'Comms/util/util';
 import { withNamespaces } from 'react-i18next';
+import ImageStore from 'Stores/ImageStore';
 import SidebarTemplate from './SidebarTemplate/index';
 import SidebarAttribute from './SidebarAttribute/index';
 import SidebarMetadata from './SidebarMetadata/index';
 import SidebarFirmConfig from './SidebarFirmware/SidebarFirmConfig';
 import { templateType, tempOpxType } from '../../TemplatePropTypes';
-import ImageStore from 'Stores/ImageStore';
 
 class Sidebar extends Component {
     static createAttribute() {
@@ -445,12 +445,15 @@ class Sidebar extends Component {
                     deleteTemplate={this.deleteTemplate}
                 />
                 <AltContainer store={ImageStore}>
-                    <SidebarFirmConfig
-                        showFirmware={showFirmware}
-                        isNewTemplate={isNewTemplate}
-                        template={template}
-                        toogleSidebarFirmware={this.toogleSidebarFirmware}
-                    />
+                    {showFirmware
+                        ? (
+                            <SidebarFirmConfig
+                                showFirmware={showFirmware}
+                                isNewTemplate={isNewTemplate}
+                                template={template}
+                                toogleSidebarFirmware={this.toogleSidebarFirmware}
+                            />
+                        ) : null}
                 </AltContainer>
                 {/* @To check: attr template isn't used */}
                 <SidebarAttribute

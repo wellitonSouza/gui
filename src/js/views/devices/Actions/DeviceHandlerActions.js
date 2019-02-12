@@ -2,7 +2,35 @@ import deviceManager from 'Comms/devices';
 import toaster from 'Comms/util/materialize';
 
 class DeviceHandlerActions {
-    set(args) { return args; }
+    set(args) {
+        console.log('DeviceHandlerActions, set:', args);
+        this.fetchTemplateData(args.templates);
+        return args;
+    }
+
+
+    fetchTemplateData(templateList, cb) {
+        return (dispatch) => {
+            dispatch();
+            deviceManager
+                .getTemplateGQL(templateList)
+                .then((result) => {
+                    console.log('fetchTemplateData', result);
+                    this.setTemplateData(result.data);
+                    if (cb) {
+                        cb(result);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Failed to fetch template information', error);
+                });
+        };
+    }
+
+    setTemplateData(data) {
+        return data;
+    }
+
 
     update(args) { return args; }
 

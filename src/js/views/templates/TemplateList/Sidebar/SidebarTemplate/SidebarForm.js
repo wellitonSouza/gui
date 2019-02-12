@@ -9,7 +9,7 @@ import SidebarButton from '../SidebarButton';
 import { templateType } from '../../../TemplatePropTypes';
 
 const SidebarForm = ({
-    isNewTemplate, changeValue, toogleSidebarAttribute, toogleSidebarFirmware, template,
+    isNewTemplate, changeValue, toogleSidebarAttribute, toogleSidebarFirmware, template, t,
 }) => {
     const renderTemplateProps = () => {
         const templateProps = [];

@@ -1,6 +1,8 @@
 /* eslint-disable */
 import util from '../util';
 
+
+
 class TemplateManager {
     constructor() {
         this.baseUrl = '';
@@ -22,6 +24,21 @@ class TemplateManager {
     getTemplate(id) {
         return util.GET(`${this.baseUrl}/template/${id}`);
     }
+
+    getTemplateGQL(id) {
+        const req = {
+            query: GQLTEMPLATE(id),
+        };
+        return util.POST(this.baseUrl+'/graphql/', req);
+    }
+
+    // getTemplateGQL(ID) {
+    //     const req = {
+    //         query: GQLTEMPLATE2(1),
+    //     };
+    //     return util.GET(`${this.baseUrl}/graphql/?${req}`);
+    // }
+
 
     setTemplate(detail) {
         return util.PUT(`${this.baseUrl}/template/${detail.id}`, detail);
@@ -45,3 +62,85 @@ class TemplateManager {
 
 const templateManager = new TemplateManager();
 export default templateManager;
+
+const GQLTEMPLATE = (templateId) => `
+{
+    template(id: ${templateId}) {
+      label
+      id
+      created
+      attrs {
+        id
+        label
+        metadata{
+          id
+          label
+          static_value
+          type
+          value_type
+          created
+          updated
+        }
+        static_value
+        template_id
+        type
+        value_type
+        created
+      }
+      config_attrs {
+        id
+        label
+        metadata{
+          id
+          label
+          static_value
+          type
+          value_type
+          created
+          updated
+        }
+        static_value
+        template_id
+        type
+        value_type
+        created
+      }
+      data_attrs {
+        id
+        label
+        metadata{
+          id
+          label
+          static_value
+          type
+          value_type
+          created
+          updated
+        }
+        static_value
+        template_id
+        type
+        value_type
+        created
+      }
+      img_attrs {
+        id
+        label
+        metadata{
+          id
+          label
+          static_value
+          type
+          value_type
+          created
+          updated
+        }
+        static_value
+        template_id
+        type
+        value_type
+        created
+      }
+    }
+  }
+  `;

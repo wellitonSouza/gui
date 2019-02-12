@@ -1,15 +1,42 @@
+
 import imageManager from 'Comms/ImageManager';
 import toaster from 'Comms/util/materialize';
 
 const alt = require('../alt');
 
 class ImageActions {
+
+    updateTemplateInfo(data) {
+        return data;
+    }
+
+    fetchTemplateInfo(params = null, cb) {
+        return (dispatch) => {
+            imageManager.getTemplateInfo(params)
+                .then((result) => {
+                    this.updateTemplateInfo(result);
+                    if (cb) {
+                        cb(result);
+                    }
+                })
+                .catch((error) => {
+                    this.templatesFailed(error);
+                });
+
+            dispatch();
+        };
+    }
+
     updateImages(images) {
         return images;
     }
 
     updateImageData(id, label, value) {
         return { id, label, value };
+    }
+
+    updateImageAllowed(value) {
+        return value;
     }
 
     fetchImages(templateId) {

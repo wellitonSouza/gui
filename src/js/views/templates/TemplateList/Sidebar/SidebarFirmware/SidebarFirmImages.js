@@ -5,14 +5,13 @@ import { DojotBtnClassic } from 'Components/DojotButton';
 import ImageActions from 'Actions/ImageActions';
 import util from 'Comms/util';
 import toaster from 'Comms/util/materialize';
-import { templateType } from '../../../TemplatePropTypes';
 import ImageList from './ImageList';
 
 class SidebarFirmImages extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            new_image: false,
+            newImage: false,
         };
         this.createNewImage = this.createNewImage.bind(this);
         this.changeAttrValue = this.changeAttrValue.bind(this);
@@ -23,8 +22,9 @@ class SidebarFirmImages extends Component {
     }
 
     componentDidMount() {
-        if (!this.props.isNewTemplate) {
-            ImageActions.fetchImages.defer(this.props.template.id);
+        const { isNewTemplate, templateId } = this.props;
+        if (!isNewTemplate) {
+            ImageActions.fetchImages.defer(templateId);
         }
     }
 
@@ -33,11 +33,12 @@ class SidebarFirmImages extends Component {
     }
 
     createNewImage() {
-        if (!this.state.new_image) {
+        const { newImage } = this.state;
+        if (newImage) {
             ImageActions.insertEmptyImage({
                 id: util.guid(), image_version: '', created: null, new: true, saved: false, image_hash: null,
             });
-            this.setState({ new_image: true });
+            this.setState({ newImage: true });
         }
     }
 
@@ -50,36 +51,42 @@ class SidebarFirmImages extends Component {
                 // 1. update or create image
                 // 2. upload binary
                 // 3. set as saved image
-                const json_img = {
-                    label: String(this.props.template.id),
-                    fw_version: image.image_version,
-                    sha1: null,
-                };
-                ImageActions.triggerInsert(json_img, (img) => {
-                    let id_to_be_used = image.id;
-                    if (image.new) {
-                        toaster.success('Image created.'); // @Todo we should split it in 2 methods;
-                        id_to_be_used = img.id;
-                    } else {
-                        toaster.success('Image updated.');
-                    }
-                    console.log('img', img);
-                    console.log('image.file', image.file);
-
+                if (image.new) {
+                    const json_img = {
+                        label: String(this.props.templateId),
+                        fw_version: image.image_version,
+                        sha1: null,
+                    };
+                    ImageActions.triggerInsert(json_img, (img) => {
+                        const id_to_be_used = image.id;
+                        toaster.success('Image created.');
+                        if (image.file) {
+                            const img_binary = {
+                                id: id_to_be_used,
+                                binary: image.file[0],
+                            };
+                            ImageActions.triggerUpdate(img_binary, () => {
+                                toaster.success('Image added.');
+                            });
+                        }
+                        ImageActions.updateImageData(id_to_be_used, 'saved', true);
+                    });
+                } else {
+                    // Todo currently we don't update meta information for images;
                     if (image.file) {
                         const img_binary = {
-                            id: id_to_be_used,
+                            id: image.id,
                             binary: image.file[0],
                         };
                         ImageActions.triggerUpdate(img_binary, () => {
                             toaster.success('Image added.');
                         });
                     }
-                    ImageActions.updateImageData(id_to_be_used, 'saved', true);
-                    if (image.new) {
-                        this.setState({ new_image: false });
-                    }
-                });
+                    ImageActions.updateImageData(image.id, 'saved', true);
+                }
+                if (image.new) {
+                    this.setState({ newImage: false });
+                }
             }
             return null;
         });
@@ -97,7 +104,7 @@ class SidebarFirmImages extends Component {
 
         if (image.new) {
             ImageActions.removeSingle(image.id);
-            this.setState({ new_image: false });
+            this.setState({ newImage: false });
         } else {
             ImageActions.triggerRemoval(image, () => {
                 toaster.error('Image removed.');
@@ -125,7 +132,7 @@ class SidebarFirmImages extends Component {
                                 <div className="header">
                                     <div className="title">MANAGE IMAGES</div>
                                     <div className="icon">
-                                       <img src="images/firmware-red.png" alt="device-icon" />
+                                        <img src="images/firmware-red.png" alt="device-icon" />
                                     </div>
                                     <div className="header-path">
                                         {'template > firmware > images'}
@@ -134,9 +141,9 @@ class SidebarFirmImages extends Component {
 
                                 <div className="body">
                                     <ImageList list={this.props.images} changeAttrValue={this.changeAttrValue} removeImage={this.removeImage} removeBinary={this.removeBinary} onDrop={this.onDrop} />
-                                    {(!this.state.new_image)
+                                    {(!this.state.newImage)
                                         ? (
-                                                                                        <div className="body-form-nodata clickable" onClick={this.createNewImage}>
+                                            <div className="body-form-nodata clickable" onClick={this.createNewImage}>
                                         Click here to add a new image
                                             </div>
                                         )
@@ -167,7 +174,7 @@ SidebarFirmImages.defaultProps = {
 SidebarFirmImages.propTypes = {
     showFirmware: PropTypes.bool,
     isNewTemplate: PropTypes.bool,
-    template: PropTypes.shape(templateType).isRequired,
+    templateId: PropTypes.string.isRequired,
     toogleSidebarFirmware: PropTypes.func.isRequired,
 
 };

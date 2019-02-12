@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Slide from 'react-reveal/Slide';
 import { DojotBtnClassic } from 'Components/DojotButton';
 import Can from 'Components/permissions/Can';
+import { withNamespaces } from 'react-i18next';
 import SidebarForm from './SidebarForm';
 import SidebarDelete from '../SidebarDelete';
 import { templateType } from '../../../TemplatePropTypes';
@@ -20,19 +21,20 @@ const SidebarTemplate = ({
     toogleSidebarDelete,
     deleteTemplate,
     showDeleteTemplate,
+    t,
 }) => (
     <Fragment>
         <Slide right when={showSidebar} duration={300}>
-            { showSidebar
+            {showSidebar
                 ? (
                     <div className="template-sidebar">
                         <div className="header">
-                            <div className="title">manage template</div>
+                            <div className="title">{isNewTemplate ? t('templates:title_sidebar.default') : template.label}</div>
                             <div className="icon">
                                 <img src="images/icons/template-cyan.png" alt="device-icon" />
                             </div>
                             <div className="header-path">
-                                {'template'}
+                                {t('templates:template')}
                             </div>
                         </div>
                         <SidebarForm
@@ -43,18 +45,27 @@ const SidebarTemplate = ({
                             changeValue={changeValue}
                         />
                         <div className="footer">
-                            <DojotBtnClassic type="secondary" label="discard" onClick={() => toogleSidebar()} />
-                            { isNewTemplate
+                            <DojotBtnClassic
+                                type="secondary"
+                                label={t('discard.label')}
+                                onClick={() => toogleSidebar()}
+                            />
+                            {isNewTemplate
                                 ? (
                                     <Can do="modifier" on="template">
-                                        <DojotBtnClassic color="blue" type="primary" label="save" onClick={saveTemplate} />
+                                        <DojotBtnClassic
+                                            color="blue"
+                                            type="primary"
+                                            label={t('save.label')}
+                                            onClick={saveTemplate}
+                                        />
                                     </Can>
                                 )
                                 : (
                                     <Fragment>
                                         <Can do="modifier" on="template">
-                                            <DojotBtnClassic label="delete" type="secondary" onClick={() => toogleSidebarDelete('showDeleteTemplate')} />
-                                            <DojotBtnClassic color="red" label="save" type="primary" onClick={updateTemplate} />
+                                            <DojotBtnClassic label={t('remove.label')} type="secondary" onClick={() => toogleSidebarDelete('showDeleteTemplate')} />
+                                            <DojotBtnClassic color="red" label={t('save.label')} type="primary" onClick={updateTemplate} />
                                         </Can>
                                     </Fragment>
                                 )
@@ -69,7 +80,7 @@ const SidebarTemplate = ({
             cancel={() => toogleSidebarDelete('showDeleteTemplate')}
             confirm={deleteTemplate}
             showSidebar={showDeleteTemplate}
-            message="You are about to remove this template. Are you sure?"
+            message={t('templates:alerts.qst_remove', { label: t('templates:template') })}
         />
     </Fragment>
 );
@@ -93,6 +104,7 @@ SidebarTemplate.propTypes = {
     toogleSidebarDelete: PropTypes.func.isRequired,
     deleteTemplate: PropTypes.func.isRequired,
     showDeleteTemplate: PropTypes.bool,
+    t: PropTypes.func.isRequired,
 };
 
-export default SidebarTemplate;
+export default withNamespaces()(SidebarTemplate);

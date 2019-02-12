@@ -4,6 +4,7 @@ import TemplateStore from 'Stores/TemplateStore';
 import AltContainer from 'alt-container';
 import toaster from 'Comms/util/materialize';
 import util from 'Comms/util/util';
+import { withNamespaces } from 'react-i18next';
 import SidebarDevice from './SidebarDevice';
 import SidebarManageTemplates from './SidebarManageTemplates';
 import SidebarDeviceAttrs from './SidebarDeviceAttrs';
@@ -200,7 +201,10 @@ class Sidebar extends Component {
     handleChangeMetadata(event, id) {
         const { device } = this.state;
         device.metadata[id] = device.metadata[id].map(meta => (meta.label === event.target.name
-            ? { ...meta, static_value: event.target.value }
+            ? {
+                ...meta,
+                static_value: event.target.value,
+            }
             : meta
         ));
 
@@ -218,13 +222,13 @@ class Sidebar extends Component {
 
     save() {
         const { device } = this.state;
-        const { ops } = this.props;
+        const { ops, t } = this.props;
         const saveDevice = this.formatDevice(device);
         const isValid = this.validDevice(saveDevice);
 
         if (isValid.result) {
             FormActions.addDevice(saveDevice, () => {
-                toaster.success('Device created');
+                toaster.success(t('devices:alerts.create'));
                 ops._fetch();
             });
         } else {
@@ -234,13 +238,13 @@ class Sidebar extends Component {
 
     update() {
         const { device } = this.state;
-        const { ops } = this.props;
+        const { ops, t } = this.props;
         const updateDevice = this.formatDevice(device);
         const isValid = this.validDevice(updateDevice);
 
         if (isValid.result) {
             FormActions.triggerUpdate(updateDevice, () => {
-                toaster.success('Device updated');
+                toaster.success(t('devices:alerts.update'));
                 ops._fetch();
             });
         } else {
@@ -250,9 +254,9 @@ class Sidebar extends Component {
 
     remove() {
         const { device } = this.state;
-        const { ops } = this.props;
+        const { ops, t } = this.props;
         FormActions.triggerRemoval(device, () => {
-            toaster.success('Device removed');
+            toaster.success(t('devices:alerts.remove'));
             this.setState({
                 isShowSidebarDelete: false,
                 showSidebarDevice: false,
@@ -281,10 +285,11 @@ class Sidebar extends Component {
     }
 
     validDevice(device) {
+        const { t } = this.props;
         if (device.templates.length < 1) {
             return {
                 result: false,
-                error: 'Select a template',
+                error: t('devices:select_template'),
             };
         }
 
@@ -390,6 +395,7 @@ Sidebar.propTypes = {
     ops: PropTypes.shape({
         _fetch: PropTypes.func,
     }).isRequired,
+    t: PropTypes.func.isRequired,
 };
 
-export default Sidebar;
+export default withNamespaces()(Sidebar);

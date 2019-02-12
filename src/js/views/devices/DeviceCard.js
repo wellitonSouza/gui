@@ -15,6 +15,7 @@ import DeviceFormStore from './Store';
 import { FormActions } from "./Actions";
 
 import Can from 'Components/permissions/Can';
+import { withNamespaces } from 'react-i18next';
 
 function SummaryItem(props) {
     let attrs = 0;
@@ -45,7 +46,7 @@ function SummaryItem(props) {
                                 </div>
                                 <div className="attr-content">
                                     <input type="text" value={attrs} disabled/>
-                                    <span>Properties</span>
+                                    <span>{props.t('text.properties')}</span>
                                 </div>
                                 <div className="center-text-parent material-btn right-side"/>
                             </div>
@@ -55,7 +56,7 @@ function SummaryItem(props) {
                                 </div>
                                 <div className="attr-content">
                                     <input type="text" value={util.iso_to_date(props.device.created)} disabled/>
-                                    <span>Last update</span>
+                                    <span>{props.t('text.last_update')}</span>
                                 </div>
                                 <div className="center-text-parent material-btn right-side"/>
                             </div>
@@ -69,7 +70,7 @@ function SummaryItem(props) {
 }
 
 
-class DeviceCardList extends Component {
+class DeviceCardListComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -87,20 +88,22 @@ class DeviceCardList extends Component {
     }
 
     render() {
+        const { t } =this.props;
+
         if (this.props.loading) {
             return <Loading />;
         }
 
         this.convertDeviceList();
 
-        this.metaData = { alias: 'device' };
+        this.metaData = { alias: t('devices:device')};
         if (this.props.toggle.props.toggleState) {
             this.props.dev_opex.setFilterToCard();
         }
-        // console.log('deviceList', this.props);
+
         return (
             <div className="device-card-area">
-                <Filter showPainel={this.props.showFilter} metaData={this.metaData} ops={this.props.dev_opex} fields={DevFilterFields}/>
+                <Filter showPainel={this.props.showFilter} metaData={this.metaData} ops={this.props.dev_opex} fields={withNamespaces()(DevFilterFields)}/>
                 <AltContainer store={DeviceFormStore}>
                     <Sidebar ops={this.props.dev_opex} />
                 </AltContainer>
@@ -108,15 +111,15 @@ class DeviceCardList extends Component {
                     <div className="background-info valign-wrapper full-height">
                         <span className="horizontal-center">
                             {this.props.dev_opex.hasFilter()
-                                ? <b className="noBold">No devices to be shown</b>
-                                : <b className="noBold">No configured devices</b>
+                                ? <b className="noBold">{t('devices:no_devices_shown')}</b>
+                                : <b className="noBold">{t('devices:no_configured_devices')}</b>
                             }
                         </span>
                     </div>
                 ) : (
                     <div className="col s12  lst-wrapper extra-padding flex-container">
                         {this.filteredList.map(device => (
-                            <SummaryItem device={device} key={device.id} />
+                            <SummaryItem device={device} key={device.id} t={t}/>
                         ))}
                     </div>
                 )}
@@ -145,8 +148,10 @@ class DevFilterFields extends Component {
     }
 
     createSelectTemplates() {
+        const { t } = this.props;
         const items = [];
-        items.push(<option key="select_template" value="">Select Template</option>);
+        items.push(<option key="select_template" value="">
+            {`${t('text.select')}   ${t('templates:template')}` }</option>);
         for (let i = 0; i < this.templates.length; i++) {
             items.push(<option key={this.templates[i].id} value={this.templates[i].id}>
                 {this.templates[i].label}
@@ -160,16 +165,15 @@ class DevFilterFields extends Component {
     }
 
     render() {
-        // console.log('DevFilterFields', this.props);
-        if (this.templates.length == 0) this.convertTemplateList();
-
+        if (this.templates.length === 0) this.convertTemplateList();
+        const { t } = this.props;
         this.opts = this.createSelectTemplates();
         return (
             <div className="col s12 m12">
                 <div className="col s5 m5">
                     <div className="dev_field_filter">
-                        <label htmlFor="fld_device_name">Device Name</label>
-                        <input id="fld_device_name" type="text" className="form-control form-control-lg margin-top-mi7px" placeholder="Device Name"
+                        <label htmlFor="fld_device_name">{`${t('devices:title')}` } </label>
+                        <input id="fld_device_name" type="text" className="form-control form-control-lg margin-top-mi7px" placeholder={t('text.name')}
                         value={this.props.fields.label} name="label" onChange={this.props.onChange} onKeyUp={this.props.KeyUp} />
                     </div>
                 </div>
@@ -177,7 +181,7 @@ class DevFilterFields extends Component {
 
                 <div className="col s6 m6">
                     <div className="col s12">
-                        <MaterialSelect id="flr_templates" name="templates" label="Templates" value={this.props.fields.templates} onChange={this.props.onChange}>
+                        <MaterialSelect id="flr_templates" name="templates" label={t('templates:title')} value={this.props.fields.templates} onChange={this.props.onChange}>
                             {this.opts}
                         </MaterialSelect>
                     </div>
@@ -187,5 +191,5 @@ class DevFilterFields extends Component {
     }
 }
 
-
+const DeviceCardList = withNamespaces()(DeviceCardListComponent);
 export { DeviceCardList };

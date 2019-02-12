@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import MaterialInput from 'Components/MaterialInput';
 import Can from 'Components/permissions/Can';
 import ability from 'Components/permissions/ability';
+import { withNamespaces } from 'react-i18next';
 import SidebarProp from './SidebarProp';
 import SidebarButton from '../SidebarButton';
 import { templateType } from '../../../TemplatePropTypes';
@@ -43,7 +44,7 @@ const SidebarForm = ({
             ? templateProps
             : (
                 <div className="body-form-nodata">
-                    <span>Select an option below</span>
+                    <span>{t('text.select_option_below')}</span>
                 </div>
             );
     };
@@ -61,7 +62,7 @@ const SidebarForm = ({
                     />
                 </div>
                 <MaterialInput
-                    name="Template Name"
+                    name={t('templates:template_name.label')}
                     className="template-name"
                     maxLength={40}
                     value={template.label}
@@ -78,12 +79,12 @@ const SidebarForm = ({
                     <SidebarButton
                         onClick={() => toogleSidebarAttribute('data_attrs')}
                         icon="data_attrs"
-                        text="New Attribute"
+                        text={t('templates:btn.new_attr.label')}
                     />
                     <SidebarButton
                         onClick={() => toogleSidebarAttribute('config_attrs')}
                         icon="config_attrs"
-                        text="New Configuration"
+                        text={t('templates:btn.new_conf.label')}
                     />
                     {!isNewTemplate
                         ? (
@@ -105,6 +106,7 @@ SidebarForm.propTypes = {
     toogleSidebarAttribute: PropTypes.func.isRequired,
     toogleSidebarFirmware: PropTypes.func.isRequired,
     template: PropTypes.shape(templateType).isRequired,
+    t: PropTypes.func.isRequired,
 };
 
-export default SidebarForm;
+export default withNamespaces()(SidebarForm);

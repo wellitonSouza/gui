@@ -1,0 +1,55 @@
+{
+  "title": "Grupos",
+  "description": "Descrição",
+  "alerts": {
+    "empty_name": "Nome do grupo vazio",
+    "invalid_name": "Nome do grupo inválido",
+    "empty_desc": "Descrição do grupo vazia",
+    "group_create": "Grupo criado",
+    "group_modify": "Grupo alterado",
+    "group_remove": "Grupo removido",
+    "admin_not_remove": "Este grupo não pode ser alterado."
+  },
+  "btn": {
+    "new": {
+      "text": "Novo grupo",
+      "alt": "Criar novo grupo"
+    }
+  },
+  "form": {
+    "title": {
+      "new": "Novo grupo",
+      "edit": "Editar grupo"
+    },
+    "input": {
+      "groupname": {
+        "label": "Nome do grupo",
+        "error": "Por favor use somente letras (a-z)"
+      },
+      "groupdescription": {
+        "label": "Descrição",
+        "error": ""
+      }
+    },
+    "feature": {
+      "template": "Template",
+      "device": "Dispositivos",
+      "flows": "Flows",
+      "history": "Histórico",
+      "metric": "Metricas",
+      "user": "Usuários",
+      "permission": "Permissões",
+      "socketio": "Socket IO",
+      "export": "Exportar",
+      "ca-sign": "Certificado Acesso",
+      "ca": "Certificado",
+      "import": "Importar",
+      "fw-image": "Firmware Imagem"
+    },
+    "table_label": {
+      "feature": "Funcionabilidade",
+      "modifier": "Modificar",
+      "viewer": "Visualizar"
+    }
+  }
+}

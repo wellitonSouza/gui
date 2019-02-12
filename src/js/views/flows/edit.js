@@ -5,7 +5,7 @@ import { hashHistory } from 'react-router';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AltContainer from 'alt-container';
 import { NewPageHeader } from '../../containers/full/PageHeader';
-
+import { Trans, withNamespaces } from 'react-i18next';
 import FlowActions from '../../actions/FlowActions';
 import FlowStore from '../../stores/FlowStore';
 import util from '../../comms/util/util';
@@ -59,7 +59,8 @@ class FlowCanvas extends Component {
                                 if (count === 0) {
                                     // tells i18next to update the page's localization placeholders
                                     // jquery makes me sad
-                                    $('.flows-wrapper').i18n();
+                                    $('.flows-wrapper')
+                                        .i18n();
                                     initDOM();
                                 }
                             });
@@ -68,13 +69,17 @@ class FlowCanvas extends Component {
 
                     if (count === 0) {
                         // jquery makes me sad
-                        $('.flows-wrapper').i18n();
+                        $('.flows-wrapper')
+                            .i18n();
                     }
                 })
-                .catch((error) => { console.error('failed to init nodes config', error); });
+                .catch((error) => {
+                    console.error('failed to init nodes config', error);
+                });
         }
 
         const domEntryPoint = this.scriptHolder;
+
         function initDOM(dom) {
             const config = {
                 headers: {
@@ -86,13 +91,16 @@ class FlowCanvas extends Component {
                 .then(response => response.text())
                 .then((dom) => {
                     // this makes me *VERY* sad
-                    $(domEntryPoint).append(dom);
+                    $(domEntryPoint)
+                        .append(dom);
                     $.getScript('js/ace/ace.js', () => {
                         ace.config.set('basePath', 'js/ace');
                     });
                     FlowActions.done();
                 })
-                .catch((error) => { console.error('failed to fetch nodes dom', error); });
+                .catch((error) => {
+                    console.error('failed to fetch nodes dom', error);
+                });
         }
 
         RED.i18n.init(`Bearer ${util.getToken()}`, () => {
@@ -107,8 +115,8 @@ class FlowCanvas extends Component {
     }
 
     /**
-   * Updates the redered flow when the store finishes loading
-   * */
+     * Updates the redered flow when the store finishes loading
+     * */
     __updateCanvas() {
         if ((this.props.loading == false) && (this.state.done == false)) {
             // to be on the safe side (avoids re-importing things after save)
@@ -142,7 +150,7 @@ class FlowCanvas extends Component {
     }
 
     componentWillUnmount() {
-    // makes sure that ongoing edits are not carried over to the next flow rendering session
+        // makes sure that ongoing edits are not carried over to the next flow rendering session
         RED.workspaces.remove(null);
         RED.nodes.clear();
         window.RED = null;
@@ -151,7 +159,7 @@ class FlowCanvas extends Component {
     }
 
     render() {
-    // while not proper rendering per-se, it makes more sense for this to be here
+        // while not proper rendering per-se, it makes more sense for this to be here
         if ((this.props.canvasLoading == false) && RED) {
             this.__updateCanvas();
         }
@@ -159,34 +167,26 @@ class FlowCanvas extends Component {
             <div className="flows-wrapper">
                 <div id="main-container">
                     <div id="workspace">
-                        <div id="chart" tabIndex="1" />
-                        <div id="workspace-toolbar" />
-                        <div id="editor-shade" className="hide" />
+                        <div id="chart" tabIndex="1"/>
+                        <div id="workspace-toolbar"/>
+                        <div id="editor-shade" className="hide"/>
                     </div>
-                    <div id="editor-stack" />
+                    <div id="editor-stack"/>
 
-                    <div id="palette" style={this.cannotEdit? {display:'none'}:{}}>
-                        {/* This gets updated on didMount */}
+                    <div id="palette" style={this.cannotEdit ? { display: 'none' } : {}}>
                         <img src="flows/red/images/spin.svg" className="palette-spinner hide" />
-                        {/* This gets updated on didMount */}
-                        {/* <div id="palette-search" className="palette-search hide">
-              <input type="text" data-i18n="[placeholder]palette.filter"></input>
-            </div> */}
-                        {/* This gets updated on didMount */}
-                        <div id="palette-container" className="palette-scroll" />
+                        <div id="palette-container" className="palette-scroll"/>
                         <div id="palette-footer">
-                            <a className="palette-button" id="palette-collapse-all" href="#"><i className="fa fa-angle-double-up" /></a>
-                            <a className="palette-button" id="palette-expand-all" href="#"><i className="fa fa-angle-double-down" /></a>
+                            <a className="palette-button" id="palette-collapse-all" href="#"><i
+                                className="fa fa-angle-double-up"/></a>
+                            <a className="palette-button" id="palette-expand-all" href="#"><i
+                                className="fa fa-angle-double-down"/></a>
                         </div>
-                        <div id="palette-shade" className="hide" />
+                        <div id="palette-shade" className="hide"/>
                     </div>
                 </div>
 
                 <div id="flows-node-scripts" ref={elem => (this.scriptHolder = elem)}>
-                    {/*
-              This will actually hold a number of scripts that handle the individual node's
-              configuration forms and client-side validations.
-          */}
                 </div>
 
             </div>
@@ -194,7 +194,7 @@ class FlowCanvas extends Component {
     }
 }
 
-function handleSave(flowid) {
+function handleSave(flowid, i18n) {
     // fetch existing data for flow
     const fData = FlowStore.getState();
     let flow = null;
@@ -202,11 +202,11 @@ function handleSave(flowid) {
         if (flowid in fData.flows) {
             flow = fData.flows[flowid];
         } else {
-            console.error('failed to find flow context');
+            console.error(i18n('flows:failed_find_ctx'));
             return;
         }
     } else {
-    // handle flow creation
+        // handle flow creation
         flow = fData.newFlow;
     }
     // update flow's actual configuration data
@@ -216,21 +216,20 @@ function handleSave(flowid) {
     if (flowid) {
         if (!ret.result) {
             toaster.error(ret.error);
-            return;
-        }else{
-            flow.name = ret.label
+        } else {
+            flow.name = ret.label;
             FlowActions.triggerUpdate(flowid, flow, (flow) => {
-                toaster.success('Flow updated');
+                toaster.success(i18n('flows:alerts.update'));
             });
         }
     } else {
         if (!ret.result) {
             toaster.error(ret.error);
             return;
-        }else{
-            flow.name = ret.label
+        } else {
+            flow.name = ret.label;
             FlowActions.triggerCreate(flow, (flow) => {
-                toaster.success('Flow created');
+                toaster.success(i18n('flows:alerts.create'));
                 hashHistory.push(`/flows/id/${flow.id}`);
             });
         }
@@ -246,9 +245,9 @@ class NameForm extends Component {
     }
 
     render() {
-        if(this.cannotEdit ){
+        if (this.cannotEdit) {
             return (<div className="col s6 l7 margin-input">{this.props.flowName}</div>);
-        }else{
+        } else {
             return (
                 <MaterialInput
                     id="fld_flowname"
@@ -262,14 +261,14 @@ class NameForm extends Component {
                     maxLength={45}
 
                 >
-                    Flow name
+                    <Trans i18nKey="flows:header.name.label"/>
                 </MaterialInput>
             );
         }
     }
 }
 
-export class EditFlow extends Component {
+class EditFlowComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -281,8 +280,9 @@ export class EditFlow extends Component {
     }
 
     removeFlow() {
+        const { t: i18n } = this.props;
         FlowActions.triggerRemove(this.props.params.flowid, () => {
-            toaster.success('Flow removed');
+            toaster.success(i18n('flows:alerts.remove'));
             hashHistory.push('/flows');
         });
         // console.log('removeFlow', this.props.params.flowid);
@@ -305,31 +305,45 @@ export class EditFlow extends Component {
     }
 
     render() {
+        const { t: i18n } = this.props;
         return (
-            <ReactCSSTransitionGroup transitionName="first" transitionAppear transitionAppearTimeout={500} transitionEnterTimeout={500} transitionLeaveTimeout={500}>
-                <NewPageHeader title="flow manager" subtitle="Flow configuration" icon="flow">
-                    <div className="row valign-wrapper absolute-input full-width no-margin top-minus-2 ">
+            <ReactCSSTransitionGroup transitionName="first" transitionAppear
+                                     transitionAppearTimeout={500} transitionEnterTimeout={500}
+                                     transitionLeaveTimeout={500}>
+                <NewPageHeader title={i18n('flows:title_edit')}
+                               subtitle={i18n('flows:subtitle_edit')} icon="flow">
+                    <div
+                        className="row valign-wrapper absolute-input full-width no-margin top-minus-2 ">
                         <AltContainer store={FlowStore}>
-                            <NameForm />
+                            <NameForm/>
                         </AltContainer>
                         <Can do="modifier" on="flows">
                             <DojotBtnRedCircle
                                 icon=" fa fa-save"
-                                tooltip="Save Flow"
+                                tooltip={i18n('flows:header.save.label')}
                                 click={() => {
-                                    handleSave(this.props.params.flowid);
+                                    handleSave(this.props.params.flowid, i18n);
                                 }}
                             />
-                            {this.props.params.flowid && <DojotBtnRedCircle icon="fa fa-trash" tooltip="Remove Flow" click={this.openRemoveModal} />}
+                            {this.props.params.flowid &&
+                            <DojotBtnRedCircle icon="fa fa-trash"
+                                               tooltip={i18n('flows:header.remove.label')}
+                                               click={this.openRemoveModal}/>}
                         </Can>
-                        <DojotBtnRedCircle to="/flows" icon="fa fa-arrow-left" tooltip="Return to Flow list" />
+                        <DojotBtnRedCircle to="/flows" icon="fa fa-arrow-left"
+                                           tooltip={i18n('flows:header.return.label')}/>
                     </div>
                 </NewPageHeader>
                 <AltContainer store={FlowStore}>
-                    <FlowCanvas flow={this.props.params.flowid} />
+                    <FlowCanvas flow={this.props.params.flowid}/>
                 </AltContainer>
-                {this.state.show_modal ? <RemoveModal name="flow" remove={this.removeFlow} openModal={this.setModal} /> : <div />}
+                {this.state.show_modal ?
+                    <RemoveModal name={i18n('flows:element_name')} remove={this.removeFlow}
+                                 openModal={this.setModal}/> :
+                    <div/>}
             </ReactCSSTransitionGroup>
         );
     }
 }
+
+export const EditFlow = (withNamespaces()(EditFlowComponent));

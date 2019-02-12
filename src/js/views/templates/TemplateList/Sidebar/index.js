@@ -4,6 +4,7 @@ import AltContainer from 'alt-container';
 import toaster from 'Comms/util/materialize';
 import TemplateActions from 'Actions/TemplateActions';
 import util from 'Comms/util/util';
+import { withNamespaces } from 'react-i18next';
 import SidebarTemplate from './SidebarTemplate/index';
 import SidebarAttribute from './SidebarAttribute/index';
 import SidebarMetadata from './SidebarMetadata/index';
@@ -99,7 +100,10 @@ class Sidebar extends Component {
         this.setState({
             showAttribute: !showAttribute,
             showMetadata: false,
-            selectAttr: { ...attr, attrType },
+            selectAttr: {
+                ...attr,
+                attrType,
+            },
             newAttr: attr.label.length === 0,
         });
     }
@@ -188,11 +192,11 @@ class Sidebar extends Component {
     validateAttrs(attrs) {
         const { template } = this.state;
         const [type, values] = [attrs.attrType, { ...attrs }];
-
+        const { t } = this.props;
         const ret = util.isNameValid(values.label);
         if (!ret.result) {
             if (type === 'config_attrs') {
-                toaster.error('You must set a type.');
+                toaster.error(t('templates:alters.must_set_type'));
             } else {
                 toaster.error(ret.error);
             }
@@ -203,8 +207,9 @@ class Sidebar extends Component {
         const existName = template[type].some(
             item => item.label === values.label && item.id !== values.id,
         );
+
         if (existName) {
-            toaster.warning(`The label '${values.label}' is already created.`);
+            toaster.warning(t('templates:alerts.label_already_exist', { label: values.label }));
             return false;
         }
 
@@ -213,18 +218,18 @@ class Sidebar extends Component {
         if (type === 'config_attrs') {
             values.value_type = 'string';
             if (values.static_value.trim().length === 0) {
-                toaster.error('You can not leave configuration attribute value empty');
+                toaster.error(t('templates:alerts.attr_empty'));
                 return false;
             }
 
             if (template[type].some(item => item.label === values.label && values.id !== item.id)) {
-                toaster.warning(`Configuration ${values.label} already exists`);
+                toaster.warning(t('templates:alerts.conf_already_exist', { label: values.label }));
                 return false;
             }
         }
 
         if (values.value_type.trim().length === 0) {
-            toaster.error('You must set a type.');
+            toaster.error(t('templates:alerts.must_set_type'));
             return false;
         }
 
@@ -238,9 +243,8 @@ class Sidebar extends Component {
     }
 
     saveTemplate() {
-        const { toogleSidebar, temp_opex } = this.props;
+        const { toogleSidebar, temp_opex, t } = this.props;
         const { template } = this.state;
-
         const ret = util.isNameValid(template.label);
         if (!ret.result) {
             toaster.error(ret.error);
@@ -252,7 +256,7 @@ class Sidebar extends Component {
         template.attrs.push(...template.config_attrs);
         template.attrs = this.removeIds(template.attrs);
         TemplateActions.addTemplate(template, () => {
-            toaster.success('Template created.');
+            toaster.success(t('templates:alerts.create'));
             TemplateActions.removeSingle('new_template');
             toogleSidebar();
             temp_opex._fetch();
@@ -261,7 +265,7 @@ class Sidebar extends Component {
 
     updateTemplate() {
         const { template } = this.state;
-        const { toogleSidebar, temp_opex } = this.props;
+        const { toogleSidebar, temp_opex, t } = this.props;
 
         // Verify template name
         const ret = util.isNameValid(template.label);
@@ -275,7 +279,7 @@ class Sidebar extends Component {
         template.attrs.push(...template.config_attrs);
         template.attrs = this.removeIds(template.attrs);
         TemplateActions.triggerUpdate(template, () => {
-            toaster.success('Template updated');
+            toaster.success(t('templates:alerts.update'));
             toogleSidebar();
             temp_opex._fetch();
         });
@@ -311,6 +315,7 @@ class Sidebar extends Component {
 
     validateMetadata(metadata) {
         const { selectAttr } = this.state;
+        const { t } = this.props;
         if (!Object.prototype.hasOwnProperty.call(selectAttr, 'metadata')) selectAttr.metadata = [];
         const resp = util.isNameValid(metadata.label);
         if (!resp.result) {
@@ -322,17 +327,17 @@ class Sidebar extends Component {
             item => item.label === metadata.label && item.id !== metadata.id,
         );
         if (existName) {
-            toaster.warning(`The label '${metadata.label}' is already created.`);
+            toaster.warning(t('templates:alerts.conf_already_exist', { label: metadata.label }));
             return false;
         }
 
         if (metadata.type.trim().length === 0) {
-            toaster.error('The Attribute Type is required.');
+            toaster.error(t('templates:alerts.attr_required'));
             return false;
         }
 
         if (metadata.type.match(/^[_A-z0-9 ]*([_A-z0-9 ])*$/g) == null) {
-            toaster.error('Please use only letters (a-z), numbers (0-9) and underscores (_) in Attribute Type');
+            toaster.error(t('templates:alerts.only_alpha_attr_type'));
             return false;
         }
 
@@ -360,9 +365,9 @@ class Sidebar extends Component {
 
     deleteTemplate() {
         const { template } = this.state;
-        const { temp_opex, toogleSidebar } = this.props;
+        const { temp_opex, toogleSidebar, t } = this.props;
         TemplateActions.triggerRemoval(template.id, () => {
-            toaster.success('Template removed');
+            toaster.success(t('templates:alerts.remove'));
             this.toogleSidebarDelete();
             toogleSidebar();
             temp_opex._fetch();
@@ -473,6 +478,7 @@ class Sidebar extends Component {
                     metadata={metadata}
                     showDeleteMeta={showDeleteMeta}
                     isNewMetadata={isNewMetadata}
+                    selectAttr={selectAttr}
                     toogleSidebarMetadata={this.toogleSidebarMetadata}
                     addMetadata={this.addMetadata}
                     updateMetadata={this.updateMetadata}
@@ -496,6 +502,7 @@ Sidebar.propTypes = {
     temp_opex: PropTypes.shape(tempOpxType).isRequired,
     showSidebar: PropTypes.bool,
     isNewTemplate: PropTypes.bool,
+    t: PropTypes.func.isRequired,
 };
 
-export default Sidebar;
+export default withNamespaces()(Sidebar);

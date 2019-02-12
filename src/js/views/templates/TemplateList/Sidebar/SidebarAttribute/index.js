@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import Slide from 'react-reveal/Slide';
 import { DojotBtnClassic } from 'Components/DojotButton';
 import Can from 'Components/permissions/Can';
+import { withNamespaces } from 'react-i18next';
 import SidebarAttributeForm from './SidebarAttributeForm';
 import SidebarConfigurationForm from './SidebarConfigurationForm';
 import MetadataList from './MetadataList';
 import SidebarButton from '../SidebarButton';
 import SidebarDelete from '../SidebarDelete';
-import { attrsType } from '../../../TemplatePropTypes';
+import { attrsType, templateType } from '../../../TemplatePropTypes';
 
 const SidebarAttribute = ({
     showAttribute,
@@ -23,19 +24,23 @@ const SidebarAttribute = ({
     toogleSidebarDelete,
     showDeleteAttr,
     selectMetadata,
+    t,
+    template,
 }) => (
     <Fragment>
         <Slide right when={showAttribute} duration={300}>
-            { showAttribute
+            {showAttribute
                 ? (
                     <div className="-sidebar sidebar-attribute">
                         <div className="header">
-                            <div className="title">{`${newAttr ? 'new atribute' : 'edit atribute'}`}</div>
+                            <div className="title">
+                                {`${newAttr ? t('templates:title_sidebar.new_attr') : t(template.label)}`}
+                            </div>
                             <div className="icon">
                                 <img src="images/icons/template-cyan.png" alt="device-icon" />
                             </div>
                             <div className="header-path">
-                                {`template > ${newAttr ? 'new atribute' : 'edit atribute'}`}
+                                {`template > ${newAttr ? t('templates:title_sidebar.new_attr') : t('templates:title_sidebar.edit_attr')}`}
                             </div>
                         </div>
 
@@ -61,25 +66,34 @@ const SidebarAttribute = ({
                                     <SidebarButton
                                         onClick={() => toogleSidebarMetadata()}
                                         icon="metadata"
-                                        text="New Metadata"
+                                        text={t('templates:btn.new_attr.label')}
                                     />
                                 </Can>
                             </div>
                         </div>
                         <div className="footer">
-                            <DojotBtnClassic label="discard" type="secondary" onClick={toogleSidebarAttribute} />
-                            { newAttr
+                            <DojotBtnClassic
+                                label={t('discard.label')}
+                                type="secondary"
+                                onClick={toogleSidebarAttribute}
+                            />
+                            {newAttr
 
                                 ? (
                                     <Can do="modifier" on="template">
-                                        <DojotBtnClassic color="blue" label="add" type="primary" onClick={() => addTemplateAttr(selectAttr)} />
+                                        <DojotBtnClassic
+                                            color="blue"
+                                            label={t('add.label')}
+                                            type="primary"
+                                            onClick={() => addTemplateAttr(selectAttr)}
+                                        />
                                     </Can>
                                 )
                                 : (
                                     <Fragment>
                                         <Can do="modifier" on="template">
-                                            <DojotBtnClassic label="remove" type="secondary" onClick={() => toogleSidebarDelete('showDeleteAttr')} />
-                                            <DojotBtnClassic color="red" label="save" type="primary" onClick={() => updateTemplateAttr(selectAttr)} />
+                                            <DojotBtnClassic label={t('remove.label')} type="secondary" onClick={() => toogleSidebarDelete('showDeleteAttr')} />
+                                            <DojotBtnClassic color="red" label={t('save.label')} type="primary" onClick={() => updateTemplateAttr(selectAttr)} />
                                         </Can>
                                     </Fragment>
                                 )
@@ -94,7 +108,7 @@ const SidebarAttribute = ({
             cancel={() => toogleSidebarDelete('showDeleteAttr')}
             confirm={removeSelectAttr}
             showSidebar={showDeleteAttr}
-            message="You are about to remove this attribute. Are you sure?"
+            message={t('templates:alerts.qst_remove', { label: t('templates:attribute') })}
         />
     </Fragment>
 );
@@ -106,6 +120,7 @@ SidebarAttribute.defaultProps = {
 };
 
 SidebarAttribute.propTypes = {
+    template: PropTypes.shape(templateType).isRequired,
     showAttribute: PropTypes.bool,
     changeAttrValue: PropTypes.func.isRequired,
     toogleSidebarAttribute: PropTypes.func.isRequired,
@@ -118,6 +133,7 @@ SidebarAttribute.propTypes = {
     toogleSidebarDelete: PropTypes.func.isRequired,
     showDeleteAttr: PropTypes.bool,
     selectMetadata: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
 };
 
-export default SidebarAttribute;
+export default withNamespaces()(SidebarAttribute);

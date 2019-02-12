@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { FormActions } from '../../Actions';
+import { withNamespaces } from 'react-i18next';
 
 const InputCheckbox = ({
-     name, onChange, checked, label,
+    name, onChange, checked, label,
 }) => (
     <span>
         <input
@@ -18,18 +18,17 @@ const InputCheckbox = ({
     </span>
 );
 
-const TemplateItem = ({ template, checked, handleSelectTemplate }) => (
+const TemplateItem = ({
+    template, checked, handleSelectTemplate, t,
+}) => (
     <Fragment>
         <div className="template-item" onClick={() => handleSelectTemplate(checked, template)}>
             <div className="template-labels">
                 <div className="template-name">
-                    {' '}
                     {template.label}
-                    {' '}
                 </div>
                 <div className="total-attrs">
-                    {' '}
-                    {`${template.attrs.length} attributes`}
+                    {`${template.attrs.length} ${t('text.attributes')}`}
                 </div>
             </div>
             <div className="select-template">
@@ -55,6 +54,7 @@ TemplateItem.propTypes = {
     }).isRequired,
     checked: PropTypes.bool,
     handleSelectTemplate: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
 };
 
-export default TemplateItem;
+export default withNamespaces()(TemplateItem);

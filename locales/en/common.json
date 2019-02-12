@@ -1,0 +1,113 @@
+{
+  "save": {
+    "label": "Save",
+    "alt": "Click to Save"
+  },
+  "discard": {
+    "label": "Discard",
+    "alt": "Click to close"
+  },
+  "back": {
+    "label": "Back"
+  },
+  "cancel": {
+    "label": "Cancel"
+  },
+  "remove": {
+    "label": "Remove",
+    "alt": "Click to Remove"
+  },
+  "description": {
+    "label": "Description"
+  },
+  "confirm": {
+    "label": "Confirm"
+  },
+  "add": {
+    "label": "Add"
+  },
+  "email": {
+    "label": "E-mail"
+  },
+  "username": {
+    "label": "Username"
+  },
+  "submit": {
+    "label": "Submit"
+  },
+  "value": {
+    "label": "Value"
+  },
+  "types": {
+    "boolean": "Boolean",
+    "geo": "Geo",
+    "float": "Float",
+    "integer": "Integer",
+    "string": "String",
+    "geo:point": "Geo:Point'"
+  },
+  "options": {
+    "attr_name": {
+      "label": "Attribute Name",
+      "values": {
+        "dynamic": "Dynamic Value",
+        "static": "Static Value",
+        "actuator": "Actuator"
+      }
+    },
+    "config_type": {
+      "label": "Configuration Type",
+      "values": {
+        "protocol": "Protocol",
+        "topic": "Topic",
+        "translator": "Translator",
+        "device_timeout": "Device Timeout"
+      }
+    }
+  },
+  "text": {
+    "new": "New",
+    "select_option_below": "Select an option below",
+    "select_type": "Select type",
+    "name": "Name",
+    "management": "Management",
+    "properties": "Properties",
+    "set": "Set",
+    "a": "a",
+    "configuration": "Configuration",
+    "static_values": "Static Values",
+    "dynamic_attributes": "Dynamic Attributes",
+    "static_attributes": "Static Attributes",
+    "attribute": "attribute",
+    "attributes": "attributes",
+    "actuators": "Actuators",
+    "selected": "Selected",
+    "select": "Select",
+    "any": "any",
+    "filter": "Filter",
+    "filtering": "Filtering",
+    "by": "by'",
+    "edit": "Edit",
+    "all": "All",
+    "or": "or",
+    "hide": "Hide",
+    "show": "Show",
+    "no_data": "No data",
+    "showing": "Showing",
+    "of": "of",
+    "last_update": "Last Update",
+    "prev": "prev",
+    "previous": "previous",
+    "next": "next",
+    "next_full": "next",
+    "per_page": "per page",
+    "logged_as": "Logged as",
+    "tenant": "Tenant",
+    "import_export": " Import/Export",
+    "change_password": "Change Password",
+    "logout": "Logout"
+  },
+  "qst_remove": "You are about to remove this {{label}}. Are you sure?",
+  "cant_empty" : "This can't be empty",
+  "only_letter_number": "Please use only letters (a-z), numbers (0-9) and underscores (_).'"
+}

@@ -4,6 +4,7 @@ import Slide from 'react-reveal/Slide';
 import { DojotCustomButton } from 'Components/DojotButton';
 import SidebarButton from 'Components/SidebarButton';
 import MaterialInput from 'Components/MaterialInput';
+import { withNamespaces } from 'react-i18next';
 import { FormActions } from '../../Actions';
 import SidebarDelete from '../../../templates/TemplateList/Sidebar/SidebarDelete';
 
@@ -20,6 +21,7 @@ const SidebarDevice = ({
     isNewDevice,
     isShowSidebarDelete,
     toogleSidebarDelete,
+    t,
 }) => {
     const {
         configValues, dynamicValues, staticValues, actuatorValues,
@@ -35,7 +37,7 @@ const SidebarDevice = ({
                             <div className="-sidebar device-sidebar">
                                 <div className="header">
                                     <div className="title">
-                                        { isNewDevice ? 'NEW DEVICE' : device.label }
+                                        {isNewDevice ? `${t('text.new')} ${t('devices:device')}` : device.label}
                                     </div>
                                     <div className="icon">
                                         <img src="images/icons/chip-cyan.png" alt="device-icon" />
@@ -43,11 +45,13 @@ const SidebarDevice = ({
                                 </div>
                                 <div className="body">
                                     <div className="title">
-                                        device
+                                        {t('devices:device')}
                                     </div>
 
                                     <div className="device-name">
-                                        <div className="label">1. Set a name</div>
+                                        <div className="label">
+                                            {`1.  ${t('text.set')} ${t('text.a')} ${t('text.name')} `}
+                                        </div>
                                         <div className="device-name-input">
                                             <MaterialInput
                                                 name="name"
@@ -55,13 +59,15 @@ const SidebarDevice = ({
                                                 value={device.label}
                                                 onChange={e => handleChangeName(e.target.value)}
                                             >
-                                                Name
+                                                {t('text.name')}
                                             </MaterialInput>
                                         </div>
                                     </div>
 
                                     <div className="device-templates">
-                                        <div className="label">2. Add or Remove Templates</div>
+                                        <div className="label">
+                                            {`2.  ${t('add.label')} ${t('text.or')}  ${t('remove.label')} ${t('templates:title')} `}
+                                        </div>
                                         <div className="template-list">
                                             <div
                                                 className="add-template-button"
@@ -77,12 +83,12 @@ const SidebarDevice = ({
                                                     <div
                                                         className="total-attrs"
                                                     >
-                                                        {total }
+                                                        {total}
                                                     </div>
                                                     <div
                                                         className="template-name"
                                                     >
-                                                        {'Templates Selecionados'}
+                                                        {t('devices:selected_templates')}
                                                     </div>
                                                 </div>
                                             </div>
@@ -91,29 +97,31 @@ const SidebarDevice = ({
                                     </div>
 
                                     <div className="device-attrs">
-                                        <div className="label">3. Manage Attributes</div>
+                                        <div className="label">
+                                            {`3. ${t('devices:manage_attributes')}`}
+                                        </div>
                                         <SidebarButton
-                                            onClick={() => handleShowDeviceAttrs(configValues, 'Configuration')}
+                                            onClick={() => handleShowDeviceAttrs(configValues, t('text.configuration'))}
                                             icon="config_attrs"
-                                            title="Configuration"
+                                            title={t('text.configuration')}
                                             disable={configValues.length === 0}
                                         />
                                         <SidebarButton
-                                            onClick={() => handleShowDeviceAttrs(staticValues, 'Static Values')}
+                                            onClick={() => handleShowDeviceAttrs(staticValues, t('text.static_values'))}
                                             icon="data_attrs"
-                                            title="Static Values"
+                                            title={t('text.static_values')}
                                             disable={staticValues.length === 0}
                                         />
                                         <SidebarButton
-                                            onClick={() => handleShowDeviceAttrs(dynamicValues, 'Dynamic Attributes')}
+                                            onClick={() => handleShowDeviceAttrs(dynamicValues, t('text.dynamic_attributes'))}
                                             icon="data_attrs"
-                                            title="Dynamic Attributes"
+                                            title={t('text.dynamic_attributes')}
                                             disable={dynamicValues.length === 0}
                                         />
                                         <SidebarButton
-                                            onClick={() => handleShowDeviceAttrs(actuatorValues, 'Actuators')}
+                                            onClick={() => handleShowDeviceAttrs(actuatorValues, t('text.actuators'))}
                                             icon="config_attrs"
-                                            title="Actuators"
+                                            title={t('text.actuators')}
                                             disable={actuatorValues.length === 0}
                                         />
                                         {!hasImageAvailable
@@ -131,20 +139,40 @@ const SidebarDevice = ({
 
                                 <div className="footer">
                                     {
-                                        isNewDevice
-                                            ? (
-                                                <Fragment>
-                                                    <DojotCustomButton label="discard" onClick={() => FormActions.toggleSidebarDevice(false)} />
-                                                    <DojotCustomButton label="save" type="primary" onClick={save} />
-                                                </Fragment>
-                                            )
-                                            : (
-                                                <Fragment>
-                                                    <DojotCustomButton label="discard" onClick={() => FormActions.toggleSidebarDevice(false)} />
-                                                    <DojotCustomButton label="delete" type="secondary" onClick={() => toogleSidebarDelete()} />
-                                                    <DojotCustomButton label="save" type="primary" onClick={update} />
-                                                </Fragment>
-                                            )
+                                        isNewDevice ? (
+                                            <Fragment>
+                                                <DojotCustomButton
+                                                    label={t('discard.label')}
+                                                    onClick={() => {
+                                                        FormActions.toggleSidebarDevice(false);
+                                                    }}
+                                                />
+                                                <DojotCustomButton
+                                                    label={t('save.label')}
+                                                    type="primary"
+                                                    onClick={save}
+                                                />
+                                            </Fragment>
+                                        ) : (
+                                            <Fragment>
+                                                <DojotCustomButton
+                                                    label={t('discard.label')}
+                                                    onClick={() => {
+                                                        FormActions.toggleSidebarDevice(false);
+                                                    }}
+                                                />
+                                                <DojotCustomButton
+                                                    label={t('remove.label')}
+                                                    type="secondary"
+                                                    onClick={() => toogleSidebarDelete()}
+                                                />
+                                                <DojotCustomButton
+                                                    label={t('save.label')}
+                                                    type="primary"
+                                                    onClick={update}
+                                                />
+                                            </Fragment>
+                                        )
                                     }
                                 </div>
                             </div>
@@ -156,7 +184,7 @@ const SidebarDevice = ({
                 cancel={toogleSidebarDelete}
                 confirm={remove}
                 showSidebar={isShowSidebarDelete}
-                message="You are about to remove this device. Are you sure?"
+                message={t('qst_remove', { label: t('devices:device') })}
             />
         </Fragment>
     );
@@ -178,5 +206,10 @@ SidebarDevice.propTypes = {
         templates: PropTypes.array,
         updated: PropTypes.string,
     }).isRequired,
+    t: PropTypes.func.isRequired,
 };
-export default SidebarDevice;
+
+SidebarDevice.defaultProps = {
+    showSidebarDevice: false,
+};
+export default withNamespaces()(SidebarDevice);

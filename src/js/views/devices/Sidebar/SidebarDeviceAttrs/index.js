@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Slide from 'react-reveal/Slide';
 import { DojotCustomButton } from 'Components/DojotButton';
+import { withNamespaces } from 'react-i18next';
 import AttrCard from './AttrCard';
 
 const SidebarDeviceAttrs = ({
@@ -14,6 +15,7 @@ const SidebarDeviceAttrs = ({
     handleChangeAttr,
     deviceAttrsTitle,
     errors,
+    t,
 }) => (
     <Slide right when={showDeviceAttrs} duration={300}>
         {
@@ -22,7 +24,7 @@ const SidebarDeviceAttrs = ({
                     <div className="sidebar-device-attrs">
                         <div className="header">
                             <div className="title">
-                                {'Manage Attributes'}
+                                {t('devices:manage_attributes')}
                             </div>
                             <div className="icon">
                                 <img src="images/icons/chip-cyan.png" alt="device-icon" />
@@ -30,7 +32,7 @@ const SidebarDeviceAttrs = ({
                         </div>
                         <div className="body">
                             <div className="title">
-                                {'device > attribute'}
+                                {`${t('devices:device')} > ${t('text.attribute')}`}
                             </div>
                             <div className="attr-type">
                                 {deviceAttrsTitle}
@@ -46,19 +48,19 @@ const SidebarDeviceAttrs = ({
                                             handleChangeMetadata={handleChangeMetadata}
                                             errors={errors[attr.id]}
                                         />
-))
+                                    ))
                                 }
                             </div>
                         </div>
                         <div className="footer">
                             <DojotCustomButton
                                 onClick={() => handleShowDeviceAttrs()}
-                                label="discard"
+                                label={t('discard.label')}
                                 type="default"
                             />
                             <DojotCustomButton
                                 onClick={() => validAttrs(selectAttr)}
-                                label="save"
+                                label={t('save.label')}
                                 type="primary"
                             />
                         </div>
@@ -76,6 +78,7 @@ SidebarDeviceAttrs.defaultProps = {
 SidebarDeviceAttrs.propTypes = {
     showDeviceAttrs: PropTypes.bool,
     validAttrs: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
 };
 
-export default SidebarDeviceAttrs;
+export default withNamespaces()(SidebarDeviceAttrs);

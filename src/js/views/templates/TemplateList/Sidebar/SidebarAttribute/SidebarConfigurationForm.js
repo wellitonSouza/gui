@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import MaterialInput from 'Components/MaterialInput';
 import MaterialSelect from 'Components/MaterialSelect';
 import ability from 'Components/permissions/ability';
+import { withNamespaces } from 'react-i18next';
 import { attrsType } from '../../../TemplatePropTypes';
 
 
 const SidebarConfigurationForm = ({
     selectAttr,
     changeAttrValue,
+    t,
 }) => (
     <Fragment>
         <div className="body-config-name">
@@ -20,7 +22,7 @@ const SidebarConfigurationForm = ({
                 />
             </div>
             <MaterialSelect
-                label="Configuration Type"
+                label={t('options.config_type.label')}
                 name="label"
                 className="config-type"
                 value={selectAttr.label}
@@ -28,19 +30,19 @@ const SidebarConfigurationForm = ({
                 isDisable={!ability.can('modifier', 'template')}
             >
                 <option value="" disabled>
-                    Select type
+                    {t('text.select_type')}
                 </option>
                 <option value="protocol" id="adm-option">
-                    Protocol
+                    {t('options.config_type.values.protocol')}
                 </option>
                 <option value="topic" id="adm-option">
-                    Topic
+                    {t('options.config_type.values.topic')}
                 </option>
                 <option value="translator" id="adm-option">
-                    Translator
+                    {t('options.config_type.values.translator')}
                 </option>
                 <option value="device_timeout" id="adm-option">
-                    Device Timeout
+                    {t('options.config_type.values.device_timeout')}
                 </option>
             </MaterialSelect>
         </div>
@@ -53,7 +55,7 @@ const SidebarConfigurationForm = ({
                 onChange={e => changeAttrValue(e, selectAttr)}
                 disabled={!ability.can('modifier', 'template')}
             >
-                Value
+                {t('value.label')}
             </MaterialInput>
         </div>
     </Fragment>
@@ -62,6 +64,7 @@ const SidebarConfigurationForm = ({
 SidebarConfigurationForm.propTypes = {
     selectAttr: PropTypes.shape(attrsType).isRequired,
     changeAttrValue: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
 };
 
-export default SidebarConfigurationForm;
+export default withNamespaces()(SidebarConfigurationForm);

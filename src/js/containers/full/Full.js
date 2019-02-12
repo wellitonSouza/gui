@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Link, browserHistory } from 'react-router';
 import AltContainer from 'alt-container';
 import MenuActions from '../../actions/MenuActions';
-import { translate, Trans } from 'react-i18next';
+import { Trans, withNamespaces } from 'react-i18next';
 import MenuStore from '../../stores/MenuStore';
 import LoginStore from '../../stores/LoginStore';
 import LoginActions from '../../actions/LoginActions';
@@ -109,13 +109,14 @@ class RightSideBar extends Component {
 
 
         const gravatar = `https://www.gravatar.com/avatar/${btoa(this.props.user.username)}?d=identicon`;
+        const { t } = this.props;
 
         return (
             <div className="">
                 <div className="rightsidebarchild">
                     <div className="logout-page-header">
                         <div className="col s12 m12">
-                            <div className="logout-page-subtitle">Logged as</div>
+                            <div className="logout-page-subtitle">{t('text.logged_as')}</div>
                         </div>
 
                         <div className="col s12 m12">
@@ -127,7 +128,7 @@ class RightSideBar extends Component {
                         {this.props.user.email != undefined && (
                             <div>
                                 <div className="col s12 m12">
-                                    <div className="logout-page-subtitle"> E-mail</div>
+                                    <div className="logout-page-subtitle"> {t('email.label')}</div>
                                 </div>
 
                                 <div className="col s12 m12">
@@ -139,7 +140,7 @@ class RightSideBar extends Component {
                         )}
                         <div>
                             <div className="col s12 m12">
-                                <div className="logout-page-subtitle">Tenant</div>
+                                <div className="logout-page-subtitle">{t('text.tenant')}</div>
                             </div>
 
                             <div className="col s12 m12">
@@ -154,7 +155,7 @@ class RightSideBar extends Component {
 
                     <div className="logout-page-settings">
                         <div className="logout-page-changePassword col s12 m12" onClick={this.handleChangePasswordModal}>
-              Change Password
+                            {t('text.change_password')}
                         </div>
                     </div>
 
@@ -162,7 +163,7 @@ class RightSideBar extends Component {
 
                     <div className="logout-page-settings">
                         <div className="logout-page-changePassword col s12 m12" onClick={this.handleImportExport}>
-                            Import/Export
+                            {t('text.import_export')}
                         </div>
                     </div>
 
@@ -170,7 +171,7 @@ class RightSideBar extends Component {
 
                     <div className="logout-page-buttons">
                         <div className="btn-logout" onClick={this.logout}>
-              Logout
+                            {t('text.logout')}
                         </div>
                     </div>
                 </div>
@@ -270,8 +271,8 @@ class LeftSidebar extends Component {
                 image: 'chip',
                 target: '/device',
                 iconClass: 'material-icons mi-ic-memory',
-                label: 'Devices',
-                desc: 'Known devices and configuration',
+                label: <Trans i18nKey="menu:devices.text"/>,
+                desc: <Trans i18nKey="menu:devices.alt"/>,
                 children: [
                     {
                         target: '/device/list',
@@ -295,8 +296,8 @@ class LeftSidebar extends Component {
                 image: 'template',
                 target: '/template/list',
                 iconClass: 'fa fa-cubes',
-                label: 'Templates ',
-                desc: 'Template management',
+                label: <Trans i18nKey="menu:templates.text"/>,
+                desc: <Trans i18nKey="menu:templates.alt"/>,
             });
         }
 
@@ -305,8 +306,8 @@ class LeftSidebar extends Component {
                 image: 'graph',
                 target: '/flows',
                 iconClass: 'material-icons mi-device-hub',
-                label: 'data flows',
-                desc: 'Processing flows to be executed',
+                label: <Trans i18nKey="menu:flows.text"/>,
+                desc: <Trans i18nKey="menu:flows.alt"/>,
             });
         }
 
@@ -315,8 +316,8 @@ class LeftSidebar extends Component {
                 image: 'user',
                 target: '/auth',
                 iconClass: 'fa fa-unlock-alt',
-                label: 'Users',
-                desc: 'Users list',
+                label: <Trans i18nKey="menu:users.text"/>,
+                desc: <Trans i18nKey="menu:users.alt"/>,
             });
         }
 
@@ -325,8 +326,8 @@ class LeftSidebar extends Component {
                 image: 'groups',
                 target: '/groups',
                 iconClass: 'fa fa-unlock-alt',
-                label: <Trans i18nKey="menu.groups.text"/>,
-                desc: <Trans i18nKey="menu.groups.alt"/>,
+                label: <Trans i18nKey="menu:groups.text"/>,
+                desc: <Trans i18nKey="menu:groups.alt"/>,
             });
         }
         return entriesLocal;
@@ -420,7 +421,7 @@ class Full extends Component {
 
                     {
                         (this.state.user_sidebar)
-                            ? <RightSideBar toggleSidebar={this.toggleUserSidebar} />
+                            ? <RightSideBar toggleSidebar={this.toggleUserSidebar} t={this.props.t}/>
                             : <div />
                     }
 
@@ -434,4 +435,4 @@ class Full extends Component {
     }
 }
 
-export default translate()(Full);
+export default withNamespaces()(Full);

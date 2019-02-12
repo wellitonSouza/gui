@@ -1,0 +1,22 @@
+{
+  "groups": {
+    "text": "Groups",
+    "alt": "List of Groups"
+  },
+  "users": {
+    "text": "Users",
+    "alt": "Users list"
+  },
+  "flows": {
+    "text": "data flows",
+    "alt": "Processing flows to be executed"
+  },
+  "templates": {
+    "text": "Templates",
+    "alt": "Template management"
+  },
+  "devices": {
+    "text": "Devices",
+    "alt": "Known devices and configuration"
+  }
+}

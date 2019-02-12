@@ -1,5 +1,8 @@
 import React, { PureComponent } from 'react';
 import MaterialInput from 'Components/MaterialInput';
+import { withNamespaces } from 'react-i18next';
+import * as i18next from 'i18next';
+import PropTypes from 'prop-types';
 
 class AttrCard extends PureComponent {
     constructor(props) {
@@ -46,7 +49,9 @@ class AttrCard extends PureComponent {
 
     render() {
         const { showMetadata, attr, metadata } = this.state;
-        const { handleChangeAttr, handleChangeMetadata, errors } = this.props;
+        const {
+            handleChangeAttr, handleChangeMetadata, errors, t,
+        } = this.props;
         const metaLength = metadata !== undefined
             ? metadata.length
             : 0;
@@ -61,7 +66,11 @@ class AttrCard extends PureComponent {
                     <div className="attr-card-input-wrapper">
                         {
                             isDynamic
-                                ? (<div>{attr.label}</div>)
+                                ? (
+                                    <div>
+                                        {attr.label}
+                                    </div>
+                                )
                                 : (
                                     <MaterialInput
                                         className="attr-card-input"
@@ -72,18 +81,24 @@ class AttrCard extends PureComponent {
                                         valid={valid}
                                         error={errorMessage}
                                     >
-                                        {attr.label}
+                                        {i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}
                                     </MaterialInput>
                                 )
                         }
-                        <div className="attr-card-type">{attr.value_type}</div>
+                        <div className="attr-card-type">
+                            {i18next.exists(`types.${attr.value_type}`) ? t(`types.${attr.value_type}`) : attr.value_type}
+                        </div>
                     </div>
                 </div>
                 {metaLength > 0 && (
                     <div className="attr-card-metadata">
                         <div className="attr-card-metadata-header">
                             <img src="images/icons/metadata-gray.png" alt="attrs-icon" />
-                            <div className="attr-card-metadata-label">{`Meta attributes(${metaLength})`}</div>
+                            <div
+                                className="attr-card-metadata-label"
+                            >
+                                {`${t('devices:meta_attributes')} (${metaLength})`}
+                            </div>
                             <div
                                 className="attr-card-metadata-arrow"
                                 onClick={() => this.handleShowMetadata()}
@@ -91,7 +106,10 @@ class AttrCard extends PureComponent {
                                 role="button"
                                 tabIndex="0"
                             >
-                                <i className={`fa fa-angle-${showMetadata ? 'up' : 'down'}`} aria-hidden="true" />
+                                <i
+                                    className={`fa fa-angle-${showMetadata ? 'up' : 'down'}`}
+                                    aria-hidden="true"
+                                />
                             </div>
                         </div>
                         <div className="attr-card-metadata-body">
@@ -107,6 +125,8 @@ class AttrCard extends PureComponent {
                                                 onChange={e => handleChangeMetadata(e, attr.id)}
                                             >
                                                 {meta.label}
+                                                {' '}
+                                                showMetadata
                                             </MaterialInput>
                                             <div className="attr-card-type">{meta.value_type}</div>
                                         </div>
@@ -115,7 +135,7 @@ class AttrCard extends PureComponent {
                             }
                         </div>
                     </div>
-)
+                )
                 }
                 <div className="divider" />
             </div>
@@ -123,4 +143,13 @@ class AttrCard extends PureComponent {
     }
 }
 
-export default AttrCard;
+AttrCard.propTypes = {
+    attr: PropTypes.instanceOf(Object).isRequired,
+    metadata: PropTypes.instanceOf(Object).isRequired,
+    t: PropTypes.func.isRequired,
+    handleChangeAttr: PropTypes.func.isRequired,
+    handleChangeMetadata: PropTypes.func.isRequired,
+    errors: PropTypes.func.isRequired,
+};
+
+export default withNamespaces()(AttrCard);

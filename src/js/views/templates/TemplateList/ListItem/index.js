@@ -1,5 +1,6 @@
 /* eslint-disable */
 import React, { Component, Fragment } from 'react';
+import { withNamespaces } from 'react-i18next';
 
 class ListItem extends Component {
     constructor(props) {
@@ -42,6 +43,8 @@ class ListItem extends Component {
 
         const attrs = template.data_attrs.length + template.config_attrs.length;
 
+        const {t}=this.props;
+
         return (
             <Fragment>
                 <div
@@ -72,7 +75,7 @@ class ListItem extends Component {
                                 <span className="center-text-child">{attrs}</span>
                             </div>
                             <div className="text-area center-text-parent">
-                                <span className="middle-text-child">Properties</span>
+                                <span className="middle-text-child">{t('text.properties')}</span>
                             </div>
                         </div>
                     </div>
@@ -82,4 +85,4 @@ class ListItem extends Component {
     }
 }
 
-export default ListItem;
+export default withNamespaces()(ListItem);

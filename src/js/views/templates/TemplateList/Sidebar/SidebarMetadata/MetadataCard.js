@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import MaterialInput from 'Components/MaterialInput';
 import MaterialSelect from 'Components/MaterialSelect';
 import ability from 'Components/permissions/ability';
+import { withNamespaces } from 'react-i18next';
 import { metadataType } from '../../../TemplatePropTypes';
 
 const MetadataCard = ({
     metadata,
     handleChangeMetadata,
+    t,
 }) => (
     <div className="metadata-card">
         <div className="body-metadata-name">
@@ -26,7 +28,7 @@ const MetadataCard = ({
                 onChange={e => handleChangeMetadata(e)}
                 disabled={!ability.can('modifier', 'template')}
             >
-                Attribute Name
+                {t('options.attr_name.label')}
             </MaterialInput>
         </div>
         <div className="body-form">
@@ -38,11 +40,11 @@ const MetadataCard = ({
                 onChange={e => handleChangeMetadata(e)}
                 disabled={!ability.can('modifier', 'template')}
             >
-                Attribute Type
+                {t('templates:attr_type.label')}
             </MaterialInput>
             <MaterialSelect
                 id="value_types"
-                label="Value Type"
+                label={t('templates:value_type.label')}
                 name="value_type"
                 className="value-type"
                 value={metadata.value_type}
@@ -50,22 +52,22 @@ const MetadataCard = ({
                 isDisable={!ability.can('modifier', 'template')}
             >
                 <option value="" disabled>
-                    Select type
+                    {t('text.select_type')}
                 </option>
                 <option value="bool" id="adm-option">
-                    Boolean
+                    {t('types.boolean')}
                 </option>
                 <option value="geo" id="adm-option">
-                    Geo
+                    {t('types.geo')}
                 </option>
                 <option value="float" id="adm-option">
-                    Float
+                    {t('types.float')}
                 </option>
                 <option value="integer" id="adm-option">
-                    Integer
+                    {t('types.integer')}
                 </option>
                 <option value="string" id="adm-option">
-                    String
+                    {t('types.string')}
                 </option>
             </MaterialSelect>
             <MaterialInput
@@ -76,7 +78,7 @@ const MetadataCard = ({
                 onChange={e => handleChangeMetadata(e)}
                 disabled={!ability.can('modifier', 'template')}
             >
-                Value
+                {t('value.label')}
             </MaterialInput>
         </div>
     </div>
@@ -85,6 +87,7 @@ const MetadataCard = ({
 MetadataCard.propTypes = {
     metadata: PropTypes.shape(metadataType).isRequired,
     handleChangeMetadata: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
 };
 
-export default MetadataCard;
+export default withNamespaces()(MetadataCard);

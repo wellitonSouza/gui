@@ -1,29 +1,29 @@
-/* eslint-disable */
-import imageManager from '../comms/ImageManager';
-import toaster from '../comms/util/materialize';
+import imageManager from 'Comms/ImageManager';
+import toaster from 'Comms/util/materialize';
 
 const alt = require('../alt');
-
-// console.log('ImageActions');
 
 class ImageActions {
     updateImages(images) {
         return images;
     }
 
-    // fetchImages() {
-    //   return (dispatch) => {
-    //     dispatch();
+    updateImageData(id, label, value) {
+        return { id, label, value };
+    }
 
-    //     imageManager.getImages().then((imageList) => {
-    //       console.log("imageManager.getImages()",imageList);
-    //       this.updateImages(imageList);
-    //     })
-    //     .catch((error) => {
-    //       this.imagesFailed(error);
-    //     });
-    //   }
-    // }
+    fetchImages(templateId) {
+      return (dispatch) => {
+        dispatch();
+
+        imageManager.getImages(templateId).then((imageList) => {
+          this.updateImages(imageList);
+        })
+        .catch((error) => {
+          this.imagesFailed(error);
+        });
+      };
+    }
 
 
     triggerUpdate(image, cb) {
@@ -31,7 +31,6 @@ class ImageActions {
             dispatch();
             imageManager.setBinary(image)
                 .then((response) => {
-                    // console.log('imageManager.setBinary', response);
                     this.updateSingle(response.image);
                     if (cb) {
                         cb(response.image);
@@ -43,8 +42,8 @@ class ImageActions {
         };
     }
 
-    updateSingle(image_id) {
-        return image_id;
+    updateSingle(imageId) {
+        return imageId;
     }
 
     fetchSingle(label, callback) {
@@ -66,8 +65,13 @@ class ImageActions {
     }
 
 
-    insertImage(image) {
+    insertEmptyImage(image) {
         return image;
+    }
+
+
+    insertImage(image, oldimage) {
+        return { image, oldimage };
     }
 
     triggerInsert(image, cb) {
@@ -76,9 +80,9 @@ class ImageActions {
             dispatch();
             imageManager.addImage(newimage)
                 .then((response) => {
-                    this.insertImage(response);
+                    this.insertImage(response, newimage);
                     if (cb) {
-                        cb(response);
+                        cb(response, newimage);
                     }
                 })
                 .catch((error) => {
@@ -87,14 +91,13 @@ class ImageActions {
         };
     }
 
-    triggerRemovalBinary(image_id, cb) {
+    triggerRemovalBinary(imageId, cb) {
         return (dispatch) => {
             dispatch();
-            imageManager.deleteBinary(image_id)
+            imageManager.deleteBinary(imageId)
                 .then((response) => {
-                    // console.log('response', response);
-                    if (response.result == 'ok') {
-                        this.removeSingleBinary(image_id);
+                    if (response.result === 'ok') {
+                        this.removeSingleBinary(imageId);
                         if (cb) {
                             cb(response);
                         }
@@ -117,9 +120,9 @@ class ImageActions {
             dispatch();
             imageManager.deleteImage(image.id)
                 .then((response) => {
-                    const resp_json = JSON.parse(response);
-                    if (resp_json.result == 'ok') {
-                        this.removeSingle(resp_json.removed_image.id);
+                    const respJson = JSON.parse(response);
+                    if (respJson.result === 'ok') {
+                        this.removeSingle(respJson.removed_image.id);
                         if (cb) {
                             cb(response);
                         }

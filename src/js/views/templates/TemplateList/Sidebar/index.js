@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
+import AltContainer from 'alt-container';
 import toaster from 'Comms/util/materialize';
 import TemplateActions from 'Actions/TemplateActions';
 import util from 'Comms/util/util';
@@ -7,7 +8,9 @@ import { withNamespaces } from 'react-i18next';
 import SidebarTemplate from './SidebarTemplate/index';
 import SidebarAttribute from './SidebarAttribute/index';
 import SidebarMetadata from './SidebarMetadata/index';
+import SidebarFirmware from './SidebarFirmware/index';
 import { templateType, tempOpxType } from '../../TemplatePropTypes';
+import ImageStore from '../../../../stores/ImageStore';
 
 class Sidebar extends Component {
     static createAttribute() {
@@ -27,6 +30,7 @@ class Sidebar extends Component {
             metadata: {},
             showAttribute: false,
             showMetadata: false,
+            showFirmware: false,
             selectAttr: {},
             newAttr: false,
             showDeleteTemplate: false,
@@ -36,6 +40,7 @@ class Sidebar extends Component {
             isNewTemplate: false,
         };
 
+        this.toogleSidebarFirmware = this.toogleSidebarFirmware.bind(this);
         this.toogleSidebarAttribute = this.toogleSidebarAttribute.bind(this);
         this.toogleSidebarMetadata = this.toogleSidebarMetadata.bind(this);
         this.changeValue = this.changeValue.bind(this);
@@ -68,6 +73,7 @@ class Sidebar extends Component {
             },
             showAttribute: false,
             showMetadata: false,
+            showFirmware: false,
         });
     }
 
@@ -76,8 +82,18 @@ class Sidebar extends Component {
             template: nextProps.template,
             showAttribute: false,
             showMetadata: false,
+            showFirmware: false,
         });
     }
+
+    toogleSidebarFirmware() {
+        console.log('toogleSidebarFirmware');
+        const { showFirmware } = this.state;
+        this.setState({
+            showFirmware: !showFirmware,
+        });
+    }
+
 
     toogleSidebarAttribute(attrType, attr = Sidebar.createAttribute()) {
         const { showAttribute } = this.state;
@@ -402,6 +418,7 @@ class Sidebar extends Component {
         const {
             showAttribute,
             showMetadata,
+            showFirmware,
             template,
             metadata,
             selectAttr,
@@ -421,12 +438,26 @@ class Sidebar extends Component {
                     toogleSidebar={toogleSidebar}
                     showDeleteTemplate={showDeleteTemplate}
                     toogleSidebarAttribute={this.toogleSidebarAttribute}
+                    toogleSidebarFirmware={this.toogleSidebarFirmware}
                     changeValue={this.changeValue}
                     saveTemplate={this.saveTemplate}
                     updateTemplate={this.updateTemplate}
                     toogleSidebarDelete={this.toogleSidebarDelete}
                     deleteTemplate={this.deleteTemplate}
                 />
+                {showFirmware
+                    ? (
+                        <AltContainer store={ImageStore}>
+                            <SidebarFirmware
+                                showFirmware={showFirmware}
+                                isNewTemplate={isNewTemplate}
+                                template={template}
+                                toogleSidebarFirmware={this.toogleSidebarFirmware}
+                            />
+                        </AltContainer>
+)
+                    : null }
+                {/* @To check: attr template isn't used */}
                 <SidebarAttribute
                     showAttribute={showAttribute}
                     template={template}

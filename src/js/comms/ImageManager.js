@@ -6,7 +6,7 @@ class ImageManager {
     }
 
     getImages(label) {
-        // console.log('imageManager:getImages: ', label);
+        console.log('imageManager:getImages: ', label);
         return util.GET(`${this.baseUrl}/fw-image/image?label=${label}`);
     }
 
@@ -21,7 +21,7 @@ class ImageManager {
     }
 
     setBinary(image) {
-        return util.POST_MULTIPART(`${this.baseUrl}/fw-image/image/${image.image_id}/binary`, image);
+        return util.POST_MULTIPART(`${this.baseUrl}/fw-image/image/${image.id}/binary`, image);
     }
 
     deleteBinary(id) {

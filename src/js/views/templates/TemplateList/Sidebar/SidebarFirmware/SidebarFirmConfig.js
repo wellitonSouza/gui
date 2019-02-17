@@ -42,7 +42,7 @@ class SidebarFirmConfig extends Component {
             'dojot:firmware_update:update_result': 'update_result',
             'dojot:firmware_update:version': 'current_version',
             'dojot:firmware_update:desired_version': 'upload_image',
-            'dojot:firmware_update:update': 'apply_image'
+            'dojot:firmware_update:update': 'apply_image',
  };
 
 
@@ -58,12 +58,9 @@ class SidebarFirmConfig extends Component {
         this.defaultAttributes();
         const { isNewTemplate, template } = this.props;
         if (!isNewTemplate) {
-            if (template.img_attrs.length === 0)
-            {
+            if (template.img_attrs.length === 0) {
                 ImageActions.updateImageAllowed(false);
-            }
-            else
-            {
+            } else {
                 ImageActions.updateImageAllowed(true);
                 this.updateFieldsWithTemplateData(template.img_attrs);
             }
@@ -73,13 +70,13 @@ class SidebarFirmConfig extends Component {
 
     updateFieldsWithTemplateData(defaultAttrs) {
         console.log('updateFieldsWithTemplateData', defaultAttrs);
-        let { attrs } = this.state; 
+        const { attrs } = this.state;
         defaultAttrs.forEach((element) => {
             attrs[this.dictFirmwareUpdate[element.metadata[0].label]].user_value = element.label;
         });
 
         console.log("attrs",attrs);
-        this.setState({attrs});
+        this.setState({ attrs });
     }
 
     toogleSidebarFirmImage() {
@@ -190,65 +187,65 @@ class SidebarFirmConfig extends Component {
                                     <div className="line-2" />
                                     { imageAllowed
                                         ? (
-<div className="body-form image-related-attrs">
-                                        <span>To confirm the firmware configuration, please update the following attributes:</span>
+                                            <div className="body-form image-related-attrs">
+                                                <span>To confirm the firmware configuration, please update the following attributes:</span>
 
-                                        <div className="body-attribute-name">
-                                            <MaterialInput
-                                                name="current_state"
-                                                className="attribute-type"
-                                                maxLength={40}
-                                                value={attrs.current_state.user_value}
-                                                onChange={e => this.changeAttrValue(e, attrs)}
-                                            >
+                                                <div className="body-attribute-name">
+                                                    <MaterialInput
+                                                        name="current_state"
+                                                        className="attribute-type"
+                                                        maxLength={40}
+                                                        value={attrs.current_state.user_value}
+                                                        onChange={e => this.changeAttrValue(e, attrs)}
+                                                    >
                                                 Current State
-                                            </MaterialInput>
-                                        </div>
-                                        <div className="body-attribute-name">
-                                            <MaterialInput
-                                                name="update_result"
-                                                className="attribute-type"
-                                                maxLength={40}
-                                                value={attrs.update_result.user_value}
-                                                onChange={e => this.changeAttrValue(e, attrs)}
-                                            >
+                                                    </MaterialInput>
+                                                </div>
+                                                <div className="body-attribute-name">
+                                                    <MaterialInput
+                                                        name="update_result"
+                                                        className="attribute-type"
+                                                        maxLength={40}
+                                                        value={attrs.update_result.user_value}
+                                                        onChange={e => this.changeAttrValue(e, attrs)}
+                                                    >
                                                 Update Result
-                                            </MaterialInput>
-                                        </div>
-                                        <div className="body-attribute-name">
-                                            <MaterialInput
-                                                name="upload_image"
-                                                className="attribute-type"
-                                                maxLength={40}
-                                                value={attrs.upload_image.user_value}
-                                                onChange={e => this.changeAttrValue(e, attrs)}
-                                            >
+                                                    </MaterialInput>
+                                                </div>
+                                                <div className="body-attribute-name">
+                                                    <MaterialInput
+                                                        name="upload_image"
+                                                        className="attribute-type"
+                                                        maxLength={40}
+                                                        value={attrs.upload_image.user_value}
+                                                        onChange={e => this.changeAttrValue(e, attrs)}
+                                                    >
                                                 Upload Image
-                                            </MaterialInput>
-                                        </div>
-                                        <div className="body-attribute-name">
-                                            <MaterialInput
-                                                name="apply_image"
-                                                className="attribute-type"
-                                                maxLength={40}
-                                                value={attrs.apply_image.user_value}
-                                                onChange={e => this.changeAttrValue(e, attrs)}
-                                            >
+                                                    </MaterialInput>
+                                                </div>
+                                                <div className="body-attribute-name">
+                                                    <MaterialInput
+                                                        name="apply_image"
+                                                        className="attribute-type"
+                                                        maxLength={40}
+                                                        value={attrs.apply_image.user_value}
+                                                        onChange={e => this.changeAttrValue(e, attrs)}
+                                                    >
                                                 Apply Image
-                                            </MaterialInput>
-                                        </div>
-                                        <div className="body-attribute-name">
-                                            <MaterialInput
-                                                name="current_version"
-                                                className="attribute-type"
-                                                maxLength={40}
-                                                value={attrs.current_version.user_value}
-                                                onChange={e => this.changeAttrValue(e, attrs)}
-                                            >
+                                                    </MaterialInput>
+                                                </div>
+                                                <div className="body-attribute-name">
+                                                    <MaterialInput
+                                                        name="current_version"
+                                                        className="attribute-type"
+                                                        maxLength={40}
+                                                        value={attrs.current_version.user_value}
+                                                        onChange={e => this.changeAttrValue(e, attrs)}
+                                                    >
                                                 Current Version
-                                            </MaterialInput>
-                                        </div>
-                                    </div>
+                                                    </MaterialInput>
+                                                </div>
+                                            </div>
 )
                                         : null }
                                     <div className="body-actions">

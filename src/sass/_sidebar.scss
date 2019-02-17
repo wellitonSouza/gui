@@ -651,7 +651,7 @@
   top: 0;
   right: 0;
   height: calc(100% - 2px);
-  min-height: 450px; 
+  min-height: 450px;
   font-size: 15px;
   background: linear-gradient(90deg, #fafafa, #f7f7f7 100%) !important;
   
@@ -666,7 +666,7 @@
     {
       position: absolute;
       width:100%;
-      bottom:0px;
+      bottom:0;
       .body-actions--button:hover {
         background-color: rgba(218, 218, 218, 0.4) !important;
         transition: 300ms;

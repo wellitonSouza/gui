@@ -5,7 +5,6 @@ import toaster from 'Comms/util/materialize';
 const alt = require('../alt');
 
 class ImageActions {
-
     updateTemplateInfo(data) {
         return data;
     }

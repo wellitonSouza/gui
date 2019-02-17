@@ -77,7 +77,7 @@ const TemplateList = ({
                 template={template}
                 isNewTemplate={isNewTemplate}
                 showSidebar={showSidebar}
-                toogleSidebar={TemplateActions.toogleSidebar} //I really appreciate it <3
+                toogleSidebar={TemplateActions.toogleSidebar} // I really appreciate it <3
                 temp_opex={temp_opex}
             />
         </div>

@@ -50,7 +50,6 @@ class ImageStore {
     handleUpdateImageAllowed(value)
     {
         this.imageAllowed = value;
-        console.log("this.imageAllowed",this.imageAllowed);
     }
 
     handleUpdateImageData(fields)

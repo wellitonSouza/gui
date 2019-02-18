@@ -1,4 +1,3 @@
-// /* eslint-disable */
 import templateManager from 'Comms/templates/TemplateManager';
 import toaster from 'Comms/util/materialize';
 
@@ -23,10 +22,9 @@ class TemplateActions {
     }
 
     addTemplate(template, cb) {
-        const newTemplate = template;
         return (dispatch) => {
             dispatch();
-            templateManager.addTemplate(newTemplate)
+            templateManager.addTemplate(template)
                 .then((response) => {
                     this.insertTemplate(response.template);
                     if (cb) {
@@ -53,7 +51,6 @@ class TemplateActions {
                     }
                 })
                 .catch((error) => {
-                    console.error('Failed to fetch single template', error);
                     this.templatesFailed(error);
                 });
         };
@@ -98,10 +95,11 @@ class TemplateActions {
     triggerIconUpdate(id, icon) {
         return (dispatch) => {
             templateManager.setIcon(id, icon)
-                .then((response) => {
+                .then(() => {
                     this.setIcon(id);
                 })
                 .catch((error) => {
+                    console.log('error:', error);
                 });
 
             dispatch();
@@ -146,7 +144,6 @@ class TemplateActions {
     }
 
     selectTemplate(template = newTemplate) {
-        console.log("selectTemplate",template);
         if (!template.newTemplate) {
             this.fetchSingle(template.id);
         }

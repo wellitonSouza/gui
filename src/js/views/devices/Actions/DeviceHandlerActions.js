@@ -3,8 +3,7 @@ import toaster from 'Comms/util/materialize';
 
 class DeviceHandlerActions {
     set(args) {
-        console.log('DeviceHandlerActions, set:', args);
-        this.fetchTemplateData(args.templates);
+        if (args) { this.fetchTemplateData(args.templates); }
         return args;
     }
 
@@ -22,7 +21,7 @@ class DeviceHandlerActions {
                     }
                 })
                 .catch((error) => {
-                    console.error('Failed to fetch template information', error);
+                    this.devicesFailed(error);
                 });
         };
     }
@@ -39,7 +38,9 @@ class DeviceHandlerActions {
             dispatch();
             deviceManager.getDevice(id)
                 .then((d) => { this.set(d); })
-                .catch((error) => { console.error('Failed to get device', error); });
+                .catch((error) => {
+                    this.devicesFailed(error);
+                });
         };
     }
 

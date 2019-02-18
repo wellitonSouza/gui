@@ -11,13 +11,13 @@ import { templateType } from '../../../TemplatePropTypes';
 import SidebarFirmImages from './SidebarFirmImages';
 import SidebarButton from '../SidebarButton';
 
-function createAttribute(label, type, value_type, static_value) {
+function createAttribute(label, type, valueType, staticValue) {
     return {
         id: `${Math.floor(Math.random() * 100000)}`,
         label,
         type,
-        value_type,
-        static_value,
+        valueType,
+        staticValue,
     };
 }
 
@@ -27,12 +27,10 @@ function createImageAttribute(data, type) {
     return aux;
 }
 
-//
 class SidebarFirmConfig extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            enabled: false,
             showFirmwareImage: false,
             attrs: {},
         };
@@ -43,7 +41,7 @@ class SidebarFirmConfig extends Component {
             'dojot:firmware_update:version': 'current_version',
             'dojot:firmware_update:desired_version': 'upload_image',
             'dojot:firmware_update:update': 'apply_image',
- };
+        };
 
 
         this.changeAttrValue = this.changeAttrValue.bind(this);
@@ -75,12 +73,11 @@ class SidebarFirmConfig extends Component {
             attrs[this.dictFirmwareUpdate[element.metadata[0].label]].user_value = element.label;
         });
 
-        console.log("attrs",attrs);
+        console.log('attrs', attrs);
         this.setState({ attrs });
     }
 
     toogleSidebarFirmImage() {
-        console.log('toogleSidebarFirmImage');
         const { showFirmwareImage } = this.state;
         this.setState({
             showFirmwareImage: !showFirmwareImage,
@@ -89,26 +86,18 @@ class SidebarFirmConfig extends Component {
 
     defaultAttributes() {
         const attrs = {};
-
-        // just some default values to user
         attrs.current_state = { label: 'Current State', dojot_value: 'dojot:firmware_update:state', user_value: 'image_state' };
-
         attrs.update_result = { label: 'Update Result', dojot_value: 'dojot:firmware_update:update_result', user_value: 'update_result' };
-
         attrs.current_version = { label: 'Current Version', dojot_value: 'dojot:firmware_update:version', user_value: 'current_version' };
-
         attrs.upload_image = { label: 'Transfer Image', dojot_value: 'dojot:firmware_update:desired_version', user_value: 'transferred_version' };
-
         attrs.apply_image = { label: 'Apply Image', dojot_value: 'dojot:firmware_update:update', user_value: 'apply_image' };
-
-
         this.setState({
             attrs,
         });
     }
 
     changeFirmwareState(e) {
-        console.log('changeFirmwareState');
+        e.preventDefault();
         const { imageAllowed } = this.props;
         ImageActions.updateImageAllowed(!imageAllowed);
     }
@@ -130,10 +119,9 @@ class SidebarFirmConfig extends Component {
         });
     }
 
-    changeAttrValue(event, attr) {
+    changeAttrValue(event) {
         event.preventDefault();
-        const name = event.target.name;
-        const value = event.target.value;
+        const { name, value } = event.target;
         const { attrs } = this.state;
         attrs[name].user_value = value;
         this.setState({
@@ -142,7 +130,6 @@ class SidebarFirmConfig extends Component {
     }
 
     render() {
-        console.log('SidebarFirmConfig. render', this.props);
         const {
             imageAllowed, images, showFirmware, template, isNewTemplate, toogleSidebarFirmware,
         } = this.props;
@@ -196,7 +183,7 @@ class SidebarFirmConfig extends Component {
                                                         className="attribute-type"
                                                         maxLength={40}
                                                         value={attrs.current_state.user_value}
-                                                        onChange={e => this.changeAttrValue(e, attrs)}
+                                                        onChange={e => this.changeAttrValue(e)}
                                                     >
                                                 Current State
                                                     </MaterialInput>
@@ -207,7 +194,7 @@ class SidebarFirmConfig extends Component {
                                                         className="attribute-type"
                                                         maxLength={40}
                                                         value={attrs.update_result.user_value}
-                                                        onChange={e => this.changeAttrValue(e, attrs)}
+                                                        onChange={e => this.changeAttrValue(e)}
                                                     >
                                                 Update Result
                                                     </MaterialInput>
@@ -218,7 +205,7 @@ class SidebarFirmConfig extends Component {
                                                         className="attribute-type"
                                                         maxLength={40}
                                                         value={attrs.upload_image.user_value}
-                                                        onChange={e => this.changeAttrValue(e, attrs)}
+                                                        onChange={e => this.changeAttrValue(e)}
                                                     >
                                                 Upload Image
                                                     </MaterialInput>
@@ -229,7 +216,7 @@ class SidebarFirmConfig extends Component {
                                                         className="attribute-type"
                                                         maxLength={40}
                                                         value={attrs.apply_image.user_value}
-                                                        onChange={e => this.changeAttrValue(e, attrs)}
+                                                        onChange={e => this.changeAttrValue(e)}
                                                     >
                                                 Apply Image
                                                     </MaterialInput>
@@ -240,13 +227,13 @@ class SidebarFirmConfig extends Component {
                                                         className="attribute-type"
                                                         maxLength={40}
                                                         value={attrs.current_version.user_value}
-                                                        onChange={e => this.changeAttrValue(e, attrs)}
+                                                        onChange={e => this.changeAttrValue(e)}
                                                     >
                                                 Current Version
                                                     </MaterialInput>
                                                 </div>
                                             </div>
-)
+                                        )
                                         : null }
                                     <div className="body-actions">
                                         <div className="body-actions--divider" />

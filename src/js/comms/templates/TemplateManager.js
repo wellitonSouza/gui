@@ -1,69 +1,6 @@
-/* eslint-disable */
 import util from '../util';
 
-
-
-class TemplateManager {
-    constructor() {
-        this.baseUrl = '';
-    }
-
-    getLastTemplates(field) {
-        return util.GET(`${this.baseUrl}/template?limit=10&sortDsc=${field}`);
-    }
-
-    getTemplates(params) {
-        if (params) {
-            const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
-            return util.GET(`${this.baseUrl}/template?${qs}`);
-        }
-        return util.GET(`${this.baseUrl}/template`);
-    // console.log("TemplateManager.getTemplates.filter: ",filter);
-    }
-
-    getTemplate(id) {
-        return util.GET(`${this.baseUrl}/template/${id}`);
-    }
-
-    getTemplateGQL(id) {
-        const req = {
-            query: GQLTEMPLATE(id),
-        };
-        return util.POST(this.baseUrl+'/graphql/', req);
-    }
-
-    // getTemplateGQL(ID) {
-    //     const req = {
-    //         query: GQLTEMPLATE2(1),
-    //     };
-    //     return util.GET(`${this.baseUrl}/graphql/?${req}`);
-    // }
-
-
-    setTemplate(detail) {
-        return util.PUT(`${this.baseUrl}/template/${detail.id}`, detail);
-    }
-
-    addTemplate(d) {
-        return util.POST(`${this.baseUrl}/template`, d);
-    }
-
-    deleteTemplate(id) {
-        return util.DELETE(`${this.baseUrl}/template/${id}`);
-    }
-
-    setIcon(id, icon) {
-        const data = new FormData();
-        data.append('icon', icon);
-        const config = { method: 'put', body: data };
-        return util._runFetch(`${this.baseUrl}/template/${id}/icon`, config);
-    }
-}
-
-const templateManager = new TemplateManager();
-export default templateManager;
-
-const GQLTEMPLATE = (templateId) => `
+const GQLTEMPLATE = templateId => `
 {
     template(id: ${templateId}) {
       label
@@ -144,3 +81,63 @@ const GQLTEMPLATE = (templateId) => `
     }
   }
   `;
+
+
+class TemplateManager {
+    constructor() {
+        this.baseUrl = '';
+    }
+
+    getLastTemplates(field) {
+        return util.GET(`${this.baseUrl}/template?limit=10&sortDsc=${field}`);
+    }
+
+    getTemplates(params) {
+        if (params) {
+            const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
+            return util.GET(`${this.baseUrl}/template?${qs}`);
+        }
+        return util.GET(`${this.baseUrl}/template`);
+    }
+
+    getTemplate(id) {
+        return util.GET(`${this.baseUrl}/template/${id}`);
+    }
+
+    getTemplateGQL(id) {
+        const req = {
+            query: GQLTEMPLATE(id),
+        };
+        return util.POST(`${this.baseUrl}/graphql/`, req);
+    }
+
+    // getTemplateGQL(ID) {
+    //     const req = {
+    //         query: GQLTEMPLATE2(1),
+    //     };
+    //     return util.GET(`${this.baseUrl}/graphql/?${req}`);
+    // }
+
+
+    setTemplate(detail) {
+        return util.PUT(`${this.baseUrl}/template/${detail.id}`, detail);
+    }
+
+    addTemplate(d) {
+        return util.POST(`${this.baseUrl}/template`, d);
+    }
+
+    deleteTemplate(id) {
+        return util.DELETE(`${this.baseUrl}/template/${id}`);
+    }
+
+    setIcon(id, icon) {
+        const data = new FormData();
+        data.append('icon', icon);
+        const config = { method: 'put', body: data };
+        return util._runFetch(`${this.baseUrl}/template/${id}/icon`, config);
+    }
+}
+
+const templateManager = new TemplateManager();
+export default templateManager;

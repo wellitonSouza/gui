@@ -1,4 +1,3 @@
-
 import imageManager from 'Comms/ImageManager';
 import toaster from 'Comms/util/materialize';
 
@@ -39,16 +38,16 @@ class ImageActions {
     }
 
     fetchImages(templateId) {
-      return (dispatch) => {
-        dispatch();
+        return (dispatch) => {
+            dispatch();
 
-        imageManager.getImages(templateId).then((imageList) => {
-          this.updateImages(imageList);
-        })
-        .catch((error) => {
-          this.imagesFailed(error);
-        });
-      };
+            imageManager.getImages(templateId).then((imageList) => {
+                this.updateImages(imageList);
+            })
+                .catch((error) => {
+                    this.imagesFailed(error);
+                });
+        };
     }
 
 

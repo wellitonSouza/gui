@@ -93,7 +93,6 @@ class Sidebar extends Component {
 
     toogleSidebarImages() {
         const { showSidebarImage, isNewDevice } = this.state;
-        console.log('toogleSidebarImages', isNewDevice);
         if (!isNewDevice) {
             this.setState({
                 showSidebarImage: !showSidebarImage,
@@ -352,8 +351,6 @@ class Sidebar extends Component {
             hasTemplateWithImages,
         } = this.props;
 
-
-        console.log('hasTemplateWithImages', hasTemplateWithImages);
         if (!Object.prototype.hasOwnProperty.call(device, 'attrs')) return <div />;
         const { metadata } = device;
         return (
@@ -392,15 +389,19 @@ class Sidebar extends Component {
                     handleShowDeviceAttrs={this.handleShowDeviceAttrs}
                     errors={errors}
                 />
-                <AltContainer store={[ImageStore, DeviceStore, MeasureStore]}>
-                    <SidebarImage
-                        deviceId={device.id}
-                        hasTemplateWithImages={hasTemplateWithImages}
-                        templateIdAllowedImage={templateIdAllowedImage}
-                        showSidebarImage={showSidebarImage}
-                        toogleSidebarImages={this.toogleSidebarImages}
-                    />
-                </AltContainer>
+                { !isNewDevice
+                    ? (
+                        <AltContainer stores={{ is: ImageStore, ds: DeviceStore, ms: MeasureStore }}>
+                            <SidebarImage
+                                deviceId={device.id}
+                                hasTemplateWithImages={hasTemplateWithImages}
+                                templateIdAllowedImage={templateIdAllowedImage}
+                                showSidebarImage={showSidebarImage}
+                                toogleSidebarImages={this.toogleSidebarImages}
+                            />
+                        </AltContainer>
+                    )
+                    : null }
             </Fragment>
         );
     }

@@ -24,17 +24,22 @@ class DeviceHandlerStore {
 
             handleRemoveSingle: FormActions.TRIGGER_REMOVAL,
 
-            handelSetTemplateData: FormActions.SET_TEMPLATE_DATA,
+            handleSetTemplateData: FormActions.SET_TEMPLATE_DATA,
         });
     }
 
 
-    handelSetTemplateData(data) {
-        console.log('handelSetTemplateData', data.templatesHasImageFirmware);
-        if (data) {
-            this.templateIdAllowedImage = '';
-            this.hasTemplateWithImages = true;
-        }
+    handleSetTemplateData(data) {
+        console.log('handleSetTemplateData', data);
+        this.hasTemplateWithImages = false;
+        this.templateIdAllowedImage = '';
+        const tmps = data.templatesHasImageFirmware;
+        tmps.forEach((element) => {
+            if (element.value) {
+                this.templateIdAllowedImage = element.key;
+                this.hasTemplateWithImages = true;
+            }
+        });
     }
 
 
@@ -42,8 +47,8 @@ class DeviceHandlerStore {
     }
 
     set(device) {
-        this.templateIdAllowedImage = '';
-        this.hasTemplateWithImages = false;
+        this.templateIdAllowedImage = '1';
+        this.hasTemplateWithImages = true;
         if (device === null || device === undefined) {
             this.device = {
                 label: '',

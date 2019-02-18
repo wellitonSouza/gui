@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Slide from 'react-reveal/Slide';
 import { DojotBtnClassic } from 'Components/DojotButton';
 import ImageActions from 'Actions/ImageActions';
+import MeasureActions from 'Actions/MeasureActions';
 import MaterialSelect from 'Components/MaterialSelect';
 import SidebarFirmImages from 'Views/templates/TemplateList/Sidebar/SidebarFirmware/SidebarFirmImages';
 import SidebarButton from 'Views/templates/TemplateList/Sidebar/SidebarButton';
@@ -16,15 +17,8 @@ class SidebarImage extends Component {
             loaded: false,
             showFirmwareImage: false,
             attrs: { current_state: '', update_result: '', current_version: '' },
-            currentImageId: '1',
+            currentImageId: '0',
         };
-        // this.attrs = {};
-        // this.attrs.current_state = { label: 'Current State', user_value: 'image_state' }; // just a default value to the user
-        // this.attrs.update_result = { label: 'Update Result', user_value: 'update_result' }; // just a default value to the user
-        // this.attrs.upload_image = { label: 'Upload Image', user_value: 'trigger_update' }; // just a default value to the user
-        // this.attrs.apply_image = { label: 'Apply Image', user_value: 'apply_image' }; // just a default value to the user
-        // this.attrs.current_version = { label: 'Current Version', user_value: 'current_version' }; // just a default value to user
-
         this.callUploadImage = this.callUploadImage.bind(this);
         this.callApplyImage = this.callApplyImage.bind(this);
         this.toogleSidebarFirmImage = this.toogleSidebarFirmImage.bind(this);
@@ -40,11 +34,11 @@ class SidebarImage extends Component {
                 loaded: false,
             };
         }
-        // Oh my God... look that man
-        if (props.devices[props.device.id].current_state !== state.attrs.current_state) {
+        console.log('props.ms', props.ms);
+        if (props.ms.data[props.deviceId] && props.ms.data[props.deviceId].current_state !== state.attrs.current_state) {
             return {
                 ...state,
-                attrs: { current_state: props.devices[props.device.id].current_state },
+                attrs: { current_state: props.ms.data[props.deviceId].current_state },
             };
         }
         return null;
@@ -52,67 +46,54 @@ class SidebarImage extends Component {
 
 
     componentDidUpdate() {
-        console.log('componentDidUpdate: requested', this.state.loaded);
-
-
-        if (!this.state.loaded && this.state.templateIdAllowedImage !== '') {
-            console.log('request info for template: ', this.props.templateIdAllowedImage);
-
-            const templateId = this.props.templateIdAllowedImage;
-            ImageActions.fetchImages(templateId);
-            DeviceActions.fetchSingle(this.props.deviceId, () => {
+        const { loaded, templateIdAllowedImage } = this.state;
+        if (!loaded && templateIdAllowedImage !== '') {
+            const { deviceId } = this.props;
+            console.log('request info for template: ', templateIdAllowedImage);
+            const templateId = templateIdAllowedImage;
+            ImageActions.fetchImages.defer(templateId);
+            DeviceActions.fetchSingle.defer(deviceId, (device) => {
                 toaster.success('Device requested');
-
                 // We should ask data for 3 measures...
-                MeasureActions.fetchMeasure.defer(this.props.device, 'current_state', 1);
-                MeasureActions.fetchMeasure.defer(this.props.device, 'update_result', 1);
-                MeasureActions.fetchMeasure.defer(this.props.device, 'current_version', 1);
+                MeasureActions.fetchMeasure.defer(device, 'current_state', 1);
+                MeasureActions.fetchMeasure.defer(device, 'update_result', 1);
+                MeasureActions.fetchMeasure.defer(device, 'current_version', 1);
             });
-            current_state;
-            update_result;
-            current_version;
-            // current version is dynamic value
-            // it should get in backstage or history
-            // current state is static value
-            // update result is a static value
-            // request information about images on tempalte
-            const attrs = { current_state: '', update_result: '', current_version: '' };
             this.setState({
-                attrs,
                 loaded: true,
             });
         }
     }
 
-    onChangeImage(e, value) {
-        console.log('onChangeImage', this.state.currentImageId, value);
-        // const target = event.target;
-        // const user = this.state.user;
-        // user[target.name] = target.value;
-        // this.fieldValidation(user, target.name);
+    onChangeImage(e) {
+        const newImageId = e.target.value;
+        this.setState({
+            currentImageId: newImageId,
+        });
     }
 
 
     callUploadImage() {
-        console.log('callUploadImage');
-
         // find the actuator responsable for upload image
-        const upload_image_alias = 'upload_image';
+        const uploadImageAlias = 'upload_image';
         // sets the new value;
         const { currentImageId } = this.state;
-        const { device } = this.props;
+        const { deviceId } = this.props;
+        const device = this.props.ds.devices[deviceId];
         console.log('currentImageId', currentImageId);
         console.log('device ', device);
-        device.attrs[upload_image_alias] = currentImageId;
+        device.attrs[uploadImageAlias] = currentImageId;
         DeviceActions.triggerUpdate(device, () => {
             toaster.success('Image successfully transferred');
         });
     }
 
     callApplyImage() {
-        console.log('callApplyImage');
-        const { device } = this.props;
-        device.attrs[apply_image] = 1;
+        // find the actuator responsable for apply image
+        const { deviceId } = this.props;
+        const device = this.props.ds.devices[deviceId];
+        console.log('callApplyImage', device);
+        device.attrs.apply_image = 1;
 
         DeviceActions.triggerUpdate(device, () => {
             toaster.success('Image Applied');
@@ -130,11 +111,13 @@ class SidebarImage extends Component {
 
     createImageOptions() {
         const items = [];
-        items.push(<option key="selectedImage" value="">Select an image</option>);
-
-        const images_info = [{ id: 1, fw_version: '0.1 alpha' }, { id: 2, fw_version: '0.2 beta' }];
-        for (let i = 0; i < images_info.length; i++) {
-            items.push(<option key={images_info[i].id} value={images_info[i].id}>{images_info[i].fw_version}</option>);
+        items.push(<option key="selectedImage" value="0">Select an image</option>);
+        const { images } = this.props.is;
+        console.log('Images to create image options', images);
+        if (images) {
+            Object.entries(images).forEach(([key, el]) => {
+                items.push(<option key={el.id} value={el.id}>{el.fw_version}</option>);
+            });
         }
         return items;
     }
@@ -143,6 +126,7 @@ class SidebarImage extends Component {
     render() {
         console.log('SidebarImage. render', this.props);
         const { toogleSidebarImages, showSidebarImage } = this.props;
+        const { images } = this.props.is;
         const { attrs, showFirmwareImage, templateIdAllowedImage } = this.state;
         const opts = this.createImageOptions();
 
@@ -186,12 +170,12 @@ class SidebarImage extends Component {
                                     <div className="body-form pl50">
                                         <div className="header2">Image to be transfer</div>
                                         <div className="cid_select">
-                                            <MaterialSelect id="flr_images" name="images" label="Available images" value={this.currentImageId} onChange={e => onChangeImage(e, currentImageId)}>
+                                            <MaterialSelect id="flr_images" name="images" label="Available images" value={this.currentImageId} onChange={e => this.onChangeImage(e)}>
                                                 {opts}
                                             </MaterialSelect>
                                         </div>
                                         <div className="cid_upload_button">
-                                            <div className="square-button" onClick={this.callUploadImage}>
+                                            <div className="square-button" onKeyPress={this.callUploadImage} tabIndex="0" role="button" onClick={this.callUploadImage}>
                                                 <i className="fa fa-download fa-2x" />
                                                 Transfer
                                             </div>
@@ -220,7 +204,7 @@ class SidebarImage extends Component {
                 <SidebarFirmImages
                     showFirmware={showFirmwareImage}
                     templateId={templateIdAllowedImage}
-                    images={this.props.images}
+                    images={images}
                     toogleSidebarFirmware={this.toogleSidebarFirmImage}
                 />
             </Fragment>
@@ -232,11 +216,11 @@ class SidebarImage extends Component {
 SidebarImage.defaultProps = {
     showSidebarImage: false,
     templateIdAllowedImage: '',
-    hasTemplateWithImages: false,
+    deviceId: '',
 };
 
 SidebarImage.propTypes = {
-    hasTemplateWithImages: PropTypes.bool,
+    deviceId: PropTypes.string,
     templateIdAllowedImage: PropTypes.string,
     showSidebarImage: PropTypes.bool,
     toogleSidebarImages: PropTypes.func.isRequired,

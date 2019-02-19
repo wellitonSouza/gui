@@ -335,7 +335,7 @@ class DyAttributeArea extends Component {
                                               change_attr={this.toggleAttribute} t={t}/>
                     </div>
                     <div className="row">
-                        <ActuatorsArea actuators={this.props.actuators} t={t}/>
+                        <ActuatorsList  device={this.props.device}  actuators={this.props.actuators} change_attr={this.toggleAttribute} t={t}/>
                     </div>
                 </div>
             </div>
@@ -343,31 +343,71 @@ class DyAttributeArea extends Component {
     }
 }
 
-class ActuatorsArea extends Component {
+class ActuatorsList extends Component {
     constructor(props) {
         super(props);
+        this.clickAttr = this.clickAttr.bind(this);
+    }
+
+    componentWillMount() {
+        const device = this.props.device;
+        for (const i in device.attrs) {
+            for (const j in device.attrs[i]) {
+                if (device.attrs[i][j].type !== 'meta') {
+                    if (device.attrs[i][j].type === 'dynamic') {
+                        if (device.attrs[i][j].value_type === 'geo:point') {
+                            MeasureActions.fetchPosition.defer(device, device.id, device.attrs[i][j].label);
+                        }
+                    }
+                    MeasureActions.fetchMeasure.defer(device, device.attrs[i][j].label, 10);
+                }
+            }
+        }
+    }
+
+    clickAttr(attr) {
+        this.props.change_attr(attr);
     }
 
     render() {
         const { t } = this.props;
-        return (
-            <div className=" dy_attributes">
-                <div className="col s12 header">
-                    <div className="col s2"/>
-                    <label className="col s8">{t('text.actuators')}</label>
-                </div>
-                <div className="col s12 body">
-                    {this.props.actuators.map(actuator => (
-                        <div key={actuator.label} className="line">
-                            <div className="col offset-s2 s8">
-                                <div className="label truncate"
-                                     title={actuator.label}>{actuator.label}</div>
-                            </div>
+        return <div className=" dy_attributes">
+            <div className="col s12 header">
+              <div className="col s2" />
+              <label className="col s8">{t('text.actuators')}</label>
+            </div>
+            <div className="col s12 body">
+              {this.props.actuators.map(actuator => (
+                <div
+                  onClick={this.clickAttr.bind(this, actuator)}
+                  key={actuator.label}
+                  className="line"
+                >
+                  <div className="col offset-s2 s8">
+                        <div
+                        className="label truncate"
+                        title={actuator.label}
+                        >
+                        {actuator.label}
                         </div>
                     ))}
+                        <div className="value-label">{actuator.value_type}</div>
+                    </div>
+
+                    <div className="col s2">
+                      <div className="star">
+                        <i
+                          className={`fa ${
+                            actuator.visible ? "fa-star" : "fa-star-o"
+                          }`}
+                        />
+                    </div>
+                  </div>
                 </div>
+              ))}
             </div>
         );
+          </div>;
     }
 }
 

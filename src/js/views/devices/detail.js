@@ -353,12 +353,7 @@ class ActuatorsList extends Component {
         const device = this.props.device;
         for (const i in device.attrs) {
             for (const j in device.attrs[i]) {
-                if (device.attrs[i][j].type !== 'meta') {
-                    if (device.attrs[i][j].type === 'dynamic') {
-                        if (device.attrs[i][j].value_type === 'geo:point') {
-                            MeasureActions.fetchPosition.defer(device, device.id, device.attrs[i][j].label);
-                        }
-                    }
+                if (device.attrs[i][j].type === 'actuator') {
                     MeasureActions.fetchMeasure.defer(device, device.attrs[i][j].label, 10);
                 }
             }
@@ -390,23 +385,16 @@ class ActuatorsList extends Component {
                         >
                         {actuator.label}
                         </div>
-                    ))}
                         <div className="value-label">{actuator.value_type}</div>
                     </div>
-
                     <div className="col s2">
                       <div className="star">
-                        <i
-                          className={`fa ${
-                            actuator.visible ? "fa-star" : "fa-star-o"
-                          }`}
-                        />
+                      <i className={`fa ${actuator.visible ? 'fa-star' : 'fa-star-o'}`}/>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
-        );
           </div>;
     }
 }

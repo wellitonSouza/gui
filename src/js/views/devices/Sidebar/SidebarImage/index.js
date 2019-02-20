@@ -35,7 +35,8 @@ class SidebarImage extends Component {
             };
         }
         console.log('props.ms', props.ms);
-        if (props.ms.data[props.deviceId] && props.ms.data[props.deviceId].current_state !== state.attrs.current_state) {
+        if (props.ms.data[props.deviceId]
+            && props.ms.data[props.deviceId].current_state !== state.attrs.current_state) {
             return {
                 ...state,
                 attrs: { current_state: props.ms.data[props.deviceId].current_state },
@@ -78,8 +79,8 @@ class SidebarImage extends Component {
         const uploadImageAlias = 'upload_image';
         // sets the new value;
         const { currentImageId } = this.state;
-        const { deviceId } = this.props;
-        const device = this.props.ds.devices[deviceId];
+        const { deviceId, ds } = this.props;
+        const device = ds.devices[deviceId];
         console.log('currentImageId', currentImageId);
         console.log('device ', device);
         device.attrs[uploadImageAlias] = currentImageId;
@@ -90,8 +91,8 @@ class SidebarImage extends Component {
 
     callApplyImage() {
         // find the actuator responsable for apply image
-        const { deviceId } = this.props;
-        const device = this.props.ds.devices[deviceId];
+        const { deviceId, ds } = this.props;
+        const device = ds.devices[deviceId];
         console.log('callApplyImage', device);
         device.attrs.apply_image = 1;
 
@@ -112,10 +113,11 @@ class SidebarImage extends Component {
     createImageOptions() {
         const items = [];
         items.push(<option key="selectedImage" value="0">Select an image</option>);
-        const { images } = this.props.is;
+        const { is } = this.props;
+        const { images } = is;
         console.log('Images to create image options', images);
         if (images) {
-            Object.entries(images).forEach(([key, el]) => {
+            Object.entries(images).forEach((el) => {
                 items.push(<option key={el.id} value={el.id}>{el.fw_version}</option>);
             });
         }
@@ -125,8 +127,8 @@ class SidebarImage extends Component {
 
     render() {
         console.log('SidebarImage. render', this.props);
-        const { toogleSidebarImages, showSidebarImage } = this.props;
-        const { images } = this.props.is;
+        const { toogleSidebarImages, showSidebarImage, is } = this.props;
+        const { images } = is;
         const { attrs, showFirmwareImage, templateIdAllowedImage } = this.state;
         const opts = this.createImageOptions();
 

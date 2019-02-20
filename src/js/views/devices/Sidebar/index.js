@@ -391,7 +391,12 @@ class Sidebar extends Component {
                 />
                 { !isNewDevice
                     ? (
-                        <AltContainer stores={{ is: ImageStore, ds: DeviceStore, ms: MeasureStore }}>
+                        <AltContainer stores={{
+                            is: ImageStore,
+                            ds: DeviceStore,
+                            ms: MeasureStore,
+                        }}
+                        >
                             <SidebarImage
                                 deviceId={device.id}
                                 hasTemplateWithImages={hasTemplateWithImages}

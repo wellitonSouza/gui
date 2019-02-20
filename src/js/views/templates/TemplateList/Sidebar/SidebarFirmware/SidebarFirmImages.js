@@ -45,7 +45,7 @@ class SidebarFirmImages extends Component {
     saveImages(e) {
         e.preventDefault();
         const { templateId, images } = this.props;
-        Object.entries(images).map(([key, image]) => {
+        Object.entries(images).map((image) => {
             if (!image.saved) {
                 // for each non saved image,
                 // 1. update or create image
@@ -139,7 +139,13 @@ class SidebarFirmImages extends Component {
                                 </div>
 
                                 <div className="body">
-                                    <ImageList list={images} changeAttrValue={this.changeAttrValue} removeImage={this.removeImage} removeBinary={this.removeBinary} onDrop={this.onDrop} />
+                                    <ImageList
+                                        list={images}
+                                        changeAttrValue={this.changeAttrValue}
+                                        removeImage={this.removeImage}
+                                        removeBinary={this.removeBinary}
+                                        onDrop={this.onDrop}
+                                    />
                                     {(!newImage)
                                         ? (
                                             <div className="body-form-nodata clickable" onKeyPress={this.createNewImage} tabIndex="0" role="button" onClick={this.createNewImage}>

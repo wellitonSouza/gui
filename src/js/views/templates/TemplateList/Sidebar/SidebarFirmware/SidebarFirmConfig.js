@@ -175,7 +175,11 @@ class SidebarFirmConfig extends Component {
                                     { imageAllowed
                                         ? (
                                             <div className="body-form image-related-attrs">
-                                                <span>To confirm the firmware configuration, please update the following attributes:</span>
+                                                <span>
+                                                    To confirm the firmware configuration,
+                                                    please update the following attributes:
+
+                                                </span>
 
                                                 <div className="body-attribute-name">
                                                     <MaterialInput

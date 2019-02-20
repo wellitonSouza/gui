@@ -111,14 +111,6 @@ class TemplateManager {
         return util.POST(`${this.baseUrl}/graphql/`, req);
     }
 
-    // getTemplateGQL(ID) {
-    //     const req = {
-    //         query: GQLTEMPLATE2(1),
-    //     };
-    //     return util.GET(`${this.baseUrl}/graphql/?${req}`);
-    // }
-
-
     setTemplate(detail) {
         return util.PUT(`${this.baseUrl}/template/${detail.id}`, detail);
     }

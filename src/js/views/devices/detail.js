@@ -495,31 +495,6 @@ function getAttrsLength(attrs) {
     return length;
 }
 
-function StatusDisplay(props) {
-    const numAttributes = getAttrsLength(props.device.attrs);
-    return (
-        <div className="detail-box-body">
-            <div className="metric">
-                <span className="label">Attributes</span>
-                <span className="value">{numAttributes}</span>
-            </div>
-            <div className="metric">
-                <span className="label">Last update</span>
-                <span className="value">{util.iso_to_date(props.device.ts)}</span>
-            </div>
-            <div className="metric">
-                <span className="label">Location</span>
-                <span className="value">{props.location}</span>
-            </div>
-            <div className="metric">
-                <span className="label">Protocol</span>
-                <span
-                    className="value">{props.device.protocol ? props.device.protocol : 'MQTT'}</span>
-            </div>
-        </div>
-    );
-}
-
 class DeviceDetail extends Component {
     constructor(props) {
         super(props);

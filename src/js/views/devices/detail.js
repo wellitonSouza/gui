@@ -487,14 +487,6 @@ class AttrHistory extends Component {
     }
 }
 
-function getAttrsLength(attrs) {
-    let length = 0;
-    for (const k in attrs) {
-        length += attrs[k].length;
-    }
-    return length;
-}
-
 class DeviceDetail extends Component {
     constructor(props) {
         super(props);

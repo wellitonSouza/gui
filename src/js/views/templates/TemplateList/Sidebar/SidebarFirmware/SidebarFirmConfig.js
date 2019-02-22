@@ -13,17 +13,16 @@ import SidebarButton from '../SidebarButton';
 
 function createAttribute(label, type, valueType, staticValue) {
     return {
-        id: `${Math.floor(Math.random() * 100000)}`,
         label,
         type,
-        valueType,
-        staticValue,
+        value_type: valueType,
+        static_value: staticValue,
     };
 }
 
 function createImageAttribute(data, type) {
     const aux = createAttribute(data.user_value, type, 'string', '');
-    aux.metadata = [createAttribute(data.dojot_value, 'static', 'bool', true)];
+    aux.metadata = [createAttribute(data.dojot_value, 'meta', 'bool', true)];
     return aux;
 }
 
@@ -32,7 +31,13 @@ class SidebarFirmConfig extends Component {
         super(props);
         this.state = {
             showFirmwareImage: false,
-            attrs: {},
+            attrs: {
+                current_state: { label: 'Current State', dojot_value: 'dojot:firmware_update:state', user_value: 'image_state' },
+                update_result: { label: 'Update Result', dojot_value: 'dojot:firmware_update:update_result', user_value: 'update_result' },
+                current_version: { label: 'Current Version', dojot_value: 'dojot:firmware_update:version', user_value: 'current_version' },
+                upload_image: { label: 'Transfer Image', dojot_value: 'dojot:firmware_update:desired_version', user_value: 'transferred_version' },
+                apply_image: { label: 'Apply Image', dojot_value: 'dojot:firmware_update:update', user_value: 'apply_image' },
+            },
         };
 
         this.dictFirmwareUpdate = {
@@ -46,19 +51,18 @@ class SidebarFirmConfig extends Component {
 
         this.changeAttrValue = this.changeAttrValue.bind(this);
         this.changeFirmwareState = this.changeFirmwareState.bind(this);
-        this.defaultAttributes = this.defaultAttributes.bind(this);
         this.saveImageConfig = this.saveImageConfig.bind(this);
         this.toogleSidebarFirmImage = this.toogleSidebarFirmImage.bind(this);
         this.updateFieldsWithTemplateData = this.updateFieldsWithTemplateData.bind(this);
     }
 
     componentDidMount() {
-        this.defaultAttributes();
         const { isNewTemplate, template } = this.props;
         if (!isNewTemplate) {
             if (template.img_attrs.length === 0) {
                 ImageActions.updateImageAllowed(false);
             } else {
+                console.log('componentDidMount: template.img_attrs', template.img_attrs);
                 ImageActions.updateImageAllowed(true);
                 this.updateFieldsWithTemplateData(template.img_attrs);
             }
@@ -81,18 +85,6 @@ class SidebarFirmConfig extends Component {
         const { showFirmwareImage } = this.state;
         this.setState({
             showFirmwareImage: !showFirmwareImage,
-        });
-    }
-
-    defaultAttributes() {
-        const attrs = {};
-        attrs.current_state = { label: 'Current State', dojot_value: 'dojot:firmware_update:state', user_value: 'image_state' };
-        attrs.update_result = { label: 'Update Result', dojot_value: 'dojot:firmware_update:update_result', user_value: 'update_result' };
-        attrs.current_version = { label: 'Current Version', dojot_value: 'dojot:firmware_update:version', user_value: 'current_version' };
-        attrs.upload_image = { label: 'Transfer Image', dojot_value: 'dojot:firmware_update:desired_version', user_value: 'transferred_version' };
-        attrs.apply_image = { label: 'Apply Image', dojot_value: 'dojot:firmware_update:update', user_value: 'apply_image' };
-        this.setState({
-            attrs,
         });
     }
 
@@ -128,6 +120,7 @@ class SidebarFirmConfig extends Component {
             attrs,
         });
     }
+
 
     render() {
         const {

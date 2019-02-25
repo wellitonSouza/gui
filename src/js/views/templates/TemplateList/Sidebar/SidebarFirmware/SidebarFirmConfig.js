@@ -5,7 +5,6 @@ import { DojotBtnClassic } from 'Components/DojotButton';
 import ImageActions from 'Actions/ImageActions';
 import TemplateActions from 'Actions/TemplateActions';
 import MaterialInput from 'Components/MaterialInput';
-import { InputCheckbox } from 'Components/DojotIn';
 import toaster from 'Comms/util/materialize';
 import { templateType } from '../../../TemplatePropTypes';
 import SidebarFirmImages from './SidebarFirmImages';
@@ -74,7 +73,6 @@ class SidebarFirmConfig extends Component {
         defaultAttrs.forEach((element) => {
             attrs[this.dictFirmwareUpdate[element.metadata[0].label]].user_value = element.label;
         });
-
         this.setState({ attrs });
     }
 
@@ -103,6 +101,7 @@ class SidebarFirmConfig extends Component {
 
         TemplateActions.triggerUpdate(template, () => {
             toaster.success('Template updated');
+            TemplateActions.fetchSingle(template.id);
         });
     }
 
@@ -120,6 +119,7 @@ class SidebarFirmConfig extends Component {
         const {
             imageAllowed, images, showFirmware, template, isNewTemplate, toogleSidebarFirmware,
         } = this.props;
+        const clssBtn = imageAllowed ? 'fw_btn_pushed' : 'fw_btn_push';
         const { attrs, showFirmwareImage } = this.state;
         return (
             <Fragment>
@@ -138,27 +138,21 @@ class SidebarFirmConfig extends Component {
                                 </div>
 
                                 <div className="body box-firmware-enabled">
-                                    <div className="firmware-enabled">
+                                    <div tabIndex="0" role="button" onKeyPress={this.changeFirmwareState} onClick={this.changeFirmwareState} className={`firmware-enabled clickable z-depth-2 card-hover ${clssBtn}`}>
                                         <div className="icon">
                                             <img src="images/firmware-red.png" alt="device-icon" />
                                         </div>
                                         <div className="description">
-                                            {imageAllowed
-                                                ? <b>Firmware enabled</b>
-                                                : <b>Firmware disabled</b>
-                                            }
-                                            <br />
-                                            This option allows add images in template.
-                                        </div>
-                                        <div className="symbol">
-                                            <InputCheckbox
-                                                name="Firmware Enabled"
-                                                checked={imageAllowed}
-                                                handleChangeCheckbox={this.changeFirmwareState}
-                                            />
+                                            <div className="tl">
+                                                {imageAllowed
+                                                    ? <b>Firmware enabled</b>
+                                                    : <b>Firmware disabled</b>
+                                                }
+
+                                            </div>
+                                            This option allows the template to handle images.
                                         </div>
                                     </div>
-                                    <div className="line-2" />
                                     { imageAllowed
                                         ? (
                                             <div className="image-related-attrs">
@@ -269,14 +263,6 @@ SidebarFirmConfig.propTypes = {
     isNewTemplate: PropTypes.bool,
     template: PropTypes.shape(templateType).isRequired,
     toogleSidebarFirmware: PropTypes.func.isRequired,
-    imageAllowed: PropTypes.bool.isRequired,
-    images: PropTypes.shape({
-        list: PropTypes.object,
-        changeAttrValue: PropTypes.func,
-        removeBinary: PropTypes.func,
-        removeImage: PropTypes.func,
-        onDrop: PropTypes.func,
-    }).isRequired,
 };
 
 export default SidebarFirmConfig;

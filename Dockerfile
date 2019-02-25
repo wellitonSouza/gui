@@ -9,5 +9,6 @@ RUN yarn install && npm rebuild node-sass && yarn run build
 FROM nginx:1.15.7-alpine
 
 COPY --from=basis /data/dist /usr/share/nginx/html
+COPY --from=basis /data/locales /usr/share/nginx/html/locales
 
 EXPOSE 80

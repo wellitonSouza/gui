@@ -30,6 +30,10 @@ class TemplateStore {
             handleTriggerUpdate: TemplateActions.TRIGGER_UPDATE,
             handleUpdateSingle: TemplateActions.UPDATE_SINGLE,
 
+            fetchSingle: TemplateActions.FETCH_SINGLE,
+            handleUpdateAndSetSingle: TemplateActions.UPDATE_AND_SET_SINGLE,
+            
+
             handleTriggerRemoval: TemplateActions.TRIGGER_REMOVAL,
             handleRemoveSingle: TemplateActions.REMOVE_SINGLE,
 
@@ -40,6 +44,17 @@ class TemplateStore {
             toogleSidebar: TemplateActions.TOOGLE_SIDEBAR,
         });
     }
+
+    fetchSingle(template) {
+        this.loading = true;
+    }
+
+    handleUpdateAndSetSingle(data) {
+        this.template = data.template;
+        this.error = null;
+        this.loading = false;
+    }
+
 
     handleTriggerIcon() {
         this.error = null;
@@ -79,6 +94,7 @@ class TemplateStore {
     }
 
     handleUpdateSingle(template) {
+        console.log("handleTriggerUpdate", template);
         for (let i = 0; i < this.templates.length; i++) {
             if (this.templates[i].id === template.id) {
                 const newTemplate = JSON.parse(JSON.stringify(template));

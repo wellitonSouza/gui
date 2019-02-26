@@ -56,7 +56,12 @@
     "label": "Template Name"
   },
   "firmware": {
-    "title": "Firmware"
+    "header": "Manage Images",
+    "title": "Firmware",
+    "btn" : "Manage Images",
+    "alerts": {
+      "click_to_new_image" :"Click here to add a new image"
+    }
   }
 }
 

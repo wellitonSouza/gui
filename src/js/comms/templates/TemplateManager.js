@@ -1,5 +1,87 @@
-/* eslint-disable */
 import util from '../util';
+
+const GQLTEMPLATE = templateId => `
+{
+    template(id: ${templateId}) {
+      label
+      id
+      created
+      attrs {
+        id
+        label
+        metadata{
+          id
+          label
+          static_value
+          type
+          value_type
+          created
+          updated
+        }
+        static_value
+        template_id
+        type
+        value_type
+        created
+      }
+      config_attrs {
+        id
+        label
+        metadata{
+          id
+          label
+          static_value
+          type
+          value_type
+          created
+          updated
+        }
+        static_value
+        template_id
+        type
+        value_type
+        created
+      }
+      data_attrs {
+        id
+        label
+        metadata{
+          id
+          label
+          static_value
+          type
+          value_type
+          created
+          updated
+        }
+        static_value
+        template_id
+        type
+        value_type
+        created
+      }
+      img_attrs {
+        id
+        label
+        metadata{
+          id
+          label
+          static_value
+          type
+          value_type
+          created
+          updated
+        }
+        static_value
+        template_id
+        type
+        value_type
+        created
+      }
+    }
+  }
+  `;
+
 
 class TemplateManager {
     constructor() {
@@ -16,11 +98,17 @@ class TemplateManager {
             return util.GET(`${this.baseUrl}/template?${qs}`);
         }
         return util.GET(`${this.baseUrl}/template`);
-    // console.log("TemplateManager.getTemplates.filter: ",filter);
     }
 
     getTemplate(id) {
         return util.GET(`${this.baseUrl}/template/${id}`);
+    }
+
+    getTemplateGQL(id) {
+        const req = {
+            query: GQLTEMPLATE(id),
+        };
+        return util.POST(`${this.baseUrl}/graphql/`, req);
     }
 
     setTemplate(detail) {

@@ -112,6 +112,7 @@ module.exports = {
             Comms: path.resolve(__dirname, 'src/js/comms'),
             Actions: path.resolve(__dirname, 'src/js/actions'),
             Stores: path.resolve(__dirname, 'src/js/stores'),
+            Views: path.resolve(__dirname, 'src/js/views'),
             Containers: path.resolve(__dirname, 'src/js/containers'),
         },
     },

@@ -6,6 +6,8 @@ class DeviceHandlerStore {
         this.usedTemplates = {};
         this.showSidebarDevice = false;
         this.isNewDevice = false;
+        this.templateIdAllowedImage = '';
+        this.hasTemplateWithImages = false;
 
         this.bindListeners({
             set: FormActions.SET,
@@ -21,13 +23,32 @@ class DeviceHandlerStore {
             handleUpdateSingle: FormActions.UPDATE_SINGLE,
 
             handleRemoveSingle: FormActions.TRIGGER_REMOVAL,
+
+            handleSetTemplateData: FormActions.SET_TEMPLATE_DATA,
         });
     }
+
+
+    handleSetTemplateData(data) {
+        console.log('handleSetTemplateData', data);
+        this.hasTemplateWithImages = false;
+        this.templateIdAllowedImage = '';
+        const tmps = data.templatesHasImageFirmware;
+        tmps.forEach((element) => {
+            if (element.value) {
+                this.templateIdAllowedImage = element.key;
+                this.hasTemplateWithImages = true;
+            }
+        });
+    }
+
 
     fetch(id) {
     }
 
     set(device) {
+        this.templateIdAllowedImage = '1';
+        this.hasTemplateWithImages = true;
         if (device === null || device === undefined) {
             this.device = {
                 label: '',

@@ -7,7 +7,8 @@ class ImageStore {
         this.images = {};
         this.error = null;
         this.loading = false;
-
+        this.imageAllowed = false;
+        
         this.bindListeners({
             handleUpdateImageList: ImageActions.UPDATE_IMAGES,
             handleFetchImageList: ImageActions.FETCH_IMAGES,
@@ -15,6 +16,9 @@ class ImageStore {
             handleTriggerInsertion: ImageActions.TRIGGER_INSERT,
             handleInsertImage: ImageActions.INSERT_IMAGE,
             handleInsertEmptyImage: ImageActions.INSERT_EMPTY_IMAGE,
+
+            handleFetchTemplateInfo: ImageActions.FETCH_TEMPLATE_INFO,
+            handleSetTemplateInfo: ImageActions.UPDATE_TEMPLATE_INFO,
             
             handleTriggerUpdate: ImageActions.TRIGGER_UPDATE,
             handleUpdateSingle: ImageActions.UPDATE_SINGLE,
@@ -26,6 +30,7 @@ class ImageStore {
             handleRemoveSingle: ImageActions.REMOVE_SINGLE,
 
             handleUpdateImageData: ImageActions.UPDATE_IMAGE_DATA,
+            handleUpdateImageAllowed: ImageActions.UPDATE_IMAGE_ALLOWED,
 
             fetchSingle: ImageActions.FETCH_SINGLE,
 
@@ -34,12 +39,25 @@ class ImageStore {
         });
     }
 
+    handleFetchTemplateInfo() {
+        this.imageAllowed = false;
+    }
+
+    handleSetTemplateInfo(data) {
+        this.imageAllowed = data.allowReceiveImages;
+    }
+
+    handleUpdateImageAllowed(value)
+    {
+        this.imageAllowed = value;
+    }
 
     handleUpdateImageData(fields)
     {
         this.images[fields.id].saved = false;
         this.images[fields.id][fields.label] = fields.value;
     }
+
 
 
     handleInsertEmptyImage(image)
@@ -65,6 +83,7 @@ class ImageStore {
     }
 
     handleFetchImageList() {
+        console.log("handleFetchImageList");
         this.images = {};
         this.loading = true;
     }

@@ -169,10 +169,6 @@ class GroupsSideBar extends Component {
         this.handleCheckBox = this.handleCheckBox.bind(this);
     }
 
-    componentDidCatch(error, info) {
-        // console.log(error, info);
-    }
-
     handleInput(e) {
         const { name, value } = e.target;
         this.setState(prevState => ({

@@ -62,7 +62,6 @@ class SidebarFirmConfig extends Component {
             if (template.img_attrs.length === 0) {
                 ImageActions.updateImageAllowed(false);
             } else {
-                console.log('componentDidMount: template.img_attrs', template.img_attrs);
                 ImageActions.updateImageAllowed(true);
                 this.updateFieldsWithTemplateData(template.img_attrs);
             }
@@ -71,13 +70,11 @@ class SidebarFirmConfig extends Component {
     }
 
     updateFieldsWithTemplateData(defaultAttrs) {
-        console.log('updateFieldsWithTemplateData', defaultAttrs);
         const { attrs } = this.state;
         defaultAttrs.forEach((element) => {
             attrs[this.dictFirmwareUpdate[element.metadata[0].label]].user_value = element.label;
         });
 
-        console.log('attrs', attrs);
         this.setState({ attrs });
     }
 
@@ -105,7 +102,6 @@ class SidebarFirmConfig extends Component {
         template.attrs.push(createImageAttribute(attrs.upload_image, 'actuator'));
         template.attrs.push(createImageAttribute(attrs.apply_image, 'actuator'));
 
-        console.log('Final template', template);
         TemplateActions.triggerUpdate(template, () => {
             toaster.success('Template updated');
         });
@@ -275,6 +271,14 @@ SidebarFirmConfig.propTypes = {
     isNewTemplate: PropTypes.bool,
     template: PropTypes.shape(templateType).isRequired,
     toogleSidebarFirmware: PropTypes.func.isRequired,
+    imageAllowed: PropTypes.bool.isRequired,
+    images: PropTypes.shape({
+        list: PropTypes.object,
+        changeAttrValue: PropTypes.func,
+        removeBinary: PropTypes.func,
+        removeImage: PropTypes.func,
+        onDrop: PropTypes.func,
+    }).isRequired,
 };
 
 export default SidebarFirmConfig;

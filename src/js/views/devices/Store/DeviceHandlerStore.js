@@ -28,9 +28,8 @@ class DeviceHandlerStore {
         });
     }
 
-
     handleSetTemplateData(data) {
-        console.log('handleSetTemplateData', data);
+        // console.log('handleSetTemplateData', data);
         this.hasTemplateWithImages = false;
         this.templateIdAllowedImage = '';
         const tmps = data.templatesHasImageFirmware;
@@ -42,9 +41,7 @@ class DeviceHandlerStore {
         });
     }
 
-
-    fetch(id) {
-    }
+    fetch(id) {}
 
     set(device) {
         this.templateIdAllowedImage = '1';
@@ -74,7 +71,9 @@ class DeviceHandlerStore {
             customDevice.configValues = customDevice.attrs.filter(item => item.type === 'meta');
             customDevice.dynamicValues = customDevice.attrs.filter(item => item.type === 'dynamic');
             customDevice.staticValues = customDevice.attrs.filter(item => item.type === 'static');
-            customDevice.actuatorValues = customDevice.attrs.filter(item => item.type === 'actuator');
+            customDevice.actuatorValues = customDevice.attrs.filter(
+                item => item.type === 'actuator',
+            );
             customDevice.metadata = {};
             customDevice.attrs.forEach((item) => {
                 if (Object.prototype.hasOwnProperty.call(item, 'metadata')) {

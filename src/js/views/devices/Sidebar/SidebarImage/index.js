@@ -34,7 +34,6 @@ class SidebarImage extends Component {
                 loaded: false,
             };
         }
-        console.log('props.ms', props.ms);
         if (props.ms.data[props.deviceId]
             && props.ms.data[props.deviceId].current_state !== state.attrs.current_state) {
             return {
@@ -50,7 +49,6 @@ class SidebarImage extends Component {
         const { loaded, templateIdAllowedImage } = this.state;
         if (!loaded && templateIdAllowedImage !== '') {
             const { deviceId } = this.props;
-            console.log('request info for template: ', templateIdAllowedImage);
             const templateId = templateIdAllowedImage;
             ImageActions.fetchImages.defer(templateId);
             DeviceActions.fetchSingle.defer(deviceId, (device) => {
@@ -81,8 +79,6 @@ class SidebarImage extends Component {
         const { currentImageId } = this.state;
         const { deviceId, ds } = this.props;
         const device = ds.devices[deviceId];
-        console.log('currentImageId', currentImageId);
-        console.log('device ', device);
         device.attrs[uploadImageAlias] = currentImageId;
         DeviceActions.triggerUpdate(device, () => {
             toaster.success('Image successfully transferred');
@@ -93,7 +89,6 @@ class SidebarImage extends Component {
         // find the actuator responsable for apply image
         const { deviceId, ds } = this.props;
         const device = ds.devices[deviceId];
-        console.log('callApplyImage', device);
         device.attrs.apply_image = 1;
 
         DeviceActions.triggerUpdate(device, () => {
@@ -103,7 +98,6 @@ class SidebarImage extends Component {
     }
 
     toogleSidebarFirmImage() {
-        console.log('toogleSidebarFirmImage');
         const { showFirmwareImage } = this.state;
         this.setState({
             showFirmwareImage: !showFirmwareImage,
@@ -113,9 +107,7 @@ class SidebarImage extends Component {
     createImageOptions() {
         const items = [];
         items.push(<option key="selectedImage" value="0">Select an image</option>);
-        const { is } = this.props;
-        const { images } = is;
-        console.log('Images to create image options', images);
+        const { is: images } = this.props;
         if (images) {
             Object.entries(images).forEach((el) => {
                 items.push(<option key={el.id} value={el.id}>{el.fw_version}</option>);
@@ -126,7 +118,6 @@ class SidebarImage extends Component {
 
 
     render() {
-        console.log('SidebarImage. render', this.props);
         const { toogleSidebarImages, showSidebarImage, is } = this.props;
         const { images } = is;
         const { attrs, showFirmwareImage, templateIdAllowedImage } = this.state;
@@ -219,6 +210,8 @@ SidebarImage.defaultProps = {
     showSidebarImage: false,
     templateIdAllowedImage: '',
     deviceId: '',
+    is: {},
+    ds: {},
 };
 
 SidebarImage.propTypes = {
@@ -226,6 +219,12 @@ SidebarImage.propTypes = {
     templateIdAllowedImage: PropTypes.string,
     showSidebarImage: PropTypes.bool,
     toogleSidebarImages: PropTypes.func.isRequired,
+    is: PropTypes.shape({
+        images: PropTypes.array,
+    }),
+    ds: PropTypes.shape({
+        devices: PropTypes.array,
+    }),
 };
 
 export default SidebarImage;

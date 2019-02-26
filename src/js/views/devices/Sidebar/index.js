@@ -428,6 +428,7 @@ Sidebar.defaultProps = {
         metadata: {},
     },
     isNewDevice: false,
+    hasTemplateWithImages: false
 };
 
 Sidebar.propTypes = {
@@ -450,6 +451,7 @@ Sidebar.propTypes = {
         _fetch: PropTypes.func,
     }).isRequired,
     t: PropTypes.func.isRequired,
+    hasTemplateWithImages: PropTypes.bool,
 };
 
 export default withNamespaces()(Sidebar);

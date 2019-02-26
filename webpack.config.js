@@ -88,11 +88,20 @@ module.exports = {
             { from: 'node_modules/leaflet/dist/leaflet.css', to: 'leaflet.css' },
             { from: 'node_modules/leaflet/dist/images', to: 'images' },
             { from: 'node_modules/ace-builds/src-min', to: 'js/ace' },
-            { from: 'node_modules/materialize-css/dist/js/materialize.min.js', to: 'js/materialize.js' },
+            {
+                from: 'node_modules/materialize-css/dist/js/materialize.min.js',
+                to: 'js/materialize.js',
+            },
             { from: 'node_modules/jquery/dist/jquery.min.js', to: 'js/jquery.js' },
-            { from: 'node_modules/jquery-i18next/jquery-i18next.min.js', to: 'js/jquery-i18next.min.js' },
+            {
+                from: 'node_modules/jquery-i18next/jquery-i18next.min.js',
+                to: 'js/jquery-i18next.min.js',
+            },
             { from: 'node_modules/jquery-ui-dist/jquery-ui.min.js', to: 'js/jquery.ui.js' },
-            { from: 'node_modules/i18next-xhr-backend/i18nextXHRBackend.min.js', to: 'js/i18nextXHRBackend.min.js' },
+            {
+                from: 'node_modules/i18next-xhr-backend/i18nextXHRBackend.min.js',
+                to: 'js/i18nextXHRBackend.min.js',
+            },
             { from: 'node_modules/i18next/i18next.min.js', to: 'js/i18next.min.js' },
             { from: 'src/img', to: 'images' },
             { from: 'src/fonts', to: 'fonts' },
@@ -102,7 +111,7 @@ module.exports = {
             'process.env': {
                 MAP_HAS_OVERLAY_ENV: 'false',
                 MAP_OVERLAY_JSON_ENV:
-                '{path:"images/Layers/Combined.png",corner1:{lat:-20.90974,lng:-48.83651},corner2:{lat:-21.80963,lng:-47.11802},}',
+                    '{path:"images/Layers/Combined.png",corner1:{lat:-20.90974,lng:-48.83651},corner2:{lat:-21.80963,lng:-47.11802},}',
             },
         }),
     ],

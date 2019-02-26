@@ -24,7 +24,8 @@ class TemplateActions {
     addTemplate(template, cb) {
         return (dispatch) => {
             dispatch();
-            templateManager.addTemplate(template)
+            templateManager
+                .addTemplate(template)
                 .then((response) => {
                     this.insertTemplate(response.template);
                     if (cb) {
@@ -37,14 +38,13 @@ class TemplateActions {
         };
     }
 
-
     fetchSingle(templateId, cb) {
         return (dispatch) => {
             dispatch();
             templateManager
                 .getTemplateGQL(templateId)
                 .then((result) => {
-                    console.log('fetchSingle', result);
+                    // console.log('fetchSingle', result);
                     this.updateAndSetSingle(result.data);
                     if (cb) {
                         cb(result);
@@ -56,10 +56,10 @@ class TemplateActions {
         };
     }
 
-
     fetchTemplates(params = null, cb) {
         return (dispatch) => {
-            templateManager.getTemplates(params)
+            templateManager
+                .getTemplates(params)
                 .then((result) => {
                     this.updateTemplates(result);
                     if (cb) {
@@ -76,8 +76,9 @@ class TemplateActions {
 
     triggerUpdate(template, cb) {
         return (dispatch) => {
-            console.log('triggerUpdate', template);
-            templateManager.setTemplate(template)
+            // console.log('triggerUpdate', template);
+            templateManager
+                .setTemplate(template)
                 .then((response) => {
                     this.updateSingle(template);
                     if (cb) {
@@ -94,11 +95,13 @@ class TemplateActions {
 
     triggerIconUpdate(id, icon) {
         return (dispatch) => {
-            templateManager.setIcon(id, icon)
+            templateManager
+                .setIcon(id, icon)
                 .then(() => {
                     this.setIcon(id);
                 })
                 .catch((error) => {
+                    // eslint-disable-next-line no-console
                     console.log('error:', error);
                 });
 
@@ -113,7 +116,8 @@ class TemplateActions {
     triggerRemoval(template, cb) {
         return (dispatch) => {
             dispatch();
-            templateManager.deleteTemplate(template)
+            templateManager
+                .deleteTemplate(template)
                 .then((response) => {
                     this.removeSingle(template);
                     if (cb) {

@@ -8,18 +8,18 @@ class ImageStore {
         this.error = null;
         this.loading = false;
         this.imageAllowed = false;
-        
+
         this.bindListeners({
             handleUpdateImageList: ImageActions.UPDATE_IMAGES,
             handleFetchImageList: ImageActions.FETCH_IMAGES,
-        
+
             handleTriggerInsertion: ImageActions.TRIGGER_INSERT,
             handleInsertImage: ImageActions.INSERT_IMAGE,
             handleInsertEmptyImage: ImageActions.INSERT_EMPTY_IMAGE,
 
             handleFetchTemplateInfo: ImageActions.FETCH_TEMPLATE_INFO,
             handleSetTemplateInfo: ImageActions.UPDATE_TEMPLATE_INFO,
-            
+
             handleTriggerUpdate: ImageActions.TRIGGER_UPDATE,
             handleUpdateSingle: ImageActions.UPDATE_SINGLE,
 
@@ -35,7 +35,6 @@ class ImageStore {
             fetchSingle: ImageActions.FETCH_SINGLE,
 
             handleFailure: ImageActions.IMAGES_FAILED,
-
         });
     }
 
@@ -47,21 +46,16 @@ class ImageStore {
         this.imageAllowed = data.allowReceiveImages;
     }
 
-    handleUpdateImageAllowed(value)
-    {
+    handleUpdateImageAllowed(value) {
         this.imageAllowed = value;
     }
 
-    handleUpdateImageData(fields)
-    {
+    handleUpdateImageData(fields) {
         this.images[fields.id].saved = false;
         this.images[fields.id][fields.label] = fields.value;
     }
 
-
-
-    handleInsertEmptyImage(image)
-    {
+    handleInsertEmptyImage(image) {
         this.images[image.id] = JSON.parse(JSON.stringify(image));
     }
 
@@ -71,24 +65,21 @@ class ImageStore {
             let aux_id = images[idx].id;
             this.images[aux_id] = JSON.parse(JSON.stringify(images[idx]));
             this.images[aux_id].has_image = this.images[aux_id].confirmed;
-            if (!this.images[aux_id].has_image)
-            this.images[aux_id].image_hash = null;
+            if (!this.images[aux_id].has_image) this.images[aux_id].image_hash = null;
             this.images[aux_id].image_version = this.images[aux_id].fw_version;
             this.images[aux_id].saved = true;
         }
-        console.log('handleUpdateImageList', this.images);
+        // console.log('handleUpdateImageList', this.images);
         // this.images = images;
         this.error = null;
         this.loading = false;
     }
 
     handleFetchImageList() {
-        console.log("handleFetchImageList");
+        // console.log('handleFetchImageList');
         this.images = {};
         this.loading = true;
     }
-
-
 
     handleTriggerInsertion(newImage) {
         // this is actually just a intermediary while addition happens asynchonously
@@ -97,15 +88,12 @@ class ImageStore {
     }
 
     handleInsertImage(imgs) {
-        console.log("handleInsertImage: image", imgs.image, imgs.oldimage);
+        // console.log('handleInsertImage: image', imgs.image, imgs.oldimage);
         delete this.images[imgs.oldimage.id];
-        this.images[imgs.image.id] = imgs.image; 
+        this.images[imgs.image.id] = imgs.image;
         this.error = null;
         this.loading = false;
     }
-
-
-
 
     handleUpdateSingle(image_id) {
         this.images[image_id].has_image = true;
@@ -117,10 +105,7 @@ class ImageStore {
         this.loading = true;
     }
 
-
-
-
-    handleTriggerRemovalBinary(id) { 
+    handleTriggerRemovalBinary(id) {
         this.error = null;
         this.loading = true;
     }
@@ -133,9 +118,6 @@ class ImageStore {
         this.loading = false;
     }
 
-
-
-
     handleTriggerRemoval(image) {
         this.error = null;
         this.loading = true;
@@ -147,7 +129,6 @@ class ImageStore {
         }
         this.loading = false;
     }
-
 
     fetchSingle(id) {
         this.images = { loading: true };

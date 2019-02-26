@@ -170,7 +170,7 @@ class GroupsSideBar extends Component {
     }
 
     componentDidCatch(error, info) {
-        console.log(error, info);
+        // console.log(error, info);
     }
 
     handleInput(e) {
@@ -266,7 +266,7 @@ class GroupsSideBar extends Component {
                         group.name ? group.name : response.name, grouppermissions, err, e,
                         () => {
                         }, (groupR) => {
-                            console.log(groupR);
+                            // console.log(groupR);
                         },
                     );
                     if (edit) {
@@ -277,7 +277,7 @@ class GroupsSideBar extends Component {
                     this.hideSideBar();
                 },
                 (groupR) => {
-                    console.log(groupR);
+                    // console.log(groupR);
                 },
             );
             GroupActions.fetchGroups.defer();
@@ -303,7 +303,7 @@ class GroupsSideBar extends Component {
                 this.hideSideBar();
             },
             (groupR) => {
-                console.log(groupR);
+                // console.log(groupR);
             },
         );
 

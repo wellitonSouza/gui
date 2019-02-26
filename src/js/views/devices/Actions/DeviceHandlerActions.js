@@ -3,10 +3,11 @@ import toaster from 'Comms/util/materialize';
 
 class DeviceHandlerActions {
     set(args) {
-        if (args) { this.fetchTemplateData(args.templates); }
+        if (args) {
+            this.fetchTemplateData(args.templates);
+        }
         return args;
     }
-
 
     fetchTemplateData(templateList, cb) {
         return (dispatch) => {
@@ -14,7 +15,7 @@ class DeviceHandlerActions {
             deviceManager
                 .getTemplateGQL(templateList)
                 .then((result) => {
-                    console.log('fetchTemplateData', result);
+                    // console.log('fetchTemplateData', result);
                     this.setTemplateData(result.data);
                     if (cb) {
                         cb(result);
@@ -30,14 +31,18 @@ class DeviceHandlerActions {
         return data;
     }
 
-
-    update(args) { return args; }
+    update(args) {
+        return args;
+    }
 
     fetch(id) {
         return (dispatch) => {
             dispatch();
-            deviceManager.getDevice(id)
-                .then((d) => { this.set(d); })
+            deviceManager
+                .getDevice(id)
+                .then((d) => {
+                    this.set(d);
+                })
                 .catch((error) => {
                     this.devicesFailed(error);
                 });
@@ -90,7 +95,8 @@ class DeviceHandlerActions {
     triggerRemoval(device, cb) {
         return (dispatch) => {
             dispatch();
-            deviceManager.deleteDevice(device.id)
+            deviceManager
+                .deleteDevice(device.id)
                 .then((response) => {
                     this.removeSingle(device.id);
                     if (cb) {

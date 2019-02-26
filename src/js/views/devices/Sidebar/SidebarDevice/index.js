@@ -204,6 +204,14 @@ SidebarDevice.propTypes = {
         updated: PropTypes.string,
     }).isRequired,
     t: PropTypes.func.isRequired,
+    hasTemplateWithImages: PropTypes.bool.isRequired,
+    handleChangeName: PropTypes.func.isRequired,
+    save: PropTypes.func.isRequired,
+    update: PropTypes.func.isRequired,
+    remove: PropTypes.func.isRequired,
+    isNewDevice: PropTypes.bool.isRequired,
+    isShowSidebarDelete: PropTypes.bool.isRequired,
+    toogleSidebarDelete: PropTypes.func.isRequired,
 };
 
 SidebarDevice.defaultProps = {

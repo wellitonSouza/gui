@@ -159,13 +159,13 @@ class DevicesComponent extends Component {
                function init(token) {
                    device_list_socket = socketio(target, { query: `token=${token}`, transports: ['polling'] });
                    device_list_socket.on('all', (data) => {
-                       console.log('received socket information:', data);
+                    //    console.log('received socket information:', data);
                        MeasureActions.appendMeasures(data);
                        // DeviceActions.updateStatus(data);
                    });
 
                    device_list_socket.on('error', (data) => {
-                       console.log('socket error', data);
+                    //    console.log('socket error', data);
                        if (device_list_socket !== null) device_list_socket.close();
                        // getWsToken();
                    });

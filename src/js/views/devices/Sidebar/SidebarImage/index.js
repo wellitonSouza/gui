@@ -208,7 +208,6 @@ class SidebarImage extends Component {
 
 SidebarImage.defaultProps = {
     showSidebarImage: false,
-    templateIdAllowedImage: '',
     deviceId: '',
     is: {},
     ds: {},
@@ -216,7 +215,6 @@ SidebarImage.defaultProps = {
 
 SidebarImage.propTypes = {
     deviceId: PropTypes.string,
-    templateIdAllowedImage: PropTypes.string,
     showSidebarImage: PropTypes.bool,
     toogleSidebarImages: PropTypes.func.isRequired,
     is: PropTypes.shape({

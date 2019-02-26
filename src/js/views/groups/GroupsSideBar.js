@@ -77,7 +77,7 @@ function TableGroupsPermissions(params) {
                                             handleChangeCheckbox={handleChangeCheckbox}
                                             disabled={cannotEdit}
                                         />
-) : <div />}
+                                    ) : <div />}
                                 </td>
                             </tr>
                         ))}
@@ -131,25 +131,6 @@ function Form(params) {
 }
 
 class GroupsSideBar extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            showDeleteModal: false,
-            group: undefined,
-            grouppermissions: undefined,
-            systempermissions: undefined,
-            edit: false,
-        };
-
-        this.handleInput = this.handleInput.bind(this);
-        this.discard = this.discard.bind(this);
-        this.save = this.save.bind(this);
-        this.delete = this.delete.bind(this);
-        this.handleModalDelete = this.handleModalDelete.bind(this);
-        this.handleCheckBox = this.handleCheckBox.bind(this);
-    }
-
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.grouppermissions !== prevState.grouppermissions) {
             return {
@@ -167,6 +148,25 @@ class GroupsSideBar extends Component {
         // will be change - regex doesnt should be here
         const regex = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
         return !regex.test(string);
+    }
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            showDeleteModal: false,
+            group: undefined,
+            grouppermissions: undefined,
+            systempermissions: undefined,
+            edit: false,
+        };
+
+        this.handleInput = this.handleInput.bind(this);
+        this.discard = this.discard.bind(this);
+        this.save = this.save.bind(this);
+        this.delete = this.delete.bind(this);
+        this.handleModalDelete = this.handleModalDelete.bind(this);
+        this.handleCheckBox = this.handleCheckBox.bind(this);
     }
 
     componentDidCatch(error, info) {
@@ -265,8 +265,6 @@ class GroupsSideBar extends Component {
                     GroupPermissionActions.triggerSaveGroupPermissions(
                         group.name ? group.name : response.name, grouppermissions, err, e,
                         () => {
-                        }, (groupR) => {
-                            // console.log(groupR);
                         },
                     );
                     if (edit) {
@@ -275,9 +273,6 @@ class GroupsSideBar extends Component {
                         toaster.success(t('alerts.group_create'));
                     }
                     this.hideSideBar();
-                },
-                (groupR) => {
-                    // console.log(groupR);
                 },
             );
             GroupActions.fetchGroups.defer();
@@ -301,9 +296,6 @@ class GroupsSideBar extends Component {
             () => {
                 toaster.success(t('alerts.group_remove'));
                 this.hideSideBar();
-            },
-            (groupR) => {
-                // console.log(groupR);
             },
         );
 

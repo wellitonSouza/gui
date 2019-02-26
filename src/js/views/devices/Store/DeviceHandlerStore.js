@@ -41,7 +41,7 @@ class DeviceHandlerStore {
         });
     }
 
-    fetch(id) {}
+    fetch() {}
 
     set(device) {
         this.templateIdAllowedImage = '1';

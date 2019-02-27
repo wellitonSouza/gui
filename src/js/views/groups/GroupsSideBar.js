@@ -317,11 +317,6 @@ class GroupsSideBar extends Component {
         ];
 
         if (!cannotEdit) {
-            buttonsFooter.push({
-                label: <Trans i18nKey="save.label" />,
-                click: this.save,
-                type: 'primary',
-            });
             if (edit) {
                 buttonsFooter.push({
                     label: <Trans i18nKey="remove.label" />,
@@ -329,6 +324,11 @@ class GroupsSideBar extends Component {
                     type: 'secondary',
                 });
             }
+            buttonsFooter.push({
+                label: <Trans i18nKey="save.label" />,
+                click: this.save,
+                type: 'primary',
+            });
         }
 
 

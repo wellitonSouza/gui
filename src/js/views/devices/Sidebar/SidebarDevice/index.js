@@ -124,15 +124,14 @@ const SidebarDevice = ({
                                             title={t('text.actuators')}
                                             disable={actuatorValues.length === 0}
                                         />
-
+                                        { hasTemplateWithImages ? (
+                                            <SidebarButton
+                                                onClick={() => toogleSidebarImages()}
+                                                icon="firmware"
+                                                title="Manage Firmware"
+                                            />
+                                        ) : null}
                                     </div>
-                                    { hasTemplateWithImages ? (
-                                        <SidebarButton
-                                            onClick={() => toogleSidebarImages()}
-                                            icon="firmware"
-                                            title="Manage Firmware"
-                                        />
-                                    ) : null}
                                 </div>
                                 <div className="footer">
                                     {

@@ -139,17 +139,11 @@ class Util {
         let authConfig = config || {};
         authConfig.credentials = 'include';
         if (this.getToken()) {
-            if (authConfig) {
-                if (authConfig.headers) {
-                    authConfig.headers.append('Authorization', `Bearer ${this.getToken()}`);
-                } else {
-                    authConfig.headers = new Headers();
-                    authConfig.headers.append('Authorization', `Bearer ${this.getToken()}`);
-                }
+            if (authConfig.headers) {
+                authConfig.headers.append('Authorization', `Bearer ${this.getToken()}`);
             } else {
-                const headers = new Headers();
-                headers.append('Authorization', `Bearer ${this.getToken()}`);
-                authConfig = { headers };
+                authConfig.headers = new Headers();
+                authConfig.headers.append('Authorization', `Bearer ${this.getToken()}`);
             }
         }
         return new Promise(((resolve, reject) => {
@@ -339,33 +333,6 @@ class Util {
       }
       return ret;
   }
-}
-
-class TypeDisplay {
-    constructor() {
-        this.availableTypes = {
-            'geo:point': 'Geo',
-            float: 'Float',
-            integer: 'Integer',
-            string: 'String',
-            boolean: 'Boolean',
-        };
-    }
-
-    getTypes() {
-        const list = [];
-        for (const k in this.availableTypes) {
-            list.push({ value: k, label: this.availableTypes[k] });
-        }
-        return list;
-    }
-
-    translate(value) {
-        if (this.availableTypes.hasOwnProperty(value)) {
-            return this.availableTypes[value];
-        }
-        return undefined;
-    }
 }
 
 const util = new Util();

@@ -4,6 +4,27 @@ import toaster from 'Comms/util/materialize';
 const alt = require('../alt');
 
 class ImageActions {
+    updateTemplateInfo(data) {
+        return data;
+    }
+
+    fetchTemplateInfo(params = null, cb) {
+        return (dispatch) => {
+            imageManager.getTemplateInfo(params)
+                .then((result) => {
+                    this.updateTemplateInfo(result);
+                    if (cb) {
+                        cb(result);
+                    }
+                })
+                .catch((error) => {
+                    this.templatesFailed(error);
+                });
+
+            dispatch();
+        };
+    }
+
     updateImages(images) {
         return images;
     }
@@ -12,17 +33,21 @@ class ImageActions {
         return { id, label, value };
     }
 
-    fetchImages(templateId) {
-      return (dispatch) => {
-        dispatch();
+    updateImageAllowed(value) {
+        return value;
+    }
 
-        imageManager.getImages(templateId).then((imageList) => {
-          this.updateImages(imageList);
-        })
-        .catch((error) => {
-          this.imagesFailed(error);
-        });
-      };
+    fetchImages(templateId) {
+        return (dispatch) => {
+            dispatch();
+
+            imageManager.getImages(templateId).then((imageList) => {
+                this.updateImages(imageList);
+            })
+                .catch((error) => {
+                    this.imagesFailed(error);
+                });
+        };
     }
 
 

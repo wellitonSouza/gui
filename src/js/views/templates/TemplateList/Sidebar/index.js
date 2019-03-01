@@ -5,12 +5,12 @@ import toaster from 'Comms/util/materialize';
 import TemplateActions from 'Actions/TemplateActions';
 import util from 'Comms/util/util';
 import { withNamespaces } from 'react-i18next';
+import ImageStore from 'Stores/ImageStore';
 import SidebarTemplate from './SidebarTemplate/index';
 import SidebarAttribute from './SidebarAttribute/index';
 import SidebarMetadata from './SidebarMetadata/index';
-import SidebarFirmware from './SidebarFirmware/index';
+import SidebarFirmConfig from './SidebarFirmware/SidebarFirmConfig';
 import { templateType, tempOpxType } from '../../TemplatePropTypes';
-import ImageStore from '../../../../stores/ImageStore';
 
 class Sidebar extends Component {
     static createAttribute() {
@@ -87,7 +87,6 @@ class Sidebar extends Component {
     }
 
     toogleSidebarFirmware() {
-        console.log('toogleSidebarFirmware');
         const { showFirmware } = this.state;
         this.setState({
             showFirmware: !showFirmware,
@@ -445,18 +444,17 @@ class Sidebar extends Component {
                     toogleSidebarDelete={this.toogleSidebarDelete}
                     deleteTemplate={this.deleteTemplate}
                 />
-                {showFirmware
-                    ? (
-                        <AltContainer store={ImageStore}>
-                            <SidebarFirmware
+                <AltContainer store={ImageStore}>
+                    {showFirmware
+                        ? (
+                            <SidebarFirmConfig
                                 showFirmware={showFirmware}
                                 isNewTemplate={isNewTemplate}
                                 template={template}
                                 toogleSidebarFirmware={this.toogleSidebarFirmware}
                             />
-                        </AltContainer>
-)
-                    : null }
+                        ) : null}
+                </AltContainer>
                 {/* @To check: attr template isn't used */}
                 <SidebarAttribute
                     showAttribute={showAttribute}

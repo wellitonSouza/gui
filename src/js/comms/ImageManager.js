@@ -6,15 +6,13 @@ class ImageManager {
     }
 
     getImages(label) {
-        console.log('imageManager:getImages: ', label);
+        // console.log('imageManager:getImages: ', label);
         return util.GET(`${this.baseUrl}/fw-image/image?label=${label}`);
     }
-
 
     getImage(id) {
         return util.GET(`${this.baseUrl}/image/${id}`);
     }
-
 
     addImage(image) {
         return util.POST(`${this.baseUrl}/fw-image/image/`, image);

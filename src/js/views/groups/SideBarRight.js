@@ -13,27 +13,29 @@ class SideBarRight extends Component {
         if (visible) {
             header = (
                 <div id="" className="header">
+                    <div className="title">{title}</div>
                     <span id="" className="header-path">
                         {title}
                     </span>
                 </div>
-);
+            );
             if (buttonsFooter !== null && buttonsFooter.length > 0) {
                 btnFooter = buttonsFooter.map(btn => (
-                    <DojotCustomButton label={btn.label} onClick={btn.click} type={btn.type} key={btn.label + btn.type} />
+                    <DojotCustomButton
+                        label={btn.label}
+                        onClick={btn.click}
+                        type={btn.type}
+                        key={btn.label + btn.type}
+                    />
                 ));
             }
             body = (
                 <div className="template-sidebar">
                     {header}
                     <div className="body">
-                        <div className="body-form">
-                            {content}
-                        </div>
+                        <div className="body-form">{content}</div>
                     </div>
-                    <div className="footer">
-                        {btnFooter}
-                    </div>
+                    <div className="footer">{btnFooter}</div>
                 </div>
             );
         }
@@ -53,4 +55,4 @@ SideBarRight.defaultProps = {
     visible: true,
     buttonsFooter: [],
 };
-export default (SideBarRight);
+export default SideBarRight;

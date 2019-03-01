@@ -112,8 +112,8 @@ class SidebarImage extends Component {
     createImageOptions() {
         const items = [];
         items.push(<option key="selectedImage" value="0">Select an image</option>);
-        const { is: images } = this.props;
-        if (images) {
+        const { is: { images } } = this.props;
+        if (!!Object.keys(images).length) {
             Object.values(images).forEach((el) => {
                 items.push(<option key={el.id} value={el.id}>{el.fw_version}</option>);
             });

@@ -34,7 +34,7 @@ class DeviceHandlerStore {
         this.templateIdAllowedImage = '';
         const tmps = data.templatesHasImageFirmware;
         tmps.forEach((element) => {
-            if (element.value) {
+            if (element.value === 'true') {
                 this.templateIdAllowedImage = element.key;
                 this.hasTemplateWithImages = true;
             }

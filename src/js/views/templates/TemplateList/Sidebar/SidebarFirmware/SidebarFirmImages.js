@@ -180,11 +180,14 @@ class SidebarFirmImages extends Component {
 SidebarFirmImages.defaultProps = {
     showFirmware: false,
     isNewTemplate: false,
+    images: {},
 };
 
 SidebarFirmImages.propTypes = {
     showFirmware: PropTypes.bool,
     isNewTemplate: PropTypes.bool,
+    images: PropTypes.shape({
+    }),
     templateId: PropTypes.string.isRequired,
     toogleSidebarFirmware: PropTypes.func.isRequired,
 

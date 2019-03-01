@@ -73,12 +73,17 @@ class SidebarImage extends Component {
 
 
     callUploadImage() {
-        // find the actuator responsable for upload image
+        const { currentImageId } = this.state;
+        if (currentImageId === '0') {
+            toaster.warning('Select a valid image');
+            return;
+        }
+        // TODO: find the actuator responsable for upload image
         const uploadImageAlias = 'upload_image';
         // sets the new value;
-        const { currentImageId } = this.state;
         const { deviceId, ds } = this.props;
         const device = ds.devices[deviceId];
+        // TODO: find the location of actuator to be updated;
         device.attrs[uploadImageAlias] = currentImageId;
         DeviceActions.triggerUpdate(device, () => {
             toaster.success('Image successfully transferred');
@@ -109,7 +114,7 @@ class SidebarImage extends Component {
         items.push(<option key="selectedImage" value="0">Select an image</option>);
         const { is: images } = this.props;
         if (images) {
-            Object.values(images).forEach((key, el) => {
+            Object.values(images).forEach((el) => {
                 items.push(<option key={el.id} value={el.id}>{el.fw_version}</option>);
             });
         }

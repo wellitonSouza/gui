@@ -89,12 +89,7 @@ class SidebarFirmImages extends Component {
                 }
             }
         });
-        this.setState({ newImage: false });
-    }
-
-    updateImageList() {
         // return the component to up-to-date state
-        const { templateId } = this.props;
         this.setState({ newImage: false });
         ImageActions.fetchImages.defer(templateId);
     }

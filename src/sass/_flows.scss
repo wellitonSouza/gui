@@ -30,8 +30,6 @@
       position: initial;
       opacity: initial;
       pointer-events: auto;
-      background-color: red;
-
     }
 
     label >  [type="checkbox"]    {
@@ -48,13 +46,11 @@
 
     [type="checkbox"] + label,
     [type="radio"] + label {
-      background-color: purple;
       width: auto !important;
       padding-left: 3px;
     }
 
     label:has( + [type="checkbox"]), label:has( + [type="radio"]){
-      background-color: deeppink;
       width: auto !important;
       padding-left: 3px;
     }

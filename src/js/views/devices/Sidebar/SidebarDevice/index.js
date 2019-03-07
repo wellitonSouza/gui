@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Slide from 'react-reveal/Slide';
-import { DojotCustomButton } from 'Components/DojotButton';
+import { DojotBtnClassic } from 'Components/DojotButton';
 import SidebarButton from 'Components/SidebarButton';
 import MaterialInput from 'Components/MaterialInput';
 import { withNamespaces } from 'react-i18next';
@@ -137,13 +137,15 @@ const SidebarDevice = ({
                                     {
                                         isNewDevice ? (
                                             <Fragment>
-                                                <DojotCustomButton
+                                                <DojotBtnClassic
+                                                    type="secondary"
                                                     label={t('discard.label')}
                                                     onClick={() => {
                                                         FormActions.toggleSidebarDevice(false);
                                                     }}
                                                 />
-                                                <DojotCustomButton
+                                                <DojotBtnClassic
+                                                    color="red"
                                                     label={t('save.label')}
                                                     type="primary"
                                                     onClick={save}
@@ -151,18 +153,20 @@ const SidebarDevice = ({
                                             </Fragment>
                                         ) : (
                                             <Fragment>
-                                                <DojotCustomButton
+                                                <DojotBtnClassic
+                                                    type="secondary"
                                                     label={t('discard.label')}
                                                     onClick={() => {
                                                         FormActions.toggleSidebarDevice(false);
                                                     }}
                                                 />
-                                                <DojotCustomButton
+                                                <DojotBtnClassic
                                                     label={t('remove.label')}
                                                     type="secondary"
                                                     onClick={() => toogleSidebarDelete()}
                                                 />
-                                                <DojotCustomButton
+                                                <DojotBtnClassic
+                                                    color="red"
                                                     label={t('save.label')}
                                                     type="primary"
                                                     onClick={update}

@@ -24,6 +24,8 @@ class SidebarImage extends Component {
         this.toogleSidebarFirmImage = this.toogleSidebarFirmImage.bind(this);
         this.createImageOptions = this.createImageOptions.bind(this);
         this.onChangeImage = this.onChangeImage.bind(this);
+        this.getAttrLabel = this.getAttrLabel.bind(this);
+        this.formatDevice = this.formatDevice.bind(this);
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -34,6 +36,9 @@ class SidebarImage extends Component {
                 loaded: false,
             };
         }
+
+        // TODO we need to get the new states using socket.io and remove
+        // the requests made using  MeasureAction
         if (props.ms.data[props.deviceId]
             && props.ms.data[props.deviceId].current_state !== state.attrs.current_state) {
             return {
@@ -52,11 +57,12 @@ class SidebarImage extends Component {
             const templateId = templateIdAllowedImage;
             ImageActions.fetchImages.defer(templateId);
             DeviceActions.fetchSingle.defer(deviceId, (device) => {
-                toaster.success('Device requested');
-                // We should ask data for 3 measures...
-                MeasureActions.fetchMeasure.defer(device, 'current_state', 1);
-                MeasureActions.fetchMeasure.defer(device, 'update_result', 1);
-                MeasureActions.fetchMeasure.defer(device, 'current_version', 1);
+                MeasureActions.fetchMeasure.defer(device,
+                    this.getAttrLabel('dojot:firmware_update:state'), 1);
+                MeasureActions.fetchMeasure.defer(device,
+                    this.getAttrLabel('dojot:firmware_update:update_result'), 1);
+                MeasureActions.fetchMeasure.defer(device,
+                    this.getAttrLabel('dojot:firmware_update:version'), 1);
             });
             this.setState({
                 loaded: true,
@@ -71,6 +77,29 @@ class SidebarImage extends Component {
         });
     }
 
+    getAttrLabel(dojotLabel) {
+        const { deviceId, ds } = this.props;
+        const { templateIdAllowedImage: templateId } = this.state;
+        const device = ds.devices[deviceId];
+        let relatedLabel = '';
+        device.attrs[templateId].forEach((attr) => {
+            if (attr.metadata) {
+                const el = attr.metadata.filter(meta => meta.label == dojotLabel);
+                if (el.length) { relatedLabel = attr.label; } // found the attr
+            }
+        });
+        return relatedLabel;
+    }
+
+
+    formatDevice(device) {
+        const dev = { ...device };
+        dev.attrs = [];
+        Object.values(device.attrs).forEach((templ) => {
+            dev.attrs.push(...templ);
+        });
+        return dev;
+    }
 
     callUploadImage() {
         const { currentImageId } = this.state;
@@ -78,27 +107,40 @@ class SidebarImage extends Component {
             toaster.warning('Select a valid image');
             return;
         }
-        // TODO: find the actuator responsable for upload image
-        const uploadImageAlias = 'upload_image';
-        // sets the new value;
         const { deviceId, ds } = this.props;
         const device = ds.devices[deviceId];
-        // TODO: find the location of actuator to be updated;
-        device.attrs[uploadImageAlias] = currentImageId;
-        DeviceActions.triggerUpdate(device, () => {
+        const formattedDevice = this.formatDevice(device);
+        // 1. find the actuator's label used to upload image
+        const uploadImageAlias = this.getAttrLabel('dojot:firmware_update:desired_version');
+
+        // 2. find the location of this actuator and set the new value
+        for (let index = 0; index < formattedDevice.attrs.length; index++) {
+            if (formattedDevice.attrs[index].label === uploadImageAlias) {
+                formattedDevice.attrs[index].static_value = currentImageId;
+            }
+        }
+        DeviceActions.triggerUpdate(formattedDevice, () => {
             toaster.success('Image successfully transferred');
         });
     }
 
     callApplyImage() {
-        // find the actuator responsable for apply image
         const { deviceId, ds } = this.props;
         const device = ds.devices[deviceId];
-        device.attrs.apply_image = 1;
+        const formattedDevice = this.formatDevice(device);
+        // 1. find the actuator's label used to upload image
+        const applyAlias = this.getAttrLabel('dojot:firmware_update:update');
 
-        DeviceActions.triggerUpdate(device, () => {
+        // 2. find the location of this actuator and set the new value
+        for (let index = 0; index < formattedDevice.attrs.length; index++) {
+            if (formattedDevice.attrs[index].label === applyAlias) {
+                formattedDevice.attrs[index].static_value = '1';
+                // customized value used to notify device to apply its image
+            }
+        }
+
+        DeviceActions.triggerUpdate(formattedDevice, () => {
             toaster.success('Image Applied');
-            // hashHistory.push('/device/list');
         });
     }
 
@@ -113,7 +155,7 @@ class SidebarImage extends Component {
         const items = [];
         items.push(<option key="selectedImage" value="0">Select an image</option>);
         const { is: { images } } = this.props;
-        if (!!Object.keys(images).length) {
+        if (Object.keys(images).length) {
             Object.values(images).forEach((el) => {
                 items.push(<option key={el.id} value={el.id}>{el.fw_version}</option>);
             });
@@ -166,7 +208,7 @@ class SidebarImage extends Component {
                                     </div>
                                     <div className="line-2" />
                                     <div className="body-form pl50">
-                                        <div className="header2">Image to be transfer</div>
+                                        <div className="header2">Image to be transferred</div>
                                         <div className="cid_select">
                                             <MaterialSelect id="flr_images" name="images" label="Available images" value={this.currentImageId} onChange={e => this.onChangeImage(e)}>
                                                 {opts}

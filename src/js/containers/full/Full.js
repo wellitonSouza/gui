@@ -336,7 +336,7 @@ class LeftSidebar extends Component {
     render() {
         const entries= LeftSidebar.createMenu();
         return (
-            <div className="sidebar expand z-depth-5" tabIndex="-1">
+            <div className="sidebar expand z-depth-4" tabIndex="-1">
                 <div className="header">
                     {this.props.open
             && (

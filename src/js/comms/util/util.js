@@ -217,6 +217,14 @@ class Util {
         return moment(timestamp).format('DD/MM HH:mm');
     }
 
+    static timestampToHourMinSec(timestamp) {
+        return timestamp? moment(timestamp).format('HH:mm:ss') : null;
+    }
+
+    static timestampToDayMonthYear(timestamp) {
+        return timestamp? moment(timestamp).format('DD/MM/YYYY'): null;
+    }
+
     isNameValid(name) {
         const ret = { result: true, error: '', label: name.trim() };
         if (name.trim().length === 0) {

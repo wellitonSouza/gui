@@ -1,7 +1,11 @@
 import toaster from 'Comms/util/materialize';
 import alt from '../alt';
 
-class NotificationsActions {
+class NotificationActions {
+    append(data) {
+        return data;
+    }
+
     load() {
         return true;
     }
@@ -12,4 +16,4 @@ class NotificationsActions {
     }
 }
 
-export default alt.createActions(NotificationsActions, exports);
+export default alt.createActions(NotificationActions, exports);

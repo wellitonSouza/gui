@@ -39,6 +39,9 @@
     },
     "new_conf": {
       "label": "New Configuration"
+    },
+    "mng_firmware": {
+      "label": "Manage Firmware"
     }
   },
   "template": "template",
@@ -54,15 +57,6 @@
   },
   "template_name": {
     "label": "Template Name"
-  },
-  "firmware": {
-    "header": "Manage Images",
-    "title": "Firmware",
-    "btn" : "Manage Images",
-    "alerts": {
-      "click_to_new_image" :"Click here to add a new image"
-    }
   }
 }
-
 

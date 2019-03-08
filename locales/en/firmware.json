@@ -1,0 +1,45 @@
+{
+    "header": "Manage Images",
+    "title": "Firmware",
+    "btn" : "Manage Images",
+    "alerts": {
+      "click_to_new_image" :"Click here to add a new image",
+      "image_created": "Image created.",
+      "image_updated": "Image updated.",
+      "image_removed": "Image removed.",
+      "file_added": "File added.",
+      "image_to_transfer": "Image to be transferred",
+      "image_transferred" :"Image successfully transferred.",
+      "image_applied":"Image Applied."
+    },
+    "labels":{
+        "remove":"Remove Image",
+        "rem":"Remove",
+        "transfer":"Transfer",
+        "apply":"Apply",
+        "available":"Available images"
+    },
+    "states":{
+        "enabled": "Firmware enabled",
+        "disabled": "Firmware disabled",
+        "short_desc": "This option allows the template to handle images.",
+        "long_desc": "To confirm the firmware configuration, please update the following attributes:"
+    },
+    "default_attrs":
+    {
+        "state":"Current State",
+        "update_result":"Update Result",
+        "upload_image":"Upload Image",
+        "apply_image": "Apply Image",
+        "current_version": "Current Version"
+    },
+    "image_list":
+    {
+        "version":"Image Version",
+        "hash":"Image Hash",
+        "created_at":"Created At",
+        "no_binary_yet":"No binary yet.",
+        "dropzone_desc": "Drop the file here or click to select image to upload."
+    }
+
+}

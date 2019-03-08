@@ -6,6 +6,7 @@ import ImageActions from 'Actions/ImageActions';
 import TemplateActions from 'Actions/TemplateActions';
 import MaterialInput from 'Components/MaterialInput';
 import toaster from 'Comms/util/materialize';
+import { withNamespaces } from 'react-i18next';
 import { templateType } from '../../../TemplatePropTypes';
 import SidebarFirmImages from './SidebarFirmImages';
 import SidebarButton from '../SidebarButton';
@@ -117,7 +118,7 @@ class SidebarFirmConfig extends Component {
 
     render() {
         const {
-            imageAllowed, images, showFirmware, template, isNewTemplate, toogleSidebarFirmware,
+            t, imageAllowed, images, showFirmware, template, isNewTemplate, toogleSidebarFirmware,
         } = this.props;
         const clssBtn = imageAllowed ? 'fw_btn_pushed' : 'fw_btn_push';
         const { attrs, showFirmwareImage } = this.state;
@@ -128,7 +129,7 @@ class SidebarFirmConfig extends Component {
                         ? (
                             <div className="generic-sidebar sidebar-firmware">
                                 <div className="header">
-                                    <div className="title">Firmware</div>
+                                    <div className="title">{t('firmware:title')}</div>
                                     <div className="icon">
                                         <img src="images/firmware-red.png" alt="device-icon" />
                                     </div>
@@ -145,23 +146,20 @@ class SidebarFirmConfig extends Component {
                                         <div className="description">
                                             <div className="tl">
                                                 {imageAllowed
-                                                    ? <b>Firmware enabled</b>
-                                                    : <b>Firmware disabled</b>
+                                                    ? <b>{t('firmware:states.enabled')}</b>
+                                                    : <b>{t('firmware:states.disabled')}</b>
                                                 }
 
                                             </div>
-                                            This option allows the template to handle images.
+                                            {t('firmware:states.short_desc')}
                                         </div>
                                     </div>
                                     { imageAllowed
                                         ? (
                                             <div className="image-related-attrs">
                                                 <span>
-                                                    To confirm the firmware configuration,
-                                                    please update the following attributes:
-
+                                                    {t('firmware:states.long_desc')}
                                                 </span>
-
                                                 <div className="body-attribute-name">
                                                     <MaterialInput
                                                         name="current_state"
@@ -170,7 +168,7 @@ class SidebarFirmConfig extends Component {
                                                         value={attrs.current_state.user_value}
                                                         onChange={e => this.changeAttrValue(e)}
                                                     >
-                                                Current State
+                                                        {t('firmware:default_attrs.state')}
                                                     </MaterialInput>
                                                 </div>
                                                 <div className="body-attribute-name">
@@ -181,7 +179,7 @@ class SidebarFirmConfig extends Component {
                                                         value={attrs.update_result.user_value}
                                                         onChange={e => this.changeAttrValue(e)}
                                                     >
-                                                Update Result
+                                                        {t('firmware:default_attrs.update_result')}
                                                     </MaterialInput>
                                                 </div>
                                                 <div className="body-attribute-name">
@@ -192,7 +190,7 @@ class SidebarFirmConfig extends Component {
                                                         value={attrs.upload_image.user_value}
                                                         onChange={e => this.changeAttrValue(e)}
                                                     >
-                                                Upload Image
+                                                        {t('firmware:default_attrs.upload_image')}
                                                     </MaterialInput>
                                                 </div>
                                                 <div className="body-attribute-name">
@@ -203,7 +201,7 @@ class SidebarFirmConfig extends Component {
                                                         value={attrs.apply_image.user_value}
                                                         onChange={e => this.changeAttrValue(e)}
                                                     >
-                                                Apply Image
+                                                        {t('firmware:default_attrs.apply_image')}
                                                     </MaterialInput>
                                                 </div>
                                                 <div className="body-attribute-name">
@@ -214,7 +212,7 @@ class SidebarFirmConfig extends Component {
                                                         value={attrs.current_version.user_value}
                                                         onChange={e => this.changeAttrValue(e)}
                                                     >
-                                                Current Version
+                                                        {t('firmware:default_attrs.current_version')}
                                                     </MaterialInput>
                                                 </div>
                                             </div>
@@ -225,14 +223,14 @@ class SidebarFirmConfig extends Component {
                                         <SidebarButton
                                             onClick={() => this.toogleSidebarFirmImage()}
                                             icon="firmware"
-                                            text="Manage Images"
+                                            text={t('firmware:btn')} 
                                         />
                                     </div>
                                 </div>
                                 <div className="footer">
                                     <Fragment>
-                                        <DojotBtnClassic label="discard" type="secondary" onClick={toogleSidebarFirmware} />
-                                        <DojotBtnClassic color="red" label="save" type="primary" onClick={e => this.saveImageConfig(e)} />
+                                        <DojotBtnClassic label={t('discard.label')} type="secondary" onClick={toogleSidebarFirmware} />
+                                        <DojotBtnClassic color="red" label={t('save.label')} type="primary" onClick={e => this.saveImageConfig(e)} />
                                     </Fragment>
                                 </div>
                             </div>
@@ -259,10 +257,11 @@ SidebarFirmConfig.defaultProps = {
 };
 
 SidebarFirmConfig.propTypes = {
+    t: PropTypes.func.isRequired,
     showFirmware: PropTypes.bool,
     isNewTemplate: PropTypes.bool,
     template: PropTypes.shape(templateType).isRequired,
     toogleSidebarFirmware: PropTypes.func.isRequired,
 };
 
-export default SidebarFirmConfig;
+export default withNamespaces()(SidebarFirmConfig);

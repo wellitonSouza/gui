@@ -47,7 +47,8 @@
   "select_attribute": "Select an attribute to be displayed.",
   "meta_attributes": "Meta Attributes",
   "no_devices_shown": "No devices to be shown",
-  "no_configured_devices": "No configured devices"
+  "no_configured_devices": "No configured devices",
+  "manage_firmware":"Manage Firmware"
 }
 
 

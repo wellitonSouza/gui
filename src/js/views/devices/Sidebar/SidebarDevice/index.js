@@ -128,7 +128,7 @@ const SidebarDevice = ({
                                             <SidebarButton
                                                 onClick={() => toogleSidebarImages()}
                                                 icon="firmware"
-                                                title="Manage Firmware"
+                                                title={t('devices:manage_firmware')}
                                             />
                                         ) : null}
                                     </div>

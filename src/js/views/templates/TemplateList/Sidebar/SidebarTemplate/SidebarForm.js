@@ -90,7 +90,7 @@ const SidebarForm = ({
                             <SidebarButton
                                 onClick={() => toogleSidebarFirmware()}
                                 icon="firmware"
-                                text="Manage Firmware"
+                                text={t('templates:btn.mng_firmware.label')}
                             />
                         ) : null}
                 </Can>

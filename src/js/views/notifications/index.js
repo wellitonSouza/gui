@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { withNamespaces } from 'react-i18next';
+import PropTypes from 'prop-types';
 import AltContainer from 'alt-container';
 import { NewPageHeader } from 'Containers/full/PageHeader';
-import PropTypes from 'prop-types';
 import NotificationsStore from 'Stores/NotificationStore';
 import SocketIO from './SocketIONotification';
 

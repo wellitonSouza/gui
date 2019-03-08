@@ -133,7 +133,7 @@ class SidebarFirmImages extends Component {
                 <Slide right when={showFirmware} duration={300}>
                     { showFirmware
                         ? (
-                            <div className="sidebar-attribute sidebar-firmware">
+                            <div className="sidebar-firmware">
                                 <div className="header">
                                     <div className="title">{t('firmware:header')}</div>
                                     <div className="icon">

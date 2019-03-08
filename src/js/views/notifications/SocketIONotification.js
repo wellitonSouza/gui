@@ -3,7 +3,7 @@ import toaster from 'Comms/util/materialize';
 import NotificationActions from 'Actions/NotificationActions';
 import util from 'Comms/util';
 
-const notification = {
+const filterLevelNotification = {
     fields: {
         subject: {
             operation: '=',
@@ -32,7 +32,7 @@ class SocketIONotification {
                 NotificationActions.append(data);
             });
             sio.on('connect', () => {
-                sio.emit('filter', JSON.stringify(notification));
+                sio.emit('filter', JSON.stringify(filterLevelNotification));
             });
         };
 

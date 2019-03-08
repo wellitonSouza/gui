@@ -1,13 +1,13 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-// import { attrsType } from '../../../TemplatePropTypes';
 import MaterialInput from 'Components/MaterialInput';
 import { DojotBtnClassicWithIcon } from 'Components/DojotButton';
 import util from 'Comms/util';
 import Dropzone from 'react-dropzone';
+import { withNamespaces } from 'react-i18next';
 
 const ImageList = ({
-    list, changeAttrValue, removeBinary, removeImage, onDrop,
+    list, changeAttrValue, removeBinary, removeImage, onDrop, t,
 }) => (
     <Fragment>
         {Object.entries(list).map(([key, element]) => (
@@ -27,12 +27,12 @@ const ImageList = ({
                         value={element.image_version}
                         onChange={e => changeAttrValue(e, element)}
                     >
-                                Image Version
+                        {t('firmware:image_list.version')}
                     </MaterialInput>
                 </div>
                 <div className="body-attribute-name pl50px height-auto pb10px">
                     <div className="input-field attribute-type  attr-content">
-                        <span className="label">Image Hash</span>
+                        <span className="label">{t('firmware:image_list.hash')}</span>
                         {(element.image_hash == null)
                             ? (
                                 <Fragment>
@@ -44,10 +44,10 @@ const ImageList = ({
                                         ) : (
                                             <div>
                                                 {' '}
-                                                <span className="value"> No binary yet.</span>
+                                                <span className="value">{t('firmware:image_list.no_binary_yet')}</span>
                                                 <div className="dropzone">
                                                     <Dropzone multiple={false} onDrop={file => onDrop(file, element)}>
-                                                        <p>Drop the file here or click to select image to upload.</p>
+                                                        <p>{t('firmware:image_list.dropzone_desc')}</p>
                                                     </Dropzone>
                                                 </div>
                                             </div>
@@ -71,7 +71,7 @@ const ImageList = ({
                     ? (
                         <div className="body-attribute-name pl50px">
                             <div className="input-field attribute-type  attr-content">
-                                <span className="label">Created At</span>
+                                <span className="label">{t('firmware:image_list.created_at')}</span>
                                 <span className="value">
                                     {util.iso_to_date(element.created)}
                                 </span>
@@ -79,7 +79,7 @@ const ImageList = ({
                         </div>
                     ) : null}
                 <div className="body-attribute-name height-50 pl50px">
-                    <DojotBtnClassicWithIcon label="Remove" title="Remove Image" onClick={e => removeImage(e, element)} icon="fa-times" />
+                    <DojotBtnClassicWithIcon label={t('firmware:labels.rem')} title={t('firmware:labels.remove')} onClick={e => removeImage(e, element)} icon="fa-times" />
                 </div>
                 <div className="line-2" />
             </div>
@@ -93,6 +93,7 @@ ImageList.defaultProps = {
 };
 
 ImageList.propTypes = {
+    t: PropTypes.func.isRequired,
     list: PropTypes.object,
     changeAttrValue: PropTypes.func.isRequired,
     removeBinary: PropTypes.func.isRequired,
@@ -100,4 +101,4 @@ ImageList.propTypes = {
     onDrop: PropTypes.func.isRequired,
 };
 
-export default ImageList;
+export default withNamespaces()(ImageList);

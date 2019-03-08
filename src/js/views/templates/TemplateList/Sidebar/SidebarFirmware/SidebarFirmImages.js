@@ -5,6 +5,7 @@ import { DojotBtnClassic } from 'Components/DojotButton';
 import ImageActions from 'Actions/ImageActions';
 import util from 'Comms/util';
 import toaster from 'Comms/util/materialize';
+import { withNamespaces } from 'react-i18next';
 import ImageList from './ImageList';
 
 class SidebarFirmImages extends Component {
@@ -44,7 +45,7 @@ class SidebarFirmImages extends Component {
 
     saveImages(e) {
         e.preventDefault();
-        const { templateId, images } = this.props;
+        const { t, templateId, images } = this.props;
         Object.values(images).forEach((image) => {
             if (!image.saved) {
                 // for each non saved image,
@@ -59,7 +60,7 @@ class SidebarFirmImages extends Component {
                         id: image.id,
                     };
                     ImageActions.triggerInsert(jsonImg, (img) => {
-                        toaster.success('Image created.');
+                        toaster.success(t('firmware:alerts.image_created'));
                         // todo: get image_id correctly
                         // const idToBeUsed = img.id;
                         const { url } = img;
@@ -70,7 +71,7 @@ class SidebarFirmImages extends Component {
                                 binary: image.file[0],
                             };
                             ImageActions.triggerUpdate(imgBinary, () => {
-                                toaster.success('File added.');
+                                toaster.success(t('firmware:alerts.file_added'));
                                 ImageActions.updateImageData(idToBeUsed, 'file', image.file);
                             });
                         }
@@ -83,7 +84,7 @@ class SidebarFirmImages extends Component {
                         binary: image.file[0],
                     };
                     ImageActions.triggerUpdate(imgBinary, () => {
-                        toaster.success('File added.');
+                        toaster.success(t('firmware:alerts.file_added'));
                         ImageActions.updateImageData(image.id, 'saved', true);
                     });
                 }
@@ -96,20 +97,21 @@ class SidebarFirmImages extends Component {
 
     removeBinary(e, image) {
         e.preventDefault();
+        const { t } = this.props;
         ImageActions.triggerRemovalBinary(image.id, () => {
-            toaster.success('Image updated.');
+            toaster.success(t('firmware:alerts.image_updated'));
         });
     }
 
     removeImage(e, image) {
+        const { t } = this.props;
         e.preventDefault();
-
         if (image.new) {
             ImageActions.removeSingle(image.id);
             this.setState({ newImage: false });
         } else {
             ImageActions.triggerRemoval(image, () => {
-                toaster.success('Image removed.');
+                toaster.success(t('firmware:alerts.image_removed'));
             });
         }
     }
@@ -122,7 +124,10 @@ class SidebarFirmImages extends Component {
 
     render() {
         const { newImage } = this.state;
-        const { images, showFirmware, toogleSidebarFirmware } = this.props;
+        const {
+            t, images, showFirmware, toogleSidebarFirmware,
+        } = this.props;
+
         return (
             <Fragment>
                 <Slide right when={showFirmware} duration={300}>
@@ -130,7 +135,7 @@ class SidebarFirmImages extends Component {
                         ? (
                             <div className="sidebar-attribute sidebar-firmware">
                                 <div className="header">
-                                    <div className="title">MANAGE IMAGES</div>
+                                    <div className="title">{t('firmware:header')}</div>
                                     <div className="icon">
                                         <img src="images/firmware-red.png" alt="device-icon" />
                                     </div>
@@ -150,15 +155,24 @@ class SidebarFirmImages extends Component {
                                     {(!newImage)
                                         ? (
                                             <div className="body-form-nodata clickable" onKeyPress={this.createNewImage} tabIndex="0" role="button" onClick={this.createNewImage}>
-                                        Click here to add a new image
+                                                {t('firmware:alerts.click_to_new_image')}
                                             </div>
                                         )
                                         : null }
                                 </div>
                                 <div className="footer">
                                     <Fragment>
-                                        <DojotBtnClassic label="back" type="secondary" onClick={toogleSidebarFirmware} />
-                                        <DojotBtnClassic color="red" label="save" type="primary" onClick={e => this.saveImages(e)} />
+                                        <DojotBtnClassic
+                                            label={t('back.label')}
+                                            type="secondary"
+                                            onClick={toogleSidebarFirmware}
+                                        />
+                                        <DojotBtnClassic
+                                            color="red"
+                                            label={t('save.label')}
+                                            type="primary"
+                                            onClick={e => this.saveImages(e)}
+                                        />
                                     </Fragment>
                                 </div>
                             </div>
@@ -183,9 +197,10 @@ SidebarFirmImages.propTypes = {
     isNewTemplate: PropTypes.bool,
     images: PropTypes.shape({
     }),
+    t: PropTypes.func.isRequired,
     templateId: PropTypes.string.isRequired,
     toogleSidebarFirmware: PropTypes.func.isRequired,
 
 };
 
-export default SidebarFirmImages;
+export default withNamespaces()(SidebarFirmImages);

@@ -32,13 +32,16 @@
   },
   "btn": {
     "new_metadata": {
-      "label": "Novo metadado"
+      "label": "Novo Metadado"
     },
     "new_attr": {
-      "label": "Novo atributo"
+      "label": "Novo Atributo"
     },
     "new_conf": {
-      "label": "Nova configuração"
+      "label": "Nova Configuração"
+    },
+    "mng_firmware": {
+      "label": "Gerenciar Firmware"
     }
   },
   "template": "modelo",

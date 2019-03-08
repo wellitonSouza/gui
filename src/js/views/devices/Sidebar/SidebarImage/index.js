@@ -9,6 +9,8 @@ import SidebarFirmImages from 'Views/templates/TemplateList/Sidebar/SidebarFirmw
 import SidebarButton from 'Views/templates/TemplateList/Sidebar/SidebarButton';
 import DeviceActions from 'Actions/DeviceActions';
 import toaster from 'Comms/util/materialize';
+import { withNamespaces } from 'react-i18next';
+
 
 class SidebarImage extends Component {
     constructor(props) {
@@ -107,7 +109,7 @@ class SidebarImage extends Component {
             toaster.warning('Select a valid image');
             return;
         }
-        const { deviceId, ds } = this.props;
+        const { t, deviceId, ds } = this.props;
         const device = ds.devices[deviceId];
         const formattedDevice = this.formatDevice(device);
         // 1. find the actuator's label used to upload image
@@ -120,12 +122,12 @@ class SidebarImage extends Component {
             }
         }
         DeviceActions.triggerUpdate(formattedDevice, () => {
-            toaster.success('Image successfully transferred');
+            toaster.success(t('firmware:alerts.image_transferred'));
         });
     }
 
     callApplyImage() {
-        const { deviceId, ds } = this.props;
+        const { t, deviceId, ds } = this.props;
         const device = ds.devices[deviceId];
         const formattedDevice = this.formatDevice(device);
         // 1. find the actuator's label used to upload image
@@ -140,7 +142,7 @@ class SidebarImage extends Component {
         }
 
         DeviceActions.triggerUpdate(formattedDevice, () => {
-            toaster.success('Image Applied');
+            toaster.success(t('firmware:alerts.image_applied'));
         });
     }
 
@@ -165,7 +167,9 @@ class SidebarImage extends Component {
 
 
     render() {
-        const { toogleSidebarImages, showSidebarImage, is } = this.props;
+        const {
+            t, toogleSidebarImages, showSidebarImage, is,
+        } = this.props;
         const { images } = is;
         const { attrs, showFirmwareImage, templateIdAllowedImage } = this.state;
         const opts = this.createImageOptions();
@@ -193,31 +197,31 @@ class SidebarImage extends Component {
                                         </div>
                                         <div className="desc">
                                             <div className="line">
-                                                <div className="label">Current Version</div>
+                                                <div className="label">{t('firmware:default_attrs.current_version')}</div>
                                                 <div className="value">{attrs.current_version}</div>
                                             </div>
                                             <div className="line">
-                                                <div className="label">Current State</div>
+                                                <div className="label">{t('firmware:default_attrs.state')}</div>
                                                 <div className="value">{attrs.current_state}</div>
                                             </div>
                                             <div className="line">
-                                                <div className="label">Update Result</div>
+                                                <div className="label">{t('firmware:default_attrs.update_result')}</div>
                                                 <div className="value">{attrs.update_result}</div>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="line-2" />
                                     <div className="body-form pl50">
-                                        <div className="header2">Image to be transferred</div>
+                                        <div className="header2">{t('firmware:alerts.image_to_transfer')}</div>
                                         <div className="cid_select">
-                                            <MaterialSelect id="flr_images" name="images" label="Available images" value={this.currentImageId} onChange={e => this.onChangeImage(e)}>
+                                            <MaterialSelect id="flr_images" name="images" label={t('firmware:labels.available')} value={this.currentImageId} onChange={e => this.onChangeImage(e)}>
                                                 {opts}
                                             </MaterialSelect>
                                         </div>
                                         <div className="cid_upload_button">
                                             <div className="square-button" onKeyPress={this.callUploadImage} tabIndex="0" role="button" onClick={this.callUploadImage}>
                                                 <i className="fa fa-download fa-2x" />
-                                                Transfer
+                                                {t('firmware:labels.transfer')}
                                             </div>
                                         </div>
                                     </div>
@@ -226,14 +230,14 @@ class SidebarImage extends Component {
                                         <SidebarButton
                                             onClick={() => this.toogleSidebarFirmImage()}
                                             icon="firmware"
-                                            text="Manage Images"
+                                            text={t('firmware:btn')}
                                         />
                                     </div>
                                 </div>
                                 <div className="footer">
                                     <Fragment>
-                                        <DojotBtnClassic label="discard" type="secondary" onClick={toogleSidebarImages} />
-                                        <DojotBtnClassic color="red" label="Apply" type="primary" onClick={e => this.callApplyImage(e)} />
+                                        <DojotBtnClassic label={t('discard.label')} type="secondary" onClick={toogleSidebarImages} />
+                                        <DojotBtnClassic color="red" label={t('firmware:labels.apply')} type="primary" onClick={e => this.callApplyImage(e)} />
                                     </Fragment>
                                 </div>
                             </div>
@@ -261,6 +265,7 @@ SidebarImage.defaultProps = {
 };
 
 SidebarImage.propTypes = {
+    t: PropTypes.func.isRequired,
     deviceId: PropTypes.string,
     showSidebarImage: PropTypes.bool,
     toogleSidebarImages: PropTypes.func.isRequired,
@@ -272,4 +277,4 @@ SidebarImage.propTypes = {
     }),
 };
 
-export default SidebarImage;
+export default withNamespaces()(SidebarImage);

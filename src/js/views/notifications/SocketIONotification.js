@@ -1,26 +1,27 @@
 import socketIO from 'socket.io-client';
+import toaster from 'Comms/util/materialize';
 import NotificationActions from 'Actions/NotificationActions';
 import util from 'Comms/util';
 
-let sio;
+const notification = {
+    fields: {
+        subject: {
+            operation: '=',
+            value: 'debug',
+        },
+        level: {
+            operation: '>',
+            value: 2,
+        },
+    },
+};
+
+let sio = null;
 
 class SocketIONotification {
-    connect() {
+    static connect() {
         const target = `${window.location.protocol}//${window.location.host}`;
         const tokenUrl = `${target}/stream/socketio`;
-
-        const notification = {
-            fields: {
-                subject: {
-                    operation: '=',
-                    value: 'debug',
-                },
-                level: {
-                    operation: '>',
-                    value: 2,
-                },
-            },
-        };
 
         function init(token) {
             sio = socketIO(target, {
@@ -37,9 +38,6 @@ class SocketIONotification {
 
             sio.on('connect', () => {
                 sio.emit('filter', JSON.stringify(notification));
-                console.log('connectOnSocket');
-                /* if (device_detail_socket) device_detail_socket.close(); */
-                // getWsToken();
             });
         }
 
@@ -49,7 +47,7 @@ class SocketIONotification {
                     init(reply.token);
                 })
                 .catch((error) => {
-                    // console.log('Failed!', error);
+                    toaster.error(error.message);
                 });
         }
 
@@ -61,5 +59,4 @@ class SocketIONotification {
     }
 }
 
-const socketIONotification = new SocketIONotification();
-export default socketIONotification;
+export default SocketIONotification;

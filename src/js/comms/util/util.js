@@ -217,11 +217,11 @@ class Util {
         return moment(timestamp).format('DD/MM HH:mm');
     }
 
-    static timestampToHourMinSec(timestamp) {
+    timestampToHourMinSec(timestamp) {
         return timestamp? moment(timestamp).format('HH:mm:ss') : null;
     }
 
-    static timestampToDayMonthYear(timestamp) {
+    timestampToDayMonthYear(timestamp) {
         return timestamp? moment(timestamp).format('DD/MM/YYYY'): null;
     }
 

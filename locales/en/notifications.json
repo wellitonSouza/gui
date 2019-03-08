@@ -1,6 +1,8 @@
 {
   "title": "Notifications",
-  "subtitle": "notifications"
+  "subtitle": "notifications",
+  "device": "device",
+  "message": "message"
 }
 
 

@@ -4,12 +4,17 @@ import AltContainer from 'alt-container';
 import { NewPageHeader } from 'Containers/full/PageHeader';
 import PropTypes from 'prop-types';
 import NotificationsStore from 'Stores/NotificationStore';
-import SocketIO from './socketIONotification';
+import SocketIO from './SocketIONotification';
 
 const CardNotification = (props) => {
     const {
-        date, time, message, device, i18n,
+        notification, i18n,
     } = props;
+
+    const {
+        date, time, message, device,
+    } = notification;
+
     return (
         <div>
             <div className="card-notification">
@@ -47,11 +52,9 @@ const NotificationList = (props) => {
         <Fragment>
             {notifications.map(notification => (
                 <CardNotification
-                    date={notification.date}
-                    time={notification.time}
-                    message={notification.message}
-                    device={notification.device}
+                    notification={notification}
                     i18n={i18n}
+                    key={Math.random()}
                 />
             ))}
         </Fragment>
@@ -84,9 +87,16 @@ class Notifications extends Component {
     }
 }
 
+const notificationType = {
+    date: PropTypes.string,
+    time: PropTypes.string,
+    message: PropTypes.string,
+    device: PropTypes.string,
+};
+
 Notifications.propTypes = {
     t: PropTypes.func.isRequired,
-    notifications: PropTypes.shape(CardNotification),
+    notifications: PropTypes.arrayOf(PropTypes.shape(notificationType)),
 };
 
 Notifications.defaultProps = {
@@ -95,20 +105,21 @@ Notifications.defaultProps = {
 
 NotificationList.propTypes = {
     i18n: PropTypes.func.isRequired,
-    notifications: PropTypes.shape(CardNotification).isRequired,
+    notifications: PropTypes.arrayOf(PropTypes.shape(notificationType)).isRequired,
 };
 
 CardNotification.propTypes = {
     i18n: PropTypes.func.isRequired,
-    date: PropTypes.string,
-    time: PropTypes.string,
-    message: PropTypes.string.isRequired,
-    device: PropTypes.string,
+    notification: PropTypes.shape(notificationType),
 };
+
 CardNotification.defaultProps = {
-    date: '',
-    time: '',
-    device: '',
+    notification: {
+        date: '',
+        time: '',
+        device: '',
+        message: '',
+    },
 };
 
 

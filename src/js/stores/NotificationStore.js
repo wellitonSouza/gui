@@ -23,8 +23,8 @@ class NotificationStore {
         this.notifications = [{
             message,
             device,
-            time: Util.timestampToHourMinSec(timestamp),
-            date: Util.timestampToDayMonthYear(timestamp),
+            time: util.timestampToHourMinSec(timestamp),
+            date: util.timestampToDayMonthYear(timestamp),
         },
         ...this.notifications,
         ];

@@ -2,7 +2,6 @@
 import moment from 'moment';
 import LoginActions from '../../actions/LoginActions';
 import 'babel-polyfill';
-import toaster from 'Comms/util/materialize';
 
 const sha1 = require('sha1');
 

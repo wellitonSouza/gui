@@ -20,38 +20,29 @@ let sio = null;
 
 class SocketIONotification {
     static connect() {
-        const target = `${window.location.protocol}//${window.location.host}`;
-        const tokenUrl = `${target}/stream/socketio`;
-
-        function init(token) {
-            sio = socketIO(target, {
+        const initSocketIO = (token) => {
+            sio = socketIO(util.getFullURL(), {
                 query: {
                     token,
                     subject: 'dojot.notifications',
                 },
                 transports: ['polling'],
             });
-
             sio.on('notification', (data) => {
                 NotificationActions.append(data);
             });
-
             sio.on('connect', () => {
                 sio.emit('filter', JSON.stringify(notification));
             });
-        }
+        };
 
-        function getWsToken() {
-            util._runFetch(tokenUrl)
-                .then((reply) => {
-                    init(reply.token);
-                })
-                .catch((error) => {
-                    toaster.error(error.message);
-                });
-        }
-
-        getWsToken();
+        util.getTokenSocketIO()
+            .then((response) => {
+                initSocketIO(response.token);
+            })
+            .catch((error) => {
+                toaster.error(error.message);
+            });
     }
 
     static disconnect() {

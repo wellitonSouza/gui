@@ -37,6 +37,21 @@ class Util {
         return opened;
     };
 
+    /**
+     * Full Url
+     * @returns {string} Ex.: http://localhost:8000
+     */
+    getFullURL(){
+        return `${window.location.protocol}//${window.location.host}`;
+    }
+
+    /**
+     *  Full Url for socketio
+     * @returns {string} Ex.: http://localhost:8000/stream/socketio
+     */
+    getUrlTokenSocketIO(){
+        return `${this.getFullURL()}/stream/socketio`;
+    }
 
     getSHA1(data) {
         return sha1(data);
@@ -84,6 +99,10 @@ class Util {
         } catch (e) {
             localStoragePolyFill();
         }
+    }
+
+    getTokenSocketIO() {
+        return this._runFetch(this.getUrlTokenSocketIO());
     }
 
     GET(url) {
@@ -215,6 +234,14 @@ class Util {
 
     iso_to_date_hour(timestamp) {
         return moment(timestamp).format('DD/MM HH:mm');
+    }
+
+    timestampToHourMinSec(timestamp) {
+        return timestamp? moment(timestamp).format('HH:mm:ss') : null;
+    }
+
+    timestampToDayMonthYear(timestamp) {
+        return timestamp? moment(timestamp).format('DD/MM/YYYY'): null;
     }
 
     isNameValid(name) {

@@ -7,6 +7,7 @@ import { Devices, ViewDevice, NewDevice } from './views/devices';
 import Templates from './views/templates';
 import Users from './views/users';
 import Groups from './views/groups/Groups';
+import Notifications from './views/notifications/index';
 import { Flows, EditFlow } from './views/flows';
 import Alarms from './views/alarms';
 import Todo from './views/utils/todo';
@@ -43,6 +44,11 @@ export default (
             </Route>
 
             <Route path="alarm" name="Alarm" component={Alarms} />
+
+            <Route path="notifications" name="Notifications">
+                <IndexRoute component={Notifications} />
+                <Route path="notifications" name="Notifications" component={Notifications} />
+            </Route>
 
             <Route path="auth" name="Authentication">
                 <IndexRoute component={Users} />

@@ -198,9 +198,8 @@ SidebarFirmImages.propTypes = {
     images: PropTypes.shape({
     }),
     t: PropTypes.func.isRequired,
-    templateId: PropTypes.string.isRequired,
+    templateId: PropTypes.number.isRequired,
     toogleSidebarFirmware: PropTypes.func.isRequired,
-
 };
 
 export default withNamespaces()(SidebarFirmImages);

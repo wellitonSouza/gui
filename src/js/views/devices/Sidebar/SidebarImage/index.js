@@ -137,7 +137,7 @@ class SidebarImage extends Component {
         for (let index = 0; index < formattedDevice.attrs.length; index++) {
             if (formattedDevice.attrs[index].label === applyAlias) {
                 formattedDevice.attrs[index].static_value = '1';
-                // customized value used to notify device to apply its image
+                // value used to notify device to apply its image
             }
         }
 

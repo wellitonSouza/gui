@@ -92,13 +92,34 @@ class SidebarFirmConfig extends Component {
 
     saveImageConfig(e) {
         e.preventDefault();
-        const { template } = this.props;
+        let { template, imageAllowed } = this.props;
         const { attrs } = this.state;
-        template.attrs.push(createImageAttribute(attrs.current_state, 'dynamic'));
-        template.attrs.push(createImageAttribute(attrs.update_result, 'dynamic'));
-        template.attrs.push(createImageAttribute(attrs.current_version, 'dynamic'));
-        template.attrs.push(createImageAttribute(attrs.upload_image, 'actuator'));
-        template.attrs.push(createImageAttribute(attrs.apply_image, 'actuator'));
+        if (imageAllowed)
+        {
+            // adding image attributes
+            template.attrs.push(createImageAttribute(attrs.current_state, 'dynamic'));
+            template.attrs.push(createImageAttribute(attrs.update_result, 'dynamic'));
+            template.attrs.push(createImageAttribute(attrs.current_version, 'dynamic'));
+            template.attrs.push(createImageAttribute(attrs.upload_image, 'actuator'));
+            template.attrs.push(createImageAttribute(attrs.apply_image, 'actuator'));
+        }
+        else
+        {
+            // removing image attributes
+            template.img_attrs = [];
+            // 2. also removes img attrs in attr list
+            for (let i = template.attrs.length - 1; i >= 0;i--)
+            {
+                if (template.attrs[i].metadata.length)
+                {
+                    const lbl = template.attrs[i].metadata[0].label;
+                    if (lbl.includes("dojot:firmware_update:"))
+                    {
+                        delete template.attrs[i];
+                    }
+                }
+            }
+        }
 
         TemplateActions.triggerUpdate(template, () => {
             toaster.success('Template updated');

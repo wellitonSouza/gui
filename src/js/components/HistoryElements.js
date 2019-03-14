@@ -109,7 +109,6 @@ function HistoryList(props) {
     for (const k in props.MeasureStore.data[props.device.id][`_${props.attr}`]) {
         listValues[k] = props.MeasureStore.data[props.device.id][`_${props.attr}`][k];
     }
-
     if (listValues.length > 0) {
             listValues.reverse();
             return (

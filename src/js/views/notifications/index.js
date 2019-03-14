@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import AltContainer from 'alt-container';
 import { NewPageHeader } from 'Containers/full/PageHeader';
 import NotificationsStore from 'Stores/NotificationStore';
+import NotificationActions from 'Actions/NotificationActions';
 import SocketIO from './SocketIONotification';
 
 const MetaNotification = (props) => {
@@ -112,6 +113,7 @@ const NotificationList = (props) => {
 
 class Notifications extends Component {
     componentDidMount() {
+        NotificationActions.fetchNotificationsFromHistory('user_notification');
         SocketIO.connect();
     }
 

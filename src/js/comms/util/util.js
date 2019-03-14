@@ -244,6 +244,14 @@ class Util {
         return timestamp? moment(timestamp).format('DD/MM/YYYY'): null;
     }
 
+    utcToHourMinSec(utc) {
+        return utc? moment.parseZone(utc).format('HH:mm:ss') : null;
+    }
+
+    utcToDayMonthYear(utc) {
+        return utc? moment.parseZone(utc).format('DD/MM/YYYY'): null;
+    }
+
     isNameValid(name) {
         const ret = { result: true, error: '', label: name.trim() };
         if (name.trim().length === 0) {

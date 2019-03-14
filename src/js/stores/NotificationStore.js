@@ -12,21 +12,33 @@ class NotificationStore {
             handleFailure: notificationsActions.failed,
             handleLoad: notificationsActions.load,
             handleAppend: notificationsActions.append,
+            handleUpdateList: notificationsActions.updateList,
+        });
+    }
+
+    handleUpdateList(notifications) {
+        this.notifications = [];
+        notifications.forEach((notification) => {
+            this.addNotification(notification);
         });
     }
 
     handleAppend(data) {
         const dataObj = JSON.parse(data);
+        this.addNotification(dataObj);
+    }
+
+    addNotification(notification) {
         const {
-            timestamp, message, metaAttrsFilter: metas, metadata: internalMetas,
-        } = dataObj;
+            timestamp, ts, message, metaAttrsFilter: metas, metadata: internalMetas,
+        } = notification;
 
         this.notifications = [{
             message,
             metas,
             internalMetas,
-            time: util.timestampToHourMinSec(timestamp),
-            date: util.timestampToDayMonthYear(timestamp),
+            time: util.utcToHourMinSec(ts) || util.timestampToHourMinSec(timestamp),
+            date: util.utcToDayMonthYear(ts) || util.timestampToDayMonthYear(timestamp),
         },
         ...this.notifications,
         ];

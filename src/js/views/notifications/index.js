@@ -6,42 +6,89 @@ import { NewPageHeader } from 'Containers/full/PageHeader';
 import NotificationsStore from 'Stores/NotificationStore';
 import SocketIO from './SocketIONotification';
 
+const MetaNotification = (props) => {
+    const {
+        keyName, value,
+    } = props;
+
+    let finalValue = 'undefined';
+    if (((typeof value) === 'boolean')) {
+        finalValue = (value ? 'true' : 'false');
+    } else if ((typeof value) === 'number' || (typeof value) === 'string') {
+        finalValue = value;
+    }
+    return (
+        <div className="meta-row">
+            <div className="main">
+                {finalValue}
+            </div>
+            <div className="sub">
+                {keyName}
+            </div>
+        </div>
+    );
+};
+
 const CardNotification = (props) => {
     const {
         notification, i18n,
     } = props;
 
     const {
-        date, time, message, device,
+        date, time, message, metas, internalMetas,
     } = notification;
 
     return (
-        <div>
-            <div className="card-notification">
-                <div className="time-row">
-                    <i className="fa fa-clock-o icon-clock " aria-hidden="true" />
-                    <div className="datetime">
-                        <div className="date">{date}</div>
-                        <div className="time">{time}</div>
-                    </div>
-                </div>
-                <div className="row-notification">
-                    <div className="info-row">
-                        <div className="main">
-                            {message}
+        <li>
+            <div className="collapsible-header">
+                <div className="card-notification">
+                    <div className="first-col">
+                        <i
+                            className="fa fa-clock-o icon-clock "
+                            aria-hidden="true"
+                        />
+                        <div className="datetime">
+                            <div className="date">{date}</div>
+                            <div className="time">
+                                {time}
+                            </div>
                         </div>
-                        <div className="sub">{i18n('notifications:message')}</div>
                     </div>
-                    <div className="name-row">
-                        <div className="main">
-                            {device}
+                    <div className="second-col">
+                        <div className="info-row">
+                            <div className="main">
+                                {message}
+                            </div>
+                            <div
+                                className="sub"
+                            >
+                                {i18n('notifications:message')}
+                            </div>
                         </div>
-                        <div className="sub">{i18n('notifications:device')}</div>
                     </div>
                 </div>
             </div>
-            <hr />
-        </div>
+            <div className="collapsible-body">
+                <div className="card-notification">
+                    <div className="meta-body">
+                        {Object.keys((metas))
+                            .map(key => (
+                                <MetaNotification
+                                    value={metas[key]}
+                                    keyName={key}
+                                />
+                            ))}
+                        {Object.keys((internalMetas))
+                            .map(key => (
+                                <MetaNotification
+                                    value={internalMetas[key]}
+                                    keyName={key}
+                                />
+                            ))}
+                    </div>
+                </div>
+            </div>
+        </li>
     );
 };
 
@@ -50,13 +97,15 @@ const NotificationList = (props) => {
     const { notifications, i18n } = props;
     return (
         <Fragment>
-            {notifications.map(notification => (
-                <CardNotification
-                    notification={notification}
-                    i18n={i18n}
-                    key={Math.random()}
-                />
-            ))}
+            <ul className="collapsible expandable">
+                {notifications.map(notification => (
+                    <CardNotification
+                        notification={notification}
+                        i18n={i18n}
+                        key={Math.random()}
+                    />
+                ))}
+            </ul>
         </Fragment>
     );
 };
@@ -87,11 +136,22 @@ class Notifications extends Component {
     }
 }
 
+
+MetaNotification.propTypes = {
+    keyName: PropTypes.string,
+    value: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+        PropTypes.bool,
+    ]),
+};
+
 const notificationType = {
     date: PropTypes.string,
     time: PropTypes.string,
     message: PropTypes.string,
-    device: PropTypes.string,
+    metas: PropTypes.shape(MetaNotification),
+    internalMetas: PropTypes.shape(MetaNotification),
 };
 
 Notifications.propTypes = {
@@ -117,10 +177,14 @@ CardNotification.defaultProps = {
     notification: {
         date: '',
         time: '',
-        device: '',
         message: '',
     },
 };
 
+
+MetaNotification.defaultProps = {
+    keyName: 'key',
+    value: 'undefined',
+};
 
 export default withNamespaces()(Notifications);

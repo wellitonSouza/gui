@@ -7,11 +7,7 @@ const filterLevelNotification = {
     fields: {
         subject: {
             operation: '=',
-            value: 'debug',
-        },
-        level: {
-            operation: '>',
-            value: 2,
+            value: 'user_notification',
         },
     },
 };

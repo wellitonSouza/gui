@@ -17,12 +17,14 @@ class NotificationStore {
 
     handleAppend(data) {
         const dataObj = JSON.parse(data);
-        const { timestamp, message, metaAttrsFilter: metas } = dataObj;
-        const { device } = metas;
+        const {
+            timestamp, message, metaAttrsFilter: metas, metadata: internalMetas,
+        } = dataObj;
 
         this.notifications = [{
             message,
-            device,
+            metas,
+            internalMetas,
             time: util.timestampToHourMinSec(timestamp),
             date: util.timestampToDayMonthYear(timestamp),
         },

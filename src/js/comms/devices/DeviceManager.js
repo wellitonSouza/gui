@@ -71,6 +71,10 @@ class DeviceManager {
         return util.GET(`${this.baseUrl}/device/template/${templateId}`);
     }
 
+    sendActuator(deviceId, attrs) {
+        return util.PUT(`${this.baseUrl}/device/${deviceId}/actuate`, attrs);
+    }
+
     setDevice(detail) {
         return util.PUT(`${this.baseUrl}/device/${detail.id}`, detail);
     }

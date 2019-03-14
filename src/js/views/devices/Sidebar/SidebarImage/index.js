@@ -27,7 +27,6 @@ class SidebarImage extends Component {
         this.createImageOptions = this.createImageOptions.bind(this);
         this.onChangeImage = this.onChangeImage.bind(this);
         this.getAttrLabel = this.getAttrLabel.bind(this);
-        this.formatDevice = this.formatDevice.bind(this);
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -94,54 +93,31 @@ class SidebarImage extends Component {
     }
 
 
-    formatDevice(device) {
-        const dev = { ...device };
-        dev.attrs = [];
-        Object.values(device.attrs).forEach((templ) => {
-            dev.attrs.push(...templ);
-        });
-        return dev;
-    }
-
     callUploadImage() {
         const { currentImageId } = this.state;
         if (currentImageId === '0') {
             toaster.warning('Select a valid image');
             return;
         }
-        const { t, deviceId, ds } = this.props;
-        const device = ds.devices[deviceId];
-        const formattedDevice = this.formatDevice(device);
-        // 1. find the actuator's label used to upload image
+        
+        const { t, deviceId } = this.props;
         const uploadImageAlias = this.getAttrLabel('dojot:firmware_update:desired_version');
+        let dataToBeSent = { attrs : {}};
+        dataToBeSent.attrs[uploadImageAlias] = currentImageId;
 
-        // 2. find the location of this actuator and set the new value
-        for (let index = 0; index < formattedDevice.attrs.length; index++) {
-            if (formattedDevice.attrs[index].label === uploadImageAlias) {
-                formattedDevice.attrs[index].static_value = currentImageId;
-            }
-        }
-        DeviceActions.triggerUpdate(formattedDevice, () => {
+        DeviceActions.triggerActuator(deviceId, dataToBeSent, () => {
             toaster.success(t('firmware:alerts.image_transferred'));
         });
     }
 
     callApplyImage() {
-        const { t, deviceId, ds } = this.props;
-        const device = ds.devices[deviceId];
-        const formattedDevice = this.formatDevice(device);
-        // 1. find the actuator's label used to upload image
+        const { t, deviceId } = this.props;
         const applyAlias = this.getAttrLabel('dojot:firmware_update:update');
+        let dataToBeSent = { attrs : {}};
+        dataToBeSent.attrs[applyAlias] = '1';
+        // value used to notify device to apply its image
 
-        // 2. find the location of this actuator and set the new value
-        for (let index = 0; index < formattedDevice.attrs.length; index++) {
-            if (formattedDevice.attrs[index].label === applyAlias) {
-                formattedDevice.attrs[index].static_value = '1';
-                // value used to notify device to apply its image
-            }
-        }
-
-        DeviceActions.triggerUpdate(formattedDevice, () => {
+        DeviceActions.triggerActuator(deviceId, dataToBeSent, () => {
             toaster.success(t('firmware:alerts.image_applied'));
         });
     }

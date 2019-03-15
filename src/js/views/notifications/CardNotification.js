@@ -50,8 +50,6 @@ class CardNotification extends Component {
             }, t: i18n,
         } = this.props;
 
-        console.log('this.state', this.state);
-        
         const { showMetas } = this.state;
 
         return (
@@ -85,7 +83,7 @@ class CardNotification extends Component {
                     </div>
                 </div>
                 <hr />
-                <div className={`dojot-collapsible-body${showMetas}` ? '-active' : ''}>
+                <div className={`dojot-collapsible-body${showMetas ? '-active' : ''}`}>
                     <div className="card-notification">
                         <div className="meta-body">
                             {Object.keys((metas))

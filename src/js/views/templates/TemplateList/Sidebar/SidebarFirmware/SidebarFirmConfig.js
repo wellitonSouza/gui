@@ -20,8 +20,8 @@ function createAttribute(label, type, valueType, staticValue) {
     };
 }
 
-function createImageAttribute(data, type) {
-    const aux = createAttribute(data.user_value, type, 'integer', '');
+function createImageAttribute(data, type, valueType) {
+    const aux = createAttribute(data.user_value, type, valueType, '');
     aux.metadata = [createAttribute(data.dojot_value, 'meta', 'boolean', true)];
     return aux;
 }
@@ -97,11 +97,11 @@ class SidebarFirmConfig extends Component {
         if (imageAllowed)
         {
             // adding image attributes
-            template.attrs.push(createImageAttribute(attrs.current_state, 'dynamic'));
-            template.attrs.push(createImageAttribute(attrs.update_result, 'dynamic'));
-            template.attrs.push(createImageAttribute(attrs.current_version, 'dynamic'));
-            template.attrs.push(createImageAttribute(attrs.upload_image, 'actuator'));
-            template.attrs.push(createImageAttribute(attrs.apply_image, 'actuator'));
+            template.attrs.push(createImageAttribute(attrs.current_state, 'dynamic','integer'));
+            template.attrs.push(createImageAttribute(attrs.update_result, 'dynamic','integer'));
+            template.attrs.push(createImageAttribute(attrs.current_version, 'dynamic','integer'));
+            template.attrs.push(createImageAttribute(attrs.upload_image, 'actuator','string'));
+            template.attrs.push(createImageAttribute(attrs.apply_image, 'actuator','string'));
         }
         else
         {

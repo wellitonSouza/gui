@@ -77,6 +77,7 @@ const CardNotification = (props) => {
                                 <MetaNotification
                                     value={metas[key]}
                                     keyName={key}
+                                    key={Math.random()}
                                 />
                             ))}
                         {Object.keys((internalMetas))
@@ -99,7 +100,7 @@ const NotificationList = (props) => {
     const { notifications, i18n } = props;
     return (
         <Fragment>
-            <ul className="collapsible expandable">
+            <ul className="collapsible">
                 {notifications.map(notification => (
                     <CardNotification
                         notification={notification}

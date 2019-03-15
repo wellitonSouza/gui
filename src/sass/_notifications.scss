@@ -22,6 +22,11 @@
     padding: 0;
   }
 
+  .collapsible {
+    margin: 0;
+    box-shadow: none;
+  }
+  
   .card-notification {
     display: flex;
     min-height: 70px;

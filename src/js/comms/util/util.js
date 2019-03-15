@@ -245,11 +245,11 @@ class Util {
     }
 
     utcToHourMinSec(utc) {
-        return utc? moment.parseZone(utc).format('HH:mm:ss') : null;
+        return utc? moment.parseZone(utc).utc().local().format('HH:mm:ss') : null;
     }
 
     utcToDayMonthYear(utc) {
-        return utc? moment.parseZone(utc).format('DD/MM/YYYY'): null;
+        return utc? moment.parseZone(utc).utc().local().format('DD/MM/YYYY'): null;
     }
 
     isNameValid(name) {

@@ -18,7 +18,7 @@ class NotificationStore {
 
     handleUpdateList(notifications) {
         this.notifications = [];
-        notifications.forEach((notification) => {
+        notifications.reverse().forEach((notification) => {
             this.addNotification(notification);
         });
     }

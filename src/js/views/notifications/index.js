@@ -84,6 +84,7 @@ const CardNotification = (props) => {
                                 <MetaNotification
                                     value={internalMetas[key]}
                                     keyName={key}
+                                    key={Math.random()}
                                 />
                             ))}
                     </div>

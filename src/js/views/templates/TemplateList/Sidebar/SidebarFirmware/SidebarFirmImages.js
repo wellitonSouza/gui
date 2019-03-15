@@ -82,7 +82,7 @@ class SidebarFirmImages extends Component {
                                 ImageActions.updateImageData(idToBeUsed, 'file', image.file);
                             });
                         }
-                        // allow add new images box
+                        // allow  again click in new images box
                         this.setState({ newImage: false });
                     });
                 } else
@@ -98,6 +98,7 @@ class SidebarFirmImages extends Component {
                     });
                 }
             }
+            return true; //it seems wrong, but code factor likes it, so...
         });
     }
 

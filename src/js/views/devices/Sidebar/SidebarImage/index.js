@@ -99,10 +99,10 @@ class SidebarImage extends Component {
             toaster.warning('Select a valid image');
             return;
         }
-        
+
         const { t, deviceId } = this.props;
         const uploadImageAlias = this.getAttrLabel('dojot:firmware_update:desired_version');
-        let dataToBeSent = { attrs : {}};
+        const dataToBeSent = { attrs: {} };
         dataToBeSent.attrs[uploadImageAlias] = currentImageId;
 
         DeviceActions.triggerActuator(deviceId, dataToBeSent, () => {
@@ -113,7 +113,7 @@ class SidebarImage extends Component {
     callApplyImage() {
         const { t, deviceId } = this.props;
         const applyAlias = this.getAttrLabel('dojot:firmware_update:update');
-        let dataToBeSent = { attrs : {}};
+        const dataToBeSent = { attrs: {} };
         dataToBeSent.attrs[applyAlias] = '1';
         // value used to notify device to apply its image
 

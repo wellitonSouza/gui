@@ -53,8 +53,7 @@ class SidebarFirmImages extends Component {
                 // 2. upload binary
                 // 3. set as saved image
 
-                if (image.image_version === "")
-                {
+                if (image.image_version === "") {
                     toaster.warning('Image version required.');
                     return false;
                 }
@@ -98,7 +97,7 @@ class SidebarFirmImages extends Component {
                     });
                 }
             }
-            return true; //it seems wrong, but code factor likes it, so...
+            return true; // it seems wrong, but code factor likes it, so...
         });
     }
 

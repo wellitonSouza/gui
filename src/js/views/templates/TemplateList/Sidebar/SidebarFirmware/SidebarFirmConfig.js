@@ -92,13 +92,34 @@ class SidebarFirmConfig extends Component {
 
     saveImageConfig(e) {
         e.preventDefault();
-        const { template } = this.props;
+        let { template, imageAllowed } = this.props;
         const { attrs } = this.state;
-        template.attrs.push(createImageAttribute(attrs.current_state, 'dynamic'));
-        template.attrs.push(createImageAttribute(attrs.update_result, 'dynamic'));
-        template.attrs.push(createImageAttribute(attrs.current_version, 'dynamic'));
-        template.attrs.push(createImageAttribute(attrs.upload_image, 'actuator'));
-        template.attrs.push(createImageAttribute(attrs.apply_image, 'actuator'));
+        if (imageAllowed)
+        {
+            // adding image attributes
+            template.attrs.push(createImageAttribute(attrs.current_state, 'dynamic'));
+            template.attrs.push(createImageAttribute(attrs.update_result, 'dynamic'));
+            template.attrs.push(createImageAttribute(attrs.current_version, 'dynamic'));
+            template.attrs.push(createImageAttribute(attrs.upload_image, 'actuator'));
+            template.attrs.push(createImageAttribute(attrs.apply_image, 'actuator'));
+        }
+        else
+        {
+            // removing image attributes
+            template.img_attrs = [];
+            // 2. also removes img attrs in attr list
+            for (let i = template.attrs.length - 1; i >= 0;i--)
+            {
+                if (template.attrs[i].metadata.length)
+                {
+                    const lbl = template.attrs[i].metadata[0].label;
+                    if (lbl.includes("dojot:firmware_update:"))
+                    {
+                        delete template.attrs[i];
+                    }
+                }
+            }
+        }
 
         TemplateActions.triggerUpdate(template, () => {
             toaster.success('Template updated');
@@ -127,7 +148,7 @@ class SidebarFirmConfig extends Component {
                 <Slide right when={showFirmware} duration={300}>
                     { showFirmware
                         ? (
-                            <div className="generic-sidebar sidebar-firmware">
+                            <div className="sidebar-firmware">
                                 <div className="header">
                                     <div className="title">{t('firmware:title')}</div>
                                     <div className="icon">
@@ -139,7 +160,13 @@ class SidebarFirmConfig extends Component {
                                 </div>
 
                                 <div className="body box-firmware-enabled">
-                                    <div tabIndex="0" role="button" onKeyPress={this.changeFirmwareState} onClick={this.changeFirmwareState} className={`firmware-enabled clickable z-depth-2 card-hover ${clssBtn}`}>
+                                <div className="sub-content">
+                                    <div 
+                                        tabIndex="0"
+                                        role="button" 
+                                        onKeyPress={this.changeFirmwareState}
+                                        onClick={this.changeFirmwareState} 
+                                        className={`firmware-enabled clickable z-depth-2 card-hover ${clssBtn}`}>
                                         <div className="icon">
                                             <img src="images/firmware-red.png" alt="device-icon" />
                                         </div>
@@ -217,7 +244,8 @@ class SidebarFirmConfig extends Component {
                                                 </div>
                                             </div>
                                         )
-                                        : <div className="image-related-attrs" /> }
+                                        : null }
+                                    </div>
                                     <div className="body-actions">
                                         <div className="body-actions--divider" />
                                         <SidebarButton

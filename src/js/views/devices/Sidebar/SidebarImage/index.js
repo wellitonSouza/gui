@@ -137,7 +137,7 @@ class SidebarImage extends Component {
         for (let index = 0; index < formattedDevice.attrs.length; index++) {
             if (formattedDevice.attrs[index].label === applyAlias) {
                 formattedDevice.attrs[index].static_value = '1';
-                // customized value used to notify device to apply its image
+                // value used to notify device to apply its image
             }
         }
 
@@ -179,7 +179,7 @@ class SidebarImage extends Component {
                 <Slide right when={showSidebarImage} duration={300}>
                     { showSidebarImage
                         ? (
-                            <div className="-sidebar sidebar-attribute sidebar-firmware">
+                            <div className="sidebar-firmware">
                                 <div className="header">
                                     <div className="title">Firmware</div>
                                     <div className="icon">
@@ -191,37 +191,39 @@ class SidebarImage extends Component {
                                 </div>
 
                                 <div className="body box-image-info">
-                                    <div className="info firmware-enabled">
-                                        <div className="icon">
-                                            <img src="images/icons/firmware-gray.png" alt="device-icon" />
-                                        </div>
-                                        <div className="desc">
-                                            <div className="line">
-                                                <div className="label">{t('firmware:default_attrs.current_version')}</div>
-                                                <div className="value">{attrs.current_version}</div>
+                                    <div className="sub-content">
+                                        <div className="info firmware-enabled">
+                                            <div className="icon">
+                                                <img src="images/icons/firmware-gray.png" alt="device-icon" />
                                             </div>
-                                            <div className="line">
-                                                <div className="label">{t('firmware:default_attrs.state')}</div>
-                                                <div className="value">{attrs.current_state}</div>
-                                            </div>
-                                            <div className="line">
-                                                <div className="label">{t('firmware:default_attrs.update_result')}</div>
-                                                <div className="value">{attrs.update_result}</div>
+                                            <div className="desc">
+                                                <div className="line">
+                                                    <div className="label">{t('firmware:default_attrs.current_version')}</div>
+                                                    <div className="value">{attrs.current_version}</div>
+                                                </div>
+                                                <div className="line">
+                                                    <div className="label">{t('firmware:default_attrs.state')}</div>
+                                                    <div className="value">{attrs.current_state}</div>
+                                                </div>
+                                                <div className="line">
+                                                    <div className="label">{t('firmware:default_attrs.update_result')}</div>
+                                                    <div className="value">{attrs.update_result}</div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="line-2" />
-                                    <div className="body-form pl50">
-                                        <div className="header2">{t('firmware:alerts.image_to_transfer')}</div>
-                                        <div className="cid_select">
-                                            <MaterialSelect id="flr_images" name="images" label={t('firmware:labels.available')} value={this.currentImageId} onChange={e => this.onChangeImage(e)}>
-                                                {opts}
-                                            </MaterialSelect>
-                                        </div>
-                                        <div className="cid_upload_button">
-                                            <div className="square-button" onKeyPress={this.callUploadImage} tabIndex="0" role="button" onClick={this.callUploadImage}>
-                                                <i className="fa fa-download fa-2x" />
-                                                {t('firmware:labels.transfer')}
+                                        <div className="line-2" />
+                                        <div className="body-form pl50">
+                                            <div className="header2">{t('firmware:alerts.image_to_transfer')}</div>
+                                            <div className="cid_select">
+                                                <MaterialSelect id="flr_images" name="images" label={t('firmware:labels.available')} value={this.currentImageId} onChange={e => this.onChangeImage(e)}>
+                                                    {opts}
+                                                </MaterialSelect>
+                                            </div>
+                                            <div className="cid_upload_button">
+                                                <div className="square-button" onKeyPress={this.callUploadImage} tabIndex="0" role="button" onClick={this.callUploadImage}>
+                                                    <i className="fa fa-download fa-2x" />
+                                                    {t('firmware:labels.transfer')}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

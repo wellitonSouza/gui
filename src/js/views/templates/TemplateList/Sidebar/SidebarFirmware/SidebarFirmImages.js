@@ -133,7 +133,7 @@ class SidebarFirmImages extends Component {
                 <Slide right when={showFirmware} duration={300}>
                     { showFirmware
                         ? (
-                            <div className="sidebar-attribute sidebar-firmware">
+                            <div className="sidebar-firmware">
                                 <div className="header">
                                     <div className="title">{t('firmware:header')}</div>
                                     <div className="icon">
@@ -198,9 +198,8 @@ SidebarFirmImages.propTypes = {
     images: PropTypes.shape({
     }),
     t: PropTypes.func.isRequired,
-    templateId: PropTypes.string.isRequired,
+    templateId: PropTypes.number.isRequired,
     toogleSidebarFirmware: PropTypes.func.isRequired,
-
 };
 
 export default withNamespaces()(SidebarFirmImages);

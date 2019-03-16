@@ -36,7 +36,7 @@
     "image_list":
     {
         "version":"Image Version",
-        "hash":"Image Hash",
+        "hash":"Binary info",
         "created_at":"Created At",
         "no_binary_yet":"No binary yet.",
         "dropzone_desc": "Drop the file here or click to select image to upload."

@@ -36,7 +36,7 @@
     "image_list":
     {
         "version":"Versão da Imagem",
-        "hash":"Hash da Imagem",
+        "hash":"Informação do Binário",
         "created_at":"Criado em",
         "no_binary_yet":"Sem binário.",
         "dropzone_desc": "Solte o arquivo ou clique para selecionar uma imagem."

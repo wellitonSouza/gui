@@ -1,20 +1,13 @@
 import {
-    shape, number, string, oneOfType, bool,
+    shape, string, any,
 } from 'prop-types';
 
-export const metaNotificationType = shape({
-    keyName: string,
-    value: oneOfType([
-        string,
-        number,
-        bool,
-    ]),
-});
-
-export const notificationType = shape({
+const notificationType = shape({
     date: string,
     time: string,
     message: string,
-    metas: metaNotificationType,
-    internalMetas: metaNotificationType,
+    metas: any,
+    internalMetas: any,
 });
+
+export default notificationType;

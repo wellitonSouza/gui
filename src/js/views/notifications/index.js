@@ -7,7 +7,7 @@ import NotificationsStore from '../../stores/NotificationStore';
 import NotificationActions from '../../actions/NotificationActions';
 import SocketIO from './SocketIONotification';
 import CardNotification from './CardNotification';
-import { notificationType } from './PropTypes';
+import notificationType from './PropTypes';
 
 
 const NotificationList = (props) => {
@@ -56,7 +56,7 @@ Notifications.propTypes = {
 };
 
 NotificationList.propTypes = {
-    notifications: PropTypes.arrayOf(PropTypes.shape(notificationType)),
+    notifications: PropTypes.arrayOf(notificationType),
 };
 
 NotificationList.defaultProps = {

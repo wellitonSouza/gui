@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withNamespaces } from 'react-i18next';
-import { notificationType, metaNotificationType } from './PropTypes';
+import notificationType from './PropTypes';
 
 const MetaNotification = (props) => {
     const {
@@ -98,7 +98,7 @@ class CardNotification extends Component {
                                     <MetaNotification
                                         value={metas[key]}
                                         keyName={key}
-
+                                        key={Math.random()}
                                     />
                                 ))}
                             {Object.keys((internalMetas))
@@ -106,7 +106,7 @@ class CardNotification extends Component {
                                     <MetaNotification
                                         value={internalMetas[key]}
                                         keyName={key}
-
+                                        key={Math.random()}
                                     />
                                 ))}
                         </div>
@@ -121,7 +121,7 @@ class CardNotification extends Component {
 
 CardNotification.propTypes = {
     t: PropTypes.func.isRequired,
-    notification: PropTypes.shape(notificationType),
+    notification: notificationType,
 };
 
 CardNotification.defaultProps = {
@@ -129,13 +129,18 @@ CardNotification.defaultProps = {
         date: '',
         time: '',
         message: '',
-        metas: [],
-        metaNotificationType: [],
+        metas: {},
+        metaNotificationType: {},
     },
 };
 
 MetaNotification.propTypes = {
-    ...metaNotificationType,
+    keyName: PropTypes.string,
+    value: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+        PropTypes.bool,
+    ]),
 };
 
 MetaNotification.defaultProps = {

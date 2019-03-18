@@ -1,23 +1,24 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withNamespaces } from 'react-i18next';
-import SocketIO from './SocketIONotification';
+import { notificationType, metaNotificationType } from './PropTypes';
 
 const MetaNotification = (props) => {
     const {
         keyName, value,
     } = props;
 
-    let finalValue = 'undefined';
+    let valueToShow = 'undefined';
     if (((typeof value) === 'boolean')) {
-        finalValue = (value ? 'true' : 'false');
+        valueToShow = (value ? 'true' : 'false');
     } else if ((typeof value) === 'number' || (typeof value) === 'string') {
-        finalValue = value;
+        valueToShow = value;
     }
+
     return (
         <div className="meta-row">
             <div className="main">
-                {finalValue}
+                {valueToShow}
             </div>
             <div className="sub">
                 {keyName}
@@ -31,7 +32,7 @@ class CardNotification extends Component {
         super(props);
 
         this.state = {
-            showMetas: false,
+            isShowMetas: false,
         };
 
         this.clickToggle = this.clickToggle.bind(this);
@@ -39,7 +40,7 @@ class CardNotification extends Component {
 
     clickToggle() {
         this.setState(prevState => ({
-            showMetas: !prevState.showMetas,
+            isShowMetas: !prevState.isShowMetas,
         }));
     }
 
@@ -50,11 +51,17 @@ class CardNotification extends Component {
             }, t: i18n,
         } = this.props;
 
-        const { showMetas } = this.state;
+        const { isShowMetas } = this.state;
 
         return (
             <li>
-                <div className="dojot-collapsible-header" role="button" onClick={this.clickToggle}>
+                <div
+                    className="dojot-collapsible-header"
+                    role="button"
+                    onClick={this.clickToggle}
+                    tabIndex={0}
+                    onKeyDown={this.clickToggle}
+                >
                     <div className="card-notification">
                         <div className="first-col-noti">
                             <i
@@ -83,7 +90,7 @@ class CardNotification extends Component {
                     </div>
                 </div>
                 <hr />
-                <div className={`dojot-collapsible-body${showMetas ? '-active' : ''}`}>
+                <div className={`dojot-collapsible-body${isShowMetas ? '-active' : ''}`}>
                     <div className="card-notification">
                         <div className="meta-body">
                             {Object.keys((metas))
@@ -110,5 +117,30 @@ class CardNotification extends Component {
         );
     }
 }
+
+
+CardNotification.propTypes = {
+    t: PropTypes.func.isRequired,
+    notification: PropTypes.shape(notificationType),
+};
+
+CardNotification.defaultProps = {
+    notification: {
+        date: '',
+        time: '',
+        message: '',
+        metas: [],
+        metaNotificationType: [],
+    },
+};
+
+MetaNotification.propTypes = {
+    ...metaNotificationType,
+};
+
+MetaNotification.defaultProps = {
+    keyName: 'key',
+    value: 'undefined',
+};
 
 export default withNamespaces()(CardNotification);

@@ -1,50 +1,20 @@
-import PropTypes from 'prop-types';
+import {
+    shape, number, string, oneOfType, bool,
+} from 'prop-types';
 
-MetaNotification.propTypes = {
-    keyName: PropTypes.string,
-    value: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-        PropTypes.bool,
+export const metaNotificationType = shape({
+    keyName: string,
+    value: oneOfType([
+        string,
+        number,
+        bool,
     ]),
-};
+});
 
-const notificationType = {
-    date: PropTypes.string,
-    time: PropTypes.string,
-    message: PropTypes.string,
-    metas: PropTypes.shape(MetaNotification),
-    internalMetas: PropTypes.shape(MetaNotification),
-};
-
-Notifications.propTypes = {
-    t: PropTypes.func.isRequired,
-    notifications: PropTypes.arrayOf(PropTypes.shape(notificationType)),
-};
-
-Notifications.defaultProps = {
-    notifications: [],
-};
-
-NotificationList.propTypes = {
-    i18n: PropTypes.func.isRequired,
-    notifications: PropTypes.arrayOf(PropTypes.shape(notificationType)).isRequired,
-};
-
-CardNotification.propTypes = {
-    i18n: PropTypes.func.isRequired,
-    notification: PropTypes.shape(notificationType),
-};
-
-CardNotification.defaultProps = {
-    notification: {
-        date: '',
-        time: '',
-        message: '',
-    },
-};
-
-MetaNotification.defaultProps = {
-    keyName: 'key',
-    value: 'undefined',
-};
+export const notificationType = shape({
+    date: string,
+    time: string,
+    message: string,
+    metas: metaNotificationType,
+    internalMetas: metaNotificationType,
+});

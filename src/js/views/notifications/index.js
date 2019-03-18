@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { withNamespaces } from 'react-i18next';
 import AltContainer from 'alt-container';
-import { NewPageHeader } from 'Containers/full/PageHeader';
-import NotificationsStore from 'Stores/NotificationStore';
-import NotificationActions from 'Actions/NotificationActions';
+import PropTypes from 'prop-types';
+import { NewPageHeader } from '../../containers/full/PageHeader';
+import NotificationsStore from '../../stores/NotificationStore';
+import NotificationActions from '../../actions/NotificationActions';
 import SocketIO from './SocketIONotification';
 import CardNotification from './CardNotification';
+import { notificationType } from './PropTypes';
 
 
 const NotificationList = (props) => {
@@ -15,7 +17,6 @@ const NotificationList = (props) => {
             {notifications.map(notification => (
                 <CardNotification
                     notification={notification}
-                    /* i18n={i18n} */
                     key={Math.random()}
                 />
             ))}
@@ -43,11 +44,23 @@ class Notifications extends Component {
                         subtitle={i18n('notifications:subtitle')}
                         icon="alarm"
                     />
-                    <NotificationList i18n={i18n}/>
+                    <NotificationList />
                 </AltContainer>
             </div>
         );
     }
 }
+
+Notifications.propTypes = {
+    t: PropTypes.func.isRequired,
+};
+
+NotificationList.propTypes = {
+    notifications: PropTypes.arrayOf(PropTypes.shape(notificationType)),
+};
+
+NotificationList.defaultProps = {
+    notifications: [],
+};
 
 export default withNamespaces()(Notifications);

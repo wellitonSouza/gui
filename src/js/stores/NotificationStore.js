@@ -18,9 +18,10 @@ class NotificationStore {
 
     handleUpdateList(notifications) {
         this.notifications = [];
-        notifications.reverse().forEach((notification) => {
-            this.addNotification(notification);
-        });
+        notifications.reverse()
+            .forEach((notification) => {
+                this.addNotification(notification);
+            });
     }
 
     handleAppend(data) {
@@ -30,13 +31,14 @@ class NotificationStore {
 
     addNotification(notification) {
         const {
-            timestamp, ts, message, metaAttrsFilter: metas, metadata: internalMetas,
+            timestamp, ts, message, metaAttrsFilter,
         } = notification;
+
+        const metas = metaAttrsFilter || {};
 
         this.notifications = [{
             message,
             metas,
-            internalMetas,
             time: util.utcToHourMinSec(ts) || util.timestampToHourMinSec(timestamp),
             date: util.utcToDayMonthYear(ts) || util.timestampToDayMonthYear(timestamp),
         },

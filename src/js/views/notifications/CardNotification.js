@@ -47,7 +47,7 @@ class CardNotification extends Component {
     render() {
         const {
             notification: {
-                date, time, message, metas, internalMetas,
+                date, time, message, metas,
             }, t: i18n,
         } = this.props;
 
@@ -101,14 +101,6 @@ class CardNotification extends Component {
                                         key={Math.random()}
                                     />
                                 ))}
-                            {Object.keys((internalMetas))
-                                .map(key => (
-                                    <MetaNotification
-                                        value={internalMetas[key]}
-                                        keyName={key}
-                                        key={Math.random()}
-                                    />
-                                ))}
                         </div>
                     </div>
                     <hr />
@@ -130,7 +122,6 @@ CardNotification.defaultProps = {
         time: '',
         message: '',
         metas: {},
-        metaNotificationType: {},
     },
 };
 

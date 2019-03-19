@@ -7,7 +7,6 @@ const notificationType = shape({
     time: string,
     message: string,
     metas: any,
-    internalMetas: any,
 });
 
 export default notificationType;

@@ -85,6 +85,22 @@ class DeviceActions {
         };
     }
 
+    triggerActuator(deviceId, attrs, cb) {
+        return (dispatch) => {
+            dispatch();
+            deviceManager
+                .sendActuator(deviceId, attrs)
+                .then((response) => {
+                    if (cb) {
+                        cb(response);
+                    }
+                })
+                .catch((error) => {
+                    this.devicesFailed(error);
+                });
+        };
+    }
+
     triggerUpdate(device, cb) {
         return (dispatch) => {
             dispatch();

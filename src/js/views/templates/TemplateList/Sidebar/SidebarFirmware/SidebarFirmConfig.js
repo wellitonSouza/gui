@@ -21,7 +21,7 @@ function createAttribute(label, type, valueType, staticValue) {
 }
 
 function createImageAttribute(data, type) {
-    const aux = createAttribute(data.user_value, type, 'string', '');
+    const aux = createAttribute(data.user_value, type, 'integer', '');
     aux.metadata = [createAttribute(data.dojot_value, 'meta', 'boolean', true)];
     return aux;
 }

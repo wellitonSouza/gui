@@ -1,68 +1,32 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { withNamespaces } from 'react-i18next';
-import PropTypes from 'prop-types';
 import AltContainer from 'alt-container';
-import { NewPageHeader } from 'Containers/full/PageHeader';
-import NotificationsStore from 'Stores/NotificationStore';
+import PropTypes from 'prop-types';
+import { NewPageHeader } from '../../containers/full/PageHeader';
+import NotificationsStore from '../../stores/NotificationStore';
+import NotificationActions from '../../actions/NotificationActions';
 import SocketIO from './SocketIONotification';
-
-const CardNotification = (props) => {
-    const {
-        notification, i18n,
-    } = props;
-
-    const {
-        date, time, message, device,
-    } = notification;
-
-    return (
-        <div>
-            <div className="card-notification">
-                <div className="time-row">
-                    <i className="fa fa-clock-o icon-clock " aria-hidden="true" />
-                    <div className="datetime">
-                        <div className="date">{date}</div>
-                        <div className="time">{time}</div>
-                    </div>
-                </div>
-                <div className="row-notification">
-                    <div className="info-row">
-                        <div className="main">
-                            {message}
-                        </div>
-                        <div className="sub">{i18n('notifications:message')}</div>
-                    </div>
-                    <div className="name-row">
-                        <div className="main">
-                            {device}
-                        </div>
-                        <div className="sub">{i18n('notifications:device')}</div>
-                    </div>
-                </div>
-            </div>
-            <hr />
-        </div>
-    );
-};
+import CardNotification from './CardNotification';
+import notificationType from './PropTypes';
 
 
 const NotificationList = (props) => {
-    const { notifications, i18n } = props;
+    const { notifications } = props;
     return (
-        <Fragment>
+        <ul>
             {notifications.map(notification => (
                 <CardNotification
                     notification={notification}
-                    i18n={i18n}
                     key={Math.random()}
                 />
             ))}
-        </Fragment>
+        </ul>
     );
 };
 
 class Notifications extends Component {
     componentDidMount() {
+        NotificationActions.fetchNotificationsFromHistory('user_notification');
         SocketIO.connect();
     }
 
@@ -71,7 +35,7 @@ class Notifications extends Component {
     }
 
     render() {
-        const { t: i18n, notifications } = this.props;
+        const { t: i18n } = this.props;
         return (
             <div className="full-notification-area">
                 <AltContainer store={NotificationsStore}>
@@ -80,47 +44,23 @@ class Notifications extends Component {
                         subtitle={i18n('notifications:subtitle')}
                         icon="alarm"
                     />
-                    <NotificationList notifications={notifications} i18n={i18n} />
+                    <NotificationList />
                 </AltContainer>
             </div>
         );
     }
 }
 
-const notificationType = {
-    date: PropTypes.string,
-    time: PropTypes.string,
-    message: PropTypes.string,
-    device: PropTypes.string,
-};
-
 Notifications.propTypes = {
     t: PropTypes.func.isRequired,
-    notifications: PropTypes.arrayOf(PropTypes.shape(notificationType)),
-};
-
-Notifications.defaultProps = {
-    notifications: [],
 };
 
 NotificationList.propTypes = {
-    i18n: PropTypes.func.isRequired,
-    notifications: PropTypes.arrayOf(PropTypes.shape(notificationType)).isRequired,
+    notifications: PropTypes.arrayOf(notificationType),
 };
 
-CardNotification.propTypes = {
-    i18n: PropTypes.func.isRequired,
-    notification: PropTypes.shape(notificationType),
+NotificationList.defaultProps = {
+    notifications: [],
 };
-
-CardNotification.defaultProps = {
-    notification: {
-        date: '',
-        time: '',
-        device: '',
-        message: '',
-    },
-};
-
 
 export default withNamespaces()(Notifications);

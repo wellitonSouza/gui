@@ -13,7 +13,7 @@ i18n.use(LanguageDetector)
             default: ['en'],
         },
         lowerCaseLng: true,
-        debug: true,
+        debug: false,
         nsSeparator: ':',
         ns: ['common', 'menu', 'groups', 'importExport', 'users', 'flows', 'templates', 'devices', 'login', 'notifications'],
         fallbackNS: 'common',

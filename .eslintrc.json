@@ -1,6 +1,9 @@
 {
   "extends": "airbnb",
-  "globals": {
+  "globals": {   
+    "window": true,
+    "browser": true,
+    "node": true,
     "FormData": "readable"
   },
   "rules": {

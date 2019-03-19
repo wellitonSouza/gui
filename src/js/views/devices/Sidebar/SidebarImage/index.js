@@ -3,14 +3,13 @@ import PropTypes from 'prop-types';
 import Slide from 'react-reveal/Slide';
 import { DojotBtnClassic } from 'Components/DojotButton';
 import ImageActions from 'Actions/ImageActions';
-import MeasureActions from 'Actions/MeasureActions';
 import MaterialSelect from 'Components/MaterialSelect';
 import SidebarFirmImages from 'Views/templates/TemplateList/Sidebar/SidebarFirmware/SidebarFirmImages';
 import SidebarButton from 'Views/templates/TemplateList/Sidebar/SidebarButton';
 import DeviceActions from 'Actions/DeviceActions';
 import toaster from 'Comms/util/materialize';
-import util from "Comms/util";
 import { withNamespaces } from 'react-i18next';
+import FirmwareWebSocket from './FirmwareWebSocket';
 
 let imageSocket = null;
 
@@ -61,20 +60,6 @@ class SidebarImage extends Component {
         }
     }
 
-
-    receivedImageInformation(data) {
-        console.log("receivedImageInformation", data);
-        const { attrs: mattrs } = data;
-        const { attrs } = this.state;
-        attrs[dojotFirmwareUpdateState] = mattrs[this.getAttrLabel('dojot:firmware_update:state')];
-        attrs[dojotFirmwareUpdateUpdateResult] = mattrs[this.getAttrLabel('dojot:firmware_update:update_result')];
-        attrs[dojotFirmwareUpdateVersion] = mattrs[this.getAttrLabel('dojot:firmware_update:version')];
-        this.setState({
-            attrs,
-        });
-    }
-
-
     onChangeImage(e) {
         const newImageId = e.target.value;
         this.setState({
@@ -96,6 +81,16 @@ class SidebarImage extends Component {
         return relatedLabel;
     }
 
+    receivedImageInformation(data) {
+        const { attrs: mattrs } = data;
+        const { attrs } = this.state;
+        attrs['dojotFirmwareUpdateState'] = mattrs[this.getAttrLabel('dojot:firmware_update:state')];
+        attrs['dojotFirmwareUpdateUpdateResult'] = mattrs[this.getAttrLabel('dojot:firmware_update:update_result')];
+        attrs['dojotFirmwareUpdateVersion'] = mattrs[this.getAttrLabel('dojot:firmware_update:version')];
+        this.setState({
+            attrs,
+        });
+    }
 
     callUploadImage() {
         const { currentImageId } = this.state;
@@ -261,56 +256,5 @@ SidebarImage.propTypes = {
 };
 
 
-class FirmwareWebSocket extends Component {
-    constructor(props) {
-      super(props);
-    }
-
-    componentDidMount() {
-      console.log("FirmwareWebSocket: componentDidMount:");
-      const rsi = this.props.onChange;
-      const socketio = require("socket.io-client");
-      const target = `${window.location.protocol}//${window.location.host}`;
-      const token_url = `${target}/stream/socketio`;
-
-      function _getWsToken() {
-        util
-          ._runFetch(token_url)
-          .then((reply) => {
-            init(reply.token);
-          })
-          .catch((error) => {
-            toaster.error(error);
-          });
-      }
-
-      function init(token) {
-        imageSocket = socketio(target, {
-          query: `token=${token}`,
-          transports: ["polling"],
-        });
-        imageSocket.on("all", (data) => {
-          onChange(data);
-        });
-
-        imageSocket.on("error", (data) => {
-          if (imageSocket !== null) imageSocket.close();
-        });
-      }
-      _getWsToken();
-    }
-
-    componentWillUnmount() {
-      if (imageSocket !== null) imageSocket.close();
-    }
-
-    render() {
-      return null;
-    }
-  }
-
-FirmwareWebSocket.propTypes = {
-    onChange: PropTypes.func.isRequired,
-};
 
 export default withNamespaces()(SidebarImage);

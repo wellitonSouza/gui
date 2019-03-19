@@ -15,14 +15,15 @@ import FirmwareWebSocket from './FirmwareWebSocket';
 class SidebarImage extends Component {
     constructor(props) {
         super(props);
+        const { t } = props;
         this.state = {
             loaded: false,
             showFirmwareImage: false,
             attrs: {
-                dojotFirmwareUpdateState: 'No data received',
-                dojotFirmwareUpdateUpdateResult: 'No data received',
-                dojotFirmwareUpdateVersion: 'No data received',
-},
+                dojotFirmwareUpdateState: t("firmware:no_data"),
+                dojotFirmwareUpdateUpdateResult: t("firmware:no_data"),
+                dojotFirmwareUpdateVersion: t("firmware:no_data"),
+            },
             currentImageId: '0',
         };
         this.callUploadImage = this.callUploadImage.bind(this);

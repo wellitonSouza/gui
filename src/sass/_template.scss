@@ -163,8 +163,8 @@
     .metadata-list-wrapper {
       display: flex;
       flex-direction: column;
-      width: 375px;
-      height: 100%;
+      height: auto;
+      min-height: 100px;
       .metadata-list-title {
         padding: 5px 20px;
         font-family: Roboto;

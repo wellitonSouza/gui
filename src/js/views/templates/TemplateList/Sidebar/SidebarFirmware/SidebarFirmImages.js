@@ -52,6 +52,12 @@ class SidebarFirmImages extends Component {
                 // 1. update or create image
                 // 2. upload binary
                 // 3. set as saved image
+
+                if (image.image_version === "") {
+                    toaster.warning('Image version required.');
+                    return false;
+                }
+
                 if (image.new) {
                     const jsonImg = {
                         label: String(templateId),
@@ -75,6 +81,8 @@ class SidebarFirmImages extends Component {
                                 ImageActions.updateImageData(idToBeUsed, 'file', image.file);
                             });
                         }
+                        // allow  again click in new images box
+                        this.setState({ newImage: false });
                     });
                 } else
                 // Todo: currently we don't update meta information for images;
@@ -89,10 +97,8 @@ class SidebarFirmImages extends Component {
                     });
                 }
             }
+            return true; // it seems wrong, but code factor likes it, so...
         });
-        // return the component to up-to-date state
-        this.setState({ newImage: false });
-        ImageActions.fetchImages.defer(templateId);
     }
 
     removeBinary(e, image) {

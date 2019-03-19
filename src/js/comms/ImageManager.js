@@ -14,6 +14,11 @@ class ImageManager {
         return util.GET(`${this.baseUrl}/image/${id}`);
     }
 
+    getBinaries() {
+        return util.GET(`${this.baseUrl}/image/binary/`);
+    }
+
+
     addImage(image) {
         return util.POST(`${this.baseUrl}/fw-image/image/`, image);
     }

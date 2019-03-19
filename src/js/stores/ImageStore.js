@@ -10,9 +10,9 @@ class ImageStore {
         this.imageAllowed = false;
 
         this.bindListeners({
+
             handleUpdateImageList: ImageActions.UPDATE_IMAGES,
             handleFetchImageList: ImageActions.FETCH_IMAGES,
-
             handleTriggerInsertion: ImageActions.TRIGGER_INSERT,
             handleInsertImage: ImageActions.INSERT_IMAGE,
             handleInsertEmptyImage: ImageActions.INSERT_EMPTY_IMAGE,
@@ -25,6 +25,7 @@ class ImageStore {
 
             handleTriggerRemovalBinary: ImageActions.TRIGGER_REMOVAL_BINARY,
             handleRemoveSingleBinary: ImageActions.REMOVE_SINGLE_BINARY,
+            handleRemoveBinaryInfo: ImageActions.REMOVE_BINARY_INFO,
 
             handleTriggerRemoval: ImageActions.TRIGGER_REMOVAL,
             handleRemoveSingle: ImageActions.REMOVE_SINGLE,
@@ -36,6 +37,11 @@ class ImageStore {
 
             handleFailure: ImageActions.IMAGES_FAILED,
         });
+    }
+
+    handleRemoveBinaryInfo(imageId) {
+        if (this.images[imageId])
+            this.images[imageId].file = null;
     }
 
     handleFetchTemplateInfo() {
@@ -64,8 +70,10 @@ class ImageStore {
         let newImage = {};
         newImage = JSON.parse(JSON.stringify(image));
         newImage.has_image = newImage.confirmed;
-        if (!newImage.has_image)
         newImage.image_hash = null;
+        if (newImage.has_image)
+            newImage.image_hash = String(newImage.id)+".hex";
+        // TODO: request more information to image manager
         newImage.image_version = newImage.fw_version;
         newImage.saved = true;
         return newImage;
@@ -82,18 +90,18 @@ class ImageStore {
     }
 
     handleFetchImageList() {
-        this.images = {};
         this.loading = true;
     }
 
     handleTriggerInsertion(newImage) {
+        // console.log("this.images", JSON.parse(JSON.stringify(this.images)));
         // this is actually just a intermediary while addition happens asynchonously
         this.error = null;
         this.loading = true;
     }
 
     handleInsertImage(imgs) {
-        // todo: get image_id correctly
+        // TODO: get image_id correctly
         // const idToBeUsed = imgs.image.id;
         // adds new image
         const idToBeUsed = imgs.image.url.split('/')[2];
@@ -102,7 +110,6 @@ class ImageStore {
         this.images[idToBeUsed].saved = true;
         this.images[idToBeUsed].created = imgs.image.published_at;
         this.images[idToBeUsed].image_version = this.images[idToBeUsed].fw_version;
-        
         // removes old image 
         delete this.images[imgs.oldimage.id];
      
@@ -111,7 +118,6 @@ class ImageStore {
     }
 
     handleUpdateSingle(image_id) {
-        this.images[image_id].has_image = true;
         this.loading = false;
     }
 
@@ -146,7 +152,7 @@ class ImageStore {
     }
 
     fetchSingle(id) {
-        this.images = { loading: true };
+        this.loading = true;
     }
 
     handleFailure(error) {

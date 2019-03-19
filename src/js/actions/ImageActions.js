@@ -25,6 +25,10 @@ class ImageActions {
         };
     }
 
+    updateBinaries(binaryList) {
+        return binaryList;
+    }
+
     updateImages(images) {
         return images;
     }
@@ -42,14 +46,17 @@ class ImageActions {
             dispatch();
 
             imageManager.getImages(templateId).then((imageList) => {
-                this.updateImages(imageList);
-            })
+                   this.updateImages(imageList);
+                })
                 .catch((error) => {
                     this.imagesFailed(error);
                 });
         };
     }
 
+    removeBinaryInfo(id) {
+        return id;
+    }
 
     triggerUpdate(image, cb) {
         return (dispatch) => {
@@ -63,6 +70,7 @@ class ImageActions {
                 })
                 .catch((error) => {
                     this.imagesFailed(error);
+                    this.removeBinaryInfo(image.id);
                 });
         };
     }
@@ -83,7 +91,6 @@ class ImageActions {
                     }
                 })
                 .catch((error) => {
-                    console.error('Failed to fetch images', error);
                     this.imagesFailed(error);
                 });
         };
@@ -107,7 +114,7 @@ class ImageActions {
                 .then((response) => {
                     this.insertImage(response, newimage);
                     if (cb) {
-                        cb(response, newimage);
+                        cb(response);
                     }
                 })
                 .catch((error) => {

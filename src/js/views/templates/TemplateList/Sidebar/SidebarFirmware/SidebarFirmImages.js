@@ -79,9 +79,10 @@ class SidebarFirmImages extends Component {
                             ImageActions.triggerUpdate(imgBinary, () => {
                                 toaster.success(t('firmware:alerts.file_added'));
                                 ImageActions.updateImageData(idToBeUsed, 'file', image.file);
+                                ImageActions.updateImageData(idToBeUsed, 'saved', true);
                             });
                         }
-                        // allow  again click in new images box
+                        // show again the image box
                         this.setState({ newImage: false });
                     });
                 } else

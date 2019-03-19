@@ -1,29 +1,17 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import util from "Comms/util";
+import toaster from 'Comms/util/materialize';
 
+let imageSocket = null;
+const socketio = require("socket.io-client");
 
 class FirmwareWebSocket extends Component {
-    constructor(props) {
-      super(props);
-    }
 
     componentDidMount() {
       const { onChange: rsi } = this.props;
-      const socketio = require("socket.io-client");
       const target = `${window.location.protocol}//${window.location.host}`;
-      const token_url = `${target}/stream/socketio`;
-
-      function _getWsToken() {
-        util
-          ._runFetch(token_url)
-          .then((reply) => {
-            init(reply.token);
-          })
-          .catch((error) => {
-            toaster.error(error);
-          });
-      }
+      const tokenUrl = `${target}/stream/socketio`;
 
       function init(token) {
         imageSocket = socketio(target, {
@@ -35,9 +23,22 @@ class FirmwareWebSocket extends Component {
         });
 
         imageSocket.on("error", (data) => {
-          if (imageSocket !== null) imageSocket.close();
+            toaster.error(data);
+            if (imageSocket !== null) imageSocket.close();
         });
       }
+
+      function _getWsToken() {
+        util
+          ._runFetch(tokenUrl)
+          .then((reply) => {
+            init(reply.token);
+          })
+          .catch((error) => {
+            toaster.error(error);
+          });
+      }
+
       _getWsToken();
     }
 

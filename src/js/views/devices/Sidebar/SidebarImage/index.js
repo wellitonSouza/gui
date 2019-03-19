@@ -11,7 +11,6 @@ import toaster from 'Comms/util/materialize';
 import { withNamespaces } from 'react-i18next';
 import FirmwareWebSocket from './FirmwareWebSocket';
 
-const imageSocket = null;
 
 class SidebarImage extends Component {
     constructor(props) {

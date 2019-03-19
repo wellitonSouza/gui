@@ -20,10 +20,11 @@ class SidebarImage extends Component {
         this.state = {
             loaded: false,
             showFirmwareImage: false,
-            attrs: { 
-                dojotFirmwareUpdateState: 'No data received', 
-                dojotFirmwareUpdateUpdateResult: 'No data received', 
-                dojotFirmwareUpdateVersion: 'No data received' },
+            attrs: {
+                dojotFirmwareUpdateState: 'No data received',
+                dojotFirmwareUpdateUpdateResult: 'No data received',
+                dojotFirmwareUpdateVersion: 'No data received',
+},
             currentImageId: '0',
         };
         this.callUploadImage = this.callUploadImage.bind(this);
@@ -63,16 +64,15 @@ class SidebarImage extends Component {
 
     receivedImageInformation(data) {
         console.log("receivedImageInformation", data);
-        const { attrs : mattrs } = data;
+        const { attrs: mattrs } = data;
         const { attrs } = this.state;
         attrs[dojotFirmwareUpdateState] = mattrs[this.getAttrLabel('dojot:firmware_update:state')];
         attrs[dojotFirmwareUpdateUpdateResult] = mattrs[this.getAttrLabel('dojot:firmware_update:update_result')];
         attrs[dojotFirmwareUpdateVersion] = mattrs[this.getAttrLabel('dojot:firmware_update:version')];
-        this.setState({ 
-            attrs
+        this.setState({
+            attrs,
         });
     }
-
 
 
     onChangeImage(e) {
@@ -265,45 +265,45 @@ class FirmwareWebSocket extends Component {
     constructor(props) {
       super(props);
     }
-     
+
     componentDidMount() {
       console.log("FirmwareWebSocket: componentDidMount:");
-      let rsi = this.props.onChange;
+      const rsi = this.props.onChange;
       const socketio = require("socket.io-client");
       const target = `${window.location.protocol}//${window.location.host}`;
       const token_url = `${target}/stream/socketio`;
-  
+
       function _getWsToken() {
         util
           ._runFetch(token_url)
-          .then(reply => {
+          .then((reply) => {
             init(reply.token);
           })
-          .catch(error => {
+          .catch((error) => {
             toaster.error(error);
           });
       }
-  
+
       function init(token) {
         imageSocket = socketio(target, {
           query: `token=${token}`,
-          transports: ["polling"]
+          transports: ["polling"],
         });
-        imageSocket.on("all", data => {
+        imageSocket.on("all", (data) => {
           onChange(data);
         });
-  
-        imageSocket.on("error", data => {
+
+        imageSocket.on("error", (data) => {
           if (imageSocket !== null) imageSocket.close();
         });
       }
       _getWsToken();
     }
-  
+
     componentWillUnmount() {
       if (imageSocket !== null) imageSocket.close();
     }
-  
+
     render() {
       return null;
     }

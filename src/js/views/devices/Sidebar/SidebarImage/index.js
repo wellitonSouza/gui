@@ -3,22 +3,27 @@ import PropTypes from 'prop-types';
 import Slide from 'react-reveal/Slide';
 import { DojotBtnClassic } from 'Components/DojotButton';
 import ImageActions from 'Actions/ImageActions';
-import MeasureActions from 'Actions/MeasureActions';
 import MaterialSelect from 'Components/MaterialSelect';
 import SidebarFirmImages from 'Views/templates/TemplateList/Sidebar/SidebarFirmware/SidebarFirmImages';
 import SidebarButton from 'Views/templates/TemplateList/Sidebar/SidebarButton';
 import DeviceActions from 'Actions/DeviceActions';
 import toaster from 'Comms/util/materialize';
 import { withNamespaces } from 'react-i18next';
+import FirmwareWebSocket from './FirmwareWebSocket';
 
 
 class SidebarImage extends Component {
     constructor(props) {
         super(props);
+        const { t } = props;
         this.state = {
             loaded: false,
             showFirmwareImage: false,
-            attrs: { current_state: '', update_result: '', current_version: '' },
+            attrs: {
+                dojotFirmwareUpdateState: t("firmware:no_data"),
+                dojotFirmwareUpdateUpdateResult: t("firmware:no_data"),
+                dojotFirmwareUpdateVersion: t("firmware:no_data"),
+            },
             currentImageId: '0',
         };
         this.callUploadImage = this.callUploadImage.bind(this);
@@ -27,6 +32,7 @@ class SidebarImage extends Component {
         this.createImageOptions = this.createImageOptions.bind(this);
         this.onChangeImage = this.onChangeImage.bind(this);
         this.getAttrLabel = this.getAttrLabel.bind(this);
+        this.receivedImageInformation = this.receivedImageInformation.bind(this);
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -35,16 +41,6 @@ class SidebarImage extends Component {
                 ...state,
                 templateIdAllowedImage: props.templateIdAllowedImage,
                 loaded: false,
-            };
-        }
-
-        // TODO we need to get the new states using socket.io and remove
-        // the requests made using  MeasureAction
-        if (props.ms.data[props.deviceId]
-            && props.ms.data[props.deviceId].current_state !== state.attrs.current_state) {
-            return {
-                ...state,
-                attrs: { current_state: props.ms.data[props.deviceId].current_state },
             };
         }
         return null;
@@ -57,14 +53,7 @@ class SidebarImage extends Component {
             const { deviceId } = this.props;
             const templateId = templateIdAllowedImage;
             ImageActions.fetchImages.defer(templateId);
-            DeviceActions.fetchSingle.defer(deviceId, (device) => {
-                MeasureActions.fetchMeasure.defer(device,
-                    this.getAttrLabel('dojot:firmware_update:state'), 1);
-                MeasureActions.fetchMeasure.defer(device,
-                    this.getAttrLabel('dojot:firmware_update:update_result'), 1);
-                MeasureActions.fetchMeasure.defer(device,
-                    this.getAttrLabel('dojot:firmware_update:version'), 1);
-            });
+            DeviceActions.fetchSingle.defer(deviceId);
             this.setState({
                 loaded: true,
             });
@@ -92,6 +81,16 @@ class SidebarImage extends Component {
         return relatedLabel;
     }
 
+    receivedImageInformation(data) {
+        const { attrs: mattrs } = data;
+        const { attrs } = this.state;
+        attrs.dojotFirmwareUpdateState = mattrs[this.getAttrLabel('dojot:firmware_update:state')];
+        attrs.dojotFirmwareUpdateUpdateResult = mattrs[this.getAttrLabel('dojot:firmware_update:update_result')];
+        attrs.dojotFirmwareUpdateVersion = mattrs[this.getAttrLabel('dojot:firmware_update:version')];
+        this.setState({
+            attrs,
+        });
+    }
 
     callUploadImage() {
         const { currentImageId } = this.state;
@@ -152,6 +151,7 @@ class SidebarImage extends Component {
 
         return (
             <Fragment>
+                <FirmwareWebSocket onChange={this.receivedImageInformation} />
                 <Slide right when={showSidebarImage} duration={300}>
                     { showSidebarImage
                         ? (
@@ -175,15 +175,15 @@ class SidebarImage extends Component {
                                             <div className="desc">
                                                 <div className="line">
                                                     <div className="label">{t('firmware:default_attrs.current_version')}</div>
-                                                    <div className="value">{attrs.current_version}</div>
+                                                    <div className="value">{attrs.dojotFirmwareUpdateVersion}</div>
                                                 </div>
                                                 <div className="line">
                                                     <div className="label">{t('firmware:default_attrs.state')}</div>
-                                                    <div className="value">{attrs.current_state}</div>
+                                                    <div className="value">{attrs.dojotFirmwareUpdateState}</div>
                                                 </div>
                                                 <div className="line">
                                                     <div className="label">{t('firmware:default_attrs.update_result')}</div>
-                                                    <div className="value">{attrs.update_result}</div>
+                                                    <div className="value">{attrs.dojotFirmwareUpdateUpdateResult}</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -254,5 +254,6 @@ SidebarImage.propTypes = {
         devices: PropTypes.array,
     }),
 };
+
 
 export default withNamespaces()(SidebarImage);

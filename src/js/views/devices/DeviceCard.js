@@ -22,7 +22,8 @@ function SummaryItem(props) {
 
     for (const attribute in props.device.attrs) {
         attrs += props.device.attrs[attribute].length;
-        return (
+    }
+       return (
             <div className="mg20px fl flex-order-2">
                 <div className="card-size card-hover lst-entry-wrapper z-depth-2 mg0px">
                     <div className="lst-entry-title col s12">

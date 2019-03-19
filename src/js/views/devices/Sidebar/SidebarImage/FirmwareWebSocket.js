@@ -7,7 +7,6 @@ let imageSocket = null;
 const socketio = require("socket.io-client");
 
 class FirmwareWebSocket extends Component {
-
     componentDidMount() {
       const { onChange: rsi } = this.props;
       const target = `${window.location.protocol}//${window.location.host}`;

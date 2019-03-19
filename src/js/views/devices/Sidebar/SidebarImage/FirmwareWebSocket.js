@@ -9,7 +9,7 @@ class FirmwareWebSocket extends Component {
     }
 
     componentDidMount() {
-      const { onChange : rsi } = this.props;
+      const { onChange: rsi } = this.props;
       const socketio = require("socket.io-client");
       const target = `${window.location.protocol}//${window.location.host}`;
       const token_url = `${target}/stream/socketio`;

@@ -11,7 +11,7 @@ import toaster from 'Comms/util/materialize';
 import { withNamespaces } from 'react-i18next';
 import FirmwareWebSocket from './FirmwareWebSocket';
 
-let imageSocket = null;
+const imageSocket = null;
 
 class SidebarImage extends Component {
     constructor(props) {
@@ -84,9 +84,9 @@ class SidebarImage extends Component {
     receivedImageInformation(data) {
         const { attrs: mattrs } = data;
         const { attrs } = this.state;
-        attrs['dojotFirmwareUpdateState'] = mattrs[this.getAttrLabel('dojot:firmware_update:state')];
-        attrs['dojotFirmwareUpdateUpdateResult'] = mattrs[this.getAttrLabel('dojot:firmware_update:update_result')];
-        attrs['dojotFirmwareUpdateVersion'] = mattrs[this.getAttrLabel('dojot:firmware_update:version')];
+        attrs.dojotFirmwareUpdateState = mattrs[this.getAttrLabel('dojot:firmware_update:state')];
+        attrs.dojotFirmwareUpdateUpdateResult = mattrs[this.getAttrLabel('dojot:firmware_update:update_result')];
+        attrs.dojotFirmwareUpdateVersion = mattrs[this.getAttrLabel('dojot:firmware_update:version')];
         this.setState({
             attrs,
         });
@@ -254,7 +254,6 @@ SidebarImage.propTypes = {
         devices: PropTypes.array,
     }),
 };
-
 
 
 export default withNamespaces()(SidebarImage);

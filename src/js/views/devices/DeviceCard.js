@@ -69,7 +69,6 @@ function SummaryItem(props) {
                     </div>
             </div>
         );
-    }
 }
 
 

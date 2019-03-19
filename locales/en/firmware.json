@@ -2,6 +2,7 @@
     "header": "Manage Images",
     "title": "Firmware",
     "btn" : "Manage Images",
+    "no_data": "No data received",
     "alerts": {
       "click_to_new_image" :"Click here to add a new image",
       "image_created": "Image created.",

@@ -9,8 +9,10 @@ import SidebarFirmImages from 'Views/templates/TemplateList/Sidebar/SidebarFirmw
 import SidebarButton from 'Views/templates/TemplateList/Sidebar/SidebarButton';
 import DeviceActions from 'Actions/DeviceActions';
 import toaster from 'Comms/util/materialize';
+import util from "Comms/util";
 import { withNamespaces } from 'react-i18next';
 
+let imageSocket = null;
 
 class SidebarImage extends Component {
     constructor(props) {
@@ -18,7 +20,10 @@ class SidebarImage extends Component {
         this.state = {
             loaded: false,
             showFirmwareImage: false,
-            attrs: { current_state: '', update_result: '', current_version: '' },
+            attrs: { 
+                dojotFirmwareUpdateState: 'No data received', 
+                dojotFirmwareUpdateUpdateResult: 'No data received', 
+                dojotFirmwareUpdateVersion: 'No data received' },
             currentImageId: '0',
         };
         this.callUploadImage = this.callUploadImage.bind(this);
@@ -27,6 +32,7 @@ class SidebarImage extends Component {
         this.createImageOptions = this.createImageOptions.bind(this);
         this.onChangeImage = this.onChangeImage.bind(this);
         this.getAttrLabel = this.getAttrLabel.bind(this);
+        this.receivedImageInformation = this.receivedImageInformation.bind(this);
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -35,16 +41,6 @@ class SidebarImage extends Component {
                 ...state,
                 templateIdAllowedImage: props.templateIdAllowedImage,
                 loaded: false,
-            };
-        }
-
-        // TODO we need to get the new states using socket.io and remove
-        // the requests made using  MeasureAction
-        if (props.ms.data[props.deviceId]
-            && props.ms.data[props.deviceId].current_state !== state.attrs.current_state) {
-            return {
-                ...state,
-                attrs: { current_state: props.ms.data[props.deviceId].current_state },
             };
         }
         return null;
@@ -57,19 +53,27 @@ class SidebarImage extends Component {
             const { deviceId } = this.props;
             const templateId = templateIdAllowedImage;
             ImageActions.fetchImages.defer(templateId);
-            DeviceActions.fetchSingle.defer(deviceId, (device) => {
-                MeasureActions.fetchMeasure.defer(device,
-                    this.getAttrLabel('dojot:firmware_update:state'), 1);
-                MeasureActions.fetchMeasure.defer(device,
-                    this.getAttrLabel('dojot:firmware_update:update_result'), 1);
-                MeasureActions.fetchMeasure.defer(device,
-                    this.getAttrLabel('dojot:firmware_update:version'), 1);
-            });
+            DeviceActions.fetchSingle.defer(deviceId);
             this.setState({
                 loaded: true,
             });
         }
     }
+
+
+    receivedImageInformation(data) {
+        console.log("receivedImageInformation", data);
+        const { attrs : mattrs } = data;
+        const { attrs } = this.state;
+        attrs[dojotFirmwareUpdateState] = mattrs[this.getAttrLabel('dojot:firmware_update:state')];
+        attrs[dojotFirmwareUpdateUpdateResult] = mattrs[this.getAttrLabel('dojot:firmware_update:update_result')];
+        attrs[dojotFirmwareUpdateVersion] = mattrs[this.getAttrLabel('dojot:firmware_update:version')];
+        this.setState({ 
+            attrs
+        });
+    }
+
+
 
     onChangeImage(e) {
         const newImageId = e.target.value;
@@ -152,6 +156,7 @@ class SidebarImage extends Component {
 
         return (
             <Fragment>
+                <FirmwareWebSocket onChange={this.receivedImageInformation} />
                 <Slide right when={showSidebarImage} duration={300}>
                     { showSidebarImage
                         ? (
@@ -175,15 +180,15 @@ class SidebarImage extends Component {
                                             <div className="desc">
                                                 <div className="line">
                                                     <div className="label">{t('firmware:default_attrs.current_version')}</div>
-                                                    <div className="value">{attrs.current_version}</div>
+                                                    <div className="value">{attrs.dojotFirmwareUpdateVersion}</div>
                                                 </div>
                                                 <div className="line">
                                                     <div className="label">{t('firmware:default_attrs.state')}</div>
-                                                    <div className="value">{attrs.current_state}</div>
+                                                    <div className="value">{attrs.dojotFirmwareUpdateState}</div>
                                                 </div>
                                                 <div className="line">
                                                     <div className="label">{t('firmware:default_attrs.update_result')}</div>
-                                                    <div className="value">{attrs.update_result}</div>
+                                                    <div className="value">{attrs.dojotFirmwareUpdateUpdateResult}</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -253,6 +258,59 @@ SidebarImage.propTypes = {
     ds: PropTypes.shape({
         devices: PropTypes.array,
     }),
+};
+
+
+class FirmwareWebSocket extends Component {
+    constructor(props) {
+      super(props);
+    }
+     
+    componentDidMount() {
+      console.log("FirmwareWebSocket: componentDidMount:");
+      let rsi = this.props.onChange;
+      const socketio = require("socket.io-client");
+      const target = `${window.location.protocol}//${window.location.host}`;
+      const token_url = `${target}/stream/socketio`;
+  
+      function _getWsToken() {
+        util
+          ._runFetch(token_url)
+          .then(reply => {
+            init(reply.token);
+          })
+          .catch(error => {
+            toaster.error(error);
+          });
+      }
+  
+      function init(token) {
+        imageSocket = socketio(target, {
+          query: `token=${token}`,
+          transports: ["polling"]
+        });
+        imageSocket.on("all", data => {
+          onChange(data);
+        });
+  
+        imageSocket.on("error", data => {
+          if (imageSocket !== null) imageSocket.close();
+        });
+      }
+      _getWsToken();
+    }
+  
+    componentWillUnmount() {
+      if (imageSocket !== null) imageSocket.close();
+    }
+  
+    render() {
+      return null;
+    }
+  }
+
+FirmwareWebSocket.propTypes = {
+    onChange: PropTypes.func.isRequired,
 };
 
 export default withNamespaces()(SidebarImage);

@@ -311,6 +311,16 @@ class LeftSidebar extends Component {
             });
         }
 
+        if (ability.can('viewer', 'socketio')) {
+            entriesLocal.push({
+                image: 'bell',
+                target: '/notifications',
+                iconClass: 'fa fa-unlock-alt',
+                label: <Trans i18nKey="menu:notifications.text"/>,
+                desc: <Trans i18nKey="menu:notifications.alt"/>,
+            });
+        }
+
         if (ability.can('viewer', 'user') || ability.can( 'modifier', 'user')) {
             entriesLocal.push({
                 image: 'user',

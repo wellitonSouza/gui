@@ -307,7 +307,7 @@ body {
 .pl40px, .pl40
 {
   padding-left: 40px !important;
-}  
+}
 
 
 .pl50px, .pl50
@@ -498,4 +498,5 @@ order: 1;
 @import 'alarms';
 @import 'pagination';
 @import 'toaster';
-@import 'importExport'
+@import 'importExport';
+@import 'notifications';

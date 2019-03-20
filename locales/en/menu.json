@@ -18,5 +18,9 @@
   "devices": {
     "text": "Devices",
     "alt": "Known devices and configuration"
+  },
+  "notifications": {
+    "text": "Notifications",
+    "alt": "Notifications List"
   }
 }

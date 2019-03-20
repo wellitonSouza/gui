@@ -60,7 +60,6 @@ class TemplateStore {
     }
 
     toogleSidebar(values) {
-        // console.log('toogleSidebar', values);
         let showSidebar;
         if (values !== undefined) {
             showSidebar = values;
@@ -92,7 +91,6 @@ class TemplateStore {
     }
 
     handleUpdateSingle(template) {
-        // console.log("handleTriggerUpdate", template);
         for (let i = 0; i < this.templates.length; i++) {
             if (this.templates[i].id === template.id) {
                 const newTemplate = JSON.parse(JSON.stringify(template));
@@ -146,7 +144,6 @@ class TemplateStore {
 
     handleFetchTemplateList() {
         this.templates = [];
-        // this.pagination = null;
         this.loading = true;
     }
 

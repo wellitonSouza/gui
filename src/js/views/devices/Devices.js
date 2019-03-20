@@ -100,7 +100,6 @@ class DeviceOperations extends GenericOperations {
     }
 
     whenUpdateFilter(config) {
-        // this.setDefaultPageNumber();
         this.filterParams = config;
         this._fetch();
     }
@@ -140,39 +139,6 @@ class DevicesComponent extends Component {
     componentDidMount() {
         this.dev_opex._fetch();
         FormActions.toggleSidebarDevice.defer(false);
-        /*
-               // Realtime
-               const socketio = require('socket.io-client');
-               const target = `${window.location.protocol}//${window.location.host}`;
-               const token_url = `${target}/stream/socketio`;
-
-               function _getWsToken() {
-                   util._runFetch(token_url)
-                       .then((reply) => {
-                           init(reply.token);
-                       })
-                       .catch((error) => {
-                           // console.log('Failed!', error);
-                       });
-               }
-
-               function init(token) {
-                   device_list_socket = socketio(target, { query: `token=${token}`, transports: ['polling'] });
-                   device_list_socket.on('all', (data) => {
-                    //    console.log('received socket information:', data);
-                       MeasureActions.appendMeasures(data);
-                       // DeviceActions.updateStatus(data);
-                   });
-
-                   device_list_socket.on('error', (data) => {
-                    //    console.log('socket error', data);
-                       if (device_list_socket !== null) device_list_socket.close();
-                       // getWsToken();
-                   });
-               }
-               _getWsToken();
-               */
-
     }
 
     componentWillUnmount() {
@@ -200,8 +166,6 @@ class DevicesComponent extends Component {
     }
 
     render() {
-        // console.info('1. <Devices>.render.');
-
         const detail = 'detail' in this.props.location.query
             ? this.props.location.query.detail
             : null;

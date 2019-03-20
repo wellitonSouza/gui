@@ -6,7 +6,6 @@ class ImageManager {
     }
 
     getImages(label) {
-        // console.log('imageManager:getImages: ', label);
         return util.GET(`${this.baseUrl}/fw-image/image?label=${label}`);
     }
 

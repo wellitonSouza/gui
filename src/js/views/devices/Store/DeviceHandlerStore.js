@@ -29,7 +29,6 @@ class DeviceHandlerStore {
     }
 
     handleSetTemplateData(data) {
-        // console.log('handleSetTemplateData', data);
         this.hasTemplateWithImages = false;
         this.templateIdAllowedImage = '';
         const tmps = data.templatesHasImageFirmware;

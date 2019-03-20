@@ -64,10 +64,10 @@ class ImageStore {
     handleInsertEmptyImage(image) {
         this.images[image.id] = JSON.parse(JSON.stringify(image));
     }
-    
+
     enhanceImage(image)
     {
-        let newImage = {};
+        let newImage;
         newImage = JSON.parse(JSON.stringify(image));
         newImage.has_image = newImage.confirmed;
         newImage.image_hash = null;
@@ -94,7 +94,6 @@ class ImageStore {
     }
 
     handleTriggerInsertion(newImage) {
-        // console.log("this.images", JSON.parse(JSON.stringify(this.images)));
         // this is actually just a intermediary while addition happens asynchonously
         this.error = null;
         this.loading = true;
@@ -105,14 +104,14 @@ class ImageStore {
         // const idToBeUsed = imgs.image.id;
         // adds new image
         const idToBeUsed = imgs.image.url.split('/')[2];
-        this.images[idToBeUsed] = JSON.parse(JSON.stringify(imgs.oldimage)); 
+        this.images[idToBeUsed] = JSON.parse(JSON.stringify(imgs.oldimage));
         this.images[idToBeUsed].id = idToBeUsed;
         this.images[idToBeUsed].saved = true;
         this.images[idToBeUsed].created = imgs.image.published_at;
         this.images[idToBeUsed].image_version = this.images[idToBeUsed].fw_version;
-        // removes old image 
+        // removes old image
         delete this.images[imgs.oldimage.id];
-     
+
         this.error = null;
         this.loading = false;
     }

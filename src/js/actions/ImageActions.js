@@ -4,6 +4,31 @@ import toaster from 'Comms/util/materialize';
 const alt = require('../alt');
 
 class ImageActions {
+    updateTemplateInfo(data) {
+        return data;
+    }
+
+    fetchTemplateInfo(params = null, cb) {
+        return (dispatch) => {
+            imageManager.getTemplateInfo(params)
+                .then((result) => {
+                    this.updateTemplateInfo(result);
+                    if (cb) {
+                        cb(result);
+                    }
+                })
+                .catch((error) => {
+                    this.templatesFailed(error);
+                });
+
+            dispatch();
+        };
+    }
+
+    updateBinaries(binaryList) {
+        return binaryList;
+    }
+
     updateImages(images) {
         return images;
     }
@@ -12,19 +37,26 @@ class ImageActions {
         return { id, label, value };
     }
 
-    fetchImages(templateId) {
-      return (dispatch) => {
-        dispatch();
-
-        imageManager.getImages(templateId).then((imageList) => {
-          this.updateImages(imageList);
-        })
-        .catch((error) => {
-          this.imagesFailed(error);
-        });
-      };
+    updateImageAllowed(value) {
+        return value;
     }
 
+    fetchImages(templateId) {
+        return (dispatch) => {
+            dispatch();
+
+            imageManager.getImages(templateId).then((imageList) => {
+                   this.updateImages(imageList);
+                })
+                .catch((error) => {
+                    this.imagesFailed(error);
+                });
+        };
+    }
+
+    removeBinaryInfo(id) {
+        return id;
+    }
 
     triggerUpdate(image, cb) {
         return (dispatch) => {
@@ -38,6 +70,7 @@ class ImageActions {
                 })
                 .catch((error) => {
                     this.imagesFailed(error);
+                    this.removeBinaryInfo(image.id);
                 });
         };
     }
@@ -58,7 +91,6 @@ class ImageActions {
                     }
                 })
                 .catch((error) => {
-                    console.error('Failed to fetch images', error);
                     this.imagesFailed(error);
                 });
         };
@@ -82,7 +114,7 @@ class ImageActions {
                 .then((response) => {
                     this.insertImage(response, newimage);
                     if (cb) {
-                        cb(response, newimage);
+                        cb(response);
                     }
                 })
                 .catch((error) => {

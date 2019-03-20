@@ -35,7 +35,8 @@
   "select_attribute": "Selecione um atributo a ser exibido",
   "meta_attributes": "Meta Atributos",
   "no_devices_shown": "Nenhum dispositivo a ser mostrado",
-  "no_configured_devices": "Nenhum dispositivo configurado"
+  "no_configured_devices": "Nenhum dispositivo configurado",
+  "manage_firmware":"Gerenciar Firmware"
 }
 
 

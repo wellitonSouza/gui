@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import AltContainer from 'alt-container';
 import TemplateStore from 'Stores/TemplateStore';
 import { NewPageHeader } from 'Containers/full/PageHeader';
-import {
-    withNamespaces,
-} from 'react-i18next';
+import { withNamespaces } from 'react-i18next';
 import TemplateActions from 'Actions';
 import OperationsHeader from './OperationsHeader';
 import { Filter, Pagination, FilterLabel } from '../utils/Manipulation';

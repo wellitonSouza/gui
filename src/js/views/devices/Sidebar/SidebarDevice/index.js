@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Slide from 'react-reveal/Slide';
-import { DojotCustomButton } from 'Components/DojotButton';
+import { DojotBtnClassic } from 'Components/DojotButton';
 import SidebarButton from 'Components/SidebarButton';
 import MaterialInput from 'Components/MaterialInput';
 import { withNamespaces } from 'react-i18next';
@@ -9,10 +9,11 @@ import { FormActions } from '../../Actions';
 import SidebarDelete from '../../../templates/TemplateList/Sidebar/SidebarDelete';
 
 const SidebarDevice = ({
+    hasTemplateWithImages,
     showSidebarDevice,
     handleShowManageTemplate,
     handleShowDeviceAttrs,
-    toogleSidebarFirmware,
+    toogleSidebarImages,
     device,
     handleChangeName,
     save,
@@ -26,7 +27,6 @@ const SidebarDevice = ({
     const {
         configValues, dynamicValues, staticValues, actuatorValues,
     } = device;
-    const hasImageAvailable = true;
     const total = device.templates.length ? device.templates.length : 0;
     return (
         <Fragment>
@@ -42,11 +42,11 @@ const SidebarDevice = ({
                                     <div className="icon">
                                         <img src="images/icons/chip-cyan.png" alt="device-icon" />
                                     </div>
-                                </div>
-                                <div className="body">
-                                    <div className="title">
+                                    <div className="header-path">
                                         {t('devices:device')}
                                     </div>
+                                </div>
+                                <div className="body">
 
                                     <div className="device-name">
                                         <div className="label">
@@ -124,30 +124,28 @@ const SidebarDevice = ({
                                             title={t('text.actuators')}
                                             disable={actuatorValues.length === 0}
                                         />
-                                        {!hasImageAvailable
-                                        ? (
+                                        { hasTemplateWithImages ? (
                                             <SidebarButton
-                                                onClick={() => toogleSidebarFirmware()}
+                                                onClick={() => toogleSidebarImages()}
                                                 icon="firmware"
-                                                text="Manage Firmware"
+                                                title={t('devices:manage_firmware')}
                                             />
                                         ) : null}
-
                                     </div>
-
                                 </div>
-
                                 <div className="footer">
                                     {
                                         isNewDevice ? (
                                             <Fragment>
-                                                <DojotCustomButton
+                                                <DojotBtnClassic
+                                                    type="secondary"
                                                     label={t('discard.label')}
                                                     onClick={() => {
                                                         FormActions.toggleSidebarDevice(false);
                                                     }}
                                                 />
-                                                <DojotCustomButton
+                                                <DojotBtnClassic
+                                                    color="red"
                                                     label={t('save.label')}
                                                     type="primary"
                                                     onClick={save}
@@ -155,18 +153,20 @@ const SidebarDevice = ({
                                             </Fragment>
                                         ) : (
                                             <Fragment>
-                                                <DojotCustomButton
+                                                <DojotBtnClassic
+                                                    type="secondary"
                                                     label={t('discard.label')}
                                                     onClick={() => {
                                                         FormActions.toggleSidebarDevice(false);
                                                     }}
                                                 />
-                                                <DojotCustomButton
+                                                <DojotBtnClassic
                                                     label={t('remove.label')}
                                                     type="secondary"
                                                     onClick={() => toogleSidebarDelete()}
                                                 />
-                                                <DojotCustomButton
+                                                <DojotBtnClassic
+                                                    color="red"
                                                     label={t('save.label')}
                                                     type="primary"
                                                     onClick={update}
@@ -194,7 +194,7 @@ SidebarDevice.propTypes = {
     showSidebarDevice: PropTypes.bool,
     handleShowManageTemplate: PropTypes.func.isRequired,
     handleShowDeviceAttrs: PropTypes.func.isRequired,
-    toogleSidebarFirmware: PropTypes.func.isRequired,
+    toogleSidebarImages: PropTypes.func.isRequired,
     device: PropTypes.shape({
         attrs: PropTypes.array,
         created: PropTypes.string,
@@ -207,6 +207,14 @@ SidebarDevice.propTypes = {
         updated: PropTypes.string,
     }).isRequired,
     t: PropTypes.func.isRequired,
+    hasTemplateWithImages: PropTypes.bool.isRequired,
+    handleChangeName: PropTypes.func.isRequired,
+    save: PropTypes.func.isRequired,
+    update: PropTypes.func.isRequired,
+    remove: PropTypes.func.isRequired,
+    isNewDevice: PropTypes.bool.isRequired,
+    isShowSidebarDelete: PropTypes.bool.isRequired,
+    toogleSidebarDelete: PropTypes.func.isRequired,
 };
 
 SidebarDevice.defaultProps = {

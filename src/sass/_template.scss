@@ -33,7 +33,6 @@
   z-index: 100;
   background: #F3F3F2;
   color: #555555;
-  font-size: 16px;
   width: 375px;
   box-shadow: -3px 0 8px 0 rgba(0, 0, 0, 0.2);
 
@@ -62,15 +61,12 @@
     }
     .body-form-nodata{
       display: flex;
-      // height: 100%;
       min-height: 150px;
       justify-content: center;
       align-items: center;
     }
     .body-form{
       height: 100%;
-      font-family: Roboto;
-      font-size: 18px;
       color: rgba(0, 0, 0, 0.4);
       margin-top: 15px;
       overflow-y: auto;
@@ -112,47 +108,7 @@
         }
       }
     }
-    .body-actions{
-      display: inline-block;
 
-      .body-actions--divider{
-        display: flex;
-        width: 310px;
-        align-self: flex-end;
-        height: 1px;
-        background: #E0E0E0;
-      }
-      .body-actions--button{
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        min-height: 56px;
-        padding: 10px 0 10px 20px;
-        cursor: pointer;
-        .button-icon{
-          display: flex;
-          align-items: center;
-          width: 180px;
-          .icon{
-            height: 30px;
-            width: 30px;
-            margin-right: 15px;
-          }
-          .text-label{
-            font-family: Roboto;
-            font-weight: 500;
-            font-size: 16px;
-            color: #555555;
-          }
-        }
-        .arrow-icon {
-          padding-right: 25px;
-        }
-        &:hover{
-          background-color: rgba(153, 153, 153, 0.4);
-        }
-      }
-    }
   }
 
   .footer{
@@ -165,38 +121,15 @@
   }
 }
 
+
 .sidebar-attribute{
-  @extend .-sidebar;
-  z-index: 100;
-  background: #F3F3F2;
-  color: #555555;
-  font-size: 16px;
-  width: 375px;
+  @extend .generic-sidebar;
 
   .header{
     background: linear-gradient(96.69deg, #4BA0C4 0%, #12BDBA 99.09%);
   }
 
   .body{
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    overflow-x: hidden;
-    flex:1;
-    padding: 10px 0;
-    .body-attribute-name{
-      display: flex;
-      height: 70px;
-      padding-right: 25px;
-      .attribute-type{
-        margin-left: 20px;
-        width: 100%;
-        margin-top: 0;
-      }
-      .body-icon{
-        padding-left: 20px;
-      }
-    }
     .body-config-name {
       display: flex;
       height: 70px;
@@ -229,8 +162,8 @@
     .metadata-list-wrapper {
       display: flex;
       flex-direction: column;
-      width: 375px;
-      height: 100%;
+      height: auto;
+      min-height: 100px;
       .metadata-list-title {
         padding: 5px 20px;
         font-family: Roboto;
@@ -263,69 +196,12 @@
         }
       }
     }
-    // .metadata-list-nodata {
-    //   display: flex;
-    //   height: 100%;
-    //   justify-content: center;
-    //   align-items: center;
-    //   font-family: Roboto;
-    //   font-size: 18px;
-    //   color: rgba(0, 0, 0, 0.4);
-    // }
-    .body-actions{
-      width: 100%;
-      .body-actions--divider{
-        display: flex;
-        width: 310px;
-        align-self: flex-end;
-        height: 1px;
-        background: #E0E0E0;
-      }
-      .body-actions--button{
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 0 10px 20px;
-        cursor: pointer;
-        .button-icon{
-          display: flex;
-          align-items: center;
-          width: 180px;
-          .icon{
-            height: 30px;
-            width: 30px;
-            margin-right: 15px;
-          }
-          .text-label{
-            font-family: Roboto;
-            font-weight: 500;
-            font-size: 16px;
-            color: #555555;
-          }
-        }
-        .arrow-icon {
-          padding-right: 25px;
-        }
-        &:hover{
-          background-color: rgba(153, 153, 153, 0.4);
-        }
-      }
-    }
-  }
-
-  .footer{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    margin-bottom: 10px;
-    height: 50px;
   }
 }
 
 .sidebar-metadata{
   @extend .-sidebar;
-  z-index: 100;
+  z-index: 102;
   background: #F3F3F2;
   color: #555555;
   font-size: 16px;
@@ -386,14 +262,6 @@
         }
       }
     }
-  }
-  .footer{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    margin-bottom: 10px;
-    height: 50px;
   }
 }
 
@@ -465,7 +333,6 @@
 
 .show-dy{
   display: block;
-  // visibility:visible;
   height: 76px;
   animation-name:  opa-hei-76px;
   animation-duration: 1s;
@@ -474,7 +341,6 @@
 .hide-dy
 {
   display: none;
-  // visibility: hidden;
 }
 
 .templatesSubHeader {
@@ -534,7 +400,6 @@
 .bg-gradient-green
 {
     background: linear-gradient(to right, #28807E, #16A085);
-    // background: linear-gradient(90.48deg, #28807E 3.7%, #54A7D6 92.73%);
 }
 
 .display-flex-column{
@@ -556,3 +421,77 @@
 }
 
 
+
+.box-firmware-enabled
+{
+  .firmware-enabled{
+  font-family: Raleway !important;
+  font-weight: normal;
+  line-height: 20px;
+  font-size: 13px !important;
+  padding-bottom: 17px;
+  color: rgba(0, 0, 0, 0.54) !important;
+  padding-top: 8px;
+
+  .icon{
+      display: inline-block;
+      width: 100px;
+      text-align: center;
+    }
+
+    .description
+    {
+      display: inline-block;
+      width: calc(100% - 120px);
+
+      .tl{
+        text-transform: uppercase;
+      }
+    }
+
+    .symbol
+    {
+      display: inline-block;
+      width: 100px;
+    }
+  }
+
+  .body-attribute-name
+  {
+    margin-left: 40px;
+  }
+
+
+  .image-related-attrs
+  {
+    font-family: Raleway !important;
+    font-weight: normal;
+    line-height: 20px;
+    font-size: 13px !important;
+    color: rgba(0, 0, 0, 0.54) !important;
+    display: inline-block;
+    padding-left: 30px;
+    padding-top: 13px;
+    min-height: 300px;
+
+      span
+      {
+        display: block;
+        padding: 5px 10px 31px 19px;
+      }
+  }
+
+
+}
+
+.fw_btn_pushed
+{
+    -webkit-box-shadow: inset 0 0 5px #c1c1c1;
+       -moz-box-shadow: inset 0 0 5px #c1c1c1;
+            box-shadow: inset 0 0 5px #c1c1c1;
+}
+
+.fw_btn_push
+{
+  background:white;
+}

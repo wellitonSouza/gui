@@ -66,7 +66,7 @@ const SidebarAttribute = ({
                                     <SidebarButton
                                         onClick={() => toogleSidebarMetadata()}
                                         icon="metadata"
-                                        text={t('templates:btn.new_attr.label')}
+                                        text={t('templates:btn.new_metadata.label')}
                                     />
                                 </Can>
                             </div>

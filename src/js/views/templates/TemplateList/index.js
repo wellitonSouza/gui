@@ -50,9 +50,9 @@ const TemplateList = ({
         }
     }
     return (
-        <div className="full-height flex-container pos-relative overflow-x-hidden">
+        <div className="full-height flex-container pos-relative">
             {filteredList.length > 0 ? (
-                <div className="col s12 lst-wrapper w100">
+                <div className="col s12 lst-wrapper w100 hei-100-over-scroll">
                     {filteredList.map(item => (
                         <ListItem
                             template={item}
@@ -77,7 +77,7 @@ const TemplateList = ({
                 template={template}
                 isNewTemplate={isNewTemplate}
                 showSidebar={showSidebar}
-                toogleSidebar={TemplateActions.toogleSidebar}
+                toogleSidebar={TemplateActions.toogleSidebar} // I really appreciate it <3
                 temp_opex={temp_opex}
             />
         </div>

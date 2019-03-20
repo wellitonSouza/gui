@@ -2,16 +2,50 @@ import deviceManager from 'Comms/devices';
 import toaster from 'Comms/util/materialize';
 
 class DeviceHandlerActions {
-    set(args) { return args; }
+    set(args) {
+        if (args) {
+            this.fetchTemplateData(args.templates);
+        }
+        return args;
+    }
 
-    update(args) { return args; }
+    fetchTemplateData(templateList, cb) {
+        return (dispatch) => {
+            dispatch();
+            deviceManager
+                .getTemplateGQL(templateList)
+                .then((result) => {
+                    // console.log('fetchTemplateData', result);
+                    this.setTemplateData(result.data);
+                    if (cb) {
+                        cb(result);
+                    }
+                })
+                .catch((error) => {
+                    this.devicesFailed(error);
+                });
+        };
+    }
+
+    setTemplateData(data) {
+        return data;
+    }
+
+    update(args) {
+        return args;
+    }
 
     fetch(id) {
         return (dispatch) => {
             dispatch();
-            deviceManager.getDevice(id)
-                .then((d) => { this.set(d); })
-                .catch((error) => { console.error('Failed to get device', error); });
+            deviceManager
+                .getDevice(id)
+                .then((d) => {
+                    this.set(d);
+                })
+                .catch((error) => {
+                    this.devicesFailed(error);
+                });
         };
     }
 
@@ -61,7 +95,8 @@ class DeviceHandlerActions {
     triggerRemoval(device, cb) {
         return (dispatch) => {
             dispatch();
-            deviceManager.deleteDevice(device.id)
+            deviceManager
+                .deleteDevice(device.id)
                 .then((response) => {
                     this.removeSingle(device.id);
                     if (cb) {

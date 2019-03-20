@@ -5,10 +5,15 @@ import AltContainer from 'alt-container';
 import toaster from 'Comms/util/materialize';
 import util from 'Comms/util/util';
 import { withNamespaces } from 'react-i18next';
+import ImageStore from 'Stores/ImageStore';
+import DeviceStore from 'Stores/DeviceStore';
+import MeasureStore from 'Stores/MeasureStore';
 import SidebarDevice from './SidebarDevice';
 import SidebarManageTemplates from './SidebarManageTemplates';
 import SidebarDeviceAttrs from './SidebarDeviceAttrs';
+import SidebarImage from './SidebarImage/index';
 import { FormActions } from '../Actions';
+
 
 class Sidebar extends Component {
     constructor(props) {
@@ -17,6 +22,7 @@ class Sidebar extends Component {
             showSidebarDevice: false,
             showManageTemplates: false,
             showDeviceAttrs: false,
+            showSidebarImage: false,
             isNewDevice: false,
             usedTemplates: [],
             device: {},
@@ -26,7 +32,7 @@ class Sidebar extends Component {
             deviceAttrsTitle: '',
         };
 
-        this.toogleSidebarFirmware = this.toogleSidebarFirmware.bind(this);
+        this.toogleSidebarImages = this.toogleSidebarImages.bind(this);
         this.handleShowManageTemplate = this.handleShowManageTemplate.bind(this);
         this.handleShowDeviceAttrs = this.handleShowDeviceAttrs.bind(this);
         this.handleSelectTemplate = this.handleSelectTemplate.bind(this);
@@ -68,8 +74,13 @@ class Sidebar extends Component {
         });
     }
 
-    toogleSidebarFirmware() {
-        console.log("toogleSidebarFirmware");
+    toogleSidebarImages() {
+        const { showSidebarImage, isNewDevice } = this.state;
+        if (!isNewDevice) {
+            this.setState({
+                showSidebarImage: !showSidebarImage,
+            });
+        }
     }
 
     handleShowManageTemplate() {
@@ -77,6 +88,7 @@ class Sidebar extends Component {
             showManageTemplates: !prevState.showManageTemplates,
         }));
     }
+
 
     handleSelectTemplate(checked, template) {
         const { device } = this.state;
@@ -309,6 +321,7 @@ class Sidebar extends Component {
             showSidebarDevice,
             showManageTemplates,
             showDeviceAttrs,
+            showSidebarImage,
             device,
             selectAttr,
             isNewDevice,
@@ -316,18 +329,24 @@ class Sidebar extends Component {
             isShowSidebarDelete,
             deviceAttrsTitle,
         } = this.state;
+        const {
+            templateIdAllowedImage,
+            hasTemplateWithImages,
+        } = this.props;
+
         if (!Object.prototype.hasOwnProperty.call(device, 'attrs')) return <div />;
         const { metadata } = device;
         return (
             <Fragment>
                 <SidebarDevice
+                    hasTemplateWithImages={hasTemplateWithImages}
                     showSidebarDevice={showSidebarDevice}
                     device={device}
                     isNewDevice={isNewDevice}
                     isShowSidebarDelete={isShowSidebarDelete}
                     handleChangeName={this.handleChangeName}
                     handleShowManageTemplate={this.handleShowManageTemplate}
-                    toogleSidebarFirmware={this.toogleSidebarFirmware}
+                    toogleSidebarImages={this.toogleSidebarImages}
                     handleShowDeviceAttrs={this.handleShowDeviceAttrs}
                     toogleSidebarDelete={this.toogleSidebarDelete}
                     save={this.save}
@@ -353,6 +372,24 @@ class Sidebar extends Component {
                     handleShowDeviceAttrs={this.handleShowDeviceAttrs}
                     errors={errors}
                 />
+                { !isNewDevice
+                    ? (
+                        <AltContainer stores={{
+                            is: ImageStore,
+                            ds: DeviceStore,
+                            ms: MeasureStore,
+                        }}
+                        >
+                            <SidebarImage
+                                deviceId={device.id}
+                                hasTemplateWithImages={hasTemplateWithImages}
+                                templateIdAllowedImage={templateIdAllowedImage}
+                                showSidebarImage={showSidebarImage}
+                                toogleSidebarImages={this.toogleSidebarImages}
+                            />
+                        </AltContainer>
+                    )
+                    : null }
             </Fragment>
         );
     }
@@ -374,6 +411,8 @@ Sidebar.defaultProps = {
         metadata: {},
     },
     isNewDevice: false,
+    hasTemplateWithImages: false,
+    templateIdAllowedImage: '',
 };
 
 Sidebar.propTypes = {
@@ -396,6 +435,8 @@ Sidebar.propTypes = {
         _fetch: PropTypes.func,
     }).isRequired,
     t: PropTypes.func.isRequired,
+    hasTemplateWithImages: PropTypes.bool,
+    templateIdAllowedImage: PropTypes.string,
 };
 
 export default withNamespaces()(Sidebar);

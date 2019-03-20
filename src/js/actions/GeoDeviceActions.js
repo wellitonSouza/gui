@@ -6,7 +6,6 @@ var alt = require('../alt');
 
 class GeoDeviceActions {
      fetchDevices(params = null, cb) {
-        // console.log("GeoDeviceActions", fetch);
         return dispatch => {
             dispatch();
             deviceManager
@@ -24,7 +23,6 @@ class GeoDeviceActions {
         };
     }
      setDevices(result) {
-        // console.log("setDevices",result);
         return result;
     }
      devicesFailed(error) {

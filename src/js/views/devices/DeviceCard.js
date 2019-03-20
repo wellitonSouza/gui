@@ -23,51 +23,52 @@ function SummaryItem(props) {
     for (const attribute in props.device.attrs) {
         attrs += props.device.attrs[attribute].length;
     }
-    return (
-        <div className="card-size card-hover lst-entry-wrapper z-depth-2">
-            <div className="lst-entry-title col s12">
-                <img className="title-icon" src="images/icons/chip-wt.png"/>
-                <div className="title-text truncate">
-                    <span className="text" title={props.device.label}>
-                        {props.device.label}
-                    </span>
-                </div>
-                <div className="title-edit" >
-                    <Can do="modifier" on="device">
-                        <i className="fa fa-edit fa-2x" onClick={() => FormActions.set(props.device)} />
-                    </Can>
-                </div>
-            </div>
-            <Link to={`/device/id/${props.device.id}/detail`}>
-                <div className="attr-list">
-                    <div className="attr-area light-background">
-                        <div className="attr-row">
-                            <div className="icon">
-                                <img src="images/tag.png"/>
-                            </div>
-                            <div className="attr-content">
-                                <input type="text" value={attrs} disabled/>
-                                <span>{props.t('text.properties')}</span>
-                            </div>
-                            <div className="center-text-parent material-btn right-side"/>
+       return (
+            <div className="mg20px fl flex-order-2">
+                <div className="card-size card-hover lst-entry-wrapper z-depth-2 mg0px">
+                    <div className="lst-entry-title col s12">
+                        <img className="title-icon" src="images/icons/chip-wt.png"/>
+                        <div className="title-text truncate">
+                            <span className="text" title={props.device.label}>
+                                {props.device.label}
+                            </span>
                         </div>
-                        <div className="attr-row">
-                            <div className="icon">
-                                <img src="images/update.png"/>
-                            </div>
-                            <div className="attr-content">
-                                <input type="text" value={util.iso_to_date(props.device.created)} disabled/>
-                                <span>{props.t('text.last_update')}</span>
-                            </div>
-                            <div className="center-text-parent material-btn right-side"/>
+                        <div className="title-edit" >
+                            <Can do="modifier" on="device">
+                                <i className="fa fa-edit fa-2x" onClick={() => FormActions.set(props.device)} />
+                            </Can>
                         </div>
-                        <div className={props.device.status}/>
                     </div>
-                </div>
-            </Link>
-        </div>
-    );
-
+                    <Link to={`/device/id/${props.device.id}/detail`}>
+                        <div className="attr-list">
+                            <div className="attr-area light-background">
+                                <div className="attr-row">
+                                    <div className="icon">
+                                        <img src="images/tag.png"/>
+                                    </div>
+                                    <div className="attr-content">
+                                        <input type="text" value={attrs} disabled/>
+                                        <span>{props.t('text.properties')}</span>
+                                    </div>
+                                    <div className="center-text-parent material-btn right-side"/>
+                                </div>
+                                <div className="attr-row">
+                                    <div className="icon">
+                                        <img src="images/update.png"/>
+                                    </div>
+                                    <div className="attr-content">
+                                        <input type="text" value={util.iso_to_date(props.device.created)} disabled/>
+                                        <span>{props.t('text.last_update')}</span>
+                                    </div>
+                                    <div className="center-text-parent material-btn right-side"/>
+                                </div>
+                                <div className={props.device.status}/>
+                            </div>
+                        </div>
+                    </Link>
+                    </div>
+            </div>
+        );
 }
 
 
@@ -103,7 +104,7 @@ class DeviceCardListComponent extends Component {
         }
 
         return (
-            <div className="device-card-area">
+            <div className="full-height flex-container pos-relative overflow-x-hidden">
                 <Filter showPainel={this.props.showFilter} metaData={this.metaData} ops={this.props.dev_opex} fields={withNamespaces()(DevFilterFields)}/>
                 <AltContainer store={DeviceFormStore}>
                     <Sidebar ops={this.props.dev_opex} />
@@ -118,7 +119,7 @@ class DeviceCardListComponent extends Component {
                         </span>
                     </div>
                 ) : (
-                    <div className="col s12  lst-wrapper extra-padding flex-container">
+                    <div className="col s12 lst-wrapper w100 hei-100-over-scroll">
                         {this.filteredList.map(device => (
                             <SummaryItem device={device} key={device.id} t={t}/>
                         ))}

@@ -153,7 +153,7 @@ class Import extends Component {
 
 Import.propTypes = {
     openModal: PropTypes.func.isRequired,
-    t: PropTypes.shape.isRequired,
+    t: PropTypes.func.isRequired,
 };
 
 export default translate()(Import);

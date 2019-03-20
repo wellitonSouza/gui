@@ -6,13 +6,15 @@ class ImageManager {
     }
 
     getImages(label) {
-        console.log('imageManager:getImages: ', label);
         return util.GET(`${this.baseUrl}/fw-image/image?label=${label}`);
     }
 
-
     getImage(id) {
         return util.GET(`${this.baseUrl}/image/${id}`);
+    }
+
+    getBinaries() {
+        return util.GET(`${this.baseUrl}/image/binary/`);
     }
 
 

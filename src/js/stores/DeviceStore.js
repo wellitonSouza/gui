@@ -75,7 +75,6 @@ class DeviceStore {
         }
     }
 
-
     handleTriggerUpdate(device) {
     // trigger handler for updateSingle
         this.error = null;

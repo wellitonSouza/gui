@@ -4,6 +4,7 @@
     "user_update": "User updated.",
     "user_update_err": "Failed to update user.",
     "user_create": "User created.",
+    "user_remove": "User removed successfully.",
     "qst_remove": "You are about to remove this user.",
     "qst_confirm_remove": "Are you sure?"
   },

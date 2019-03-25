@@ -170,7 +170,7 @@ class SidebarImage extends Component {
                                     <div className="sub-content">
                                         <div className="info firmware-enabled">
                                             <div className="icon">
-                                                <img src="images/icons/firmware-gray.png" alt="device-icon" />
+                                                <img src="images/icons/firmware-big-gray.png" alt="device-icon" />
                                             </div>
                                             <div className="desc">
                                                 <div className="line">

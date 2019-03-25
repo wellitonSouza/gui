@@ -474,6 +474,16 @@ order: 1;
   overflow-x: hidden;
 }
 
+.color-white
+{
+  color:white;
+}
+
+.pointer
+{
+  cursor:pointer;
+}
+
 @import 'inputs';
 @import 'shadow';
 @import 'list';

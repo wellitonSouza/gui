@@ -16,6 +16,7 @@ import { FormActions } from "./Actions";
 
 import Can from 'Components/permissions/Can';
 import { withNamespaces } from 'react-i18next';
+import ability from 'Components/permissions/ability';
 
 function SummaryItem(props) {
     let attrs = 0;
@@ -23,9 +24,10 @@ function SummaryItem(props) {
     for (const attribute in props.device.attrs) {
         attrs += props.device.attrs[attribute].length;
     }
+    const canEdit = ability.can('modifier', 'device');
        return (
-            <div className="mg20px fl flex-order-2">
-                <div className="card-size card-hover lst-entry-wrapper z-depth-2 mg0px">
+             <div className="mg20px fl flex-order-2">
+                <div className="card-size card-hover lst-entry-wrapper z-depth-2 mg0px pointer"  onClick={() => { if (canEdit) FormActions.set(props.device)}}>
                     <div className="lst-entry-title col s12">
                         <img className="title-icon" src="images/icons/chip-wt.png"/>
                         <div className="title-text truncate">
@@ -34,38 +36,38 @@ function SummaryItem(props) {
                             </span>
                         </div>
                         <div className="title-edit" >
-                            <Can do="modifier" on="device">
-                                <i className="fa fa-edit fa-2x" onClick={() => FormActions.set(props.device)} />
+                            <Can do="viewer" on="device">
+                                <Link to={`/device/id/${props.device.id}/detail`}>
+                                    <i title={props.t('devices:alts.details')} className="fa fa-info-circle fa-2x color-white" />
+                                </Link>
                             </Can>
                         </div>
                     </div>
-                    <Link to={`/device/id/${props.device.id}/detail`}>
-                        <div className="attr-list">
-                            <div className="attr-area light-background">
-                                <div className="attr-row">
-                                    <div className="icon">
-                                        <img src="images/tag.png"/>
-                                    </div>
-                                    <div className="attr-content">
-                                        <input type="text" value={attrs} disabled/>
-                                        <span>{props.t('text.properties')}</span>
-                                    </div>
-                                    <div className="center-text-parent material-btn right-side"/>
+                    <div className="attr-list">
+                        <div className="attr-area light-background">
+                            <div className="attr-row">
+                                <div className="icon">
+                                    <img src="images/tag.png"/>
                                 </div>
-                                <div className="attr-row">
-                                    <div className="icon">
-                                        <img src="images/update.png"/>
-                                    </div>
-                                    <div className="attr-content">
-                                        <input type="text" value={util.iso_to_date(props.device.created)} disabled/>
-                                        <span>{props.t('text.last_update')}</span>
-                                    </div>
-                                    <div className="center-text-parent material-btn right-side"/>
+                                <div className="attr-content">
+                                    <input type="text" value={attrs} disabled/>
+                                    <span>{props.t('text.properties')}</span>
                                 </div>
-                                <div className={props.device.status}/>
+                                <div className="center-text-parent material-btn right-side"/>
+                            </div>
+                            <div className="attr-row">
+                                <div className="icon">
+                                    <img src="images/update.png"/>
+                                </div>
+                                <div className="attr-content">
+                                    <input type="text" value={util.iso_to_date(props.device.created)} disabled/>
+                                    <span>{props.t('text.last_update')}</span>
+                                </div>
+                                <div className="center-text-parent material-btn right-side"/>
+                            </div>
+                            <div className={props.device.status}/>
                             </div>
                         </div>
-                    </Link>
                     </div>
             </div>
         );

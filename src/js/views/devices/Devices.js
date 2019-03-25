@@ -75,7 +75,6 @@ class DeviceOperations extends GenericOperations {
         for (const key in config) {
             this.paginationParams[key] = config[key];
         }
-        this.filterParams = { sortBy: 'label' };
         this._fetch();
     }
 

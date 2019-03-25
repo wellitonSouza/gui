@@ -11,7 +11,7 @@ class MeasureStore {
         this.tracking = {};
         this.error = null;
 
-        this.geoLabelForTracking = null;
+        this.geoLabelForTracking = [];
 
         this.bindListeners({
             handleAppendMeasures: MeasureActions.APPEND_MEASURES,
@@ -26,8 +26,9 @@ class MeasureStore {
         });
     }
 
-    handleUpdateGeoLabel(geoLabel) {
-        this.geoLabelForTracking = geoLabel;
+    handleUpdateGeoLabel(info) {
+        const {geoLabel, deviceID} = info;
+        this.geoLabelForTracking[deviceID] = geoLabel;
     }
 
     handleTrackingFetch() {
@@ -66,13 +67,13 @@ class MeasureStore {
      */
     handleUpdateTracking(measureData) {
         const { metadata: { deviceid , timestamp }, attrs } = measureData;
-        if (this.geoLabelForTracking) {
+        if (this.geoLabelForTracking[deviceid]) {
             for (const label in attrs) {
-                if (this.geoLabelForTracking === label) {
+                if (this.geoLabelForTracking[deviceid] === label) {
                     if (this.tracking[deviceid] !== undefined && this.tracking[deviceid] !== null) {
                         const trackingStructure = {
                             device_id: deviceid,
-                            position: this.parserPosition(attrs[this.geoLabelForTracking]),
+                            position: this.parserPosition(attrs[this.geoLabelForTracking[deviceid]]),
                             timestamp: util.iso_to_date(timestamp),
                         };
                         //add new position in begin of tracking list

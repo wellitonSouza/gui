@@ -218,7 +218,7 @@ class CustomMap extends Component {
     if (geoLabel == null) return; //no attribute with position
 
       if (myPoint.active_tracking) {
-          MeasureActions.updateGeoLabel(geoLabel);
+          MeasureActions.updateGeoLabel( {geoLabel, deviceID});
           MeasureActions.updateTracking(measureData);
       }
 

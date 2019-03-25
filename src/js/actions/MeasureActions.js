@@ -10,8 +10,8 @@ class MeasureActions {
     updateTracking(data) {
         return data;
     }
-    updateGeoLabel(geoLabel){
-        return geoLabel;
+    updateGeoLabel(geoInfo){
+        return geoInfo;
     }
 
     updateMeasures(data) {

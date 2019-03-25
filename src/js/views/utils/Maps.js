@@ -7,6 +7,7 @@ import DivIcon from 'react-leaflet-div-icon';
 import * as pins from '../../config'
 import util from "../../comms/util";
 import MapPositionActions from "../../actions/MapPositionActions";
+import MeasureActions from '../../actions/MeasureActions';
 
 require('leaflet.markercluster');
 
@@ -32,7 +33,7 @@ const Esri_WorldImagery = L.tileLayer(
     {
       return pins.mapPinYellow;
     }
-    
+
     let varToMeasure = "_" + config.measureAttribute;
 
     if (device.hasOwnProperty('unique_key')) {
@@ -188,7 +189,6 @@ class CustomMap extends Component {
 
   handleDyData(socket_data) {
     this.creatingDynamicPoint(socket_data);
-    // MeasureActions.appendMeasures(data);
   }
 
   creatingDynamicPoint(measureData) {
@@ -206,6 +206,8 @@ class CustomMap extends Component {
 
     let myPoint = dev;
 
+
+
     // 2. trying to find the dynamic geo-point
     let geoLabel = null;
     for (const label in measureData.attrs) {
@@ -214,6 +216,11 @@ class CustomMap extends Component {
     }
 
     if (geoLabel == null) return; //no attribute with position
+
+      if (myPoint.active_tracking) {
+          MeasureActions.updateGeoLabel(geoLabel);
+          MeasureActions.updateTracking(measureData);
+      }
 
     let position = util.parserPosition(measureData.attrs[geoLabel]);
     myPoint.pos = L.latLng(position[0], position[1]);
@@ -312,12 +319,12 @@ class ContextMenuComponent extends Component {
 
         this.contextMenu = new ContextMenu();
     }
-    
+
      handleTracking(device_id) {
         // console.log("6. handleTracking", device_id);
         this.props.handleTracking(device_id);
     }
-    
+
     componentDidMount() {
         this.contextMenu.updateCurrentContextMenu(this.props.metadata.event, this.root);
     }
@@ -330,14 +337,14 @@ class ContextMenuComponent extends Component {
 
         // console.log("6. ContextMenuComponent - Render: ", this.props);
         const md = this.props.metadata;
-        
+
         return <div ref={(ref) => {
             this.root = ref;
         }} className="contextMenu">
             <Link to={`/device/id/${md.device_id}/detail`} title="View details">
                 <div className="contextMenu--option cmenu"><i className="fa fa-info-circle" />Details</div>
             </Link>
-            {(md.allow_tracking) ? 
+            {(md.allow_tracking) ?
             <div
                 className="contextMenu--option cmenu"
                 onClick={() => {
@@ -360,7 +367,7 @@ class MapSocket extends Component {
     super(props);
     this.state = { data: [] };
   }
-   
+
   componentDidMount() {
     // console.log("MapSocket: componentDidMount:");
     let rsi = this.props.receivedSocketInfo
@@ -418,7 +425,7 @@ class SmallPositionRenderer extends Component {
             loadedLayers: false,
             zoom: (this.props.zoom ? this.props.zoom : this.props.config.mapZoom ? this.props.config.mapZoom : 12),
         };
-        
+
         this.toggleLayer = this.toggleLayer.bind(this);
         this.layers = [];
     }

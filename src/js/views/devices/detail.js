@@ -315,7 +315,7 @@ class DyAttributeArea extends Component {
 
         const { t } = this.props;
         return (
-            <div className="content-row">
+            <div className="content-row float-right">
                 <div className="second-col">
                     {this.state.selected_attributes.length == 0 && this.props.openStaticMap == false
                         ? (<div

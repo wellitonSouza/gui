@@ -67,6 +67,12 @@ class MeasureStore {
                                 ts: now,
                                 value: measureData.attrs[label],
                             };
+
+                            if (this.data[deviceID][`_${label}`] === undefined) {
+                                this.data[deviceID][`_${label}`] = [];
+                            }
+                            this.data[deviceID][`_${label}`].push(attrValue);
+
                             if (this.data[deviceID].attrs[templateID][attrID].value_type === 'geo:point') {
                                 this.data[deviceID].position = parserPosition(measureData.attrs[label]);
                                 if (this.tracking[measureData.metadata.deviceid] !== undefined && this.tracking[measureData.metadata.deviceid] !== null) {
@@ -79,12 +85,7 @@ class MeasureStore {
                                         this.tracking[measureData.metadata.deviceid] = this.tracking[measureData.metadata.deviceid].slice(0, 4);
                                     }
                                 }
-                            } else {
-                                // attr is not geo
-                                if (this.data[deviceID][`_${label}`] === undefined) {
-                                    this.data[deviceID][`_${label}`] = [];
-                                }
-                                this.data[deviceID][`_${label}`].push(attrValue);
+                            }else{
                                 if (this.data[deviceID][`_${label}`].length > 10) {
                                     this.data[deviceID][`_${label}`].shift();
                                 }

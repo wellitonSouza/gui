@@ -92,7 +92,7 @@ class SidebarFirmConfig extends Component {
 
     saveImageConfig(e) {
         e.preventDefault();
-        const { template, imageAllowed } = this.props;
+        const { t, template, imageAllowed } = this.props;
         const { attrs } = this.state;
         if (imageAllowed) {
             // adding image attributes
@@ -116,7 +116,7 @@ class SidebarFirmConfig extends Component {
         }
 
         TemplateActions.triggerUpdate(template, () => {
-            toaster.success('Template updated');
+            toaster.success(t('firmware:alerts.template_updated'));
             TemplateActions.fetchSingle(template.id);
         });
     }
@@ -277,12 +277,14 @@ class SidebarFirmConfig extends Component {
 SidebarFirmConfig.defaultProps = {
     showFirmware: false,
     isNewTemplate: false,
+    imageAllowed: false,
 };
 
 SidebarFirmConfig.propTypes = {
     t: PropTypes.func.isRequired,
     showFirmware: PropTypes.bool,
     isNewTemplate: PropTypes.bool,
+    imageAllowed: PropTypes.bool,
     template: PropTypes.shape(templateType).isRequired,
     toogleSidebarFirmware: PropTypes.func.isRequired,
 };

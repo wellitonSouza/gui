@@ -4,6 +4,7 @@
     "btn" : "Manage Images",
     "no_data": "No data received",
     "alerts": {
+      "template_updated":"Template successfully updated.",
       "click_to_new_image" :"Click here to add a new image",
       "image_created": "Image created.",
       "image_updated": "Image updated.",

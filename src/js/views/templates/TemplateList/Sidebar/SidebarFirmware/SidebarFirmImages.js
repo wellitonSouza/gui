@@ -62,7 +62,6 @@ class SidebarFirmImages extends Component {
                     const jsonImg = {
                         label: String(templateId),
                         fw_version: image.image_version,
-                        sha1: null,
                         id: image.id,
                     };
                     ImageActions.triggerInsert(jsonImg, (img) => {

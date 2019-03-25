@@ -439,8 +439,12 @@ order: 1;
   height: 50px !important;
 }
 
-.fl{
-  float:left;
+.fl, .float-left{
+  float:left !important;
+}
+
+.fr, .float-right{
+  float:right !important;
 }
 
 .mg20px{

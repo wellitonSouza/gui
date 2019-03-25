@@ -1310,10 +1310,10 @@ h1, h2, p {
   height:100%;
   float: right;
   box-shadow: 0 2px 8px rgba(130, 130, 130, 0.5);
-  // -webkit-animation-name: opa-width-250; /* Safari 4.0 - 8.0 */
-  //-webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
-  //animation-name: opa-width-250;
-  //animation-duration: 1s;
+  -webkit-animation-name: opa-width-250; /* Safari 4.0 - 8.0 */
+  -webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
+  animation-name: opa-width-250;
+  animation-duration: 1s;
   overflow-y: auto;
 }
 

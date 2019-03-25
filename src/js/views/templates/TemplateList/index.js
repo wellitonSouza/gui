@@ -52,7 +52,7 @@ const TemplateList = ({
     return (
         <div className="full-height flex-container pos-relative">
             {filteredList.length > 0 ? (
-                <div className="col s12 lst-wrapper w100 hei-100-over-scroll">
+                <div className="col s12 lst-wrapper w100 hei-100-over-scroll flex-container">
                     {filteredList.map(item => (
                         <ListItem
                             template={item}

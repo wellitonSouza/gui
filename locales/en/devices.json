@@ -1,6 +1,11 @@
 {
   "title": "Devices",
   "subtitle": "device manager",
+  "alts":
+  {
+    "details":"See details",
+    "edition":"Edit device"
+  },
   "alerts": {
     "create": "Device created.",
     "update": "Device updated.",

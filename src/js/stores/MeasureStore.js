@@ -11,24 +11,19 @@ class MeasureStore {
         this.tracking = {};
         this.error = null;
 
-        this.geoLabelForTracking = null;
-
         this.bindListeners({
             handleAppendMeasures: MeasureActions.APPEND_MEASURES,
-            handleUpdateTracking: MeasureActions.updateTracking,
             handleUpdateMeasures: MeasureActions.UPDATE_MEASURES,
-            handleUpdateGeoLabel: MeasureActions.updateGeoLabel,
             handleFailure: MeasureActions.MEASURES_FAILED,
+            // handleUpdatePosition: MeasureActions.UPDATE_POSITION,
 
             handleTrackingFetch: TrackingActions.FETCH,
             handleTrackingSet: TrackingActions.SET,
             handleTrackingDismiss: TrackingActions.DISMISS,
         });
+        // handleFetchMeansures: MeasureActions.FETCH_MEASURES,
     }
 
-    handleUpdateGeoLabel(geoLabel) {
-        this.geoLabelForTracking = geoLabel;
-    }
 
     handleTrackingFetch() {
     }
@@ -49,44 +44,18 @@ class MeasureStore {
         }
     }
 
-    parserPosition(position) {
-        if (position.toString().indexOf(',') > -1) {
-            const parsedPosition = position.split(',');
-            if (parsedPosition.length > 1) {
-                return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
-            }
-        } else {
-            return undefined;
-        }
-    }
-
-    /**
-     *  Receive data from socket and add in tracking list
-     * @param measureData
-     */
-    handleUpdateTracking(measureData) {
-        const { metadata: { deviceid , timestamp }, attrs } = measureData;
-        if (this.geoLabelForTracking) {
-            for (const label in attrs) {
-                if (this.geoLabelForTracking === label) {
-                    if (this.tracking[deviceid] !== undefined && this.tracking[deviceid] !== null) {
-                        const trackingStructure = {
-                            device_id: deviceid,
-                            position: this.parserPosition(attrs[this.geoLabelForTracking]),
-                            timestamp: util.iso_to_date(timestamp),
-                        };
-                        //add new position in begin of tracking list
-                        if (this.tracking[deviceid].unshift(trackingStructure) > 50) {
-                            //if there are more than 50 positions, remove more older
-                            this.tracking[deviceid] = this.tracking[deviceid].slice(0, 50);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     handleAppendMeasures(measureData) {
+        function parserPosition(position) {
+            if (position.toString().indexOf(',') > -1) {
+                const parsedPosition = position.split(',');
+                if (parsedPosition.length > 1) {
+                    return [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
+                }
+            } else {
+                return undefined;
+            }
+        }
+
         const now = measureData.metadata.timestamp;
         const deviceID = measureData.metadata.deviceid;
         if (typeof this.data[deviceID] !== 'undefined') {
@@ -105,11 +74,11 @@ class MeasureStore {
                             this.data[deviceID][`_${label}`].push(attrValue);
 
                             if (this.data[deviceID].attrs[templateID][attrID].value_type === 'geo:point') {
-                                this.data[deviceID].position = this.parserPosition(measureData.attrs[label]);
+                                this.data[deviceID].position = parserPosition(measureData.attrs[label]);
                                 if (this.tracking[measureData.metadata.deviceid] !== undefined && this.tracking[measureData.metadata.deviceid] !== null) {
                                     const trackingStructure = {
                                         device_id: measureData.metadata.deviceid,
-                                        position:  this.parserPosition(measureData.attrs[label]),
+                                        position: parserPosition(measureData.attrs[label]),
                                         timestamp: util.iso_to_date(now),
                                     };
                                     if (this.tracking[measureData.metadata.deviceid].unshift(trackingStructure) > 5) {
@@ -127,6 +96,7 @@ class MeasureStore {
             }
         }
     }
+
 
     handleFetchMeasures(measureData) {
         if (!('device' in measureData)) {

@@ -64,6 +64,7 @@ class DeviceMap extends Component {
 
         this.staticDevices = [];
         this.dynamicDevices = [];
+        this.activeTracks = [];
         this.didMount = false;
     }
 
@@ -146,20 +147,21 @@ class DeviceMap extends Component {
 
         if (!device.active_tracking)
         {
+            // enabling device' tracking
             TrackingActions.fetch.defer(device.dp_metadata.id,
                 device.dp_metadata.attr_label, 50);
             device.active_tracking = true;
-            activeTracks.push(device_id);
+            this.activeTracks.push(device_id);
         }
         else
         {
+            // disabling device' tracking
             device.active_tracking = false;
-            activeTracks = activeTracks.filter(i => i !== device_id);
-            // device;
-            // updated.timestamp = e.timestamp;
+            // removes device from array of activeTracks; 
+            this.activeTracks = this.activeTracks.filter(i => i !== device_id);
+            // request again the last geo of this devices;
             TrackingActions.fetch.defer(device.dp_metadata.id,
                 device.dp_metadata.attr_label, 1);
-
         }
     }
 

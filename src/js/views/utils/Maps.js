@@ -3,10 +3,8 @@ import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { ImageOverlay } from 'react-leaflet';
 import L from 'leaflet';
-import DivIcon from 'react-leaflet-div-icon';
 import * as pins from '../../config'
 import util from "../../comms/util";
-import MapPositionActions from "../../actions/MapPositionActions";
 
 require('leaflet.markercluster');
 
@@ -97,6 +95,7 @@ class CustomMap extends Component {
     this.handleContextMenu = this.handleContextMenu.bind(this);
     this.closeContextMenu = this.closeContextMenu.bind(this);
     this.creatingDynamicPoint = this.creatingDynamicPoint.bind(this);
+    this.createMarker = this.createMarker.bind(this);
   }
 
   componentDidMount() {
@@ -194,85 +193,92 @@ class CustomMap extends Component {
   creatingDynamicPoint(measureData) {
     // 1. get device data
     let dev = null;
+    let devIndex = 0;
     const now = measureData.metadata.timestamp;
-    const deviceID = measureData.metadata.deviceid;
+    const deviceId = measureData.metadata.deviceid;
 
-    for (const index in this.props.markersData) {
-      if (this.props.markersData[index].id == deviceID) {
-        dev = this.props.markersData[index];
+    for (devIndex in this.props.markersData) {
+      if (this.props.markersData[devIndex].id === deviceId) {
+        dev = this.props.markersData[devIndex];
       }
     }
-    if (dev == null) return;
-
-    let myPoint = dev;
-
-    // 2. trying to find the dynamic geo-point
+    if (dev == null) return; // received a valid device
+    
+    // 2. trying to find the dynamic geo-point attr
     let geoLabel = null;
-    for (const label in measureData.attrs) {
+    for (const label in measureData.attrs)
       if (dev.attr_label == label)
         geoLabel = label;
-    }
-
     if (geoLabel == null) return; //no attribute with position
 
+    // 3. duplicate point info
+    let myPoint = {...dev};
+
+    // 4. create position info
     let position = util.parserPosition(measureData.attrs[geoLabel]);
     myPoint.pos = L.latLng(position[0], position[1]);
     myPoint.timestamp = util.iso_to_date(now);
 
-    // 3. change Marker point
+    // 5. if tracking is not active
+    if (!myPoint.active_tracking)
+    {
+      // 5. a remove last location point
+      let indexLastPoint = -1;
+      for (indexLastPoint in this.mkrHelper)
+        if (this.mkrHelper[indexLastPoint].options.id === deviceId) 
+          break;
+
+      this.markers.removeLayer(this.mkrHelper[indexLastPoint]);
+      delete this.mkrHelper[indexLastPoint];
+    }
+
+    // 6. creates and sets new Marker point
+    let newMkr = this.createMarker(myPoint); 
+    this.markers.addLayer(newMkr);
+    // 7. sets in device_id index in mkrHelper 
+    this.mkrHelper[newMkr.options.index] = newMkr;
+  }
+
+
+  createMarker(marker)
+  {
+    let { pos, name, allow_tracking, id, pin, timestamp } = marker;
     let hcm = this.handleContextMenu;
-    let mkr = this.mkrHelper[myPoint.id];
-    console.log("mkr", mkr);
-    mkr.setLatLng(myPoint.pos);
-    mkr.bindPopup(myPoint.name + " : " + myPoint.timestamp);
-    mkr.on("click", function (a) {
+    let mkr = L.marker(pos, {
+      title: name,
+      allow_tracking: allow_tracking,
+      id: id,
+      icon: pin,
+      index: util.sid()
+    }) 
+    
+    if (timestamp)
+      mkr.bindPopup(name + " : " + timestamp);
+    else 
+      mkr.bindPopup(name);
+    
+    mkr.on("click", function(a) {
       hcm(a, a.target.options.id, a.target.options.allow_tracking);
       a.originalEvent.preventDefault();
     });
+    return mkr;
   }
 
   updateMarkers() {
-    // console.log("5. this.props.markersData");
     this.subset = JSON.parse(JSON.stringify(this.props.markersData));
     this.markers.clearLayers();
     this.mkrHelper = {};
-    let hcm = this.handleContextMenu;
     this.props.markersData.forEach(marker => {
-      let mkr = L.marker(marker.pos, {
-        title: marker.name,
-        allow_tracking: marker.allow_tracking,
-        id: marker.id,
-        icon: marker.pin
-      });
-      if (marker.timestamp)
-        mkr.bindPopup(marker.name + " : " + marker.timestamp);
-      else mkr.bindPopup(marker.name);
-
-      mkr.on("click", function(a) {
-        // console.log("a", a);
-        hcm(a, a.target.options.id, a.target.options.allow_tracking);
-        a.originalEvent.preventDefault();
-      });
-
+      let mkr = this.createMarker(marker);
       this.markers.addLayer(mkr);
-
-      // creating a map to helps find the device
-      this.mkrHelper[marker.id] = mkr;
+      this.mkrHelper[mkr.options.index] = mkr; // creating a map to helps find the device
     });
     this.markers.addTo(this.map);
-
     this.handleBounds();
-    // this.markers.on('click', function (a) {
-    //     hcm(a, a.layer.options.id);
-    //     a.originalEvent.preventDefault();
-    //     console.log('marker ',a);
-    // });
   }
 
   handleTracking(device_id) {
-    // console.log("5. handleTracking", device_id);
     this.props.toggleTracking(device_id);
-
     this.setState({ cm_visible: false });
   }
 

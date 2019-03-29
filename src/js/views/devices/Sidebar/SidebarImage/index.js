@@ -93,17 +93,16 @@ class SidebarImage extends Component {
     }
 
     callUploadImage() {
+        const { t, deviceId, is: { images } } = this.props;
         const { currentImageId } = this.state;
         if (currentImageId === '0') {
-            toaster.warning('Select a valid image');
+            toaster.warning(t('firmware:alerts.valid_image'));
             return;
         }
 
-        const { t, deviceId } = this.props;
         const uploadImageAlias = this.getAttrLabel('dojot:firmware_update:desired_version');
         const dataToBeSent = { attrs: {} };
-        dataToBeSent.attrs[uploadImageAlias] = currentImageId;
-
+        dataToBeSent.attrs[uploadImageAlias] = images[currentImageId].fw_version;
         DeviceActions.triggerActuator(deviceId, dataToBeSent, () => {
             toaster.success(t('firmware:alerts.image_transferred'));
         });
@@ -170,7 +169,7 @@ class SidebarImage extends Component {
                                     <div className="sub-content">
                                         <div className="info firmware-enabled">
                                             <div className="icon">
-                                                <img src="images/icons/firmware-gray.png" alt="device-icon" />
+                                                <img src="images/icons/firmware-big-gray.png" alt="device-icon" />
                                             </div>
                                             <div className="desc">
                                                 <div className="line">

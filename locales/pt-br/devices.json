@@ -1,6 +1,11 @@
 {
   "title": "Dispositivos",
   "subtitle": "gerenciador de dispositivos",
+  "alts":
+  {
+    "details":"Ver detalhes do dispositivo",
+    "edition":"Editar dispositivo"
+  },
   "alerts": {
     "create": "Dispositivo criado.",
     "update": "Dispositivo atualizado.",

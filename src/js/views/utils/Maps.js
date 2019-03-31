@@ -237,6 +237,13 @@ class CustomMap extends Component {
     this.markers.addLayer(newMkr);
     // 7. sets in device_id index in mkrHelper 
     this.mkrHelper[newMkr.options.index] = newMkr;
+
+    // 8. Bonus issue
+    // if we've lost some points when remove tracking,
+    // we need to update the store and use the data from there
+    //     MeasureActions.updateGeoLabel( {geoLabel, deviceID});
+    //     MeasureActions.updateTracking(measureData);
+    // also we need update measureReload and check it in shouldComponentUpdate
   }
 
 

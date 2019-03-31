@@ -76,6 +76,10 @@ class DeviceMap extends Component {
         return count;
     }
 
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     return nextProps.isFavourite != this.props.isFavourite;
+    // }
+
     componentDidMount() {
 
         this.showAll();

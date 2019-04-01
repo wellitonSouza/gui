@@ -7,9 +7,17 @@ const alt = require('../alt');
 class MeasureActions {
     appendMeasures(data) { return data; }
 
+    updateTracking(data) {
+        return data;
+    }
+    updateGeoLabel(geoInfo){
+        return geoInfo;
+    }
+
     updateMeasures(data) {
         return data;
     }
+
 
     fetchMeasure(device, attrs, history_length) {
         function getUrl() {

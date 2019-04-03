@@ -4,11 +4,13 @@
     "btn" : "Gerenciar Imagens",
     "no_data" : "Dado não recebido",
     "alerts": {
+      "valid_image":"Selecione uma imagem válida.",
+      "template_updated":"Modelo atualizado com sucesso!",
       "click_to_new_image" :"Clique aqui para adicionar uma nova imagem.",
       "image_created": "Imagem criada.",
       "image_updated": "Imagem atualizada.",
       "image_removed": "Image removida.",
-      "file_added": "Arquivo adicionado..",
+      "file_added": "Arquivo adicionado.",
       "image_to_transfer": "Imagem a ser transferida",
       "image_transferred": "Imagem transferida com sucesso!",
       "image_applied":"Imagem aplicada."

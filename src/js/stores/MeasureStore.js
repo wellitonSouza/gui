@@ -10,7 +10,7 @@ class MeasureStore {
         this.data = {};
         this.tracking = {};
         this.error = null;
-
+        //this.measureReload = true;
         this.geoLabelForTracking = [];
 
         this.bindListeners({

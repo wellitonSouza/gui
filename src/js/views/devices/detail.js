@@ -185,7 +185,7 @@ class GenericList extends Component {
                     <label>{this.props.box_title}</label>
                 </div>
                 <div className="col s12 body">
-                    {this.props.box_title == 'Configurations' ? (
+                    {this.props.box_title == t('text.configuration') ? (
                         <div key="id" className="line display-flex">
                             <div className="col s12 pr0">
                                 <div className="col s5">
@@ -219,7 +219,7 @@ class GenericList extends Component {
                                             className={this.state.truncate ? 'value-value truncate' : 'value-value'}
                                             title={attr.static_value}>
                                             {attr.static_value.length > 25 ?
-                                                attr.static_value.substr(1, 22) + '...' :
+                                                attr.static_value.substr(0, 21) + '...' :
                                                 attr.static_value
                                             }
                                         </div>
@@ -241,7 +241,7 @@ class GenericList extends Component {
                                             className={this.state.truncate ? 'value-value  truncate' : 'value-value '}
                                             title={attr.static_value}>
                                             {(attr.static_value !== undefined && attr.static_value.length > 25) ?
-                                                attr.static_value.substr(1, 22) + '...' :
+                                                attr.static_value.substr(0, 21) + '...' :
                                                 attr.static_value
                                             }
                                         </div>
@@ -315,7 +315,7 @@ class DyAttributeArea extends Component {
 
         const { t } = this.props;
         return (
-            <div className="content-row">
+            <div className="content-row float-right">
                 <div className="second-col">
                     {this.state.selected_attributes.length == 0 && this.props.openStaticMap == false
                         ? (<div

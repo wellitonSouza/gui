@@ -4,6 +4,7 @@
     "user_update": "Usuário atualizado.",
     "user_update_err": "Falha ao atualizar o usuário.",
     "user_create": "Usuário criado",
+    "user_remove": "Usuário removido com sucesso.",
     "modal_qst_remove": "Você irá apagar o usuário.",
     "modal_qst_confirm_remove": "Você tem certeza?"
   },

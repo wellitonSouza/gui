@@ -92,29 +92,23 @@ class SidebarFirmConfig extends Component {
 
     saveImageConfig(e) {
         e.preventDefault();
-        let { template, imageAllowed } = this.props;
+        const { t, template, imageAllowed } = this.props;
         const { attrs } = this.state;
-        if (imageAllowed)
-        {
+        if (imageAllowed) {
             // adding image attributes
             template.attrs.push(createImageAttribute(attrs.current_state, 'dynamic', 'integer'));
             template.attrs.push(createImageAttribute(attrs.update_result, 'dynamic', 'integer'));
             template.attrs.push(createImageAttribute(attrs.current_version, 'dynamic', 'integer'));
             template.attrs.push(createImageAttribute(attrs.upload_image, 'actuator', 'string'));
             template.attrs.push(createImageAttribute(attrs.apply_image, 'actuator', 'string'));
-        }
-        else
-        {
+        } else {
             // removing image attributes
             template.img_attrs = [];
             // 2. also removes img attrs in attr list
-            for (let i = template.attrs.length - 1; i >= 0;i--)
-            {
-                if (template.attrs[i].metadata.length)
-                {
+            for (let i = template.attrs.length - 1; i >= 0; i--) {
+                if (template.attrs[i].metadata.length) {
                     const lbl = template.attrs[i].metadata[0].label;
-                    if (lbl.includes("dojot:firmware_update:"))
-                    {
+                    if (lbl.includes("dojot:firmware_update:")) {
                         delete template.attrs[i];
                     }
                 }
@@ -122,7 +116,7 @@ class SidebarFirmConfig extends Component {
         }
 
         TemplateActions.triggerUpdate(template, () => {
-            toaster.success('Template updated');
+            toaster.success(t('firmware:alerts.template_updated'));
             TemplateActions.fetchSingle(template.id);
         });
     }
@@ -160,28 +154,29 @@ class SidebarFirmConfig extends Component {
                                 </div>
 
                                 <div className="body box-firmware-enabled">
-                                <div className="sub-content">
-                                    <div 
-                                        tabIndex="0"
-                                        role="button" 
-                                        onKeyPress={this.changeFirmwareState}
-                                        onClick={this.changeFirmwareState} 
-                                        className={`firmware-enabled clickable z-depth-2 card-hover ${clssBtn}`}>
-                                        <div className="icon">
-                                            <img src="images/firmware-red.png" alt="device-icon" />
-                                        </div>
-                                        <div className="description">
-                                            <div className="tl">
-                                                {imageAllowed
+                                    <div className="sub-content">
+                                        <div
+                                            tabIndex="0"
+                                            role="button"
+                                            onKeyPress={this.changeFirmwareState}
+                                            onClick={this.changeFirmwareState}
+                                            className={`firmware-enabled clickable z-depth-2 card-hover ${clssBtn}`}
+                                        >
+                                            <div className="icon">
+                                                <img src="images/firmware-red.png" alt="device-icon" />
+                                            </div>
+                                            <div className="description">
+                                                <div className="tl">
+                                                    {imageAllowed
                                                     ? <b>{t('firmware:states.enabled')}</b>
                                                     : <b>{t('firmware:states.disabled')}</b>
                                                 }
 
+                                                </div>
+                                                {t('firmware:states.short_desc')}
                                             </div>
-                                            {t('firmware:states.short_desc')}
                                         </div>
-                                    </div>
-                                    { imageAllowed
+                                        { imageAllowed
                                         ? (
                                             <div className="image-related-attrs">
                                                 <span>
@@ -251,7 +246,7 @@ class SidebarFirmConfig extends Component {
                                         <SidebarButton
                                             onClick={() => this.toogleSidebarFirmImage()}
                                             icon="firmware"
-                                            text={t('firmware:btn')} 
+                                            text={t('firmware:btn')}
                                         />
                                     </div>
                                 </div>
@@ -282,12 +277,14 @@ class SidebarFirmConfig extends Component {
 SidebarFirmConfig.defaultProps = {
     showFirmware: false,
     isNewTemplate: false,
+    imageAllowed: false,
 };
 
 SidebarFirmConfig.propTypes = {
     t: PropTypes.func.isRequired,
     showFirmware: PropTypes.bool,
     isNewTemplate: PropTypes.bool,
+    imageAllowed: PropTypes.bool,
     template: PropTypes.shape(templateType).isRequired,
     toogleSidebarFirmware: PropTypes.func.isRequired,
 };

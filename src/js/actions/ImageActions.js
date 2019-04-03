@@ -107,12 +107,13 @@ class ImageActions {
     }
 
     triggerInsert(image, cb) {
-        const newimage = image;
+        const newimage = { ...image };
+        delete newimage.id;
         return (dispatch) => {
             dispatch();
             imageManager.addImage(newimage)
                 .then((response) => {
-                    this.insertImage(response, newimage);
+                    this.insertImage(response, image);
                     if (cb) {
                         cb(response);
                     }

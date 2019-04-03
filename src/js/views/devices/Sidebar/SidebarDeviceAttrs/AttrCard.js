@@ -63,7 +63,7 @@ class AttrCard extends PureComponent {
             <div className="attr-card">
                 <div className="attr-card-header">
                     <img src="images/icons/data_attrs-gray.png" alt="attrs-icon" />
-                    <div className="attr-card-input-wrapper">
+                    <div className="attr-card-input-wrapper" id={`label:${attr.label}`}>
                         {
                             isDynamic
                                 ? (
@@ -75,6 +75,7 @@ class AttrCard extends PureComponent {
                                     <MaterialInput
                                         className="attr-card-input"
                                         name="name"
+                                        title={`${attr.label}`}
                                         maxLength={40}
                                         value={attr.static_value}
                                         onChange={e => handleChangeAttr(e, attr.id)}
@@ -105,6 +106,7 @@ class AttrCard extends PureComponent {
                                 onKeyPress={() => this.handleShowMetadata()}
                                 role="button"
                                 tabIndex="0"
+                                id={`meta_show:${attr.label}`}
                             >
                                 <i
                                     className={`fa fa-angle-${showMetadata ? 'up' : 'down'}`}
@@ -112,7 +114,7 @@ class AttrCard extends PureComponent {
                                 />
                             </div>
                         </div>
-                        <div className="attr-card-metadata-body">
+                        <div className="attr-card-metadata-body" id={`meta_data:${attr.label}`}>
                             {
                                 showMetadata
                                     ? (metadata.map(meta => (
@@ -124,9 +126,7 @@ class AttrCard extends PureComponent {
                                                 value={meta.static_value}
                                                 onChange={e => handleChangeMetadata(e, attr.id)}
                                             >
-                                                {meta.label}
-                                                {' '}
-                                                showMetadata
+                                                {`${meta.label} (${meta.type})` }
                                             </MaterialInput>
                                             <div className="attr-card-type">{meta.value_type}</div>
                                         </div>

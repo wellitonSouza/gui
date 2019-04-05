@@ -87,7 +87,7 @@ class AttrCard extends PureComponent {
                                 )
                         }
                         <div className="attr-card-type">
-                            {i18next.exists(`types.${attr.value_type}`) ? t(`types.${attr.value_type}`) : attr.value_type}
+                            {i18next.exists(`types.${(attr.value_type).replace(':', '_')}`) ? t(`types.${attr.value_type.replace(':', '_')}`) : attr.value_type}
                         </div>
                     </div>
                 </div>
@@ -126,9 +126,11 @@ class AttrCard extends PureComponent {
                                                 value={meta.static_value}
                                                 onChange={e => handleChangeMetadata(e, attr.id)}
                                             >
-                                                {`${meta.label} (${meta.type})` }
+                                                {`${meta.label} (${meta.type})`}
                                             </MaterialInput>
-                                            <div className="attr-card-type">{meta.value_type}</div>
+                                            <div className="attr-card-type">
+                                                {i18next.exists(`types.${(meta.value_type).replace(':', '_')}`) ? t(`types.${meta.value_type.replace(':', '_')}`).replace('_', ':') : meta.value_type}
+                                            </div>
                                         </div>
                                     )))
                                     : <div />

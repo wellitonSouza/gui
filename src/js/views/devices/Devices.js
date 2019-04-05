@@ -89,7 +89,6 @@ class DeviceOperations extends GenericOperations {
             page_size: 5000,
             page_num: 1,
         };
-        this.filterParams = {};
     }
 
     setFilterToCard() {
@@ -153,11 +152,9 @@ class DevicesComponent extends Component {
     toggleDisplay() {
         const newDisplay = !this.state.displayList;
         // reload devices for maps
-        if (!newDisplay) {
-            this.dev_opex.setFilterToMap();
-        } else {
-            this.dev_opex.setDefaultFilter();
-        }
+        this.dev_opex.setDefaultFilter();
+        if (!newDisplay) 
+             this.dev_opex.setFilterToMap();
 
         this.dev_opex._fetch(() => {
             this.setState({ displayList: newDisplay });

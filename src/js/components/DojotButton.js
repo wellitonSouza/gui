@@ -123,8 +123,8 @@ class DojotBtnCircle extends Component {
     }
 }
 
-const DojotCustomButton = ({ type = "default", onClick, label }) => (
-    <button type="button" className={`custom-button-${type}`} onClick={onClick}>
+const DojotCustomButton = ({ type = "default", onClick, label , id=''}) => (
+    <button type="button" className={`custom-button-${type}`} onClick={onClick} id={id}>
         {label}
     </button>
 )

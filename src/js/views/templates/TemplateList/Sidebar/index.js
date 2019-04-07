@@ -110,10 +110,12 @@ class Sidebar extends Component {
     toogleSidebarMetadata(metadata) {
         const { showMetadata } = this.state;
         if (metadata) {
+            const immutableMeta = JSON.parse(JSON.stringify(metadata));
             this.setState({
                 showMetadata: !showMetadata,
                 metadata,
                 isNewMetadata: false,
+                immutableMeta,
             });
         } else {
             const newMeta = Sidebar.createAttribute();
@@ -121,6 +123,7 @@ class Sidebar extends Component {
                 showMetadata: !showMetadata,
                 metadata: newMeta,
                 isNewMetadata: true,
+                immutableMeta: newMeta,
             });
         }
     }
@@ -298,15 +301,18 @@ class Sidebar extends Component {
         });
     }
 
-    updateMetadata() {
-        const { metadata, selectAttr, showMetadata } = this.state;
+    updateMetadata(originalMetadata) {
+        const { selectAttr, showMetadata } = this.state;
+        let { metadata } = this.state;
+        if (originalMetadata) { metadata = originalMetadata; }
         if (!Object.prototype.hasOwnProperty.call(selectAttr, 'metadata')) selectAttr.metadata = [];
         if (!this.validateMetadata(metadata)) return;
 
         selectAttr.metadata = selectAttr.metadata.map((item) => {
             if (item.id === metadata.id) return metadata;
             return item;
-        });
+        }); // updating attr's metas
+
         this.setState({
             showMetadata: !showMetadata,
             selectAttr,
@@ -421,6 +427,7 @@ class Sidebar extends Component {
             showFirmware,
             template,
             metadata,
+            immutableMeta,
             selectAttr,
             newAttr,
             showDeleteTemplate,
@@ -475,6 +482,7 @@ class Sidebar extends Component {
                 <SidebarMetadata
                     showMetadata={showMetadata}
                     metadata={metadata}
+                    immutableMeta={immutableMeta}
                     showDeleteMeta={showDeleteMeta}
                     isNewMetadata={isNewMetadata}
                     selectAttr={selectAttr}

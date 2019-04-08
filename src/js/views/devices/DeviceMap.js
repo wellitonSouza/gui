@@ -33,7 +33,7 @@ class DeviceMapWrapperComponent extends Component {
         }
 
         const { t } =this.props;
-
+     
         return (
             <DeviceMap Config={this.props.configs} trackedDevices={this.props.measures.tracking} devices={this.props.positions.devicesPos} showFilter={this.props.showFilter} dev_opex={this.props.dev_opex} t={t}/>
         );
@@ -213,7 +213,6 @@ class DeviceMap extends Component {
         let deviceWithData = this.props.devices.filter(dev => dev.has_static_position || dev.dy_positions.length > 0);
         const nVisibleDevices = this.countVisibleDevices(deviceWithData);
         const displayDevicesCount = `${t('text.showing')} ${nVisibleDevices} ${t('text.of')} ${deviceWithData.length} ${t('devices:device')}(s)`;
-
         return <div className="fix-map-bug">
             <div className="flex-wrapper">
               <div className="map-filter-box">
@@ -240,7 +239,7 @@ class DevFilterFields extends Component {
         <div className="col s5 m5">
             <div className="dev_field_filter">
                 <label htmlFor="fld_device_name">{t('devices:title')}</label>
-                <input id="fld_device_name" type="text" className="form-control form-control-lg margin-top-mi7px" placeholder={t('text.name')} value={this.props.fields.label} name="label" onChange={this.props.onChange} />
+                <input id="fld_device_name" type="text" className="form-control form-control-lg margin-top-mi7px" placeholder={t('text.name')} value={this.props.fields.label} name="label" onChange={this.props.onChange}  onKeyUp={this.props.KeyUp} />
             </div>
         </div>
         <div className="col s1 m1" />

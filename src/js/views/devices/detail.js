@@ -219,7 +219,7 @@ class GenericList extends Component {
                                             className={this.state.truncate ? 'value-value truncate' : 'value-value'}
                                             title={attr.static_value}>
                                             {attr.static_value.length > 25 ?
-                                                attr.static_value.substr(1, 22) + '...' :
+                                                attr.static_value.substr(0, 21) + '...' :
                                                 attr.static_value
                                             }
                                         </div>
@@ -241,7 +241,7 @@ class GenericList extends Component {
                                             className={this.state.truncate ? 'value-value  truncate' : 'value-value '}
                                             title={attr.static_value}>
                                             {(attr.static_value !== undefined && attr.static_value.length > 25) ?
-                                                attr.static_value.substr(1, 22) + '...' :
+                                                attr.static_value.substr(0, 21) + '...' :
                                                 attr.static_value
                                             }
                                         </div>

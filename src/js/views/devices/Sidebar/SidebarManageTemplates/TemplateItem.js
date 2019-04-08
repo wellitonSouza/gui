@@ -22,7 +22,14 @@ const TemplateItem = ({
     template, checked, handleSelectTemplate, t,
 }) => (
     <Fragment>
-        <div className="template-item" onClick={() => handleSelectTemplate(checked, template)}>
+        <div
+            tabIndex="0"
+            role="button"
+            className="template-item"
+            title={template.label}
+            onClick={() => handleSelectTemplate(checked, template)}
+            onKeyDown={() => handleSelectTemplate(checked, template)}
+        >
             <div className="template-labels">
                 <div className="template-name">
                     {template.label}

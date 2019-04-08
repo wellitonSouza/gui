@@ -14,6 +14,7 @@ const SidebarMetadata = ({
     addMetadata,
     updateMetadata,
     metadata,
+    immutableMeta,
     handleChangeMetadata,
     showDeleteMeta,
     removeSelectMeta,
@@ -47,7 +48,10 @@ const SidebarMetadata = ({
                             <DojotBtnClassic
                                 label={t('discard.label')}
                                 type="secondary"
-                                onClick={() => toogleSidebarMetadata()}
+                                onClick={() => {
+                                    if (!isNewMetadata) { updateMetadata(immutableMeta); }
+                                    toogleSidebarMetadata();
+                                }}
                             />
                             {
                                 isNewMetadata
@@ -66,7 +70,7 @@ const SidebarMetadata = ({
                                         <Fragment>
                                             <Can do="modifier" on="template">
                                                 <DojotBtnClassic label={t('remove.label')} type="secondary" onClick={() => toogleSidebarDelete('showDeleteMeta')} />
-                                                <DojotBtnClassic color="red" label={t('save.label')} type="primary" onClick={updateMetadata} />
+                                                <DojotBtnClassic color="red" label={t('save.label')} type="primary" onClick={() => updateMetadata()} />
                                             </Can>
                                         </Fragment>
                                     )
@@ -97,6 +101,7 @@ SidebarMetadata.propTypes = {
     toogleSidebarMetadata: PropTypes.func.isRequired,
     addMetadata: PropTypes.func.isRequired,
     updateMetadata: PropTypes.func.isRequired,
+    immutableMeta: PropTypes.shape(metadataType).isRequired,
     metadata: PropTypes.shape(metadataType).isRequired,
     handleChangeMetadata: PropTypes.func.isRequired,
     showDeleteMeta: PropTypes.bool,

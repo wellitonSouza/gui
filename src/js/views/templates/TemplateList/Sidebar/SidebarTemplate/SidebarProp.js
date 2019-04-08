@@ -12,6 +12,7 @@ const SidebarProp = ({
         onKeyPress={() => toogleSidebarAttribute(icon, attr)}
         role="button"
         tabIndex="0"
+        title={attr.label}
     >
         <div className="button-icon">
             <img

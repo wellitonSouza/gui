@@ -44,7 +44,7 @@
     "float": "Float",
     "integer": "Integer",
     "string": "String",
-    "geo:point": "Geo:Point'"
+    "geo_point": "Geo:point"
   },
   "options": {
     "attr_name": {

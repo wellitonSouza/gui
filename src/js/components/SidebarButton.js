@@ -10,6 +10,7 @@ const SidebarButton = ({
         onKeyPress={disable ? () => {} : onClick}
         role="button"
         tabIndex="0"
+        title={title}
     >
         <div className="button-icon">
             <img

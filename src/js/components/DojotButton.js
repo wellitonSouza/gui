@@ -54,7 +54,7 @@ const DojotBtnClassicWithIcon = ({title, onClick, label, icon}) => {
         auxTitle = label;
     return (
         <button type="button" title={auxTitle} onClick={onClick} className={`new-btn-flat style-2 secondary`}>
-        <i className={`fa ${icon} withIcon`} />&nbsp;{label} 
+        <i className={`fa ${icon} withIcon`} />&nbsp;{label}
         </button>
     );
 }
@@ -101,9 +101,9 @@ class DojotBtnRedCircle extends Component {
         }
 
         return (
-            <button type="button" className="btn new-btn-circle btn-red" onClick={this.props.click} title={this.props.tooltip}>
+            <div type="button" className="btn new-btn-circle btn-red" onClick={this.props.click} title={this.props.tooltip}>
                 <i className={this.props.icon} aria-hidden="true" />
-            </button>
+            </div>
         );
     }
 }
@@ -123,15 +123,15 @@ class DojotBtnCircle extends Component {
     }
 }
 
-const DojotCustomButton = ({ type = "default", onClick, label }) => (
-    <button type="button" className={`custom-button-${type}`} onClick={onClick}>
+const DojotCustomButton = ({ type = "default", onClick, label , id=''}) => (
+    <button type="button" className={`custom-button-${type}`} onClick={onClick} id={id}>
         {label}
     </button>
 )
 
 export {
     DojotBtnRedCircle, DojotBtnCircle,
-    DojotBtnClassic, DojotBtnClassicWithIcon, 
+    DojotBtnClassic, DojotBtnClassicWithIcon,
     DojotBtnLink,
     DojotButton,
     DojotCustomButton

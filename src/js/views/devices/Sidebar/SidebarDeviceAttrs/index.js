@@ -62,6 +62,7 @@ const SidebarDeviceAttrs = ({
                                 onClick={() => validAttrs(selectAttr)}
                                 label={t('save.label')}
                                 type="primary"
+                                id="btn-save-attrs"
                             />
                         </div>
                     </div>

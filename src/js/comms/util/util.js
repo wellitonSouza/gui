@@ -264,13 +264,13 @@ class Util {
 
     isTypeValid(value, type, dynamic) {
         const ret = { result: true, error: '' };
-        if (dynamic === 'actuator' && !value) return ret;
+        if (dynamic === 'actuator' && value.length === 0) return ret;
         if (type.trim().length == 0) {
             ret.result = false;
             ret.error = 'You must set a type.';
             return ret;
         }
-        if (dynamic === 'dynamic' && !value) return ret;
+        if (dynamic === 'dynamic' && value.length === 0) return ret;
         const validator = {
             string(value) {
                 ret.result = value.trim().length > 0;

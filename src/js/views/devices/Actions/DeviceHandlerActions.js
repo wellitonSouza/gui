@@ -1,5 +1,19 @@
 import deviceManager from 'Comms/devices';
+import templateManager from 'Comms/templates';
 import toaster from 'Comms/util/materialize';
+
+async function getTemplatesByDevice(device) {
+    const templates = [];
+    const promises = [];
+    device.templates.forEach((idTemplate) => {
+        promises.push(templateManager.getTemplate(idTemplate)
+            .then((template) => {
+                templates.push(template);
+            }));
+    });
+    await Promise.all(promises);
+    return templates;
+}
 
 class DeviceHandlerActions {
     set(args) {
@@ -58,7 +72,7 @@ class DeviceHandlerActions {
     }
 
     addDevice(device, selectedTemplates, cb) {
-        const newDevice = this.diffBetweenTemplateAndSpecializedAttrsAndMetas(selectedTemplates, device);
+        const newDevice = this.diffTempAndSpecializedAttrsAndMetas(device, selectedTemplates);
         return (dispatch) => {
             dispatch();
             deviceManager
@@ -77,52 +91,66 @@ class DeviceHandlerActions {
 
     /**
      * Remove all values of attrs and metas that it will be not specialized
+     * comparing with templates
      *
-     * @param templates Array of templates that be associated with device
      * @param device Object with all data of device
+     * @param templates Array of templates that be associated with device
+     * @param oldDevice When is a update
      * @returns {*} new object with  all data of device  without not specialized  attr and metas.
      */
-    diffBetweenTemplateAndSpecializedAttrsAndMetas(templates, device) {
+    diffTempAndSpecializedAttrsAndMetas(device, templates, oldDevice = null) {
         let specializedAttrs = [];
         const modifiedDevice = device;
 
         templates.forEach((template) => {
             template.attrs.forEach((attrTemp) => {
                 let specializedMetas = [];
-                let shouldNotSpecializeStaticAttrValue = false;
+                let notSpecializeStaticAttrValue = false;
                 const filteredAttr = modifiedDevice.attrs.filter((attrDev) => {
                     if (attrDev.id === attrTemp.id
-                        && attrDev.label === attrTemp.label
-                        && attrDev.template_id === attrTemp.template_id
-                        && attrDev.value_type === attrTemp.value_type
+                        /*                        && attrDev.label === attrTemp.label
+                            && attrDev.template_id === attrTemp.template_id
+                            && attrDev.value_type === attrTemp.value_type */
                         && attrDev.type === attrTemp.type) {
-                        if (attrDev.static_value === attrTemp.static_value && attrDev.type === 'static') {
-                            shouldNotSpecializeStaticAttrValue = true;
+                        const oldFilteredAttr = oldDevice ? oldDevice[template.id].attrs.filter(oldAttrDev => attrDev.id === oldAttrDev.id) : null;
+
+                        if (attrDev.static_value === attrTemp.static_value && attrDev.type !== 'dynamic') {
+                            // if template update the static value for
+                            // the same of device, do not.. keep old value
+                            if (oldFilteredAttr) {
+                                notSpecializeStaticAttrValue = oldFilteredAttr[0].static_value !== attrDev.static_value;
+                            } else {
+                                notSpecializeStaticAttrValue = true;
+                            }
                         }
 
                         if (attrTemp.metadata) {
-                            specializedMetas = attrDev.metadata.filter((meta) => {
-                                let shouldNotSpecializeStaticMetaValue = false;
-                                attrTemp.metadata.forEach((metaDev) => {
-                                    if (metaDev.id === meta.id
-                                        && metaDev.label === meta.label
+                            specializedMetas = attrDev.metadata.filter((metaDev) => {
+                                let specializeStaticMetaValue = false;
+                                attrTemp.metadata.forEach((metaTemp) => {
+                                    if (metaTemp.id === metaDev.id
+                                    /*                                       && metaDev.label === meta.label
                                         && metaDev.value_type === meta.value_type
-                                        && metaDev.type === meta.type) {
-                                        if (metaDev.static_value !== meta.static_value) {
-                                            shouldNotSpecializeStaticMetaValue = true;
+                                        && metaDev.type === meta.type */
+                                    ) {
+                                        const oldFilteredMeta = oldFilteredAttr ? oldFilteredAttr[0].metadata.filter(oldAttrDev => metaDev.id === oldAttrDev.id) : null;
+                                        if (metaTemp.static_value !== metaDev.static_value) {
+                                            specializeStaticMetaValue = true;
+                                        } else if (oldFilteredMeta && oldFilteredMeta[0].static_value === metaDev.static_value) {
+                                            specializeStaticMetaValue = true;
                                         }
                                     }
                                 });
-                                return shouldNotSpecializeStaticMetaValue;
+                                return specializeStaticMetaValue;
                             });
                         }
-                        return specializedMetas.length > 0 || (attrDev.static_value !== attrTemp.static_value && attrDev.type === 'static');
+                        return specializedMetas.length > 0 || (attrDev.static_value !== attrTemp.static_value && attrDev.type !== 'dynamic');
                     }
                     return false;
                 });
                 if (filteredAttr && filteredAttr[0]) {
                     filteredAttr[0].metadata = specializedMetas;
-                    if (shouldNotSpecializeStaticAttrValue) {
+                    if (notSpecializeStaticAttrValue) {
                         delete filteredAttr[0].static_value;
                     }
                 }
@@ -135,21 +163,26 @@ class DeviceHandlerActions {
     }
 
     triggerUpdate(device, cb) {
-        console.log('triggerUpdate', device);
-        return (dispatch) => {
+        // const newDevice = this.diffTempAndSpecializedAttrsAndMetas(selectedTemplates, device);
+        /*        const newDevice = device; */
+        return (async (dispatch) => {
             dispatch();
+            const templates = await getTemplatesByDevice(device);
+            const oldDevice = await deviceManager.getDevice(device.id);
+            console.log('triggerUpdate device oldDevice templates', device, oldDevice, templates);
+            const newDevice = this.diffTempAndSpecializedAttrsAndMetas(device, templates, oldDevice);
             deviceManager
-                .setDevice(device)
+                .setDevice(newDevice)
                 .then(() => {
-                    this.updateSingle(device);
+                    this.updateSingle(newDevice);
                     if (cb) {
-                        cb(device);
+                        cb(newDevice);
                     }
                 })
                 .catch((error) => {
                     this.devicesFailed(error);
                 });
-        };
+        });
     }
 
     triggerRemoval(device, cb) {

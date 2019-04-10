@@ -95,7 +95,6 @@ class Sidebar extends Component {
     handleSelectTemplate(checked, template) {
         const { device } = this.state;
         let { selectedTemplates } = this.state;
-        console.log('selectedTemplates template', selectedTemplates, template);
         if (checked) {
             device.templates = device.templates.filter(id => id !== template.id);
             device.attrs = device.attrs.filter(item => +item.template_id !== template.id);

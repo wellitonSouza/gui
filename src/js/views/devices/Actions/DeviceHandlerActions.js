@@ -58,10 +58,7 @@ class DeviceHandlerActions {
     }
 
     addDevice(device, selectedTemplates, cb) {
-        const newDevice = device;
-        console.log('addDevice selectedTemplates', newDevice, selectedTemplates);
-
-
+        const newDevice = this.diffBetweenTemplateAndSpecializedAttrsAndMetas(selectedTemplates, device);
         return (dispatch) => {
             dispatch();
             deviceManager
@@ -76,6 +73,65 @@ class DeviceHandlerActions {
                     this.devicesFailed(error);
                 });
         };
+    }
+
+    /**
+     * Remove all values of attrs and metas that it will be not specialized
+     *
+     * @param templates Array of templates that be associated with device
+     * @param device Object with all data of device
+     * @returns {*} new object with  all data of device  without not specialized  attr and metas.
+     */
+    diffBetweenTemplateAndSpecializedAttrsAndMetas(templates, device) {
+        let specializedAttrs = [];
+        const modifiedDevice = device;
+
+        templates.forEach((template) => {
+            template.attrs.forEach((attrTemp) => {
+                let specializedMetas = [];
+                let shouldNotSpecializeStaticAttrValue = false;
+                const filteredAttr = modifiedDevice.attrs.filter((attrDev) => {
+                    if (attrDev.id === attrTemp.id
+                        && attrDev.label === attrTemp.label
+                        && attrDev.template_id === attrTemp.template_id
+                        && attrDev.value_type === attrTemp.value_type
+                        && attrDev.type === attrTemp.type) {
+                        if (attrDev.static_value === attrTemp.static_value && attrDev.type === 'static') {
+                            shouldNotSpecializeStaticAttrValue = true;
+                        }
+
+                        if (attrTemp.metadata) {
+                            specializedMetas = attrDev.metadata.filter((meta) => {
+                                let shouldNotSpecializeStaticMetaValue = false;
+                                attrTemp.metadata.forEach((metaDev) => {
+                                    if (metaDev.id === meta.id
+                                        && metaDev.label === meta.label
+                                        && metaDev.value_type === meta.value_type
+                                        && metaDev.type === meta.type) {
+                                        if (metaDev.static_value !== meta.static_value) {
+                                            shouldNotSpecializeStaticMetaValue = true;
+                                        }
+                                    }
+                                });
+                                return shouldNotSpecializeStaticMetaValue;
+                            });
+                        }
+                        return specializedMetas.length > 0 || (attrDev.static_value !== attrTemp.static_value && attrDev.type === 'static');
+                    }
+                    return false;
+                });
+                if (filteredAttr && filteredAttr[0]) {
+                    filteredAttr[0].metadata = specializedMetas;
+                    if (shouldNotSpecializeStaticAttrValue) {
+                        delete filteredAttr[0].static_value;
+                    }
+                }
+                specializedAttrs = specializedAttrs.concat(filteredAttr);
+            });
+        });
+
+        modifiedDevice.attrs = specializedAttrs;
+        return modifiedDevice;
     }
 
     triggerUpdate(device, cb) {

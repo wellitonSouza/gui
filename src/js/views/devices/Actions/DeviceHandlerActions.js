@@ -57,8 +57,11 @@ class DeviceHandlerActions {
         return template;
     }
 
-    addDevice(device, cb) {
+    addDevice(device, selectedTemplates, cb) {
         const newDevice = device;
+        console.log('addDevice selectedTemplates', newDevice, selectedTemplates);
+
+
         return (dispatch) => {
             dispatch();
             deviceManager
@@ -76,6 +79,7 @@ class DeviceHandlerActions {
     }
 
     triggerUpdate(device, cb) {
+        console.log('triggerUpdate', device);
         return (dispatch) => {
             dispatch();
             deviceManager

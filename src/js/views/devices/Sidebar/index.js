@@ -25,6 +25,7 @@ class Sidebar extends Component {
             showSidebarImage: false,
             isNewDevice: false,
             usedTemplates: [],
+            selectedTemplates: [],
             device: {},
             selectAttr: [],
             errors: {},
@@ -92,11 +93,15 @@ class Sidebar extends Component {
 
     handleSelectTemplate(checked, template) {
         const { device } = this.state;
+        let { selectedTemplates } = this.state;
+        console.log('selectedTemplates template', selectedTemplates, template);
         if (checked) {
             device.templates = device.templates.filter(id => id !== template.id);
             device.attrs = device.attrs.filter(item => +item.template_id !== template.id);
+            selectedTemplates = selectedTemplates.filter(id => id !== template.id);
         } else {
             device.templates.push(template.id);
+            selectedTemplates.push(template);
             device.attrs = device.attrs.concat(template.attrs);
         }
 
@@ -119,6 +124,7 @@ class Sidebar extends Component {
         this.setState({
             device,
             usedTemplates: device.templates,
+            selectedTemplates,
         });
     }
 
@@ -261,13 +267,13 @@ class Sidebar extends Component {
     }
 
     save() {
-        const { device } = this.state;
+        const { device, selectedTemplates } = this.state;
         const { ops, t } = this.props;
         const saveDevice = this.formatDevice(device);
         const isValid = this.validDevice(saveDevice);
 
         if (isValid.result) {
-            FormActions.addDevice(saveDevice, () => {
+            FormActions.addDevice(saveDevice, selectedTemplates, () => {
                 toaster.success(t('devices:alerts.create'));
                 ops._fetch();
             });

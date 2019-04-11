@@ -27,6 +27,7 @@ const SidebarDevice = ({
     const {
         configValues, dynamicValues, staticValues, actuatorValues,
     } = device;
+    console.log('device', device);
     const total = device.templates.length ? device.templates.length : 0;
     return (
         <Fragment>

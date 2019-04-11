@@ -57,7 +57,7 @@ class AttrCard extends PureComponent {
             : 0;
         const errorMessage = errors ? errors.message : '';
         const valid = errors ? Object.keys(errors).length === 0 : true;
-        const isDynamic = attr.type === 'dynamic';
+        const isWithoutStaticValue = attr.type === 'dynamic' || attr.type === 'actuator';
         if (Object.keys(attr).length === 0) return <div />;
         return (
             <div className="attr-card">
@@ -65,7 +65,7 @@ class AttrCard extends PureComponent {
                     <img src="images/icons/data_attrs-gray.png" alt="attrs-icon" />
                     <div className="attr-card-input-wrapper" id={`label:${attr.label}`}>
                         {
-                            isDynamic
+                            isWithoutStaticValue
                                 ? (
                                     <div>
                                         {attr.label}

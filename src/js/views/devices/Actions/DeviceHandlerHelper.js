@@ -20,42 +20,35 @@ class DeviceHandlerHelper {
      *
      * @param device Object with all data of device
      * @param templates Array of templates that be associated with device
-     * @param oldDevice When is a update, this is use to keep the specialized
-     *                                  when the old value is equals to template
+     *
      * @returns {*} new object with  all data of device  without not specialized  attr and metas.
      */
-    diffTemAndSpecializedAttrsMetas(device, templates, oldDevice = null) {
+    diffTemAndSpecializedAttrsMetas(device, templates) {
         let specializedAttrs = [];
         const modifiedDevice = device;
-
         templates.forEach((template) => {
             if (template.attrs) {
-                template.attrs.forEach((attrTemp) => {
+                template.attrs.forEach((attrTem) => {
                     let specializedMetas = [];
-                    let notSpecializeStaticAttr = false;
-                    let filteredAttr = [];
+                    let specializedStaticAttr = true;
+                    const filteredAttr = modifiedDevice.attrs.filter((attrDev) => {
+                        if (attrDev.id === attrTem.id
+                            && attrDev.template_id === attrTem.template_id) {
+                            specializedStaticAttr = !this._isNotSpecialStaticAttr(attrDev, attrTem);
+                            specializedMetas = this._filterSpecializedMetas(attrTem, attrDev);
+                            return specializedMetas.length > 0 || (attrDev.static_value !== attrTem.static_value && attrDev.type !== 'dynamic');
+                        }
+                        return false;
+                    });
 
-                    if (modifiedDevice.attrs) {
-                        filteredAttr = modifiedDevice.attrs.filter((attrDev) => {
-                            if (attrDev.id === attrTemp.id
-                                && attrDev.template_id === attrTemp.template_id
-                            ) {
-                                const oldAttr = this._filterAttrFromOldDevice(oldDevice, template, attrDev);
-                                notSpecializeStaticAttr = this._isNotSpecializeStaticAttr(attrDev, attrTemp, oldAttr);
-                                specializedMetas = this._filterSpecializedMetas(attrTemp, attrDev, oldAttr);
-
-                                return specializedMetas.length > 0 || (attrDev.static_value !== attrTemp.static_value && attrDev.type !== 'dynamic');
-                            }
-                            return false;
-                        });
-                    }
                     const attrElement = filteredAttr[0];
                     if (filteredAttr && attrElement) {
                         attrElement.metadata = specializedMetas;
-                        if (notSpecializeStaticAttr) {
+                        if (!specializedStaticAttr) {
                             delete attrElement.static_value;
                         }
                     }
+
                     specializedAttrs = specializedAttrs.concat(filteredAttr);
                 });
             }
@@ -65,41 +58,30 @@ class DeviceHandlerHelper {
         return modifiedDevice;
     }
 
-    _filterAttrFromOldDevice(oldDevice, template, attrDev) {
-        let oldFilteredAttr = null;
-        if (oldDevice && oldDevice.attrs && oldDevice.attrs[template.id]) {
-            oldFilteredAttr = oldDevice.attrs[template.id].filter(oldAttrDev => attrDev.id === oldAttrDev.id);
+    _filterAttrFromOldDevice(oldDev, template, attrDev) {
+        let oldAttr = null;
+        if (oldDev && oldDev.attrs && oldDev.attrs[template.id]) {
+            oldAttr = oldDev.attrs[template.id].filter(oldAttrDev => attrDev.id === oldAttrDev.id);
         }
-        return oldFilteredAttr && oldFilteredAttr[0] ? oldFilteredAttr[0] : null;
+        return oldAttr && oldAttr[0] ? oldAttr[0] : null;
     }
 
-    _isNotSpecializeStaticAttr(attrDev, attrTemp, oldAttr) {
+    _isNotSpecialStaticAttr(attrDev, attrTemp) {
         let notSpecializeStaticAttr = false;
         if (attrDev.static_value === attrTemp.static_value && attrDev.type !== 'dynamic') {
-            if (oldAttr) {
-                notSpecializeStaticAttr = oldAttr.static_value !== attrDev.static_value;
-            } else {
-                notSpecializeStaticAttr = true;
-            }
+            notSpecializeStaticAttr = true;
         }
         return notSpecializeStaticAttr;
     }
 
-    _filterSpecializedMetas(attrTemp, attrDev, oldAttr) {
-        console.log('_filterSpecializedMetas attrTemp, attrDev, oldAttr', attrTemp, attrDev, oldAttr);
+    _filterSpecializedMetas(attrTemp, attrDev) {
         let specializedMetas = [];
         if (attrTemp.metadata && attrDev.metadata) {
             specializedMetas = attrDev.metadata.filter((metaDev) => {
                 let specializeStaticMetaValue = false;
                 attrTemp.metadata.forEach((metaTemp) => {
                     if (metaTemp.id === metaDev.id) {
-                        const oldFilteredMeta = oldAttr && oldAttr.metadata
-                            ? oldAttr.metadata.filter(oldMetaDev => metaDev.id === oldMetaDev.id) : null;
-                        if (metaTemp.static_value === metaDev.static_value) {
-                            specializeStaticMetaValue = oldFilteredMeta
-                                && oldFilteredMeta[0].static_value
-                                !== metaDev.static_value;
-                        } else {
+                        if (metaTemp.static_value !== metaDev.static_value) {
                             specializeStaticMetaValue = true;
                         }
                     }
@@ -107,8 +89,6 @@ class DeviceHandlerHelper {
                 return specializeStaticMetaValue;
             });
         }
-
-        console.log('_filterSpecializedMetas specializedMetas', specializedMetas);
         return specializedMetas;
     }
 }

@@ -1,6 +1,6 @@
 import deviceManager from 'Comms/devices';
 import toaster from 'Comms/util/materialize';
-import deviceHandlerHelper from './DeviceHandlerHelper';
+import helper from './DeviceHandlerHelper';
 
 
 class DeviceHandlerActions {
@@ -59,7 +59,7 @@ class DeviceHandlerActions {
     }
 
     addDevice(device, selectedTemplates, cb) {
-        const newDevice = deviceHandlerHelper.diffTemAndSpecializedAttrsMetas(device, selectedTemplates);
+        const newDevice = helper.diffTemAndSpecializedAttrsMetas(device, selectedTemplates);
         return (dispatch) => {
             dispatch();
             deviceManager
@@ -79,9 +79,8 @@ class DeviceHandlerActions {
     triggerUpdate(device, cb) {
         return (async (dispatch) => {
             dispatch();
-            const templates = await deviceHandlerHelper.getTemplatesByDevice(device);
-            const oldDevice = await deviceManager.getDevice(device.id);
-            const newDevice = deviceHandlerHelper.diffTemAndSpecializedAttrsMetas(device, templates, oldDevice);
+            const templates = await helper.getTemplatesByDevice(device);
+            const newDevice = helper.diffTemAndSpecializedAttrsMetas(device, templates);
             deviceManager
                 .setDevice(newDevice)
                 .then(() => {

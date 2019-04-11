@@ -68,7 +68,7 @@ class DeviceHandlerStore {
                 customDevice.attrs = customDevice.attrs.concat(device.attrs[id]);
             });
 
-            //console.log('customDevice', customDevice);
+            // console.log('customDevice', customDevice);
 
             customDevice.configValues = customDevice.attrs.filter(item => item.type === 'meta');
             customDevice.dynamicValues = customDevice.attrs.filter(item => item.type === 'dynamic');

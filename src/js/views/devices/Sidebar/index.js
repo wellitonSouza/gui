@@ -27,7 +27,6 @@ class Sidebar extends Component {
             usedTemplates: [],
             selectedTemplates: [],
             device: {},
-            attrsModified: [],
             selectAttr: [],
             errors: {},
             isShowSidebarDelete: false,

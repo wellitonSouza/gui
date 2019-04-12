@@ -24,6 +24,7 @@ class DeviceHandlerHelper {
      * @returns {*} new object with  all data of device  without not specialized  attr and metas.
      */
     diffTemAndSpecializedAttrsMetas(device, templates) {
+        console.log('device', device);
         let specializedAttrs = [];
         const modifiedDevice = device;
         templates.forEach((template) => {
@@ -69,6 +70,8 @@ class DeviceHandlerHelper {
     }
 
     _isNotSpecialStaticAttr(attrDev, attrTemp) {
+        if (attrDev.is_static_overridden) return false;
+
         let notSpecializeStaticAttr = false;
         if (attrDev.static_value === attrTemp.static_value && attrDev.type !== 'dynamic') {
             notSpecializeStaticAttr = true;
@@ -84,6 +87,9 @@ class DeviceHandlerHelper {
                 attrTemp.metadata.forEach((metaTemp) => {
                     if (metaTemp.id === metaDev.id) {
                         if (metaTemp.static_value !== metaDev.static_value) {
+                            specializeStaticMetaValue = true;
+                        }
+                        if (metaDev.is_static_overridden) {
                             specializeStaticMetaValue = true;
                         }
                     }

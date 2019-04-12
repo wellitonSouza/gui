@@ -72,7 +72,6 @@ class ListRender extends Component {
 
     componentDidUpdate() {
         if ((!this.state.loaded) && (this.props.flows !== undefined) && (Object.keys(this.props.flows).length)) {
-            this.convertFlowList();
             this.setState({ loaded: true });
         }
     }
@@ -86,18 +85,8 @@ class ListRender extends Component {
         this.setState({ filter: event.target.value });
     }
 
-    convertFlowList() {
-        if (this.state.filter != '') {
-            const updatedList = this.filteredList.filter(flow => flow.name.includes(event.target.value));
-            this.filteredList = updatedList;
-        } else {
-            this.filteredList = [];
-            for (const k in this.props.flows) {
-                if (this.props.flows.hasOwnProperty(k)) {
-                    this.filteredList.push(this.props.flows[k]);
-                }
-            }
-        }
+    convertFlowList(list) {
+        return list.sort((a, b) => a.name.localeCompare(b.name));
     }
 
     applyFiltering(list) {
@@ -109,9 +98,7 @@ class ListRender extends Component {
     }
 
     render() {
-        this.filteredList = this.applyFiltering(this.props.flows);
-
-        this.convertFlowList();
+        this.filteredList = this.convertFlowList(this.applyFiltering(this.props.flows));
         const { i18n } = this.props;
 
         const header = null;

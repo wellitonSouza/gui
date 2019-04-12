@@ -41,11 +41,13 @@ class DeviceHandlerHelper {
                         return false;
                     });
 
-                    const attrElement = filteredAttr[0];
-                    if (filteredAttr && attrElement) {
-                        attrElement.metadata = specializedMetas;
-                        if (!specializedStaticAttr) {
-                            delete attrElement.static_value;
+                    if (filteredAttr[0]) {
+                        const attrElement = filteredAttr[0];
+                        if (attrElement) {
+                            attrElement.metadata = specializedMetas;
+                            if (!specializedStaticAttr) {
+                                delete attrElement.static_value;
+                            }
                         }
                     }
 

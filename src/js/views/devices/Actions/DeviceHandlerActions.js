@@ -1,5 +1,7 @@
 import deviceManager from 'Comms/devices';
 import toaster from 'Comms/util/materialize';
+import helper from './DeviceHandlerHelper';
+
 
 class DeviceHandlerActions {
     set(args) {
@@ -15,7 +17,6 @@ class DeviceHandlerActions {
             deviceManager
                 .getTemplateGQL(templateList)
                 .then((result) => {
-                    // console.log('fetchTemplateData', result);
                     this.setTemplateData(result.data);
                     if (cb) {
                         cb(result);
@@ -57,8 +58,8 @@ class DeviceHandlerActions {
         return template;
     }
 
-    addDevice(device, cb) {
-        const newDevice = device;
+    addDevice(device, selectedTemplates, cb) {
+        const newDevice = helper.diffTemAndSpecializedAttrsMetas(device, selectedTemplates);
         return (dispatch) => {
             dispatch();
             deviceManager
@@ -76,20 +77,22 @@ class DeviceHandlerActions {
     }
 
     triggerUpdate(device, cb) {
-        return (dispatch) => {
+        return (async (dispatch) => {
             dispatch();
+            const templates = await helper.getTemplatesByDevice(device);
+            const newDevice = helper.diffTemAndSpecializedAttrsMetas(device, templates);
             deviceManager
-                .setDevice(device)
+                .setDevice(newDevice)
                 .then(() => {
-                    this.updateSingle(device);
+                    this.updateSingle(newDevice);
                     if (cb) {
-                        cb(device);
+                        cb(newDevice);
                     }
                 })
                 .catch((error) => {
                     this.devicesFailed(error);
                 });
-        };
+        });
     }
 
     triggerRemoval(device, cb) {
@@ -104,7 +107,7 @@ class DeviceHandlerActions {
                     }
                 })
                 .catch((error) => {
-                    this.devicesFailed('Failed to remove given device');
+                    this.devicesFailed(`Failed to remove given device: ${error}`);
                 });
         };
     }

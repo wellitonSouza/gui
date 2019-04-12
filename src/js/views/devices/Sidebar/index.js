@@ -145,8 +145,9 @@ class Sidebar extends Component {
         const errors = {};
         attrs.forEach((item) => {
             newAttrs[item.id] = item;
-            const isValid = util.isTypeValid(item.static_value, item.value_type, item.type);
-            if (!isValid.result) {
+            const isValid = item.static_value
+                && util.isTypeValid(item.static_value, item.value_type, item.type);
+            if (isValid && !isValid.result) {
                 errors[item.id] = {
                     message: isValid.error,
                     metadata: [],
@@ -210,18 +211,45 @@ class Sidebar extends Component {
         });
     }
 
-    handleChangeMetadata(event, id) {
-        const { device } = this.state;
-        device.metadata[id] = device.metadata[id].map(meta => (meta.label === event.target.name
-            ? {
-                ...meta,
-                static_value: event.target.value,
-            }
-            : meta
-        ));
+    handleChangeMetadata(event, idAttr) {
+        const { device, selectAttr } = this.state;
+
+        function updateMeta(arrayAttrs, arrayMeta, idAttr_) {
+            return arrayAttrs.map(attr => (attr.id === idAttr_
+                ? {
+                    ...attr,
+                    metadata: arrayMeta[idAttr_],
+                }
+                : attr
+            ));
+        }
+
+        device.metadata[idAttr] = device.metadata[idAttr].map(
+            meta => (meta.label === event.target.name
+                ? {
+                    ...meta,
+                    static_value: event.target.value,
+                }
+                : meta
+            ),
+        );
+
+
+        const updateDevice = {
+            ...device,
+            attrs: updateMeta(device.attrs, device.metadata, idAttr),
+            dynamicValues: updateMeta(device.dynamicValues, device.metadata, idAttr),
+            staticValues: updateMeta(device.staticValues, device.metadata, idAttr),
+            configValues: updateMeta(device.configValues, device.metadata, idAttr),
+            actuatorValues: updateMeta(device.actuatorValues, device.metadata, idAttr),
+        };
+
+        const updateAttr = updateMeta(selectAttr, device.metadata, idAttr);
 
         this.setState({
-            device,
+            device: updateDevice,
+            selectAttr: updateAttr,
+            errors: [],
         });
     }
 
@@ -372,7 +400,7 @@ class Sidebar extends Component {
                     handleShowDeviceAttrs={this.handleShowDeviceAttrs}
                     errors={errors}
                 />
-                { !isNewDevice
+                {!isNewDevice
                     ? (
                         <AltContainer stores={{
                             is: ImageStore,
@@ -389,7 +417,7 @@ class Sidebar extends Component {
                             />
                         </AltContainer>
                     )
-                    : null }
+                    : null}
             </Fragment>
         );
     }

@@ -2,6 +2,7 @@
   "title": "Groups",
   "description": "Description",
   "alerts": {
+    "group": "group",
     "empty_name": "Empty Group name.",
     "invalid_name": "Invalid Group name.",
     "empty_desc": "Empty Group description.",

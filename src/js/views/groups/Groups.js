@@ -18,7 +18,7 @@ i18next.setDefaultNamespace('groups');
 function GroupCard(obj) {
     return (
         <div
-            className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight"
+            className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight pointer"
             id={obj.group.name}
             onClick={obj.onclick}
             role="none"

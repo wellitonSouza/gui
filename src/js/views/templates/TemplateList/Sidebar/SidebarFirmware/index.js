@@ -108,8 +108,8 @@ class SidebarFirmware extends Component {
 
     changeAttrValue(event, attr) {
         event.preventDefault();
-        const name = event.target.name;
-        const value = event.target.value;
+        const { name } = event.target;
+        const { value } = event.target;
         // FirmwareActions.update({ f: f, v: v });
         //    this.setState({ fw_version: event.target.value });
         // const values = { ...attr };

@@ -354,7 +354,7 @@ class GroupsSideBar extends Component {
                 />
                 {showDeleteModal ? (
                     <RemoveModal
-                        name="group"
+                        name={t('groups:alerts.group')}
                         remove={this.delete}
                         openModal={this.handleModalDelete}
                     />

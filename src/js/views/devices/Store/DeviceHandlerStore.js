@@ -70,9 +70,7 @@ class DeviceHandlerStore {
             customDevice.configValues = customDevice.attrs.filter(item => item.type === 'meta');
             customDevice.dynamicValues = customDevice.attrs.filter(item => item.type === 'dynamic');
             customDevice.staticValues = customDevice.attrs.filter(item => item.type === 'static');
-            customDevice.actuatorValues = customDevice.attrs.filter(
-                item => item.type === 'actuator',
-            );
+            customDevice.actuatorValues = customDevice.attrs.filter(item => item.type === 'actuator');
             customDevice.metadata = {};
             customDevice.attrs.forEach((item) => {
                 if (Object.prototype.hasOwnProperty.call(item, 'metadata')) {

@@ -35,7 +35,7 @@ class DeviceHandlerHelper {
                     const filteredAttr = modifiedDevice.attrs.filter((attrDev) => {
                         if (attrDev.id === attrTem.id
                             && attrDev.template_id === attrTem.template_id) {
-                            specializedStaticAttr = !this._isNotSpecialStaticAttr(attrDev, attrTem);
+                            specializedStaticAttr = attrDev.is_static_overridden || this._isSpecializedStaticAttr(attrDev, attrTem);
                             specializedMetas = this._filterSpecializedMetas(attrTem, attrDev);
                             return specializedMetas.length > 0 || (attrDev.static_value !== attrTem.static_value && attrDev.type !== 'dynamic');
                         }
@@ -69,14 +69,12 @@ class DeviceHandlerHelper {
         return oldAttr && oldAttr[0] ? oldAttr[0] : null;
     }
 
-    _isNotSpecialStaticAttr(attrDev, attrTemp) {
-        if (attrDev.is_static_overridden) return false;
-
-        let notSpecializeStaticAttr = false;
-        if (attrDev.static_value === attrTemp.static_value && attrDev.type !== 'dynamic') {
-            notSpecializeStaticAttr = true;
+    _isSpecializedStaticAttr(attrDev, attrTemp) {
+        let specializeStaticAttr = false;
+        if (attrDev.static_value !== attrTemp.static_value && attrDev.type !== 'dynamic') {
+            specializeStaticAttr = true;
         }
-        return notSpecializeStaticAttr;
+        return specializeStaticAttr;
     }
 
     _filterSpecializedMetas(attrTemp, attrDev) {

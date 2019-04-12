@@ -236,7 +236,7 @@ class Util {
     }
 
     timestampToDayMonthYear(timestamp) {
-        return timestamp? moment(timestamp).format(i18n.t('format.full_date')+): null;
+        return timestamp? moment(timestamp).format(i18n.t('format.full_date')): null;
     }
 
     utcToHourMinSec(utc) {

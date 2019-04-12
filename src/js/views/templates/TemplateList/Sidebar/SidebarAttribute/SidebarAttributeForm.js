@@ -84,7 +84,7 @@ const SidebarAttributeForm = ({
             </MaterialSelect>
 
             {
-                selectAttr.type !== 'dynamic'
+                selectAttr.type !== 'dynamic' && selectAttr.type !== 'actuator'
                     ? (
                         <MaterialInput
                             name="static_value"

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { translate, Trans } from 'react-i18next';
 import PropTypes from 'prop-types';
 import ability from 'Components/permissions/ability';
@@ -102,7 +102,7 @@ function Form(params) {
     }
 
     return (
-        <form action="#">
+        <Fragment>
             <InputText
                 label={<Trans i18nKey="form.input.groupname.label" />}
                 name="name"
@@ -126,7 +126,7 @@ function Form(params) {
                 handleChangeCheckbox={handleChangeCheckbox}
                 cannotEdit={cannotEdit}
             />
-        </form>
+        </Fragment>
     );
 }
 
@@ -310,31 +310,33 @@ class GroupsSideBar extends Component {
 
         const buttonsFooter = [
             {
-                label: <Trans i18nKey="discard.label" />,
+                label: t('common:discard.label'),
                 click: this.discard,
-                type: 'default',
+                type: 'secondary',
             },
         ];
 
         if (!cannotEdit) {
             if (edit) {
                 buttonsFooter.push({
-                    label: <Trans i18nKey="remove.label" />,
+                    label: t('common:remove.label'),
                     click: this.handleModalDelete,
                     type: 'secondary',
                 });
             }
             buttonsFooter.push({
-                label: <Trans i18nKey="save.label" />,
+                label: t('common:save.label'),
                 click: this.save,
+                color: 'red',
                 type: 'primary',
             });
         }
 
 
         return (
-            <div>
+            <Fragment>
                 <SideBarRight
+                    icon="groups"
                     title={edit ? t('groups:form.title.edit')
                         : t('groups:form.title.new')}
                     content={(
@@ -356,8 +358,8 @@ class GroupsSideBar extends Component {
                         remove={this.delete}
                         openModal={this.handleModalDelete}
                     />
-) : <div />}
-            </div>
+                ) : <div />}
+            </Fragment>
         );
     }
 }

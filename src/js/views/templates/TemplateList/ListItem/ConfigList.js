@@ -29,7 +29,7 @@ class ConfigList extends Component {
     }
 
     suppress() {
-        const state = this.state;
+        const { state } = this;
         state.isSuppressed = !state.isSuppressed;
         this.setState(state);
     }

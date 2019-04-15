@@ -34,7 +34,8 @@ class DeviceHandlerHelper {
                     const filteredAttr = modifiedDevice.attrs.filter((attrDev) => {
                         if (attrDev.id === attrTem.id
                             && attrDev.template_id === attrTem.template_id) {
-                            specializedStaticAttr = attrDev.is_static_overridden || this._isSpecializedStaticAttr(attrDev, attrTem);
+                            specializedStaticAttr = attrDev.is_static_overridden
+                                || this._isSpecializedStaticAttr(attrDev, attrTem);
                             specializedMetas = this._filterSpecializedMetas(attrTem, attrDev);
                             return specializedMetas.length > 0 || specializedStaticAttr;
                         }

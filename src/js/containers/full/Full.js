@@ -110,6 +110,9 @@ class RightSideBar extends Component {
 
         const gravatar = `https://www.gravatar.com/avatar/${btoa(this.props.user.username)}?d=identicon`;
         const { t } = this.props;
+        const canSeeImportOrExport = ability.can('modifier', 'import')
+            || ability.can('viewer', 'export')
+            || ability.can('modifier', 'export');
 
         return (
             <div className="">
@@ -160,12 +163,14 @@ class RightSideBar extends Component {
                     </div>
 
                     <div className="horizontal-line" />
-
-                    <div className="logout-page-settings">
-                        <div className="logout-page-changePassword col s12 m12" onClick={this.handleImportExport}>
-                            {t('text.import_export')}
-                        </div>
-                    </div>
+                    {canSeeImportOrExport ? (
+                        <div className="logout-page-settings">
+                            <div className="logout-page-changePassword col s12 m12"
+                                 onClick={this.handleImportExport}>
+                                {t('text.import_export')}
+                            </div>
+                        </div>) : <div/>
+                    }
 
                     <div className="horizontal-line" />
 

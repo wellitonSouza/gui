@@ -4,6 +4,7 @@ import { translate } from 'react-i18next';
 import { FilePond, File, registerPlugin } from 'react-filepond';
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
 import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
+import ability from 'Components/permissions/ability';
 import toaster from '../../comms/util/materialize';
 import ImportExport from './ImportExport';
 import HeadImportExport from './HeadImportExport';
@@ -87,6 +88,9 @@ class Import extends Component {
         const label = t('importExport:import.btnModal');
         const title = t('importExport:import.titleModal');
         const firstMessage = t('importExport:import.subtitleModal');
+
+        const canSeeImport = ability.can('modifier', 'import');
+
         return (
             <div>
                 <ImportExport
@@ -96,12 +100,14 @@ class Import extends Component {
                     label={t('importExport:import.title')}
                     handleClick={this.handleOpenModal}
                 >
-                    <HeadImportExport
-                        main
-                        icon="import-icon"
-                        title={t('importExport:import.titleMain')}
-                        firstMessage={t('importExport:import.subtitle')}
-                    />
+                    {canSeeImport ? (
+                        <HeadImportExport
+                            main
+                            icon="import-icon"
+                            title={t('importExport:import.titleMain')}
+                            firstMessage={t('importExport:import.subtitle')}
+                        />
+                    ) : <div /> }
                     <FilePond
                         ref={this.pond}
                         onupdatefiles={(fileItems) => {

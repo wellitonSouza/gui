@@ -1,113 +1,133 @@
 {
-  "save": {
-    "label": "Save",
-    "alt": "Click to Save"
-  },
-  "discard": {
-    "label": "Discard",
-    "alt": "Click to close"
-  },
-  "back": {
-    "label": "Back"
-  },
-  "cancel": {
-    "label": "Cancel"
-  },
-  "remove": {
-    "label": "Remove",
-    "alt": "Click to Remove"
-  },
-  "description": {
-    "label": "Description"
-  },
-  "confirm": {
-    "label": "Confirm"
-  },
-  "add": {
-    "label": "Add"
-  },
-  "email": {
-    "label": "E-mail"
-  },
-  "username": {
-    "label": "Username"
-  },
-  "submit": {
-    "label": "Submit"
-  },
-  "value": {
-    "label": "Value"
-  },
-  "types": {
-    "boolean": "Boolean",
-    "geo": "Geo",
-    "float": "Float",
-    "integer": "Integer",
-    "string": "String",
-    "geo_point": "Geo:point"
-  },
-  "options": {
-    "attr_name": {
-      "label": "Attribute Name",
-      "values": {
-        "dynamic": "Dynamic Value",
-        "static": "Static Value",
-        "actuator": "Actuator"
-      }
+    "save": {
+        "label": "Save",
+        "alt": "Click to Save"
     },
-    "config_type": {
-      "label": "Configuration Type",
-      "values": {
-        "protocol": "Protocol",
-        "topic": "Topic",
-        "translator": "Translator",
-        "device_timeout": "Device Timeout"
-      }
+    "discard": {
+        "label": "Discard",
+        "alt": "Click to close"
+    },
+    "back": {
+        "label": "Back"
+    },
+    "cancel": {
+        "label": "Cancel"
+    },
+    "remove": {
+        "label": "Remove",
+        "alt": "Click to Remove"
+    },
+    "description": {
+        "label": "Description"
+    },
+    "confirm": {
+        "label": "Confirm"
+    },
+    "add": {
+        "label": "Add"
+    },
+    "email": {
+        "label": "E-mail"
+    },
+    "username": {
+        "label": "Username"
+    },
+    "submit": {
+        "label": "Submit"
+    },
+    "value": {
+        "label": "Value"
+    },
+    "types": {
+        "boolean": "Boolean",
+        "geo": "Geo",
+        "float": "Float",
+        "integer": "Integer",
+        "string": "String",
+        "geo_point": "Geo:point"
+    },
+    "options": {
+        "attr_name": {
+            "label": "Attribute Name",
+            "values": {
+                "dynamic": "Dynamic Value",
+                "static": "Static Value",
+                "actuator": "Actuator"
+            }
+        },
+        "config_type": {
+            "label": "Configuration Type",
+            "values": {
+                "protocol": "Protocol",
+                "topic": "Topic",
+                "translator": "Translator",
+                "device_timeout": "Device Timeout"
+            }
+        }
+    },
+    "text": {
+        "new": "New",
+        "select_option_below": "Select an option below",
+        "select_type": "Select type",
+        "name": "Name",
+        "management": "Management",
+        "properties": "Properties",
+        "set": "Set",
+        "a": "a",
+        "configuration": "Configuration",
+        "static_values": "Static Values",
+        "dynamic_attributes": "Dynamic Attributes",
+        "static_attributes": "Static Attributes",
+        "attribute": "attribute",
+        "attributes": "attributes",
+        "actuators": "Actuators",
+        "selected": "Selected",
+        "select": "Select",
+        "any": "any",
+        "filter": "Filter",
+        "filtering": "Filtering",
+        "by": "by'",
+        "edit": "Edit",
+        "all": "All",
+        "or": "or",
+        "hide": "Hide",
+        "show": "Show",
+        "no_data": "No data",
+        "showing": "Showing",
+        "of": "of",
+        "last_update": "Last Update",
+        "prev": "prev",
+        "previous": "previous",
+        "next": "next",
+        "next_full": "next",
+        "per_page": "per page",
+        "logged_as": "Logged as",
+        "tenant": "Tenant",
+        "import_export": " Import/Export",
+        "change_password": "Change Password",
+        "logout": "Logout"
+    },
+    "qst_remove": "You are about to remove this {{label}}. Are you sure?",
+    "cant_empty": "This can't be empty",
+    "only_letter_number": "Please use only letters (a-z), numbers (0-9) and underscores (_).'",
+    "errors_msg": {
+        "name_empty": "You can't leave the name empty.",
+        "alpha_number": "Please use only letters (a-z), numbers (0-9) and underscores (_).",
+        "set_type": "You must set a type.",
+        "invalid_text": "This text is not valid",
+        "invalid_geo": "This is not a valid coordinate",
+        "invalid_int": "This is not an integer",
+        "invalid_float": "This is not a float",
+        "invalid_bool": "This is not a boolean",
+        "invalid_protocol": "This protocol is not valid",
+        "invalid_topic": "This topic is not valid",
+        "invalid_translator": "This translator is not valid",
+        "invalid_timeout": "This device timeout is not an integer",
+        "empty_timeout": "You can't leave the device timeout empty.",
+        "invalid_timeout_2": "Invalid device timeout value. This is not a integer"
+    },
+    "format": {
+        "full_date": "MM/DD/YYYY",
+        "day_mouth": "MM/DD"
     }
-  },
-  "text": {
-    "new": "New",
-    "select_option_below": "Select an option below",
-    "select_type": "Select type",
-    "name": "Name",
-    "management": "Management",
-    "properties": "Properties",
-    "set": "Set",
-    "a": "a",
-    "configuration": "Configuration",
-    "static_values": "Static Values",
-    "dynamic_attributes": "Dynamic Attributes",
-    "static_attributes": "Static Attributes",
-    "attribute": "attribute",
-    "attributes": "attributes",
-    "actuators": "Actuators",
-    "selected": "Selected",
-    "select": "Select",
-    "any": "any",
-    "filter": "Filter",
-    "filtering": "Filtering",
-    "by": "by'",
-    "edit": "Edit",
-    "all": "All",
-    "or": "or",
-    "hide": "Hide",
-    "show": "Show",
-    "no_data": "No data",
-    "showing": "Showing",
-    "of": "of",
-    "last_update": "Last Update",
-    "prev": "prev",
-    "previous": "previous",
-    "next": "next",
-    "next_full": "next",
-    "per_page": "per page",
-    "logged_as": "Logged as",
-    "tenant": "Tenant",
-    "import_export": " Import/Export",
-    "change_password": "Change Password",
-    "logout": "Logout"
-  },
-  "qst_remove": "You are about to remove this {{label}}. Are you sure?",
-  "cant_empty" : "This can't be empty",
-  "only_letter_number": "Please use only letters (a-z), numbers (0-9) and underscores (_).'"
 }

@@ -2,6 +2,7 @@
 import moment from 'moment';
 import LoginActions from '../../actions/LoginActions';
 import 'babel-polyfill';
+import i18n from 'i18next';
 
 const sha1 = require('sha1');
 
@@ -223,11 +224,11 @@ class Util {
     }
 
     iso_to_date(timestamp) {
-        return moment(timestamp).format('DD/MM/YYYY HH:mm:ss');
+        return moment(timestamp).format(i18n.t('format.full_date')+ ' HH:mm:ss');
     }
 
     iso_to_date_hour(timestamp) {
-        return moment(timestamp).format('DD/MM HH:mm');
+        return moment(timestamp).format(i18n.t('format.day_mouth')+' HH:mm');
     }
 
     timestampToHourMinSec(timestamp) {
@@ -235,7 +236,7 @@ class Util {
     }
 
     timestampToDayMonthYear(timestamp) {
-        return timestamp? moment(timestamp).format('DD/MM/YYYY'): null;
+        return timestamp? moment(timestamp).format(i18n.t('format.full_date')): null;
     }
 
     utcToHourMinSec(utc) {
@@ -243,20 +244,20 @@ class Util {
     }
 
     utcToDayMonthYear(utc) {
-        return utc? moment.parseZone(utc).utc().local().format('DD/MM/YYYY'): null;
+        return utc? moment.parseZone(utc).utc().local().format(i18n.t('format.full_date')): null;
     }
 
     isNameValid(name) {
         const ret = { result: true, error: '', label: name.trim() };
         if (name.trim().length === 0) {
             ret.result = false;
-            ret.error = "You can't leave the name empty.";
+            ret.error =  i18n.t('errors_msg.name_empty');
             return ret;
         }
 
         if (name.match(/^[_A-z0-9 ]*([_A-z0-9 ])*$/g) == null) {
             ret.result = false;
-            ret.error = 'Please use only letters (a-z), numbers (0-9) and underscores (_).';
+            ret.error = i18n.t('errors_msg.alpha_number')  ;
             return ret;
         }
         return ret;
@@ -267,14 +268,14 @@ class Util {
         if (dynamic === 'actuator' && value.length === 0) return ret;
         if (type.trim().length == 0) {
             ret.result = false;
-            ret.error = 'You must set a type.';
+            ret.error =  i18n.t('errors_msg.set_type')  ;
             return ret;
         }
         if (dynamic === 'dynamic' && value.length === 0) return ret;
         const validator = {
             string(value) {
                 ret.result = value.trim().length > 0;
-                ret.error = 'This text is not valid';
+                ret.error = i18n.t('errors_msg.invalid_text')  ;
                 return ret;
             },
             'geo:point': function (value) {
@@ -284,7 +285,7 @@ class Util {
                 const re = /^([+-]?\d+(\.\d+)?)([,]\s*)([+-]?\d+(\.\d+)?)$/;
                 ret.result = re.test(value);
                 if (ret.result === false) {
-                    ret.error = 'This is not a valid coordinate';
+                    ret.error = i18n.t('errors_msg.invalid_geo')  ;
                 }
                 return ret;
             },
@@ -292,7 +293,7 @@ class Util {
                 const re = /^[+-]?\d+$/;
                 ret.result = re.test(value);
                 if (ret.result === false) {
-                    ret.error = 'This is not an integer';
+                    ret.error = i18n.t('errors_msg.invalid_int')  ;
                 }
                 return ret;
             },
@@ -300,7 +301,7 @@ class Util {
                 const re = /^[+-]?\d+(\.\d+)?$/;
                 ret.result = re.test(value);
                 if (ret.result === false) {
-                    ret.error = 'This is not a float';
+                    ret.error =  i18n.t('errors_msg.invalid_float')  ;
                 }
                 return ret;
             },
@@ -308,7 +309,7 @@ class Util {
                 const re = /^0|1|true|false$/;
                 ret.result = re.test(value);
                 if (ret.result === false) {
-                    ret.error = 'This is not a boolean';
+                    ret.error =   i18n.t('errors_msg.invalid_bool')  ;
                 }
                 return ret;
             },
@@ -317,39 +318,33 @@ class Util {
             },
             'protocol': function (value) {
                 ret.result = value.trim().length > 0;
-                ret.error = 'This protocol is not valid';
+                ret.error =  i18n.t('errors_msg.invalid_protocol')  ;
                 return ret;
             },
             'topic': function (value) {
                 ret.result = value.trim().length > 0;
-                ret.error = 'This topic is not valid';
+                ret.error = i18n.t('errors_msg.invalid_topic')  ;
                 return ret;
             },
             'translator': function (value) {
                 ret.result = value.trim().length > 0;
-                ret.error = 'This translator is not valid';
+                ret.error =  i18n.t('errors_msg.invalid_translator')  ;
                 return ret;
             },
             'device_timeout': function (value) {
                 const re = /^[+-]?\d+$/;
                 ret.result = re.test(value);
                 if (ret.result === false) {
-                    ret.error = 'This device timeout is not an integer';
+                    ret.error =  i18n.t('errors_msg.invalid_timeout')  ;
                 }
                 return ret;
             },
         };
-        // console.log('isTypeValid');
+
         if (validator.hasOwnProperty(type)) {
-            const result = validator[type](value);
-            return result;
+            return validator[type](value);
         }
 
-        // if (validator.hasOwnProperty(this.props.newAttr.type)) {
-        //   const result = validator[this.props.newAttr.type](value)
-        //   if (result) { ErrorActions.setField('value', ''); }
-        //   return result;
-        // }
         return ret;
   }
 
@@ -357,14 +352,14 @@ class Util {
       let ret = {result: true, error: ""};
       if (device_timeout.length === 0) {
           ret.result = false;
-          ret.error = "You can't leave the device timeout empty.";
+          ret.error = i18n.t('errors_msg.empty_timeout')  ;
           return ret;
       }
 
       const re = /^[+-]?\d+$/;
       ret.result = re.test(device_timeout);
       if (ret.result === false) {
-          ret.error = 'Invalid device timeout value. This is not a integer';
+          ret.error =  i18n.t('errors_msg.invalid_timeout_2')  ;
       }
       return ret;
   }

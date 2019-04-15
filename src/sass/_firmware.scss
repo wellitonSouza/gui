@@ -98,12 +98,20 @@
     display: inline-block;
 }
 
+.sidebar-groups
+{
+    .header{
+        background: linear-gradient(96.69deg, #f08080 0%, #E96D71 99.09%) !important;
+    }
+}
 
 .sidebar-firmware
 {
   @extend .generic-sidebar;
+  box-shadow: -3px 0 8px 0 rgba(0, 0, 0, 0.2);
+
   .header{
-      background: linear-gradient(96.69deg, #813C9A 0%, #E96D71 99.09%) !important;
+      background: linear-gradient(96.69deg, #813C9A 0%, #E96D71 99.09%);
   }
   .body{
     .sub-content

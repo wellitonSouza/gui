@@ -33,7 +33,6 @@ const DojotBtnClassic = ({ type = "secondary", color = 'none', title, onClick, l
     let auxTitle = title;
     if (auxTitle == undefined)
         auxTitle = label;
-
     if (to) {
         return (
             <Link to={to} title={auxTitle} className={'new-btn-flat style-2 ${type} clr-${color}'}>

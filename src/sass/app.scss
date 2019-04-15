@@ -488,6 +488,11 @@ order: 1;
   cursor:pointer;
 }
 
+.sepia-opa{
+  filter: sepia(100%);
+  opacity: 0.7;
+}
+
 @import 'inputs';
 @import 'shadow';
 @import 'list';

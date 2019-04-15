@@ -70,7 +70,7 @@ class DeviceHandlerHelper {
 
     _isSpecializedStaticAttr(attrDev, attrTemp) {
         let specializeStaticAttr = false;
-        if (attrDev.type !== 'dynamic' && attrDev.static_value !== attrTemp.static_value) {
+        if ((attrDev.type !== 'dynamic' || attrDev.type !== 'actuator') && attrDev.static_value !== attrTemp.static_value) {
             specializeStaticAttr = true;
         }
         return specializeStaticAttr;

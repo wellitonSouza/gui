@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Slide from 'react-reveal/Slide';
-import { DojotCustomButton } from 'Components/DojotButton';
+import { DojotBtnClassic } from 'Components/DojotButton';
 import { withNamespaces } from 'react-i18next';
 import AttrCard from './AttrCard';
 
@@ -53,15 +53,16 @@ const SidebarDeviceAttrs = ({
                             </div>
                         </div>
                         <div className="footer">
-                            <DojotCustomButton
+                            <DojotBtnClassic
                                 onClick={() => handleShowDeviceAttrs()}
                                 label={t('discard.label')}
-                                type="default"
+                                type="secondary"
                             />
-                            <DojotCustomButton
+                            <DojotBtnClassic
                                 onClick={() => validAttrs(selectAttr)}
                                 label={t('save.label')}
                                 type="primary"
+                                color="red"
                                 id="btn-save-attrs"
                             />
                         </div>

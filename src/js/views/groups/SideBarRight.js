@@ -1,36 +1,40 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { DojotCustomButton } from '../../components/DojotButton';
+import { DojotBtnClassic } from '../../components/DojotButton';
 
 class SideBarRight extends Component {
     render() {
         const {
-            visible, title, buttonsFooter, content,
+            visible, title, buttonsFooter, content, icon,
         } = this.props;
         let body = null;
         let header = null;
         let btnFooter = null;
         if (visible) {
             header = (
-                <div id="" className="header">
+                <div className="header">
                     <div className="title">{title}</div>
-                    <span id="" className="header-path">
+                    <div className="icon">
+                        <img className="sepia-opa" alt={icon} src={`images/icons/${icon}.png`} />
+                    </div>
+                    <div className="header-path">
                         {title}
-                    </span>
+                    </div>
                 </div>
             );
             if (buttonsFooter !== null && buttonsFooter.length > 0) {
                 btnFooter = buttonsFooter.map(btn => (
-                    <DojotCustomButton
+                    <DojotBtnClassic
                         label={btn.label}
                         onClick={btn.click}
+                        color={btn.color}
                         type={btn.type}
                         key={btn.label + btn.type}
                     />
                 ));
             }
             body = (
-                <div className="template-sidebar">
+                <div className="sidebar-firmware sidebar-groups">
                     {header}
                     <div className="body">
                         <div className="body-form">{content}</div>
@@ -46,12 +50,14 @@ class SideBarRight extends Component {
 
 SideBarRight.propTypes = {
     visible: PropTypes.bool,
+    icon: PropTypes.string,
     title: PropTypes.string.isRequired,
     buttonsFooter: PropTypes.arrayOf(PropTypes.object),
     content: PropTypes.instanceOf(Object).isRequired,
 };
 
 SideBarRight.defaultProps = {
+    icon: '',
     visible: true,
     buttonsFooter: [],
 };

@@ -1,113 +1,133 @@
 {
-  "save": {
-    "label": "Salvar",
-    "alt": "Clique para salvar"
-  },
-  "discard": {
-    "label": "Fechar",
-    "alt": "Clique para fechar"
-  },
-  "back": {
-    "label": "Voltar"
-  },
-  "cancel": {
-    "label": "Cancelar"
-  },
-  "remove": {
-    "label": "Remover",
-    "alt": "Clique para remover"
-  },
-  "description": {
-    "label": "Descrição"
-  },
-  "confirm": {
-    "label": "Confirmar"
-  },
-  "add": {
-    "label": "Adicionar"
-  },
-  "email": {
-    "label": "E-mail"
-  },
-  "username": {
-    "label": "Nome de usuário"
-  },
-  "submit": {
-    "label": "Entrar"
-  },
-  "value": {
-    "label": "Valor"
-  },
-  "types": {
-    "boolean": "Boleano",
-    "geo": "Geo",
-    "float": "Ponto Flutuante",
-    "integer": "Inteiro",
-    "string": "Texto",
-    "geo_point": "Geo:ponto"
-  },
-  "options": {
-    "attr_name": {
-      "label": "Nome do Atributo",
-      "values": {
-        "dynamic": "Valor Dinâmico",
-        "static": "Valor Estático",
-        "actuator": "Atuador"
-      }
+    "save": {
+        "label": "Salvar",
+        "alt": "Clique para salvar"
     },
-    "config_type": {
-      "label": "Tipo de configuração",
-      "values": {
-        "protocol": "Protocolo",
-        "topic": "Tópico",
-        "translator": "Tradutor",
-        "device_timeout": "Tempo limite do dispositivo"
-      }
+    "discard": {
+        "label": "Fechar",
+        "alt": "Clique para fechar"
+    },
+    "back": {
+        "label": "Voltar"
+    },
+    "cancel": {
+        "label": "Cancelar"
+    },
+    "remove": {
+        "label": "Remover",
+        "alt": "Clique para remover"
+    },
+    "description": {
+        "label": "Descrição"
+    },
+    "confirm": {
+        "label": "Confirmar"
+    },
+    "add": {
+        "label": "Adicionar"
+    },
+    "email": {
+        "label": "E-mail"
+    },
+    "username": {
+        "label": "Nome de usuário"
+    },
+    "submit": {
+        "label": "Entrar"
+    },
+    "value": {
+        "label": "Valor"
+    },
+    "types": {
+        "boolean": "Boleano",
+        "geo": "Geo",
+        "float": "Ponto Flutuante",
+        "integer": "Inteiro",
+        "string": "Texto",
+        "geo_point": "Geo:ponto"
+    },
+    "options": {
+        "attr_name": {
+            "label": "Nome do Atributo",
+            "values": {
+                "dynamic": "Valor Dinâmico",
+                "static": "Valor Estático",
+                "actuator": "Atuador"
+            }
+        },
+        "config_type": {
+            "label": "Tipo de configuração",
+            "values": {
+                "protocol": "Protocolo",
+                "topic": "Tópico",
+                "translator": "Tradutor",
+                "device_timeout": "Tempo limite do dispositivo"
+            }
+        }
+    },
+    "text": {
+        "new": "Novo",
+        "select_option_below": "Selecione uma opção abaixo",
+        "select_type": "Selecione um tipo",
+        "name": "Nome",
+        "management": "Gerenciar",
+        "properties": "Propriedades",
+        "set": "Definir",
+        "a": "um",
+        "configuration": "Configurações",
+        "static_values": "Valores Estáticos",
+        "dynamic_attributes": "Atributos dinâmicos",
+        "static_attributes": "Atributos estáticos",
+        "attribute": "atributo",
+        "attributes": "atributos",
+        "actuators": "Atuadores",
+        "selected": "Selecionado",
+        "select": "Selecionar",
+        "any": "algum",
+        "filter": "Filtro",
+        "filtering": "Filtrando",
+        "by": "por",
+        "edit": "Editar",
+        "all": "Todos",
+        "or": "ou",
+        "hide": "Ocultar",
+        "show": "Mostrar",
+        "no_data": "Sem dados",
+        "showing": "Exibindo",
+        "of": "de",
+        "last_update": "Ultima atualização",
+        "prev": "<<",
+        "previous": "anterior",
+        "next": ">>",
+        "next_full": "próximo",
+        "per_page": "exibir",
+        "logged_as": "Acessando como",
+        "tenant": "Tenant",
+        "import_export": " Import./Exportação",
+        "change_password": "Alterar Senha",
+        "logout": "Sair"
+    },
+    "qst_remove": "Você irá remover um {{label}}. Deseja continuar?",
+    "cant_empty": "Não pode ser vazio",
+    "only_letter_number": "Por favor use apenas letras (a-z), números (0-9) e sublinhados (_).",
+    "errors_msg": {
+        "name_empty": "Você não pode deixar o nome vazio.",
+        "alpha_number": "Por favor use apenas letras (a-z), números (0-9) e sublinhados (_).",
+        "set_type": "Você deve definir um tipo.",
+        "invalid_text": "Não é um texto válido",
+        "invalid_geo": "Não é uma coordenada válida",
+        "invalid_int": "Não é um inteiro",
+        "invalid_float": "Não é um ponto flutuante",
+        "invalid_bool": "Não é um booleano",
+        "invalid_protocol": "Este protocolo não é válido",
+        "invalid_topic": "Este tópico não é válido",
+        "invalid_translator": "Este tradutor não é válido",
+        "invalid_timeout": "Tempo limite do dispositivo não é um número inteiro",
+        "empty_timeout": "Você não pode deixar o tempo limite do dispositivo vazio.",
+        "invalid_timeout_2": "Valor de tempo limite do dispositivo inválido. Não é um inteiro"
+    },
+    "format": {
+        "full_date": "DD/MM/YYYY",
+        "day_mouth": "DD/MM"
     }
-  },
-  "text": {
-    "new": "Novo",
-    "select_option_below": "Selecione uma opção abaixo",
-    "select_type": "Selecione um tipo",
-    "name": "Nome",
-    "management": "Gerenciar",
-    "properties": "Propriedades",
-    "set": "Definir",
-    "a": "um",
-    "configuration": "Configurações",
-    "static_values": "Valores Estáticos",
-    "dynamic_attributes": "Atributos dinâmicos",
-    "static_attributes": "Atributos estáticos",
-    "attribute": "atributo",
-    "attributes": "atributos",
-    "actuators": "Atuadores",
-    "selected": "Selecionado",
-    "select": "Selecionar",
-    "any": "algum",
-    "filter": "Filtro",
-    "filtering": "Filtrando",
-    "by": "por",
-    "edit": "Editar",
-    "all": "Todos",
-    "or": "ou",
-    "hide": "Ocultar",
-    "show": "Mostrar",
-    "no_data": "Sem dados",
-    "showing": "Exibindo",
-    "of": "de",
-    "last_update": "Ultima atualização",
-    "prev": "<<",
-    "previous": "anterior",
-    "next": ">>",
-    "next_full": "próximo",
-    "per_page": "exibir",
-    "logged_as": "Acessando como",
-    "tenant": "Tenant",
-    "import_export": " Import./Exportação",
-    "change_password": "Alterar Senha",
-    "logout": "Sair"
-  },
-  "qst_remove": "Você irá remover um {{label}}. Deseja continuar?",
-  "cant_empty" : "Não pode ser vazio",
-  "only_letter_number": "Por favor use apenas letras (a-z), números (0-9) e sublinhados (_)."
 }

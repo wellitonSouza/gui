@@ -99,7 +99,7 @@ class SidebarFirmConfig extends Component {
             // adding image attributes
             template.attrs.push(createImageAttribute(attrs.current_state, 'dynamic', 'integer'));
             template.attrs.push(createImageAttribute(attrs.update_result, 'dynamic', 'integer'));
-            template.attrs.push(createImageAttribute(attrs.current_version, 'dynamic', 'integer'));
+            template.attrs.push(createImageAttribute(attrs.current_version, 'dynamic', 'string'));
             template.attrs.push(createImageAttribute(attrs.upload_image, 'actuator', 'string'));
             template.attrs.push(createImageAttribute(attrs.apply_image, 'actuator', 'string'));
         } else {

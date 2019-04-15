@@ -7,6 +7,7 @@ import TemplateActions from 'Actions/TemplateActions';
 import MaterialInput from 'Components/MaterialInput';
 import toaster from 'Comms/util/materialize';
 import { withNamespaces } from 'react-i18next';
+import ability from 'Components/permissions/ability';
 import { templateType } from '../../../TemplatePropTypes';
 import SidebarFirmImages from './SidebarFirmImages';
 import SidebarButton from '../SidebarButton';
@@ -108,7 +109,7 @@ class SidebarFirmConfig extends Component {
             for (let i = template.attrs.length - 1; i >= 0; i--) {
                 if (template.attrs[i].metadata.length) {
                     const lbl = template.attrs[i].metadata[0].label;
-                    if (lbl.includes("dojot:firmware_update:")) {
+                    if (lbl.includes('dojot:firmware_update:')) {
                         delete template.attrs[i];
                     }
                 }
@@ -137,6 +138,8 @@ class SidebarFirmConfig extends Component {
         } = this.props;
         const clssBtn = imageAllowed ? 'fw_btn_pushed' : 'fw_btn_push';
         const { attrs, showFirmwareImage } = this.state;
+        const fwImageModifier = ability.can('modifier', 'fw-image');
+
         return (
             <Fragment>
                 <Slide right when={showFirmware} duration={300}>
@@ -168,78 +171,78 @@ class SidebarFirmConfig extends Component {
                                             <div className="description">
                                                 <div className="tl">
                                                     {imageAllowed
-                                                    ? <b>{t('firmware:states.enabled')}</b>
-                                                    : <b>{t('firmware:states.disabled')}</b>
-                                                }
+                                                        ? <b>{t('firmware:states.enabled')}</b>
+                                                        : <b>{t('firmware:states.disabled')}</b>
+                                                    }
 
                                                 </div>
                                                 {t('firmware:states.short_desc')}
                                             </div>
                                         </div>
                                         { imageAllowed
-                                        ? (
-                                            <div className="image-related-attrs">
-                                                <span>
-                                                    {t('firmware:states.long_desc')}
-                                                </span>
-                                                <div className="body-attribute-name">
-                                                    <MaterialInput
-                                                        name="current_state"
-                                                        className="attribute-type"
-                                                        maxLength={40}
-                                                        value={attrs.current_state.user_value}
-                                                        onChange={e => this.changeAttrValue(e)}
-                                                    >
-                                                        {t('firmware:default_attrs.state')}
-                                                    </MaterialInput>
+                                            ? (
+                                                <div className="image-related-attrs">
+                                                    <span>
+                                                        {t('firmware:states.long_desc')}
+                                                    </span>
+                                                    <div className="body-attribute-name">
+                                                        <MaterialInput
+                                                            name="current_state"
+                                                            className="attribute-type"
+                                                            maxLength={40}
+                                                            value={attrs.current_state.user_value}
+                                                            onChange={e => this.changeAttrValue(e)}
+                                                        >
+                                                            {t('firmware:default_attrs.state')}
+                                                        </MaterialInput>
+                                                    </div>
+                                                    <div className="body-attribute-name">
+                                                        <MaterialInput
+                                                            name="update_result"
+                                                            className="attribute-type"
+                                                            maxLength={40}
+                                                            value={attrs.update_result.user_value}
+                                                            onChange={e => this.changeAttrValue(e)}
+                                                        >
+                                                            {t('firmware:default_attrs.update_result')}
+                                                        </MaterialInput>
+                                                    </div>
+                                                    <div className="body-attribute-name">
+                                                        <MaterialInput
+                                                            name="upload_image"
+                                                            className="attribute-type"
+                                                            maxLength={40}
+                                                            value={attrs.upload_image.user_value}
+                                                            onChange={e => this.changeAttrValue(e)}
+                                                        >
+                                                            {t('firmware:default_attrs.upload_image')}
+                                                        </MaterialInput>
+                                                    </div>
+                                                    <div className="body-attribute-name">
+                                                        <MaterialInput
+                                                            name="apply_image"
+                                                            className="attribute-type"
+                                                            maxLength={40}
+                                                            value={attrs.apply_image.user_value}
+                                                            onChange={e => this.changeAttrValue(e)}
+                                                        >
+                                                            {t('firmware:default_attrs.apply_image')}
+                                                        </MaterialInput>
+                                                    </div>
+                                                    <div className="body-attribute-name">
+                                                        <MaterialInput
+                                                            name="current_version"
+                                                            className="attribute-type"
+                                                            maxLength={40}
+                                                            value={attrs.current_version.user_value}
+                                                            onChange={e => this.changeAttrValue(e)}
+                                                        >
+                                                            {t('firmware:default_attrs.current_version')}
+                                                        </MaterialInput>
+                                                    </div>
                                                 </div>
-                                                <div className="body-attribute-name">
-                                                    <MaterialInput
-                                                        name="update_result"
-                                                        className="attribute-type"
-                                                        maxLength={40}
-                                                        value={attrs.update_result.user_value}
-                                                        onChange={e => this.changeAttrValue(e)}
-                                                    >
-                                                        {t('firmware:default_attrs.update_result')}
-                                                    </MaterialInput>
-                                                </div>
-                                                <div className="body-attribute-name">
-                                                    <MaterialInput
-                                                        name="upload_image"
-                                                        className="attribute-type"
-                                                        maxLength={40}
-                                                        value={attrs.upload_image.user_value}
-                                                        onChange={e => this.changeAttrValue(e)}
-                                                    >
-                                                        {t('firmware:default_attrs.upload_image')}
-                                                    </MaterialInput>
-                                                </div>
-                                                <div className="body-attribute-name">
-                                                    <MaterialInput
-                                                        name="apply_image"
-                                                        className="attribute-type"
-                                                        maxLength={40}
-                                                        value={attrs.apply_image.user_value}
-                                                        onChange={e => this.changeAttrValue(e)}
-                                                    >
-                                                        {t('firmware:default_attrs.apply_image')}
-                                                    </MaterialInput>
-                                                </div>
-                                                <div className="body-attribute-name">
-                                                    <MaterialInput
-                                                        name="current_version"
-                                                        className="attribute-type"
-                                                        maxLength={40}
-                                                        value={attrs.current_version.user_value}
-                                                        onChange={e => this.changeAttrValue(e)}
-                                                    >
-                                                        {t('firmware:default_attrs.current_version')}
-                                                    </MaterialInput>
-                                                </div>
-                                            </div>
-                                        )
-                                        : null }
+                                            )
+                                            : null }
                                     </div>
                                     <div className="body-actions">
                                         <div className="body-actions--divider" />
@@ -261,13 +264,16 @@ class SidebarFirmConfig extends Component {
                         : <div />
                     }
                 </Slide>
-                <SidebarFirmImages
-                    showFirmware={showFirmwareImage}
-                    isNewTemplate={isNewTemplate}
-                    templateId={template.id}
-                    images={images}
-                    toogleSidebarFirmware={this.toogleSidebarFirmImage}
-                />
+                { fwImageModifier
+                    ? (
+                        <SidebarFirmImages
+                            showFirmware={showFirmwareImage}
+                            isNewTemplate={isNewTemplate}
+                            templateId={template.id}
+                            images={images}
+                            toogleSidebarFirmware={this.toogleSidebarFirmImage}
+                        />
+                    ) : null }
             </Fragment>
         );
     }

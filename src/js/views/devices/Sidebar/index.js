@@ -8,12 +8,12 @@ import { withNamespaces } from 'react-i18next';
 import ImageStore from 'Stores/ImageStore';
 import DeviceStore from 'Stores/DeviceStore';
 import MeasureStore from 'Stores/MeasureStore';
+import ability from 'Components/permissions/ability';
 import SidebarDevice from './SidebarDevice';
 import SidebarManageTemplates from './SidebarManageTemplates';
 import SidebarDeviceAttrs from './SidebarDeviceAttrs';
 import SidebarImage from './SidebarImage/index';
 import { FormActions } from '../Actions';
-
 
 class Sidebar extends Component {
     constructor(props) {
@@ -366,6 +366,7 @@ class Sidebar extends Component {
             templateIdAllowedImage,
             hasTemplateWithImages,
         } = this.props;
+        const deviceModifier = ability.can('modifier', 'device');
 
         if (!Object.prototype.hasOwnProperty.call(device, 'attrs')) return <div />;
         const { metadata } = device;
@@ -413,13 +414,16 @@ class Sidebar extends Component {
                             ms: MeasureStore,
                         }}
                         >
-                            <SidebarImage
-                                deviceId={device.id}
-                                hasTemplateWithImages={hasTemplateWithImages}
-                                templateIdAllowedImage={templateIdAllowedImage}
-                                showSidebarImage={showSidebarImage}
-                                toogleSidebarImages={this.toogleSidebarImages}
-                            />
+                            { deviceModifier
+                                ? (
+                                    <SidebarImage
+                                        deviceId={device.id}
+                                        hasTemplateWithImages={hasTemplateWithImages}
+                                        templateIdAllowedImage={templateIdAllowedImage}
+                                        showSidebarImage={showSidebarImage}
+                                        toogleSidebarImages={this.toogleSidebarImages}
+                                    />
+                                ) : null }
                         </AltContainer>
                     )
                     : null}

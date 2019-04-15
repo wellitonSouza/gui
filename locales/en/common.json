@@ -105,7 +105,8 @@
         "tenant": "Tenant",
         "import_export": " Import/Export",
         "change_password": "Change Password",
-        "logout": "Logout"
+        "logout": "Logout",
+        "password_updated": "Password updated"
     },
     "qst_remove": "You are about to remove this {{label}}. Are you sure?",
     "cant_empty": "This can't be empty",

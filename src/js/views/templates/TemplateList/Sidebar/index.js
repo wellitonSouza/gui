@@ -198,7 +198,7 @@ class Sidebar extends Component {
         const ret = util.isNameValid(values.label);
         if (!ret.result) {
             if (type === 'config_attrs') {
-                toaster.error(t('templates:alters.must_set_type'));
+                toaster.error(t('templates:alerts.must_set_type'));
             } else {
                 toaster.error(ret.error);
             }

@@ -1,6 +1,8 @@
 import PropTypes, { func } from 'prop-types';
+import i18n from 'i18next';
 import React, { Component } from 'react';
 import { DojotBtnClassic } from '../DojotButton';
+
 
 export default class ImportExport extends Component {
     constructor(props) {
@@ -40,7 +42,7 @@ export default class ImportExport extends Component {
                         })}
                     </div>
                     <div className="footer">
-                        <DojotBtnClassic is_secondary onClick={this.dismiss} label="Cancel" title="Cancel" />
+                        <DojotBtnClassic is_secondary onClick={this.dismiss} label={i18n.t('cancel.label')} title={i18n.t('cancel.label')} />
                         {save ? (
                             <DojotBtnClassic
                                 is_secondary={false}

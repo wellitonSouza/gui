@@ -1,5 +1,6 @@
 /* eslint-disable */
 import { browserHistory } from 'react-router';
+import i18n from 'i18next';
 import loginManager from '../comms/login/LoginManager';
 import toaster from '../comms/util/materialize';
 import {AbilityUtil} from '../components/permissions/ability';
@@ -46,7 +47,7 @@ class LoginActions {
             dispatch();
             loginManager.updatePassword(data)
                 .then(() => {
-                    toaster.success('Password updated');
+                    toaster.success(i18n.t('text.password_updated'));
                 })
                 .catch((error) => {
                     toaster.error(error.message);

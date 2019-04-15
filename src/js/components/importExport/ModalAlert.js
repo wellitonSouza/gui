@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import i18n from 'i18next';
 import PropTypes from 'prop-types';
 import {
     DojotBtnClassic,
@@ -37,8 +38,8 @@ export default class ModalAlert extends Component {
                             <DojotBtnClassic
                                 is_secondary
                                 onClick={this.dismiss}
-                                label="Cancel"
-                                title="Cancel"
+                                label={i18n.t('cancel.label')}
+                                title={i18n.t('cancel.label')}
                             />
                         ) : null}
                         <DojotBtnClassic

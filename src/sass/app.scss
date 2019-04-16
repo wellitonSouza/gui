@@ -68,6 +68,16 @@ $details-background-color: #f3f3f3;
 $main-font-family: Roboto, sans-serif;
 
 
+.bg-gradient-light-blue
+{
+  background: linear-gradient(to right, #1CB5E0, #6b6bb3);
+}
+.bg-gradient-dark-blue
+{
+    background-color: #7f5a83;
+    background-image: linear-gradient(315deg, #7f5a83 0%, #0d324d 74%);
+}
+
 .bg-gradient-ciano-blue
 {
     background: linear-gradient(96.69deg, #4BA0C4 0%, #12BDBA 99.09%);
@@ -493,6 +503,13 @@ order: 1;
   opacity: 0.7;
 }
 
+.truncate{
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+ 
 @import 'inputs';
 @import 'shadow';
 @import 'list';

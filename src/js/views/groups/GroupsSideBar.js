@@ -337,7 +337,7 @@ class GroupsSideBar extends Component {
             <Fragment>
                 <SideBarRight
                     icon="groups"
-                    title={edit ? `${t('groups:form.title.edit')} ${group.name}`
+                    title={edit ? `${group.name}`
                         : t('groups:form.title.new')}
                     content={(
                         <Form

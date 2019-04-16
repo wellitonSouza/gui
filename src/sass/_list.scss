@@ -893,13 +893,15 @@ $action-area-width: 200px;
   }
 
   .title-text {
+    display: inline-block !important;
     height: 100%;
     width: calc(100% - 100px);
-    float: left;
-    display: inline;
     font-size: 18px;
+    text-align: left;
     padding-top: 25px;
-
+    font-family: "Open Sans", sans-serif;
+    font-weight: 500;
+    
     textarea {
       float: left;
       resize: none;
@@ -1067,7 +1069,7 @@ $action-area-width: 200px;
   font-weight: normal;
   font-size: 18px;
   color: #4F4F4F;
-  font-family: Roboto, sans-serif;
+  font-family: Raleway, sans-serif;
   .center-text-child {
     display: table-cell;
     vertical-align: middle;

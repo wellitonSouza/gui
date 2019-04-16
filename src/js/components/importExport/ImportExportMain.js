@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { translate } from 'react-i18next';
+import ability from 'Components/permissions/ability';
 import ImportExportAction from '../../actions/ImportExportAction';
 import ImportExport from './ImportExport';
 import HeadImportExport from './HeadImportExport';
@@ -32,6 +33,11 @@ class ImportExportMain extends Component {
     render() {
         const { openModal, toggleSidebar, t } = this.props;
         const { openImport } = this.state;
+
+        const canSeeImport = ability.can('modifier', 'import');
+        const canSeeExport = ability.can('viewer', 'export')
+            || ability.can('modifier', 'export');
+
         return (
             <div>
                 <ImportExport
@@ -42,12 +48,16 @@ class ImportExportMain extends Component {
                     <div className="">
                         <HeadImportExport main icon="import-export-icon" title={t('importExport:title')} firstMessage="" />
                     </div>
-                    <div className="">
-                        <HeadImportExport handleClick={this.handleImport} icon="import-icon" title={t('importExport:import.titleMain')} firstMessage={t('importExport:import.subtitleMain')} />
-                    </div>
-                    <div className="">
-                        <HeadImportExport handleClick={this.handleExport} icon="export-icon" title={t('importExport:export.title')} firstMessage={t('importExport:export.subtitle')} />
-                    </div>
+                    {canSeeImport ? (
+                        <div className="">
+                            <HeadImportExport handleClick={this.handleImport} icon="import-icon" title={t('importExport:import.titleMain')} firstMessage={t('importExport:import.subtitleMain')} />
+                        </div>
+                    ) : <div /> }
+                    {canSeeExport ? (
+                        <div className="">
+                            <HeadImportExport handleClick={this.handleExport} icon="export-icon" title={t('importExport:export.title')} firstMessage={t('importExport:export.subtitle')} />
+                        </div>
+                    ) : <div /> }
                 </ImportExport>
                 {openImport ? <Import openModal={this.openImport} /> : null}
             </div>

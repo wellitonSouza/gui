@@ -280,7 +280,6 @@ class ChangePasswordModalComponent extends Component {
                             className="confirm-password-title">[&nbsp;&nbsp;{t('text.change_password')}&nbsp;&nbsp;]
                         </div>
                     </div>
-                    {/*    <form>*/}
                     <div className="row">
                         <div className="confirm-password-body">
                             <div className="input-field col s12 m12">
@@ -346,7 +345,6 @@ class ChangePasswordModalComponent extends Component {
                                              title={t('discard.label')}/>
                         </div>
                     </div>
-                    {/*     </form>*/}
                 </div>
                 <div className="rightsidebar" onClick={this.dismiss}/>
             </div>

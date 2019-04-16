@@ -12,8 +12,8 @@
       "image_removed": "Image removed.",
       "file_added": "File added.",
       "image_to_transfer": "Image to be transferred",
-      "image_transferred" :"Image successfully transferred.",
-      "image_applied":"Image Applied."
+      "image_transferred" :"Request to transfer firmware image was accepted.",
+      "image_applied":"Request to apply firmware image was accepted."
     },
     "labels":{
         "remove":"Remove Image",

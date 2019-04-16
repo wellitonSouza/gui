@@ -6,6 +6,7 @@ import TemplateActions from 'Actions/TemplateActions';
 import util from 'Comms/util/util';
 import { withNamespaces } from 'react-i18next';
 import ImageStore from 'Stores/ImageStore';
+import ability from 'Components/permissions/ability';
 import SidebarTemplate from './SidebarTemplate/index';
 import SidebarAttribute from './SidebarAttribute/index';
 import SidebarMetadata from './SidebarMetadata/index';
@@ -198,7 +199,7 @@ class Sidebar extends Component {
         const ret = util.isNameValid(values.label);
         if (!ret.result) {
             if (type === 'config_attrs') {
-                toaster.error(t('templates:alters.must_set_type'));
+                toaster.error(t('templates:alerts.must_set_type'));
             } else {
                 toaster.error(ret.error);
             }
@@ -435,6 +436,7 @@ class Sidebar extends Component {
             showDeleteMeta,
             isNewMetadata,
         } = this.state;
+        const templateModifier = ability.can('modifier', 'template');
 
         return (
             <Fragment>
@@ -453,7 +455,7 @@ class Sidebar extends Component {
                     deleteTemplate={this.deleteTemplate}
                 />
                 <AltContainer store={ImageStore}>
-                    {showFirmware
+                    {showFirmware && templateModifier
                         ? (
                             <SidebarFirmConfig
                                 showFirmware={showFirmware}

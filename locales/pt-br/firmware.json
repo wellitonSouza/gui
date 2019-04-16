@@ -12,8 +12,8 @@
       "image_removed": "Image removida.",
       "file_added": "Arquivo adicionado.",
       "image_to_transfer": "Imagem a ser transferida",
-      "image_transferred": "Imagem transferida com sucesso!",
-      "image_applied":"Imagem aplicada."
+      "image_transferred": "Requisição para transferir a imagem foi aceita.",
+      "image_applied":"Requisição para aplicar a imagem foi aceita."
     },
     "labels":{
         "remove":"Remover Imagem",

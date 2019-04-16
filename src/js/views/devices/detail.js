@@ -582,7 +582,7 @@ class ViewDeviceImpl extends Component {
 
         for (const i in device.attrs) {
             for (const j in device.attrs[i]) {
-                if (device.attrs[i][j].type !== 'meta') {
+                if (device.attrs[i][j].type !== 'meta' && device.attrs[i][j].type !== 'static') {
                     MeasureActions.fetchMeasure.defer(device, device.attrs[i][j].label, 10);
                 }
             }

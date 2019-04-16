@@ -34,9 +34,10 @@ class DeviceHandlerHelper {
                     const filteredAttr = modifiedDevice.attrs.filter((attrDev) => {
                         if (attrDev.id === attrTem.id
                             && attrDev.template_id === attrTem.template_id) {
-                            specializedStaticAttr = !this._isNotSpecialStaticAttr(attrDev, attrTem);
+                            specializedStaticAttr = attrDev.is_static_overridden
+                                || this._isSpecializedStaticAttr(attrDev, attrTem);
                             specializedMetas = this._filterSpecializedMetas(attrTem, attrDev);
-                            return specializedMetas.length > 0 || (attrDev.static_value !== attrTem.static_value && attrDev.type !== 'dynamic');
+                            return specializedMetas.length > 0 || specializedStaticAttr;
                         }
                         return false;
                     });
@@ -68,12 +69,12 @@ class DeviceHandlerHelper {
         return oldAttr && oldAttr[0] ? oldAttr[0] : null;
     }
 
-    _isNotSpecialStaticAttr(attrDev, attrTemp) {
-        let notSpecializeStaticAttr = false;
-        if (attrDev.static_value === attrTemp.static_value && attrDev.type !== 'dynamic') {
-            notSpecializeStaticAttr = true;
+    _isSpecializedStaticAttr(attrDev, attrTemp) {
+        let specializeStaticAttr = false;
+        if ((attrDev.type !== 'dynamic' || attrDev.type !== 'actuator') && attrDev.static_value !== attrTemp.static_value) {
+            specializeStaticAttr = true;
         }
-        return notSpecializeStaticAttr;
+        return specializeStaticAttr;
     }
 
     _filterSpecializedMetas(attrTemp, attrDev) {
@@ -84,6 +85,9 @@ class DeviceHandlerHelper {
                 attrTemp.metadata.forEach((metaTemp) => {
                     if (metaTemp.id === metaDev.id) {
                         if (metaTemp.static_value !== metaDev.static_value) {
+                            specializeStaticMetaValue = true;
+                        }
+                        if (metaDev.is_static_overridden) {
                             specializeStaticMetaValue = true;
                         }
                     }

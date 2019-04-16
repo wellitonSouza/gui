@@ -169,7 +169,8 @@ class ChangePasswordModalComponent extends Component {
             oldPassword: '',
             invalid: {
                 confirm: '',
-                password: ''
+                password: '',
+                oldPassword: ''
             },
         };
 
@@ -191,6 +192,15 @@ class ChangePasswordModalComponent extends Component {
     validate() {
         const errorMessage = this.state.invalid;
         const { t } = this.props;
+
+        if (this.state.oldPassword.trim().length <= 0) {
+            errorMessage.oldPassword = t('login:alerts.empty');
+            this.setState({ invalid: errorMessage });
+            return false;
+        }
+        delete errorMessage.oldPassword;
+        this.setState({ invalid: errorMessage });
+
 
         if (this.state.password.trim().length < 8) {
             errorMessage.password = t('login:alerts.least_8');
@@ -214,19 +224,29 @@ class ChangePasswordModalComponent extends Component {
     sendUpdatePassword(e) {
         e.preventDefault();
         const { t } = this.props;
+        const {
+            invalid: errorMsg,
+            oldPassword,
+            password,
+            confirmPassword
+        } = this.state;
         if (this.validate()) {
-            const password = {
-                passwd: this.state.password,
-                token: this.state.token
-            };
             const passwordData = {
-                oldpasswd: this.state.oldPassword,
-                newpasswd: this.state.password
+                oldpasswd: oldPassword,
+                newpasswd: password
             };
             LoginActions.updatePassword(passwordData);
             this.dismiss();
         } else {
-            errorMsg.confirm = t('login:alerts.password_mismatch');
+
+            if (oldPassword.trim().length <= 0 ||
+                password.trim().length <= 0 ||
+                confirmPassword.trim().length <= 0) {
+                errorMsg.confirm = t('login:alerts.empty');
+            } else if (password.trim() !== confirmPassword.trim()) {
+                errorMsg.confirm = t('login:alerts.password_mismatch');
+            }
+
             this.setState({ invalid: errorMsg });
             toaster.error(this.state.invalid.password);
             toaster.error(this.state.invalid.confirm);
@@ -260,72 +280,73 @@ class ChangePasswordModalComponent extends Component {
                             className="confirm-password-title">[&nbsp;&nbsp;{t('text.change_password')}&nbsp;&nbsp;]
                         </div>
                     </div>
-                    <form>
-                        <div className="row">
-                            <div className="confirm-password-body">
-                                <div className="input-field col s12 m12">
-                                    <input
-                                        id="fld_oldPassword"
-                                        type="password"
-                                        name="oldPassword"
-                                        onChange={this.handleChange}
-                                        value={this.state.oldPassword}
-                                    />
-                                    <label
-                                        htmlFor="fld_oldPassword"
-                                        data-success=""
-                                        data-error={this.state.invalid.password}
-                                    >
-                                        {t('login:old_password')}
-                                    </label>
-                                </div>
-                                <div className="input-field col s12 m12">
-                                    <input
-                                        id="fld_newPassword"
-                                        type="password"
-                                        name="password"
-                                        className={getClass('password')}
-                                        onChange={this.handleChange}
-                                        value={this.state.password}
-                                    />
-                                    <label
-                                        htmlFor="fld_newPassword"
-                                        data-success=""
-                                        data-error={this.state.invalid.password}
-                                    >
-                                        {t('login:password.label')}
-                                    </label>
-                                </div>
-                                <div className="input-field col s12 m12">
-                                    <input
-                                        id="fld_confirmPassword"
-                                        type="password"
-                                        name="confirmPassword"
-                                        className={getClass('confirm')}
-                                        onChange={this.handleChange}
-                                        value={this.state.confirm}
-                                    />
-                                    <label
-                                        htmlFor="fld_confirmPassword"
-                                        data-success=""
-                                        data-error={this.state.invalid.confirm}
-                                    >
-                                        {t('login:confirm_pass')}
-                                    </label>
-                                </div>
+                    {/*    <form>*/}
+                    <div className="row">
+                        <div className="confirm-password-body">
+                            <div className="input-field col s12 m12">
+                                <input
+                                    id="fld_oldPassword"
+                                    type="password"
+                                    name="oldPassword"
+                                    className={getClass('oldPassword')}
+                                    onChange={this.handleChange}
+                                    value={this.state.oldPassword}
+                                />
+                                <label
+                                    htmlFor="fld_oldPassword"
+                                    data-success=""
+                                    data-error={this.state.invalid.password}
+                                >
+                                    {t('login:old_password')}
+                                </label>
                             </div>
-
-                            <div className="col s12 text-right">
-                                <DojotBtnClassic is_secondary={false}
-                                                 onClick={this.sendUpdatePassword}
-                                                 label={t('save.label')}
-                                                 title={t('save.label')}/>
-                                <DojotBtnClassic is_secondary onClick={this.dismiss}
-                                                 label={t('discard.label')}
-                                                 title={t('discard.label')}/>
+                            <div className="input-field col s12 m12">
+                                <input
+                                    id="fld_newPassword"
+                                    type="password"
+                                    name="password"
+                                    className={getClass('password')}
+                                    onChange={this.handleChange}
+                                    value={this.state.password}
+                                />
+                                <label
+                                    htmlFor="fld_newPassword"
+                                    data-success=""
+                                    data-error={this.state.invalid.password}
+                                >
+                                    {t('login:password.label')}
+                                </label>
+                            </div>
+                            <div className="input-field col s12 m12">
+                                <input
+                                    id="fld_confirmPassword"
+                                    type="password"
+                                    name="confirmPassword"
+                                    className={getClass('confirm')}
+                                    onChange={this.handleChange}
+                                    value={this.state.confirm}
+                                />
+                                <label
+                                    htmlFor="fld_confirmPassword"
+                                    data-success=""
+                                    data-error={this.state.invalid.confirm}
+                                >
+                                    {t('login:confirm_pass')}
+                                </label>
                             </div>
                         </div>
-                    </form>
+
+                        <div className="col s12 text-right">
+                            <DojotBtnClassic is_secondary={false}
+                                             onClick={this.sendUpdatePassword}
+                                             label={t('save.label')}
+                                             title={t('save.label')}/>
+                            <DojotBtnClassic is_secondary onClick={this.dismiss}
+                                             label={t('discard.label')}
+                                             title={t('discard.label')}/>
+                        </div>
+                    </div>
+                    {/*     </form>*/}
                 </div>
                 <div className="rightsidebar" onClick={this.dismiss}/>
             </div>

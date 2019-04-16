@@ -125,7 +125,8 @@
         "invalid_translator": "Este tradutor não é válido",
         "invalid_timeout": "Tempo limite do dispositivo não é um número inteiro",
         "empty_timeout": "Você não pode deixar o tempo limite do dispositivo vazio.",
-        "invalid_timeout_2": "Valor de tempo limite do dispositivo inválido. Não é um inteiro"
+        "invalid_timeout_2": "Valor de tempo limite do dispositivo inválido. Não é um inteiro",
+        "not_perm": "Você nao tem as permissões necessárias para esta ação."
     },
     "format": {
         "full_date": "DD/MM/YYYY",

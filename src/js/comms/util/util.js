@@ -169,7 +169,6 @@ class Util {
         return new Promise(((resolve, reject) => {
             fetch(url, authConfig)
                 .then(local._status)
-            // .then(local._json)
                 .then((data) => { resolve(data[1]); })
                 .catch((error) => {
                     reject(local.checkContent(error));
@@ -178,6 +177,15 @@ class Util {
     }
 
     async _status(response) {
+
+        if ((response.status === 401)) {
+            LoginActions.logout();
+        }
+
+        if ((response.status === 403)) {
+            return Promise.reject(new FetchError(response, i18n.t('errors_msg.not_perm')));
+        }
+
         if (response.status === 500) return Promise.reject(response);
 
         if (response.status === 404) return Promise.reject(new FetchError(response, 'API not found.'));
@@ -187,11 +195,7 @@ class Util {
         if (response.status >= 200 && response.status < 300) {
             return [Promise.resolve(response), body];
         }
-        if ((response.status === 401) || (response.status === 403)) {
-            LoginActions.logout();
-        }
 
-        // return Promise.reject(new FetchError(response, response.statusText ));
         return Promise.reject(response);
     }
 

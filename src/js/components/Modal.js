@@ -193,15 +193,6 @@ class ChangePasswordModalComponent extends Component {
         const errorMessage = this.state.invalid;
         const { t } = this.props;
 
-        if (this.state.oldPassword.trim().length <= 0) {
-            errorMessage.oldPassword = t('login:alerts.empty');
-            this.setState({ invalid: errorMessage });
-            return false;
-        }
-        delete errorMessage.oldPassword;
-        this.setState({ invalid: errorMessage });
-
-
         if (this.state.password.trim().length < 8) {
             errorMessage.password = t('login:alerts.least_8');
             this.setState({ invalid: errorMessage });

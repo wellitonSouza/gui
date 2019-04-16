@@ -9,6 +9,7 @@ import SidebarButton from 'Views/templates/TemplateList/Sidebar/SidebarButton';
 import DeviceActions from 'Actions/DeviceActions';
 import toaster from 'Comms/util/materialize';
 import { withNamespaces } from 'react-i18next';
+import ability from 'Components/permissions/ability';
 import FirmwareWebSocket from './FirmwareWebSocket';
 
 
@@ -20,9 +21,9 @@ class SidebarImage extends Component {
             loaded: false,
             showFirmwareImage: false,
             attrs: {
-                dojotFirmwareUpdateState: t("firmware:no_data"),
-                dojotFirmwareUpdateUpdateResult: t("firmware:no_data"),
-                dojotFirmwareUpdateVersion: t("firmware:no_data"),
+                dojotFirmwareUpdateState: t('firmware:no_data'),
+                dojotFirmwareUpdateUpdateResult: t('firmware:no_data'),
+                dojotFirmwareUpdateVersion: t('firmware:no_data'),
             },
             currentImageId: '0',
         };
@@ -147,6 +148,7 @@ class SidebarImage extends Component {
         const { images } = is;
         const { attrs, showFirmwareImage, templateIdAllowedImage } = this.state;
         const opts = this.createImageOptions();
+        const fwImageModifier = ability.can('modifier', 'fw-image');
 
         return (
             <Fragment>
@@ -222,12 +224,15 @@ class SidebarImage extends Component {
                         : <div />
                     }
                 </Slide>
-                <SidebarFirmImages
-                    showFirmware={showFirmwareImage}
-                    templateId={templateIdAllowedImage}
-                    images={images}
-                    toogleSidebarFirmware={this.toogleSidebarFirmImage}
-                />
+                { fwImageModifier
+                    ? (
+                        <SidebarFirmImages
+                            showFirmware={showFirmwareImage}
+                            templateId={templateIdAllowedImage}
+                            images={images}
+                            toogleSidebarFirmware={this.toogleSidebarFirmImage}
+                        />
+                    ) : null }
             </Fragment>
         );
     }

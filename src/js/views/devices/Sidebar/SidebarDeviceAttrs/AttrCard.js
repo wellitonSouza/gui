@@ -93,21 +93,19 @@ class AttrCard extends PureComponent {
                 </div>
                 {metaLength > 0 && (
                     <div className="attr-card-metadata">
-                        <div className="attr-card-metadata-header">
+                        <div
+                            className="attr-card-metadata-header pointer"
+                            onClick={() => this.handleShowMetadata()}
+                            onKeyPress={() => this.handleShowMetadata()}
+                            role="button"
+                            tabIndex="0"
+                            id={`meta_show:${attr.label}`}
+                        >
                             <img src="images/icons/metadata-gray.png" alt="attrs-icon" />
-                            <div
-                                className="attr-card-metadata-label"
-                            >
+                            <div className="attr-card-metadata-label">
                                 {`${t('devices:meta_attributes')} (${metaLength})`}
                             </div>
-                            <div
-                                className="attr-card-metadata-arrow"
-                                onClick={() => this.handleShowMetadata()}
-                                onKeyPress={() => this.handleShowMetadata()}
-                                role="button"
-                                tabIndex="0"
-                                id={`meta_show:${attr.label}`}
-                            >
+                            <div className="attr-card-metadata-arrow">
                                 <i
                                     className={`fa fa-angle-${showMetadata ? 'up' : 'down'}`}
                                     aria-hidden="true"

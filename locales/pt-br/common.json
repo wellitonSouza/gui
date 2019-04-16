@@ -105,7 +105,8 @@
         "tenant": "Tenant",
         "import_export": " Import./Exportação",
         "change_password": "Alterar Senha",
-        "logout": "Sair"
+        "logout": "Sair",
+        "password_updated": "Senha atualizada."
     },
     "qst_remove": "Você irá remover um {{label}}. Deseja continuar?",
     "cant_empty": "Não pode ser vazio",

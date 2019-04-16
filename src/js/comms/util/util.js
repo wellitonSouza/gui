@@ -188,7 +188,7 @@ class Util {
 
         if (response.status === 500) return Promise.reject(response);
 
-        if (response.status === 404) return Promise.reject(new FetchError(response, 'API not found.'));
+        if (response.status === 404) return Promise.reject(new FetchError(response, i18n.t('errors_msg.api_404')));
 
         const body = await response.json();
         response.message = body.message;

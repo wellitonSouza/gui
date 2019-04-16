@@ -183,7 +183,7 @@ class Util {
         }
 
         if ((response.status === 403)) {
-            return Promise.reject(new FetchError(response, i18n.t('errors_msg.not_perm')));
+            return Promise.reject(i18n.t('errors_msg.not_perm'));
         }
 
         if (response.status === 500) return Promise.reject(response);

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-multi-comp */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { hashHistory } from 'react-router';
@@ -107,7 +108,7 @@ const Configurations = ({ t, attrs, device }) => (
 
 Configurations.propTypes = {
     device: PropTypes.shape({}).isRequired,
-    attr: PropTypes.shape({}).isRequired,
+    attrs: PropTypes.shape({}).isRequired,
     t: PropTypes.func.isRequired,
 };
 
@@ -202,18 +203,20 @@ class GenericList extends Component {
     }
 
     render() {
-        const { t } = this.props;
-        this.verifyIsGeo(this.props.attrs);
+        const {
+            t, attrs, img, box_title,
+        } = this.props;
+        this.verifyIsGeo(attrs);
         return (
             <div className="row stt-attributes">
                 <div className="col s12 header">
                     <div className="icon">
-                        <img src={this.props.img} />
+                        <img src={img} />
                     </div>
-                    <label>{this.props.box_title}</label>
+                    <label>{box_title}</label>
                 </div>
                 <div className="col s12 body">
-                    {this.props.box_title == t('text.configuration') ? (
+                    {box_title == t('text.configuration') ? (
                         <div key="id" className="line display-flex">
                             <div className="col s12 pr0">
                                 <div className="col s5">
@@ -308,29 +311,15 @@ class DyAttributeArea extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selected_attributes: [],
-            visible_attributes: {},
-            static_geo_attr_label: '',
+            selectedAttributes: [],
+            isAttrsVisible: {},
         };
         this.toggleAttribute = this.toggleAttribute.bind(this);
     }
 
-    componentWillMount() {
-        // Get static geo attr label
-        for (const k in this.props.device.attrs) {
-            for (const j in this.props.device.attrs[k]) {
-                if (this.props.device.attrs[k][j].isGeo) {
-                    if (this.props.device.attrs[k][j].type == 'static') {
-                        this.setState({ static_geo_attr_label: this.props.device.attrs[k][j].label });
-                    }
-                }
-            }
-        }
-    }
-
     toggleAttribute(attr) {
-        let sa = this.state.selected_attributes;
-        const current_attrs = this.state.visible_attributes;
+        let { selectedAttributes : sa } = this.state;
+        const { isAttrsVisible : current_attrs } = this.state;
         if (current_attrs[attr.id]) {
             sa = sa.filter(i => i.id !== attr.id);
             delete current_attrs[attr.id];
@@ -339,68 +328,100 @@ class DyAttributeArea extends Component {
             current_attrs[attr.id] = true;
         }
 
-        // iterate over attrs
+        // update attributes
         this.setState({
-            selected_attributes: sa,
-            visible_attributes: current_attrs,
+            selectedAttributes: sa,
+            isAttrsVisible: current_attrs,
         });
     }
 
     render() {
-        const lista = this.props.attrs;
+        const { isAttrsVisible, selectedAttributes } = this.state;
+        const { openStaticMap, device, t, actuators, attrs,
+        } = this.props;
+
+        const auxAttrs = { ...attrs };
+        const auxActuators = { ...actuators };
         // preparing dynamic attributes
-        for (const index in lista) {
-            if (this.state.visible_attributes[lista[index].id]) {
-                lista[index].visible = true;
+
+        //Object.entries(auxAttrs).map(([index, element]) => (
+        for (const index in auxAttrs) {
+            if (isAttrsVisible[auxAttrs[index].id]) {
+                auxAttrs[index].visible = true;
             } else {
-                lista[index].visible = false;
+                auxAttrs[index].visible = false;
             }
         }
-        // preparing actuators
 
-        const { t } = this.props;
+        // preparing actuators
+        for (const index in auxActuators) {
+            if (isAttrsVisible[attrs[index].id]) {
+                auxActuators[index].visible = true;
+            } else {
+                auxActuators[index].visible = false;
+            }
+        }
+
+        const NoActiveAttr = () => (
+            <div className="second-col-label center-align">
+                {t('devices:select_attribute')}
+            </div>
+        );
+
         return (
             <div className="content-row float-right">
                 <div className="second-col">
-                    {this.state.selected_attributes.length == 0 && this.props.openStaticMap == false
+                    {selectedAttributes.length == 0 && openStaticMap == false
                         ? (
-                            <div
-                                className="second-col-label center-align"
-                            >
-                                {t('devices:select_attribute')}
-
-                            </div>
+                            <NoActiveAttr />
                         )
                         : null
                     }
-                    {this.props.openStaticMap ? (
+                    {openStaticMap ? (
                         <HandleGeoElements
-                            device={this.props.device}
-                            label={this.state.static_geo_attr_label}
+                            device={device}
                             isStatic
                         />
                     ) : null}
-                    {this.state.selected_attributes.map(at => (
-                        <Attribute key={at.id} device={this.props.device} attr={at} />
+                    {selectedAttributes.map(at => (
+                        <Attribute key={at.id} device={device} attr={at} />
                     ))}
                 </div>
                 <div className="third-col">
                     <div className="row">
                         <DynamicAttributeList
-                            device={this.props.device}
-                            attrs={lista}
+                            device={device}
+                            attrs={auxAttrs}
                             change_attr={this.toggleAttribute}
                             t={t}
                         />
                     </div>
                     <div className="row">
-                        <ActuatorsList device={this.props.device} actuators={this.props.actuators} change_attr={this.toggleAttribute} t={t} />
+                        <ActuatorsList
+                            device={device}
+                            actuators={auxActuators}
+                            change_attr={this.toggleAttribute}
+                            t={t}
+                        />
                     </div>
                 </div>
             </div>
         );
     }
 }
+
+DyAttributeArea.propTypes = {
+    device: PropTypes.shape({}).isRequired,
+    actuators: PropTypes.shape({}).isRequired,
+    attrs: PropTypes.shape({}).isRequired,
+    openStaticMap: PropTypes.bool,
+    t: PropTypes.func.isRequired,
+};
+
+DyAttributeArea.defaultProps = {
+    openStaticMap: false,
+};
+
 
 class ActuatorsList extends Component {
     constructor(props) {

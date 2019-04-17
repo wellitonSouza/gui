@@ -442,7 +442,7 @@ class SideBar extends Component {
 function SummaryItem(props) {
     return (
         <div className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight">
-            <div className="lst-entry-title col s12">
+            <div className="lst-entry-title col s12 bg-gradient-light-blue">
                 <img className="title-icon" src="images/generic-user-icon.png"/>
                 <div className="title-text truncate" title={props.user.name}>
                     <span className="text">

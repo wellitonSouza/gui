@@ -24,7 +24,7 @@ function GroupCard(obj) {
             role="none"
             tabIndex={obj.group.id}
         >
-            <div className="lst-entry-title col s12 ">
+            <div className="lst-entry-title col s12 bg-gradient-dark-ciano">
                 <img className="title-icon" src="images/groups-icon.png" alt="Group" />
                 <div className="title-text truncate" title={obj.group.name}>
                     <span className="text">

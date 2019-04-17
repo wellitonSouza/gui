@@ -598,17 +598,20 @@
     background: linear-gradient(90deg, #fafafa, #f7f7f7 100%) !important;
 
     .header {
-        text-transform: uppercase;
-        font-family: Raleway;
         display: flex;
         justify-content: space-around;
         position: relative;
         height: 52px;
         .title {
-            font-family: Roboto, sans-serif;
-            font-size: 13px;
+            @extend .truncate;
+            width: 250px;
             text-align: center;
-            letter-spacing: 0.3em;
+            font-size: 14px;
+            font-family: "Open Sans", sans-serif;
+            letter-spacing: 0.1em;
+            position: relative;
+            bottom: 3px;
+            height: 25px;
             color: #ffffff;
         }
         .icon {
@@ -641,11 +644,11 @@
     }
 
     .body {
-        height: calc(100% - 138px) !important;
+        height: calc(100% - 147px) !important;
         overflow: auto;
         display: inline-block;
-        padding: 15px 0 !important;
-        margin-top: 15px;
+        padding: 10px 0 !important;
+        margin-top: 24px;
         position: relative;
         width: 100%;
         overflow-x: auto;
@@ -719,6 +722,21 @@
         height: 50px;
         width: 100%;
     }
+}
+
+
+.bg-gradient-dark-ciano {
+    background: #B993D6 !important;
+    background: -webkit-linear-gradient(to right, #8CA6DB, #B993D6) !important;
+    background: linear-gradient(to right, #7c92bf, #B993D6)!important;
+}
+
+.profile-sidebar {
+    .header {
+        background: #B993D6 !important;
+        background: -webkit-linear-gradient(to right, #8CA6DB, #B993D6) !important;
+        background: linear-gradient(to right, #7c92bf, #B993D6)!important;
+        }
 }
 
 .generic-sidebar {

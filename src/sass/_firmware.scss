@@ -97,14 +97,7 @@
     width: calc(100% - 108px);
     display: inline-block;
 }
-
-.sidebar-groups
-{
-    .header{
-        background: linear-gradient(96.69deg, #f08080 0%, #E96D71 99.09%) !important;
-    }
-}
-
+ 
 .sidebar-firmware
 {
   @extend .generic-sidebar;

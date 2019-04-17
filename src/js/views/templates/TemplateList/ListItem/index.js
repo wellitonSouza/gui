@@ -61,13 +61,10 @@ class ListItem extends Component {
                                 src="images/big-icons/template.png"
                                 alt=""
                             />
-                            <div className="title-text">
-                                <label
-                                    className="template-title-text truncate"
-                                    title={template.label}
-                                >
+                            <div className="title-text truncate">
+                                <span>
                                     {template.label}
-                                </label>
+                                </span>
                             </div>
                         </div>
                         <div className="lst-entry-body">

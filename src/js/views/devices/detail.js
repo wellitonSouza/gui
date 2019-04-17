@@ -4,18 +4,18 @@ import { hashHistory } from 'react-router';
 import AltContainer from 'alt-container';
 import { withNamespaces } from 'react-i18next';
 import * as i18next from 'i18next';
-import { NewPageHeader } from '../../containers/full/PageHeader';
-import MeasureStore from '../../stores/MeasureStore';
-import MeasureActions from '../../actions/MeasureActions';
-import DeviceActions from '../../actions/DeviceActions';
-import DeviceStore from '../../stores/DeviceStore';
-import util from '../../comms/util/util';
-import { Loading } from '../../components/Loading';
-import { Attr, HandleGeoElements } from '../../components/HistoryElements';
-import toaster from '../../comms/util/materialize';
-import { DojotBtnRedCircle } from '../../components/DojotButton';
-import { RemoveModal } from '../../components/Modal';
-import ConfigStore from '../../stores/ConfigStore';
+import { Loading } from 'Components/Loading';
+import { Attr, HandleGeoElements } from 'Components/HistoryElements';
+import { DojotBtnRedCircle } from 'Components/DojotButton';
+import { RemoveModal } from 'Components/Modal';
+import MeasureActions from 'Actions/MeasureActions';
+import DeviceActions from 'Actions/DeviceActions';
+import MeasureStore from 'Stores/MeasureStore';
+import DeviceStore from 'Stores/DeviceStore';
+import ConfigStore from 'Stores/ConfigStore';
+import { NewPageHeader } from 'Containers/full/PageHeader';
+import util from 'Comms/util/util';
+import toaster from 'Comms/util/materialize';
 
 const DeviceHeader = ({ device, t }) => (
     <div className="row devicesSubHeader p0 device-details-header">
@@ -112,33 +112,28 @@ Configurations.propTypes = {
 };
 
 
-class StaticAttributes extends Component {
-    constructor(props) {
-        super(props);
+const StaticAttributes = ({
+    t, openStaticMap, attrs, device,
+}) => (
+    <div>
+        <GenericList
+            img="images/tag.png"
+            attrs={attrs}
+            box_title={t('text.static_attributes')}
+            device={device}
+            openStaticMap={openStaticMap}
+            t={t}
+        />
+    </div>
+);
 
-        this.openStaticMap = this.openStaticMap.bind(this);
-    }
+StaticAttributes.propTypes = {
+    device: PropTypes.shape({}).isRequired,
+    attrs: PropTypes.shape({}).isRequired,
+    openStaticMap: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
+};
 
-    openStaticMap(state) {
-        this.props.openStaticMap(state);
-    }
-
-    render() {
-        const { t } = this.props;
-        return (
-            <div>
-                <GenericList
-                    img="images/tag.png"
-                    attrs={this.props.attrs}
-                    box_title={t('text.static_attributes')}
-                    device={this.props.device}
-                    openStaticMap={this.openStaticMap}
-                    t={t}
-                />
-            </div>
-        );
-    }
-}
 
 class GenericList extends Component {
     constructor(props) {

@@ -7,12 +7,15 @@ import util from 'Comms/util';
 import toaster from 'Comms/util/materialize';
 import { withNamespaces } from 'react-i18next';
 import ImageList from './ImageList';
+import SidebarDeleteImage from './SidebarDeleteImage';
 
 class SidebarFirmImages extends Component {
     constructor(props) {
         super(props);
         this.state = {
             newImage: false,
+            showDeleteAttr: false,
+            imgToBeRemoved: null,
         };
         this.createNewImage = this.createNewImage.bind(this);
         this.changeAttrValue = this.changeAttrValue.bind(this);
@@ -20,6 +23,7 @@ class SidebarFirmImages extends Component {
         this.removeImage = this.removeImage.bind(this);
         this.saveImages = this.saveImages.bind(this);
         this.onDrop = this.onDrop.bind(this);
+        this.toggleDeleteSidebar = this.toggleDeleteSidebar.bind(this);
     }
 
     componentDidMount() {
@@ -31,6 +35,12 @@ class SidebarFirmImages extends Component {
 
     onDrop(files, image) {
         ImageActions.updateImageData(image.id, 'file', files);
+    }
+
+    toggleDeleteSidebar(e, image) {
+        e.preventDefault();
+        const { showDeleteAttr } = this.state;
+        this.setState({ showDeleteAttr: !showDeleteAttr, imgToBeRemoved: image });
     }
 
     createNewImage() {
@@ -53,7 +63,7 @@ class SidebarFirmImages extends Component {
                 // 2. upload binary
                 // 3. set as saved image
 
-                if (image.image_version === "") {
+                if (image.image_version === '') {
                     toaster.warning('Image version required.');
                     return false;
                 }
@@ -109,16 +119,18 @@ class SidebarFirmImages extends Component {
         });
     }
 
-    removeImage(e, image) {
+    removeImage() {
         const { t } = this.props;
-        e.preventDefault();
+        const { imgToBeRemoved: image } = this.state;
+        const showDeleteAttr = false;
         if (image.new) {
             ImageActions.removeSingle(image.id);
-            this.setState({ newImage: false });
+            this.setState({ showDeleteAttr, newImage: false });
         } else {
             ImageActions.triggerRemoval(image, () => {
                 toaster.success(t('firmware:alerts.image_removed'));
             });
+            this.setState({ showDeleteAttr });
         }
     }
 
@@ -129,7 +141,7 @@ class SidebarFirmImages extends Component {
     }
 
     render() {
-        const { newImage } = this.state;
+        const { newImage, showDeleteAttr } = this.state;
         const {
             t, images, showFirmware, toogleSidebarFirmware,
         } = this.props;
@@ -155,6 +167,7 @@ class SidebarFirmImages extends Component {
                                         list={images}
                                         changeAttrValue={this.changeAttrValue}
                                         removeImage={this.removeImage}
+                                        toggleDeleteSidebar={this.toggleDeleteSidebar}
                                         removeBinary={this.removeBinary}
                                         onDrop={this.onDrop}
                                     />
@@ -186,6 +199,12 @@ class SidebarFirmImages extends Component {
                         : <div />
                     }
                 </Slide>
+                <SidebarDeleteImage
+                    toggleSidebar={this.toggleDeleteSidebar}
+                    showSidebar={showDeleteAttr}
+                    confirm={this.removeImage}
+                    message={t('firmware:alerts.qst_remove')}
+                />
             </Fragment>
         );
     }

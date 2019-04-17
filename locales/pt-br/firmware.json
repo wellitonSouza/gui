@@ -1,5 +1,6 @@
 {
     "header": "Gerenciar Imagens",
+    "remove_image_header": "Remover imagem",
     "title": "Firmware",
     "btn" : "Gerenciar Imagens",
     "no_data" : "Dado não recebido",
@@ -13,7 +14,8 @@
       "file_added": "Arquivo adicionado.",
       "image_to_transfer": "Imagem a ser transferida",
       "image_transferred": "Requisição para transferir a imagem foi aceita.",
-      "image_applied":"Requisição para aplicar a imagem foi aceita."
+      "image_applied":"Requisição para aplicar a imagem foi aceita.",
+      "qst_remove": "Você está prestes a remover uma imagem. Você tem certeza?"
     },
     "labels":{
         "remove":"Remover Imagem",

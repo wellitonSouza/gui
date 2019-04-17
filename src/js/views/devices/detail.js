@@ -1,4 +1,4 @@
-/* eslint-disable react/no-multi-comp */
+/* eslint-disable */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import AltContainer from 'alt-container';
@@ -447,7 +447,6 @@ class ActuatorsList extends Component {
 
     clickAttr(attr) {
         const { toggleAttribute } = this.props;
-        console.log('clickAttr', attr);
         toggleAttribute(attr);
     }
 
@@ -727,7 +726,6 @@ class ViewDeviceImpl extends Component {
         if (device === undefined) {
             return (<Loading />);
         }
-        console.log('T', t);
         return (
             <div className="full-height bg-light-gray">
                 <NewPageHeader

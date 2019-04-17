@@ -1401,7 +1401,7 @@ h1, h2, p {
       padding-top: 5px;
       cursor: pointer;
       color: #aaa;
-      top: 0px;
+      top: 0;
     }
   }
 }
@@ -1432,7 +1432,6 @@ h1, h2, p {
   {
     line-height: 42px;
     font-size: 11px !important;
-    letter-spacing: 0.05em;
     text-transform: uppercase;
     padding-left: 20px;
     font-family: Raleway !important;

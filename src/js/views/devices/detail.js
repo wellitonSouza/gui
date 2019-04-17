@@ -1,7 +1,9 @@
-/* eslint-disable */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { hashHistory } from 'react-router';
 import AltContainer from 'alt-container';
+import { withNamespaces } from 'react-i18next';
+import * as i18next from 'i18next';
 import { NewPageHeader } from '../../containers/full/PageHeader';
 import MeasureStore from '../../stores/MeasureStore';
 import MeasureActions from '../../actions/MeasureActions';
@@ -14,19 +16,22 @@ import toaster from '../../comms/util/materialize';
 import { DojotBtnRedCircle } from '../../components/DojotButton';
 import { RemoveModal } from '../../components/Modal';
 import ConfigStore from '../../stores/ConfigStore';
-import { withNamespaces } from 'react-i18next';
-import * as i18next from 'i18next';
 
 const DeviceHeader = ({ device, t }) => (
     <div className="row devicesSubHeader p0 device-details-header">
         <div className="col s8 m8">
-            <label className="col s12 device-label truncate" title={device.label}>
+            <span className="col s12 device-label truncate" title={device.label}>
                 {device.label}
-            </label>
+            </span>
             <div className="col s12 device-label-name">{t('text.name')}</div>
         </div>
     </div>
 );
+
+DeviceHeader.propTypes = {
+    device: PropTypes.shape({}).isRequired,
+    t: PropTypes.func.isRequired,
+};
 
 
 class Attribute extends Component {
@@ -38,51 +43,74 @@ class Attribute extends Component {
         this.toogleExpand = this.toogleExpand.bind(this);
     }
 
-    componentDidMount() {
-        //  MeasureActions.fetchMeasure(this.props.device, this.props.device.id, this.props.device.templates, this.props.attr.id, 250);
-    }
-
     toogleExpand(state) {
         this.setState({ opened: state });
     }
 
     render() {
         // check the current window, if less then 1024px, blocks compressed state
-        let opened = util.checkWidthToStateOpen(this.state.opened);
+        const { opened } = this.state;
+        const { device, attr: { label, value_type: valueType } } = this.props;
+        const isOpened = util.checkWidthToStateOpen(opened);
         return (
-            <div className={`attributeBox ${opened ? 'expanded' : 'compressed'}`}>
+            <div className={`attributeBox ${isOpened ? 'expanded' : 'compressed'}`}>
                 <div className="header">
-                    <label>{this.props.attr.label}</label>
-                    {!opened ?
-                        <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand"/> :
-                        <i onClick={this.toogleExpand.bind(this, false)}
-                           className="fa fa-compress"/>}
+                    <span>{label}</span>
+                    {!isOpened
+                        ? (
+                            <i
+                                role="button"
+                                tabIndex="-1"
+                                onKeyUp={this.toogleExpand.bind(this, true)}
+                                onClick={this.toogleExpand.bind(this, true)}
+                                className="fa fa-expand"
+                            />
+                        )
+                        : (
+                            <i
+                                role="button"
+                                tabIndex="-1"
+                                onKeyUp={this.toogleExpand.bind(this, false)}
+                                onClick={this.toogleExpand.bind(this, false)}
+                                className="fa fa-compress"
+                            />
+                        )}
                 </div>
                 <div className="details-card-content">
-                    <AttrHistory device={this.props.device} type={this.props.attr.value_type}
-                                 attr={this.props.attr.label}/>
+                    <AttrHistory
+                        device={device}
+                        type={valueType}
+                        attr={label}
+                    />
                 </div>
             </div>
         );
     }
 }
 
+Attribute.propTypes = {
+    device: PropTypes.shape({}).isRequired,
+    attr: PropTypes.shape({}).isRequired,
+};
 
-class Configurations extends Component {
-    constructor(props) {
-        super(props);
-    }
+const Configurations = ({ t, attrs, device }) => (
+    <div>
+        <GenericList
+            img="images/gear-dark.png"
+            attrs={attrs}
+            box_title={t('text.configuration')}
+            device={device}
+            t={t}
+        />
+    </div>
+);
 
-    render() {
-        const { t } = this.props;
-        return (
-            <div>
-                <GenericList img="images/gear-dark.png" attrs={this.props.attrs}
-                             box_title={t('text.configuration')} device={this.props.device} t={ t }/>
-            </div>
-        );
-    }
-}
+Configurations.propTypes = {
+    device: PropTypes.shape({}).isRequired,
+    attr: PropTypes.shape({}).isRequired,
+    t: PropTypes.func.isRequired,
+};
+
 
 class StaticAttributes extends Component {
     constructor(props) {
@@ -99,9 +127,14 @@ class StaticAttributes extends Component {
         const { t } = this.props;
         return (
             <div>
-                <GenericList img="images/tag.png" attrs={this.props.attrs}
-                             box_title={t('text.static_attributes')} device={this.props.device}
-                             openStaticMap={this.openStaticMap} t={t}/>
+                <GenericList
+                    img="images/tag.png"
+                    attrs={this.props.attrs}
+                    box_title={t('text.static_attributes')}
+                    device={this.props.device}
+                    openStaticMap={this.openStaticMap}
+                    t={t}
+                />
             </div>
         );
     }
@@ -113,7 +146,7 @@ class GenericList extends Component {
         this.state = {
             openStaticMap: true,
             visible_static_map: false,
-            truncate: false
+            truncate: false,
         };
 
         this.openMap = this.openMap.bind(this);
@@ -180,7 +213,7 @@ class GenericList extends Component {
             <div className="row stt-attributes">
                 <div className="col s12 header">
                     <div className="icon">
-                        <img src={this.props.img}/>
+                        <img src={this.props.img} />
                     </div>
                     <label>{this.props.box_title}</label>
                 </div>
@@ -201,32 +234,40 @@ class GenericList extends Component {
                     ) : ('')}
                     {this.props.attrs.map(attr => (
                         attr.isGeo ? (
-                            <div key={attr.label} className="line col s12 pl30"
-                                 id="static-geo-attribute" onClick={this.openMap}>
+                            <div
+                                key={attr.label}
+                                className="line col s12 pl30"
+                                id="static-geo-attribute"
+                                onClick={this.openMap}
+                            >
                                 <div className="display-flex-column flex-1">
-                                    <div className={this.state.truncate ?
-                                        'name-value display-flex flex-1 space-between truncate' :
-                                        'name-value display-flex flex-1 space-between'}
-                                         title= {i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}
+                                    <div
+                                        className={this.state.truncate
+                                            ? 'name-value display-flex flex-1 space-between truncate'
+                                            : 'name-value display-flex flex-1 space-between'}
+                                        title={i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}
                                     >
                                         {i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}
                                         <div className="star">
-                                            <i className={`fa ${this.state.visible_static_map ? 'fa-star' : 'fa-star-o'}`}/>
+                                            <i className={`fa ${this.state.visible_static_map ? 'fa-star' : 'fa-star-o'}`} />
                                         </div>
                                     </div>
                                     <div className="display-flex-no-wrap space-between">
                                         <div
                                             className={this.state.truncate ? 'value-value truncate' : 'value-value'}
-                                            title={attr.static_value}>
-                                            {attr.static_value.length > 25 ?
-                                                attr.static_value.substr(0, 21) + '...' :
-                                                attr.static_value
+                                            title={attr.static_value}
+                                        >
+                                            {attr.static_value.length > 25
+                                                ? `${attr.static_value.substr(0, 21)}...`
+                                                : attr.static_value
                                             }
                                         </div>
-                                        <div className="value-label"
-                                             title={attr.value_type}>
+                                        <div
+                                            className="value-label"
+                                            title={attr.value_type}
+                                        >
                                             {i18next.exists(`types.${attr.value_type}`) ? t(`types.${attr.value_type}`) : attr.value_type}
-                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -235,20 +276,27 @@ class GenericList extends Component {
                                 <div className="display-flex-column flex-1">
                                     <div
                                         className={this.state.truncate ? 'name-value  truncate' : 'name-value '}
-                                        title= {i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}>{i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}</div>
+                                        title={i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}
+                                    >
+                                        {i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}
+
+                                    </div>
                                     <div className="display-flex-no-wrap space-between">
                                         <div
                                             className={this.state.truncate ? 'value-value  truncate' : 'value-value '}
-                                            title={attr.static_value}>
-                                            {(attr.static_value !== undefined && attr.static_value.length > 25) ?
-                                                attr.static_value.substr(0, 21) + '...' :
-                                                attr.static_value
+                                            title={attr.static_value}
+                                        >
+                                            {(attr.static_value !== undefined && attr.static_value.length > 25)
+                                                ? `${attr.static_value.substr(0, 21)}...`
+                                                : attr.static_value
                                             }
                                         </div>
-                                        <div className="value-label"
-                                             title={attr.value_type}>
+                                        <div
+                                            className="value-label"
+                                            title={attr.value_type}
+                                        >
                                             {i18next.exists(`types.${attr.value_type}`) ? t(`types.${attr.value_type}`) : attr.value_type}
-                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -267,7 +315,7 @@ class DyAttributeArea extends Component {
         this.state = {
             selected_attributes: [],
             visible_attributes: {},
-            static_geo_attr_label: ''
+            static_geo_attr_label: '',
         };
         this.toggleAttribute = this.toggleAttribute.bind(this);
     }
@@ -305,6 +353,7 @@ class DyAttributeArea extends Component {
 
     render() {
         const lista = this.props.attrs;
+        // preparing dynamic attributes
         for (const index in lista) {
             if (this.state.visible_attributes[lista[index].id]) {
                 lista[index].visible = true;
@@ -312,30 +361,45 @@ class DyAttributeArea extends Component {
                 lista[index].visible = false;
             }
         }
+        // preparing actuators
 
         const { t } = this.props;
         return (
             <div className="content-row float-right">
                 <div className="second-col">
                     {this.state.selected_attributes.length == 0 && this.props.openStaticMap == false
-                        ? (<div
-                            className="second-col-label center-align">{t('devices:select_attribute')}</div>)
+                        ? (
+                            <div
+                                className="second-col-label center-align"
+                            >
+                                {t('devices:select_attribute')}
+
+                            </div>
+                        )
                         : null
                     }
-                    {this.props.openStaticMap ? <HandleGeoElements device={this.props.device}
-                                                                   label={this.state.static_geo_attr_label}
-                                                                   isStatic/> : null}
+                    {this.props.openStaticMap ? (
+                        <HandleGeoElements
+                            device={this.props.device}
+                            label={this.state.static_geo_attr_label}
+                            isStatic
+                        />
+                    ) : null}
                     {this.state.selected_attributes.map(at => (
-                        <Attribute key={at.id} device={this.props.device} attr={at}/>
+                        <Attribute key={at.id} device={this.props.device} attr={at} />
                     ))}
                 </div>
                 <div className="third-col">
                     <div className="row">
-                        <DynamicAttributeList device={this.props.device} attrs={lista}
-                                              change_attr={this.toggleAttribute} t={t}/>
+                        <DynamicAttributeList
+                            device={this.props.device}
+                            attrs={lista}
+                            change_attr={this.toggleAttribute}
+                            t={t}
+                        />
                     </div>
                     <div className="row">
-                        <ActuatorsList  device={this.props.device}  actuators={this.props.actuators} change_attr={this.toggleAttribute} t={t}/>
+                        <ActuatorsList device={this.props.device} actuators={this.props.actuators} change_attr={this.toggleAttribute} t={t} />
                     </div>
                 </div>
             </div>
@@ -366,36 +430,38 @@ class ActuatorsList extends Component {
 
     render() {
         const { t } = this.props;
-        return <div className=" dy_attributes">
-            <div className="col s12 header">
-              <div className="col s2" />
-              <label className="col s8">{t('text.actuators')}</label>
-            </div>
-            <div className="col s12 body">
-              {this.props.actuators.map(actuator => (
-                <div
-                  onClick={this.clickAttr.bind(this, actuator)}
-                  key={actuator.label}
-                  className="line"
-                >
-                  <div className="col offset-s2 s8">
-                        <div
-                        className="label truncate"
-                        title={actuator.label}
-                        >
-                        {actuator.label}
-                        </div>
-                        <div className="value-label">{actuator.value_type}</div>
-                    </div>
-                    <div className="col s2">
-                      <div className="star">
-                      <i className={`fa ${actuator.visible ? 'fa-star' : 'fa-star-o'}`}/>
-                    </div>
-                  </div>
+        return (
+            <div className=" dy_attributes">
+                <div className="col s12 header">
+                    <div className="col s2" />
+                    <label className="col s8">{t('text.actuators')}</label>
                 </div>
-              ))}
+                <div className="col s12 body">
+                    {this.props.actuators.map(actuator => (
+                        <div
+                            onClick={this.clickAttr.bind(this, actuator)}
+                            key={actuator.label}
+                            className="line"
+                        >
+                            <div className="col offset-s2 s8">
+                                <div
+                                    className="label truncate"
+                                    title={actuator.label}
+                                >
+                                    {actuator.label}
+                                </div>
+                                <div className="value-label">{actuator.value_type}</div>
+                            </div>
+                            <div className="col s2">
+                                <div className="star">
+                                    <i className={`fa ${actuator.visible ? 'fa-star' : 'fa-star-o'}`} />
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
-          </div>;
+        );
     }
 }
 
@@ -442,23 +508,35 @@ class DynamicAttributeList extends Component {
         return (
             <div className=" dy_attributes">
                 <div className="col s12 header">
-                    <div className="col s2 filter-icon">
-                    </div>
+                    <div className="col s2 filter-icon" />
                     <label className="col s10">{t('devices:dynamic_attributes')}</label>
                 </div>
                 <div className="col s12 body">
                     {this.props.attrs.map(attr => (
-                        <div key={attr.label} className="line"
-                             onClick={this.clickAttr.bind(this, attr)}>
+                        <div
+                            key={attr.label}
+                            className="line"
+                            onClick={this.clickAttr.bind(this, attr)}
+                        >
                             <div className="col offset-s2 s8">
-                                <div className={this.state.truncate ? 'label truncate' : 'label'}
-                                     title= {i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}>  {i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}</div>
                                 <div
-                                    className="value-label">{i18next.exists(`types.${attr.value_type}`) ? t(`types.${attr.value_type}`) : attr.value_type}</div>
+                                    className={this.state.truncate ? 'label truncate' : 'label'}
+                                    title={i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}
+                                >
+                                    {' '}
+                                    {i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}
+
+                                </div>
+                                <div
+                                    className="value-label"
+                                >
+                                    {i18next.exists(`types.${attr.value_type}`) ? t(`types.${attr.value_type}`) : attr.value_type}
+
+                                </div>
                             </div>
                             <div className="col s2">
                                 <div className="star">
-                                    <i className={`fa ${attr.visible ? 'fa-star' : 'fa-star-o'}`}/>
+                                    <i className={`fa ${attr.visible ? 'fa-star' : 'fa-star-o'}`} />
                                 </div>
                             </div>
                         </div>
@@ -504,11 +582,17 @@ class AttrHistory extends Component {
         return (
             <div className="graphLarge">
                 <AltContainer stores={{
-                    MeasureStore: MeasureStore,
-                    Config: ConfigStore
-                }}>
-                    <Attr device={this.props.device} type={this.props.type} attr={this.props.attr}
-                          label={this.props.attr} isStatic={false}/>
+                    MeasureStore,
+                    Config: ConfigStore,
+                }}
+                >
+                    <Attr
+                        device={this.props.device}
+                        type={this.props.type}
+                        attr={this.props.attr}
+                        label={this.props.attr}
+                        isStatic={false}
+                    />
                 </AltContainer>
             </div>
         );
@@ -554,12 +638,21 @@ class DeviceDetail extends Component {
         return (
             <div className="row detail-body">
                 <div className="first-col">
-                    <Configurations device={this.props.device} attrs={config_list} t={t}/>
-                    <StaticAttributes device={this.props.device} attrs={attr_list}
-                                      openStaticMap={this.openStaticMap} t={t}/>
+                    <Configurations device={this.props.device} attrs={config_list} t={t} />
+                    <StaticAttributes
+                        device={this.props.device}
+                        attrs={attr_list}
+                        openStaticMap={this.openStaticMap}
+                        t={t}
+                    />
                 </div>
-                <DyAttributeArea device={this.props.device} actuators={actuators} attrs={dal}
-                                 openStaticMap={this.state.openStaticMap} t={t}/>
+                <DyAttributeArea
+                    device={this.props.device}
+                    actuators={actuators}
+                    attrs={dal}
+                    openStaticMap={this.state.openStaticMap}
+                    t={t}
+                />
             </div>
         );
     }
@@ -615,24 +708,36 @@ class ViewDeviceImpl extends Component {
         }
 
         if (device === undefined) {
-            return (<Loading/>);
+            return (<Loading />);
         }
         const { t } = this.props;
         return (
             <div className="full-height bg-light-gray">
-                <NewPageHeader title={t('devices:title')} subtitle={t('devices:subtitle')}
-                               icon="device">
+                <NewPageHeader
+                    title={t('devices:title')}
+                    subtitle={t('devices:subtitle')}
+                    icon="device"
+                >
                     <div className="box-sh">
-                        <DeviceUserActions devices={this.props.devices} deviceid={device.id}
-                                           setModal={this.setModal} t={t}/>
+                        <DeviceUserActions
+                            devices={this.props.devices}
+                            deviceid={device.id}
+                            setModal={this.setModal}
+                            t={t}
+                        />
                     </div>
                 </NewPageHeader>
-                <DeviceHeader device={device} t={t}/>
-                <DeviceDetail deviceid={device.id} device={device} t={t}/>
-                {this.state.show_modal ?
-                    <RemoveModal name={t('devices:device')} remove={this.remove}
-                                 openModal={this.setModal}/> :
-                    <div/>}
+                <DeviceHeader device={device} t={t} />
+                <DeviceDetail deviceid={device.id} device={device} t={t} />
+                {this.state.show_modal
+                    ? (
+                        <RemoveModal
+                            name={t('devices:device')}
+                            remove={this.remove}
+                            openModal={this.setModal}
+                        />
+                    )
+                    : <div />}
             </div>
         );
     }
@@ -670,7 +775,7 @@ class ViewDeviceComponent extends Component {
         function init(token) {
             device_detail_socket = socketio(target, {
                 query: `token=${token}`,
-                transports: ['polling']
+                transports: ['polling'],
             });
 
             device_detail_socket.on('all', (data) => {
@@ -695,7 +800,7 @@ class ViewDeviceComponent extends Component {
         return (
             <div className="full-width full-height">
                 <AltContainer store={DeviceStore}>
-                    <ViewDeviceImpl device_id={this.props.params.device} t={this.props.t}/>
+                    <ViewDeviceImpl device_id={this.props.params.device} t={this.props.t} />
                 </AltContainer>
             </div>
         );

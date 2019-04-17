@@ -125,10 +125,13 @@
         "invalid_translator": "This translator is not valid",
         "invalid_timeout": "This device timeout is not an integer",
         "empty_timeout": "You can't leave the device timeout empty.",
-        "invalid_timeout_2": "Invalid device timeout value. This is not a integer"
+        "invalid_timeout_2": "Invalid device timeout value. This is not a integer",
+        "not_perm": "Your profile does not have the required permissions for this action.",
+        "api_404": "API not found."
     },
     "format": {
         "full_date": "MM/DD/YYYY",
         "day_mouth": "MM/DD"
-    }
+    },
+
 }

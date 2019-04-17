@@ -454,10 +454,12 @@ class ActuatorsList extends Component {
     render() {
         const { t, actuators } = this.props;
         return (
-            <div className=" dy_attributes">
+            <div className="stt-attributes dy_attributes">
                 <div className="col s12 header">
-                    <div className="col s2" />
-                    <span className="col s8">{t('text.actuators')}</span>
+                    <div className="icon">
+                        <img src="images/gear-dark.png" />
+                    </div>
+                    <span>{t('text.actuators')}</span>
                 </div>
                 <div className="col s12 body">
                     {actuators.map(actuator => (
@@ -543,10 +545,12 @@ class DynamicAttributeList extends Component {
         const { truncate } = this.state;
         const { t, attrs } = this.props;
         return (
-            <div className=" dy_attributes">
+            <div className="stt-attributes dy_attributes">
                 <div className="col s12 header">
-                    <div className="col s2 filter-icon" />
-                    <span className="col s10">{t('devices:dynamic_attributes')}</span>
+                    <div className="icon">
+                        <img src="images/tag.png" />
+                    </div>
+                    <span>{t('devices:dynamic_attributes')}</span>
                 </div>
                 <div className="col s12 body">
                     {attrs.map(attr => (

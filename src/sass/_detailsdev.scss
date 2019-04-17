@@ -1279,7 +1279,7 @@ h1, h2, p {
       font-size: 12px;
       padding-top:3px;
       letter-spacing: 0.05em;
-      color: #EB5757;
+      color: #0f8076;
   }
 
 
@@ -1315,6 +1315,7 @@ h1, h2, p {
   animation-name: opa-width-250;
   animation-duration: 1s;
   overflow-y: auto;
+  background: #f9f9f9;
 }
 
 .second-col{
@@ -1333,7 +1334,6 @@ h1, h2, p {
 
 .first-col{
   width: 250px;
-  background:#F6F6F6;
   float: left;
   box-shadow: 0 -2px 8px rgba(189, 189, 189, 0.5);
   -webkit-animation-name: opa-width-250; /* Safari 4.0 - 8.0 */
@@ -1343,6 +1343,7 @@ h1, h2, p {
   overflow-y: auto;
   overflow-x: hidden;
   height:100%;
+  background: #f9f9f9;
 }
 
 .content-row {
@@ -1367,29 +1368,6 @@ h1, h2, p {
     padding-top: 1px;
   }
 
-  .header{
-    padding-top:12px;
-    height: 44px;
-    position: relative;
-    letter-spacing: 0.05em;
-    color: #8a8a8a;
-
-   .filter-icon, .search-icon{
-      font-size: 15px;
-    }
-
-    span{
-        font-family: 'Roboto';
-        font-weight: bold;
-        font-size: 11px;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        height: 100%;
-        color: #828282;
-    }
-
-  }
-
   .body{
     padding:0;
   }
@@ -1399,6 +1377,7 @@ h1, h2, p {
     background: #fbfbfb;
     height: 50px;
     padding-top: 7px;
+    margin-left: 0 !important;
     margin-bottom: 7px;
     cursor: pointer;
     transition: 300ms linear;
@@ -1419,9 +1398,10 @@ h1, h2, p {
 
     .star
     {
-        padding-top: 5px;
+      padding-top: 5px;
       cursor: pointer;
       color: #aaa;
+      top: 0px;
     }
   }
 }
@@ -1431,8 +1411,9 @@ h1, h2, p {
   margin: 0;
 
   .header{
-    height: 41px;
+    height: 45px;
     padding-top: 3px;
+    background: linear-gradient(97.26deg, #28807e 0%, #16a085 99.09%);
   }
 
   .icon{
@@ -1440,26 +1421,24 @@ h1, h2, p {
     height: 100%;
     padding-top: 7px;
     float: left;
-    // C4C4C4
+    filter: invert(100%) brightness(274%);
 
     img{
       width: 22px;
     }
   }
 
-  label
+  label,span
   {
-    font-family: 'Roboto' !important;
-    font-weight: bold !important;
-    line-height: 35px;
+    line-height: 42px;
     font-size: 11px !important;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    padding-left: 30px;
-    height: 100%;
-    color:#828282 !important;
-    top: 0;
-    float: left;
+    padding-left: 20px;
+    font-family: Raleway !important;
+    text-align: center;
+    letter-spacing: 0.2em;
+    color: #ffffff !important;
   }
 
   .body
@@ -1473,8 +1452,6 @@ h1, h2, p {
   {
 
     margin-left: 10px;
-    border-bottom: 1px solid #DEDEDE;
-    //width: calc(100% - 35px);
     width: 100%;
     display: inline-flex;
     padding-top: 14px;
@@ -1487,7 +1464,6 @@ h1, h2, p {
         //margin-left: 0px;
         //padding-left: 10px;
         width: 100%;
-    border-bottom: 1px solid #f5f5f5;
     }
 
     .name-value, .value-value, .template-value
@@ -1512,7 +1488,7 @@ h1, h2, p {
         line-height: 23px;
         font-size: 9px;
         letter-spacing: 0.05em;
-        color: #BDBDBD;
+        color: #aaaaaa;
         text-transform: uppercase;
     }
 

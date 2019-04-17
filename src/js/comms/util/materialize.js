@@ -39,7 +39,7 @@ class MaterialToast {
 
     custom(options) {
         // It helps to avoid repeated messages in a short time
-        // if last msg was diff penult one or this msg was publicated >=5000 miles
+        // if last msg was diff penult one or this msg was publicated >=_timeout miles
         if (_lastMsg !== options.html) {
             Materialize.toast(options.html, options.displayLength, options.className);
 

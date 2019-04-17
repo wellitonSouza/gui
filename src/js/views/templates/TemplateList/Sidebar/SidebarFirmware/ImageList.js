@@ -7,7 +7,7 @@ import Dropzone from 'react-dropzone';
 import { withNamespaces } from 'react-i18next';
 
 const ImageList = ({
-    list, changeAttrValue, removeBinary, removeImage, onDrop, t,
+    list, changeAttrValue, removeBinary, toggleDeleteSidebar, onDrop, t,
 }) => (
     <Fragment>
         {Object.entries(list).map(([key, element]) => (
@@ -79,7 +79,7 @@ const ImageList = ({
                         </div>
                     ) : null}
                 <div className="body-attribute-name height-50 pl50px">
-                    <DojotBtnClassicWithIcon label={t('firmware:labels.rem')} title={t('firmware:labels.remove')} onClick={e => removeImage(e, element)} icon="fa-times" />
+                    <DojotBtnClassicWithIcon label={t('firmware:labels.rem')} title={t('firmware:labels.remove')} onClick={e => toggleDeleteSidebar(e, element)} icon="fa-times" />
                 </div>
                 <div className="line-2" />
             </div>
@@ -97,7 +97,7 @@ ImageList.propTypes = {
     list: PropTypes.object,
     changeAttrValue: PropTypes.func.isRequired,
     removeBinary: PropTypes.func.isRequired,
-    removeImage: PropTypes.func.isRequired,
+    toggleDeleteSidebar: PropTypes.func.isRequired,
     onDrop: PropTypes.func.isRequired,
 };
 

@@ -2,7 +2,7 @@ import Materialize from 'materialize-css';
 
 let _lastMsg = '';
 let _enableTimeOut = true;
-const _timeout = 5000;
+const _timeout = 4000;
 
 class MaterialToast {
     success(message) {
@@ -38,6 +38,7 @@ class MaterialToast {
     }
 
     custom(options) {
+        // It helps to avoid repeated messages in a short time
         // if last msg was diff penult one or this msg was publicated >=5000 miles
         if (_lastMsg !== options.html) {
             Materialize.toast(options.html, options.displayLength, options.className);

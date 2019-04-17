@@ -1,5 +1,6 @@
 {
     "header": "Manage Images",
+    "remove_image_header":" Remove Image",
     "title": "Firmware",
     "btn" : "Manage Images",
     "no_data": "No data received",
@@ -13,7 +14,8 @@
       "file_added": "File added.",
       "image_to_transfer": "Image to be transferred",
       "image_transferred" :"Request to transfer firmware image was accepted.",
-      "image_applied":"Request to apply firmware image was accepted."
+      "image_applied":"Request to apply firmware image was accepted.",
+      "qst_remove": "You are about to remove an image. Are you sure?"
     },
     "labels":{
         "remove":"Remove Image",

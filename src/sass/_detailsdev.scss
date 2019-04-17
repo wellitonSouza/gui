@@ -1378,8 +1378,7 @@ h1, h2, p {
       font-size: 15px;
     }
 
-    label
-    {
+    span{
         font-family: 'Roboto';
         font-weight: bold;
         font-size: 11px;
@@ -1388,7 +1387,6 @@ h1, h2, p {
         height: 100%;
         color: #828282;
     }
-
 
   }
 
@@ -1592,7 +1590,7 @@ h1, h2, p {
       letter-spacing: 0.05em;
     }
 
-    label{
+    span{
       color: #4F4F4F;
       font-weight: bold;
       font-size: 14px;

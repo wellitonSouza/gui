@@ -1,14 +1,12 @@
 /* eslint-disable react/no-multi-comp */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { hashHistory } from 'react-router';
 import AltContainer from 'alt-container';
 import { withNamespaces } from 'react-i18next';
 import * as i18next from 'i18next';
 import { Loading } from 'Components/Loading';
 import { Attr, HandleGeoElements } from 'Components/HistoryElements';
 import { DojotBtnRedCircle } from 'Components/DojotButton';
-import { RemoveModal } from 'Components/Modal';
 import MeasureActions from 'Actions/MeasureActions';
 import DeviceActions from 'Actions/DeviceActions';
 import MeasureStore from 'Stores/MeasureStore';
@@ -16,7 +14,6 @@ import DeviceStore from 'Stores/DeviceStore';
 import ConfigStore from 'Stores/ConfigStore';
 import { NewPageHeader } from 'Containers/full/PageHeader';
 import util from 'Comms/util/util';
-import toaster from 'Comms/util/materialize';
 
 const DeviceHeader = ({ device, t }) => (
     <div className="row devicesSubHeader p0 device-details-header">
@@ -51,7 +48,8 @@ class Attribute extends Component {
     render() {
         // check the current window, if less then 1024px, blocks compressed state
         const { opened } = this.state;
-        const { device, attr: { label, value_type: valueType } } = this.props;
+        const { device, attr } = this.props;
+        const { label, value_type: valueType } = attr;
         const isOpened = util.checkWidthToStateOpen(opened);
         return (
             <div className={`attributeBox ${isOpened ? 'expanded' : 'compressed'}`}>
@@ -99,7 +97,7 @@ const Configurations = ({ t, attrs, device }) => (
         <GenericList
             img="images/gear-dark.png"
             attrs={attrs}
-            box_title={t('text.configuration')}
+            boxTitle={t('text.configuration')}
             device={device}
             t={t}
         />
@@ -108,7 +106,7 @@ const Configurations = ({ t, attrs, device }) => (
 
 Configurations.propTypes = {
     device: PropTypes.shape({}).isRequired,
-    attrs: PropTypes.shape({}).isRequired,
+    attrs: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     t: PropTypes.func.isRequired,
 };
 
@@ -120,7 +118,7 @@ const StaticAttributes = ({
         <GenericList
             img="images/tag.png"
             attrs={attrs}
-            box_title={t('text.static_attributes')}
+            boxTitle={t('text.static_attributes')}
             device={device}
             openStaticMap={openStaticMap}
             t={t}
@@ -130,7 +128,7 @@ const StaticAttributes = ({
 
 StaticAttributes.propTypes = {
     device: PropTypes.shape({}).isRequired,
-    attrs: PropTypes.shape({}).isRequired,
+    attrs: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     openStaticMap: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
 };
@@ -204,7 +202,7 @@ class GenericList extends Component {
 
     render() {
         const {
-            t, attrs, img, box_title,
+            t, attrs, img, boxTitle, device,
         } = this.props;
         this.verifyIsGeo(attrs);
         return (
@@ -213,10 +211,10 @@ class GenericList extends Component {
                     <div className="icon">
                         <img src={img} />
                     </div>
-                    <label>{box_title}</label>
+                    <label>{boxTitle}</label>
                 </div>
                 <div className="col s12 body">
-                    {box_title == t('text.configuration') ? (
+                    {boxTitle == t('text.configuration') ? (
                         <div key="id" className="line display-flex">
                             <div className="col s12 pr0">
                                 <div className="col s5">
@@ -224,18 +222,21 @@ class GenericList extends Component {
                                     <div className="value-label">Name</div>
                                 </div>
                                 <div className="col s7 p0 text-right">
-                                    <div className="value-value pr0">{this.props.device.id}</div>
+                                    <div className="value-value pr0">{device.id}</div>
                                     <div className="value-label pr0">STRING</div>
                                 </div>
                             </div>
                         </div>
                     ) : ('')}
-                    {this.props.attrs.map(attr => (
+                    {attrs.map(attr => (
                         attr.isGeo ? (
                             <div
+                                role="button"
+                                tabIndex="0"
                                 key={attr.label}
                                 className="line col s12 pl30"
                                 id="static-geo-attribute"
+                                onKeyUp={this.openMap}
                                 onClick={this.openMap}
                             >
                                 <div className="display-flex-column flex-1">
@@ -318,33 +319,34 @@ class DyAttributeArea extends Component {
     }
 
     toggleAttribute(attr) {
-        let { selectedAttributes : sa } = this.state;
-        const { isAttrsVisible : current_attrs } = this.state;
-        if (current_attrs[attr.id]) {
+        let { selectedAttributes: sa } = this.state;
+        const { isAttrsVisible } = this.state;
+        if (isAttrsVisible[attr.id]) {
             sa = sa.filter(i => i.id !== attr.id);
-            delete current_attrs[attr.id];
+            delete isAttrsVisible[attr.id];
         } else {
             sa.push(attr);
-            current_attrs[attr.id] = true;
+            isAttrsVisible[attr.id] = true;
         }
 
         // update attributes
         this.setState({
             selectedAttributes: sa,
-            isAttrsVisible: current_attrs,
+            isAttrsVisible,
         });
     }
 
     render() {
         const { isAttrsVisible, selectedAttributes } = this.state;
-        const { openStaticMap, device, t, actuators, attrs,
+        const {
+            openStaticMap, device, t, actuators, dynamicAttrs,
         } = this.props;
 
-        const auxAttrs = { ...attrs };
-        const auxActuators = { ...actuators };
+        const auxAttrs = JSON.parse(JSON.stringify(dynamicAttrs));
+        const auxActuators = JSON.parse(JSON.stringify(actuators));
         // preparing dynamic attributes
 
-        //Object.entries(auxAttrs).map(([index, element]) => (
+        // Object.entries(auxAttrs).map(([index, element]) => (
         for (const index in auxAttrs) {
             if (isAttrsVisible[auxAttrs[index].id]) {
                 auxAttrs[index].visible = true;
@@ -355,7 +357,7 @@ class DyAttributeArea extends Component {
 
         // preparing actuators
         for (const index in auxActuators) {
-            if (isAttrsVisible[attrs[index].id]) {
+            if (isAttrsVisible[auxActuators[index].id]) {
                 auxActuators[index].visible = true;
             } else {
                 auxActuators[index].visible = false;
@@ -371,7 +373,7 @@ class DyAttributeArea extends Component {
         return (
             <div className="content-row float-right">
                 <div className="second-col">
-                    {selectedAttributes.length == 0 && openStaticMap == false
+                    {selectedAttributes.length === 0 && openStaticMap === false
                         ? (
                             <NoActiveAttr />
                         )
@@ -392,7 +394,7 @@ class DyAttributeArea extends Component {
                         <DynamicAttributeList
                             device={device}
                             attrs={auxAttrs}
-                            change_attr={this.toggleAttribute}
+                            toggleAttribute={this.toggleAttribute}
                             t={t}
                         />
                     </div>
@@ -400,7 +402,7 @@ class DyAttributeArea extends Component {
                         <ActuatorsList
                             device={device}
                             actuators={auxActuators}
-                            change_attr={this.toggleAttribute}
+                            toggleAttribute={this.toggleAttribute}
                             t={t}
                         />
                     </div>
@@ -410,10 +412,11 @@ class DyAttributeArea extends Component {
     }
 }
 
+
 DyAttributeArea.propTypes = {
     device: PropTypes.shape({}).isRequired,
     actuators: PropTypes.shape({}).isRequired,
-    attrs: PropTypes.shape({}).isRequired,
+    dynamicAttrs: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     openStaticMap: PropTypes.bool,
     t: PropTypes.func.isRequired,
 };
@@ -430,32 +433,39 @@ class ActuatorsList extends Component {
     }
 
     componentWillMount() {
-        const device = this.props.device;
-        for (const i in device.attrs) {
-            for (const j in device.attrs[i]) {
-                if (device.attrs[i][j].type === 'actuator') {
-                    MeasureActions.fetchMeasure.defer(device, device.attrs[i][j].label, 10);
+        const { device } = this.props;
+        const { attrs } = device;
+
+        for (const i in attrs) {
+            for (const j in attrs[i]) {
+                if (attrs[i][j].type === 'actuator') {
+                    MeasureActions.fetchMeasure.defer(device, attrs[i][j].label, 10);
                 }
             }
         }
     }
 
     clickAttr(attr) {
-        this.props.change_attr(attr);
+        const { toggleAttribute } = this.props;
+        console.log('clickAttr', attr);
+        toggleAttribute(attr);
     }
 
     render() {
-        const { t } = this.props;
+        const { t, actuators } = this.props;
         return (
             <div className=" dy_attributes">
                 <div className="col s12 header">
                     <div className="col s2" />
-                    <label className="col s8">{t('text.actuators')}</label>
+                    <span className="col s8">{t('text.actuators')}</span>
                 </div>
                 <div className="col s12 body">
-                    {this.props.actuators.map(actuator => (
+                    {actuators.map(actuator => (
                         <div
+                            onKeyUp={this.clickAttr.bind(this, actuator)}
                             onClick={this.clickAttr.bind(this, actuator)}
+                            role="button"
+                            tabIndex="0"
                             key={actuator.label}
                             className="line"
                         >
@@ -481,6 +491,14 @@ class ActuatorsList extends Component {
     }
 }
 
+ActuatorsList.propTypes = {
+    device: PropTypes.shape({}).isRequired,
+    actuators: PropTypes.shape({}).isRequired,
+    toggleAttribute: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
+};
+
+
 class DynamicAttributeList extends Component {
     constructor(props) {
         super(props);
@@ -490,25 +508,27 @@ class DynamicAttributeList extends Component {
     }
 
     componentWillMount() {
-        const device = this.props.device;
-        for (const i in device.attrs) {
-            for (const j in device.attrs[i]) {
-                if (device.attrs[i][j].type !== 'meta') {
-                    if (device.attrs[i][j].type === 'dynamic') {
-                        if (device.attrs[i][j].value_type === 'geo:point') {
-                            MeasureActions.fetchPosition.defer(device, device.id, device.attrs[i][j].label);
+        const { device, attrs: propsAttrs } = this.props;
+        const { attrs } = device;
+        for (const i in attrs) {
+            for (const j in attrs[i]) {
+                if (attrs[i][j].type !== 'meta') {
+                    if (attrs[i][j].type === 'dynamic') {
+                        if (attrs[i][j].value_type === 'geo:point') {
+                            MeasureActions.fetchPosition.defer(device, device.id, attrs[i][j].label);
                         }
                     }
-                    MeasureActions.fetchMeasure.defer(device, device.attrs[i][j].label, 10);
+                    MeasureActions.fetchMeasure.defer(device, attrs[i][j].label, 10);
                 }
             }
         }
 
-        this.limitSizeField(this.props.attrs);
+        this.limitSizeField(propsAttrs);
     }
 
     clickAttr(attr) {
-        this.props.change_attr(attr);
+        const { toggleAttribute } = this.props;
+        toggleAttribute(attr);
     }
 
     limitSizeField(dyAttrs) {
@@ -520,23 +540,27 @@ class DynamicAttributeList extends Component {
     }
 
     render() {
-        const { t } = this.props;
+        const { truncate } = this.state;
+        const { t, attrs } = this.props;
         return (
             <div className=" dy_attributes">
                 <div className="col s12 header">
                     <div className="col s2 filter-icon" />
-                    <label className="col s10">{t('devices:dynamic_attributes')}</label>
+                    <span className="col s10">{t('devices:dynamic_attributes')}</span>
                 </div>
                 <div className="col s12 body">
-                    {this.props.attrs.map(attr => (
+                    {attrs.map(attr => (
                         <div
+                            role="button"
+                            tabIndex="0"
                             key={attr.label}
                             className="line"
+                            onKeyUp={this.clickAttr.bind(this, attr)}
                             onClick={this.clickAttr.bind(this, attr)}
                         >
                             <div className="col offset-s2 s8">
                                 <div
-                                    className={this.state.truncate ? 'label truncate' : 'label'}
+                                    className={truncate ? 'label truncate' : 'label'}
                                     title={i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}
                                 >
                                     {' '}
@@ -563,57 +587,48 @@ class DynamicAttributeList extends Component {
     }
 }
 
-
-class DeviceUserActions extends Component {
-    constructor(props) {
-        super(props);
-        this.removeDevice = this.removeDevice.bind(this);
-    }
-
-    removeDevice(event) {
-        this.props.setModal(true);
-    }
-
-    render() {
-        const { t } = this.props;
-        return (
-            <div>
-                <DojotBtnRedCircle
-                    to="/device/list"
-                    icon="fa fa-arrow-left"
-                    tooltip={t('devices:return_list')}
-                />
-            </div>
-        );
-    }
-}
+DynamicAttributeList.propTypes = {
+    device: PropTypes.shape({}).isRequired,
+    attrs: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+    toggleAttribute: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
+};
 
 
-class AttrHistory extends Component {
-    constructor(props) {
-        super(props);
-    }
+const DeviceUserActions = ({ t }) => (
+    <div>
+        <DojotBtnRedCircle
+            to="/device/list"
+            icon="fa fa-arrow-left"
+            tooltip={t('devices:return_list')}
+        />
+    </div>
+);
 
-    render() {
-        return (
-            <div className="graphLarge">
-                <AltContainer stores={{
-                    MeasureStore,
-                    Config: ConfigStore,
-                }}
-                >
-                    <Attr
-                        device={this.props.device}
-                        type={this.props.type}
-                        attr={this.props.attr}
-                        label={this.props.attr}
-                        isStatic={false}
-                    />
-                </AltContainer>
-            </div>
-        );
-    }
-}
+
+const AttrHistory = (device, type, attr) => (
+    <div className="graphLarge">
+        <AltContainer stores={{
+            MeasureStore,
+            Config: ConfigStore,
+        }}
+        >
+            <Attr
+                device={device}
+                type={type}
+                attr={attr}
+                label={attr}
+                isStatic={false}
+            />
+        </AltContainer>
+    </div>
+);
+
+AttrHistory.propTypes = {
+    device: PropTypes.shape({}).isRequired,
+    type: PropTypes.string.isRequired,
+    attr: PropTypes.shape({}).isRequired,
+};
 
 class DeviceDetail extends Component {
     constructor(props) {
@@ -628,14 +643,17 @@ class DeviceDetail extends Component {
     }
 
     render() {
+        const { openStaticMap } = this.state;
+        const { device, t } = this.props;
         let attr_list = [];
         let dal = [];
         let actuators = [];
         let config_list = [];
-        for (const index in this.props.device.attrs) {
-            let tmp = this.props.device.attrs[index];
+        // splitting attributes
+        for (const index in device.attrs) {
+            let tmp = device.attrs[index];
             if (!Array.isArray(tmp)) {
-                tmp = this.props.device.attrs;
+                tmp = device.attrs;
             }
 
             attr_list = attr_list.concat(tmp.filter(i => String(i.type) === 'static'));
@@ -649,24 +667,26 @@ class DeviceDetail extends Component {
             }));
             config_list = config_list.concat(tmp.filter(i => String(i.type) === 'meta'));
         }
-        const { t } = this.props;
-        // console.log('attrs: ', dal);
         return (
             <div className="row detail-body">
                 <div className="first-col">
-                    <Configurations device={this.props.device} attrs={config_list} t={t} />
+                    <Configurations
+                        device={device}
+                        attrs={config_list}
+                        t={t}
+                    />
                     <StaticAttributes
-                        device={this.props.device}
+                        device={device}
                         attrs={attr_list}
                         openStaticMap={this.openStaticMap}
                         t={t}
                     />
                 </div>
                 <DyAttributeArea
-                    device={this.props.device}
+                    device={device}
                     actuators={actuators}
-                    attrs={dal}
-                    openStaticMap={this.state.openStaticMap}
+                    dynamicAttrs={dal}
+                    openStaticMap={openStaticMap}
                     t={t}
                 />
             </div>
@@ -676,17 +696,9 @@ class DeviceDetail extends Component {
 
 
 class ViewDeviceImpl extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            show_modal: false,
-        };
-        this.setModal = this.setModal.bind(this);
-        this.remove = this.remove.bind(this);
-    }
-
     componentWillMount() {
-        const device = this.props.devices[this.props.device_id];
+        const { devices, device_id } = this.props;
+        const device = devices[device_id];
         if (device === undefined) return; // not ready
 
         for (const i in device.attrs) {
@@ -698,35 +710,20 @@ class ViewDeviceImpl extends Component {
         }
     }
 
-    remove(e) {
-        // This should be on DeviceUserActions -
-        // this is not good, but will have to make do because of z-index on the action header
-        const { t } = this.props;
-        e.preventDefault();
-        DeviceActions.triggerRemoval({ id: this.props.device_id }, (response) => {
-            toaster.success(t('devices:alerts.remove'));
-            hashHistory.push('/device/list');
-        });
-    }
-
-    setModal(status) {
-        this.setState({ show_modal: status });
-    }
-
-
     render() {
         let device;
+        const { t, devices } = this.props;
 
-        if (this.props.devices !== undefined) {
-            if (this.props.devices.hasOwnProperty(this.props.device_id)) {
-                device = this.props.devices[this.props.device_id];
+        if (devices !== undefined) {
+            if (devices.hasOwnProperty(this.props.device_id)) {
+                device = devices[this.props.device_id];
             }
         }
 
         if (device === undefined) {
             return (<Loading />);
         }
-        const { t } = this.props;
+        console.log('T', t);
         return (
             <div className="full-height bg-light-gray">
                 <NewPageHeader
@@ -736,24 +733,12 @@ class ViewDeviceImpl extends Component {
                 >
                     <div className="box-sh">
                         <DeviceUserActions
-                            devices={this.props.devices}
-                            deviceid={device.id}
-                            setModal={this.setModal}
                             t={t}
                         />
                     </div>
                 </NewPageHeader>
                 <DeviceHeader device={device} t={t} />
                 <DeviceDetail deviceid={device.id} device={device} t={t} />
-                {this.state.show_modal
-                    ? (
-                        <RemoveModal
-                            name={t('devices:device')}
-                            remove={this.remove}
-                            openModal={this.setModal}
-                        />
-                    )
-                    : <div />}
             </div>
         );
     }
@@ -813,10 +798,14 @@ class ViewDeviceComponent extends Component {
     }
 
     render() {
+        const {
+            params, t,
+        } = this.props;
+
         return (
             <div className="full-width full-height">
                 <AltContainer store={DeviceStore}>
-                    <ViewDeviceImpl device_id={this.props.params.device} t={this.props.t} />
+                    <ViewDeviceImpl device_id={params.device} t={t} />
                 </AltContainer>
             </div>
         );

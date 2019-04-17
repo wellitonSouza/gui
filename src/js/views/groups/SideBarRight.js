@@ -34,7 +34,7 @@ class SideBarRight extends Component {
                 ));
             }
             body = (
-                <div className="sidebar-firmware sidebar-groups">
+                <div className="sidebar-firmware profile-sidebar">
                     {header}
                     <div className="body">
                         <div className="body-form">{content}</div>

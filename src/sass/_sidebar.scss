@@ -598,6 +598,8 @@
     background: linear-gradient(90deg, #fafafa, #f7f7f7 100%) !important;
 
     .header {
+        text-transform: uppercase;
+        font-family: Raleway, sans-serif;
         display: flex;
         justify-content: space-around;
         position: relative;

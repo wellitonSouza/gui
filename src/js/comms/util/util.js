@@ -16,6 +16,9 @@ function FetchError(data, message) {
 FetchError.prototype = Object.create(Error.prototype);
 FetchError.prototype.constructor = FetchError;
 
+const REGEX_ALPHA_NUMBER_HYPHEN_2_POINTS_SPACE_UNDER = /^[\w-: ]+$/g;
+const REGEX_ALPHA_NUMBER_HYPHEN_2_POINTS_UNDER = /^[\w-:]+$/g;
+
 class Util {
 
     parserPosition(position) {
@@ -258,12 +261,35 @@ class Util {
             ret.error =  i18n.t('errors_msg.name_empty');
             return ret;
         }
-
-        if (name.match(/^[_A-z0-9 ]*([_A-z0-9 ])*$/g) == null) {
+        if (name.match(REGEX_ALPHA_NUMBER_HYPHEN_2_POINTS_SPACE_UNDER) == null) {
             ret.result = false;
-            ret.error = i18n.t('errors_msg.alpha_number')  ;
+            ret.error = i18n.t('errors_msg.alpha_number_space_hyphen')  ;
             return ret;
         }
+        return ret;
+    }
+
+    /**
+     * @param name
+     * @returns {{result: boolean, error: string, label: *}}
+     */
+    isLabelValid(name) {
+        const ret = {
+            result: true,
+            error: '',
+            label: name.trim()
+        };
+        if (name.trim().length === 0) {
+            ret.result = false;
+            ret.error = i18n.t('errors_msg.name_empty');
+            return ret;
+        }
+        if (name.match(REGEX_ALPHA_NUMBER_HYPHEN_2_POINTS_UNDER) == null) {
+            ret.result = false;
+            ret.error = i18n.t('errors_msg.alpha_number_hyphen');
+            return ret;
+        }
+
         return ret;
     }
 

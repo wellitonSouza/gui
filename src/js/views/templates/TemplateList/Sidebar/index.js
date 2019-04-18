@@ -196,7 +196,7 @@ class Sidebar extends Component {
         const { template } = this.state;
         const [type, values] = [attrs.attrType, { ...attrs }];
         const { t } = this.props;
-        const ret = util.isNameValid(values.label);
+        const ret = util.isLabelValid(values.label);
         if (!ret.result) {
             if (type === 'config_attrs') {
                 toaster.error(t('templates:alerts.must_set_type'));
@@ -324,7 +324,7 @@ class Sidebar extends Component {
         const { selectAttr } = this.state;
         const { t } = this.props;
         if (!Object.prototype.hasOwnProperty.call(selectAttr, 'metadata')) selectAttr.metadata = [];
-        const resp = util.isNameValid(metadata.label);
+        const resp = util.isLabelValid(metadata.label);
         if (!resp.result) {
             toaster.error(resp.error);
             return false;

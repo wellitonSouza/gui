@@ -166,7 +166,8 @@ class DevFilterFields extends Component {
 
     componentDidMount() {
         TemplateActions.fetchTemplates.defer({
-            page_size: 999999
+            page_size: 999999,
+            sortBy: label,
         });
     }
 

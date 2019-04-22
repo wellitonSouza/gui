@@ -146,7 +146,7 @@ class HandleGeoElements extends Component {
             hasPosition: false,
             pos: []
         };
-        this.label = "";
+
         this.handleDevicePosition = this.handleDevicePosition.bind(this);
         this.toogleExpand = this.toogleExpand.bind(this);
     }
@@ -162,7 +162,6 @@ class HandleGeoElements extends Component {
             for (const i in device.attrs[j]) {
                 if (device.attrs[j][i].type === 'static') {
                     if (device.attrs[j][i].value_type === 'geo:point') {
-                        this.label = device.attrs[j][i].label;
                         const aux = device.attrs[j][i].static_value;
                         const parsedPosition = aux.split(',');
                         device.sp_value = [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
@@ -231,7 +230,7 @@ class HandleGeoElements extends Component {
             if (this.props.isStatic) {
                 return <div className={"attributeBox " + (opened ? "expanded" : "compressed")}>
                     <div className="header">
-                        <label>{this.label}</label>
+                        <label>{this.props.label}</label>
                         {!this.state.opened ? <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand" /> : <i onClick={this.toogleExpand.bind(this, false)} className="fa fa-compress" />}
                     </div>
                     <SmallPositionRenderer showLayersIcons={false} staticDevices={validDevices} allowContextMenu={false} zoom={14} showPolyline={false} config={geoconfs} />

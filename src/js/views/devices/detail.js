@@ -609,7 +609,7 @@ const DeviceUserActions = ({ t }) => (
 );
 
 
-const AttrHistory = (device, type, attr) => (
+const AttrHistory = ({device, type, attr}) => (
     <div className="graphLarge">
         <AltContainer stores={{
             MeasureStore,
@@ -630,7 +630,7 @@ const AttrHistory = (device, type, attr) => (
 AttrHistory.propTypes = {
     device: PropTypes.shape({}).isRequired,
     type: PropTypes.string.isRequired,
-    attr: PropTypes.shape({}).isRequired,
+    attr: PropTypes.string.isRequired,
 };
 
 class DeviceDetail extends Component {

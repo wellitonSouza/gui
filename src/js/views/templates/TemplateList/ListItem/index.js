@@ -49,7 +49,7 @@ class ListItem extends Component {
             <Fragment>
                 <div
                     className={`mg20px fl ${template.isNewTemplate ? 'flex-order-1' : 'flex-order-2'}`}
-                    onClick={() => this.props.selectTemplate(template)}
+                    onClick={() => this.props.selectTemplate(template)} title={template.label}
                     >
                     <div
                         className="template-card template card-size lst-entry-wrapper z-depth-2 mg0px height-auto suppressed card-hover"

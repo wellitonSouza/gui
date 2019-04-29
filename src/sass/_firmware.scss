@@ -1,10 +1,9 @@
-.dropzone
-{
+.dropzone {
     width: 100%;
     cursor: pointer;
     font-family: 'Raleway';
 
-    & > div{
+    & > div {
         width: 100% !important;
         height: 75px !important;
         padding: 0 18px;
@@ -18,11 +17,14 @@
     }
 }
 
-.body-form
-{
-    .header2{
-        padding: 20px 0;
-        font-family: Raleway;
+
+.body-form-fw {
+    margin-left: 28px !important;
+    margin-right: 28px !important;
+
+    .header2 {
+        padding: 10px 0;
+        font-family: Raleway, serif;
         font-style: normal;
         font-weight: 500;
         line-height: normal;
@@ -30,90 +32,117 @@
         color: #7C7C7C;
         display: block;
     }
+
 }
 
-.box-image-info
-{
-    .info
-    {
-        .icon
-        {
-            display: block;
-            width: 90px;
-            float: left;
-            padding-top: 25px;
-            padding-left: 20px;
+.box-image-info {
 
-            img
-            {
+    .image-up {
+        box-sizing: border-box;
+        width: 100%;
+
+        .clr-gray {
+            border-color: #1c2733;
+            color: #1c2733;
+        }
+
+        .new-btn-flat.style-2 {
+            width: 100%;
+        }
+
+
+        .cid_upload_button {
+            display: inline-block;
+        }
+
+
+        .cid_select {
+            width: 100%;
+        }
+
+        button {
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .new-btn-flat {
+            margin-left: initial;
+            margin-right: initial;
+        }
+    }
+
+    .info {
+        border: 1px solid #E0E0E0;
+        box-sizing: border-box;
+        width: 100%;
+        padding: 5px 10px;
+        margin-top: 120px;
+
+        .title-info {
+            font-size: 15px;
+            font-family: Raleway, serif;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 25px;
+            color: #7C7C7C;
+        }
+
+        .icon {
+            display: block;
+            float: right;
+
+            img {
                 height: 38px;
             }
         }
 
-        .desc
-        {
-            display: inline-block;
-            width: calc(100% - 100px);
+        .desc {
 
-            .line
-            {
-                display: inline-block;
-                width: 100%;
-                padding-bottom: 9px;
+            .info-group {
 
-                .label
-                {
-                    display: inline-block;
-                    font-family: "Raleway";
-                    font-weight: 500;
-                    font-size: 14px;
-                    padding-right: 5px;
-                    text-align: right;
+                padding: 5px 0;
+
+                .label {
                     color: #7C7C7C;
+                    font-family: Raleway, serif;
+                    font-style: normal;
+                    font-weight: 500;
+                    font-size: 12px;
+                    align-items: center;
+
                 }
 
-                .value
-                {
-                    display: inline;
-                    font-family: "Raleway";
-                    font-weight: bold;
-                    font-size: 14px;
+                .value {
                     color: #4F4F4F;
+                    font-family: Raleway, serif;
+                    font-style: normal;
+                    font-weight: bold;
+                    font-size: 13px;
+                    line-height: 15px;
                 }
             }
         }
+
     }
 }
 
 
-.cid_upload_button
-{
-    display: inline-block;
-}
+.sidebar-firmware {
+    @extend .generic-sidebar;
+    box-shadow: -3px 0 8px 0 rgba(0, 0, 0, 0.2);
 
-
-.cid_select
-{
-    width: calc(100% - 108px);
-    display: inline-block;
-}
-
-.sidebar-firmware
-{
-  @extend .generic-sidebar;
-  box-shadow: -3px 0 8px 0 rgba(0, 0, 0, 0.2);
-
-  .header{
-      background: linear-gradient(96.69deg, #813C9A 0%, #E96D71 99.09%);
-  }
-  .body{
-    .sub-content
-    {
-      height: calc(100% - 58px);
+    .header {
+        background: linear-gradient(96.69deg, #813C9A 0%, #E96D71 99.09%);
     }
-    .body-form{
-      padding-bottom: 50px;
-      height: auto;
+
+    .body {
+        .sub-content {
+            height: calc(100% - 58px);
+        }
+
+        .body-form {
+            padding-bottom: 50px;
+            height: auto;
+        }
     }
-  }
 }

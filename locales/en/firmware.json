@@ -4,6 +4,7 @@
     "title": "Firmware",
     "btn" : "Manage Images",
     "no_data": "No data received",
+    "title_info": "Current device information::",
     "alerts": {
       "valid_image": "Select a valid image.",
       "template_updated":"Template successfully updated.",
@@ -12,7 +13,7 @@
       "image_updated": "Image updated.",
       "image_removed": "Image removed.",
       "file_added": "File added.",
-      "image_to_transfer": "Image to be transferred",
+      "image_to_transfer": "Update firmware image device",
       "image_transferred" :"Request to transfer firmware image was accepted.",
       "image_applied":"Request to apply firmware image was accepted.",
       "qst_remove": "You are about to remove an image. Are you sure?"
@@ -32,11 +33,11 @@
     },
     "default_attrs":
     {
-        "state":"Current State",
-        "update_result":"Update Result",
+        "state":"State",
+        "update_result":"Result",
         "upload_image":"Upload Image",
         "apply_image": "Apply Image",
-        "current_version": "Current Version"
+        "current_version": "Version"
     },
     "image_list":
     {

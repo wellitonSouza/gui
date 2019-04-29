@@ -31,7 +31,7 @@ class DojotBtnLink extends Component {
 
 const DojotBtnClassic = ({ type = "secondary", color = 'none', title, onClick, label, to, id }) => {
     let auxTitle = title;
-    if (auxTitle == undefined)
+    if (auxTitle === undefined)
         auxTitle = label;
     if (to) {
         return (

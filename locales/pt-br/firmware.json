@@ -4,6 +4,7 @@
     "title": "Firmware",
     "btn": "Gerenciar Imagens",
     "no_data": "Dado não recebido",
+    "title_info": "Informações atuais do dispostivo:",
     "alerts": {
         "valid_image": "Selecione uma imagem válida.",
         "template_updated": "Modelo atualizado com sucesso!",
@@ -12,7 +13,7 @@
         "image_updated": "Imagem atualizada.",
         "image_removed": "Image removida.",
         "file_added": "Arquivo adicionado.",
-        "image_to_transfer": "Imagem a ser transferida",
+        "image_to_transfer": "Atualizar imagem de firmware do dispositivo",
         "image_transferred": "Requisição para transferir a imagem foi aceita.",
         "image_applied": "Requisição para aplicar a imagem foi aceita.",
         "qst_remove": "Você está prestes a remover uma imagem. Você tem certeza?"
@@ -31,11 +32,11 @@
         "long_desc": "Para confirmar a configuração, por favor atualize os seguintes campos:"
     },
     "default_attrs": {
-        "state": "Estado Atual",
+        "state": "Estado",
         "update_result": "Resultado da Atualização",
         "upload_image": "Upload da Imagem",
         "apply_image": "Aplicar Imagem",
-        "current_version": "Versão Atual"
+        "current_version": "Versão"
     },
     "image_list": {
         "version": "Versão da Imagem",

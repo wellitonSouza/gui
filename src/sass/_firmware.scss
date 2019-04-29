@@ -11,7 +11,7 @@
         font-weight: bold;
         margin-top: 10px;
         margin-bottom: 5px;
-        
+
         p {
             font-size: 15px;
         }
@@ -43,13 +43,13 @@
             float: left;
             padding-top: 25px;
             padding-left: 20px;
-            
+
             img
             {
                 height: 38px;
             }
         }
-    
+
         .desc
         {
             display: inline-block;
@@ -74,7 +74,7 @@
 
                 .value
                 {
-                    display: inline-block;
+                    display: inline;
                     font-family: "Raleway";
                     font-weight: bold;
                     font-size: 14px;
@@ -97,7 +97,7 @@
     width: calc(100% - 108px);
     display: inline-block;
 }
- 
+
 .sidebar-firmware
 {
   @extend .generic-sidebar;

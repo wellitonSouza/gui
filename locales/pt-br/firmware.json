@@ -2,48 +2,64 @@
     "header": "Gerenciar Imagens",
     "remove_image_header": "Remover imagem",
     "title": "Firmware",
-    "btn" : "Gerenciar Imagens",
-    "no_data" : "Dado não recebido",
+    "btn": "Gerenciar Imagens",
+    "no_data": "Dado não recebido",
     "alerts": {
-      "valid_image":"Selecione uma imagem válida.",
-      "template_updated":"Modelo atualizado com sucesso!",
-      "click_to_new_image" :"Clique aqui para adicionar uma nova imagem.",
-      "image_created": "Imagem criada.",
-      "image_updated": "Imagem atualizada.",
-      "image_removed": "Image removida.",
-      "file_added": "Arquivo adicionado.",
-      "image_to_transfer": "Imagem a ser transferida",
-      "image_transferred": "Requisição para transferir a imagem foi aceita.",
-      "image_applied":"Requisição para aplicar a imagem foi aceita.",
-      "qst_remove": "Você está prestes a remover uma imagem. Você tem certeza?"
+        "valid_image": "Selecione uma imagem válida.",
+        "template_updated": "Modelo atualizado com sucesso!",
+        "click_to_new_image": "Clique aqui para adicionar uma nova imagem.",
+        "image_created": "Imagem criada.",
+        "image_updated": "Imagem atualizada.",
+        "image_removed": "Image removida.",
+        "file_added": "Arquivo adicionado.",
+        "image_to_transfer": "Imagem a ser transferida",
+        "image_transferred": "Requisição para transferir a imagem foi aceita.",
+        "image_applied": "Requisição para aplicar a imagem foi aceita.",
+        "qst_remove": "Você está prestes a remover uma imagem. Você tem certeza?"
     },
-    "labels":{
-        "remove":"Remover Imagem",
-        "rem":"Remover",
-        "transfer":"Enviar",
-        "apply":"Aplicar",
-        "available":"Imagens disponíveis"
+    "labels": {
+        "remove": "Remover Imagem",
+        "rem": "Remover",
+        "transfer": "Enviar",
+        "apply": "Aplicar",
+        "available": "Imagens disponíveis"
     },
-    "states":{
+    "states": {
         "enabled": "Firmware ativado",
         "disabled": "Firmware desativado",
         "short_desc": "Esta opção permite o modelo gerenciar imagens de firmware.",
         "long_desc": "Para confirmar a configuração, por favor atualize os seguintes campos:"
     },
-    "default_attrs":
-    {
-        "state":"Estado Atual",
-        "update_result":"Resultado da Atualização",
-        "upload_image":"Upload da Imagem",
+    "default_attrs": {
+        "state": "Estado Atual",
+        "update_result": "Resultado da Atualização",
+        "upload_image": "Upload da Imagem",
         "apply_image": "Aplicar Imagem",
         "current_version": "Versão Atual"
     },
-    "image_list":
-    {
-        "version":"Versão da Imagem",
-        "hash":"Informação do Binário",
-        "created_at":"Criado em",
-        "no_binary_yet":"Sem binário.",
+    "image_list": {
+        "version": "Versão da Imagem",
+        "hash": "Informação do Binário",
+        "created_at": "Criado em",
+        "no_binary_yet": "Sem binário.",
         "dropzone_desc": "Solte o arquivo ou clique para selecionar uma imagem."
+    },
+    "state": {
+        "0": "Em espera",
+        "1": "Em transferência",
+        "2": "Transferência concluída",
+        "3": "Atualizando"
+    },
+    "result": {
+        "0": "Ação iniciada",
+        "1": "Imagem de firmware atualizada com sucesso",
+        "2": "Falta espaço em flash",
+        "3": "Memória RAM insuficiente para transferência da imagem",
+        "4": "Conexão perdida durante a transferência da imagem",
+        "5": "Falha na verificação de integridade da nova imagem",
+        "6": "Tipo da imagem não suportado",
+        "7": "Localizador de imagem inválido",
+        "8": "Falha na atualização da imagem de firmware",
+        "9": "Protocolo não suportado"
     }
 }

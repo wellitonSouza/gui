@@ -45,6 +45,23 @@
         "created_at":"Created At",
         "no_binary_yet":"No binary yet.",
         "dropzone_desc": "Drop the file here or click to select image to upload."
+    },
+    "state": {
+        "0": "On hold",
+        "1": "Downloading",
+        "2": "Downloaded",
+        "3": "Updating"
+    },
+    "result": {
+        "0": "Action started",
+        "1": "Firmware updated success",
+        "2": "Flash space is missing",
+        "3": "Insufficient RAM memory for image transfer",
+        "4": "Connection lost during image transfer",
+        "5": "New image integrity check failed",
+        "6": "Unsupported image type",
+        "7": "Invalid image finder",
+        "8": "Failed to update firmware image",
+        "9": "Unsupported protocol"
     }
-
 }

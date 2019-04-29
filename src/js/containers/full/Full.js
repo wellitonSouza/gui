@@ -316,7 +316,7 @@ class LeftSidebar extends Component {
             });
         }
 
-        if (ability.can('viewer', 'socketio')) {
+        if (ability.can('viewer', 'socketIO')) {
             entriesLocal.push({
                 image: 'bell',
                 target: '/notifications',

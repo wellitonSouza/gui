@@ -4,7 +4,8 @@ import Slide from 'react-reveal/Slide';
 import { DojotBtnClassic } from 'Components/DojotButton';
 import ImageActions from 'Actions/ImageActions';
 import MaterialSelect from 'Components/MaterialSelect';
-import SidebarFirmImages from 'Views/templates/TemplateList/Sidebar/SidebarFirmware/SidebarFirmImages';
+import SidebarFirmImages
+    from 'Views/templates/TemplateList/Sidebar/SidebarFirmware/SidebarFirmImages';
 import SidebarButton from 'Views/templates/TemplateList/Sidebar/SidebarButton';
 import DeviceActions from 'Actions/DeviceActions';
 import toaster from 'Comms/util/materialize';
@@ -22,8 +23,10 @@ class SidebarImage extends Component {
             showFirmwareImage: false,
             attrs: {
                 dojotFirmwareUpdateState: t('firmware:no_data'),
-                dojotFirmwareUpdateUpdateResult: t('firmware:no_data'),
+                dojotFirmwareUpdateResult: t('firmware:no_data'),
                 dojotFirmwareUpdateVersion: t('firmware:no_data'),
+                dojotFirmwareUpdateStateCode: 0,
+                dojotFirmwareUpdateResultCode: 0,
             },
             currentImageId: '0',
         };
@@ -75,8 +78,10 @@ class SidebarImage extends Component {
         let relatedLabel = '';
         device.attrs[templateId].forEach((attr) => {
             if (attr.metadata) {
-                const el = attr.metadata.filter(meta => meta.label == dojotLabel);
-                if (el.length) { relatedLabel = attr.label; } // found the attr
+                const el = attr.metadata.filter(meta => meta.label === dojotLabel);
+                if (el.length) {
+                    relatedLabel = attr.label;
+                } // found the attr
             }
         });
         return relatedLabel;
@@ -85,9 +90,28 @@ class SidebarImage extends Component {
     receivedImageInformation(data) {
         const { attrs: mattrs } = data;
         const { attrs } = this.state;
-        attrs.dojotFirmwareUpdateState = mattrs[this.getAttrLabel('dojot:firmware_update:state')];
-        attrs.dojotFirmwareUpdateUpdateResult = mattrs[this.getAttrLabel('dojot:firmware_update:update_result')];
-        attrs.dojotFirmwareUpdateVersion = mattrs[this.getAttrLabel('dojot:firmware_update:version')];
+        const { t } = this.props;
+
+        if (mattrs['FWUpdate-UpdateResult'] || mattrs['FWUpdate-State'] || mattrs['Firmware-version']) {
+            console.log('receive', data);
+        }
+
+        const state = mattrs[this.getAttrLabel('dojot:firmware_update:state')];
+        if (state) {
+            attrs.dojotFirmwareUpdateState = `${t(`firmware:state.${state}`)} (${state})`;
+            attrs.dojotFirmwareUpdateStateCode = state;
+        }
+
+        const result = mattrs[this.getAttrLabel('dojot:firmware_update:update_result')];
+        if (result) {
+            attrs.dojotFirmwareUpdateResult = `${t(`firmware:result.${result}`)} (${result})`;
+            attrs.dojotFirmwareUpdateResultCode = result;
+        }
+
+        const version = mattrs[this.getAttrLabel('dojot:firmware_update:version')];
+        if (version) {
+            attrs.dojotFirmwareUpdateVersion = version;
+        }
         this.setState({
             attrs,
         });
@@ -133,9 +157,10 @@ class SidebarImage extends Component {
         items.push(<option key="selectedImage" value="0">Select an image</option>);
         const { is: { images } } = this.props;
         if (Object.keys(images).length) {
-            Object.values(images).forEach((el) => {
-                items.push(<option key={el.id} value={el.id}>{el.fw_version}</option>);
-            });
+            Object.values(images)
+                .forEach((el) => {
+                    items.push(<option key={el.id} value={el.id}>{el.fw_version}</option>);
+                });
         }
         return items;
     }
@@ -143,18 +168,35 @@ class SidebarImage extends Component {
 
     render() {
         const {
-            t, toogleSidebarImages, showSidebarImage, is,
+            t, toogleSidebarImages, showSidebarImage, is, deviceId,
         } = this.props;
         const { images } = is;
-        const { attrs, showFirmwareImage, templateIdAllowedImage } = this.state;
+        const {
+            attrs, showFirmwareImage, templateIdAllowedImage, currentImageId,
+        } = this.state;
         const opts = this.createImageOptions();
         const fwImageModifier = ability.can('modifier', 'fw-image');
 
+        const { dojotFirmwareUpdateState: state, fwUpdateUpdateResult: result } = attrs;
+
+        // enable Transfer if state is 0 or 2  and img was selected
+        let enableBtnTransfer = false;
+        if (state === 0 && currentImageId !== '0') {
+            enableBtnTransfer = true;
+        }
+
+        // enable apply img if state=2 and result=0 ou 8
+        let enableBtnApply = false;
+        if (state === 2 && (result === 0 || result === 8)) {
+            enableBtnApply = true;
+        }
+
+
         return (
             <Fragment>
-                <FirmwareWebSocket onChange={this.receivedImageInformation} />
+                <FirmwareWebSocket onChange={this.receivedImageInformation} deviceId={deviceId} />
                 <Slide right when={showSidebarImage} duration={300}>
-                    { showSidebarImage
+                    {showSidebarImage
                         ? (
                             <div className="sidebar-firmware">
                                 <div className="header">
@@ -171,33 +213,76 @@ class SidebarImage extends Component {
                                     <div className="sub-content">
                                         <div className="info firmware-enabled">
                                             <div className="icon">
-                                                <img src="images/icons/firmware-big-gray.png" alt="device-icon" />
+                                                <img
+                                                    src="images/icons/firmware-big-gray.png"
+                                                    alt="device-icon"
+                                                />
                                             </div>
                                             <div className="desc">
                                                 <div className="line">
-                                                    <div className="label">{t('firmware:default_attrs.current_version')}</div>
-                                                    <div className="value">{attrs.dojotFirmwareUpdateVersion}</div>
+                                                    <div
+                                                        className="label"
+                                                    >
+                                                        {t('firmware:default_attrs.current_version')}
+                                                    </div>
+                                                    <div
+                                                        className="value"
+                                                    >
+                                                        {attrs.dojotFirmwareUpdateVersion}
+                                                    </div>
                                                 </div>
                                                 <div className="line">
-                                                    <div className="label">{t('firmware:default_attrs.state')}</div>
-                                                    <div className="value">{attrs.dojotFirmwareUpdateState}</div>
+                                                    <div
+                                                        className="label"
+                                                    >
+                                                        {t('firmware:default_attrs.state')}
+                                                    </div>
+                                                    <div
+                                                        className="value"
+                                                    >
+                                                        {attrs.dojotFirmwareUpdateState}
+                                                    </div>
                                                 </div>
                                                 <div className="line">
-                                                    <div className="label">{t('firmware:default_attrs.update_result')}</div>
-                                                    <div className="value">{attrs.dojotFirmwareUpdateUpdateResult}</div>
+                                                    <div
+                                                        className="label"
+                                                    >
+                                                        {t('firmware:default_attrs.update_result')}
+                                                    </div>
+                                                    <div
+                                                        className="value"
+                                                    >
+                                                        {attrs.dojotFirmwareUpdateResult}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="line-2" />
                                         <div className="body-form pl50">
-                                            <div className="header2">{t('firmware:alerts.image_to_transfer')}</div>
+                                            <div
+                                                className="header2"
+                                            >
+                                                {t('firmware:alerts.image_to_transfer')}
+                                            </div>
                                             <div className="cid_select">
-                                                <MaterialSelect id="flr_images" name="images" label={t('firmware:labels.available')} value={this.currentImageId} onChange={e => this.onChangeImage(e)}>
+                                                <MaterialSelect
+                                                    id="flr_images"
+                                                    name="images"
+                                                    label={t('firmware:labels.available')}
+                                                    value={this.currentImageId}
+                                                    onChange={e => this.onChangeImage(e)}
+                                                >
                                                     {opts}
                                                 </MaterialSelect>
                                             </div>
                                             <div className="cid_upload_button">
-                                                <div className="square-button" onKeyPress={this.callUploadImage} tabIndex="0" role="button" onClick={this.callUploadImage}>
+                                                <div
+                                                    className="square-button"
+                                                    onKeyPress={this.callUploadImage}
+                                                    tabIndex="0"
+                                                    role="button"
+                                                    onClick={this.callUploadImage}
+                                                >
                                                     <i className="fa fa-download fa-2x" />
                                                     {t('firmware:labels.transfer')}
                                                 </div>
@@ -215,8 +300,17 @@ class SidebarImage extends Component {
                                 </div>
                                 <div className="footer">
                                     <Fragment>
-                                        <DojotBtnClassic label={t('discard.label')} type="secondary" onClick={toogleSidebarImages} />
-                                        <DojotBtnClassic color="red" label={t('firmware:labels.apply')} type="primary" onClick={e => this.callApplyImage(e)} />
+                                        <DojotBtnClassic
+                                            label={t('discard.label')}
+                                            type="secondary"
+                                            onClick={toogleSidebarImages}
+                                        />
+                                        <DojotBtnClassic
+                                            color="red"
+                                            label={t('firmware:labels.apply')}
+                                            type="primary"
+                                            onClick={e => this.callApplyImage(e)}
+                                        />
                                     </Fragment>
                                 </div>
                             </div>
@@ -224,7 +318,7 @@ class SidebarImage extends Component {
                         : <div />
                     }
                 </Slide>
-                { fwImageModifier
+                {fwImageModifier
                     ? (
                         <SidebarFirmImages
                             showFirmware={showFirmwareImage}
@@ -232,7 +326,7 @@ class SidebarImage extends Component {
                             images={images}
                             toogleSidebarFirmware={this.toogleSidebarFirmImage}
                         />
-                    ) : null }
+                    ) : null}
             </Fragment>
         );
     }

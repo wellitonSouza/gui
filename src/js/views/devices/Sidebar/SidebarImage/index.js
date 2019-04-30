@@ -11,6 +11,7 @@ import DeviceActions from 'Actions/DeviceActions';
 import toaster from 'Comms/util/materialize';
 import { withNamespaces } from 'react-i18next';
 import ability from 'Components/permissions/ability';
+import { GenericModal, RecoveryPasswordModal } from 'Components/Modal';
 import FirmwareWebSocket from './FirmwareWebSocket';
 
 const StateFirmwareDevice = (props) => {
@@ -67,7 +68,9 @@ StateFirmwareDevice.propTypes = {
 };
 
 function BtnActionImgFirmware(props) {
-    const { title, onClick, enable } = props;
+    const {
+        title, label, onClick, enable,
+    } = props;
     return (
         <button
             type="button"
@@ -76,13 +79,14 @@ function BtnActionImgFirmware(props) {
             onKeyPress={onClick}
             className={`new-btn-flat style-2 primary ${enable ? 'btn-enable' : 'btn-disable'}`}
         >
-            {title}
+            {label}
         </button>
     );
 }
 
 BtnActionImgFirmware.propTypes = {
     title: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
     onClick: PropTypes.func.isRequired,
     enable: PropTypes.bool.isRequired,
 };
@@ -100,38 +104,38 @@ const ImgToTransfer = (props) => {
     } = props;
 
     return (
-        <Fragment>
-            <div className="image-up">
-                <div className="header2">
-                    {t('firmware:alerts.image_to_transfer')}
-                </div>
-                <div className="cid_select">
-                    <MaterialSelect
-                        id="flr_images"
-                        name="images"
-                        label={t('firmware:labels.available')}
-                        value={currentImgId}
-                        onChange={onChange}
-                    >
-                        {options}
-                    </MaterialSelect>
-                </div>
-                <div className="btn-action">
-                    <BtnActionImgFirmware
-                        title={t('firmware:labels.transfer')}
-                        onClick={onClickBtnTransfer}
-                        enable={enableBtnTransfer}
-                    />
-                </div>
-                <div className="btn-action">
-                    <BtnActionImgFirmware
-                        title={t('firmware:labels.apply')}
-                        onClick={onClickBtnApply}
-                        enable={enableBtnApply}
-                    />
-                </div>
+        <div className="image-up">
+            <div className="header2">
+                {t('firmware:alerts.image_to_transfer')}
             </div>
-        </Fragment>
+            <div className="cid_select">
+                <MaterialSelect
+                    id="flr_images"
+                    name="images"
+                    label={t('firmware:labels.available')}
+                    value={currentImgId}
+                    onChange={onChange}
+                >
+                    {options}
+                </MaterialSelect>
+            </div>
+            <div className="btn-action">
+                <BtnActionImgFirmware
+                    title={t('firmware:labels.transfer_alt')}
+                    onClick={onClickBtnTransfer}
+                    enable={enableBtnTransfer}
+                    label={t('firmware:labels.transfer')}
+                />
+            </div>
+            <div className="btn-action">
+                <BtnActionImgFirmware
+                    title={t('firmware:labels.apply_alt')}
+                    onClick={onClickBtnApply}
+                    enable={enableBtnApply}
+                    label={t('firmware:labels.apply')}
+                />
+            </div>
+        </div>
     );
 };
 
@@ -153,6 +157,7 @@ class SidebarImage extends Component {
         this.state = {
             loaded: false,
             showFirmwareImage: false,
+            showApplyModal: false,
             attrs: {
                 fwUpdateState: t('firmware:no_data'),
                 fwUpdateResult: t('firmware:no_data'),
@@ -169,6 +174,8 @@ class SidebarImage extends Component {
         this.onChangeImage = this.onChangeImage.bind(this);
         this.getAttrLabel = this.getAttrLabel.bind(this);
         this.receivedImageInformation = this.receivedImageInformation.bind(this);
+        this.showModalApply = this.showModalApply.bind(this);
+        this.handleModalApply = this.handleModalApply.bind(this);
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -219,6 +226,20 @@ class SidebarImage extends Component {
         return relatedLabel;
     }
 
+    getLabelImageFromId(imageId) {
+        let label = null;
+        const { is: { images } } = this.props;
+        if (Object.keys(images).length) {
+            Object.values(images)
+                .forEach((el) => {
+                    if (el.id === imageId) {
+                        label = el.fw_version;
+                    }
+                });
+        }
+        return label;
+    }
+
     receivedImageInformation(data) {
         const { attrs: attrsReceive } = data;
         const { attrs } = this.state;
@@ -228,20 +249,17 @@ class SidebarImage extends Component {
         if (state) {
             attrs.fwUpdateState = `${t(`firmware:state.${state}`)} (${state})`;
             attrs.fwUpdateStateCode = state;
-            console.log('receivedImageInformation state', state);
         }
 
         const result = attrsReceive[this.getAttrLabel('dojot:firmware_update:update_result')];
         if (result) {
             attrs.fwUpdateResult = `${t(`firmware:result.${result}`)} (${result})`;
             attrs.fwUpdateResultCode = result;
-            console.log('receivedImageInformation result', result);
         }
 
         const version = attrsReceive[this.getAttrLabel('dojot:firmware_update:version')];
         if (version) {
             attrs.fwUpdateVersion = version;
-            console.log('receivedImageInformation version', version);
         }
         this.setState({
             attrs,
@@ -260,7 +278,7 @@ class SidebarImage extends Component {
         const dataToBeSent = { attrs: {} };
         dataToBeSent.attrs[uploadImageAlias] = images[currentImageId].fw_version;
         DeviceActions.triggerActuator(deviceId, dataToBeSent, () => {
-            toaster.success(t('firmware:alerts.image_transferred'));
+            toaster.warning(t('firmware:alerts.image_transferred'));
         });
     }
 
@@ -272,8 +290,10 @@ class SidebarImage extends Component {
         // value used to notify device to apply its image
 
         DeviceActions.triggerActuator(deviceId, dataToBeSent, () => {
-            toaster.success(t('firmware:alerts.image_applied'));
+            toaster.warning(t('firmware:alerts.image_applied'));
         });
+
+        this.setState({ showApplyModal: false });
     }
 
     toogleSidebarFirmImage() {
@@ -284,8 +304,9 @@ class SidebarImage extends Component {
     }
 
     createImageOptions() {
+        const { t } = this.props;
         const items = [];
-        items.push(<option key="selectedImage" value="0">Select an image</option>);
+        items.push(<option key="selectedImage" value="0">{t('firmware:select_image')}</option>);
         const { is: { images } } = this.props;
         if (Object.keys(images).length) {
             Object.values(images)
@@ -297,13 +318,21 @@ class SidebarImage extends Component {
     }
 
 
+    showModalApply() {
+        this.setState({ showApplyModal: true });
+    }
+
+    handleModalApply(status) {
+        this.setState({ showApplyModal: status });
+    }
+
     render() {
         const {
             t, toogleSidebarImages, showSidebarImage, is, deviceId,
         } = this.props;
         const { images } = is;
         const {
-            attrs, showFirmwareImage, templateIdAllowedImage, currentImageId,
+            attrs, showFirmwareImage, templateIdAllowedImage, currentImageId, showApplyModal,
         } = this.state;
         const listAvailableOptionsImages = this.createImageOptions();
         const fwImageModifier = ability.can('modifier', 'fw-image');
@@ -322,23 +351,33 @@ class SidebarImage extends Component {
             enableBtnApply = true;
         }
 
-        /*        console.log('props state', this.props, this.state);
-        console.log('enableBtnApply enableBtnTransfer', enableBtnApply, enableBtnTransfer); */
+        console.log('props state', this.props, this.state);
 
         return (
             <Fragment>
+                {showApplyModal ? (
+                    <GenericModal
+                        title={t('firmware:labels.title_modal_apply')}
+                        first_message={t('firmware:labels.qst_apply_image', {
+                            image: this.getLabelImageFromId(currentImageId),
+                        })}
+                        openModal={this.handleModalApply}
+                        click={this.callApplyImage}
+                        op_type={{ label: t('firmware:labels.btn_apply') }}
+                    />
+                ) : <div />}
                 <FirmwareWebSocket onChange={this.receivedImageInformation} deviceId={deviceId} />
                 <Slide right when={showSidebarImage} duration={300}>
                     {showSidebarImage
                         ? (
                             <div className="sidebar-firmware">
                                 <div className="header">
-                                    <div className="title">ATUALIZAÇÃO DE FIRMWARE</div>
+                                    <div className="title">{t('firmware:update_firmware')}</div>
                                     <div className="icon">
                                         <img src="images/firmware-red.png" alt="firmware-icon" />
                                     </div>
                                     <div className="header-path">
-                                        {'dispositivo > ATUALIZAÇÃO DE FIRMWARE'}
+                                        {`${t('devices:device')} > ${t('firmware:update_firmware')}`}
                                     </div>
                                 </div>
 
@@ -350,7 +389,7 @@ class SidebarImage extends Component {
                                                 onChange={e => this.onChangeImage(e)}
                                                 options={listAvailableOptionsImages}
                                                 onClickBtnTransfer={this.callUploadImage}
-                                                onClickBtnApply={this.callApplyImage}
+                                                onClickBtnApply={this.showModalApply}
                                                 enableBtnTransfer={enableBtnTransfer}
                                                 enableBtnApply={enableBtnApply}
                                                 t={t}
@@ -365,11 +404,11 @@ class SidebarImage extends Component {
 
                                     </div>
                                     <div className="body-actions">
-                                        {/* <div className="body-actions--divider" /> */}
                                         <SidebarButton
                                             onClick={() => this.toogleSidebarFirmImage()}
                                             icon="firmware"
-                                            text={t('firmware:btn')}
+                                            text={t('firmware:btn_manage_images')}
+                                            title={t('firmware:btn_manage_images_alt')}
                                         />
                                     </div>
                                 </div>

@@ -2,7 +2,10 @@
     "header": "Gerenciar Imagens",
     "remove_image_header": "Remover imagem",
     "title": "Firmware",
+    "update_firmware": "Atualização de Firmware",
     "btn": "Gerenciar Imagens",
+    "btn_manage_images": "Gerenciar Imagens do modelo",
+    "btn_manage_images_alt": "Gerenciar imagens associadas ao modelo de atualização de firmware",
     "no_data": "Dado não recebido",
     "title_info": "Informações atuais do dispostivo:",
     "alerts": {
@@ -13,17 +16,23 @@
         "image_updated": "Imagem atualizada.",
         "image_removed": "Image removida.",
         "file_added": "Arquivo adicionado.",
-        "image_to_transfer": "Atualizar imagem de firmware do dispositivo",
-        "image_transferred": "Requisição para transferir a imagem foi aceita.",
-        "image_applied": "Requisição para aplicar a imagem foi aceita.",
+        "image_to_transfer": "Atualizar firmware do dispositivo",
+        "image_transferred": "Requisição para transferir a imagem foi enviada.",
+        "image_applied": "Requisição para aplicar a imagem foi enviada.",
         "qst_remove": "Você está prestes a remover uma imagem. Você tem certeza?"
     },
     "labels": {
         "remove": "Remover Imagem",
         "rem": "Remover",
-        "transfer": "Enviar",
-        "apply": "Aplicar",
-        "available": "Imagens disponíveis"
+        "transfer": "Enviar imagem ao dispositivo",
+        "transfer_alt": "Transferir imagem ao dispositivo para atualização de firmware",
+        "apply": "Aplicar atualização da image",
+        "apply_alt": "Efetivar atualização da firmware a partir da imagem transferida para o dispositivo",
+        "available": "Imagens disponíveis para transferência",
+        "select_image": "Selecione uma imagem",
+        "title_modal_apply": "Aplicar atualização",
+        "qst_apply_image": "Deseja atualizar a firmware do dispositivo aplicando a imagem {{image}}?",
+        "btn_apply": "Aplicar"
     },
     "states": {
         "enabled": "Firmware ativado",

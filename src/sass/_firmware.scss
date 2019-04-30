@@ -41,20 +41,21 @@
         box-sizing: border-box;
         width: 100%;
 
-        .clr-gray {
-            border-color: #1c2733;
-            color: #1c2733;
+        .btn-enable {
+        }
+
+        .btn-disable {
+            opacity: 0.2;
+            pointer-events: none;
         }
 
         .new-btn-flat.style-2 {
             width: 100%;
         }
 
-
         .cid_upload_button {
             display: inline-block;
         }
-
 
         .cid_select {
             width: 100%;
@@ -63,6 +64,8 @@
         button {
             margin-top: 15px;
             width: 100%;
+            border-color: #1c2733;
+            color: #1c2733;
         }
 
         .new-btn-flat {
@@ -76,7 +79,7 @@
         box-sizing: border-box;
         width: 100%;
         padding: 5px 10px;
-        margin-top: 120px;
+        margin-top: 150px;
 
         .title-info {
             font-size: 15px;
@@ -143,6 +146,12 @@
         .body-form {
             padding-bottom: 50px;
             height: auto;
+        }
+    }
+
+    .footer {
+        .new-btn-flat.style-2.secondary {
+            width: 100%;
         }
     }
 }

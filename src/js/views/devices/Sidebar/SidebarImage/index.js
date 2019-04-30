@@ -66,9 +66,37 @@ StateFirmwareDevice.propTypes = {
     t: PropTypes.func.isRequired,
 };
 
+function BtnActionImgFirmware(props) {
+    const { title, onClick, enable } = props;
+    return (
+        <button
+            type="button"
+            title={title}
+            onClick={onClick}
+            onKeyPress={onClick}
+            className={`new-btn-flat style-2 primary ${enable ? 'btn-enable' : 'btn-disable'}`}
+        >
+            {title}
+        </button>
+    );
+}
+
+BtnActionImgFirmware.propTypes = {
+    title: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired,
+    enable: PropTypes.bool.isRequired,
+};
+
 const ImgToTransfer = (props) => {
     const {
-        currentImgId, onChange, options, onClickBtnTransfer, onClickBtnApply, t,
+        currentImgId,
+        onChange,
+        options,
+        onClickBtnTransfer,
+        onClickBtnApply,
+        t,
+        enableBtnTransfer,
+        enableBtnApply,
     } = props;
 
     return (
@@ -88,51 +116,19 @@ const ImgToTransfer = (props) => {
                         {options}
                     </MaterialSelect>
                 </div>
-                {/*                <div className="cid_upload_button">*/}
-                {/*                <div
-                    className="square-button"
-                    onKeyPress={onKeyPress}
-                    tabIndex="0"
-                    role="button"
-                    onClick={onKeyPress}
-                >
-                    <i className="fa fa-download fa-2x" />
-                    {t('firmware:labels.transfer')}
-                </div> */}
-                {/*                <DojotBtnClassic
-                    color="gray"
-                    label={t('firmware:labels.transfer')}
-                    type="primary"
-                    onClick={e => this.callApplyImage(e)}
-                />*/}
                 <div className="btn-action">
-                    <button
-                        type="button"
+                    <BtnActionImgFirmware
                         title={t('firmware:labels.transfer')}
                         onClick={onClickBtnTransfer}
-                        onKeyPress={onClickBtnTransfer}
-                        className="new-btn-flat style-2 primary clr-gray"
-                    >
-                        {t('firmware:labels.transfer')}
-                    </button>
-
-                    {/*                    <DojotBtnClassic
-                        color="red"
-                        label={t('firmware:labels.apply')}
-                        type="primary"
-                        onClick={e => this.callApplyImage(e)}
-                    />*/}
+                        enable={enableBtnTransfer}
+                    />
                 </div>
                 <div className="btn-action">
-                    <button
-                        type="button"
+                    <BtnActionImgFirmware
                         title={t('firmware:labels.apply')}
                         onClick={onClickBtnApply}
-                        onKeyPress={onClickBtnApply}
-                        className="new-btn-flat style-2 primary clr-gray"
-                    >
-                        {t('firmware:labels.apply')}
-                    </button>
+                        enable={enableBtnApply}
+                    />
                 </div>
             </div>
         </Fragment>
@@ -146,6 +142,8 @@ ImgToTransfer.propTypes = {
     currentImgId: PropTypes.string.isRequired,
     t: PropTypes.func.isRequired,
     onClickBtnApply: PropTypes.func.isRequired,
+    enableBtnApply: PropTypes.bool.isRequired,
+    enableBtnTransfer: PropTypes.bool.isRequired,
 };
 
 class SidebarImage extends Component {
@@ -199,7 +197,7 @@ class SidebarImage extends Component {
     }
 
     onChangeImage(e) {
-        const newImageId = e.target.currentImgId;
+        const newImageId = e.target.value;
         this.setState({
             currentImageId: newImageId,
         });
@@ -230,17 +228,20 @@ class SidebarImage extends Component {
         if (state) {
             attrs.fwUpdateState = `${t(`firmware:state.${state}`)} (${state})`;
             attrs.fwUpdateStateCode = state;
+            console.log('receivedImageInformation state', state);
         }
 
         const result = attrsReceive[this.getAttrLabel('dojot:firmware_update:update_result')];
         if (result) {
             attrs.fwUpdateResult = `${t(`firmware:result.${result}`)} (${result})`;
             attrs.fwUpdateResultCode = result;
+            console.log('receivedImageInformation result', result);
         }
 
         const version = attrsReceive[this.getAttrLabel('dojot:firmware_update:version')];
         if (version) {
             attrs.fwUpdateVersion = version;
+            console.log('receivedImageInformation version', version);
         }
         this.setState({
             attrs,
@@ -304,10 +305,10 @@ class SidebarImage extends Component {
         const {
             attrs, showFirmwareImage, templateIdAllowedImage, currentImageId,
         } = this.state;
-        const listOfOptions = this.createImageOptions();
+        const listAvailableOptionsImages = this.createImageOptions();
         const fwImageModifier = ability.can('modifier', 'fw-image');
 
-        const { fwUpdateState: state, fwUpdateUpdateResult: result } = attrs;
+        const { fwUpdateStateCode: state, fwUpdateUpdateResultCode: result } = attrs;
 
         // enable Transfer if state is 0 or 2  and img was selected
         let enableBtnTransfer = false;
@@ -316,15 +317,17 @@ class SidebarImage extends Component {
         }
 
         // enable apply img if state=2 and result=0 ou 8
-        let enableBtnApply = false;
-        if (state === 2 && (result === 0 || result === 8)) {
+        let enableBtnApply = false; // maybe dont make sense result === undefined
+        if (state === 2 && (result === 0 || result === 8 || result === undefined)) {
             enableBtnApply = true;
         }
 
+        /*        console.log('props state', this.props, this.state);
+        console.log('enableBtnApply enableBtnTransfer', enableBtnApply, enableBtnTransfer); */
 
         return (
             <Fragment>
-                <FirmwareWebSocket onChange={this.receivedImageInformation} deviceId={deviceId}/>
+                <FirmwareWebSocket onChange={this.receivedImageInformation} deviceId={deviceId} />
                 <Slide right when={showSidebarImage} duration={300}>
                     {showSidebarImage
                         ? (
@@ -332,7 +335,7 @@ class SidebarImage extends Component {
                                 <div className="header">
                                     <div className="title">ATUALIZAÇÃO DE FIRMWARE</div>
                                     <div className="icon">
-                                        <img src="images/firmware-red.png" alt="firmware-icon"/>
+                                        <img src="images/firmware-red.png" alt="firmware-icon" />
                                     </div>
                                     <div className="header-path">
                                         {'dispositivo > ATUALIZAÇÃO DE FIRMWARE'}
@@ -345,7 +348,7 @@ class SidebarImage extends Component {
                                             <ImgToTransfer
                                                 currentImgId={this.currentImageId}
                                                 onChange={e => this.onChangeImage(e)}
-                                                options={listOfOptions}
+                                                options={listAvailableOptionsImages}
                                                 onClickBtnTransfer={this.callUploadImage}
                                                 onClickBtnApply={this.callApplyImage}
                                                 enableBtnTransfer={enableBtnTransfer}
@@ -381,7 +384,7 @@ class SidebarImage extends Component {
                                 </div>
                             </div>
                         )
-                        : <div/>
+                        : <div />
                     }
                 </Slide>
                 {fwImageModifier

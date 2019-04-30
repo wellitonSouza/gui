@@ -14,7 +14,7 @@
     "only_alpha_attr_type": "Por favor use apenas letras (a-z), números (0-9) e sublinhados (_) em Tipo de Atributo",
     "qst_remove": "Você está prestes a remover este {{label}}. Você tem certeza?",
     "select_to_add": "Selecione uma opção abaixo para adicionar um metadado",
-    "leave_empty": "Você não pode deixar o tipo vazio",
+    "leave_empty": "Você não pode deixar o tipo vazio"
   },
   "header": {
     "new": {

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Slide from 'react-reveal/Slide';
 import { DojotBtnClassic } from 'Components/DojotButton';
 import ImageActions from 'Actions/ImageActions';
+import HistoryActions from 'Actions/HistoryActions';
 import MaterialSelect from 'Components/MaterialSelect';
 import SidebarFirmImages
     from 'Views/templates/TemplateList/Sidebar/SidebarFirmware/SidebarFirmImages';
@@ -11,21 +12,22 @@ import DeviceActions from 'Actions/DeviceActions';
 import toaster from 'Comms/util/materialize';
 import { withNamespaces } from 'react-i18next';
 import ability from 'Components/permissions/ability';
-import { GenericModal, RecoveryPasswordModal } from 'Components/Modal';
+import { GenericModal } from 'Components/Modal';
 import FirmwareWebSocket from './FirmwareWebSocket';
+
+const FW_RESULT_META_LABEL = 'dojot:firmware_update:update_result';
+const FW_VERSION_META_LABEL = 'dojot:firmware_update:version';
+const FW_STATE_META_LABEL = 'dojot:firmware_update:state';
+const FW_TRANSFER_META_LABEL = 'dojot:firmware_update:desired_version';
+const FW_APPLY_META_LABEL = 'dojot:firmware_update:update';
+
 
 const StateFirmwareDevice = (props) => {
     const {
-        version, state, result, t,
+        version, state, result, transferred, t,
     } = props;
     return (
         <div className="info firmware-enabled">
-            <div className="icon">
-                <img
-                    src="images/icons/firmware-big-gray.png"
-                    alt="device-icon"
-                />
-            </div>
             <div className="title-info">
                 {t('firmware:title_info')}
             </div>
@@ -36,7 +38,7 @@ const StateFirmwareDevice = (props) => {
                     </div>
 
                     <div className="value">
-                        {version}
+                        {version || t('firmware:no_data')}
                     </div>
                 </div>
                 <div className="info-group">
@@ -44,7 +46,7 @@ const StateFirmwareDevice = (props) => {
                         {t('firmware:default_attrs.state')}
                     </div>
                     <div className="value">
-                        {state}
+                        {state !== undefined ? `${t(`firmware:state.${state}`)} (${state})` : t('firmware:no_data')}
                     </div>
                 </div>
                 <div className="info-group">
@@ -52,7 +54,17 @@ const StateFirmwareDevice = (props) => {
                         {t('firmware:default_attrs.update_result')}
                     </div>
                     <div className="value">
-                        {result}
+                        {result !== undefined ? `${t(`firmware:result.${result}`)} (${result})` : t('firmware:no_data')}
+                    </div>
+                </div>
+                <div className="info-group">
+                    <div className="label">
+                        {t('firmware:default_attrs.update_result')}
+                        {' '}
+Trans
+                    </div>
+                    <div className="value">
+                        {transferred !== undefined ? transferred : t('firmware:no_data')}
                     </div>
                 </div>
             </div>
@@ -153,20 +165,19 @@ ImgToTransfer.propTypes = {
 class SidebarImage extends Component {
     constructor(props) {
         super(props);
-        const { t } = props;
         this.state = {
             loaded: false,
             showFirmwareImage: false,
             showApplyModal: false,
             attrs: {
-                fwUpdateState: t('firmware:no_data'),
-                fwUpdateResult: t('firmware:no_data'),
-                fwUpdateVersion: t('firmware:no_data'),
-                fwUpdateStateCode: 0,
-                fwUpdateResultCode: 0,
+                fwUpdateState: undefined,
+                fwUpdateResult: undefined,
+                fwUpdateVersion: undefined,
+                fwUpdateTransferred: undefined,
             },
             currentImageId: '0',
         };
+
         this.callUploadImage = this.callUploadImage.bind(this);
         this.callApplyImage = this.callApplyImage.bind(this);
         this.toogleSidebarFirmImage = this.toogleSidebarFirmImage.bind(this);
@@ -186,9 +197,26 @@ class SidebarImage extends Component {
                 loaded: false,
             };
         }
+
+        if (state.attrs.fwUpdateVersion === undefined
+            || state.attrs.fwUpdateResult === undefined
+            || state.attrs.fwUpdateState === undefined
+            || state.attrs.fwUpdateTransferred === undefined) {
+            const { is: { history } } = props;
+            return {
+                ...state,
+                attrs: {
+                    ...state.attrs,
+                    fwUpdateVersion: history.version,
+                    fwUpdateState: history.state,
+                    fwUpdateResult: history.result,
+                    fwUpdateTransferred: history.transfer,
+                },
+            };
+        }
+
         return null;
     }
-
 
     componentDidUpdate() {
         const { loaded, templateIdAllowedImage } = this.state;
@@ -197,6 +225,17 @@ class SidebarImage extends Component {
             const templateId = templateIdAllowedImage;
             ImageActions.fetchImages.defer(templateId);
             DeviceActions.fetchSingle.defer(deviceId);
+
+            const stateLbAttr = this.getAttrLabel(FW_STATE_META_LABEL);
+            const resultLbAttr = this.getAttrLabel(FW_RESULT_META_LABEL);
+            const versionLbAttr = this.getAttrLabel(FW_VERSION_META_LABEL);
+            const transLbAttr = this.getAttrLabel(FW_TRANSFER_META_LABEL);
+
+            HistoryActions.fetchLastAttrDataByDeviceIDAndAttrLabel.defer(deviceId, stateLbAttr, 'state');
+            HistoryActions.fetchLastAttrDataByDeviceIDAndAttrLabel.defer(deviceId, resultLbAttr, 'result');
+            HistoryActions.fetchLastAttrDataByDeviceIDAndAttrLabel.defer(deviceId, versionLbAttr, 'version');
+            HistoryActions.fetchLastAttrDataByDeviceIDAndAttrLabel.defer(deviceId, transLbAttr, 'transfer');
+
             this.setState({
                 loaded: true,
             });
@@ -243,23 +282,24 @@ class SidebarImage extends Component {
     receivedImageInformation(data) {
         const { attrs: attrsReceive } = data;
         const { attrs } = this.state;
-        const { t } = this.props;
 
-        const state = attrsReceive[this.getAttrLabel('dojot:firmware_update:state')];
+
+        const state = attrsReceive[this.getAttrLabel(FW_STATE_META_LABEL)];
+        console.log('receivedImageInformation', state);
         if (state) {
-            attrs.fwUpdateState = `${t(`firmware:state.${state}`)} (${state})`;
-            attrs.fwUpdateStateCode = state;
+            attrs.fwUpdateState = state;
         }
-
-        const result = attrsReceive[this.getAttrLabel('dojot:firmware_update:update_result')];
+        const result = attrsReceive[this.getAttrLabel(FW_RESULT_META_LABEL)];
         if (result) {
-            attrs.fwUpdateResult = `${t(`firmware:result.${result}`)} (${result})`;
-            attrs.fwUpdateResultCode = result;
+            attrs.fwUpdateResult = result;
         }
-
-        const version = attrsReceive[this.getAttrLabel('dojot:firmware_update:version')];
+        const version = attrsReceive[this.getAttrLabel(FW_VERSION_META_LABEL)];
         if (version) {
             attrs.fwUpdateVersion = version;
+        }
+        const transferred = attrsReceive[this.getAttrLabel(FW_TRANSFER_META_LABEL)];
+        if (version) {
+            attrs.fwUpdateTransferred = transferred;
         }
         this.setState({
             attrs,
@@ -274,7 +314,7 @@ class SidebarImage extends Component {
             return;
         }
 
-        const uploadImageAlias = this.getAttrLabel('dojot:firmware_update:desired_version');
+        const uploadImageAlias = this.getAttrLabel(FW_TRANSFER_META_LABEL);
         const dataToBeSent = { attrs: {} };
         dataToBeSent.attrs[uploadImageAlias] = images[currentImageId].fw_version;
         DeviceActions.triggerActuator(deviceId, dataToBeSent, () => {
@@ -284,7 +324,7 @@ class SidebarImage extends Component {
 
     callApplyImage() {
         const { t, deviceId } = this.props;
-        const applyAlias = this.getAttrLabel('dojot:firmware_update:update');
+        const applyAlias = this.getAttrLabel(FW_APPLY_META_LABEL);
         const dataToBeSent = { attrs: {} };
         dataToBeSent.attrs[applyAlias] = '1';
         // value used to notify device to apply its image
@@ -337,7 +377,7 @@ class SidebarImage extends Component {
         const listAvailableOptionsImages = this.createImageOptions();
         const fwImageModifier = ability.can('modifier', 'fw-image');
 
-        const { fwUpdateStateCode: state, fwUpdateUpdateResultCode: result } = attrs;
+        const { fwUpdateState: state, fwUpdateResult: result, fwUpdateTransferred: transferredVersion } = attrs;
 
         // enable Transfer if state is 0 or 2  and img was selected
         let enableBtnTransfer = false;
@@ -351,7 +391,7 @@ class SidebarImage extends Component {
             enableBtnApply = true;
         }
 
-        console.log('props state', this.props, this.state);
+        /* console.log('props state', this.props, this.state); */
 
         return (
             <Fragment>
@@ -359,7 +399,7 @@ class SidebarImage extends Component {
                     <GenericModal
                         title={t('firmware:labels.title_modal_apply')}
                         first_message={t('firmware:labels.qst_apply_image', {
-                            image: this.getLabelImageFromId(currentImageId),
+                            image: transferredVersion,
                         })}
                         openModal={this.handleModalApply}
                         click={this.callApplyImage}
@@ -398,6 +438,7 @@ class SidebarImage extends Component {
                                                 version={attrs.fwUpdateVersion}
                                                 result={attrs.fwUpdateResult}
                                                 state={attrs.fwUpdateState}
+                                                transferred={attrs.fwUpdateTransferred}
                                                 t={t}
                                             />
                                         </div>

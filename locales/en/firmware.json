@@ -15,18 +15,25 @@
         "image_created": "Image created.",
         "image_updated": "Image updated.",
         "image_removed": "Image removed.",
-        "file_added": "File added.",
+        "version_created": "Version created {{version}}.",
+        "version_updated": "Version updated.",
+        "version_removed": "Version removed.",
+        "version_required": "Image version required.",
+        "not_to_be_save": "There is no change to be saved",
+        "file_added": "Image file associated with version {{version}}.",
         "image_to_transfer": "Transfer image to device:",
         "apply_the_image": "Apply image {{image}} to device:",
         "image_transferred": "Request to transfer firmware image was sent.",
         "image_reset_header": "Enable transfer another image:",
         "image_reset": "Request to enable the sending of a new image.",
         "image_applied": "Request to apply firmware image was sent.",
-        "qst_remove": "You are about to remove an image. Are you sure?"
+        "qst_remove": "You are about to remove a version. Are you sure?",
+        "qst_remove_binary": "You are about to remove an image. Are you sure?"
     },
     "labels": {
         "remove": "Remove Image",
         "rem": "Remove",
+        "rem_bin": "Remove this image associated with the version",
         "transfer": "Transfer image to device",
         "transfer_alt": "Transfer image to device for firmware update",
         "apply": "Apply image update",
@@ -44,7 +51,7 @@
         "enabled": "Firmware enabled",
         "disabled": "Firmware disabled",
         "short_desc": "This option allows the template to handle images.",
-        "long_desc": "To confirm the firmware configuration, please update the following attributes:"
+        "long_desc": "Attributes used to manage firmware update information:"
     },
     "default_attrs": {
         "state": "State",
@@ -53,6 +60,14 @@
         "transferred": "Last transferred version",
         "apply_image": "Apply Image",
         "current_version": "Version"
+    },
+    "default_attrs_template": {
+        "state": "Device State",
+        "update_result": "Result of apply version",
+        "transferred": "Last transferred version",
+        "upload_image": "Sets which version to transfer",
+        "apply_image": "Trigger version update",
+        "current_version": "Current version of the image"
     },
     "image_list": {
         "version": "Image Version",

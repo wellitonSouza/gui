@@ -9,7 +9,7 @@ class ImageStore {
         this.error = null;
         this.loading = false;
         this.imageAllowed = false;
-        this.history = {};
+        this.history = [];
 
         this.bindListeners({
 

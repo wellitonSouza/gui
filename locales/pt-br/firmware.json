@@ -6,8 +6,8 @@
     "btn": "Gerenciar Imagens",
     "btn_manage_images": "Gerenciar Imagens do modelo",
     "btn_manage_images_alt": "Gerenciar imagens associadas ao modelo de atualização de firmware",
-    "no_data": "Dado não recebido",
-    "title_info": "Informações atuais do dispostivo:",
+    "no_data": "Indisponível",
+    "title_info": "Informações atuais do dispositivo:",
     "alerts": {
         "valid_image": "Selecione uma imagem válida.",
         "template_updated": "Modelo atualizado com sucesso!",
@@ -16,8 +16,11 @@
         "image_updated": "Imagem atualizada.",
         "image_removed": "Image removida.",
         "file_added": "Arquivo adicionado.",
-        "image_to_transfer": "Atualizar firmware do dispositivo",
+        "image_to_transfer": "Transferir imagem para o dispositivo:",
+        "apply_the_image": "Aplicar imagem {{image}} ao dispositivo:",
         "image_transferred": "Requisição para transferir a imagem foi enviada.",
+        "image_reset_header": "Habilitar o envio de outra imagem:",
+        "image_reset": "Requisição para habilitar o envio de uma nova imagem.",
         "image_applied": "Requisição para aplicar a imagem foi enviada.",
         "qst_remove": "Você está prestes a remover uma imagem. Você tem certeza?"
     },
@@ -26,13 +29,16 @@
         "rem": "Remover",
         "transfer": "Enviar imagem ao dispositivo",
         "transfer_alt": "Transferir imagem ao dispositivo para atualização de firmware",
-        "apply": "Aplicar atualização da image",
+        "apply": "Aplicar atualização da imagem",
         "apply_alt": "Efetivar atualização da firmware a partir da imagem transferida para o dispositivo",
+        "reset": "Definir dispositivo para 'Em espera'",
+        "reset_alt": "Reinicia o fluxo e possibilita o envio de uma nova imagem",
         "available": "Imagens disponíveis para transferência",
         "select_image": "Selecione uma imagem",
         "title_modal_apply": "Aplicar atualização",
         "qst_apply_image": "Deseja atualizar a firmware do dispositivo aplicando a imagem {{image}}?",
-        "btn_apply": "Aplicar"
+        "btn_apply": "Aplicar",
+        "close": "Fechar atualização de firmware"
     },
     "states": {
         "enabled": "Firmware ativado",
@@ -42,7 +48,8 @@
     },
     "default_attrs": {
         "state": "Estado",
-        "update_result": "Resultado da Atualização",
+        "update_result": "Resultado da atualização da imagem",
+        "transferred": "Última versão transferida",
         "upload_image": "Upload da Imagem",
         "apply_image": "Aplicar Imagem",
         "current_version": "Versão"

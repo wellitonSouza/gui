@@ -23,14 +23,18 @@
     margin-right: 28px !important;
 
     .header2 {
-        padding: 10px 0;
+        /* padding: 10px 0;*/
+       /* padding-top: 5px;
+        padding-bottom: 5px;*/
+        /*padding-top: 5px;*/
+        padding-bottom: 5px;
         font-family: Raleway, serif;
         font-style: normal;
         font-weight: 500;
         line-height: normal;
         font-size: 17px;
         color: #7C7C7C;
-        display: block;
+        /*display: block;*/
     }
 
 }
@@ -62,10 +66,13 @@
         }
 
         button {
-            margin-top: 15px;
             width: 100%;
             border-color: #1c2733;
             color: #1c2733;
+        }
+
+        .btn-action{
+            padding-bottom: 60px;
         }
 
         .new-btn-flat {
@@ -80,7 +87,9 @@
         box-sizing: border-box;
         width: 100%;
         padding: 5px 15px;
-        margin-top: 150px;
+        margin-top: 10px;
+        display: block;
+
 
         .title-info {
             font-size: 15px;

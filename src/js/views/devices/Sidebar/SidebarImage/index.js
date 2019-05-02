@@ -59,12 +59,10 @@ const StateFirmwareDevice = (props) => {
                 </div>
                 <div className="info-group">
                     <div className="label">
-                        {t('firmware:default_attrs.update_result')}
-                        {' '}
-Trans
+                        {t('firmware:default_attrs.transferred')}
                     </div>
                     <div className="value">
-                        {transferred !== undefined ? transferred : t('firmware:no_data')}
+                        {transferred !== undefined && transferred !== null && transferred.trim() !== '' ? transferred : t('firmware:no_data')}
                     </div>
                 </div>
             </div>
@@ -76,6 +74,7 @@ StateFirmwareDevice.propTypes = {
     result: PropTypes.string.isRequired,
     state: PropTypes.string.isRequired,
     version: PropTypes.string.isRequired,
+    transferred: PropTypes.string.isRequired,
     t: PropTypes.func.isRequired,
 };
 
@@ -110,9 +109,12 @@ const ImgToTransfer = (props) => {
         options,
         onClickBtnTransfer,
         onClickBtnApply,
+        onClickBtnReset,
         t,
         enableBtnTransfer,
         enableBtnApply,
+        enableBtnReset,
+        transferredVersion,
     } = props;
 
     return (
@@ -139,12 +141,26 @@ const ImgToTransfer = (props) => {
                     label={t('firmware:labels.transfer')}
                 />
             </div>
+            <div className="header2">
+                {t('firmware:alerts.apply_the_image', { image: transferredVersion })}
+            </div>
             <div className="btn-action">
                 <BtnActionImgFirmware
                     title={t('firmware:labels.apply_alt')}
                     onClick={onClickBtnApply}
                     enable={enableBtnApply}
                     label={t('firmware:labels.apply')}
+                />
+            </div>
+            <div className="header2">
+                {t('firmware:alerts.image_reset_header')}
+            </div>
+            <div className="btn-action">
+                <BtnActionImgFirmware
+                    title={t('firmware:labels.reset_alt')}
+                    onClick={onClickBtnReset}
+                    enable={enableBtnReset}
+                    label={t('firmware:labels.reset')}
                 />
             </div>
         </div>
@@ -158,8 +174,11 @@ ImgToTransfer.propTypes = {
     currentImgId: PropTypes.string.isRequired,
     t: PropTypes.func.isRequired,
     onClickBtnApply: PropTypes.func.isRequired,
+    onClickBtnReset: PropTypes.func.isRequired,
     enableBtnApply: PropTypes.bool.isRequired,
     enableBtnTransfer: PropTypes.bool.isRequired,
+    enableBtnReset: PropTypes.bool.isRequired,
+    transferredVersion: PropTypes.string.isRequired,
 };
 
 class SidebarImage extends Component {
@@ -187,6 +206,7 @@ class SidebarImage extends Component {
         this.receivedImageInformation = this.receivedImageInformation.bind(this);
         this.showModalApply = this.showModalApply.bind(this);
         this.handleModalApply = this.handleModalApply.bind(this);
+        this.callResetMachine = this.callResetMachine.bind(this);
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -222,8 +242,7 @@ class SidebarImage extends Component {
         const { loaded, templateIdAllowedImage } = this.state;
         if (!loaded && templateIdAllowedImage !== '') {
             const { deviceId } = this.props;
-            const templateId = templateIdAllowedImage;
-            ImageActions.fetchImages.defer(templateId);
+            ImageActions.fetchImages.defer(templateIdAllowedImage);
             DeviceActions.fetchSingle.defer(deviceId);
 
             const stateLbAttr = this.getAttrLabel(FW_STATE_META_LABEL);
@@ -265,27 +284,11 @@ class SidebarImage extends Component {
         return relatedLabel;
     }
 
-    getLabelImageFromId(imageId) {
-        let label = null;
-        const { is: { images } } = this.props;
-        if (Object.keys(images).length) {
-            Object.values(images)
-                .forEach((el) => {
-                    if (el.id === imageId) {
-                        label = el.fw_version;
-                    }
-                });
-        }
-        return label;
-    }
-
     receivedImageInformation(data) {
         const { attrs: attrsReceive } = data;
         const { attrs } = this.state;
 
-
         const state = attrsReceive[this.getAttrLabel(FW_STATE_META_LABEL)];
-        console.log('receivedImageInformation', state);
         if (state) {
             attrs.fwUpdateState = state;
         }
@@ -298,7 +301,7 @@ class SidebarImage extends Component {
             attrs.fwUpdateVersion = version;
         }
         const transferred = attrsReceive[this.getAttrLabel(FW_TRANSFER_META_LABEL)];
-        if (version) {
+        if (transferred) {
             attrs.fwUpdateTransferred = transferred;
         }
         this.setState({
@@ -322,13 +325,23 @@ class SidebarImage extends Component {
         });
     }
 
+    callResetMachine() {
+        const { t, deviceId } = this.props;
+        const uploadImageAlias = this.getAttrLabel(FW_TRANSFER_META_LABEL);
+        const dataToBeSent = { attrs: {} };
+        dataToBeSent.attrs[uploadImageAlias] = '';
+
+        DeviceActions.triggerActuator(deviceId, dataToBeSent, () => {
+            toaster.warning(t('firmware:alerts.image_reset'));
+        });
+    }
+
     callApplyImage() {
         const { t, deviceId } = this.props;
         const applyAlias = this.getAttrLabel(FW_APPLY_META_LABEL);
         const dataToBeSent = { attrs: {} };
         dataToBeSent.attrs[applyAlias] = '1';
         // value used to notify device to apply its image
-
         DeviceActions.triggerActuator(deviceId, dataToBeSent, () => {
             toaster.warning(t('firmware:alerts.image_applied'));
         });
@@ -346,7 +359,14 @@ class SidebarImage extends Component {
     createImageOptions() {
         const { t } = this.props;
         const items = [];
-        items.push(<option key="selectedImage" value="0">{t('firmware:select_image')}</option>);
+        items.push(
+            <option
+                key="selectedImage"
+                value="0"
+            >
+                {t('firmware:labels.select_image')}
+            </option>,
+        );
         const { is: { images } } = this.props;
         if (Object.keys(images).length) {
             Object.values(images)
@@ -377,7 +397,11 @@ class SidebarImage extends Component {
         const listAvailableOptionsImages = this.createImageOptions();
         const fwImageModifier = ability.can('modifier', 'fw-image');
 
-        const { fwUpdateState: state, fwUpdateResult: result, fwUpdateTransferred: transferredVersion } = attrs;
+        const {
+            fwUpdateState: state,
+            fwUpdateResult: result,
+            fwUpdateTransferred: transferredVersion,
+        } = attrs;
 
         // enable Transfer if state is 0 or 2  and img was selected
         let enableBtnTransfer = false;
@@ -386,12 +410,16 @@ class SidebarImage extends Component {
         }
 
         // enable apply img if state=2 and result=0 ou 8
-        let enableBtnApply = false; // maybe dont make sense result === undefined
-        if (state === 2 && (result === 0 || result === 8 || result === undefined)) {
+        let enableBtnApply = false;
+        if (state === 2 && (result === 0 || result === 8)) {
             enableBtnApply = true;
         }
 
-        /* console.log('props state', this.props, this.state); */
+        // enable reset cycle if state=2
+        let enableBtnReset = false;
+        if (state === 2) {
+            enableBtnReset = true;
+        }
 
         return (
             <Fragment>
@@ -430,9 +458,12 @@ class SidebarImage extends Component {
                                                 options={listAvailableOptionsImages}
                                                 onClickBtnTransfer={this.callUploadImage}
                                                 onClickBtnApply={this.showModalApply}
+                                                onClickBtnReset={this.callResetMachine}
                                                 enableBtnTransfer={enableBtnTransfer}
                                                 enableBtnApply={enableBtnApply}
+                                                enableBtnReset={enableBtnReset}
                                                 t={t}
+                                                transferredVersion={transferredVersion}
                                             />
                                             <StateFirmwareDevice
                                                 version={attrs.fwUpdateVersion}
@@ -456,7 +487,7 @@ class SidebarImage extends Component {
                                 <div className="footer">
                                     <Fragment>
                                         <DojotBtnClassic
-                                            label="Fechar atualização de firmware"
+                                            label={t('firmware:labels.close')}
                                             type="secondary"
                                             onClick={toogleSidebarImages}
                                         />

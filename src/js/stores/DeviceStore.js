@@ -1,8 +1,6 @@
 /* eslint-disable */
 const alt = require('../alt');
 const DeviceActions = require('../actions/DeviceActions');
-/*import HistoryManager
-import notificationsManager from '../actions/DeviceActions';*/
 
 class DeviceStore {
     constructor() {

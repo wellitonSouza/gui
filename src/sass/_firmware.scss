@@ -1,7 +1,7 @@
 .dropzone {
     width: 100%;
     cursor: pointer;
-    font-family: 'Raleway';
+    font-family: 'Raleway', serif;
 
     & > div {
         width: 100% !important;
@@ -17,16 +17,11 @@
     }
 }
 
-
 .body-form-fw {
     margin-left: 28px !important;
     margin-right: 28px !important;
 
     .header2 {
-        /* padding: 10px 0;*/
-       /* padding-top: 5px;
-        padding-bottom: 5px;*/
-        /*padding-top: 5px;*/
         padding-bottom: 5px;
         font-family: Raleway, serif;
         font-style: normal;
@@ -34,7 +29,6 @@
         line-height: normal;
         font-size: 17px;
         color: #7C7C7C;
-        /*display: block;*/
     }
 
 }
@@ -44,9 +38,6 @@
     .image-up {
         box-sizing: border-box;
         width: 100%;
-
-        .btn-enable {
-        }
 
         .btn-disable {
             opacity: 0.2;
@@ -71,7 +62,7 @@
             color: #1c2733;
         }
 
-        .btn-action{
+        .btn-action {
             padding-bottom: 60px;
         }
 

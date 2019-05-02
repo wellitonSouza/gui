@@ -29,7 +29,7 @@ class DojotBtnLink extends Component {
     }
 }
 
-const DojotBtnClassic = ({ type = "secondary", color = 'none', title, onClick, label, to, id }) => {
+const DojotBtnClassic = ({ type = "secondary", color = 'none', title, onClick, label, to, id, moreClasses ='' }) => {
     let auxTitle = title;
     if (auxTitle === undefined)
         auxTitle = label;
@@ -41,7 +41,7 @@ const DojotBtnClassic = ({ type = "secondary", color = 'none', title, onClick, l
         );
     }
     return (
-        <button type="button" title={auxTitle} onClick={onClick} className={`new-btn-flat style-2 ${type} clr-${color}`} id={id}>
+        <button type="button" title={auxTitle} onClick={onClick} className={`new-btn-flat style-2 ${type} clr-${color} ${moreClasses}`} id={id}>
             {label}
         </button>
     );

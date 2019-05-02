@@ -83,15 +83,13 @@ function BtnActionImgFirmware(props) {
         title, label, onClick, enable,
     } = props;
     return (
-        <button
-            type="button"
+        <DojotBtnClassic
+            type="primary"
             title={title}
             onClick={onClick}
-            onKeyPress={onClick}
-            className={`new-btn-flat style-2 primary ${enable ? 'btn-enable' : 'btn-disable'}`}
-        >
-            {label}
-        </button>
+            label={label}
+            moreClasses={enable ? '' : 'btn-disable'}
+        />
     );
 }
 

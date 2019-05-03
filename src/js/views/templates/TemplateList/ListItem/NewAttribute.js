@@ -69,7 +69,7 @@ class NewAttribute extends Component {
     addAttribute(attribute) {
         const { t } = this.props;
 
-        let ret = util.isNameValid(attribute.label);
+        let ret = util.isLabelValid(attribute.label);
         if (!ret.result && !this.state.isConfiguration) {
             toaster.error(ret.error);
             return;

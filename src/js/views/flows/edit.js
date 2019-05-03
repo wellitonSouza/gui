@@ -1,20 +1,19 @@
 /* eslint-disable */
-import React, { Component } from 'react';
+import React, { Fragment, Component } from 'react';
 import { hashHistory } from 'react-router';
 
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AltContainer from 'alt-container';
+import { withNamespaces } from 'react-i18next';
+import ability from 'Components/permissions/ability';
+import { DojotBtnRedCircle } from 'Components/DojotButton';
+import { RemoveModal } from 'Components/Modal';
+import Can from 'Components/permissions/Can';
 import { NewPageHeader } from '../../containers/full/PageHeader';
-import { Trans, withNamespaces } from 'react-i18next';
 import FlowActions from '../../actions/FlowActions';
 import FlowStore from '../../stores/FlowStore';
 import util from '../../comms/util/util';
-import MaterialInput from '../../components/MaterialInput';
-import { DojotBtnRedCircle } from '../../components/DojotButton';
 import toaster from '../../comms/util/materialize';
-import { RemoveModal } from '../../components/Modal';
-import ability from 'Components/permissions/ability';
-import Can from '../../components/permissions/Can';
 
 class FlowCanvas extends Component {
     constructor(props) {
@@ -23,7 +22,7 @@ class FlowCanvas extends Component {
         this.state = { done: false };
         this.__updateCanvas = this.__updateCanvas.bind(this);
 
-        //When cannotEdit is true, the flow is just for viewer
+        // When cannotEdit is true, the flow is just for viewer
         this.cannotEdit = !ability.can('modifier', 'flows');
     }
 
@@ -167,27 +166,34 @@ class FlowCanvas extends Component {
             <div className="flows-wrapper">
                 <div id="main-container">
                     <div id="workspace">
-                        <div id="chart" tabIndex="1"/>
-                        <div id="workspace-toolbar"/>
-                        <div id="editor-shade" className="hide"/>
+                        <div id="chart" tabIndex="1" />
+                        <div id="workspace-toolbar" />
+                        <div id="editor-shade" className="hide" />
                     </div>
-                    <div id="editor-stack"/>
+                    <div id="editor-stack" />
 
                     <div id="palette" style={this.cannotEdit ? { display: 'none' } : {}}>
                         <img src="flows/red/images/spin.svg" className="palette-spinner hide" />
-                        <div id="palette-container" className="palette-scroll"/>
+                        <div id="palette-container" className="palette-scroll" />
                         <div id="palette-footer">
-                            <a className="palette-button" id="palette-collapse-all" href="#"><i
-                                className="fa fa-angle-double-up"/></a>
-                            <a className="palette-button" id="palette-expand-all" href="#"><i
-                                className="fa fa-angle-double-down"/></a>
+                            <a className="palette-button" id="palette-collapse-all" href="#">
+                                <i
+                                    className="fa fa-angle-double-up"
+                                />
+
+                            </a>
+                            <a className="palette-button" id="palette-expand-all" href="#">
+                                <i
+                                    className="fa fa-angle-double-down"
+                                />
+
+                            </a>
                         </div>
-                        <div id="palette-shade" className="hide"/>
+                        <div id="palette-shade" className="hide" />
                     </div>
                 </div>
 
-                <div id="flows-node-scripts" ref={elem => (this.scriptHolder = elem)}>
-                </div>
+                <div id="flows-node-scripts" ref={elem => (this.scriptHolder = elem)} />
 
             </div>
         );
@@ -212,7 +218,7 @@ function handleSave(flowid, i18n) {
     // update flow's actual configuration data
     flow.name = fData.flowName;
     flow.flow = RED.nodes.createCompleteNodeSet();
-    let ret = util.isNameValid(flow.name);
+    const ret = util.isNameValid(flow.name);
     if (flowid) {
         if (!ret.result) {
             toaster.error(ret.error);
@@ -222,17 +228,14 @@ function handleSave(flowid, i18n) {
                 toaster.success(i18n('flows:alerts.update'));
             });
         }
+    } else if (!ret.result) {
+        toaster.error(ret.error);
     } else {
-        if (!ret.result) {
-            toaster.error(ret.error);
-            return;
-        } else {
-            flow.name = ret.label;
-            FlowActions.triggerCreate(flow, (flow) => {
-                toaster.success(i18n('flows:alerts.create'));
-                hashHistory.push(`/flows/id/${flow.id}`);
-            });
-        }
+        flow.name = ret.label;
+        FlowActions.triggerCreate(flow, (flow) => {
+            toaster.success(i18n('flows:alerts.create'));
+            hashHistory.push(`/flows/id/${flow.id}`);
+        });
     }
 }
 
@@ -240,31 +243,38 @@ function handleSave(flowid, i18n) {
 class NameForm extends Component {
     constructor(props) {
         super(props);
-        //When cannotEdit is true, the flow is just for viewer
+        // When cannotEdit is true, the flow is just for viewer
         this.cannotEdit = !ability.can('modifier', 'flows');
     }
 
     render() {
+        const { flowName, t } = this.props;
+
         if (this.cannotEdit) {
-            return (<div className="col s6 l7 margin-input">{this.props.flowName}</div>);
-        } else {
-            return (
-                <MaterialInput
+            return (<div className="col s6 margin-input">{flowName}</div>);
+        }
+        return (
+            <Fragment>
+            <div className="col s2 text-right bold">
+                <span>
+                    {t('flows:header.name.label')}
+                </span>
+            </div>
+            <div className="col s5 ml0 input-field">
+                <input
                     id="fld_flowname"
+                    type="text"
                     name="name"
-                    className="col s6 l7 margin-input"
-                    value={this.props.flowName}
                     onChange={(e) => {
                         e.preventDefault();
                         FlowActions.setName(e.target.value);
                     }}
                     maxLength={45}
-
-                >
-                    <Trans i18nKey="flows:header.name.label"/>
-                </MaterialInput>
-            );
-        }
+                    value={flowName}
+                />
+            </div>
+            </Fragment>
+        );
     }
 }
 
@@ -307,15 +317,23 @@ class EditFlowComponent extends Component {
     render() {
         const { t: i18n } = this.props;
         return (
-            <ReactCSSTransitionGroup transitionName="first" transitionAppear
-                                     transitionAppearTimeout={500} transitionEnterTimeout={500}
-                                     transitionLeaveTimeout={500}>
-                <NewPageHeader title={i18n('flows:title_edit')}
-                               subtitle={i18n('flows:subtitle_edit')} icon="flow">
+            <ReactCSSTransitionGroup
+                transitionName="first"
+                transitionAppear
+                transitionAppearTimeout={500}
+                transitionEnterTimeout={500}
+                transitionLeaveTimeout={500}
+            >
+                <NewPageHeader
+                    title={i18n('flows:title_edit')}
+                    subtitle={i18n('flows:subtitle_edit')}
+                    icon="flow"
+                >
                     <div
-                        className="row valign-wrapper absolute-input full-width no-margin top-minus-2 ">
+                        className="row valign-wrapper absolute-input full-width no-margin top-minus-2 "
+                    >
                         <AltContainer store={FlowStore}>
-                            <NameForm/>
+                            <NameForm t={i18n} />
                         </AltContainer>
                         <Can do="modifier" on="flows">
                             <DojotBtnRedCircle
@@ -325,22 +343,34 @@ class EditFlowComponent extends Component {
                                     handleSave(this.props.params.flowid, i18n);
                                 }}
                             />
-                            {this.props.params.flowid &&
-                            <DojotBtnRedCircle icon="fa fa-trash"
-                                               tooltip={i18n('flows:header.remove.label')}
-                                               click={this.openRemoveModal}/>}
+                            {this.props.params.flowid
+                            && (
+                                <DojotBtnRedCircle
+                                    icon="fa fa-trash"
+                                    tooltip={i18n('flows:header.remove.label')}
+                                    click={this.openRemoveModal}
+                                />
+                            )}
                         </Can>
-                        <DojotBtnRedCircle to="/flows" icon="fa fa-arrow-left"
-                                           tooltip={i18n('flows:header.return.label')}/>
+                        <DojotBtnRedCircle
+                            to="/flows"
+                            icon="fa fa-arrow-left"
+                            tooltip={i18n('flows:header.return.label')}
+                        />
                     </div>
                 </NewPageHeader>
                 <AltContainer store={FlowStore}>
-                    <FlowCanvas flow={this.props.params.flowid}/>
+                    <FlowCanvas flow={this.props.params.flowid} />
                 </AltContainer>
-                {this.state.show_modal ?
-                    <RemoveModal name={i18n('flows:element_name')} remove={this.removeFlow}
-                                 openModal={this.setModal}/> :
-                    <div/>}
+                {this.state.show_modal
+                    ? (
+                        <RemoveModal
+                            name={i18n('flows:element_name')}
+                            remove={this.removeFlow}
+                            openModal={this.setModal}
+                        />
+                    )
+                    : <div />}
             </ReactCSSTransitionGroup>
         );
     }

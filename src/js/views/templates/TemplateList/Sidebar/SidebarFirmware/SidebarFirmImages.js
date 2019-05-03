@@ -176,7 +176,6 @@ class SidebarFirmImages extends Component {
         const {
             t, images, showFirmware, toogleSidebarFirmware,
         } = this.props;
-        console.log('list images', images);
 
         return (
             <Fragment>

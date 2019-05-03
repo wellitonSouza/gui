@@ -13,13 +13,15 @@ import toaster from 'Comms/util/materialize';
 import { withNamespaces } from 'react-i18next';
 import ability from 'Components/permissions/ability';
 import { GenericModal } from 'Components/Modal';
-import FirmwareWebSocket from './FirmwareWebSocket';
+import {
+    FW_RESULT_META_LABEL,
+    FW_VERSION_META_LABEL,
+    FW_STATE_META_LABEL,
+    FW_TRANSFER_META_LABEL,
+    FW_APPLY_META_LABEL,
+} from 'Comms/firmware/FirmwareMetasConst';
 
-const FW_RESULT_META_LABEL = 'dojot:firmware_update:update_result';
-const FW_VERSION_META_LABEL = 'dojot:firmware_update:version';
-const FW_STATE_META_LABEL = 'dojot:firmware_update:state';
-const FW_TRANSFER_META_LABEL = 'dojot:firmware_update:desired_version';
-const FW_APPLY_META_LABEL = 'dojot:firmware_update:update';
+import FirmwareWebSocket from './FirmwareWebSocket';
 
 
 const StateFirmwareDevice = (props) => {

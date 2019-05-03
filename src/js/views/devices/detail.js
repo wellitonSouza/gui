@@ -49,7 +49,7 @@ class Attribute extends Component {
         // check the current window, if less then 1024px, blocks compressed state
         const { opened } = this.state;
         const { device, attr } = this.props;
-        const { label, value_type: valueType } = attr;
+        const { label, value_type: valueType, metadata } = attr;
         const isOpened = util.checkWidthToStateOpen(opened);
         return (
             <div className={`attributeBox ${isOpened ? 'expanded' : 'compressed'}`}>
@@ -80,6 +80,7 @@ class Attribute extends Component {
                         device={device}
                         type={valueType}
                         attr={label}
+                        metadata={metadata}
                     />
                 </div>
             </div>
@@ -566,7 +567,6 @@ class DynamicAttributeList extends Component {
                                     className={truncate ? 'label truncate' : 'label'}
                                     title={i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}
                                 >
-                                    {' '}
                                     {i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}
 
                                 </div>
@@ -609,7 +609,7 @@ const DeviceUserActions = ({ t }) => (
 );
 
 
-const AttrHistory = ({device, type, attr}) => (
+const AttrHistory = ({device, type, attr, metadata}) => (
     <div className="graphLarge">
         <AltContainer stores={{
             MeasureStore,
@@ -621,6 +621,7 @@ const AttrHistory = ({device, type, attr}) => (
                 type={type}
                 attr={attr}
                 label={attr}
+                metadata={metadata}
                 isStatic={false}
             />
         </AltContainer>

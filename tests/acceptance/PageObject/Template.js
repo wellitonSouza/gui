@@ -8,7 +8,7 @@ module.exports = {
         add: 'Add',
         remove: 'Remove',
         save: 'Save',
-        discard: 'Discard'
+        discard: 'Discard',
     },
 
     ClassesCSS: {},
@@ -38,66 +38,66 @@ module.exports = {
         I = i;
     },
 
-    convertToObjectMeta: function (labelValue, typeValue, attrValueType, value) {
+    convertToObjectMeta(labelValue, typeValue, attrValueType, value) {
         return this.convertToObjectMetaToAdd(labelValue, typeValue, attrValueType, value);
     },
 
-    convertToObjectMetaToAdd: function (labelValue, typeValue, attrValueType, value) {
+    convertToObjectMetaToAdd(labelValue, typeValue, attrValueType, value) {
         return {
             labelValue,
             typeValue,
             attrValueType,
-            value
-        }
+            value,
+        };
     },
 
-    convertToObjectMetaToUpdate: function (oldLabelValue, newLabelValue, newTypeValue, newAttrValueType, newValue) {
-        return {oldLabelValue, ...this.convertToObjectMetaToAdd(newLabelValue, newTypeValue, newAttrValueType, newValue)};
+    convertToObjectMetaToUpdate(oldLabelValue, newLabelValue, newTypeValue, newAttrValueType, newValue) {
+        return { oldLabelValue, ...this.convertToObjectMetaToAdd(newLabelValue, newTypeValue, newAttrValueType, newValue) };
     },
 
-    convertToObjectMetaToRemove: function (removeLabelValue) {
-        return {removeLabelValue};
+    convertToObjectMetaToRemove(removeLabelValue) {
+        return { removeLabelValue };
     },
 
-    clickOpenTemplatePage: function () {
-        I.waitForElement(locate('a').withAttr({href: '#/template/list'}));
-        I.click(locate('a').withAttr({href: '#/template/list'}));
+    clickOpenTemplatePage() {
+        I.waitForElement(locate('a').withAttr({ href: '#/template/list' }));
+        I.click(locate('a').withAttr({ href: '#/template/list' }));
     },
 
-    fillNameTemplate: function (value) {
+    fillNameTemplate(value) {
         I.fillField('Template Name', value);
     },
 
-    change64QtyToShowPagination(){
+    change64QtyToShowPagination() {
         I.selectOption(locate('select').inside('.card-select-2'), '64');
     },
 
-    seeNameTemplate: function (value) {
+    seeNameTemplate(value) {
         I.seeInputByNameAndValue('Template Name', value);
     },
 
-    clickCreateNew: function () {
-        I.waitForElement(locate('div').withAttr({title: 'Create a new template'}));
-        I.click(locate('div').withAttr({title: 'Create a new template'}));
+    clickCreateNew() {
+        I.waitForElement(locate('div').withAttr({ title: 'Create a new template' }));
+        I.click(locate('div').withAttr({ title: 'Create a new template' }));
     },
 
-    clickCardByNameTemplate: function (nameTemplate) {
-        I.waitForElement(locate('div').withAttr({title: nameTemplate}));
-        I.click(locate('div').withAttr({title: nameTemplate}));
+    clickCardByNameTemplate(nameTemplate) {
+        I.waitForElement(locate('div').withAttr({ title: nameTemplate }));
+        I.click(locate('div').withAttr({ title: nameTemplate }));
     },
 
-    _fillAttrForm: function (fieldValue, attrType, attrValueType, value) {
+    _fillAttrForm(fieldValue, attrType, attrValueType, value) {
         within('.sidebar-attribute', () => {
             I.fillField(locate('input').first(), fieldValue);
             I.fillSelectByName('type', attrType);
             I.fillSelectByName('value_type', attrValueType);
             if ((attrType !== this.AttributeType.dynamic || attrType !== this.AttributeType.actuator) && value) {
-                I.fillField(locate('input').withAttr({name: 'static_value'}), Util.toString(value));
+                I.fillField(locate('input').withAttr({ name: 'static_value' }), Util.toString(value));
             }
         });
     },
 
-    _fillMetaForm: function (labelValue, typeValue, attrValueType, value) {
+    _fillMetaForm(labelValue, typeValue, attrValueType, value) {
         within('.sidebar-metadata', () => {
             I.fillField('label', labelValue);
             I.fillField('type', typeValue);
@@ -106,19 +106,19 @@ module.exports = {
         });
     },
 
-    _addMeta: function (labelValue, typeValue, attrValueType, value) {
+    _addMeta(labelValue, typeValue, attrValueType, value) {
         this._clickOpenFooterBtnNew('New Metadata');
         this._fillMetaForm(labelValue, typeValue, attrValueType, value);
         I.click(this.ButtonLabel.add);
     },
 
-    _updateMeta: function (oldLabelValue, newLabelValue, newTypeValue, newAttrValueType, newValue) {
+    _updateMeta(oldLabelValue, newLabelValue, newTypeValue, newAttrValueType, newValue) {
         this._clickToEditAMeta(oldLabelValue);
         this._fillMetaForm(newLabelValue, newTypeValue, newAttrValueType, newValue);
         I.click(this.ButtonLabel.save);
     },
 
-    addAttr: function (fieldValue, attrType, attrValueType, metaDataArray, value = '') {
+    addAttr(fieldValue, attrType, attrValueType, metaDataArray, value = '') {
         this._clickOpenFooterBtnNew('New Attribute');
         this._fillAttrForm(fieldValue, attrType, attrValueType, value);
         this._metasArrayToAddUpdateRemove(metaDataArray);
@@ -127,7 +127,7 @@ module.exports = {
         });
     },
 
-    _metasArrayToAddUpdateRemove: function (metaDataArray) {
+    _metasArrayToAddUpdateRemove(metaDataArray) {
         metaDataArray.forEach((meta) => {
             if (meta.oldLabelValue) {
                 this._updateMeta(meta.oldLabelValue, meta.labelValue, meta.typeValue, meta.attrValueType, meta.value);
@@ -139,7 +139,7 @@ module.exports = {
         });
     },
 
-    updateAttr: function (oldFieldValue, newFieldValue, newAttrType, newAttrValueType, metaDataArray, newValue = '') {
+    updateAttr(oldFieldValue, newFieldValue, newAttrType, newAttrValueType, metaDataArray, newValue = '') {
         this._clickToEditAAttr(oldFieldValue);
         this._fillAttrForm(newFieldValue, newAttrType, newAttrValueType, newValue);
         this._metasArrayToAddUpdateRemove(metaDataArray);
@@ -148,16 +148,16 @@ module.exports = {
         });
     },
 
-    seeAttrHasRemoved: function(oldFieldValue){
-        I.dontSeeElement(locate('.template-prop').withAttr({title: oldFieldValue, role: 'button'}));
+    seeAttrHasRemoved(oldFieldValue) {
+        I.dontSeeElement(locate('.template-prop').withAttr({ title: oldFieldValue, role: 'button' }));
     },
 
-    _clickToEditAMeta: function (labelValue) {
+    _clickToEditAMeta(labelValue) {
         I.waitForElement(locate('.metadata-label').withText(labelValue).inside('.metadata-list-item'));
         I.click(locate('.metadata-label').withText(labelValue).inside('.metadata-list-item'));
     },
 
-    _seeMeta: function (labelValue, typeValue, attrValueType, value) {
+    _seeMeta(labelValue, typeValue, attrValueType, value) {
         this._clickToEditAMeta(labelValue);
         within('.sidebar-metadata', () => {
             I.seeInputByNameAndValue('label', labelValue);
@@ -168,7 +168,7 @@ module.exports = {
         });
     },
 
-    seeAttr: function (fieldValue, attrType, attrValueType, metaDataArray, value = null) {
+    seeAttr(fieldValue, attrType, attrValueType, metaDataArray, value = null) {
         this._clickToEditAAttr(fieldValue);
         within('.sidebar-attribute', () => {
             I.seeInputByNameAndValue('label', fieldValue);
@@ -180,7 +180,6 @@ module.exports = {
             if ((attrType !== this.AttributeType.dynamic || attrType !== this.AttributeType.actuator) && value) {
                 I.seeInputByNameAndValue('static_value', Util.toString(value));
             }
-
         });
         metaDataArray.forEach((meta) => {
             this._seeMeta(meta.labelValue, meta.typeValue, meta.attrValueType, meta.value);
@@ -190,23 +189,22 @@ module.exports = {
         });
     },
 
-    _removeMeta: function (labelValue) {
+    _removeMeta(labelValue) {
         this._clickToEditAMeta(labelValue);
         within('.sidebar-metadata', () => {
             I.seeInputByNameAndValue('label', labelValue);
             I.click(this.ButtonLabel.remove);
-
         });
 
         I.click('Confirm');
     },
 
-    _clickToEditAAttr: function (label) {
-        I.waitForElement(locate('.template-prop').withAttr({title: label, role: 'button'}));
-        I.click(locate('.template-prop').withAttr({title: label, role: 'button'}));
+    _clickToEditAAttr(label) {
+        I.waitForElement(locate('.template-prop').withAttr({ title: label, role: 'button' }));
+        I.click(locate('.template-prop').withAttr({ title: label, role: 'button' }));
     },
 
-    removeAttr: function (fieldValue, metaDataArray) {
+    removeAttr(fieldValue, metaDataArray) {
         this._clickToEditAAttr(fieldValue);
         within('.sidebar-attribute', () => {
             I.seeInputByNameAndValue('label', fieldValue);
@@ -218,20 +216,20 @@ module.exports = {
         I.click('Confirm');
     },
 
-    _fillConfigForm: function (confType, value) {
+    _fillConfigForm(confType, value) {
         within('.sidebar-attribute', () => {
             I.fillSelectByName('label', confType);
             I.fillField('static_value', value);
         });
     },
 
-    addConfigTemplate: function (confType, value) {
+    addConfigTemplate(confType, value) {
         this._clickOpenFooterBtnNew('New Configuration');
         this._fillConfigForm(confType, value);
         I.click(this.ButtonLabel.add);
     },
 
-    seeConfigTemplate: function (confType, value) {
+    seeConfigTemplate(confType, value) {
         this._clickToEditAAttr(confType.toLowerCase());
         within('.sidebar-attribute', () => {
             I.seeSelectOptionByNameAndValue('label', confType);
@@ -240,62 +238,61 @@ module.exports = {
         });
     },
 
-    updateConfigTemplate: function (oldConfType,newConfType, value) {
+    updateConfigTemplate(oldConfType, newConfType, value) {
         this._clickToEditAAttr(oldConfType.toLowerCase());
         this._fillConfigForm(newConfType, value);
         I.click(this.ButtonLabel.save);
     },
 
-    removeConfigTemplate: function (confType) {
+    removeConfigTemplate(confType) {
         this._clickToEditAAttr(confType.toLowerCase());
         within('.sidebar-attribute', () => {
             I.seeSelectOptionByNameAndValue('label', confType);
             I.click(this.ButtonLabel.remove);
-
         });
         I.click('Confirm');
         I.wait(1);
     },
 
-    _clickOpenFooterBtnNew: function (labelBtn) {
+    _clickOpenFooterBtnNew(labelBtn) {
         I.waitForElement(locate('.body-actions--button div').withText(labelBtn));
         I.click(locate('.body-actions--button div').withText(labelBtn));
     },
 
-    seeManageFirmware: function () {
+    seeManageFirmware() {
         this._clickOpenFooterBtnNew('Manage Firmware');
-        I.waitForElement(locate('.firmware-enabled'),5);
+        I.waitForElement(locate('.firmware-enabled'), 5);
         I.click(locate('.firmware-enabled'));
         I.click(this.ButtonLabel.discard);
         I.wait(1);
     },
 
-    clickSave: function () {
+    clickSave() {
         I.click(this.ButtonLabel.save);
     },
 
-    clickDiscard: function () {
+    clickDiscard() {
         I.click(this.ButtonLabel.discard);
         I.wait(1);
     },
 
-    seeTemplateHasCreated: function () {
+    seeTemplateHasCreated() {
         I.wait(3);
         I.see('Template created.');
     },
 
-    removeTemplate: function () {
+    removeTemplate() {
         I.click(this.ButtonLabel.remove);
         I.click('Confirm');
         I.wait(1);
     },
 
-    seeTemplateHasDelete: function () {
+    seeTemplateHasDelete() {
         I.wait(3);
         I.see('Template removed.');
     },
 
-    seeTemplateHasUpdated: function () {
+    seeTemplateHasUpdated() {
         I.wait(3);
         I.see('Template updated.');
     },

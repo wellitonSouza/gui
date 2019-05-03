@@ -27,17 +27,17 @@ module.exports = {
         I = i;
     },
 
-    clickOpenDevicePage: function () {
-        I.waitForElement(locate('a').withAttr({href: '#/device'}));
-        I.click(locate('a').withAttr({href: '#/device'}));
+    clickOpenDevicePage() {
+        I.waitForElement(locate('a').withAttr({ href: '#/device' }));
+        I.click(locate('a').withAttr({ href: '#/device' }));
     },
 
-    clickCreateNew: function () {
-        I.waitForElement(locate('div').withAttr({title: 'Create a new device'}));
-        I.click(locate('div').withAttr({title: 'Create a new device'}));
+    clickCreateNew() {
+        I.waitForElement(locate('div').withAttr({ title: 'Create a new device' }));
+        I.click(locate('div').withAttr({ title: 'Create a new device' }));
     },
 
-    fillNameDevice: function (value) {
+    fillNameDevice(value) {
         I.fillField('name', value);
     },
 
@@ -46,38 +46,38 @@ module.exports = {
     },
 
     clickToSelectTemplate(templateName) {
-        I.click(locate('.template-item').withAttr({title: templateName}));
+        I.click(locate('.template-item').withAttr({ title: templateName }));
     },
 
     clickToManageAttributes(attributeType) {
-        I.waitForElement(locate('.sidebar-button').withAttr({title: attributeType, role: 'button'}),10);
-        I.click(locate('.sidebar-button').withAttr({title: attributeType, role: 'button'}));
+        I.waitForElement(locate('.sidebar-button').withAttr({ title: attributeType, role: 'button' }), 10);
+        I.click(locate('.sidebar-button').withAttr({ title: attributeType, role: 'button' }));
     },
 
     seeAllConfigurations(arrayConfigurations) {
-        arrayConfigurations.forEach(config => {
-            I.seeElement(locate('input').withAttr({value: Util.toString(config.static_value)}).before(locate('label').withText(Util.uppercaseFirstLetter(config.label))));
+        arrayConfigurations.forEach((config) => {
+            I.seeElement(locate('input').withAttr({ value: Util.toString(config.static_value) }).before(locate('label').withText(Util.uppercaseFirstLetter(config.label))));
         });
     },
 
     seeAllStatic(arrayStatics) {
-        arrayStatics.forEach(attr => {
-            I.seeElement(locate('input').withAttr({value: Util.toString(attr.static_value)}).before(locate('label').withText(attr.label)));
+        arrayStatics.forEach((attr) => {
+            I.seeElement(locate('input').withAttr({ value: Util.toString(attr.static_value) }).before(locate('label').withText(attr.label)));
             this._seeMetas(attr);
         });
     },
 
-    _seeMetas: function (attr) {
+    _seeMetas(attr) {
         if (attr.metadata && attr.metadata.length > 0) {
             I.seeElement(locate('.attr-card-input-wrapper div').withText(attr.label));
             I.click(locate('.attr-card-metadata-header').withAttr({
-                id: 'meta_show:' + attr.label,
-                role: 'button'
+                id: `meta_show:${attr.label}`,
+                role: 'button',
             }));
-            within(locate('.attr-card-metadata-body').withAttr({id: 'meta_data:' + attr.label}), () => {
-                attr.metadata.forEach(meta => {
+            within(locate('.attr-card-metadata-body').withAttr({ id: `meta_data:${attr.label}` }), () => {
+                attr.metadata.forEach((meta) => {
                     I.seeElement(locate('label').withText(`${meta.label} (${meta.type})`));
-                    I.seeElement(locate('input').withAttr({name: meta.label, value: Util.toString(meta.static_value)}));
+                    I.seeElement(locate('input').withAttr({ name: meta.label, value: Util.toString(meta.static_value) }));
                     I.seeElement(locate('.attr-card-type').withText(Util.uppercaseFirstLetter(meta.value_type)));
                 });
             });
@@ -85,9 +85,8 @@ module.exports = {
     },
 
     seeAllDynamics(arrayAttrs) {
-        arrayAttrs.forEach(attr => {
-
-            within(locate('.attr-card-input-wrapper').withAttr({id: `label:${attr.label}`}), () => {
+        arrayAttrs.forEach((attr) => {
+            within(locate('.attr-card-input-wrapper').withAttr({ id: `label:${attr.label}` }), () => {
                 I.seeElement(locate('div').withText(attr.label));
                 I.seeElement(locate('div').withText(Util.uppercaseFirstLetter(attr.value_type)));
             });
@@ -96,7 +95,7 @@ module.exports = {
         });
     },
 
-    _fillStaticValue: function (label, newValue) {
+    _fillStaticValue(label, newValue) {
         I.fillField(locate('input').before(locate('label').withText(label)), newValue);
         this.clickSaveAttrs();
     },
@@ -111,13 +110,13 @@ module.exports = {
         this._fillStaticValue(label, newValue);
     },
 
-    _fillMetaValue: function (labelAttr, labelMeta, newValueMeta) {
+    _fillMetaValue(labelAttr, labelMeta, newValueMeta) {
         I.click(locate('.attr-card-metadata-header').withAttr({
-            id: 'meta_show:' + labelAttr,
-            role: 'button'
+            id: `meta_show:${labelAttr}`,
+            role: 'button',
         }));
-        within(locate('.attr-card-metadata-body').withAttr({id: 'meta_data:' + labelAttr}), () => {
-            I.fillField(locate('input').withAttr({name: labelMeta}), Util.toString(newValueMeta));
+        within(locate('.attr-card-metadata-body').withAttr({ id: `meta_data:${labelAttr}` }), () => {
+            I.fillField(locate('input').withAttr({ name: labelMeta }), Util.toString(newValueMeta));
         });
         this.clickSaveAttrs();
     },
@@ -144,7 +143,6 @@ module.exports = {
         I.click('Save');
     },
     clickSaveAttrs() {
-
         I.click('#btn-save-attrs');
     },
 
@@ -157,28 +155,28 @@ module.exports = {
     },
 
     openDevicesPage() {
-        I.click(locate('a').withAttr({href: `#/device`}));
+        I.click(locate('a').withAttr({ href: '#/device' }));
     },
 
-    clickCardByDeviceName: function (name) {
-        I.waitForElement(locate('.card-size  span').withAttr({title: name}));
-        I.click(locate('.card-size  span').withAttr({title: name}));
+    clickCardByDeviceName(name) {
+        I.waitForElement(locate('.card-size  span').withAttr({ title: name }));
+        I.click(locate('.card-size  span').withAttr({ title: name }));
     },
 
     clickDetailsDevice(deviceId) {
-        I.click(locate('a').withAttr({href: `#/device/id/${deviceId}/detail`}));
+        I.click(locate('a').withAttr({ href: `#/device/id/${deviceId}/detail` }));
     },
 
     selectAttr(attr) {
-        I.click(locate('div').withAttr({title: attr}));
+        I.click(locate('div').withAttr({ title: attr }));
     },
 
     selectAttrWithCallback(attr, callback) {
-        I.click(locate('div').withAttr({title: attr})).then(callback);
+        I.click(locate('div').withAttr({ title: attr })).then(callback);
     },
 
     async selectAttrSync(attr) {
-        await I.click(locate('div').withAttr({title: attr}));
+        await I.click(locate('div').withAttr({ title: attr }));
     },
 
     shouldSeeMessage(message) {
@@ -189,15 +187,15 @@ module.exports = {
         I.selectOption(locate('select').inside('.card-select-2'), '64');
     },
 
-    seeHasCreated: function () {
+    seeHasCreated() {
         I.waitForText('Device created.', 20);
     },
 
-    seeHasUpdated: function () {
+    seeHasUpdated() {
         I.waitForText('Device updated.', 20);
     },
 
-    seeHasRemoved: function () {
+    seeHasRemoved() {
         I.waitForText('Device removed.', 20);
     },
 };

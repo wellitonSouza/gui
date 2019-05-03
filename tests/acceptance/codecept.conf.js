@@ -1,12 +1,12 @@
-let env = require('./env.conf');
+const env = require('./env.conf');
 
 exports.config = {
-  tests: './Scenarios/*_test.js',
+    tests: './Scenarios/*_test.js',
     output: './output',
     multiple: {
         parallel: {
-          chunks: 1
-        }
+            chunks: 1,
+        },
     },
     helpers: {
         Puppeteer: {
@@ -23,25 +23,25 @@ exports.config = {
                 handleSIGHUP: false,
                 defaultViewport: {
                     width: 1700,
-                    height: 1080
+                    height: 1080,
                 },
             },
         },
         REST: {
             endpoint: env.dojot_host,
-        }
+        },
     },
     include: {
         I: './steps_file.js',
-        Template: "./PageObject/Template.js",
+        Template: './PageObject/Template.js',
         Flow: './PageObject/Flow.js',
         Device: './PageObject/Device.js',
-        Notification: './PageObject/Notification.js'
+        Notification: './PageObject/Notification.js',
     },
     plugins: {
         allure: {},
         autoDelay: {
-            enabled: true
+            enabled: true,
         },
         autoLogin: {
             enabled: true,
@@ -65,12 +65,12 @@ exports.config = {
                     check: (I) => {
                         I.amOnPage(`${env.dojot_host}/#/`);
                         I.see('admin');
-                    }
-                }
-            }
-        }
+                    },
+                },
+            },
+        },
     },
     bootstrap: null,
     mocha: {},
-    name: 'dojot-codecept'
+    name: 'dojot-codecept',
 };

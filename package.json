@@ -22,7 +22,6 @@
             "react"
         ]
     },
-    
     "repository": {
         "type": "git",
         "url": "ssh://<user>@gerrit.cpqd.com.br:29418/iot/middleware/gui/devicemanager"

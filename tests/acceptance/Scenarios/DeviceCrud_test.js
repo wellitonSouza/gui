@@ -4,7 +4,7 @@ Before((login) => {
     login('admin');
 });
 
-let template1 = {
+const template1 = {
     id: null,
     name: '1 - Template',
     attrsDynamics: [
@@ -19,11 +19,11 @@ let template1 = {
             type: 'dynamic',
             metadata: [
                 {
-                    label: "unit",
-                    static_value: "empty",
-                    type: "temperature",
-                    value_type: "string"
-                }
+                    label: 'unit',
+                    static_value: 'empty',
+                    type: 'temperature',
+                    value_type: 'string',
+                },
             ],
         },
         {
@@ -49,23 +49,23 @@ let template1 = {
             static_value: 'undefined',
             metadata: [
                 {
-                    label: "meta1",
+                    label: 'meta1',
                     static_value: 10,
-                    type: "type_meta",
-                    value_type: "integer"
+                    type: 'type_meta',
+                    value_type: 'integer',
                 },
                 {
-                    label: "meta2",
-                    static_value: "value",
-                    type: "type_string_x",
-                    value_type: "string"
+                    label: 'meta2',
+                    static_value: 'value',
+                    type: 'type_string_x',
+                    value_type: 'string',
                 },
                 {
-                    label: "meta3",
-                    static_value: "value",
-                    type: "type_string_x",
-                    value_type: "string"
-                }
+                    label: 'meta3',
+                    static_value: 'value',
+                    type: 'type_string_x',
+                    value_type: 'string',
+                },
             ],
         },
         {
@@ -79,25 +79,25 @@ let template1 = {
             label: 'str_static2',
             type: 'static',
             static_value: 'undefined',
-        }
+        },
     ],
     attrsConfig: [
         {
             value_type: 'string',
             label: 'protocol',
             type: 'meta',
-            static_value: 'mqtt'
-        }
+            static_value: 'mqtt',
+        },
     ],
     attrsActuators: [
         {
             value_type: 'string',
             label: 'msg',
             type: 'actuator',
-            static_value: ''
-        }
+            static_value: '',
+        },
     ],
-    json: {}
+    json: {},
 };
 const loadJson = (template) => {
     template.json = {
@@ -107,8 +107,8 @@ const loadJson = (template) => {
             ...template.attrsConfig,
             ...template.attrsStatics,
             ...template.attrsDynamics,
-        ]
-    }
+        ],
+    };
 };
 
 loadJson(template1);
@@ -133,9 +133,8 @@ function checkingAttrTemplate(Device, template) {
 }
 
 Scenario('Creating a device', async (I, Device) => {
-
     const template = await I.createTemplate(template1.json);
-    template1.id = template['template']['id'];
+    template1.id = template.template.id;
 
     Device.init(I);
     Device.clickOpenDevicePage();
@@ -164,7 +163,6 @@ Scenario('Creating a device', async (I, Device) => {
 });
 
 Scenario('Checking a device create', async (I, Device) => {
-
     Device.init(I);
     Device.change64QtyToShowPagination();
     Device.clickCardByDeviceName('Name of device');
@@ -179,11 +177,9 @@ Scenario('Checking a device create', async (I, Device) => {
     checkingAttrTemplate(Device, templateJustToCheck);
 
     Device.clickDiscard();
-
 });
 
 Scenario('Updating a device', async (I, Device) => {
-
     Device.init(I);
     Device.change64QtyToShowPagination();
     Device.clickCardByDeviceName('Name of device');
@@ -198,11 +194,9 @@ Scenario('Updating a device', async (I, Device) => {
     Device.clickSave();
 
     Device.seeHasUpdated();
-
 });
 
 Scenario('Checking a device update', async (I, Device) => {
-
     Device.init(I);
     Device.change64QtyToShowPagination();
     Device.clickCardByDeviceName('Name of device change');
@@ -217,21 +211,18 @@ Scenario('Checking a device update', async (I, Device) => {
     checkingAttrTemplate(Device, templateJustToCheck);
 
     Device.clickDiscard();
-
 });
 
 
 Scenario('Checking after change template', async (I, Device) => {
-
-    //attr serial
+    // attr serial
     template1.attrsStatics[0].static_value = 'updateValueWithEditOnDevice';
-    //meta2
+    // meta2
     template1.attrsStatics[0].metadata[1].static_value = 'updateValueWithoutEditOnDevice';
-    //meta3
-   template1.attrsStatics[0].metadata[2].static_value = 'updateValueWithEditOnDevice';
-    //str_static
+    // meta3
+    template1.attrsStatics[0].metadata[2].static_value = 'updateValueWithEditOnDevice';
+    // str_static
     template1.attrsStatics[1].static_value = 'updateValueWithoutEditOnDevice';
-
 
 
     await I.updateTemplate(template1.json, template1.id);
@@ -251,11 +242,9 @@ Scenario('Checking after change template', async (I, Device) => {
     checkingAttrTemplate(Device, templateJustToCheck);
 
     Device.clickDiscard();
-
 });
 
 Scenario('Updating a device - specialized', async (I, Device) => {
-
     template1.attrsStatics[0].metadata[2].static_value = 'value2';
     template1.attrsStatics[2].static_value = 'ABC';
     template1.attrsConfig[0].static_value = 'mqtt3';
@@ -271,9 +260,7 @@ Scenario('Updating a device - specialized', async (I, Device) => {
 });
 
 
-
 Scenario('Checking a after specialized change  ', async (I, Device) => {
-
     template1.attrsConfig[0].static_value = 'mqtt';
     await I.updateTemplate(template1.json, template1.id);
 
@@ -293,7 +280,6 @@ Scenario('Checking a after specialized change  ', async (I, Device) => {
     checkingAttrTemplate(Device, templateJustToCheck);
 
     Device.clickDiscard();
-
 });
 
 
@@ -305,9 +291,3 @@ Scenario('Removing a device', async (I, Device) => {
     Device.clickConfirm();
     Device.seeHasRemoved();
 });
-
-
-
-
-
-

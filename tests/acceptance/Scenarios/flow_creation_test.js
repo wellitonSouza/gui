@@ -1,6 +1,6 @@
 Feature('Flow creation');
 
-Before(login => {
+Before((login) => {
     login('admin');
 });
 
@@ -22,7 +22,7 @@ Scenario('Creating a simple flow', async (I, Flow, Device, Notification) => {
     await Flow.connectFlows();
 
     Flow.clickOnDeviceInput();
-    Flow.editDeviceInputName()
+    Flow.editDeviceInputName();
     Flow.selectDevice(deviceId);
     Flow.clickOnDone();
 
@@ -66,5 +66,4 @@ Scenario('Creating a simple flow', async (I, Flow, Device, Notification) => {
     // I.wait(5);
 
     // await Notification.shouldISeeMessagesWithText('output value', totalBefore + 1);
-
 });

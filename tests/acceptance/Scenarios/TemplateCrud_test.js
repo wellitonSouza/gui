@@ -12,13 +12,13 @@ Scenario('Creating a template', async (I, Template) => {
 
     Template.addConfigTemplate(
         Template.ConfigurationType.protocol,
-        'mqtt'
+        'mqtt',
     );
 
     Template.updateConfigTemplate(
         Template.ConfigurationType.protocol,
         Template.ConfigurationType.protocol,
-        'mqtt2'
+        'mqtt2',
     );
 
     Template.addAttr(
@@ -30,14 +30,16 @@ Scenario('Creating a template', async (I, Template) => {
                 'metaString',
                 'typeValueMetaString',
                 Template.AttributeValueType.string,
-                'valueMetaString'),
+                'valueMetaString',
+            ),
             Template.convertToObjectMetaToAdd(
                 'metaBool',
                 'typeValueMetaBool',
                 Template.AttributeValueType.boolean,
-                false),
+                false,
+            ),
         ],
-        'Value of text'
+        'Value of text',
     );
 
     Template.addAttr(
@@ -49,22 +51,25 @@ Scenario('Creating a template', async (I, Template) => {
                 'metaString',
                 'typeValueMetaString',
                 Template.AttributeValueType.string,
-                'valueMetaString'),
+                'valueMetaString',
+            ),
             Template.convertToObjectMetaToAdd(
                 'metaBool',
                 'typeValueMetaBool',
                 Template.AttributeValueType.boolean,
-                false),
+                false,
+            ),
             Template.convertToObjectMetaToRemove(
-                'metaString'
+                'metaString',
             ),
             Template.convertToObjectMetaToUpdate(
                 'metaBool',
                 'metaChangeFromBoolToFloat',
                 'typeValueMetaFloat',
                 Template.AttributeValueType.float,
-                3.14),
-        ]
+                3.14,
+            ),
+        ],
     );
 
     Template.addAttr(
@@ -76,16 +81,17 @@ Scenario('Creating a template', async (I, Template) => {
                 'metaString',
                 'typeValueMetaString',
                 Template.AttributeValueType.string,
-                'valueMetaString')
+                'valueMetaString',
+            ),
         ],
-        '-22.826702502573774, -47.044628078647314'
+        '-22.826702502573774, -47.044628078647314',
     );
 
-/*    Template.addAttr(
+    /*    Template.addAttr(
         'attrStringActuator',
         Template.AttributeType.actuator,
         Template.AttributeValueType.string
-    );*/
+    ); */
 
     Template.updateAttr(
         'attrGPSStatic',
@@ -93,7 +99,7 @@ Scenario('Creating a template', async (I, Template) => {
         Template.AttributeType.static,
         Template.AttributeValueType.geo,
         [],
-        '-23.826702502573774, -48.044628078647314'
+        '-23.826702502573774, -48.044628078647314',
     );
 
     Template.clickSave();
@@ -109,7 +115,7 @@ Scenario('Checking create template', async (I, Template) => {
 
     Template.seeConfigTemplate(
         Template.ConfigurationType.protocol,
-        'mqtt2'
+        'mqtt2',
     );
 
     Template.seeAttr(
@@ -121,14 +127,16 @@ Scenario('Checking create template', async (I, Template) => {
                 'metaString',
                 'typeValueMetaString',
                 Template.AttributeValueType.string,
-                'valueMetaString'),
+                'valueMetaString',
+            ),
             Template.convertToObjectMeta(
                 'metaBool',
                 'typeValueMetaBool',
                 Template.AttributeValueType.boolean,
-                false),
+                false,
+            ),
         ],
-        'Value of text'
+        'Value of text',
     );
 
     Template.seeAttr(
@@ -140,8 +148,9 @@ Scenario('Checking create template', async (I, Template) => {
                 'metaChangeFromBoolToFloat',
                 'typeValueMetaFloat',
                 Template.AttributeValueType.float,
-                3.14),
-        ]
+                3.14,
+            ),
+        ],
     );
 
 
@@ -154,16 +163,17 @@ Scenario('Checking create template', async (I, Template) => {
                 'metaString',
                 'typeValueMetaString',
                 Template.AttributeValueType.string,
-                'valueMetaString')
+                'valueMetaString',
+            ),
         ],
-        '-23.826702502573774, -48.044628078647314'
+        '-23.826702502573774, -48.044628078647314',
     );
 
-/*    Template.seeAttr(
+    /*    Template.seeAttr(
         'attrStringActuator',
         Template.AttributeType.actuator,
         Template.AttributeValueType.string,
-    );*/
+    ); */
 
     Template.seeManageFirmware();
     Template.clickDiscard();
@@ -187,19 +197,20 @@ Scenario('Updating a template', async (I, Template) => {
                 'metaBoolChange',
                 'typeValueMetaBool',
                 Template.AttributeValueType.boolean,
-                true)
+                true,
+            ),
         ],
-        10
+        10,
     );
 
     Template.updateConfigTemplate(
         Template.ConfigurationType.protocol,
         Template.ConfigurationType.topic,
-        'topic'
+        'topic',
     );
     Template.addConfigTemplate(
         Template.ConfigurationType.protocol,
-        'mqtt'
+        'mqtt',
     );
 
     Template.addAttr(
@@ -211,23 +222,26 @@ Scenario('Updating a template', async (I, Template) => {
                 'metaString2',
                 'typeValueMetaString2',
                 Template.AttributeValueType.string,
-                'valueMetaString2'),
+                'valueMetaString2',
+            ),
             Template.convertToObjectMetaToAdd(
                 'metaBool2',
                 'typeValueMetaBool2',
                 Template.AttributeValueType.boolean,
-                false),
+                false,
+            ),
             Template.convertToObjectMetaToRemove(
-                'metaString2'
+                'metaString2',
             ),
             Template.convertToObjectMetaToUpdate(
                 'metaBool2',
                 'metaChangeFromBoolToFloat2',
                 'typeValueMetaFloat2',
                 Template.AttributeValueType.float,
-                3.14),
+                3.14,
+            ),
         ],
-        45
+        45,
     );
 
 
@@ -235,9 +249,9 @@ Scenario('Updating a template', async (I, Template) => {
         'attrStringStatic',
         [
             Template.convertToObjectMetaToRemove(
-                'metaString'
-            )
-        ]
+                'metaString',
+            ),
+        ],
     );
 
     Template.seeManageFirmware();
@@ -260,19 +274,20 @@ Scenario('Checking update template', async (I, Template) => {
                 'metaBoolChange',
                 'typeValueMetaBool',
                 Template.AttributeValueType.boolean,
-                true)
+                true,
+            ),
         ],
-        10
+        10,
     );
 
     Template.seeConfigTemplate(
         Template.ConfigurationType.topic,
-        'topic'
+        'topic',
     );
 
     Template.seeConfigTemplate(
         Template.ConfigurationType.protocol,
-        'mqtt'
+        'mqtt',
     );
 
     Template.seeAttr(
@@ -284,9 +299,10 @@ Scenario('Checking update template', async (I, Template) => {
                 'metaChangeFromBoolToFloat2',
                 'typeValueMetaFloat2',
                 Template.AttributeValueType.float,
-                3.14),
+                3.14,
+            ),
         ],
-        false
+        false,
     );
     Template.seeAttrHasRemoved('attrStringStatic');
     Template.seeManageFirmware();
@@ -300,7 +316,7 @@ Scenario('Removing template', async (I, Template) => {
     Template.clickCardByNameTemplate('2_NameOfTemplate');
     Template.seeNameTemplate('2_NameOfTemplate');
     Template.removeAttr('attrIntegerDynamicChange', [
-        Template.convertToObjectMetaToRemove('metaBoolChange')
+        Template.convertToObjectMetaToRemove('metaBoolChange'),
     ]);
     Template.removeConfigTemplate(Template.ConfigurationType.topic);
 

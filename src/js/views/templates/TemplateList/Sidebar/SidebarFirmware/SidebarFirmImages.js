@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
 import Slide from 'react-reveal/Slide';
 import { DojotBtnClassic } from 'Components/DojotButton';
 import ImageActions from 'Actions/ImageActions';
@@ -176,7 +175,6 @@ class SidebarFirmImages extends Component {
         const {
             t, images, showFirmware, toogleSidebarFirmware,
         } = this.props;
-        console.log('list images', images);
 
         return (
             <Fragment>

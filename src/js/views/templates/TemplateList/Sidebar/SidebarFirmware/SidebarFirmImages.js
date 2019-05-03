@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
 import Slide from 'react-reveal/Slide';
+import PropTypes from 'prop-types';
 import { DojotBtnClassic } from 'Components/DojotButton';
 import ImageActions from 'Actions/ImageActions';
 import util from 'Comms/util';
@@ -187,7 +187,7 @@ class SidebarFirmImages extends Component {
                                 <div className="header">
                                     <div className="title">{t('firmware:header')}</div>
                                     <div className="icon">
-                                        <img src="images/firmware-red.png" alt="device-icon"/>
+                                        <img src="images/firmware-red.png" alt="device-icon" />
                                     </div>
                                     <div className="header-path">
                                         {'template > firmware > images'}
@@ -234,7 +234,7 @@ class SidebarFirmImages extends Component {
                                 </div>
                             </div>
                         )
-                        : <div/>
+                        : <div />
                     }
                 </Slide>
                 <SidebarDeleteImage

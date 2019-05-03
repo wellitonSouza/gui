@@ -287,7 +287,7 @@ function Attr(props) {
     }
 
     const newValueForFwStateAndResult = FirmwareHelper.getNewParsedValueForAttrStateOrResult(props.metadata, props.MeasureStore.data[props.device.id][`_${props.attr}`]);
-    console.log('newValueForFwStateAndResult', newValueForFwStateAndResult);
+    console.log('newValueForFwStateAndResult', newValueForFwStateAndResult, props);
     if (newValueForFwStateAndResult !== null) {
         props.MeasureStore.data[props.device.id][`_${props.attr}`] = newValueForFwStateAndResult;
         console.log('newValueForFwStateAndResult props', props );

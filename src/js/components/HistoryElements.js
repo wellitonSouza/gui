@@ -1,7 +1,6 @@
 /* eslint-disable */
 import React, {Component} from 'react';
 import {Line} from 'react-chartjs-2';
-import Script from 'react-load-script';
 import FirmwareHelper from '../comms/firmware/FirmwareHelper';
 import util from '../comms/util/util';
 import {SmallPositionRenderer} from "../views/utils/Maps";
@@ -112,16 +111,18 @@ function HistoryList(props) {
     }
     if (listValues.length > 0) {
         listValues.reverse();
-        console.log('listValues', listValues);
         return (
             <div className="relative full-height">
                 <div className="full-height full-width history-list">
                     {listValues.map((i, k) => (<div className={`history-row ${k % 2 ? 'alt-row' : ''}`} key={i.ts}>
                             {typeof i.value === "boolean" ?
                                 <div className="value">{i.value.toString()}</div> :
-                                <div
-                                    className="value">{i.value !== null && (i.value.length !== undefined && i.value.length > 0) ? i.value :
-                                    <span className="red-text"> <em>Invalid data </em></span>}</div>
+                                <div className="value">
+                                    {i.value !== null && (i.value.length !== undefined && i.value.length > 0) ? i.value :
+                                        <span className="red-text">
+                                        <em>Invalid data </em>
+                                    </span>}
+                                </div>
                             }
                             <div className="label">{util.iso_to_date(i.ts)}</div>
                         </div>
@@ -160,7 +161,6 @@ class HandleGeoElements extends Component {
     }
 
     handleDevicePosition(device) {
-        // console.log("device", device);
         const validDevices = [];
         for (const j in device.attrs) {
             for (const i in device.attrs[j]) {
@@ -189,7 +189,6 @@ class HandleGeoElements extends Component {
         if (device.sp_value !== null || device.has_dynamic_position) {
             validDevices.push(device);
         }
-        // console.log("validDevices", validDevices);
         return validDevices;
     }
 
@@ -220,7 +219,7 @@ class HandleGeoElements extends Component {
         }
 
         let geoconfs = this.props.Config;
-        if (geoconfs == undefined)
+        if (geoconfs === undefined)
             geoconfs = {}
 
 
@@ -237,13 +236,25 @@ class HandleGeoElements extends Component {
                             <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand"/> :
                             <i onClick={this.toogleExpand.bind(this, false)} className="fa fa-compress"/>}
                     </div>
-                    <SmallPositionRenderer showLayersIcons={false} staticDevices={validDevices} allowContextMenu={false}
-                                           zoom={14} showPolyline={false} config={geoconfs}/>
+                    <SmallPositionRenderer
+                        showLayersIcons={false}
+                        staticDevices={validDevices}
+                        allowContextMenu={false}
+                        zoom={14}
+                        showPolyline={false}
+                        config={geoconfs}
+                    />
                 </div>;
             } else {
                 return <span>
-                    <SmallPositionRenderer showLayersIcons={false} dynamicDevices={validDevices}
-                                           allowContextMenu={false} zoom={14} showPolyline={false} config={geoconfs}/>
+                    <SmallPositionRenderer
+                        showLayersIcons={false}
+                        dynamicDevices={validDevices}
+                        allowContextMenu={false}
+                        zoom={14}
+                        showPolyline={false}
+                        config={geoconfs}
+                    />
                 </span>;
             }
         }

@@ -349,7 +349,6 @@ class DyAttributeArea extends Component {
 
         console.log('auxAttrs', auxAttrs);
 
-        // Object.entries(auxAttrs).map(([index, element]) => (
         for (const index in auxAttrs) {
             if (isAttrsVisible[auxAttrs[index].id]) {
                 auxAttrs[index].visible = true;

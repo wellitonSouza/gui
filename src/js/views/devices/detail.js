@@ -347,6 +347,8 @@ class DyAttributeArea extends Component {
         const auxActuators = JSON.parse(JSON.stringify(actuators));
         // preparing dynamic attributes
 
+        console.log('auxAttrs', auxAttrs);
+
         // Object.entries(auxAttrs).map(([index, element]) => (
         for (const index in auxAttrs) {
             if (isAttrsVisible[auxAttrs[index].id]) {

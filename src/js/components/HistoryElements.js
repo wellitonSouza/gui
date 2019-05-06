@@ -112,6 +112,7 @@ function HistoryList(props) {
     }
     if (listValues.length > 0) {
         listValues.reverse();
+        console.log('listValues', listValues);
         return (
             <div className="relative full-height">
                 <div className="full-height full-width history-list">
@@ -119,7 +120,7 @@ function HistoryList(props) {
                             {typeof i.value === "boolean" ?
                                 <div className="value">{i.value.toString()}</div> :
                                 <div
-                                    className="value">{i.value !== null && (i.value.length != undefined && i.value.length > 0) ? i.value :
+                                    className="value">{i.value !== null && (i.value.length !== undefined && i.value.length > 0) ? i.value :
                                     <span className="red-text"> <em>Invalid data </em></span>}</div>
                             }
                             <div className="label">{util.iso_to_date(i.ts)}</div>
@@ -290,7 +291,7 @@ function Attr(props) {
     console.log('newValueForFwStateAndResult', newValueForFwStateAndResult, props);
     if (newValueForFwStateAndResult !== null) {
         props.MeasureStore.data[props.device.id][`_${props.attr}`] = newValueForFwStateAndResult;
-        console.log('newValueForFwStateAndResult props', props );
+        console.log('newValueForFwStateAndResult props', props);
         return (
             <HistoryList {...props} />
         );

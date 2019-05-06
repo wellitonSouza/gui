@@ -289,11 +289,11 @@ class SidebarImage extends Component {
         const { attrs } = this.state;
 
         const state = attrsReceive[this.getAttrLabel(FW_STATE_META_LABEL)];
-        if (state) {
+        if (typeof state === 'number') {
             attrs.fwUpdateState = state;
         }
         const result = attrsReceive[this.getAttrLabel(FW_RESULT_META_LABEL)];
-        if (result) {
+        if (typeof result === 'number') {
             attrs.fwUpdateResult = result;
         }
         const version = attrsReceive[this.getAttrLabel(FW_VERSION_META_LABEL)];

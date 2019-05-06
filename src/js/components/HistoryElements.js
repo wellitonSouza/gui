@@ -287,11 +287,10 @@ function Attr(props) {
         return <NoDataAv/>;
     }
 
-    const newValueForFwStateAndResult = FirmwareHelper.getNewParsedValueForAttrStateOrResult(props.metadata, props.MeasureStore.data[props.device.id][`_${props.attr}`]);
-    console.log('newValueForFwStateAndResult', newValueForFwStateAndResult, props);
-    if (newValueForFwStateAndResult !== null) {
-        props.MeasureStore.data[props.device.id][`_${props.attr}`] = newValueForFwStateAndResult;
-        console.log('newValueForFwStateAndResult props', props);
+    //this is used in firmware update, its just a expect to show the full infos about state and result
+    const newValuesForFwStateAndResult = FirmwareHelper.transformStatusToFullTextStatus(props.metadata, props.MeasureStore.data[props.device.id][`_${props.attr}`]);
+    if (newValuesForFwStateAndResult !== null) {
+        props.MeasureStore.data[props.device.id][`_${props.attr}`] = newValuesForFwStateAndResult;
         return (
             <HistoryList {...props} />
         );

@@ -2,48 +2,96 @@
     "header": "Gerenciar Imagens",
     "remove_image_header": "Remover imagem",
     "title": "Firmware",
-    "btn" : "Gerenciar Imagens",
-    "no_data" : "Dado não recebido",
+    "update_firmware": "Atualização de Firmware",
+    "btn": "Gerenciar Imagens",
+    "btn_manage_images": "Gerenciar Imagens do modelo",
+    "btn_manage_images_alt": "Gerenciar imagens associadas ao modelo de atualização de firmware",
+    "no_data": "Indisponível",
+    "title_info": "Informações atuais do dispositivo:",
     "alerts": {
-      "valid_image":"Selecione uma imagem válida.",
-      "template_updated":"Modelo atualizado com sucesso!",
-      "click_to_new_image" :"Clique aqui para adicionar uma nova imagem.",
-      "image_created": "Imagem criada.",
-      "image_updated": "Imagem atualizada.",
-      "image_removed": "Image removida.",
-      "file_added": "Arquivo adicionado.",
-      "image_to_transfer": "Imagem a ser transferida",
-      "image_transferred": "Requisição para transferir a imagem foi aceita.",
-      "image_applied":"Requisição para aplicar a imagem foi aceita.",
-      "qst_remove": "Você está prestes a remover uma imagem. Você tem certeza?"
+        "valid_image": "Selecione uma imagem válida.",
+        "template_updated": "Modelo atualizado com sucesso!",
+        "click_to_new_image": "Clique aqui para adicionar uma nova imagem.",
+        "image_created": "Imagem criada.",
+        "image_updated": "Imagem atualizada.",
+        "image_removed": "Image removida.",
+        "version_created": "Versão criada {{version}}.",
+        "version_updated": "Versão atualizada.",
+        "version_removed": "Versão removida.",
+        "version_required": "Versão da imagem requerida.",
+        "not_to_be_save": "Não há nenhuma mudança a ser salva",
+        "file_added": "Arquivo de imagem associado a versão {{version}}.",
+        "image_to_transfer": "Transferir imagem para o dispositivo:",
+        "apply_the_image": "Aplicar imagem {{image}} ao dispositivo:",
+        "image_transferred": "Requisição para transferir a imagem foi enviada.",
+        "image_reset_header": "Habilitar o envio de outra imagem:",
+        "image_reset": "Requisição para habilitar o envio de uma nova imagem.",
+        "image_applied": "Requisição para aplicar a imagem foi enviada.",
+        "qst_remove": "Você está prestes a remover uma versão. Você tem certeza?",
+        "qst_remove_binary": "Você está prestes a remover uma imagem. Você tem certeza?"
     },
-    "labels":{
-        "remove":"Remover Imagem",
-        "rem":"Remover",
-        "transfer":"Enviar",
-        "apply":"Aplicar",
-        "available":"Imagens disponíveis"
+    "labels": {
+        "remove": "Remover Versão",
+        "rem": "Remover esta versão",
+        "rem_bin": "Remover esta imagem associada a versão",
+        "transfer": "Enviar imagem ao dispositivo",
+        "transfer_alt": "Transferir imagem ao dispositivo para atualização de firmware",
+        "apply": "Aplicar atualização da imagem",
+        "apply_alt": "Efetivar atualização da firmware a partir da imagem transferida para o dispositivo",
+        "reset": "Definir dispositivo para 'Em espera'",
+        "reset_alt": "Reinicia o fluxo e possibilita o envio de uma nova imagem",
+        "available": "Imagens disponíveis para transferência",
+        "select_image": "Selecione uma imagem",
+        "title_modal_apply": "Aplicar atualização",
+        "qst_apply_image": "Deseja atualizar a firmware do dispositivo aplicando a imagem {{image}}?",
+        "btn_apply": "Aplicar",
+        "close": "Fechar atualização de firmware"
     },
-    "states":{
+    "states": {
         "enabled": "Firmware ativado",
         "disabled": "Firmware desativado",
         "short_desc": "Esta opção permite o modelo gerenciar imagens de firmware.",
-        "long_desc": "Para confirmar a configuração, por favor atualize os seguintes campos:"
+        "long_desc": "Atributos utilizados para gerenciar as informações da atualização de firmware:"
     },
-    "default_attrs":
-    {
-        "state":"Estado Atual",
-        "update_result":"Resultado da Atualização",
-        "upload_image":"Upload da Imagem",
+    "default_attrs": {
+        "state": "Estado",
+        "update_result": "Resultado da atualização da imagem",
+        "transferred": "Última versão transferida",
+        "upload_image": "Upload da Imagem",
         "apply_image": "Aplicar Imagem",
-        "current_version": "Versão Atual"
+        "current_version": "Versão"
     },
-    "image_list":
-    {
-        "version":"Versão da Imagem",
-        "hash":"Informação do Binário",
-        "created_at":"Criado em",
-        "no_binary_yet":"Sem binário.",
+    "default_attrs_template": {
+        "state": "Estado do dispositivo",
+        "update_result": "Resultado da atualização da imagem",
+        "transferred": "Última versão transferida",
+        "upload_image": "Define qual imagem será transferida",
+        "apply_image": "Dispara a atualização da versão",
+        "current_version": "Versão atual da imagem"
+    },
+    "image_list": {
+        "version": "Versão da Imagem",
+        "hash": "Informação do Binário",
+        "created_at": "Criado em",
+        "no_binary_yet": "Sem binário.",
         "dropzone_desc": "Solte o arquivo ou clique para selecionar uma imagem."
+    },
+    "state": {
+        "0": "Em espera",
+        "1": "Em transferência",
+        "2": "Transferência concluída",
+        "3": "Atualizando"
+    },
+    "result": {
+        "0": "Ação iniciada",
+        "1": "Imagem de firmware atualizada com sucesso",
+        "2": "Falta espaço em flash",
+        "3": "Memória RAM insuficiente para transferência da imagem",
+        "4": "Conexão perdida durante a transferência da imagem",
+        "5": "Falha na verificação de integridade da nova imagem",
+        "6": "Tipo da imagem não suportado",
+        "7": "Localizador de imagem inválido",
+        "8": "Falha na atualização da imagem de firmware",
+        "9": "Protocolo não suportado"
     }
 }

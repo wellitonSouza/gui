@@ -26,7 +26,7 @@ import { withNamespaces } from 'react-i18next';
 
 function ToggleWidget(props) {
     function checkAndToggle(currentState) {
-        if (props.toggleState == currentState) props.toggle();
+        if (props.toggleState === currentState) props.toggle();
     }
 
     return (
@@ -153,7 +153,7 @@ class DevicesComponent extends Component {
         const newDisplay = !this.state.displayList;
         // reload devices for maps
         this.dev_opex.setDefaultFilter();
-        if (!newDisplay) 
+        if (!newDisplay)
              this.dev_opex.setFilterToMap();
 
         this.dev_opex._fetch(() => {

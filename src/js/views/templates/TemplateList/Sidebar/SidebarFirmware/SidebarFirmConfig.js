@@ -193,7 +193,7 @@ class SidebarFirmConfig extends Component {
                                                             value={attrs.current_state.user_value}
                                                             onChange={e => this.changeAttrValue(e)}
                                                         >
-                                                            {t('firmware:default_attrs.state')}
+                                                            {t('firmware:default_attrs_template.state')}
                                                         </MaterialInput>
                                                     </div>
                                                     <div className="body-attribute-name">
@@ -204,7 +204,7 @@ class SidebarFirmConfig extends Component {
                                                             value={attrs.update_result.user_value}
                                                             onChange={e => this.changeAttrValue(e)}
                                                         >
-                                                            {t('firmware:default_attrs.update_result')}
+                                                            {t('firmware:default_attrs_template.update_result')}
                                                         </MaterialInput>
                                                     </div>
                                                     <div className="body-attribute-name">
@@ -215,7 +215,7 @@ class SidebarFirmConfig extends Component {
                                                             value={attrs.upload_image.user_value}
                                                             onChange={e => this.changeAttrValue(e)}
                                                         >
-                                                            {t('firmware:default_attrs.upload_image')}
+                                                            {t('firmware:default_attrs_template.upload_image')}
                                                         </MaterialInput>
                                                     </div>
                                                     <div className="body-attribute-name">
@@ -226,7 +226,7 @@ class SidebarFirmConfig extends Component {
                                                             value={attrs.apply_image.user_value}
                                                             onChange={e => this.changeAttrValue(e)}
                                                         >
-                                                            {t('firmware:default_attrs.apply_image')}
+                                                            {t('firmware:default_attrs_template.apply_image')}
                                                         </MaterialInput>
                                                     </div>
                                                     <div className="body-attribute-name">
@@ -237,7 +237,7 @@ class SidebarFirmConfig extends Component {
                                                             value={attrs.current_version.user_value}
                                                             onChange={e => this.changeAttrValue(e)}
                                                         >
-                                                            {t('firmware:default_attrs.current_version')}
+                                                            {t('firmware:default_attrs_template.current_version')}
                                                         </MaterialInput>
                                                     </div>
                                                 </div>

@@ -375,12 +375,12 @@ class GenericModalComponent extends Component {
                         </div>
                     </div>
                     <div className="col s12 text-right">
-                        <DojotBtnClassic type="secondary" onClick={this.dismiss}
-                                         label={t('cancel.label')}
-                                         title={t('cancel.label')}/>
                         <DojotBtnClassic color="blue" type="primary" onClick={this.primary_click}
                                          label={this.props.op_type.label}
                                          title={this.props.op_type.label}/>
+                        <DojotBtnClassic type="secondary" onClick={this.dismiss}
+                                         label={t('cancel.label')}
+                                         title={t('cancel.label')}/>
                     </div>
                 </div>
                 <div className="modal-background" onClick={this.dismiss}/>

@@ -50,7 +50,7 @@ class Util {
     }
 
     /**
-     *  Full Url for socketio
+     *  Full Url for socketIO
      * @returns {string} Ex.: http://localhost:8000/stream/socketio
      */
     getUrlTokenSocketIO(){

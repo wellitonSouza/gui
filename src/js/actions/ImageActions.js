@@ -1,4 +1,4 @@
-import imageManager from 'Comms/ImageManager';
+import imageManager from 'Comms/firmware/ImageManager';
 import toaster from 'Comms/util/materialize';
 
 const alt = require('../alt');

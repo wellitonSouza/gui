@@ -72,6 +72,9 @@ class Sidebar extends Component {
             showSidebarDevice,
             device,
             isNewDevice,
+            usedTemplates: [],
+            selectedTemplates: [],
+            selectAttr: [],
         });
     }
 

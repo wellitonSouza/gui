@@ -24,7 +24,11 @@ module.exports = {
     },
 
     checkExistCard(name) {
-        I.waitForElement(locate('.card-size').find('div').withAttr({ title: name }));
+        I.seeElement(locate('.card-size').find('div').withAttr({ title: name }));
+    },
+
+    checkNonExistCard(name) {
+        I.dontSeeElement(locate('.card-size').find('div').withAttr({ title: name }));
     },
 
 

@@ -63,7 +63,7 @@ const StateFirmwareDevice = (props) => {
                         {t('firmware:default_attrs.transferred')}
                     </div>
                     <div className="value">
-                        {transferred !== undefined && transferred !== null && transferred.trim() !== '' ? transferred : t('firmware:no_data')}
+                        {transferred !== undefined && transferred !== null ? transferred : t('firmware:no_data')}
                     </div>
                 </div>
             </div>
@@ -248,14 +248,6 @@ class SidebarImage extends Component {
             const versionLbAttr = this.getAttrLabel(FW_VERSION_META_LABEL);
             const transLbAttr = this.getAttrLabel(FW_TRANSFER_META_LABEL);
 
-            this.setState({
-                attrs: {
-                    fwUpdateState: null,
-                    fwUpdateResult: null,
-                    fwUpdateVersion: null,
-                    fwUpdateTransferred: null,
-                },
-            });
             HistoryActions.fetchLastAttrDataByDeviceIDAndAttrLabel.defer(deviceId, stateLbAttr, 'state');
             HistoryActions.fetchLastAttrDataByDeviceIDAndAttrLabel.defer(deviceId, resultLbAttr, 'result');
             HistoryActions.fetchLastAttrDataByDeviceIDAndAttrLabel.defer(deviceId, versionLbAttr, 'version');
@@ -296,7 +288,6 @@ class SidebarImage extends Component {
     receivedImageInformation(data) {
         const { attrs: attrsReceive } = data;
         const { deviceId } = this.props;
-
         const stateLabel = this.getAttrLabel(FW_STATE_META_LABEL);
         const state = attrsReceive[stateLabel];
         if (typeof state === 'number') {
@@ -311,12 +302,12 @@ class SidebarImage extends Component {
 
         const versionLabel = this.getAttrLabel(FW_VERSION_META_LABEL);
         const version = attrsReceive[versionLabel];
-        if (version) {
+        if (typeof version === 'string') {
             HistoryActions.updateAttrHistory.defer(deviceId, versionLabel, version, 'version');
         }
         const transferredLabel = this.getAttrLabel(FW_TRANSFER_META_LABEL);
         const transferred = attrsReceive[transferredLabel];
-        if (transferred) {
+        if (typeof transferred === 'string') {
             HistoryActions.updateAttrHistory.defer(deviceId, transferredLabel, transferred, 'transfer');
         }
     }

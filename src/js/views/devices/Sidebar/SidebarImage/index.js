@@ -20,8 +20,7 @@ import {
     FW_TRANSFER_META_LABEL,
     FW_APPLY_META_LABEL,
 } from 'Comms/firmware/FirmwareMetasConst';
-
-import FirmwareWebSocket from './FirmwareWebSocket';
+import FWSocketIO from './FWSocketIO';
 
 
 const StateFirmwareDevice = (props) => {
@@ -48,7 +47,7 @@ const StateFirmwareDevice = (props) => {
                         {t('firmware:default_attrs.state')}
                     </div>
                     <div className="value">
-                        {state !== undefined ? `${t(`firmware:state.${state}`)} (${state})` : t('firmware:no_data')}
+                        {state !== undefined && state !== null ? `${t(`firmware:state.${state}`)} (${state})` : t('firmware:no_data')}
                     </div>
                 </div>
                 <div className="info-group">
@@ -56,7 +55,7 @@ const StateFirmwareDevice = (props) => {
                         {t('firmware:default_attrs.update_result')}
                     </div>
                     <div className="value">
-                        {result !== undefined ? `${t(`firmware:result.${result}`)} (${result})` : t('firmware:no_data')}
+                        {result !== undefined && result !== null ? `${t(`firmware:result.${result}`)} (${result})` : t('firmware:no_data')}
                     </div>
                 </div>
                 <div className="info-group">
@@ -217,12 +216,11 @@ class SidebarImage extends Component {
                 loaded: false,
             };
         }
-
-        if (state.attrs.fwUpdateVersion === undefined
-            || state.attrs.fwUpdateResult === undefined
-            || state.attrs.fwUpdateState === undefined
-            || state.attrs.fwUpdateTransferred === undefined) {
-            const { is: { history } } = props;
+        const { is: { history } } = props;
+        if (state.attrs.fwUpdateVersion !== history.version
+            || state.attrs.fwUpdateResult !== history.result
+            || state.attrs.fwUpdateState !== history.state
+            || state.attrs.fwUpdateTransferred !== history.transfer) {
             return {
                 ...state,
                 attrs: {
@@ -250,10 +248,21 @@ class SidebarImage extends Component {
             const versionLbAttr = this.getAttrLabel(FW_VERSION_META_LABEL);
             const transLbAttr = this.getAttrLabel(FW_TRANSFER_META_LABEL);
 
+            this.setState({
+                attrs: {
+                    fwUpdateState: null,
+                    fwUpdateResult: null,
+                    fwUpdateVersion: null,
+                    fwUpdateTransferred: null,
+                },
+            });
             HistoryActions.fetchLastAttrDataByDeviceIDAndAttrLabel.defer(deviceId, stateLbAttr, 'state');
             HistoryActions.fetchLastAttrDataByDeviceIDAndAttrLabel.defer(deviceId, resultLbAttr, 'result');
             HistoryActions.fetchLastAttrDataByDeviceIDAndAttrLabel.defer(deviceId, versionLbAttr, 'version');
             HistoryActions.fetchLastAttrDataByDeviceIDAndAttrLabel.defer(deviceId, transLbAttr, 'transfer');
+
+            FWSocketIO.disconnect();
+            FWSocketIO.connect(deviceId, this.receivedImageInformation);
 
             this.setState({
                 loaded: true,
@@ -286,27 +295,30 @@ class SidebarImage extends Component {
 
     receivedImageInformation(data) {
         const { attrs: attrsReceive } = data;
-        const { attrs } = this.state;
+        const { deviceId } = this.props;
 
-        const state = attrsReceive[this.getAttrLabel(FW_STATE_META_LABEL)];
+        const stateLabel = this.getAttrLabel(FW_STATE_META_LABEL);
+        const state = attrsReceive[stateLabel];
         if (typeof state === 'number') {
-            attrs.fwUpdateState = state;
+            HistoryActions.updateAttrHistory.defer(deviceId, stateLabel, state, 'state');
         }
-        const result = attrsReceive[this.getAttrLabel(FW_RESULT_META_LABEL)];
+
+        const resultLabel = this.getAttrLabel(FW_RESULT_META_LABEL);
+        const result = attrsReceive[resultLabel];
         if (typeof result === 'number') {
-            attrs.fwUpdateResult = result;
+            HistoryActions.updateAttrHistory.defer(deviceId, resultLabel, result, 'result');
         }
-        const version = attrsReceive[this.getAttrLabel(FW_VERSION_META_LABEL)];
+
+        const versionLabel = this.getAttrLabel(FW_VERSION_META_LABEL);
+        const version = attrsReceive[versionLabel];
         if (version) {
-            attrs.fwUpdateVersion = version;
+            HistoryActions.updateAttrHistory.defer(deviceId, versionLabel, version, 'version');
         }
-        const transferred = attrsReceive[this.getAttrLabel(FW_TRANSFER_META_LABEL)];
+        const transferredLabel = this.getAttrLabel(FW_TRANSFER_META_LABEL);
+        const transferred = attrsReceive[transferredLabel];
         if (transferred) {
-            attrs.fwUpdateTransferred = transferred;
+            HistoryActions.updateAttrHistory.defer(deviceId, transferredLabel, transferred, 'transfer');
         }
-        this.setState({
-            attrs,
-        });
     }
 
     callUploadImage() {
@@ -388,7 +400,7 @@ class SidebarImage extends Component {
 
     render() {
         const {
-            t, toogleSidebarImages, showSidebarImage, is, deviceId,
+            t, toogleSidebarImages, showSidebarImage, is,
         } = this.props;
         const { images } = is;
         const {
@@ -434,7 +446,6 @@ class SidebarImage extends Component {
                         op_type={{ label: t('firmware:labels.btn_apply') }}
                     />
                 ) : <div />}
-                <FirmwareWebSocket onChange={this.receivedImageInformation} deviceId={deviceId} />
                 <Slide right when={showSidebarImage} duration={300}>
                     {showSidebarImage
                         ? (

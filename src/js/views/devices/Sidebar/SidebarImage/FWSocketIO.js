@@ -1,6 +1,5 @@
 import socketIO from 'socket.io-client';
 import toaster from 'Comms/util/materialize';
-//import NotificationActions from 'Actions/NotificationActions';
 import util from 'Comms/util';
 
 let sio = null;
@@ -14,10 +13,7 @@ class FWSocketIO {
                 },
                 transports: ['polling'],
             });
-
-            console.log('connect', deviceId);
             sio.on(deviceId, (data) => {
-                //NotificationActions.append(data);
                 receivedImageInformation(data);
             });
             sio.on('error', (data) => {
@@ -36,7 +32,6 @@ class FWSocketIO {
     }
 
     static disconnect() {
-        console.log('disconnect');
         if (sio) sio.close();
     }
 }

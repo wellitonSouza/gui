@@ -1,30 +1,30 @@
 {
-  "title": "Grupos",
+  "title": "Perfis",
   "description": "Descrição",
   "alerts": {
-    "group": "grupo",
-    "empty_name": "Nome do grupo vazio",
-    "invalid_name": "Nome do grupo inválido",
-    "empty_desc": "Descrição do grupo vazia",
-    "group_create": "Grupo criado",
-    "group_modify": "Grupo alterado",
-    "group_remove": "Grupo removido",
-    "admin_not_remove": "Este grupo não pode ser alterado."
+    "group": "perfil",
+    "empty_name": "Nome do perfil vazio",
+    "invalid_name": "Nome do perfil inválido",
+    "empty_desc": "Descrição do perfil vazia",
+    "group_create": "Perfil criado",
+    "group_modify": "Perfil alterado",
+    "group_remove": "Perfil removido",
+    "admin_not_remove": "Este perfil não pode ser alterado."
   },
   "btn": {
     "new": {
-      "text": "Novo grupo",
-      "alt": "Criar novo grupo"
+      "text": "Novo perfil",
+      "alt": "Criar novo perfil"
     }
   },
   "form": {
     "title": {
-      "new": "Novo grupo",
-      "edit": "Editar grupo"
+      "new": "Novo perfil",
+      "edit": "Editar perfil"
     },
     "input": {
       "groupname": {
-        "label": "Nome do grupo",
+        "label": "Nome do perfil",
         "error": "Por favor use somente letras (a-z)"
       },
       "groupdescription": {

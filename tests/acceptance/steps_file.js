@@ -7,6 +7,19 @@ module.exports = () => {
 
     return actor({
 
+        loginAdmin(I, clearDb) {
+            I.amOnPage(env.dojot_host);
+            I.setEnglishLanghage();
+            I.refreshPage();
+            I.see('Sign in');
+            I.fillField('Username', 'admin');
+            I.fillField('Password', 'admin');
+            I.click('Login');
+            I.wait(3);
+            if (clearDb) { I.clearDatabase(); }
+            I.refreshPage();
+        },
+
         seeInputByNameAndValue(name, value) {
             this.seeElement(locate('input')
                 .withAttr({

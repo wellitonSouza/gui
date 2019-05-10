@@ -7,14 +7,6 @@ import { DojotBtnClassic } from '../DojotButton';
 export default class ImportExport extends Component {
     constructor(props) {
         super(props);
-
-        this.dismiss = this.dismiss.bind(this);
-    }
-
-    dismiss() {
-        const { openModal, toggleSidebar } = this.props;
-        openModal(false);
-        toggleSidebar();
     }
 
     render() {
@@ -42,7 +34,7 @@ export default class ImportExport extends Component {
                         })}
                     </div>
                     <div className="footer">
-                        <DojotBtnClassic is_secondary onClick={this.dismiss} label={i18n.t('cancel.label')} title={i18n.t('cancel.label')} />
+                        <DojotBtnClassic is_secondary onClick={this.props.closeModal} label={i18n.t('cancel.label')} title={i18n.t('cancel.label')} />
                         {save ? (
                             <DojotBtnClassic
                                 is_secondary={false}
@@ -54,7 +46,7 @@ export default class ImportExport extends Component {
                             : null }
                     </div>
                 </div>
-                <div className="rightsidebar" onClick={() => this.dismiss()} onKeyPress={this.dismiss} role="button" tabIndex={0} />
+                <div className="rightsidebar" onClick={this.props.closeModal} onKeyPress={this.props.closeModal} role="button" tabIndex={0} />
             </div>
         );
     }

@@ -52,6 +52,7 @@ class ImportExportMain extends Component {
                     openModal={openModal}
                     toggleSidebar={toggleSidebar}
                     save={false}
+                    closeModal={this.dismiss}
                 >
                     <div className="">
                         <HeadImportExport main icon="import-export-icon" title={t('importExport:title')} firstMessage="" />

@@ -63,7 +63,7 @@ const StateFirmwareDevice = (props) => {
                         {t('firmware:default_attrs.transferred')}
                     </div>
                     <div className="value">
-                        {transferred !== undefined && transferred !== null ? transferred : t('firmware:no_data')}
+                        {transferred !== undefined && transferred !== null && transferred !== '' ? transferred : t('firmware:no_data')}
                     </div>
                 </div>
             </div>

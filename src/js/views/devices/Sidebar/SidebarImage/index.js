@@ -25,8 +25,18 @@ import FWSocketIO from './FWSocketIO';
 
 const StateFirmwareDevice = (props) => {
     const {
-        version, state, result, transferred, t,
+        version, state, result, transferred, t, showTransferred, showTransferring, showApplying,
     } = props;
+
+    let labelTransfer = '';
+    if (showTransferred) {
+        labelTransfer = t('firmware:default_attrs.transferred');
+    } else if (showTransferring) {
+        labelTransfer = t('firmware:default_attrs.transferring');
+    } else if (showApplying) {
+        labelTransfer = t('firmware:default_attrs.applying');
+    }
+
     return (
         <div className="info firmware-enabled">
             <div className="title-info">
@@ -58,14 +68,17 @@ const StateFirmwareDevice = (props) => {
                         {result !== undefined && result !== null ? `${t(`firmware:result.${result}`)} (${result})` : t('firmware:no_data')}
                     </div>
                 </div>
-                <div className="info-group">
-                    <div className="label">
-                        {t('firmware:default_attrs.transferred')}
-                    </div>
-                    <div className="value">
-                        {transferred !== undefined && transferred !== null && transferred !== '' ? transferred : t('firmware:no_data')}
-                    </div>
-                </div>
+                {showTransferred || showTransferring || showApplying
+                    ? (
+                        <div className="info-group">
+                            <div className="label">
+                                {labelTransfer}
+                            </div>
+                            <div className="value">
+                                {transferred !== undefined && transferred !== null && transferred !== '' ? transferred : t('firmware:no_data')}
+                            </div>
+                        </div>
+                    ) : null}
             </div>
         </div>
     );
@@ -77,6 +90,9 @@ StateFirmwareDevice.propTypes = {
     version: PropTypes.string.isRequired,
     transferred: PropTypes.string.isRequired,
     t: PropTypes.func.isRequired,
+    showTransferred: PropTypes.bool.isRequired,
+    showTransferring: PropTypes.bool.isRequired,
+    showApplying: PropTypes.bool.isRequired,
 };
 
 function BtnActionImgFirmware(props) {
@@ -424,6 +440,21 @@ class SidebarImage extends Component {
             enableBtnReset = true;
         }
 
+        let showTransferring = false;
+        if (state === 1) {
+            showTransferring = true;
+        }
+
+        let showTransferred = false;
+        if (state === 2) {
+            showTransferred = true;
+        }
+
+        let showApplying = false;
+        if (state === 3) {
+            showApplying = true;
+        }
+
         return (
             <Fragment>
                 {showApplyModal ? (
@@ -473,6 +504,9 @@ class SidebarImage extends Component {
                                                 state={attrs.fwUpdateState}
                                                 transferred={attrs.fwUpdateTransferred}
                                                 t={t}
+                                                showTransferring={showTransferring}
+                                                showTransferred={showTransferred}
+                                                showApplying={showApplying}
                                             />
                                         </div>
 

@@ -440,20 +440,9 @@ class SidebarImage extends Component {
             enableBtnReset = true;
         }
 
-        let showTransferring = false;
-        if (state === 1) {
-            showTransferring = true;
-        }
-
-        let showTransferred = false;
-        if (state === 2) {
-            showTransferred = true;
-        }
-
-        let showApplying = false;
-        if (state === 3) {
-            showApplying = true;
-        }
+        const showTransferring = state === 1;
+        const showTransferred = state === 2;
+        const showApplying = state === 3;
 
         return (
             <Fragment>

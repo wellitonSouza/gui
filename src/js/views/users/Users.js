@@ -28,7 +28,7 @@ class SideBar extends Component {
                 email: '',
                 confirmEmail: '',
                 profile: '',
-                service: 'admin'
+                service: ''
             },
             show_modal: false,
             confirmEmail: '',
@@ -135,7 +135,9 @@ class SideBar extends Component {
 
     handleCreate() {
         if (this.checkValidation()) {
+            const { userTenant } = this.props;
             const temp = this.state.user;
+            temp.service = userTenant;
             temp.email = String(temp.email)
                 .toLowerCase();
             const { t } = this.props;
@@ -164,7 +166,7 @@ class SideBar extends Component {
             email: '',
             confirmEmail: '',
             profile: '',
-            service: 'admin'
+            service: ''
         });
         this.props.hide();
         this.loadUsers();
@@ -598,7 +600,7 @@ class UserList extends Component {
                 email: '',
                 confirmEmail: '',
                 profile: '',
-                service: 'admin'
+                service: ''
             }
         };
 
@@ -619,7 +621,7 @@ class UserList extends Component {
                     email: '',
                     confirmEmail: '',
                     profile: '',
-                    service: 'admin'
+                    service: ''
                 }
             };
         }
@@ -656,7 +658,7 @@ class UserList extends Component {
             email: '',
             confirmEmail: '',
             profile: '',
-            service: 'admin',
+            service: '',
         };
         this.setState(temp);
     }
@@ -666,11 +668,11 @@ class UserList extends Component {
     }
 
     render() {
-        const {t} = this.props;
+        const {t, user : {service}} = this.props;
         return (
             <div className="fill">
                 <AltContainer store={UserStore}>
-                    <SideBar {...this.state} t={t} hide={this.hideSideBar}
+                    <SideBar userTenant={service} {...this.state} t={t} hide={this.hideSideBar}
                              visible={this.props.visible}
                              formUser={this.formUser}/>
                 </AltContainer>

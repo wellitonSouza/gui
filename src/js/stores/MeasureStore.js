@@ -1,5 +1,7 @@
 /* eslint-disable */
 import util from '../comms/util';
+
+
 const alt = require('../alt');
 const MeasureActions = require('../actions/MeasureActions');
 const TrackingActions = require('../actions/TrackingActions');
@@ -66,7 +68,7 @@ class MeasureStore {
      * @param measureData
      */
     handleUpdateTracking(measureData) {
-        const { metadata: { deviceid , timestamp }, attrs } = measureData;
+        const {metadata: {deviceid, timestamp}, attrs} = measureData;
         if (this.geoLabelForTracking[deviceid]) {
             for (const label in attrs) {
                 if (this.geoLabelForTracking[deviceid] === label) {
@@ -95,10 +97,12 @@ class MeasureStore {
                 for (const attrID in this.data[deviceID].attrs[templateID]) {
                     for (const label in measureData.attrs) {
                         if (this.data[deviceID].attrs[templateID][attrID].label === label) {
+
                             const attrValue = {
                                 ts: now,
                                 value: measureData.attrs[label],
                             };
+
 
                             if (this.data[deviceID][`_${label}`] === undefined) {
                                 this.data[deviceID][`_${label}`] = [];
@@ -110,14 +114,14 @@ class MeasureStore {
                                 if (this.tracking[measureData.metadata.deviceid] !== undefined && this.tracking[measureData.metadata.deviceid] !== null) {
                                     const trackingStructure = {
                                         device_id: measureData.metadata.deviceid,
-                                        position:  this.parserPosition(measureData.attrs[label]),
+                                        position: this.parserPosition(measureData.attrs[label]),
                                         timestamp: util.iso_to_date(now),
                                     };
                                     if (this.tracking[measureData.metadata.deviceid].unshift(trackingStructure) > 5) {
                                         this.tracking[measureData.metadata.deviceid] = this.tracking[measureData.metadata.deviceid].slice(0, 4);
                                     }
                                 }
-                            }else{
+                            } else {
                                 if (this.data[deviceID][`_${label}`].length > 10) {
                                     this.data[deviceID][`_${label}`].shift();
                                 }

@@ -1,6 +1,7 @@
 /* eslint-disable */
 const alt = require('../alt');
 const ImageActions = require('../actions/ImageActions');
+const HistoryActions = require('../actions/HistoryActions');
 
 class ImageStore {
     constructor() {
@@ -8,6 +9,7 @@ class ImageStore {
         this.error = null;
         this.loading = false;
         this.imageAllowed = false;
+        this.history = {};
 
         this.bindListeners({
 
@@ -36,7 +38,19 @@ class ImageStore {
             fetchSingle: ImageActions.FETCH_SINGLE,
 
             handleFailure: ImageActions.IMAGES_FAILED,
+
+            handleUpdateHistory: HistoryActions.updateAttrHistory,
+            handleFailureHistory: HistoryActions.failed,
         });
+    }
+
+    handleUpdateHistory(data) {
+        this.history[data.newLabel] = data.value;
+    }
+
+    handleFailureHistory(error) {
+        this.error = error;
+        this.loading = false;
     }
 
     handleRemoveBinaryInfo(imageId) {
@@ -65,14 +79,13 @@ class ImageStore {
         this.images[image.id] = JSON.parse(JSON.stringify(image));
     }
 
-    enhanceImage(image)
-    {
+    enhanceImage(image) {
         let newImage;
         newImage = JSON.parse(JSON.stringify(image));
         newImage.has_image = newImage.confirmed;
         newImage.image_hash = null;
         if (newImage.has_image)
-            newImage.image_hash = String(newImage.id)+".hex";
+            newImage.image_hash = String(newImage.id) + ".hex";
         // TODO: request more information to image manager
         newImage.image_version = newImage.fw_version;
         newImage.saved = true;

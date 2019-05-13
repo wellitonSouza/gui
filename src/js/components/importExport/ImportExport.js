@@ -5,20 +5,16 @@ import { DojotBtnClassic } from '../DojotButton';
 
 
 export default class ImportExport extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         const {
             children,
             handleClick,
             save,
             label,
-            closeModal
+            closeModal,
         } = this.props;
+
         return (
-            
             <div>
                 <div className="import-export row">
                     <div className="main-head">

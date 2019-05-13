@@ -22,8 +22,8 @@ exports.config = {
                 handleSIGTERM: false,
                 handleSIGHUP: false,
                 defaultViewport: {
-                    width: 1700,
-                    height: 1080,
+                    width: 1380,
+                    height: 720,
                 },
             },
         },
@@ -34,7 +34,9 @@ exports.config = {
     include: {
         I: './steps_file.js',
         Template: './PageObject/Template.js',
+        User: './PageObject/User.js',
         Flow: './PageObject/Flow.js',
+        Commons: './PageObject/Common.js',
         Device: './PageObject/Device.js',
         Notification: './PageObject/Notification.js',
     },
@@ -59,8 +61,8 @@ exports.config = {
                         I.fillField('Password', 'admin');
                         I.click('Login');
                         I.wait(3);
-                        I.clearDatabase();
-                        I.refreshPage();
+                        //   I.clearDatabase();
+                        //   I.refreshPage();
                     },
                     check: (I) => {
                         I.amOnPage(`${env.dojot_host}/#/`);

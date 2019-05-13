@@ -23,6 +23,13 @@ class GroupStore {
                 subject: 'template',
                 action: 'viewer',
             }],
+        }, {
+            subject: 'user',
+            action: 'modifier',
+            requires: [{
+                subject: 'permission',
+                action: 'viewer',
+            }],
         }];
         this.requiredBy = {};
         // creating systemcorrelations inverse dict (required by)

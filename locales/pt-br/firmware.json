@@ -65,6 +65,8 @@
         "state": "Estado do dispositivo",
         "update_result": "Resultado da atualização da imagem",
         "transferred": "Última versão transferida",
+        "transferring": "Transferindo a versão",
+        "applying": "Aplicando versão",
         "upload_image": "Define qual imagem será transferida",
         "apply_image": "Dispara a atualização da versão",
         "current_version": "Versão atual da imagem"

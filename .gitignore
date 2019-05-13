@@ -1,3 +1,4 @@
+tests/acceptance/output/*
 node_modules/*
 npm-debug.log
 public/*

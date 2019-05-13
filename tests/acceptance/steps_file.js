@@ -52,6 +52,10 @@ module.exports = () => {
             return await this.postJSON('device', json);
         },
 
+        async createUser(json) {
+            return await this.postJSON('auth/user', json);
+        },
+
         async clearDatabase() {
             return await this.postJSON('import', {
                 devices: [],

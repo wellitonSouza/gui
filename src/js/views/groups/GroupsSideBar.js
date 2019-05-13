@@ -131,6 +131,7 @@ function Form(params) {
 }
 
 class GroupsSideBar extends Component {
+    // @todo: we should avoid use derivedState
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.grouppermissions !== prevState.grouppermissions) {
             return {
@@ -161,6 +162,10 @@ class GroupsSideBar extends Component {
             edit: false,
         };
 
+        this.auxGroupPermissions = null;
+        this.addingCorrelations = this.addingCorrelations.bind(this);
+        this.addingPermission = this.addingPermission.bind(this);
+        this.isPossibleRemove = this.isPossibleRemove.bind(this);
         this.handleInput = this.handleInput.bind(this);
         this.discard = this.discard.bind(this);
         this.save = this.save.bind(this);
@@ -168,6 +173,52 @@ class GroupsSideBar extends Component {
         this.handleModalDelete = this.handleModalDelete.bind(this);
         this.handleCheckBox = this.handleCheckBox.bind(this);
     }
+
+    // applying a DFS algorithm strategy with pre order
+    addingCorrelations(subject, action) {
+        const { systemcorrelations } = this.props;
+        const corr = systemcorrelations.filter(n1 => subject === n1.subject && action === n1.action)[0];
+        if (corr === undefined) return;
+        corr.requires.forEach((el) => {
+            const res = groupHasPermission(el.subject, el.action, this.auxGroupPermissions);
+            if (!res) this.addingPermission(el.subject, el.action);
+        });
+    }
+
+    addingPermission(subject, action) {
+        // Adds subject tuple to permissions list
+        if (!groupHasSubject(subject, this.auxGroupPermissions)) {
+            this.auxGroupPermissions.push({
+                subject,
+                actions: [],
+            });
+        }
+
+        this.auxGroupPermissions.forEach((item, index1) => {
+            if (item.subject === subject) {
+                this.auxGroupPermissions[index1].actions.push(action);
+            }
+        });
+
+        this.addingCorrelations(subject, action);
+    }
+
+    isPossibleRemove(subject, action, groupPermissions) {
+        let retrn = true;
+        const { requiredBy } = this.props;
+        if (requiredBy[subject] && requiredBy[subject][action]) {
+            // checking all constraints
+            requiredBy[subject][action].forEach((el) => {
+                const res = groupHasPermission(el.subject, el.action, groupPermissions);
+                if (res) {
+                    retrn = false;
+                }
+                // A restriction is been used;
+            });
+        }
+        return retrn;
+    }
+
 
     handleInput(e) {
         const { name, value } = e.target;
@@ -181,34 +232,35 @@ class GroupsSideBar extends Component {
     }
 
     handleCheckBox(e) {
+        const { systemcorrelations } = this.props;
         const { name } = e.target;
         const [subject, action] = name.split('.');
-        const { grouppermissions } = this.state;
-        // i dont like this block of code, i will improve
-        if (groupHasSubject(subject, grouppermissions)) {
-            const hasPermission = groupHasPermission(subject, action, grouppermissions);
+        let { grouppermissions } = this.state;
+
+        const hasPermission = groupHasPermission(subject, action, grouppermissions);
+        // removing action
+        if (hasPermission) {
+            // check is possible to remove
+            if (!this.isPossibleRemove(subject, action, grouppermissions)) {
+                e.preventDefault();
+                return;
+            }
             grouppermissions.forEach((item, index1) => {
                 if (item.subject === subject) {
-                    if (hasPermission) {
-                        (item.actions).forEach((item2, index2) => {
-                            if (item2 === action) {
-                                grouppermissions[index1].actions[index2] = '';
-                            }
-                        });
-                    } else {
-                        if (!grouppermissions[index1].actions) {
-                            grouppermissions[index1].actions = [];
+                    (item.actions).forEach((item2, index2) => {
+                        if (item2 === action) {
+                            delete grouppermissions[index1].actions[index2];
                         }
-                        grouppermissions[index1].actions.push(action);
-                    }
+                    });
                 }
             });
         } else {
-            grouppermissions.push({
-                subject,
-                actions: [action],
-            });
+            // adding action (using a auxiliar variable)
+            this.auxGroupPermissions = grouppermissions;
+            this.addingPermission(subject, action);
+            grouppermissions = this.auxGroupPermissions;
         }
+
         this.setState({
             grouppermissions,
         });
@@ -365,9 +417,12 @@ class GroupsSideBar extends Component {
 }
 
 GroupsSideBar.propTypes = {
+
     grouppermissions: PropTypes.arrayOf(PropTypes.object).isRequired,
     group: PropTypes.instanceOf(Object).isRequired,
     edit: PropTypes.bool,
+    systemcorrelations: PropTypes.shape({}).isRequired,
+    requiredBy: PropTypes.shape({}).isRequired,
     handleHideSideBar: PropTypes.func.isRequired,
     handleShowSideBar: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,

@@ -15,6 +15,30 @@ class GroupStore {
         this.grouppermissions = [];
         this.systempermissions = [];
 
+        // default permissions_correlations
+        this.systemcorrelations = [{
+            subject: 'device',
+            action: 'modifier',
+            requires: [{
+                subject: 'template',
+                action: 'viewer',
+            }],
+        }];
+        this.requiredBy = {};
+        // creating systemcorrelations inverse dict (required by)
+        this.systemcorrelations.forEach((el) => {
+            el.requires.forEach((req) => {
+                if (!this.requiredBy[req.subject]) {
+                    this.requiredBy[req.subject] = {};
+                }
+
+                if (!this.requiredBy[req.subject][req.action]) {
+                    this.requiredBy[req.subject][req.action] = [];
+                }
+                this.requiredBy[req.subject][req.action].push({ subject: el.subject, action: el.action });
+            });
+        });
+
         this.loading = false;
         this.error = null;
 

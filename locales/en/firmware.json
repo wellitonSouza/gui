@@ -58,6 +58,8 @@
         "update_result": "Result of apply image",
         "upload_image": "Upload Image",
         "transferred": "Last transferred version",
+        "transferring": "Transferring version",
+        "applying": "Applying version",
         "apply_image": "Apply Image",
         "current_version": "Version"
     },

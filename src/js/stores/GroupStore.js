@@ -35,7 +35,9 @@ class GroupStore {
                 if (!this.requiredBy[req.subject][req.action]) {
                     this.requiredBy[req.subject][req.action] = [];
                 }
-                this.requiredBy[req.subject][req.action].push({ subject: el.subject, action: el.action });
+                this.requiredBy[req.subject][req.action].push(
+                    { subject: el.subject, action: el.action },
+                );
             });
         });
 

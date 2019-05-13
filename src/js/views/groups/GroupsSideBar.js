@@ -177,7 +177,8 @@ class GroupsSideBar extends Component {
     // applying a DFS algorithm strategy with pre order
     addingCorrelations(subject, action) {
         const { systemcorrelations } = this.props;
-        const corr = systemcorrelations.filter(n1 => subject === n1.subject && action === n1.action)[0];
+        const corr = systemcorrelations.filter(n1 => subject === n1.subject
+            && action === n1.action)[0];
         if (corr === undefined) return;
         corr.requires.forEach((el) => {
             const res = groupHasPermission(el.subject, el.action, this.auxGroupPermissions);
@@ -232,7 +233,6 @@ class GroupsSideBar extends Component {
     }
 
     handleCheckBox(e) {
-        const { systemcorrelations } = this.props;
         const { name } = e.target;
         const [subject, action] = name.split('.');
         let { grouppermissions } = this.state;

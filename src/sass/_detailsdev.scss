@@ -1247,50 +1247,18 @@ h1, h2, p {
 }
 
 .metadata-wrapper {
-    margin-top: 5px;
+    width: 100%;
 
     .button {
         cursor: pointer;
         color: #aaa;
         border-top: 1px solid #DEDEDE;
-        display: flex;
         flex: 1;
         height: auto;
-        padding: 0 5px;
-        margin: 0 5px;
-        justify-content: flex-end;
+        font-size: 11px;
+        letter-spacing: 0.05em;
     }
 
-    .line-metadata {
-        display: flex;
-        flex: 1;
-        border-top: 1px solid #DEDEDE;
-        padding: 0 5px;
-        margin: 0 5px;
-        z-index: -100;
-        justify-content: space-between;
-        transition: height 900ms ease;
-
-        .label {
-            font-family: "Roboto";
-            font-weight: 400;
-            line-height: 10px;
-            font-size: 11px;
-            letter-spacing: 0.05em;
-            color: #BDBDBD;
-            padding: 5px 0;
-        }
-
-        .value {
-            font-family: "Roboto";
-            font-weight: 400;
-            line-height: 10px;
-            font-size: 11px;
-            letter-spacing: 0.05em;
-            color: #808080;
-            padding: 5px 0;
-        }
-    }
 }
 
 .stt-attributes {

@@ -12,6 +12,7 @@ import DeviceActions from 'Actions/DeviceActions';
 import MeasureStore from 'Stores/MeasureStore';
 import DeviceStore from 'Stores/DeviceStore';
 import ConfigStore from 'Stores/ConfigStore';
+import Metadata from './Details/Metadata';
 import { NewPageHeader } from 'Containers/full/PageHeader';
 import util from 'Comms/util/util';
 
@@ -297,6 +298,7 @@ class GenericList extends Component {
                                         >
                                             {i18next.exists(`types.${attr.value_type}`) ? t(`types.${attr.value_type}`) : attr.value_type}
                                         </div>
+                                        {Object.prototype.hasOwnProperty.call(attr, "metadata") ? <Metadata attr={attr} /> : null }
                                     </div>
                                 </div>
                             </div>
@@ -346,8 +348,6 @@ class DyAttributeArea extends Component {
         const auxAttrs = JSON.parse(JSON.stringify(dynamicAttrs));
         const auxActuators = JSON.parse(JSON.stringify(actuators));
         // preparing dynamic attributes
-
-        console.log('auxAttrs', auxAttrs);
 
         for (const index in auxAttrs) {
             if (isAttrsVisible[auxAttrs[index].id]) {
@@ -583,6 +583,7 @@ class DynamicAttributeList extends Component {
                                     <i className={`fa ${attr.visible ? 'fa-star' : 'fa-star-o'}`} />
                                 </div>
                             </div>
+                            {Object.prototype.hasOwnProperty.call(attr, "metadata") ? <Metadata attr={attr} /> : null }
                         </div>
                     ))}
                 </div>

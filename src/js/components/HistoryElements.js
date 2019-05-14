@@ -7,6 +7,7 @@ import {SmallPositionRenderer} from "../views/utils/Maps";
 
 
 class Graph extends Component {
+
     render() {
         const labels = [];
         const values = [];
@@ -102,30 +103,40 @@ class Graph extends Component {
     }
 }
 
-
 function HistoryList(props) {
     // handle values
     const listValues = [];
+
+    //Get attribute type to compare with received value
+    const attrType = props.type === 'bool' ? 'boolean' : props.type ;
+
+
     for (const k in props.MeasureStore.data[props.device.id][`_${props.attr}`]) {
         listValues[k] = props.MeasureStore.data[props.device.id][`_${props.attr}`][k];
     }
     if (listValues.length > 0) {
         listValues.reverse();
+        
         return (
             <div className="relative full-height">
                 <div className="full-height full-width history-list">
-                    {listValues.map((i, k) => (<div className={`history-row ${k % 2 ? 'alt-row' : ''}`} key={i.ts}>
-                            {typeof i.value === "boolean" ?
-                                <div className="value">{i.value.toString()}</div> :
-                                <div className="value">
-                                    {i.value !== null && (i.value.length !== undefined && i.value.length > 0) ? i.value :
-                                        <span className="red-text">
-                                        <em>Invalid data </em>
-                                    </span>}
-                                </div>
+                    {listValues.map((i, k) => (
+                        
+                    <div className={`history-row ${k % 2 ? 'alt-row' : ''}`} key={i.ts}>
+                        
+                        <div className="value">
+                            {attrType !== typeof i.value ?
+                                <span className="red-text">
+                                    <em>Invalid data </em>
+                                </span>   
+                            :
+                                `${i.value.toString()}`
                             }
-                            <div className="label">{util.iso_to_date(i.ts)}</div>
+
                         </div>
+
+                        <div className="label">{util.iso_to_date(i.ts)}</div>
+                    </div>
                     ))}
                 </div>
             </div>

@@ -116,6 +116,7 @@ Scenario('Checking child tenant equals parent tenant', async (I, Commons, User) 
 });
 
 
+
 Scenario('Checking message in 2 tenants', async (I, Commons, Device) => {
     Device.init(I);
     const deviceA = 'device A';
@@ -163,3 +164,4 @@ Scenario('Checking message in 2 tenants', async (I, Commons, Device) => {
     await I.sendMQTTMessage(deviceId, '{"text": "data B"}', userB.service);
     checkMessage(I, Device, deviceId, 'data B');
 });
+

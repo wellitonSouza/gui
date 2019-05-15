@@ -1331,6 +1331,55 @@ h1, h2, p {
 
 }
 
+
+.metadata-wrapper {
+    width: 100%;
+    padding-bottom: 4px;
+
+    .button-meta {
+        cursor: pointer;
+        color: #333333;
+        flex: 1;
+        height: auto;
+        font-size: 11px;
+        letter-spacing: 0.05em;
+        padding: 2px 18px;
+        font-family: Raleway, serif !important;
+
+        i {
+            float: right;
+        }
+    }
+
+    .line-meta {
+        padding: 4px 18px 4px 28px;
+    }
+
+    .name-value, .value-value {
+        font-family: "Open Sans", sans-serif;
+        font-weight: 300;
+        line-height: 20px;
+        font-size: 12px;
+        letter-spacing: 0.03em;
+        color: rgba(0, 0, 0, 0.50);
+        text-transform: none;
+    }
+
+    .value-value {
+        font-weight: bold;
+        color: rgba(0, 0, 0, 0.75);
+    }
+
+    .value-label {
+        font-family: 'Roboto', sans-serif;
+        line-height: 23px;
+        font-size: 9px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+
+}
+
 .stt-attributes {
     margin: 0;
 

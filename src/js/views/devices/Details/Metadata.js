@@ -1,5 +1,20 @@
-import React, {Component} from 'react';
+import React, { Component, Fragment } from 'react';
 import * as i18next from 'i18next';
+import * as PropTypes from 'prop-types';
+
+const Truncate = (props) => {
+    const { value } = props;
+    return (
+        <Fragment>
+            {value.length > 25
+                ? `${value.substr(0, 21)}...`
+                : value
+            }
+        </Fragment>
+    );
+};
+
+Truncate.propTypes = { value: PropTypes.string.isRequired };
 
 class Metadata extends Component {
     constructor(props) {
@@ -12,33 +27,45 @@ class Metadata extends Component {
     }
 
     showMetadata() {
-        this.setState({open: !this.state.open});
+        const { open } = this.state;
+        this.setState({ open: !open });
     }
 
     render() {
-        const {attr: {metadata}} = this.props;
-        const {open} = this.state;
+        const { attr: { metadata } } = this.props;
+        const { open } = this.state;
+
+        function formatName(item) {
+            return `${item.label} (${item.type})`;
+        }
+
         return (
             <div className="metadata-wrapper">
-                <div className="button" onClick={this.showMetadata}>
-                    {`Meta Attributes (${metadata.length})`}
-                    <i className={`fa ${open ? 'fa-angle-up' : 'fa-angle-down'}`}/>
+                <div
+                    className="button-meta"
+                    onClick={this.showMetadata}
+                    onKeyPress={this.showMetadata}
+                    role="button"
+                    tabIndex={0}
+                >
+                    {`${i18next.t('devices:meta_attributes')} (${metadata.length})`}
+                    <i className={`fa ${open ? 'fa-angle-up' : 'fa-angle-down'}`} />
                 </div>
                 {metadata.map(item => (
                     open && (
-                        <div className="display-flex-column flex-1">
+                        <div className="display-flex-column flex-1 line-meta">
                             <div
                                 className="name-value truncate"
-                                title={`${item.label} (${item.type})`}
+                                title={formatName(item)}
                             >
-                                {`${item.label} (${item.type})`}
+                                <Truncate value={formatName(item)} />
                             </div>
                             <div className="display-flex-no-wrap space-between">
                                 <div
                                     className="value-value truncate"
                                     title={item.static_value}
                                 >
-                                    {item.static_value}
+                                    <Truncate value={item.static_value} />
                                 </div>
                                 <div
                                     className="value-label "
@@ -56,5 +83,7 @@ class Metadata extends Component {
         );
     }
 }
+
+Metadata.propTypes = { attr: PropTypes.shape({}).isRequired };
 
 export default Metadata;

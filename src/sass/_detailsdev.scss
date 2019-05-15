@@ -1148,7 +1148,6 @@ h1, h2, p {
 
 .third-col {
     width: 250px;
-    // display:inline-block;
     height: 100%;
     float: right;
     box-shadow: 0 2px 8px rgba(130, 130, 130, 0.5);
@@ -1204,9 +1203,9 @@ h1, h2, p {
         line-height: 23px;
         font-size: 9px;
         letter-spacing: 0.05em;
-        color: #BDBDBD;
         text-transform: uppercase;
         padding-top: 1px;
+
     }
 
     .body {
@@ -1214,27 +1213,41 @@ h1, h2, p {
     }
 
 
-    .line {
+    .line-dy {
         background: #fbfbfb;
         height: 50px;
-        padding-top: 7px;
         margin-left: 0 !important;
-        margin-bottom: 7px;
         cursor: pointer;
         transition: 300ms linear;
+        padding: 7px 18px;
+        display: inline-flex;
+
 
         &:hover {
             background: white;
         }
 
+        .col-label-star {
+            width: 20px;
+
+            i {
+                float: right;
+                margin-left: 3px;
+            }
+        }
+
+        .col-label-body {
+            width: 182px;
+        }
+
         .label {
             font-family: "Roboto", sans-serif;
-            font-weight: 400;
             line-height: 12px;
             font-size: 13px;
             letter-spacing: 0.05em;
-            color: #808080;
+            color: rgba(0, 0, 0, 0.75);
             padding-top: 5px;
+            font-weight: bold;
         }
 
         .star {
@@ -1243,26 +1256,89 @@ h1, h2, p {
             color: #aaa;
             top: 0;
         }
+
+        .name-value, .value-value, .template-value {
+            font-family: "Open Sans", sans-serif;
+            font-weight: 300;
+            line-height: 20px;
+            font-size: 12px;
+            letter-spacing: 0.03em;
+            color: rgba(0, 0, 0, 0.50);
+            text-transform: none;
+        }
+
+        .value-value {
+            font-weight: bold;
+            color: rgba(0, 0, 0, 0.75);
+        }
+
+        .value-label, .template-label {
+            font-family: 'Roboto', sans-serif;
+            line-height: 23px;
+            font-size: 9px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
     }
 }
 
+
 .metadata-wrapper {
     width: 100%;
+    padding-bottom: 4px;
 
-    .button {
+    .button-meta {
         cursor: pointer;
-        color: #aaa;
-        border-top: 1px solid #DEDEDE;
+        color: #333333;
         flex: 1;
         height: auto;
         font-size: 11px;
         letter-spacing: 0.05em;
+        padding: 2px 18px;
+        font-family: Raleway, serif !important;
+
+        i {
+            float: right;
+        }
+    }
+
+    .line-meta {
+        padding: 4px 18px 4px 28px;
+    }
+
+    .name-value, .value-value {
+        font-family: "Open Sans", sans-serif;
+        font-weight: 300;
+        line-height: 20px;
+        font-size: 12px;
+        letter-spacing: 0.03em;
+        color: rgba(0, 0, 0, 0.50);
+        text-transform: none;
+    }
+
+    .value-value {
+        font-weight: bold;
+        color: rgba(0, 0, 0, 0.75);
+    }
+
+    .value-label {
+        font-family: 'Roboto', sans-serif;
+        line-height: 23px;
+        font-size: 9px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
     }
 
 }
 
 .stt-attributes {
     margin: 0;
+
+    hr {
+        border: 0.5px solid rgba(0, 0, 0, 0.05);
+        padding: 0 0;
+        margin: 0 0;
+    }
 
     .header {
         height: 45px;
@@ -1301,18 +1377,14 @@ h1, h2, p {
 
     .line {
 
-        margin-left: 10px;
+        padding: 7px 18px;
         width: 100%;
         display: inline-flex;
-        padding-top: 14px;
-        padding-bottom: 7px;
         transition: linear 100ms;
 
 
         &:hover {
             background: white;
-            //margin-left: 0px;
-            //padding-left: 10px;
             width: 100%;
         }
 
@@ -1322,12 +1394,13 @@ h1, h2, p {
             line-height: 20px;
             font-size: 12px;
             letter-spacing: 0.03em;
-            color: #333333;
+            color: rgba(0, 0, 0, 0.50);
             text-transform: none;
         }
 
         .value-value {
             font-weight: bold;
+            color: rgba(0, 0, 0, 0.75);
         }
 
         .value-label, .template-label {
@@ -1335,15 +1408,18 @@ h1, h2, p {
             line-height: 23px;
             font-size: 9px;
             letter-spacing: 0.05em;
-            color: #aaaaaa;
             text-transform: uppercase;
         }
 
     }
 
+    .line-meta-btn {
+        padding: 0 0;
+    }
+
     .star {
         position: relative;
-        //right: 16px;
+        float: right;
         top: -5px;
         cursor: pointer;
         color: #aaa;

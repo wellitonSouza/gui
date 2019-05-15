@@ -41,7 +41,7 @@
     "types": {
         "boolean": "Boleano",
         "geo": "Geo",
-        "float": "Ponto Flutuante",
+        "float": "Float",
         "integer": "Inteiro",
         "string": "Texto",
         "geo_point": "Geo:ponto"

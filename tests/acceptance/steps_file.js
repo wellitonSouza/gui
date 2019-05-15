@@ -7,6 +7,19 @@ module.exports = () => {
 
     return actor({
 
+        loginAdmin(I, clearDb) {
+            I.amOnPage(env.dojot_host);
+            I.setEnglishLanghage();
+            I.refreshPage();
+            I.see('Sign in');
+            I.fillField('Username', 'admin');
+            I.fillField('Password', 'admin');
+            I.click('Login');
+            I.wait(3);
+            if (clearDb) { I.clearDatabase(); }
+            I.refreshPage();
+        },
+
         seeInputByNameAndValue(name, value) {
             this.seeElement(locate('input')
                 .withAttr({
@@ -25,10 +38,12 @@ module.exports = () => {
                 .withAttr({ name }), value);
         },
 
+        async getJWT() {
+            return this.executeScript(() => localStorage.getItem('jwt'));
+        },
+
         async postJSON(resource, myJson, method = 'POST') {
-            if (!jwt) {
-                jwt = await this.executeScript(() => localStorage.getItem('jwt'));
-            }
+            jwt = await this.executeScript(() => localStorage.getItem('jwt'));
 
             const response = request(method, `${env.dojot_host}/${resource}`, {
                 headers: {
@@ -52,6 +67,10 @@ module.exports = () => {
             return await this.postJSON('device', json);
         },
 
+        async createUser(json) {
+            return await this.postJSON('auth/user', json);
+        },
+
         async clearDatabase() {
             return await this.postJSON('import', {
                 devices: [],
@@ -65,9 +84,9 @@ module.exports = () => {
             return await this.executeScript(() => localStorage.setItem('i18nextLng', 'en'));
         },
 
-        async sendMQTTMessage(deviceId, message) {
+        async sendMQTTMessage(deviceId, message, tenant = 'admin') {
             const client = await mqtt.connect(env.mqtt_host);
-            await client.publish(`/admin/${deviceId}/attrs`, message);
+            await client.publish(`/${tenant}/${deviceId}/attrs`, message);
             await client.end();
         },
 

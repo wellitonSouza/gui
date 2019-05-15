@@ -27,8 +27,7 @@ class Metadata extends Component {
     }
 
     showMetadata() {
-        const { open } = this.state;
-        this.setState({ open: !open });
+        this.setState(prevState => ({ open: !prevState.open }));
     }
 
     render() {
@@ -53,7 +52,10 @@ class Metadata extends Component {
                 </div>
                 {metadata.map(item => (
                     open && (
-                        <div className="display-flex-column flex-1 line-meta">
+                        <div
+                            key={item.id}
+                            className="display-flex-column flex-1 line-meta"
+                        >
                             <div
                                 className="name-value truncate"
                                 title={formatName(item)}
@@ -71,7 +73,8 @@ class Metadata extends Component {
                                     className="value-label "
                                     title={item.value_type}
                                 >
-                                    {i18next.exists(`types.${item.value_type}`) ? i18next.t(`types.${item.value_type}`) : item.value_type}
+                                    {i18next.exists(`types.${item.value_type}`)
+                                        ? i18next.t(`types.${item.value_type}`) : item.value_type}
                                 </div>
 
                             </div>

@@ -1283,6 +1283,7 @@ h1, h2, p {
 }
 
 
+
 .metadata-wrapper {
     width: 100%;
     padding-bottom: 4px;
@@ -1336,8 +1337,8 @@ h1, h2, p {
 
     hr {
         border: 0.5px solid rgba(0, 0, 0, 0.05);
-        padding: 0 0;
-        margin: 0 0;
+        padding: 0;
+        margin: 0;
     }
 
     .header {
@@ -1414,7 +1415,7 @@ h1, h2, p {
     }
 
     .line-meta-btn {
-        padding: 0 0;
+        padding: 0;
     }
 
     .star {

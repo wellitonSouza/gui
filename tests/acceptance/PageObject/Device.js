@@ -158,6 +158,15 @@ module.exports = {
         I.click(locate('a').withAttr({ href: '#/device' }));
     },
 
+    checkExistCard(name) {
+        I.seeElement(locate('.card-size').find('span').withAttr({ title: name }));
+    },
+
+    checkNonExistCard(name) {
+        I.dontSeeElement(locate('.card-size').find('span').withAttr({ title: name }));
+    },
+
+
     clickCardByDeviceName(name) {
         I.waitForElement(locate('.card-size  span').withAttr({ title: name }));
         I.click(locate('.card-size  span').withAttr({ title: name }));
@@ -180,7 +189,7 @@ module.exports = {
     },
 
     shouldSeeMessage(message) {
-        I.see(message);
+        I.waitForText(message, 10);
     },
 
     change64QtyToShowPagination() {

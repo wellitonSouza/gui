@@ -26,8 +26,8 @@ class HistoryActions {
                         this.updateAttrHistory(hist.device_id, hist.attr, hist.value, newLabel);
                     });
                 })
-                .catch((error) => {
-                    this.failed(error);
+                .catch(() => {
+                    this.updateAttrHistory(deviceId, attrLabel, null, newLabel);
                 });
         };
     }

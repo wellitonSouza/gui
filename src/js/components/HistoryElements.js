@@ -19,8 +19,7 @@ class Graph extends Component {
                 if (tuple.attrValue.trim().length > 0) {
                     if (tuple.attrType.toLowerCase() === 'integer') {
                         return parseInt(tuple.attrValue);
-                    }
-                    if (tuple.attrType.toLowerCase() === 'float') {
+                    } else if (tuple.attrType.toLowerCase() === 'float') {
                         return parseFloat(tuple.attrValue);
                     }
                 }

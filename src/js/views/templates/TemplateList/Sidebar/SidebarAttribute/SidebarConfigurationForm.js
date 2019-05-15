@@ -35,15 +35,6 @@ const SidebarConfigurationForm = ({
                 <option value="protocol" id="adm-option">
                     {t('options.config_type.values.protocol')}
                 </option>
-                <option value="topic" id="adm-option">
-                    {t('options.config_type.values.topic')}
-                </option>
-                <option value="translator" id="adm-option">
-                    {t('options.config_type.values.translator')}
-                </option>
-                <option value="device_timeout" id="adm-option">
-                    {t('options.config_type.values.device_timeout')}
-                </option>
             </MaterialSelect>
         </div>
         <div className="body-form">

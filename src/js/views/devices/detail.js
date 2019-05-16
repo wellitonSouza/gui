@@ -98,7 +98,7 @@ const Configurations = ({ t, attrs, device }) => (
         <GenericList
             img="images/gear-dark.png"
             attrs={attrs}
-            boxTitle={t('text.configuration')}
+            boxTitle={t('text.properties')}
             device={device}
             t={t}
         />
@@ -215,7 +215,7 @@ class GenericList extends Component {
                     <label>{boxTitle}</label>
                 </div>
                 <div className="col s12 body">
-                    {boxTitle == t('text.configuration') ? (
+                    {boxTitle === t('text.properties') ? (
                         <div key="id" className="line display-flex">
                             <div className="col s12 pr0">
                                 <div className="col s5">
@@ -346,8 +346,6 @@ class DyAttributeArea extends Component {
         const auxAttrs = JSON.parse(JSON.stringify(dynamicAttrs));
         const auxActuators = JSON.parse(JSON.stringify(actuators));
         // preparing dynamic attributes
-
-        console.log('auxAttrs', auxAttrs);
 
         for (const index in auxAttrs) {
             if (isAttrsVisible[auxAttrs[index].id]) {

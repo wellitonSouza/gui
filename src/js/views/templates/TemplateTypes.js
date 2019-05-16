@@ -6,6 +6,7 @@ export default class TemplateTypes {
             { value: 'integer', label: 'Integer' },
             { value: 'string', label: 'String' },
             { value: 'boolean', label: 'Boolean' },
+            { value: 'object', label: 'Object' },
         ];
         this.availableTypes = [
             { value: 'dynamic', label: 'Dynamic Value' },
@@ -16,7 +17,6 @@ export default class TemplateTypes {
             { value: 'mqtt', label: 'MQTT' },
         ];
         this.configValueTypes = [
-            // {"value": "fw_version", "label": "Firmware Version" },
             { value: 'protocol', label: 'Protocol' },
             { value: 'topic', label: 'Topic' },
             { value: 'translator', label: 'Translator' },

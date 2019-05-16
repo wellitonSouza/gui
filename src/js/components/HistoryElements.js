@@ -4,7 +4,7 @@ import {Line} from 'react-chartjs-2';
 import FirmwareHelper from '../comms/firmware/FirmwareHelper';
 import util from '../comms/util/util';
 import {SmallPositionRenderer} from "../views/utils/Maps";
-import { Trans, withNamespaces } from 'react-i18next';
+import {Trans, withNamespaces} from 'react-i18next';
 
 
 class Graph extends Component {
@@ -108,7 +108,7 @@ function HistoryList(props) {
     const listValues = [];
 
     //Get attribute type to compare with received value
-    const attrType = props.type === 'bool' ? 'boolean' : props.type ;
+    const attrType = props.type === 'bool' ? 'boolean' : props.type;
 
 
     for (const k in props.MeasureStore.data[props.device.id][`_${props.attr}`]) {
@@ -116,31 +116,40 @@ function HistoryList(props) {
     }
     if (listValues.length > 0) {
         listValues.reverse();
-        
+
         return (
             <div className="relative full-height">
                 <div className="full-height full-width history-list">
                     {listValues.map((i, k) => (
-                        
-                    <div className={`history-row ${k % 2 ? 'alt-row' : ''}`} key={i.ts}>
-                        {
-                        ((typeof i.value === "boolean") && (attrType === typeof i.value)) ?
-                            <div className="value">{i.value.toString()}</div>
-                        :
+
+                        <div className={`history-row ${k % 2 ? 'alt-row' : ''}`} key={i.ts}>
                             <div className="value">
                                 {
-                                ((attrType === typeof i.value) && (i.value !== null) && (i.value.length !== undefined) && (i.value.length > 0)) ?
-                                    `${i.value}`
-                                :
-                                    <span className="red-text">
+                                    ((typeof i.value === "boolean") && (attrType === typeof i.value)) ?
+                                        <React.Fragment>{i.value.toString()}</React.Fragment>
+                                        :
+                                        <React.Fragment>
+                                            {
+                                                ((attrType === typeof i.value) && (attrType !== 'object' && (i.value !== null) && (i.value.length !== undefined) && (i.value.length > 0))) ?
+                                                    <React.Fragment> {i.value.toString()} </React.Fragment>
+                                                    :
+                                                    <React.Fragment>
+                                                        {
+                                                            ((attrType === typeof i.value) && (attrType.toLowerCase() === 'object') && i.value !== null) ?
+                                                                <pre>{JSON.stringify(i.value, undefined, 2)}</pre>
+                                                                :
+                                                                <span className="red-text">
                                         <em><Trans i18nKey="devices:invalid_data"/></em>
                                     </span>
+                                                        }
+                                                    </React.Fragment>
+                                            }
+                                        </React.Fragment>
                                 }
-                            </div>
-                        }
-                        
-                        <div className="label">{util.iso_to_date(i.ts)}</div>
-                    </div>
+
+
+                            </div><div className="label">{util.iso_to_date(i.ts)}</div>
+                        </div>
 
                     ))}
                 </div>

@@ -1,3 +1,5 @@
+const Utils = require('../Utils');
+
 Feature('User Management');
 
 Before((login) => {
@@ -6,41 +8,34 @@ Before((login) => {
 
 const user_data = {
     id: null,
-    name: 'john',
-    full_name: 'John Obama',
-    email: 'john@email.com',
-    confirm_email: 'john@email.com',
+    username: 'john',
+    name: 'John Obama',
+    email: `${Utils.sid()}@noemail.com`,
     profile: 'user',
 };
 
 const admin_data = {
     id: null,
-    name: 'admin',
-    full_name: 'Admin (superuser)',
+    username: 'admin',
+    name: 'Admin (superuser)',
     email: 'admin@noemail.com',
-    confirm_email: 'admin@noemail.com',
     profile: 'admin',
 };
 
+
 function checkingUser(I, data) {
-    I.seeInputByNameAndValue('username', data.name);
-    I.seeInputByNameAndValue('name', data.full_name);
+    I.seeInputByNameAndValue('username', data.username);
+    I.seeInputByNameAndValue('name', data.name);
     I.seeInputByNameAndValue('email', data.email);
-    I.seeInputByNameAndValue('confirmEmail', data.confirm_email);
+    I.seeInputByNameAndValue('confirmEmail', data.email);
     I.seeSelectOptionByNameAndValue('profile', data.profile);
 }
 
-Scenario('Creating a new user', async (I, User, Commons) => {
+Scenario('Creating a new user', async (I, User) => {
     User.init(I);
     User.openUserPage();
     User.clickCreateNew();
-
-    I.fillField('username', user_data.name);
-    I.fillField('name', user_data.full_name);
-    I.fillField('email', user_data.email);
-    I.fillField('confirmEmail', user_data.confirm_email);
-    I.fillSelectByName('profile', user_data.profile);
-    User.clickSave('#create-footer');
+    User.fillAndSave(user_data);
     User.seeHasCreated();
 });
 
@@ -49,15 +44,14 @@ Scenario('Updating an user', async (I, User, Commons) => {
     User.init(I);
     User.openUserPage();
     Commons.clickCardByName('John Obama');
-    I.fillField('email', 'updatedemail@email.com');
-    I.fillField('confirmEmail', 'updatedemail@email.com');
-    User.clickSave('#edit-footer');
+    User.fillEmailAndSave(`${Utils.sid()}@noemail.com`);
     User.seeHasUpdated();
 });
 
 Scenario('Checking the admin user', async (I, User, Commons) => {
     User.init(I);
     User.openUserPage();
+
     Commons.clickCardByName('Admin (superuser)');
     checkingUser(I, admin_data);
     Commons.clickDiscard();

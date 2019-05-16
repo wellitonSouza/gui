@@ -16,6 +16,7 @@ class ImportExportMain extends Component {
         this.handleImport = this.handleImport.bind(this);
         this.openImport = this.openImport.bind(this);
         this.handleExport = this.handleExport.bind(this);
+        this.dismiss = this.dismiss.bind(this);
     }
 
     handleImport() {
@@ -28,6 +29,13 @@ class ImportExportMain extends Component {
 
     handleExport() {
         ImportExportAction.export();
+        this.dismiss();
+    }
+
+    dismiss() {
+        const { openModal, toggleSidebar } = this.props;
+        openModal(false);
+        toggleSidebar();
     }
 
     render() {
@@ -44,6 +52,7 @@ class ImportExportMain extends Component {
                     openModal={openModal}
                     toggleSidebar={toggleSidebar}
                     save={false}
+                    closeModal={this.dismiss}
                 >
                     <div className="">
                         <HeadImportExport main icon="import-export-icon" title={t('importExport:title')} firstMessage="" />

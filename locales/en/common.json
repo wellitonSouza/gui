@@ -44,7 +44,8 @@
         "float": "Float",
         "integer": "Integer",
         "string": "String",
-        "geo_point": "Geo:point"
+        "geo_point": "Geo:point",
+        "object": "JSON"
     },
     "options": {
         "attr_name": {

@@ -50,7 +50,7 @@ module.exports = {
     },
 
     seeHasRemoved() {
-        I.waitForText('User removed successfully.', 20);
+        I.waitForText('User removed.', 20);
     },
 
 };

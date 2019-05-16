@@ -80,7 +80,7 @@ const SidebarForm = ({
                         icon="data_attrs"
                         text={t('templates:btn.new_attr.label')}
                     />
-{/*                    <SidebarButton
+                    {/*                    <SidebarButton
                         onClick={() => toogleSidebarAttribute('config_attrs')}
                         icon="config_attrs"
                         text={t('templates:btn.new_conf.label')}

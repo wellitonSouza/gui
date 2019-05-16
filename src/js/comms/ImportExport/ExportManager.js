@@ -6,13 +6,12 @@ class ExportManager {
     }
 
     export() {
-
         const headers = {
             'Content-Type': 'application/json',
             'Cache-Control': 'no-cache',
             'Pragma': 'no-cache',
-            'Content-Disposition': 'attachment; filename="download"'
-        }
+            'Content-Disposition': 'attachment; filename="download"',
+        };
 
         return util.GET(`${this.baseUrl}/export`, headers);
     }

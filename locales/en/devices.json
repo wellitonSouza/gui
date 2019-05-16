@@ -22,8 +22,23 @@
             "alt2": "Show search bar"
         }
     },
-    "new_conf": {
-        "label": "New Configuration"
+    "return_details": "Return to device details",
+    "return_list": "Return to device list",
+    "title_sidebar": {
+        "new_attr": "new attribute",
+        "edit_attr": "edit attribute",
+        "default": "manage template"
+    },
+    "btn": {
+        "new_metadata": {
+            "label": "New Metadata"
+        },
+        "new_attr": {
+            "label": "New Attribute"
+        },
+        "new_conf": {
+            "label": "New Configuration"
+        }
     },
     "device": "device",
     "selected_templates": "Selected Models",

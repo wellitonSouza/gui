@@ -34,10 +34,12 @@ class ImportExportActions {
                 .then((file) => {
                     const text = new global.Blob([JSON.stringify(file)], { type: 'text/json' });
                     const atag = global.document.createElement('a');
+                    document.body.appendChild(atag);
                     atag.href = URL.createObjectURL(text);
                     atag.download = 'DojotData.json';
                     atag.click();
                     this.exportFile(text);
+                    document.body.removeChild(atag);
                 })
                 .catch((error) => {
                     this.exportFailed(error);

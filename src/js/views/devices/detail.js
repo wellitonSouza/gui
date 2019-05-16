@@ -2,11 +2,11 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import AltContainer from 'alt-container';
-import {withNamespaces} from 'react-i18next';
+import { withNamespaces } from 'react-i18next';
 import * as i18next from 'i18next';
-import {Loading} from 'Components/Loading';
-import {Attr, HandleGeoElements} from 'Components/HistoryElements';
-import {DojotBtnRedCircle} from 'Components/DojotButton';
+import { Loading } from 'Components/Loading';
+import { Attr, HandleGeoElements } from 'Components/HistoryElements';
+import { DojotBtnRedCircle } from 'Components/DojotButton';
 import MeasureActions from 'Actions/MeasureActions';
 import DeviceActions from 'Actions/DeviceActions';
 import MeasureStore from 'Stores/MeasureStore';
@@ -16,7 +16,7 @@ import Metadata from './Details/Metadata';
 import {NewPageHeader} from 'Containers/full/PageHeader';
 import util from 'Comms/util/util';
 
-const DeviceHeader = ({device, t}) => (
+const DeviceHeader = ({ device, t }) => (
     <div className="row devicesSubHeader p0 device-details-header">
         <div className="col s8 m8">
             <span className="col s12 device-label truncate" title={device.label}>
@@ -48,9 +48,9 @@ class Attribute extends Component {
 
     render() {
         // check the current window, if less then 1024px, blocks compressed state
-        const {opened} = this.state;
-        const {device, attr} = this.props;
-        const {label, value_type: valueType, metadata} = attr;
+        const { opened } = this.state;
+        const { device, attr } = this.props;
+        const { label, value_type: valueType, metadata } = attr;
         const isOpened = util.checkWidthToStateOpen(opened);
         return (
             <div className={`attributeBox ${isOpened ? 'expanded' : 'compressed'}`}>
@@ -94,12 +94,12 @@ Attribute.propTypes = {
     attr: PropTypes.shape({}).isRequired,
 };
 
-const Configurations = ({t, attrs, device}) => (
+const Configurations = ({ t, attrs, device }) => (
     <div>
         <GenericList
             img="images/gear-dark.png"
             attrs={attrs}
-            boxTitle={t('text.configuration')}
+            boxTitle={t('text.properties')}
             device={device}
             t={t}
         />
@@ -114,8 +114,8 @@ Configurations.propTypes = {
 
 
 const StaticAttributes = ({
-                              t, openStaticMap, attrs, device,
-                          }) => (
+    t, openStaticMap, attrs, device,
+}) => (
     <div>
         <GenericList
             img="images/tag.png"
@@ -183,15 +183,15 @@ class GenericList extends Component {
                 if (attr.type === 'meta') {
                     // values of configurations
                     if (attr.static_value.length > 20) {
-                        this.setState({truncate: true});
+                        this.setState({ truncate: true });
                     }
                 } else {
                     if (attr.label.length > 20 || attr.value_type > 20) {
-                        this.setState({truncate: true});
+                        this.setState({ truncate: true });
                     }
                     // Values of static attributes
                     if (attr.static_value.length > 20) {
-                        this.setState({truncate: true});
+                        this.setState({ truncate: true });
                     }
                 }
             }
@@ -212,7 +212,7 @@ class GenericList extends Component {
                     <label>{boxTitle}</label>
                 </div>
                 <div className="col s12 body">
-                    {boxTitle === t('text.configuration') ? (
+                    {boxTitle === t('text.properties') ? (
                         <Fragment>
                             <div className="line">
                                 <div className="display-flex-column flex-1">
@@ -339,8 +339,8 @@ class DyAttributeArea extends Component {
     }
 
     toggleAttribute(attr) {
-        let {selectedAttributes: sa} = this.state;
-        const {isAttrsVisible} = this.state;
+        let { selectedAttributes: sa } = this.state;
+        const { isAttrsVisible } = this.state;
         if (isAttrsVisible[attr.id]) {
             sa = sa.filter(i => i.id !== attr.id);
             delete isAttrsVisible[attr.id];
@@ -357,7 +357,7 @@ class DyAttributeArea extends Component {
     }
 
     render() {
-        const {isAttrsVisible, selectedAttributes} = this.state;
+        const { isAttrsVisible, selectedAttributes } = this.state;
         const {
             openStaticMap, device, t, actuators, dynamicAttrs,
         } = this.props;
@@ -386,7 +386,7 @@ class DyAttributeArea extends Component {
                 <div className="second-col">
                     {selectedAttributes.length === 0 && openStaticMap === false
                         ? (
-                            <NoActiveAttr/>
+                            <NoActiveAttr />
                         )
                         : null
                     }
@@ -397,7 +397,7 @@ class DyAttributeArea extends Component {
                         />
                     ) : null}
                     {selectedAttributes.map(at => (
-                        <Attribute key={at.id} device={device} attr={at}/>
+                        <Attribute key={at.id} device={device} attr={at} />
                     ))}
                 </div>
                 <div className="third-col">
@@ -444,8 +444,8 @@ class ActuatorsList extends Component {
     }
 
     componentWillMount() {
-        const {device} = this.props;
-        const {attrs} = device;
+        const { device } = this.props;
+        const { attrs } = device;
 
         for (const i in attrs) {
             for (const j in attrs[i]) {
@@ -457,18 +457,17 @@ class ActuatorsList extends Component {
     }
 
     clickAttr(attr) {
-        const {toggleAttribute} = this.props;
+        const { toggleAttribute } = this.props;
         toggleAttribute(attr);
     }
 
     render() {
-        const {t, actuators} = this.props;
+        const { t, actuators } = this.props;
         return (
-
             <div className="stt-attributes dy_attributes">
                 <div className="col s12 header">
                     <div className="icon">
-                        <img src="images/gear-dark.png"/>
+                        <img src="images/gear-dark.png" />
                     </div>
                     <span>{t('text.actuators')}</span>
                 </div>
@@ -528,7 +527,7 @@ ActuatorsList.propTypes = {
 class DynamicAttributeList extends Component {
     constructor(props) {
         super(props);
-        this.state = {truncate: false};
+        this.state = { truncate: false };
         this.clickAttr = this.clickAttr.bind(this);
         this.limitSizeField = this.limitSizeField.bind(this);
     }
@@ -627,7 +626,7 @@ DynamicAttributeList.propTypes = {
 };
 
 
-const DeviceUserActions = ({t}) => (
+const DeviceUserActions = ({ t }) => (
     <div>
         <DojotBtnRedCircle
             to="/device/list"
@@ -730,7 +729,7 @@ class DeviceDetail extends Component {
 
 class ViewDeviceImpl extends Component {
     componentWillMount() {
-        const {devices, device_id} = this.props;
+        const { devices, device_id } = this.props;
         const device = devices[device_id];
         if (device === undefined) return; // not ready
 
@@ -745,7 +744,7 @@ class ViewDeviceImpl extends Component {
 
     render() {
         let device;
-        const {t, devices} = this.props;
+        const { t, devices } = this.props;
 
         if (devices !== undefined) {
             if (devices.hasOwnProperty(this.props.device_id)) {
@@ -754,7 +753,7 @@ class ViewDeviceImpl extends Component {
         }
 
         if (device === undefined) {
-            return (<Loading/>);
+            return (<Loading />);
         }
         return (
             <div className="full-height bg-light-gray">
@@ -769,8 +768,8 @@ class ViewDeviceImpl extends Component {
                         />
                     </div>
                 </NewPageHeader>
-                <DeviceHeader device={device} t={t}/>
-                <DeviceDetail deviceid={device.id} device={device} t={t}/>
+                <DeviceHeader device={device} t={t} />
+                <DeviceDetail deviceid={device.id} device={device} t={t} />
             </div>
         );
     }
@@ -837,7 +836,7 @@ class ViewDeviceComponent extends Component {
         return (
             <div className="full-width full-height">
                 <AltContainer store={DeviceStore}>
-                    <ViewDeviceImpl device_id={params.device} t={t}/>
+                    <ViewDeviceImpl device_id={params.device} t={t} />
                 </AltContainer>
             </div>
         );
@@ -845,4 +844,4 @@ class ViewDeviceComponent extends Component {
 }
 
 const ViewDevice = withNamespaces()(ViewDeviceComponent);
-export {ViewDevice};
+export { ViewDevice };

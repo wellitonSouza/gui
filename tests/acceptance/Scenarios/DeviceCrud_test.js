@@ -114,9 +114,9 @@ const loadJson = (template) => {
 loadJson(template1);
 
 function checkingAttrTemplate(Device, template) {
-    Device.clickToManageAttributes(Device.AttributeTypes.configuration);
+/*    Device.clickToManageAttributes(Device.AttributeTypes.configuration);
     Device.seeAllConfigurations(template.attrsConfig);
-    Device.clickDiscard();
+    Device.clickDiscard();*/
 
     Device.clickToManageAttributes(Device.AttributeTypes.dynamic);
     Device.seeAllDynamics(template.attrsDynamics);
@@ -152,7 +152,7 @@ Scenario('Creating a device', async (I, Device) => {
 
     Device.fillAttrStaticValue('serial', 'ABCDEFG-86');
     Device.fillAttrStaticValue('str_static2', 'ABC2');
-    Device.fillConfigurationValue(Device.ConfigurationType.protocol, 'mqtt2');
+   /* Device.fillConfigurationValue(Device.ConfigurationType.protocol, 'mqtt2');*/
     Device.fillMetaStaticValue('serial', 'meta1', 22);
     Device.fillMetaStaticValue('serial', 'meta3', 'value2');
     Device.fillMetaDynamicValue('float', 'unit', '40');
@@ -186,7 +186,7 @@ Scenario('Updating a device', async (I, Device) => {
     Device.fillNameDevice('Name of device change');
 
     Device.fillAttrStaticValue('serial', 'change-ABCDEFG-86');
-    Device.fillConfigurationValue(Device.ConfigurationType.protocol, 'mqtt3');
+    /*Device.fillConfigurationValue(Device.ConfigurationType.protocol, 'mqtt3');*/
     Device.fillMetaStaticValue('serial', 'meta1', 10);
     Device.fillMetaDynamicValue('float', 'unit', '11');
     Device.fillAttrStaticValue('str_static2', 'ABC');

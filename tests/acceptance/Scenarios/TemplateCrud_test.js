@@ -10,16 +10,16 @@ Scenario('Creating a template', async (I, Template) => {
     Template.clickCreateNew();
     Template.fillNameTemplate('1_NameOfTemplate');
 
-    Template.addConfigTemplate(
-        Template.ConfigurationType.protocol,
-        'mqtt',
-    );
+    /*    Template.addConfigTemplate(
+            Template.ConfigurationType.protocol,
+            'mqtt',
+        );
 
-    Template.updateConfigTemplate(
-        Template.ConfigurationType.protocol,
-        Template.ConfigurationType.protocol,
-        'mqtt2',
-    );
+        Template.updateConfigTemplate(
+            Template.ConfigurationType.protocol,
+            Template.ConfigurationType.protocol,
+            'mqtt2',
+        ); */
 
     Template.addAttr(
         'attrStringStatic',
@@ -113,10 +113,10 @@ Scenario('Checking create template', async (I, Template) => {
     Template.clickCardByNameTemplate('1_NameOfTemplate');
     Template.seeNameTemplate('1_NameOfTemplate');
 
-    Template.seeConfigTemplate(
-        Template.ConfigurationType.protocol,
-        'mqtt2',
-    );
+    /*    Template.seeConfigTemplate(
+            Template.ConfigurationType.protocol,
+            'mqtt2',
+        ); */
 
     Template.seeAttr(
         'attrStringStatic',
@@ -203,15 +203,15 @@ Scenario('Updating a template', async (I, Template) => {
         10,
     );
 
-    Template.updateConfigTemplate(
-        Template.ConfigurationType.protocol,
-        Template.ConfigurationType.topic,
-        'topic',
-    );
-    Template.addConfigTemplate(
-        Template.ConfigurationType.protocol,
-        'mqtt',
-    );
+    /*    Template.updateConfigTemplate(
+            Template.ConfigurationType.protocol,
+            Template.ConfigurationType.topic,
+            'topic',
+        ); */
+    /*    Template.addConfigTemplate(
+            Template.ConfigurationType.protocol,
+            'mqtt',
+        ); */
 
     Template.addAttr(
         'attrBoolStatic',
@@ -280,15 +280,15 @@ Scenario('Checking update template', async (I, Template) => {
         10,
     );
 
-    Template.seeConfigTemplate(
-        Template.ConfigurationType.topic,
-        'topic',
-    );
+    /*    Template.seeConfigTemplate(
+            Template.ConfigurationType.topic,
+            'topic',
+        ); */
 
-    Template.seeConfigTemplate(
-        Template.ConfigurationType.protocol,
-        'mqtt',
-    );
+    /*    Template.seeConfigTemplate(
+            Template.ConfigurationType.protocol,
+            'mqtt',
+        ); */
 
     Template.seeAttr(
         'attrBoolStatic',
@@ -318,7 +318,7 @@ Scenario('Removing template', async (I, Template) => {
     Template.removeAttr('attrIntegerDynamicChange', [
         Template.convertToObjectMetaToRemove('metaBoolChange'),
     ]);
-    Template.removeConfigTemplate(Template.ConfigurationType.topic);
+    /*  Template.removeConfigTemplate(Template.ConfigurationType.topic); */
 
     Template.seeAttrHasRemoved('attrIntegerDynamicChange');
 

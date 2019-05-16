@@ -5,22 +5,9 @@
         "details": "Ver detalhes do dispositivo",
         "edition": "Editar dispositivo"
     },
-    "alerts": {
-        "create": "Dispositivo criado.",
-        "update": "Dispositivo atualizado.",
-        "remove": "Dispositivo removido.",
-        "create_template_first": "Crie um modelo primeiro",
-        "view_device_information": "Ver informações do dispositivo"
-    },
-    "header": {
-        "new": {
-            "label": "Novo dispositivo",
-            "alt": "Crie um novo dispositivo"
-        },
-        "filter": {
-            "alt": "Mostrar barra de pesquisa",
-            "alt2": "Filtrar"
-        }
+    "filter": {
+        "alt": "Mostrar barra de pesquisa",
+        "alt2": "Filtrar"
     },
     "return_details": "Retornar aos detalhes do dispositivo",
     "return_list": "Retornar a lista de dispositivos",
@@ -40,11 +27,10 @@
     "meta_attributes": "Meta Atributos",
     "no_devices_shown": "Nenhum dispositivo a ser mostrado",
     "no_configured_devices": "Nenhum dispositivo configurado",
-    "manage_firmware": "Gerenciar Firmware",
-    "device_id": "Identificador do Dispositivo (ID)",
+    "manage_firmware":"Gerenciar Firmware",
     "invalid_data":"Dado Inválido",
     "no_data_received": "Nenhum dado recebido",
-    "no_data_avaliable": "Nenhum dado disponível"
+    "no_data_avaliable": "Nenhum dado disponível",
+    "device_id": "Identificador do Dispositivo (ID)"
 }
-
 

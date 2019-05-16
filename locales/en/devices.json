@@ -22,23 +22,8 @@
             "alt2": "Show search bar"
         }
     },
-    "return_details": "Return to device details",
-    "return_list": "Return to device list",
-    "title_sidebar": {
-        "new_attr": "new attribute",
-        "edit_attr": "edit attribute",
-        "default": "manage template"
-    },
-    "btn": {
-        "new_metadata": {
-            "label": "New Metadata"
-        },
-        "new_attr": {
-            "label": "New Attribute"
-        },
-        "new_conf": {
-            "label": "New Configuration"
-        }
+    "new_conf": {
+        "label": "New Configuration"
     },
     "device": "device",
     "selected_templates": "Selected Models",
@@ -53,10 +38,9 @@
     "no_devices_shown": "No devices to be shown",
     "no_configured_devices": "No configured devices",
     "manage_firmware": "Manage Firmware",
-    "device_id": "Device ID",
     "invalid_data": "Invalid data",
     "no_data_received": "No data received",
-    "no_data_avaliable": "No data available"
+    "no_data_avaliable": "No data available",
+    "device_id": "Device ID"
 }
-
 

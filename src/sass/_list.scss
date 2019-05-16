@@ -782,9 +782,10 @@ $status: #0c343d;
     padding-left: 10px !important;
     font-family: 'Roboto', sans-serif;
     color: #555555;
+
   }
   .label {
-    float: left;
+    float: right;
     width: 140px;
     line-height: 23px;
     font-family: 'Roboto', sans-serif;
@@ -798,15 +799,23 @@ $status: #0c343d;
     background-color: $almost-white
   }
 
-  .history-row {
-    padding: 13px 5px;
-    min-height: 50px;
-    width: 100%;
-    float: left;
-    .col {
-      padding: 0;
+    .history-row {
+        padding: 13px 5px;
+        min-height: 50px;
+        width: 100%;
+        float: left;
+
+        .col {
+            padding: 0;
+        }
+        pre {
+            margin: 0;
+        }
+
+       align-items: center;
+        display: flex;
+
     }
-  }
 }
 
 $action-area-width: 200px;
@@ -901,7 +910,7 @@ $action-area-width: 200px;
     padding-top: 25px;
     font-family: "Open Sans", sans-serif;
     font-weight: 500;
-    
+
     textarea {
       float: left;
       resize: none;

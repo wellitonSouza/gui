@@ -81,6 +81,13 @@ const SidebarAttributeForm = ({
                 <option value="string" id="adm-option">
                     {t('types.string')}
                 </option>
+                {selectAttr.type === 'dynamic' || selectAttr.type === 'actuator'
+                    ? (
+                        <option value="object" id="adm-option">
+                            {t('types.object')}
+                        </option>
+                    ) : null
+                }
             </MaterialSelect>
 
             {

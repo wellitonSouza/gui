@@ -1,4 +1,8 @@
 class Utils {
+    static sid() {
+        return (1 + Math.random() * 429496729125).toFixed().toString();
+    }
+
     static toString(value) {
         let valueToShow = 'undefined';
         if (((typeof value) === 'boolean')) {

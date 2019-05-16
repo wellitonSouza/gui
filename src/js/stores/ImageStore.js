@@ -45,7 +45,7 @@ class ImageStore {
     }
 
     handleUpdateHistory(data) {
-        this.history[data.newLabel]=data.value;
+        this.history[data.newLabel] = data.value;
     }
 
     handleFailureHistory(error) {
@@ -79,14 +79,13 @@ class ImageStore {
         this.images[image.id] = JSON.parse(JSON.stringify(image));
     }
 
-    enhanceImage(image)
-    {
+    enhanceImage(image) {
         let newImage;
         newImage = JSON.parse(JSON.stringify(image));
         newImage.has_image = newImage.confirmed;
         newImage.image_hash = null;
         if (newImage.has_image)
-            newImage.image_hash = String(newImage.id)+".hex";
+            newImage.image_hash = String(newImage.id) + ".hex";
         // TODO: request more information to image manager
         newImage.image_version = newImage.fw_version;
         newImage.saved = true;

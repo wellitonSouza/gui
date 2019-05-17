@@ -84,7 +84,7 @@ class Import extends Component {
 
     render() {
         const { showModal, file, success } = this.state;
-        const { t, openModal } = this.props;
+        const { t, openModal,closeModal } = this.props;
         const label = t('importExport:import.btnModal');
         const title = t('importExport:import.titleModal');
         const firstMessage = t('importExport:import.subtitleModal');
@@ -95,6 +95,7 @@ class Import extends Component {
             <div>
                 <ImportExport
                     openModal={openModal}
+                    closeModal={closeModal}
                     toggleSidebar={this.dismiss}
                     save
                     label={t('importExport:import.title')}
@@ -159,6 +160,7 @@ class Import extends Component {
 
 Import.propTypes = {
     openModal: PropTypes.func.isRequired,
+    closeModal: PropTypes.func,
     t: PropTypes.func.isRequired,
 };
 

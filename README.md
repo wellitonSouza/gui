@@ -38,7 +38,7 @@ To run the created image:
 docker run -d [-n name] <tag name>
 ```
 
-# Development
+# Acceptance Test
 
 To run the acceptance test, run the commands below.
 
@@ -46,3 +46,10 @@ To run the acceptance test, run the commands below.
 yarn install
 yarn run test 
 ```
+To clean database (devices, templates and flows) and run the acceptance test, run the commands below.
+
+```shell
+yarn install
+yarn run test:clearDb 
+```
+

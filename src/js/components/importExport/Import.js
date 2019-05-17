@@ -147,7 +147,7 @@ class Import extends Component {
 
 Import.propTypes = {
     openModal: PropTypes.func.isRequired,
-    closeModal: PropTypes.func,
+    closeModal: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
 };
 

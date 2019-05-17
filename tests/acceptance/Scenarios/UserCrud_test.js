@@ -31,7 +31,7 @@ function checkingUser(I, data) {
     I.seeSelectOptionByNameAndValue('profile', data.profile);
 }
 
-Scenario('Creating a new user', async (I, User) => {
+Scenario('@basic: Creating a new user', async (I, User) => {
     User.init(I);
     User.openUserPage();
     User.clickCreateNew();
@@ -40,7 +40,7 @@ Scenario('Creating a new user', async (I, User) => {
 });
 
 
-Scenario('Updating an user', async (I, User, Commons) => {
+Scenario('@basic: Updating an user', async (I, User, Commons) => {
     User.init(I);
     User.openUserPage();
     Commons.clickCardByName('John Obama');
@@ -48,7 +48,7 @@ Scenario('Updating an user', async (I, User, Commons) => {
     User.seeHasUpdated();
 });
 
-Scenario('Checking the admin user', async (I, User, Commons) => {
+Scenario('@basic: Checking the admin user', async (I, User, Commons) => {
     User.init(I);
     User.openUserPage();
 
@@ -58,7 +58,7 @@ Scenario('Checking the admin user', async (I, User, Commons) => {
 });
 
 
-Scenario('Removing an user', async (I, User, Commons) => {
+Scenario('@basic: Removing an user', async (I, User, Commons) => {
     User.init(I);
     User.openUserPage();
     Commons.clickCardByName('john');

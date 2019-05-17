@@ -116,7 +116,7 @@ loadJson(template1);
 function checkingAttrTemplate(Device, template) {
 /*    Device.clickToManageAttributes(Device.AttributeTypes.configuration);
     Device.seeAllConfigurations(template.attrsConfig);
-    Device.clickDiscard();*/
+    Device.clickDiscard(); */
 
     Device.clickToManageAttributes(Device.AttributeTypes.dynamic);
     Device.seeAllDynamics(template.attrsDynamics);
@@ -132,7 +132,7 @@ function checkingAttrTemplate(Device, template) {
     Device.clickDiscard();
 }
 
-Scenario('Creating a device', async (I, Device) => {
+Scenario('@basic: Creating a device', async (I, Device) => {
     const template = await I.createTemplate(template1.json);
     template1.id = template.template.id;
 
@@ -152,7 +152,7 @@ Scenario('Creating a device', async (I, Device) => {
 
     Device.fillAttrStaticValue('serial', 'ABCDEFG-86');
     Device.fillAttrStaticValue('str_static2', 'ABC2');
-   /* Device.fillConfigurationValue(Device.ConfigurationType.protocol, 'mqtt2');*/
+    /* Device.fillConfigurationValue(Device.ConfigurationType.protocol, 'mqtt2'); */
     Device.fillMetaStaticValue('serial', 'meta1', 22);
     Device.fillMetaStaticValue('serial', 'meta3', 'value2');
     Device.fillMetaDynamicValue('float', 'unit', '40');
@@ -162,7 +162,7 @@ Scenario('Creating a device', async (I, Device) => {
     Device.seeHasCreated();
 });
 
-Scenario('Checking a device create', async (I, Device) => {
+Scenario('@basic: Checking a device create', async (I, Device) => {
     Device.init(I);
     Device.change64QtyToShowPagination();
     Device.clickCardByDeviceName('Name of device');
@@ -179,14 +179,14 @@ Scenario('Checking a device create', async (I, Device) => {
     Device.clickDiscard();
 });
 
-Scenario('Updating a device', async (I, Device) => {
+Scenario('@basic: Updating a device', async (I, Device) => {
     Device.init(I);
     Device.change64QtyToShowPagination();
     Device.clickCardByDeviceName('Name of device');
     Device.fillNameDevice('Name of device change');
 
     Device.fillAttrStaticValue('serial', 'change-ABCDEFG-86');
-    /*Device.fillConfigurationValue(Device.ConfigurationType.protocol, 'mqtt3');*/
+    /* Device.fillConfigurationValue(Device.ConfigurationType.protocol, 'mqtt3'); */
     Device.fillMetaStaticValue('serial', 'meta1', 10);
     Device.fillMetaDynamicValue('float', 'unit', '11');
     Device.fillAttrStaticValue('str_static2', 'ABC');
@@ -196,7 +196,7 @@ Scenario('Updating a device', async (I, Device) => {
     Device.seeHasUpdated();
 });
 
-Scenario('Checking a device update', async (I, Device) => {
+Scenario('@basic: Checking a device update', async (I, Device) => {
     Device.init(I);
     Device.change64QtyToShowPagination();
     Device.clickCardByDeviceName('Name of device change');
@@ -214,7 +214,7 @@ Scenario('Checking a device update', async (I, Device) => {
 });
 
 
-Scenario('Checking after change template', async (I, Device) => {
+Scenario('@basic: Checking after change template', async (I, Device) => {
     // attr serial
     template1.attrsStatics[0].static_value = 'updateValueWithEditOnDevice';
     // meta2
@@ -244,7 +244,7 @@ Scenario('Checking after change template', async (I, Device) => {
     Device.clickDiscard();
 });
 
-Scenario('Updating a device - specialized', async (I, Device) => {
+Scenario('@basic: Updating a device - specialized', async (I, Device) => {
     template1.attrsStatics[0].metadata[2].static_value = 'value2';
     template1.attrsStatics[2].static_value = 'ABC';
     template1.attrsConfig[0].static_value = 'mqtt3';
@@ -260,7 +260,7 @@ Scenario('Updating a device - specialized', async (I, Device) => {
 });
 
 
-Scenario('Checking a after specialized change  ', async (I, Device) => {
+Scenario('@basic: Checking a after specialized change  ', async (I, Device) => {
     template1.attrsConfig[0].static_value = 'mqtt';
     await I.updateTemplate(template1.json, template1.id);
 
@@ -283,7 +283,7 @@ Scenario('Checking a after specialized change  ', async (I, Device) => {
 });
 
 
-Scenario('Removing a device', async (I, Device) => {
+Scenario('@basic: Removing a device', async (I, Device) => {
     Device.init(I);
     Device.change64QtyToShowPagination();
     Device.clickCardByDeviceName('Name of device');

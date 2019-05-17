@@ -6,21 +6,13 @@ Before((login) => {
     login('admin');
 });
 
-const userA = {
-    name: 'Allan Basic',
+newUser = () => ({
+    name: 'Random Morty',
     username: `a${Utils.sid()}`,
     service: `a${Utils.sid()}`,
     email: `${Utils.sid()}@noemail.com`,
     profile: 'admin',
-};
-
-const userB = {
-    name: 'Boris Basic',
-    username: `b${Utils.sid()}`,
-    service: `b${Utils.sid()}`,
-    email: `${Utils.sid()}@noemail.com`,
-    profile: 'admin',
-};
+});
 
 const jsonTemplate = {
     label: 'String Template',
@@ -78,49 +70,70 @@ function genericLogin(I, username, pass = 'temppwd') {
     This scenario checks if a new user inherits the parent's tenant. Besides that, checks when an admin changes the user metadata, the tenant still the same.
 */
 
-Scenario('Checking child tenant equals parent tenant', async (I, Commons, User) => {
+Scenario('@adv: Checking child tenant equals parent tenant', async (I, Commons, User) => {
     // Create a user A using API with a different tenant
     // 1. create User A
-    await I.createUser(userA);
+    const jUserA = newUser();
+    const jUserB = newUser();
+    await I.createUser(jUserA);
 
     // Logout and Login user A
-    genericLogin(I, userA.username);
+    genericLogin(I, jUserA.username);
 
     // Create via GUI user B
     User.init(I);
     User.openUserPage();
     User.clickCreateNew();
-    User.fillAndSave(userB);
+    User.fillAndSave(jUserB);
     User.seeHasCreated();
 
     // Logout and Login user B
-    genericLogin(I, userB.username);
+    genericLogin(I, jUserB.username);
 
     // Check with user B has the same tenant than user A
-    checkingTenant(I, userA.service);
+    checkingTenant(I, jUserA.service);
 
     // Login admin
     genericLogin(I, 'admin', 'admin');
 
     // Edit user B
     User.openUserPage();
-    Commons.clickCardByName(userB.name);
-    User.fillEmailAndSave('updatedemail@email.com');
+    Commons.clickCardByName(jUserB.name);
+    User.fillEmailAndSave(`w${Utils.sid()}@noemail.com`);
     User.seeHasUpdated();
 
     // Logout and Login user B
-    genericLogin(I, userB.username);
+    genericLogin(I, jUserB.username);
 
     // Check with user B has the same tenant than user A
-    checkingTenant(I, userA.service);
+    checkingTenant(I, jUserA.service);
+
+    // back to admin
+    genericLogin(I, 'admin', 'admin');
+    User.openUserPage();
+
+    // remove user A
+    Commons.clickCardByName(jUserA.name);
+    Commons.clickRemove();
+    User.confirmRemove();
+    User.seeHasRemoved();
+
+    // remove user B
+    Commons.clickCardByName(jUserB.name);
+    Commons.clickRemove();
+    User.confirmRemove();
+    User.seeHasRemoved();
 });
 
 
-
-Scenario('Checking message in 2 tenants', async (I, Commons, Device) => {
+Scenario('@adv: Checking message in 2 tenants', async (I, Device) => {
     Device.init(I);
+    genericLogin(I, 'admin', 'admin');
+
     const deviceA = 'device A';
     const deviceB = 'device B';
+    const userA = newUser();
+    const userB = newUser();
     let deviceId = 0;
     // 1. create User A
     await I.createUser(userA);
@@ -164,4 +177,3 @@ Scenario('Checking message in 2 tenants', async (I, Commons, Device) => {
     await I.sendMQTTMessage(deviceId, '{"text": "data B"}', userB.service);
     checkMessage(I, Device, deviceId, 'data B');
 });
-

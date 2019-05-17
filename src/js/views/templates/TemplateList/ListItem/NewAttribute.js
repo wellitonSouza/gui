@@ -112,7 +112,7 @@ class NewAttribute extends Component {
 
                 <div
                     className={`add-row ${this.state.isSuppressed ? '' : 'invisible zero-height'}`}>
-                    <div
+{/*                    <div
                         className="add-btn add-config"
                         onClick={this.suppress.bind(this, true)}
                         title={`${t('add.label')} ${t('templates:btn.new_conf.label')}`}
@@ -123,7 +123,7 @@ class NewAttribute extends Component {
                         <div className="text">
                             <span>configuration</span>
                         </div>
-                    </div>
+                    </div>*/}
                     <div
                         className="add-btn add-attr"
                         onClick={this.suppress.bind(this, false)}

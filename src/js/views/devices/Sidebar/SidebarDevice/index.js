@@ -25,7 +25,8 @@ const SidebarDevice = ({
     t,
 }) => {
     const {
-        configValues, dynamicValues, staticValues, actuatorValues,
+        /* configValues, */
+        dynamicValues, staticValues, actuatorValues,
     } = device;
     const total = device.templates.length ? device.templates.length : 0;
     return (
@@ -100,12 +101,14 @@ const SidebarDevice = ({
                                         <div className="label">
                                             {`3. ${t('devices:manage_attributes')}`}
                                         </div>
-                                        <SidebarButton
-                                            onClick={() => handleShowDeviceAttrs(configValues, t('text.configuration'))}
+                                        {/* <SidebarButton
+                                            onClick={() =>
+                                            handleShowDeviceAttrs(configValues,
+                                             t('text.configuration'))}
                                             icon="config_attrs"
                                             title={t('text.configuration')}
                                             disable={configValues.length === 0}
-                                        />
+                                        /> */}
                                         <SidebarButton
                                             onClick={() => handleShowDeviceAttrs(staticValues, t('text.static_values'))}
                                             icon="data_attrs"
@@ -124,7 +127,7 @@ const SidebarDevice = ({
                                             title={t('text.actuators')}
                                             disable={actuatorValues.length === 0}
                                         />
-                                        { hasTemplateWithImages ? (
+                                        {hasTemplateWithImages ? (
                                             <SidebarButton
                                                 onClick={() => toogleSidebarImages()}
                                                 icon="firmware"

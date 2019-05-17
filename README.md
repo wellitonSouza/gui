@@ -53,3 +53,10 @@ yarn install
 yarn run test:clearDb 
 ```
 
+There are 2 types of scenarios: Basic and Advanced.
+In order to run each scenario, run the following command:
+
+```shell
+yarn run test --grep @basic
+yarn run test --grep @adv
+```

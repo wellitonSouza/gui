@@ -22,15 +22,9 @@ class Import extends Component {
         };
         this.pond = createRef();
         this.file = createRef();
-        this.dismiss = this.dismiss.bind(this);
         this.handleOpenModal = this.handleOpenModal.bind(this);
         this.openModal = this.openModal.bind(this);
         this.uploadFile = this.uploadFile.bind(this);
-    }
-
-    dismiss() {
-        const { openModal } = this.props;
-        openModal(false);
     }
 
     handleOpenModal() {
@@ -84,7 +78,7 @@ class Import extends Component {
 
     render() {
         const { showModal, file, success } = this.state;
-        const { t, openModal } = this.props;
+        const { t, openModal, closeModal } = this.props;
         const label = t('importExport:import.btnModal');
         const title = t('importExport:import.titleModal');
         const firstMessage = t('importExport:import.subtitleModal');
@@ -93,13 +87,7 @@ class Import extends Component {
 
         return (
             <div>
-                <ImportExport
-                    openModal={openModal}
-                    toggleSidebar={this.dismiss}
-                    save
-                    label={t('importExport:import.title')}
-                    handleClick={this.handleOpenModal}
-                >
+                <ImportExport openModal={openModal} closeModal={closeModal} toggleSidebar={closeModal} save label={t('importExport:import.title')} handleClick={this.handleOpenModal}>
                     {canSeeImport ? (
                         <HeadImportExport
                             main
@@ -137,7 +125,7 @@ class Import extends Component {
                             click={this.uploadFile}
                             img="warning"
                             cancel
-                            back={this.dismiss}
+                            back={closeModal}
                         />
                     ) : null}
                     {success ? (
@@ -159,6 +147,7 @@ class Import extends Component {
 
 Import.propTypes = {
     openModal: PropTypes.func.isRequired,
+    closeModal: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
 };
 

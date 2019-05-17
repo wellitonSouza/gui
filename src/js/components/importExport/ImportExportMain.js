@@ -87,7 +87,7 @@ class ImportExportMain extends Component {
                     openImport ? (
                         <Import
                             openModal={this.openImport}
-                                closeModal={this.dismiss}
+                            closeModal={this.dismiss}
                         />
                     ) : null
                 }
@@ -98,6 +98,7 @@ class ImportExportMain extends Component {
 
 ImportExportMain.propTypes = {
     openModal: PropTypes.func.isRequired,
+    closeModal: PropTypes.func,
     t: PropTypes.shape.isRequired,
     toggleSidebar: PropTypes.func.isRequired,
 };

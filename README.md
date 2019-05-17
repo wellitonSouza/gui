@@ -37,3 +37,12 @@ To run the created image:
 ```shell
 docker run -d [-n name] <tag name>
 ```
+
+# Development
+
+To run the acceptance test, run the commands below.
+
+```shell
+yarn install
+yarn run test 
+```

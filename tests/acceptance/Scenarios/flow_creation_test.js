@@ -7,12 +7,13 @@ Before((login) => {
 Scenario('Creating a simple flow', async (I, Flow, Device, Notification) => {
     Flow.init(I);
 
+    // TODO: createDevice should be in step_files, Commons or Device
     const deviceId = await Flow.createDevice();
 
     Flow.clickOpen();
     Flow.clickCreateNew();
     Flow.setFlowName('my flow');
-
+    I.wait(3);
     Flow.addDeviceInput();
     Flow.addSwitch();
     Flow.addChange();

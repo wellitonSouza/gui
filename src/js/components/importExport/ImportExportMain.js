@@ -74,7 +74,7 @@ class ImportExportMain extends Component {
                     ) : <div /> }
                     {canSeeExport ? (
                         <div className="">
-                                <HeadImportExport
+                            <HeadImportExport
                                 handleClick={this.handleExport}
                                 icon="export-icon"
                                 title={t('importExport:export.title')}
@@ -84,13 +84,12 @@ class ImportExportMain extends Component {
                     ) : <div /> }
                 </ImportExport>
                 {
-                    openImport ? 
+                    openImport ? (
                         <Import
                             openModal={this.openImport}
-                            closeModal={this.dismiss}
+                                closeModal={this.dismiss}
                         />
-                    :
-                    null
+                    ) : null
                 }
             </div>
         );

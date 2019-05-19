@@ -443,7 +443,7 @@ class SideBar extends Component {
 
 function SummaryItem(props) {
     return (
-        <div className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight">
+        <div className="card-size card-hover lst-entry-wrapper z-depth-2 mg0px pointer">
             <div className="lst-entry-title col s12 bg-gradient-light-blue">
                 <img className="title-icon" src="images/generic-user-icon.png"/>
                 <div className="title-text truncate" title={props.user.name}>
@@ -514,7 +514,7 @@ class ListItem extends Component {
     render() {
         const active = (this.props.user.id === this.props.detail);
         return (
-            <div className="col s12 no-padding clickable" id={this.props.user.id}
+            <div className="mg20px fl flex-order-2" id={this.props.user.id}
                  onClick={this.handleDetail}>
                 <SummaryItem user={this.props.user} isActive={active}/>
             </div>
@@ -677,7 +677,7 @@ class UserList extends Component {
                              formUser={this.formUser}/>
                 </AltContainer>
                 <RemoveDialog callback={this.deleteUser} target="confirmDiag"/>
-                <div id="user-wrapper" className="col s12  lst-wrapper scroll-bar">
+                <div id="user-wrapper" className="col s12 lst-wrapper w100 hei-100-over-scroll flex-container">
                     {this.props.values.map(user => (
                         <ListItem
                             user={user}

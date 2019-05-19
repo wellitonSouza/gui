@@ -18,24 +18,24 @@
   },
   "username": {
     "label": "User Name",
-    "error": "Please use only letters (a-z) and numbers (0-9)"
+    "error": "Invalid username: Please use only letters (a-z) and numbers (0-9)"
   },
   "name": {
     "label": "Name",
-    "error": "Invalid name"
+    "error": "Invalid name: Please use only letters (A-z)"
   },
   "email": {
     "label": "Email",
-    "error": "Please enter a valid email address."
+    "error": "Invalid email: Please enter a valid email address."
   },
   "confirm_email": {
     "label": "Confirm Email",
-    "error": "Email address mismatch."
+    "error": "Invalid confirmation: Email address mismatch."
   },
   "profile": {
     "label": "Profile",
     "alt": "Choose your option",
-    "error": "Missing profile."
+    "error": "Invalid profile: Missing profile."
   },
   "user": "user"
 }

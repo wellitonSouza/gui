@@ -17,6 +17,9 @@ const jsonTemplate = {
 
 
 Scenario('@adv: Watching a simple message', async (I, Device) => {
+    // At first, do login
+    I.loginAdmin(I, false);
+
     const template = await I.createTemplate(jsonTemplate);
     const templateId = template.template.id;
     const device = await I.createDevice({

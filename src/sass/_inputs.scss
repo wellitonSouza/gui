@@ -93,6 +93,8 @@ a.new-btn-flat
   {
     position: relative;
     width: 102px;
+    min-width: 100px;
+    cursor: pointer;
     text-align: center;
     text-transform: uppercase;
     box-shadow: none;

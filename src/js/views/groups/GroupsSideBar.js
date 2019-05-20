@@ -389,6 +389,7 @@ class GroupsSideBar extends Component {
             <Fragment>
                 <SideBarRight
                     icon="groups"
+                    headerColor="bg-gradient-purple"
                     title={edit ? `${group.name}`
                         : t('groups:form.title.new')}
                     content={(

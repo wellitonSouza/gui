@@ -18,7 +18,7 @@ i18next.setDefaultNamespace('groups');
 function GroupCard(obj) {
     return (
         <div
-            className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight pointer"
+            className="card-size card-hover lst-entry-wrapper z-depth-2 mg0px pointer"
             id={obj.group.name}
             onClick={obj.onclick}
             role="none"
@@ -58,13 +58,15 @@ function GroupCard(obj) {
 function GroupList(param) {
     if (param.groups) {
         return (
-            <div className="fill">
+            <div className="col s12 lst-wrapper w100 hei-100-over-scroll flex-container">
                 {param.groups.map(obj => (
-                    <GroupCard
-                        group={obj}
-                        key={obj.name}
-                        onclick={param.handleUpdate}
-                    />
+                    <div key={obj.name} className="mg20px fl flex-order-2">
+                        <GroupCard
+                            group={obj}
+                            key={obj.name}
+                            onclick={param.handleUpdate}
+                        />
+                    </div>
                 ))}
             </div>
         );
@@ -162,7 +164,7 @@ class Groups extends Component {
         } = this.state;
         const { t } = this.props;
         return (
-            <span id="groups-wrapper">
+            <div className="full-device-area">
                 <AltContainer store={GroupStore}>
                     <NewPageHeader title={<Trans i18nKey="title" />} icon="groups">
                         <OperationsHeader newGroup={this.newGroup} i18n={t} />
@@ -176,7 +178,7 @@ class Groups extends Component {
                         />
                     ) : <div />}
                 </AltContainer>
-            </span>
+            </div>
         );
     }
 }

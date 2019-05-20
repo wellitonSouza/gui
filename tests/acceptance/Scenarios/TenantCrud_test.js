@@ -2,10 +2,6 @@ const Utils = require('../Utils');
 
 Feature('Tenant verification');
 
-Before((login) => {
-    login('admin');
-});
-
 newUser = () => ({
     name: 'Random Morty',
     username: `a${Utils.sid()}`,
@@ -71,6 +67,9 @@ function genericLogin(I, username, pass = 'temppwd') {
 */
 
 Scenario('@adv: Checking child tenant equals parent tenant', async (I, Commons, User) => {
+    // At first, do login
+    I.loginAdmin(I, false);
+
     // Create a user A using API with a different tenant
     // 1. create User A
     const jUserA = newUser();
@@ -125,8 +124,15 @@ Scenario('@adv: Checking child tenant equals parent tenant', async (I, Commons, 
     User.seeHasRemoved();
 });
 
+// back to admin
+genericLogin(I, 'admin', 'admin');
+User.openUserPage();
 
 Scenario('@adv: Checking message in 2 tenants', async (I, Device) => {
+    // At first, do login
+    I.loginAdmin(I, false);
+
+    // create variables
     Device.init(I);
     genericLogin(I, 'admin', 'admin');
 
@@ -135,6 +141,7 @@ Scenario('@adv: Checking message in 2 tenants', async (I, Device) => {
     const userA = newUser();
     const userB = newUser();
     let deviceId = 0;
+
     // 1. create User A
     await I.createUser(userA);
 

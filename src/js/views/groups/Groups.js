@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import AltContainer from 'alt-container';
-import TextTruncate from 'react-text-truncate';
 import { translate, Trans } from 'react-i18next';
 import PropTypes from 'prop-types';
 import * as i18next from 'i18next';
@@ -34,18 +33,18 @@ function GroupCard(obj) {
             </div>
             <div className="attr-list">
                 <div className="attr-area light-background">
-                    <div className="attr-row">
-                        <div className="icon">
+                    <div className="attr-row height74">
+                        <div className="icon height50">
                             <img src="images/info-icon.png" alt={obj.group.description} />
                         </div>
-                        <div className="user-card attr-content" title={obj.group.description}>
-                            <TextTruncate
-                                line={2}
-                                truncateText="…"
-                                text={obj.group.description}
-                                containerClassName="description-text"
-                            />
-                            <div className="subtitle"><Trans i18nKey="description.label" /></div>
+                        <div className="attr-content" title={obj.group.description}>
+                            <div className="subtitle">
+                                {obj.group.description}
+                                {' '}
+                            </div>
+                            <span>
+                                <Trans i18nKey="description.label" />
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -169,14 +168,13 @@ class Groups extends Component {
                     <NewPageHeader title={<Trans i18nKey="title" />} icon="groups">
                         <OperationsHeader newGroup={this.newGroup} i18n={t} />
                     </NewPageHeader>
-                    <GroupList handleUpdate={this.handleUpdate} />
-                    {showSideBar ? (
-                        <GroupsSideBar
-                            handleShowSideBar={this.showSideBar}
-                            handleHideSideBar={this.hideSideBar}
-                            edit={edit}
-                        />
-                    ) : <div />}
+                    <GroupBox
+                        handleUpdate={this.handleUpdate}
+                        showSideBar={showSideBar}
+                        handleShowSideBar={this.showSideBar}
+                        handleHideSideBar={this.hideSideBar}
+                        edit={edit}
+                    />
                 </AltContainer>
             </div>
         );
@@ -186,5 +184,33 @@ class Groups extends Component {
 Groups.propTypes = {
     t: PropTypes.func.isRequired,
 };
+
+function GroupBox(props) {
+    const {
+        handleUpdate, showSideBar, handleHideSideBar, handleShowSideBar, edit,
+    } = props;
+    return (
+        <div className="full-height flex-container pos-relative overflow-x-hidden">
+            <GroupList handleUpdate={handleUpdate} {...props} />
+            {showSideBar ? (
+                <GroupsSideBar
+                    handleShowSideBar={handleShowSideBar}
+                    handleHideSideBar={handleHideSideBar}
+                    edit={edit}
+                    {...props}
+                />
+            ) : <div />}
+        </div>
+    );
+}
+
+GroupBox.propTypes = {
+    handleUpdate: PropTypes.func.isRequired,
+    showSideBar: PropTypes.bool.isRequired,
+    handleHideSideBar: PropTypes.func.isRequired,
+    handleShowSideBar: PropTypes.func.isRequired,
+    edit: PropTypes.func.isRequired,
+};
+
 
 export default translate()(Groups);

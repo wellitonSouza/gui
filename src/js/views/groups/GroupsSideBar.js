@@ -393,14 +393,16 @@ class GroupsSideBar extends Component {
                     title={edit ? `${group.name}`
                         : t('groups:form.title.new')}
                     content={(
-                        <Form
-                            dataGroup={group}
-                            groupPermissions={grouppermissions}
-                            systemPermissions={systempermissions}
-                            handleCharge={this.handleInput}
-                            handleChangeCheckbox={this.handleCheckBox}
-                            cannotEdit={cannotEdit}
-                        />
+                        <div className="pl20 pr20">
+                            <Form
+                                dataGroup={group}
+                                groupPermissions={grouppermissions}
+                                systemPermissions={systempermissions}
+                                handleCharge={this.handleInput}
+                                handleChangeCheckbox={this.handleCheckBox}
+                                cannotEdit={cannotEdit}
+                            />
+                        </div>
                     )}
                     visible
                     buttonsFooter={buttonsFooter}

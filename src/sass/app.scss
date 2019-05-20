@@ -316,6 +316,17 @@ body {
   padding-bottom: 20px !important;
 }
 
+.pl20px, .pl20
+{
+  padding-left: 20px !important;
+}
+
+.pr20px, .pr20
+{
+  padding-right: 20px !important;
+}
+
+
 .pl30px, .pl30
 {
   padding-left: 30px !important;
@@ -530,7 +541,16 @@ order: 1;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.height50
+{
+  height:50px !important;
+}
  
+.height74
+{
+  height:74px !important;
+}
+
 @import 'inputs';
 @import 'shadow';
 @import 'list';

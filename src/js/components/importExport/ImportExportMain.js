@@ -55,20 +55,42 @@ class ImportExportMain extends Component {
                     closeModal={this.dismiss}
                 >
                     <div className="">
-                        <HeadImportExport main icon="import-export-icon" title={t('importExport:title')} firstMessage="" />
+                        <HeadImportExport
+                            main
+                            icon="import-export-icon"
+                            title={t('importExport:title')}
+                            firstMessage=""
+                        />
                     </div>
                     {canSeeImport ? (
                         <div className="">
-                            <HeadImportExport handleClick={this.handleImport} icon="import-icon" title={t('importExport:import.titleMain')} firstMessage={t('importExport:import.subtitleMain')} />
+                            <HeadImportExport
+                                handleClick={this.handleImport}
+                                icon="import-icon"
+                                title={t('importExport:import.titleMain')}
+                                firstMessage={t('importExport:import.subtitleMain')}
+                            />
                         </div>
                     ) : <div /> }
                     {canSeeExport ? (
                         <div className="">
-                            <HeadImportExport handleClick={this.handleExport} icon="export-icon" title={t('importExport:export.title')} firstMessage={t('importExport:export.subtitle')} />
+                            <HeadImportExport
+                                handleClick={this.handleExport}
+                                icon="export-icon"
+                                title={t('importExport:export.title')}
+                                firstMessage={t('importExport:export.subtitle')}
+                            />
                         </div>
                     ) : <div /> }
                 </ImportExport>
-                {openImport ? <Import openModal={this.openImport} /> : null}
+                {
+                    openImport ? (
+                        <Import
+                            openModal={this.openImport}
+                            closeModal={this.dismiss}
+                        />
+                    ) : null
+                }
             </div>
         );
     }

@@ -79,17 +79,17 @@ class SideBar extends Component {
 
     checkValidation() {
         const { t } = this.props;
-        if (this.checkName(this.state.user.name)) {
+        if (this.checkUsername(this.state.user.username)) {
+            toaster.warning(t('users:username.error'));
+            return false;
+        }
+
+        if (this.checkName(this.state.user.name.trim())) {
             toaster.warning(t('users:name.error'));
             return false;
         }
         if (this.checkEmail(this.state.user.email)) {
             toaster.warning(t('users:email.error'));
-            return false;
-        }
-
-        if (this.checkUsername(this.state.user.username)) {
-            toaster.warning(t('users:username.error'));
             return false;
         }
 

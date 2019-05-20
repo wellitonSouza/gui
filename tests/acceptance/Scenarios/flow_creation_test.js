@@ -4,7 +4,7 @@ Before((login) => {
     login('admin');
 });
 
-Scenario('Creating a simple flow', async (I, Flow, Device, Notification) => {
+Scenario('@basic: Creating a simple flow', async (I, Flow, Device, Notification) => {
     Flow.init(I);
 
     // TODO: createDevice should be in step_files, Commons or Device

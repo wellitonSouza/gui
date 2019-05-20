@@ -55,6 +55,23 @@ module.exports = () => {
             return JSON.parse(response.getBody('utf8'));
         },
 
+        async deleteXHR(resource, querystring) {
+            console.log(querystring);
+            pause();
+            jwt = await this.executeScript(() => localStorage.getItem('jwt'));
+
+            const method = 'DELETE';
+            const response = request(method, `${env.dojot_host}/${resource}?${querystring}`, {
+                headers: {
+                    Authorization: `Bearer ${jwt}`,
+                },
+                json: myJson,
+            });
+
+            return JSON.parse(response.getBody('utf8'));
+        },
+
+
         async createTemplate(json) {
             return await this.postJSON('template', json);
         },
@@ -67,9 +84,14 @@ module.exports = () => {
             return await this.postJSON('device', json);
         },
 
+        async deleteUser(userId) {
+            return await this.deleteXHR('auth/user', userId);
+        },
+
         async createUser(json) {
             return await this.postJSON('auth/user', json);
         },
+
 
         async clearDatabase() {
             return await this.postJSON('import', {

@@ -4,7 +4,7 @@ Before((login) => {
     login('admin');
 });
 
-Scenario('Creating a template', async (I, Template) => {
+Scenario('@basic: Creating a template', async (I, Template) => {
     Template.init(I);
     Template.clickOpenTemplatePage();
     Template.clickCreateNew();
@@ -87,11 +87,11 @@ Scenario('Creating a template', async (I, Template) => {
         '-22.826702502573774, -47.044628078647314',
     );
 
-/*    Template.addAttr(
+    /*    Template.addAttr(
         'attrStringActuator',
         Template.AttributeType.actuator,
         Template.AttributeValueType.string,
-    );*/
+    ); */
 
     Template.updateAttr(
         'attrGPSStatic',
@@ -106,7 +106,7 @@ Scenario('Creating a template', async (I, Template) => {
     Template.seeTemplateHasCreated();
 });
 
-Scenario('Checking create template', async (I, Template) => {
+Scenario('@basic: Checking create template', async (I, Template) => {
     Template.init(I);
     Template.clickOpenTemplatePage();
     Template.change64QtyToShowPagination();
@@ -169,17 +169,17 @@ Scenario('Checking create template', async (I, Template) => {
         '-23.826702502573774, -48.044628078647314',
     );
 
-/*    Template.seeAttr(
+    /*    Template.seeAttr(
         'attrStringActuator',
         Template.AttributeType.actuator,
         Template.AttributeValueType.string,
-    );*/
+    ); */
 
     Template.seeManageFirmware();
     Template.clickDiscard();
 });
 
-Scenario('Updating a template', async (I, Template) => {
+Scenario('@basic: Updating a template', async (I, Template) => {
     Template.init(I);
     Template.clickOpenTemplatePage();
     Template.change64QtyToShowPagination();
@@ -259,7 +259,7 @@ Scenario('Updating a template', async (I, Template) => {
     Template.seeTemplateHasUpdated();
 });
 
-Scenario('Checking update template', async (I, Template) => {
+Scenario('@basic: Checking update template', async (I, Template) => {
     Template.init(I);
     Template.clickOpenTemplatePage();
     Template.change64QtyToShowPagination();
@@ -309,7 +309,7 @@ Scenario('Checking update template', async (I, Template) => {
     Template.clickDiscard();
 });
 
-Scenario('Removing template', async (I, Template) => {
+Scenario('@basic: Removing template', async (I, Template) => {
     Template.init(I);
     Template.clickOpenTemplatePage();
     Template.change64QtyToShowPagination();

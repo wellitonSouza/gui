@@ -113,20 +113,19 @@ Scenario('@adv: Checking child tenant equals parent tenant', async (I, Commons, 
 
     // remove user A
     Commons.clickCardByName(jUserA.name);
-    Commons.clickRemove();
+    User.clickRemove();
     User.confirmRemove();
     User.seeHasRemoved();
 
     // remove user B
     Commons.clickCardByName(jUserB.name);
-    Commons.clickRemove();
+    User.clickRemove();
     User.confirmRemove();
     User.seeHasRemoved();
+
+    logout(I);
 });
 
-// back to admin
-genericLogin(I, 'admin', 'admin');
-User.openUserPage();
 
 Scenario('@adv: Checking message in 2 tenants', async (I, Device) => {
     // At first, do login
@@ -183,4 +182,6 @@ Scenario('@adv: Checking message in 2 tenants', async (I, Device) => {
     // 10. Send Message in User B device, to go detail page and check the message
     await I.sendMQTTMessage(deviceId, '{"text": "data B"}', userB.service);
     checkMessage(I, Device, deviceId, 'data B');
+
+    logout(I);
 });

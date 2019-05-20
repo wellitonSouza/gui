@@ -15,6 +15,11 @@ const jsonTemplate = {
     ],
 };
 
+function logout(I) {
+    I.click(locate('div').withAttr({ title: 'Login details' }));
+    I.click('.btn-logout');
+    I.wait(3);
+}
 
 Scenario('@adv: Watching a simple message', async (I, Device) => {
     // At first, do login
@@ -38,4 +43,6 @@ Scenario('@adv: Watching a simple message', async (I, Device) => {
     Device.selectAttr('text');
     I.wait(3);
     Device.shouldSeeMessage(msg);
+
+    logout(I);
 });

@@ -23,9 +23,9 @@ const config = {
                 handleSIGTERM: false,
                 handleSIGHUP: false,
                 defaultViewport: {
-                    width: 1380,
-                    height: 720,
-                },
+                    width: 1700,
+                    height: 1080,
+                }, 
             },
         },
         REST: {

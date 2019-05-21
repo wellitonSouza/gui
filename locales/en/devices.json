@@ -41,7 +41,7 @@
         }
     },
     "device": "device",
-    "selected_templates": "Selected Models",
+    "selected_templates": "Selected Templates",
     "manage_attributes": "Manage Attributes",
     "manage_template": "manage template",
     "attribute": "attribute",

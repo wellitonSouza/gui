@@ -1,0 +1,61 @@
+CodeceptJS v2.1.0
+Using test root "/tests/tests/acceptance"
+
+Para --
+  @adv: Watching a simple message
+    I: login 
+    I am on page "http://10.202.71.108:8000"
+    I: setEnglishLanghage 
+    I execute script () => localStorage.setItem('i18nextLng', 'en')
+    I refresh page 
+    I see "Sign in"
+    I fill field "Username", "user1"
+    I fill field "Password", "temppwd"
+    I click "Login"
+    I wait 3
+    I refresh page 
+    I: postJSON 
+    I execute script () => localStorage.getItem('jwt')
+    I execute script () => localStorage.getItem('jwt')
+    I am on page "#/device/id/9dd43a/detail"
+    I wait 2
+    Device: selectAttr 
+    I click {xpath: .//div[@title = 'text']}
+    I wait 3
+    Device: shouldSeeMessage 
+    I wait for text "my string", 10
+  ✖ FAILED in 46976ms
+
+
+-- FAILURES:
+
+  1) Para
+       @adv: Watching a simple message:
+     Text "my string" was not found on page after 10 sec
+waiting for function failed: timeout 10000ms exceeded
+  
+  Scenario Steps:
+  
+  - I.waitForText("my string", 10) at Object.shouldSeeMessage (tests/acceptance/PageObject/Device.js:189:11)
+  - I.wait(3) at Test.Scenario (tests/acceptance/Scenarios/ManyTeneats_test.js:80:7)
+  - I.click({xpath: .//div[@title = 'text']}) at Object.selectAttr (tests/acceptance/PageObject/Device.js:177:11)
+  - I.wait(2) at Test.Scenario (tests/acceptance/Scenarios/ManyTeneats_test.js:78:7)
+  - I.amOnPage("#/device/id/9dd43a/detail") at Test.Scenario (tests/acceptance/Scenarios/ManyTeneats_test.js:77:7)
+  - I.executeScript(() => localStorage.getItem('jwt')) at Object.postJSON (tests/acceptance/steps_file.js:59:30)
+  - I.executeScript(() => localStorage.getItem('jwt')) at Object.postJSON (tests/acceptance/steps_file.js:59:30)
+  - I.refreshPage() at Object.login (tests/acceptance/steps_file.js:33:15)
+  - I.wait(3) at Object.login (tests/acceptance/steps_file.js:31:15)
+  - I.click("Login") at Object.login (tests/acceptance/steps_file.js:30:15)
+  - I.fillField("Password", "temppwd") at Object.login (tests/acceptance/steps_file.js:29:15)
+  - I.fillField("Username", "user1") at Object.login (tests/acceptance/steps_file.js:28:15)
+  - I.see("Sign in") at Object.login (tests/acceptance/steps_file.js:27:15)
+  - I.refreshPage() at Object.login (tests/acceptance/steps_file.js:26:15)
+  - I.executeScript(() => localStorage.setItem('i18nextLng', 'en')) at Object.setEnglishLanghage (tests/acceptance/steps_file.js:119:31)
+  - I.amOnPage("http://10.202.71.108:8000") at Object.login (tests/acceptance/steps_file.js:24:15)
+  
+  
+  
+  Run with --verbose flag to see NodeJS stacktrace
+
+
+  FAIL  | 0 passed, 1 failed   // 48s

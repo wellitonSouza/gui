@@ -1,0 +1,30 @@
+CodeceptJS v2.1.0
+Using test root "/tests/tests/acceptance"
+
+Para --
+  @adv: Watching a simple message
+    I: login 
+    I am on page "http://10.202.71.108:8000"
+    I: setEnglishLanghage 
+    I execute script () => localStorage.setItem('i18nextLng', 'en')
+    I refresh page 
+    I see "Sign in"
+    I fill field "Username", "user1"
+    I fill field "Password", "temppwd"
+    I click "Login"
+    I wait 3
+    I refresh page 
+    I: postJSON 
+    I execute script () => localStorage.getItem('jwt')
+    I execute script () => localStorage.getItem('jwt')
+    I am on page "#/device/id/450e65/detail"
+    I wait 2
+    Device: selectAttr 
+    I click {xpath: .//div[@title = 'text']}
+    I wait 3
+    Device: shouldSeeMessage 
+    I wait for text "my string", 10
+  ✔ OK in 15048ms
+
+
+  OK  | 1 passed   // 15s

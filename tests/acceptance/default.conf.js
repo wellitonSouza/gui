@@ -6,7 +6,8 @@ const config = {
     output: './output',
     multiple: {
         parallel: {
-            chunks: 1,
+            chunks: 3,
+/*            browsers: ['chrome', 'chrome', 'chrome'],*/
         },
     },
     helpers: {
@@ -15,8 +16,8 @@ const config = {
             keepCookies: true,
             fullPageScreenshots: true,
             restart: false,
-            keepBrowserState: true,
-            show: true,
+            keepBrowserState: false,
+            show: false,
             waitForNavigation: ['networkidle2', 'domcontentloaded'],
             chrome: {
                 args: ['--no-sandbox', '--start-maximized', '--start-fullscreen'],
@@ -25,7 +26,7 @@ const config = {
                 defaultViewport: {
                     width: 1700,
                     height: 1080,
-                }, 
+                },
             },
         },
         REST: {

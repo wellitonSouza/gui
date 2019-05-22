@@ -34,7 +34,7 @@ echo "";
 echo "";
 echo "";
 
-CONTADOR=1
+CONTADOR=6
 while [  $CONTADOR -lt $1 ]; do
     JSON_CREATE_USER='{"username":"usertest'"$CONTADOR"'","service":"usertest'"$CONTADOR"'","email":"usertest'"$CONTADOR"'@noemail.com","name":"test'"$CONTADOR"'","profile":"testuser"}'
 
@@ -42,7 +42,7 @@ while [  $CONTADOR -lt $1 ]; do
     CREATE_USER_RESPONSE=$( curl \
     -H "Content-Type:application/json" \
     -H "Connection:keep-alive" \
-    -H "Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYVFdCWm9vS0w2QmJnSkdjMGx1QmFhTGU4NWF0QVNQUCIsImlhdCI6MTU1ODUzMTA5NiwiZXhwIjoxNTU4NTMxNTE2LCJwcm9maWxlIjoiYWRtaW4iLCJncm91cHMiOlsxXSwidXNlcmlkIjoxLCJqdGkiOiI0OTBkNWU4OTg0MzhkN2I2NmZlZGM2Yjg0OGE3NmEwMiIsInNlcnZpY2UiOiJhZG1pbiIsInVzZXJuYW1lIjoiYWRtaW4ifQ.-PzZR0rUr6wDZ3YaROPpj8Zkd9wv4hti-Zao42-E_j4" \
+    -H "Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIxaUoyRE9hWk11ZGlwNWJISUVSOExZQVUyOHhQckpOdCIsImlhdCI6MTU1ODUzNTAwNCwiZXhwIjoxNTU4NTM1NDI0LCJwcm9maWxlIjoiYWRtaW4iLCJncm91cHMiOlsxXSwidXNlcmlkIjoxLCJqdGkiOiI3MmVkYmNjZDcwZmQzN2MyNDkxMzgwMmY2ZTMxMjVjYiIsInNlcnZpY2UiOiJhZG1pbiIsInVzZXJuYW1lIjoiYWRtaW4ifQ.HiWCL4_GfngeJ5Ej6YFaAZ_gHZYMSvekzP6q84wLwyw" \
     --silent \
     --write-out "HTTPSTATUS:%{http_code}" -X POST \
     --data $JSON_CREATE_USER \
@@ -53,8 +53,8 @@ while [  $CONTADOR -lt $1 ]; do
     CREATE_USER_STATUS=$(echo $CREATE_USER_RESPONSE | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
 
     # print message based on status
-    if [ ! $CREATE_USER_STATUS -eq 200  ]; then
-        echo "Error [HTTP status: $CREATE_USER_STATUS]"
+    if [ ! $CREATE_USER_STATUS -eq '200'  ]; then
+        echo "Error [HTTP status: $CREATE_USER_STATUS]";
         exit 1
     else
         echo "\---------------------------------------------------------------------";
@@ -65,20 +65,24 @@ while [  $CONTADOR -lt $1 ]; do
         echo "";
     fi
 
+
     # Request to login with user to get his JWT Token
     LOGIN_USER_RESPONSE=$(curl \
     -H 'Content-Type: application/json' \
     --silent \
     --write-out "HTTPSTATUS:%{http_code}" -X POST \
     --data '{"username":"usertest'"$CONTADOR"'","passwd": "temppwd"}' \
-    http://localhost:8000/auth/ | jq '.jwt')
+    http://localhost:8000/auth/)
 
     # extract the status
     LOGIN_USER_STATUS=$(echo $LOGIN_USER_RESPONSE | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
 
+    # extract the token
+    LOGGED_USER_TOKEN=$(echo $LOGIN_USER_RESPONSE | jq '.jwt')
+
     # print message based on status
-    if [ ! $LOGIN_USER_STATUS -eq 200  ]; then
-        echo "Error [HTTP status: $LOGIN_USER_STATUS]"
+    if [ ! $LOGIN_USER_STATUS -eq '200'  ]; then
+        echo "Error [HTTP status: $LOGIN_USER_STATUS]";
         exit 1
     else
         echo "\---------------------------------------------------------------------";
@@ -87,9 +91,6 @@ while [  $CONTADOR -lt $1 ]; do
         echo "";
         echo "";
         echo "";
-
-        # extract the token
-        LOGGED_USER_TOKEN=$(echo $HTTP_RESPONSE | jq '.jwt')
 
         echo "\---------------------------------------------------------------------";
         echo "Token: $LOGGED_USER_TOKEN";
@@ -117,8 +118,9 @@ while [  $CONTADOR -lt $1 ]; do
     PSWD_USER_STATUS=$(echo $CHANGE_USER_PSWD_RESPONSE | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
 
     # print message based on status
-    if [ ! $PSWD_USER_STATUS -eq 200  ]; then
-        echo "Error [HTTP status: $PSWD_USER_STATUS]"
+    if [ ! $PSWD_USER_STATUS -eq '200'  ]; then
+        echo "$CHANGE_USER_PSWD_RESPONSE";
+        echo "Error [HTTP status: $PSWD_USER_STATUS]";
         exit 1
     else
         echo "\---------------------------------------------------------------------";

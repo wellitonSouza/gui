@@ -1,7 +1,7 @@
 # variables assignment
-NUMBER_USERS=$1
-HOST=$2
-GROUP=$3
+[ ! -z "$1" ] && NUMBER_USERS=$1 || NUMBER_USERS=40
+[ ! -z "$2" ] && HOST=$2 || HOST="http://localhost:8000"
+[ ! -z "$3" ] && GROUP=$3 || GROUP="user"
 
 # Login to get JWT Token
 HTTP_RESPONSE=$(curl \
@@ -40,14 +40,14 @@ echo "";
 echo "";
 
 CONTADOR=1
-while [  $CONTADOR -lt $NUMBER_USERS ]; do
+while [  $CONTADOR -le $NUMBER_USERS ]; do
     JSON_CREATE_USER='{"username":"usertest'"$CONTADOR"'","service":"usertest'"$CONTADOR"'","email":"usertest'"$CONTADOR"'@noemail.com","name":"test'"$CONTADOR"'","profile":"'"$GROUP"'"}'
 
     # request to create user
     CREATE_USER_RESPONSE=$( curl \
     -H "Content-Type:application/json" \
     -H "Connection:keep-alive" \
-    -H "Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhejN3OEtyWXVrNXFwUXFxMmZuR0x4SERuNkVZOVRWbCIsImlhdCI6MTU1ODU0NDIyNCwiZXhwIjoxNTU4NTQ0NjQ0LCJwcm9maWxlIjoiYWRtaW4iLCJncm91cHMiOlsxXSwidXNlcmlkIjoxLCJqdGkiOiIxNDUwMjRiMmMwMjY0ZjZlYWIzMzMxZjAyYWJjOWRhYSIsInNlcnZpY2UiOiJhZG1pbiIsInVzZXJuYW1lIjoiYWRtaW4ifQ.CpdDGTQ0vh6F5cNiGYlFFeGU8GL-ppkYGq1PfH6afS4" \
+    -H "Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeDF0bnExNTRpc0ltUENWTjNYTVBsNTFtZUJ6cUs1RCIsImlhdCI6MTU1ODU0OTAxNCwiZXhwIjoxNTU4NTQ5NDM0LCJwcm9maWxlIjoiYWRtaW4iLCJncm91cHMiOlsxXSwidXNlcmlkIjoxLCJqdGkiOiJkYmY0OGUwNzczN2I0Yjk1NDI1ZDNhY2E1MjBiYjEwOSIsInNlcnZpY2UiOiJhZG1pbiIsInVzZXJuYW1lIjoiYWRtaW4ifQ.DFEQZbjOWDGhRA1NOc3zJ37Zxsqqs9VnHgowthipEV0" \
     --silent \
     --write-out "HTTPSTATUS:%{http_code}" -X POST \
     --data $JSON_CREATE_USER \

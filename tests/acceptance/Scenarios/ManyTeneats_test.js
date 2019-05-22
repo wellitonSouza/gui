@@ -8,14 +8,12 @@ const current = {
     password: process.env.PASSWORD || 'admin',
 };
 
-Scenario('@adv: Watching a simple message with import', async (I, Device) => {
-    console.log('current', current);
-    console.log('process.env', process.env);
+Scenario('@adv: Watching a message through flow with import', async (I, Device) => {
     await I.login(I, current.username, current.password, false);
     await I.importDatabase(dataJson);
-    const deviceInfo = await I.getDeviceByLabel('device');
+    const devicesInfo = await I.getDeviceByLabel('device');
 
-    const deviceID = deviceInfo.devices[0].id;
+    const deviceID = devicesInfo.devices[0].id;
     await I.sendMQTTMessage(deviceID, '{"trigger": "run"}', current.tenant);
 
     I.amOnPage(`#/device/id/${deviceID}/detail`);

@@ -55,10 +55,14 @@ module.exports = () => {
             return this.executeScript(() => localStorage.getItem('jwt'));
         },
 
-        async postJSON(resource, myJson, method = 'POST') {
+        async requestJSON(resource, myJson, method = 'POST', querystring = '') {
             jwt = await this.executeScript(() => localStorage.getItem('jwt'));
+            let endPoint = `${env.dojot_host}/${resource}`;
 
-            const response = request(method, `${env.dojot_host}/${resource}`, {
+            if (querystring && querystring.length > 0) {
+                endPoint += `?${querystring}`;
+            }
+            const response = request(method, endPoint, {
                 headers: {
                     Authorization: `Bearer ${jwt}`,
                 },
@@ -69,8 +73,6 @@ module.exports = () => {
         },
 
         async deleteXHR(resource, querystring) {
-            console.log(querystring);
-            pause();
             jwt = await this.executeScript(() => localStorage.getItem('jwt'));
 
             const method = 'DELETE';
@@ -86,33 +88,41 @@ module.exports = () => {
 
 
         async createTemplate(json) {
-            return await this.postJSON('template', json);
+            return await this.requestJSON('template', json);
         },
 
         async updateTemplate(json, templateID) {
-            return await this.postJSON(`template/${templateID}`, json, 'PUT');
+            return await this.requestJSON(`template/${templateID}`, json, 'PUT');
         },
 
         async createDevice(json) {
-            return await this.postJSON('device', json);
+            return await this.requestJSON('device', json);
         },
 
         async deleteUser(userId) {
             return await this.deleteXHR('auth/user', userId);
         },
 
+        async getDeviceByLabel(label) {
+            return await this.requestJSON('device', {}, 'GET', `label=${label}`);
+        },
+
         async createUser(json) {
-            return await this.postJSON('auth/user', json);
+            return await this.requestJSON('auth/user', json);
         },
 
 
         async clearDatabase() {
-            return await this.postJSON('import', {
+            return await this.requestJSON('import', {
                 devices: [],
                 templates: [],
                 flows: [],
                 flowRemoteNodes: [],
             });
+        },
+
+        async importDatabase(dataJson) {
+            return await this.requestJSON('import', dataJson);
         },
 
         async setEnglishLanghage() {

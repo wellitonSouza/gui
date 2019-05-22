@@ -1,87 +1,28 @@
-Feature('Para');
+const dataJson = require('../utils/DojotData.json');
 
-/*
-Before((login) => {
-    /!*login('admin');*!/
-});
-*/
-
-
-const userObj = id => ({
-    username: `user${id}`,
-    service: `user${id}`,
-    email: `user${id}@noemail.com`,
-    name: `user${id}`,
-    profile: 'admin',
-});
-
-const jsonTemplate = {
-    label: 'String Template',
-    attrs: [
-        {
-            label: 'text',
-            type: 'dynamic',
-            value_type: 'string',
-        },
-        {
-            label: 'protocol',
-            type: 'static',
-            value_type: 'string',
-            static_value: 'mqtt',
-        },
-    ],
-};
-
-/* const accounts = new DataTable(['username']); //
-accounts.add([userObj('1').username]);
-accounts.add([userObj('2').username]);
-accounts.add([userObj('3').username]);
-
-Data(accounts).Scenario('@adv: Watching a simple message', async (I, Device, current) => {
-    await I.login(I, current.username, 'temppwd', false);
-
-    const template = await I.createTemplate(jsonTemplate);
-    const templateId = template.template.id;
-    const device = await I.createDevice({
-        templates: [
-            templateId,
-        ],
-        label: 'String device',
-    });
-    const deviceId = device.devices[0].id;
-    const msg = 'my string';
-
-    await I.sendMQTTMessage(deviceId, `{"text": "${msg}"}`, current.username);
-
-    I.amOnPage(`#/device/id/${deviceId}/detail`);
-    I.wait(2);
-    Device.selectAttr('text');
-    I.wait(3);
-    Device.shouldSeeMessage(msg);
-}); */
+Feature('ManyTenants');
 
 const current = {
-    username: process.env.USERNAME,
+    username: process.env.USERNAME || 'admin',
+    tenant: process.env.TENANT || 'admin',
+    password: process.env.PASSWORD || 'admin',
 };
 
-Scenario('@adv: Watching a simple message', async (I, Device) => {
-    await I.login(I, current.username, 'admin', false);
-    const template = await I.createTemplate(jsonTemplate);
-    const templateId = template.template.id;
-    const device = await I.createDevice({
-        templates: [
-            templateId,
-        ],
-        label: 'String device',
-    });
-    const deviceId = device.devices[0].id;
-    const msg = 'my string';
+Scenario('@adv: Watching a simple message with import', async (I, Device) => {
+    console.log('current', current);
+    console.log('process.env', process.env);
+    await I.login(I, current.username, current.password, false);
+    await I.importDatabase(dataJson);
+    const deviceInfo = await I.getDeviceByLabel('device');
 
-    await I.sendMQTTMessage(deviceId, `{"text": "${msg}"}`);
+    const deviceID = deviceInfo.devices[0].id;
+    await I.sendMQTTMessage(deviceID, '{"trigger": "run"}', current.tenant);
 
-    I.amOnPage(`#/device/id/${deviceId}/detail`);
+    I.amOnPage(`#/device/id/${deviceID}/detail`);
     I.wait(2);
-    Device.selectAttr('text');
+    Device.selectAttr('trigger');
+    Device.selectAttr('mensagem');
     I.wait(3);
-    Device.shouldSeeMessage(msg);
+    Device.shouldSeeMessage('run');
+    Device.shouldSeeMessage('msgOut');
 });

@@ -1,10 +1,13 @@
+HOST=$2
+GROUP=$3
+
 # Login to get JWT Token
 HTTP_RESPONSE=$(curl \
 -H 'Content-Type: application/json' \
 --silent \
 --write-out "HTTPSTATUS:%{http_code}" -X POST \
 --data '{"username":"admin","passwd": "admin"}' \
-http://localhost:8000/auth/)
+$HOST/auth/)
 
 echo "\---------------------------------------------------------------------";
 echo "Login Admin";
@@ -34,19 +37,19 @@ echo "";
 echo "";
 echo "";
 
-CONTADOR=1
+CONTADOR=5
 while [  $CONTADOR -lt $1 ]; do
-    JSON_CREATE_USER='{"username":"usertest'"$CONTADOR"'","service":"usertest'"$CONTADOR"'","email":"usertest'"$CONTADOR"'@noemail.com","name":"test'"$CONTADOR"'","profile":"testuser"}'
+    JSON_CREATE_USER='{"username":"usertest'"$CONTADOR"'","service":"usertest'"$CONTADOR"'","email":"usertest'"$CONTADOR"'@noemail.com","name":"test'"$CONTADOR"'","profile":"'"$GROUP"'"}'
 
     # request to create user
     CREATE_USER_RESPONSE=$( curl \
     -H "Content-Type:application/json" \
     -H "Connection:keep-alive" \
-    -H "Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIxaUoyRE9hWk11ZGlwNWJISUVSOExZQVUyOHhQckpOdCIsImlhdCI6MTU1ODUzNTAwNCwiZXhwIjoxNTU4NTM1NDI0LCJwcm9maWxlIjoiYWRtaW4iLCJncm91cHMiOlsxXSwidXNlcmlkIjoxLCJqdGkiOiI3MmVkYmNjZDcwZmQzN2MyNDkxMzgwMmY2ZTMxMjVjYiIsInNlcnZpY2UiOiJhZG1pbiIsInVzZXJuYW1lIjoiYWRtaW4ifQ.HiWCL4_GfngeJ5Ej6YFaAZ_gHZYMSvekzP6q84wLwyw" \
+    -H "Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhejN3OEtyWXVrNXFwUXFxMmZuR0x4SERuNkVZOVRWbCIsImlhdCI6MTU1ODU0NDIyNCwiZXhwIjoxNTU4NTQ0NjQ0LCJwcm9maWxlIjoiYWRtaW4iLCJncm91cHMiOlsxXSwidXNlcmlkIjoxLCJqdGkiOiIxNDUwMjRiMmMwMjY0ZjZlYWIzMzMxZjAyYWJjOWRhYSIsInNlcnZpY2UiOiJhZG1pbiIsInVzZXJuYW1lIjoiYWRtaW4ifQ.CpdDGTQ0vh6F5cNiGYlFFeGU8GL-ppkYGq1PfH6afS4" \
     --silent \
     --write-out "HTTPSTATUS:%{http_code}" -X POST \
     --data $JSON_CREATE_USER \
-    http://localhost:8000/auth/user/)
+    $HOST/auth/user/)
 
 
     # extract the status
@@ -54,6 +57,7 @@ while [  $CONTADOR -lt $1 ]; do
 
     # print message based on status
     if [ ! $CREATE_USER_STATUS -eq '200'  ]; then
+        echo "RESPONSE: $CREATE_USER_RESPONSE";
         echo "Error [HTTP status: $CREATE_USER_STATUS]";
         exit 1
     else
@@ -72,7 +76,7 @@ while [  $CONTADOR -lt $1 ]; do
     --silent \
     --write-out "HTTPSTATUS:%{http_code}" -X POST \
     --data '{"username":"usertest'"$CONTADOR"'","passwd": "temppwd"}' \
-    http://localhost:8000/auth/)
+    $HOST/auth/)
 
     # extract the status
     LOGIN_USER_STATUS=$(echo $LOGIN_USER_RESPONSE | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
@@ -82,6 +86,7 @@ while [  $CONTADOR -lt $1 ]; do
 
     # print message based on status
     if [ ! $LOGIN_USER_STATUS -eq '200'  ]; then
+        echo "RESPONSE: $LOGIN_USER_RESPONSE";
         echo "Error [HTTP status: $LOGIN_USER_STATUS]";
         exit 1
     else
@@ -111,7 +116,7 @@ while [  $CONTADOR -lt $1 ]; do
     --silent \
     --write-out "HTTPSTATUS:%{http_code}" -X POST \
     --data $JSON_CHANGE_PSWD_OBJ \
-    http://localhost:8000/auth/password/update/)
+    $HOST/auth/password/update/)
 
 
     # extract the status from response to change user pswd
@@ -119,7 +124,7 @@ while [  $CONTADOR -lt $1 ]; do
 
     # print message based on status
     if [ ! $PSWD_USER_STATUS -eq '200'  ]; then
-        echo "$CHANGE_USER_PSWD_RESPONSE";
+        echo "RESPONSE: $CHANGE_USER_PSWD_RESPONSE";
         echo "Error [HTTP status: $PSWD_USER_STATUS]";
         exit 1
     else

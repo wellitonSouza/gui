@@ -34,7 +34,7 @@ echo "";
 echo "";
 echo "";
 
-CONTADOR=6
+CONTADOR=1
 while [  $CONTADOR -lt $1 ]; do
     JSON_CREATE_USER='{"username":"usertest'"$CONTADOR"'","service":"usertest'"$CONTADOR"'","email":"usertest'"$CONTADOR"'@noemail.com","name":"test'"$CONTADOR"'","profile":"testuser"}'
 

@@ -1,38 +1,28 @@
 #!/usr/bin/env bash
-#cleanUsers
-for i in $(seq 1 2);
+#param 1: initial range of user
+[[ ! -z "$1" ]] && RANGE_USERS_INIT=$1 || RANGE_USERS_INIT=1
+
+#param 2: end range of user
+[[ ! -z "$2" ]] && RANGE_USERS_END=$2 || RANGE_USERS_END=3
+
+#param 3: dojot host. Eg:  http://10.202.71.108:8000
+[[ ! -z "$3" ]] && HOST=$3 || HOST='http://10.202.71.108:8000'
+
+DOJOT_USERNAME='admin'
+DOJOT_PASSWD='admin'
+
+echo 'Getting jwt token ...'
+JWT=$(curl --silent -X POST ${HOST}/auth \
+-H "Content-Type:application/json" \
+-d "{\"username\": \"${DOJOT_USERNAME}\", \"passwd\" : \"${DOJOT_PASSWD}\"}" | jq '.jwt' | tr -d '"')
+echo "... Got jwt token ${JWT}."
+
+for i in $(seq ${RANGE_USERS_INIT} ${RANGE_USERS_END});
     do
-        # Request to login with user to get his JWT Token
-        LOGIN_USER_RESPONSE=$(curl \
-        -H 'Content-Type: application/json' \
-        --silent \
-        -X POST \
-        --data '{"username":"usertest'"$i"'","passwd": "newusrpswd'"$i"'"}' \
-        http://localhost:8000/auth/)
-
-        # extract the status
-        LOGIN_USER_STATUS=$(echo $LOGIN_USER_RESPONSE | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
-
-        # extract the token
-        LOGGED_USER_TOKEN=$(echo $LOGIN_USER_RESPONSE | jq '.jwt')
-
-        #request to change password
-        DELETE_USER_RESPONSE=$(curl \
-        -H "Content-Type:application/json" \
-        -H "Connection:keep-alive" \
-        -H "Authorization:Bearer '$LOGGED_USER_TOKEN'" \
-        --silent \
-        -X DELETE \
-        http://localhost:8000/auth/user/)
-
-
-        # extract the status from response to change user pswd
-        DELETE_USER_STATUS=$(echo $DELETE_USER_RESPONSE | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
-
-        echo "DELETE_USER_RESPONSE";
-        echo "$DELETE_USER_RESPONSE";
-        echo "DELETE_USER_STATUS";
-        echo "$DELETE_USER_STATUS";
+        echo "Trying delete usertest${i}";
+DELETE_USER_RESPONSE=$(curl -w "\n%{http_code}" --silent -X DELETE ${HOST}/auth/user/usertest${i} \
+-H "Authorization: Bearer ${JWT}")
+        echo "RESPONSE: $DELETE_USER_RESPONSE";
     done
 
 

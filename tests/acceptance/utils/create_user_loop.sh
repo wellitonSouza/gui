@@ -1,3 +1,5 @@
+# variables assignment
+NUMBER_USERS=$1
 HOST=$2
 GROUP=$3
 
@@ -37,8 +39,8 @@ echo "";
 echo "";
 echo "";
 
-CONTADOR=5
-while [  $CONTADOR -lt $1 ]; do
+CONTADOR=1
+while [  $CONTADOR -lt $NUMBER_USERS ]; do
     JSON_CREATE_USER='{"username":"usertest'"$CONTADOR"'","service":"usertest'"$CONTADOR"'","email":"usertest'"$CONTADOR"'@noemail.com","name":"test'"$CONTADOR"'","profile":"'"$GROUP"'"}'
 
     # request to create user

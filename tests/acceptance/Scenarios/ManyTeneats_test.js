@@ -1,4 +1,4 @@
-const dataJson = require('../perfomaceTests/DojotData.json');
+const dataJson = require('../performanceTests/DojotData.json');
 
 Feature('ManyTenants');
 

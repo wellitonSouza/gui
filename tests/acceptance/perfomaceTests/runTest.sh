@@ -15,7 +15,7 @@
 [[ ! -z "$5" ]] && PROFILE=$5 || PROFILE='user'
 
 echo "Create users."
-sh $PWD/tests/acceptance/perfomaceTests/createManyUsers.sh ${RANGE_USERS_INIT} ${RANGE_USERS_END} ${DOJOT_HOST} ${PROFILE}
+sh $PWD/tests/acceptance/perfomaceTests/create_user_loop.sh ${RANGE_USERS_INIT} ${RANGE_USERS_END} ${DOJOT_HOST} ${PROFILE}
 echo "Finish create users."
 
 echo "Iniciate all tests."

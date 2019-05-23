@@ -8,7 +8,7 @@ const current = {
     password: process.env.PASSWORD || 'admin',
 };
 
-Scenario('@adv: Watching a message through flow with import', async (I, Device) => {
+Scenario('Watching a message through flow with import', async (I, Device) => {
     await I.login(I, current.username, current.password, false);
     await I.importDatabase(dataJson);
     const devicesInfo = await I.getDeviceByLabel('device');

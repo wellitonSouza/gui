@@ -3,7 +3,7 @@
 [[ ! -z "$1" ]] && RANGE_USERS_INIT=$1 || RANGE_USERS_INIT=1
 
 #param 2: end range of user
-[[ ! -z "$2" ]] && RANGE_USERS_END=$2 || RANGE_USERS_END=3
+[[ ! -z "$2" ]] && RANGE_USERS_END=$2 || RANGE_USERS_END=2
 
 #param 3: dojot host. Eg:  http://localhost:8000
 [[ ! -z "$3" ]] && DOJOT_HOST=$3 || DOJOT_HOST='http://10.202.71.108:8000'
@@ -15,7 +15,7 @@
 [[ ! -z "$5" ]] && PROFILE=$5 || PROFILE='user'
 
 echo "Create users."
-sh ./tests/acceptance/utils/create_user_loop.sh ${RANGE_USERS_END} ${DOJOT_HOST} ${PROFILE}
+sh $PWD/tests/acceptance/perfomaceTests/createManyUsers.sh ${RANGE_USERS_INIT} ${RANGE_USERS_END} ${DOJOT_HOST} ${PROFILE}
 echo "Finish create users."
 
 echo "Iniciate all tests."

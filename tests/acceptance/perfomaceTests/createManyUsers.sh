@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # variables assignment
 [ ! -z "$1" ] && RANGE_USERS_INIT=$1 || START_USERS_INDEX=40
 [ ! -z "$2" ] && RANGE_USERS_END=$2 || echo "NULL"
@@ -87,7 +88,7 @@ do
     #     echo "Error [HTTP status: ${PSWD_USER_STATUS}]";
     #     exit 1
     # else
-        
+
         echo "|            usertest'"${i}"'           |            newusrpswd'${i}'           |";
         echo "|                                                                         |";
         echo "|-------------------------------------------------------------------------|";

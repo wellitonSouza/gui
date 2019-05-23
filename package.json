@@ -12,7 +12,7 @@
         "lint:fix": "./node_modules/.bin/eslint src/js/* --fix",
         "test": "./node_modules/.bin/codeceptjs --config=tests/acceptance/codecept.conf.js run --steps",
         "test:clearDb": "./node_modules/.bin/codeceptjs --config=tests/acceptance/custom.conf.js run --steps",
-        "paral": "./node_modules/.bin/codeceptjs --config=tests/acceptance/custom.conf.js run-multiple parallel"
+        "perfomaceTests": "./tests/acceptance/perfomaceTests/runTest.sh"
     },
     "babel": {
         "plugins": [

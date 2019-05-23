@@ -21,7 +21,7 @@ echo "... Got jwt token ${JWT}."
 
 for i in $(seq ${RANGE_USERS_INIT} ${RANGE_USERS_END});
     do
-        echo "Trying delete usertest${i}";
+        echo "Trying delete ${USERNAME_PREFIX}${i}";
 DELETE_USER_RESPONSE=$(curl -w "\n%{http_code}" --silent -X DELETE ${HOST}/auth/user/${USERNAME_PREFIX}${i} \
 -H "Authorization: Bearer ${JWT}")
         echo "RESPONSE: $DELETE_USER_RESPONSE";

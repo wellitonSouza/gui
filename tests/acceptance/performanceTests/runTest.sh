@@ -14,6 +14,10 @@
 #param 5: profile/group of users Eg.: user
 [[ ! -z "$5" ]] && PROFILE=$5 || PROFILE='user'
 
+USERNAME_PREFIX='usuario'
+PASSWORD_PREFIX='dojotsenha'
+TENANT_PREFIX='usuario'
+
 echo "Create users."
 sh $PWD/tests/acceptance/performanceTests/create_user_loop.sh ${RANGE_USERS_INIT} ${RANGE_USERS_END} ${DOJOT_HOST} ${PROFILE}
 echo "Finish create users."
@@ -23,9 +27,9 @@ for i in $(seq ${RANGE_USERS_INIT} ${RANGE_USERS_END});
     do
         echo "Test ${i} iniciate"
         docker run   --rm  \
-        -e USERNAME=usertest${i} \
-        -e PASSWORD=newusrpswd${i} \
-        -e TENANT=usertest${i}  \
+        -e USERNAME=${USERNAME_PREFIX}${i} \
+        -e PASSWORD=${PASSWORD_PREFIX}${i} \
+        -e TENANT=${TENANT_PREFIX}${i}  \
         -e DOJOT_HOST=${DOJOT_HOST} \
         -e MQTT_HOST=${MQTT_HOST} \
         -v $PWD:/tests \

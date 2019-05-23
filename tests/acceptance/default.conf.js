@@ -6,8 +6,7 @@ const config = {
     output: './output',
     multiple: {
         parallel: {
-            chunks: 3,
-/*            browsers: ['chrome', 'chrome', 'chrome'],*/
+            chunks: 1,
         },
     },
     helpers: {
@@ -16,8 +15,8 @@ const config = {
             keepCookies: true,
             fullPageScreenshots: true,
             restart: false,
-            keepBrowserState: false,
-            show: false,
+            keepBrowserState: true,
+            show: true,
             waitForNavigation: ['networkidle2', 'domcontentloaded'],
             chrome: {
                 args: ['--no-sandbox', '--start-maximized', '--start-fullscreen'],

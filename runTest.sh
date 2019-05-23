@@ -1,22 +1,18 @@
 #!/bin/bash
+#param 1: initial range of user
+[[ ! -z "$1" ]] && RANGE_USERS_INIT=$1 || RANGE_USERS_INIT=1
 
-#param 1: token JWT
-[[ ! -z "$1" ]] && JWT=$1 || JWT=''
+#param 2: end range of user
+[[ ! -z "$2" ]] && RANGE_USERS_END=$2 || RANGE_USERS_END=3
 
-#param 2: initial range of user
-[[ ! -z "$2" ]] && RANGE_USERS_INIT=$2 || RANGE_USERS_INIT=1
+#param 3: dojot host. Eg:  http://localhost:8000
+[[ ! -z "$3" ]] && DOJOT_HOST=$3 || DOJOT_HOST='http://10.202.71.108:8000'
 
-#param 3: end range of user
-[[ ! -z "$3" ]] && RANGE_USERS_END=$3 || RANGE_USERS_END=3
+#param 4: dojot mqtt host. Eg: http://localhost
+[[ ! -z "$4" ]] && MQTT_HOST=$4 || MQTT_HOST='http://10.202.71.108'
 
-#param 4: dojot host. Eg:  http://10.202.71.108:8000
-[[ ! -z "$4" ]] && DOJOT_HOST=$4 || DOJOT_HOST='http://10.202.71.108:8000'
-
-#param 5: dojot mqtt host. Eg: http://10.202.71.108
-[[ ! -z "$5" ]] && MQTT_HOST=$5 || MQTT_HOST='http://10.202.71.108'
-
-#param 6: profile/group of users Eg.: user
-[[ ! -z "$6" ]] && PROFILE=$6 || PROFILE='user'
+#param 5: profile/group of users Eg.: user
+[[ ! -z "$5" ]] && PROFILE=$5 || PROFILE='user'
 
 echo "Create users."
 sh ./tests/acceptance/utils/create_user_loop.sh ${RANGE_USERS_END} ${DOJOT_HOST} ${PROFILE}

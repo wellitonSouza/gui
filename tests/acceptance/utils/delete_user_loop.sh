@@ -5,7 +5,7 @@
 #param 2: end range of user
 [[ ! -z "$2" ]] && RANGE_USERS_END=$2 || RANGE_USERS_END=3
 
-#param 3: dojot host. Eg:  http://10.202.71.108:8000
+#param 3: dojot host. Eg:  http://localhost:8000
 [[ ! -z "$3" ]] && HOST=$3 || HOST='http://10.202.71.108:8000'
 
 DOJOT_USERNAME='admin'

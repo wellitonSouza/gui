@@ -54,7 +54,7 @@ Scenario('@basic: Checking the admin user', async (I, User, Commons) => {
 
     Commons.clickCardByName('Admin (superuser)');
     checkingUser(I, admin_data);
-    Commons.clickDiscard();
+    User.clickDiscard();
 });
 
 
@@ -62,7 +62,7 @@ Scenario('@basic: Removing an user', async (I, User, Commons) => {
     User.init(I);
     User.openUserPage();
     Commons.clickCardByName('john');
-    Commons.clickRemove();
+    User.clickRemove();
     User.confirmRemove();
     User.seeHasRemoved();
 });

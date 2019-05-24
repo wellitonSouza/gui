@@ -15,8 +15,16 @@ const jsonTemplate = {
     ],
 };
 
+function logout(I) {
+    I.click(locate('div').withAttr({ title: 'Login details' }));
+    I.click('.btn-logout');
+    I.wait(3);
+}
 
 Scenario('@adv: Watching a simple message', async (I, Device) => {
+    // At first, do login
+    I.loginAdmin(I, false);
+
     const template = await I.createTemplate(jsonTemplate);
     const templateId = template.template.id;
     const device = await I.createDevice({
@@ -35,4 +43,6 @@ Scenario('@adv: Watching a simple message', async (I, Device) => {
     Device.selectAttr('text');
     I.wait(3);
     Device.shouldSeeMessage(msg);
+
+    logout(I);
 });

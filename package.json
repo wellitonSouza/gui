@@ -1,7 +1,7 @@
 {
-  "name": "webpack-react",
+  "name": "dojot-gui",
   "version": "0.0.1",
-  "description": "A Webpack sample project, configured for ES6 React and SASS",
+  "description": "This package implements a WEB user interface for the management and configuration of the dojot's basic functionality.",
   "main": "index.js",
   "scripts": {
     "start": "http-server ./dist -p 3000",
@@ -28,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "ssh://<user>@gerrit.cpqd.com.br:29418/iot/middleware/gui/devicemanager"
+    "url": "https://github.com/dojot/gui"
   },
   "keywords": [
     "webpack",

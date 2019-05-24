@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import ReactDOM from 'react-dom';
 import AltContainer from 'alt-container';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
@@ -17,6 +17,7 @@ import UserStore from '../../stores/UserStore';
 import { DojotBtnLink } from '../../components/DojotButton';
 import ability from 'Components/permissions/ability';
 import Can from '../../components/permissions/Can';
+import SideBarRight from 'Views/groups/SideBarRight';
 
 class SideBar extends Component {
     constructor() {
@@ -226,32 +227,49 @@ class SideBar extends Component {
     }
 
     render() {
-        let sideBar;
+        let myContent;
         const cannotEdit = !ability.can('modifier', 'user');
         const { t } = this.props;
+
+        const buttonsFooter = [
+            {
+                label: t('common:discard.label'),
+                click: this.hideSideBar,
+                type: 'secondary',
+            },
+        ];
+
+        if (!cannotEdit) {
+            if (this.props.edit &&  this.state.user.username !== 'admin') {
+                buttonsFooter.push({
+                    label: t('common:remove.label'),
+                    click: this.handleDelete,
+                    type: 'secondary',
+                });
+            }
+            if (this.props.edit)
+            {
+                buttonsFooter.push({
+                    label: t('common:save.label'),
+                    click: this.handleSave,
+                    color: 'red',
+                    type: 'primary',
+            });}
+            else    
+            {
+                buttonsFooter.push({
+                label: t('common:save.label'),
+                click: this.handleCreate,
+                color: 'red',
+                type: 'primary',
+            });}
+        }
+
+
         if (this.props.visible) {
-            sideBar = (
-                <div id="sidebar" className="sidebar-auth visible">
-                    <div
-                        id="auth-title"
-                        className={`title${this.props.edit ? ' ' : ' hide'}`}
-                    >
-                        <span id="title-text" className="title-text">
-                            <Trans i18nKey="users:title_sidebar.edit"/>
-                        </span>
-                    </div>
-                    <div
-                        id="auth-title"
-                        className={`title${this.props.edit ? ' hide' : ''}`}
-                    >
-                        <span id="title-text" className="title-text">
-              <Trans i18nKey="users:title_sidebar.new"/>
-                        </span>
-                    </div>
-                    <div className="fixed-height">
-                        <div id="auth-icon" className="user-icon">
-                            <img src="images/generic-user-icon.png"/>
-                        </div>
+            myContent = (
+                    <Fragment>
+                    <div className="pl30 pr30">
                         <div id="auth-name" className="input-field icon-space">
                             <input
                                 id="userName46465"
@@ -361,62 +379,7 @@ class SideBar extends Component {
                             </MaterialSelect>
                         </div>
                     </div>
-                    <div
-                        id="edit-footer"
-                        className={`action-footer${this.props.edit ? '' : ' hide'}`}
-                    >
-                        <div
-                            id="auth-save"
-                            className="material-btn center-text-parent center-middle-flex"
-                            title={t('save.alt')}
-                            onClick={this.handleSave}
-                        >
-                            <span className="text center-text-child"
-                                  style={cannotEdit ? { display: 'none' } : {}}>{t('save.label')}</span>
-                        </div>
-                        <div
-                            id="auth-cancel"
-                            className="material-btn center-text-parent center-middle-flex"
-                            title={t('discard.alt')}
-                            onClick={this.hideSideBar}
-                        >
-                            <span className="text center-text-child">{t('discard.label')}</span>
-                        </div>
-                        <div
-                            id="auth-delete"
-                            className="material-btn center-text-parent center-middle-flex"
-                            title={t('remove.alt')}
-                            onClick={this.handleDelete}
-                        >
-                            <span className="text center-text-child"
-                                  style={cannotEdit || this.state.user.username === 'admin' ? { display: 'none' } : {}}>{t('remove.label')}</span>
-                        </div>
-                    </div>
-
-                    <div
-                        id="create-footer"
-                        className={`action-footer${this.props.edit ? ' hide' : ''}`}
-                    >
-                        <div
-                            id="auth-save"
-                            className="material-btn center-text-parent center-middle-flex"
-                            title={t('save.alt')}
-                            onClick={this.handleCreate}
-                        >
-                            <span className="text center-text-child"
-                                  style={cannotEdit ? { display: 'none' } : {}}>{t('save.label')}</span>
-                        </div>
-                        <div
-                            id="auth-cancel"
-                            className="material-btn center-text-parent center-middle-flex"
-                            title={t('discard.alt')}
-                            onClick={this.hideSideBar}
-                        >
-                            <span className="text center-text-child">{t('discard.label')}</span>
-                        </div>
-                    </div>
-                </div>
-            );
+                    </Fragment>);
         }
         return (
             <ReactCSSTransitionGroup
@@ -426,7 +389,17 @@ class SideBar extends Component {
                 transitionEnterTimeout={500}
                 transitionLeaveTimeout={500}
             >
-                {sideBar}
+               { this.props.visible ? (
+                <SideBarRight
+                    icon="user"
+                    title={this.props.edit ? t('users:title_sidebar.edit')
+                        : t('users:title_sidebar.new')}
+                    content={myContent}
+                    headerColor={'bg-gradient-light-blue'}
+                    visible
+                    buttonsFooter={buttonsFooter}
+                />
+                ) : null}
                 {this.state.show_modal ? (
                     <RemoveModal
                         name={t('users:user')}
@@ -670,22 +643,22 @@ class UserList extends Component {
     render() {
         const {t, user : {service}} = this.props;
         return (
-            <div className="fill">
-                <AltContainer store={UserStore}>
-                    <SideBar userTenant={service} {...this.state} t={t} hide={this.hideSideBar}
-                             visible={this.props.visible}
-                             formUser={this.formUser}/>
-                </AltContainer>
-                <RemoveDialog callback={this.deleteUser} target="confirmDiag"/>
-                <div id="user-wrapper" className="col s12 lst-wrapper w100 hei-100-over-scroll flex-container">
-                    {this.props.values.map(user => (
-                        <ListItem
-                            user={user}
-                            key={user.id}
-                            detail={this.state.detail}
-                            editUser={this.editUser}
-                        />
-                    ))}
+                <div className="full-height flex-container pos-relative overflow-x-hidden">
+                    <AltContainer store={UserStore}>
+                        <SideBar userTenant={service} {...this.state} t={t} hide={this.hideSideBar}
+                                visible={this.props.visible}
+                                formUser={this.formUser}/>
+                    </AltContainer>
+                    <RemoveDialog callback={this.deleteUser} target="confirmDiag"/>
+                    <div className="col s12 lst-wrapper w100 hei-100-over-scroll flex-container">
+                        {this.props.values.map(user => (
+                            <ListItem
+                                user={user}
+                                key={user.id}
+                                detail={this.state.detail}
+                                editUser={this.editUser}
+                            />
+                        ))}
                 </div>
             </div>
         );
@@ -786,16 +759,16 @@ class UsersContent extends Component {
     render() {
         const { t } = this.props;
         return (
-            <span id="userMain">
-                    <AltContainer store={UserStore}>
-                      <NewPageHeader title={t('users:title')} subtitle={t('users:title')}
-                                     icon='user'>
-                        <OperationsHeader newUser={this.newUser} {...this.props}/>
-                      </NewPageHeader>
-                      <UserFilter filter={this.state.filter} {...this.state} {...this.props}
-                                  visibility={this.visibility}/>
-                    </AltContainer>
-                </span>
+            <div className="full-device-area">
+                <AltContainer store={UserStore}>
+                    <NewPageHeader title={t('users:title')} subtitle={t('users:title')}
+                                    icon='user'>
+                    <OperationsHeader newUser={this.newUser} {...this.props}/>
+                    </NewPageHeader>
+                    <UserFilter filter={this.state.filter} {...this.state} {...this.props}
+                                visibility={this.visibility}/>
+                </AltContainer>
+            </div>
         );
 
     }

@@ -67,11 +67,18 @@ $details-background-color: #f3f3f3;
 // $main-font-family: Montserrat, sans-serif;
 $main-font-family: Roboto, sans-serif;
 
+.bg-gradient-purple
+{
+  background: #B993D6 !important;
+  background: -webkit-linear-gradient(to right, #8CA6DB, #B993D6)!important;
+  background: linear-gradient(to right, #7c92bf, #B993D6)!important;
+}
 
 .bg-gradient-light-blue
 {
-  background: linear-gradient(to right, #1CB5E0, #6b6bb3);
+  background: linear-gradient(to right, #1CB5E0, #6b6bb3)!important;
 }
+
 .bg-gradient-dark-blue
 {
     background-color: #7f5a83;
@@ -309,6 +316,17 @@ body {
   padding-bottom: 20px !important;
 }
 
+.pl20px, .pl20
+{
+  padding-left: 20px !important;
+}
+
+.pr20px, .pr20
+{
+  padding-right: 20px !important;
+}
+
+
 .pl30px, .pl30
 {
   padding-left: 30px !important;
@@ -325,6 +343,11 @@ body {
   padding-left: 50px !important;
 }
 
+
+.pr30px, .pr30
+{
+  padding-right: 30px !important;
+}
 
 
 
@@ -518,7 +541,16 @@ order: 1;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.height50
+{
+  height:50px !important;
+}
  
+.height74
+{
+  height:74px !important;
+}
+
 @import 'inputs';
 @import 'shadow';
 @import 'list';

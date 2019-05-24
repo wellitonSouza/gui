@@ -10,7 +10,7 @@ module.exports = {
     fillEmailAndSave(email) {
         I.fillField('email', email);
         I.fillField('confirmEmail', email);
-        this.clickSave('#edit-footer');
+        this.clickSave();
     },
 
     fillAndSave(user) {
@@ -19,7 +19,7 @@ module.exports = {
         I.fillField('email', user.email);
         I.fillField('confirmEmail', user.email);
         I.fillSelectByName('profile', user.profile);
-        this.clickSave('#create-footer');
+        this.clickSave();
     },
 
     clickCreateNew() {
@@ -33,12 +33,21 @@ module.exports = {
         I.click(locate('a').withAttr({ href: '#/auth' }));
     },
 
-    clickSave(sidebar) {
-        I.click(locate('#auth-save').inside(locate(sidebar)));
+    clickSave() {
+        I.click(locate('button').withAttr({ title: 'Save' }));
     },
 
-    confirmRemove() {
+    clickRemove() {
         I.click(locate('button').withAttr({ title: 'Remove' }));
+    },
+
+    clickDiscard() {
+        I.click(locate('button').withAttr({ title: 'Discard' }));
+    },
+
+
+    confirmRemove() {
+        I.click(locate('button').inside('.confirm-modal').withAttr({ title: 'Remove' }));
     },
 
     seeHasCreated() {

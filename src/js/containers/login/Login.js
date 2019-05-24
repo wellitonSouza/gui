@@ -66,23 +66,24 @@ class Content extends Component {
 
 
     validate(user, password) {
+        const { t } = this.props;
         const valid = { state: true, currentError: '' };
 
         if (user.trim().length === 0) {
             valid.state = false;
-            valid.currentError = 'Empty username.';
+            valid.currentError = t('login:alerts.empty_user');
             return valid;
         }
 
         if (password.trim().length === 0) {
             valid.state = false;
-            valid.currentError = 'Empty password.';
+            valid.currentError = t('login:alerts.empty_pass');
             return valid;
         }
 
         if (!this.checkUsername(user)) {
             valid.state = false;
-            valid.currentError = 'Invalid username: Please use letters (a-z) and numbers (0-9)';
+            valid.currentError = t('login:alerts.invalid_user');
             return valid;
         }
 
@@ -137,7 +138,7 @@ class Content extends Component {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="row">
+                                <div className="row mb0">
                                     <div className="col s12  offset-m2">
                                         <div className="login-page-subtitle">
                                             {t('login:sign_in_desc')}
@@ -145,7 +146,7 @@ class Content extends Component {
                                     </div>
                                 </div>
 
-                                <div className="row">
+                                <div className="row mb0">
                                     <div className="input-field col s12 m8 offset-m2">
                                         <MaterialInput
                                             name="username"
@@ -170,6 +171,18 @@ class Content extends Component {
                                         >
                                             {t('login:password.label')}
                                         </MaterialInput>
+                                        <div className="row">
+                                            <div className="forget-password col s12">
+                                                <span
+                                                    tabIndex="-1"
+                                                    role="button"
+                                                    onKeyPress={this.handlePasswordModal}
+                                                    onClick={this.handlePasswordModal}
+                                                >
+                                                    {t('login:forgot_password')}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="row">
@@ -180,7 +193,7 @@ class Content extends Component {
                                                 when={appear}
                                                 onReveal={() => setTimeout(() => {
                                                     this.setState({ appear: false });
-                                                }, 3500)}
+                                                }, 3000)}
                                             >
                                                 <div className="login-page-error">
                                                     <span>{this.getError()}</span>
@@ -191,24 +204,13 @@ class Content extends Component {
                                     </div>
                                 </div>
 
+
                                 <div className="row">
-                                    <div className="forget-password col s12 m6 offset-m3">
-                                        <span
-                                            tabIndex="-1"
-                                            role="button"
-                                            onKeyPress={this.handlePasswordModal}
-                                            onClick={this.handlePasswordModal}
-                                        >
-                                            {t('login:forgot_password')}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="row">
-                                    <div className="col s12 m1 offset-m7">
-                                        {loading ? (
+                                    <div className="col s10">
+                                        {!loading ? (
                                             <button
                                                 type="button"
-                                                className="red btn-flat"
+                                                className="clear-btn  red btn-flat sp-btn-login"
                                             >
                                                 <i className="fa fa-circle-o-notch fa-spin fa-fw" />
                                             </button>
@@ -218,7 +220,7 @@ class Content extends Component {
                                                 tabIndex="0"
                                                 onKeyPress={this.login}
                                                 onClick={this.login}
-                                                className="red btn-flat"
+                                                className="clear-btn new-btn-flat red sp-btn-login"
                                             >
                                                 {t('login:title')}
                                             </button>

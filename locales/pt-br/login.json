@@ -1,6 +1,9 @@
 {
   "title": "Entrar",
   "alerts": {
+    "empty_pass": "Senha vazia.",
+    "empty_user": "Nome de usuário vazio.",
+    "invalid_user" : "Nome de usuário invalido: Use apenas letras (a-z) e números (0-9).",
     "empty": "Aa senhas devem ser inseridas",
     "least_8": "A senha deve conter pelo menos 8 caracteres",
     "password_mismatch": "Senhas não coincidem"

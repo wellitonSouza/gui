@@ -63,6 +63,43 @@ a.new-btn-flat
   padding-top:6px !important;
 }
 
+.sp-btn-login
+{
+  text-transform: uppercase;
+  padding: 0px 29px;
+  letter-spacing: 1.0px;
+}
+
+.clear-btn{
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+  overflow: visible;
+
+  background: transparent;
+
+  /* inherit font & color from ancestor */
+  color: inherit;
+  font: inherit;
+
+  /* Normalize `line-height`. Cannot be changed from `normal` in Firefox 4+. */
+  line-height: normal;
+
+  /* Corrects font smoothing for webkit */
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+
+  /* Corrects inability to style clickable `input` types in iOS */
+  -webkit-appearance: none;
+  
+  /* Remove excess padding and border in Firefox 4+ */
+  &::-moz-focus-inner {
+      border: 0;
+      padding: 0;
+  }
+}
+
 .new-btn-flat
 {
   margin-right: 10px;

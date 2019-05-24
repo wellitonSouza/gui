@@ -11,16 +11,10 @@
 #param 4: dojot mqtt host. Eg: http://localhost
 [[ ! -z "$4" ]] && MQTT_HOST=$4 || MQTT_HOST='http://localhost'
 
-#param 5: profile/group of users Eg.: user
-[[ ! -z "$5" ]] && PROFILE=$5 || PROFILE='user'
 
 USERNAME_PREFIX='usertest'
 PASSWORD_PREFIX='dojotsenha'
 TENANT_PREFIX='usertest'
-
-echo "Create users."
-sh $PWD/tests/acceptance/performanceTests/create_user_loop.sh ${RANGE_USERS_INIT} ${RANGE_USERS_END} ${DOJOT_HOST} ${PROFILE}
-echo "Finish create users."
 
 echo "Iniciate all tests."
 for i in $(seq ${RANGE_USERS_INIT} ${RANGE_USERS_END});

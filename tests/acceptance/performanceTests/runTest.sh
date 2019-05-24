@@ -3,20 +3,20 @@
 [[ ! -z "$1" ]] && RANGE_USERS_INIT=$1 || RANGE_USERS_INIT=1
 
 #param 2: end range of user
-[[ ! -z "$2" ]] && RANGE_USERS_END=$2 || RANGE_USERS_END=2
+[[ ! -z "$2" ]] && RANGE_USERS_END=$2 || RANGE_USERS_END=5
 
 #param 3: dojot host. Eg:  http://localhost:8000
-[[ ! -z "$3" ]] && DOJOT_HOST=$3 || DOJOT_HOST='http://10.202.71.108:8000'
+[[ ! -z "$3" ]] && DOJOT_HOST=$3 || DOJOT_HOST='http://localhost:8000'
 
 #param 4: dojot mqtt host. Eg: http://localhost
-[[ ! -z "$4" ]] && MQTT_HOST=$4 || MQTT_HOST='http://10.202.71.108'
+[[ ! -z "$4" ]] && MQTT_HOST=$4 || MQTT_HOST='http://localhost'
 
 #param 5: profile/group of users Eg.: user
 [[ ! -z "$5" ]] && PROFILE=$5 || PROFILE='user'
 
-USERNAME_PREFIX='usuario'
+USERNAME_PREFIX='usertest'
 PASSWORD_PREFIX='dojotsenha'
-TENANT_PREFIX='usuario'
+TENANT_PREFIX='usertest'
 
 echo "Create users."
 sh $PWD/tests/acceptance/performanceTests/create_user_loop.sh ${RANGE_USERS_INIT} ${RANGE_USERS_END} ${DOJOT_HOST} ${PROFILE}

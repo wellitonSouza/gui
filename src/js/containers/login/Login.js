@@ -186,6 +186,28 @@ class Content extends Component {
                                     </div>
                                 </div>
                                 <div className="row">
+                                    <div className="col s11">
+                                        {loading ? (
+                                            <button
+                                                type="button"
+                                                className="clear-btn new-btn-flat red sp-btn-loading"
+                                            >
+                                                <i className="fa fa-circle-o-notch fa-spin fa-fw" />
+                                            </button>
+                                        ) : (
+                                            <button
+                                                type="submit"
+                                                tabIndex="0"
+                                                onKeyPress={this.login}
+                                                onClick={this.login}
+                                                className="clear-btn new-btn-flat red sp-btn-login"
+                                            >
+                                                {t('login:title')}
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="row">
                                     <div className="col s12 m8 offset-m2">
                                         { (hasBeError || !valid.state) ? (
                                             <Fade
@@ -201,30 +223,6 @@ class Content extends Component {
                                                 </div>
                                             </Fade>
                                         ) : <div className="no-error" />}
-                                    </div>
-                                </div>
-
-
-                                <div className="row">
-                                    <div className="col s10">
-                                        {!loading ? (
-                                            <button
-                                                type="button"
-                                                className="clear-btn  red btn-flat sp-btn-login"
-                                            >
-                                                <i className="fa fa-circle-o-notch fa-spin fa-fw" />
-                                            </button>
-                                        ) : (
-                                            <button
-                                                type="submit"
-                                                tabIndex="0"
-                                                onKeyPress={this.login}
-                                                onClick={this.login}
-                                                className="clear-btn new-btn-flat red sp-btn-login"
-                                            >
-                                                {t('login:title')}
-                                            </button>
-                                        )}
                                     </div>
                                 </div>
                             </form>

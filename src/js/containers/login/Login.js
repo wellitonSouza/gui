@@ -104,8 +104,6 @@ class Content extends Component {
         const { target: { name, value } } = event;
         const { login } = this.state;
         login[name] = value;
-        //  const results = this.validate(state.username, state.password);
-        //  results.login = login;
         this.setState({ login });
     }
 
@@ -118,10 +116,13 @@ class Content extends Component {
     }
 
     render() {
-        const { appear, valid, showPasswordModal } = this.state;
-        const { login: { username, password } } = this.state;
-        const { t, hasError, loading } = this.props;
+        const {
+            appear, valid, showPasswordModal, hasBeError,
+            login: { username, password },
+        } = this.state;
+        const { t, loading } = this.props;
 
+        const titleLogin = `[  ${t('login:title')}  ]`;
         return (
             <div className="row m0">
                 <div className="login col s12 p0 bg-left">
@@ -132,9 +133,7 @@ class Content extends Component {
                                 <div className="row">
                                     <div className="col s12  offset-m1">
                                         <div className="login-page-title">
-                    [&nbsp;&nbsp;
-                                            {t('login:title')}
-&nbsp;&nbsp;]
+                                            {titleLogin}
                                         </div>
                                     </div>
                                 </div>
@@ -158,7 +157,6 @@ class Content extends Component {
                                         >
                                             {t('username.label')}
                                         </MaterialInput>
-                                        {/* <i className="material-icons prefix">account_circle</i> */}
                                     </div>
                                     <div className="input-field col s12 m8 offset-m2">
                                         <MaterialInput
@@ -172,19 +170,17 @@ class Content extends Component {
                                         >
                                             {t('login:password.label')}
                                         </MaterialInput>
-                                        {/* <i className="material-icons prefix">lock_open</i> */}
                                     </div>
                                 </div>
                                 <div className="row">
                                     <div className="col s12 m8 offset-m2">
-                                        { (hasError || !valid.state) ? (
+                                        { (hasBeError || !valid.state) ? (
                                             <Fade
                                                 bottom
                                                 when={appear}
                                                 onReveal={() => setTimeout(() => {
-                                                    console.log('appear', appear);
                                                     this.setState({ appear: false });
-                                                }, 3000)}
+                                                }, 3500)}
                                             >
                                                 <div className="login-page-error">
                                                     <span>{this.getError()}</span>
@@ -233,7 +229,7 @@ class Content extends Component {
                         </div>
                         <div className="col s5 right-side">
                             <div className="dojot-logo">
-                                <img src="images/dojot_white.png" />
+                                <img alt="dojot logo" src="images/dojot_white.png" />
                             </div>
                             <div className="slogan">
                                 <b>Do IoT</b>
@@ -248,41 +244,41 @@ Safe to deploy
                         </div>
                     </div>
                 </div>
-                {showPasswordModal ? <RecoveryPasswordModal openPasswordModal={this.openPasswordModal} /> : <div />}
+                {showPasswordModal
+                    ? (
+                        <RecoveryPasswordModal
+                            openPasswordModal={this.openPasswordModal}
+                        />
+                    ) : <div />}
             </div>
         );
     }
 }
 
 Content.propTypes = {
-    error: PropTypes.string.isRequired,
     t: PropTypes.func.isRequired,
-    hasError: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
 };
 
 
-class Login extends Component {
-    constructor(props) {
-        super(props);
-    }
+const Login = ({ t }) => (
+    <ReactCSSTransitionGroup
+        transitionName="first"
+        transitionAppear
+        transitionAppearTimeout={500}
+        transitionEnterTimeout={500}
+        transitionLeaveTimeout={500}
+    >
+        <AltContainer store={LoginStore}>
+            <Content t={t} />
+        </AltContainer>
+    </ReactCSSTransitionGroup>
+);
 
-    render() {
-        const { t } = this.props;
-        return (
-            <ReactCSSTransitionGroup
-                transitionName="first"
-                transitionAppear
-                transitionAppearTimeout={500}
-                transitionEnterTimeout={500}
-                transitionLeaveTimeout={500}
-            >
-                <AltContainer store={LoginStore}>
-                    <Content t={t} />
-                </AltContainer>
-            </ReactCSSTransitionGroup>
-        );
-    }
-}
+
+Login.propTypes = {
+    t: PropTypes.func.isRequired,
+};
+
 
 export default withNamespaces()(Login);

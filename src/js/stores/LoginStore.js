@@ -1,5 +1,5 @@
-import LoginActions from '../actions/LoginActions';
-import Util from '../comms/util/util';
+import LoginActions from 'Actions/LoginActions';
+import Util from 'Comms/util/util';
 
 
 const alt = require('../alt');
@@ -33,7 +33,6 @@ class LoginStore {
             this.authenticated = true;
             this.loading = false;
         } catch (e) {
-            console.error('Invalid session information detected', e);
             this.reset();
             this.hasError = true;
             this.Irror = 'Invalid session information detected';

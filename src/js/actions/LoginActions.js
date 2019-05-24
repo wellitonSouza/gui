@@ -1,12 +1,12 @@
 import { browserHistory } from 'react-router';
-import i18n from 'i18next';
+import * as i18next from 'i18next';
 import loginManager from 'Comms/login/LoginManager';
 import toaster from 'Comms/util/materialize';
 import { AbilityUtil } from 'Components/permissions/ability';
 
 const alt = require('../alt');
 
-const { t } = i18n;
+const { t } = i18next;
 
 class LoginActions {
     authenticate(login) {

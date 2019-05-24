@@ -269,7 +269,7 @@ class SideBar extends Component {
         if (this.props.visible) {
             myContent = (
                     <Fragment>
-                    <div className="pl30 pr30">
+                    <div className="pl20 pr20">
                         <div id="auth-name" className="input-field icon-space">
                             <input
                                 id="userName46465"

@@ -5,6 +5,13 @@
         "least_8": "Password must be at least 8 characters",
         "password_mismatch": "Password mismatch"
     },
+    "errors":
+    {
+        "not_found": "User not found or wrong password.",
+        "no_connection":"No connection to server.",
+        "internal_error": "Internal error. Please try again later.",
+        "auth_failed": "Authentication failed."   
+    },
     "sign_in_desc": "Sign in to start your session",
     "confirm_pass": "Confirm your password",
     "type_password": "Type your password",

@@ -1,8 +1,14 @@
-#user_label, #pass_label
+
+
+
+.attribute-type-login
 {
-  &.active
+  label
   {
-    color:red;
+
+    font-weight: 700;
+    color: #eb5757 !important;
+    font-family: 'Raleway', sans-serif;
   }
 }
 
@@ -48,8 +54,8 @@
     .forget-password
     {
       font-family: 'Open Sans', sans-serif;
-      font-style: italic;
       font-weight: bold;
+      cursor: pointer;
       line-height: normal;
       text-align: right;
       font-size: 10px;
@@ -214,17 +220,35 @@
 }
 
 .login-page-error {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgb(235, 87, 87);
   border-radius: 10px;
   font-weight: bold;
-  color: $dark-gray;
-  padding-left: 5%;
-  float: left;
+  color: #ffffff;
   width: 100%;
-  padding-left: 5%;
-  padding-right: 5%;
-  padding-top:  3%;
-  padding-bottom:  3%;
+  padding: 10px 15px 10px 15px;
+  font-family: 'Raleway', sans-serif;
+  min-height: 43px;
+  position: relative;
+
+  span
+  {
+    display: inline-block;
+    width: calc(100% - 30px);
+  }
+  
+  i{
+    top:10px;
+    right: 10px;
+    position: absolute;    
+    font-size: 18px;
+  }
+
+}
+
+.no-error
+{
+  width: 100%;
+  height: 43px;
 }
 
 .login-page-error i.material-icons {

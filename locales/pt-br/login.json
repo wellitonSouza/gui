@@ -5,6 +5,13 @@
     "least_8": "A senha deve conter pelo menos 8 caracteres",
     "password_mismatch": "Senhas não coincidem"
   },
+  "errors":
+  {
+      "not_found": "Usuário não encontrado ou senha incorreta.",
+      "no_connection":"Sem conexão com o servidor.",
+      "internal_error": "Erro interno, tente novamente mais tarde.",
+      "auth_failed": "Falha de autenticação."   
+  },
   "sign_in_desc": "Entre para iniciar sua sessão",
   "confirm_pass": "Confirme sua senha",
   "type_password": "Digite sua senha",

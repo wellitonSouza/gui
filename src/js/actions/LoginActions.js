@@ -1,11 +1,12 @@
-/* eslint-disable */
 import { browserHistory } from 'react-router';
 import i18n from 'i18next';
-import loginManager from '../comms/login/LoginManager';
-import toaster from '../comms/util/materialize';
-import {AbilityUtil} from '../components/permissions/ability';
+import loginManager from 'Comms/login/LoginManager';
+import toaster from 'Comms/util/materialize';
+import { AbilityUtil } from 'Components/permissions/ability';
 
 const alt = require('../alt');
+
+const { t } = i18n;
 
 class LoginActions {
     authenticate(login) {
@@ -14,8 +15,12 @@ class LoginActions {
             loginManager.authenticate(login)
                 .then((response) => {
                     browserHistory.push('/#/');
-                    this.loginPermissions(response.data.login.user.permissions);
-                    this.loginSuccess(response.data.login);
+                    if (response.data.login === null) {
+                        this.loginFailed(response.data.login);
+                    } else {
+                        this.loginPermissions(response.data.login.user.permissions);
+                        this.loginSuccess(response.data.login);
+                    }
                 })
                 .catch((error) => {
                     this.loginFailed(error);
@@ -47,7 +52,7 @@ class LoginActions {
             dispatch();
             loginManager.updatePassword(data)
                 .then(() => {
-                    toaster.success(i18n.t('text.password_updated'));
+                    toaster.success(t('text.password_updated'));
                 })
                 .catch((error) => {
                     toaster.error(error.message);
@@ -72,19 +77,20 @@ class LoginActions {
     }
 
     loginFailed(error) {
+        if (error === null) { return t('login:errors.not_found'); }
+
         if (error instanceof TypeError) {
-            return 'No connection to server.';
+            return t('login:errors.no_connection');
         }
 
-        toaster.error(error.message);
-        const data = error.data;
+        const { data } = error;
         if ((data.status === 401) || (data.status === 403)) {
-            return 'Authentication failed.';
+            return t('login:errors.auth_failed');
         }
         if (data.status === 500) {
-            return 'Internal error. Please try again later.';
+            return t('login:errors.internal_error');
         }
-        return 'No connection to server.';
+        return t('login:errors.not_found');
     }
 }
 

@@ -1348,7 +1348,7 @@ h1, h2, p {
     }
 
     .icon {
-        padding-left: 20px;
+        padding-left: 10px;
         height: 100%;
         padding-top: 7px;
         float: left;
@@ -1360,14 +1360,16 @@ h1, h2, p {
     }
 
     label, span {
-        line-height: 42px;
-        font-size: 11px !important;
-        text-transform: uppercase;
-        padding-left: 20px;
+        color: #fff !important;
+        display: block;
         font-family: Raleway, serif !important;
-        text-align: center;
+        font-size: 11px !important;
         letter-spacing: 0.2em;
-        color: #ffffff !important;
+        line-height: 42px;
+        overflow: hidden;
+        padding-left: 10px;
+        text-align: left;
+        text-transform: uppercase;
     }
 
     .body {

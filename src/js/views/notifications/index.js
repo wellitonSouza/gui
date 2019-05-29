@@ -12,25 +12,24 @@ import notificationType from './PropTypes';
 
 
 const NotificationList = (props) => {
-    const { t, notifications } = props;
+    const { notifications } = props;
 
     console.log('notifications length', Notifications);
 
     return (
         <div>
             {notifications.length > 0 ?
-                <ul>
+                (<ul>
                     {notifications.map(notification => (
                         <CardNotification
                             notification={notification}
                             key={Math.random()}
                         />
                     ))}
-                </ul>
-                :
-                <div className="valign-wrapper full-height background-info">
+                </ul>)
+                : (<div className="valign-wrapper full-height background-info">
                     <div className="full-width center">{`${i18n.t('notifications:no_data_avaliable')}`}</div>
-                </div>
+                </div>)
             }
         </div>
     );

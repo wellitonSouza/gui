@@ -292,7 +292,7 @@ class GenericList extends Component {
                                             className={this.state.truncate ? 'name-value  truncate' : 'name-value '}
                                             title={i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}
                                         >
-                                            {i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}
+                                            {`${attr.label}`}
 
                                         </div>
                                         <div className="display-flex-no-wrap space-between">

@@ -2,7 +2,8 @@
   "title": "Notifications",
   "subtitle": "notifications",
   "device": "device",
-  "message": "message"
+  "message": "message",
+  "no_data_avaliable": "No notifications available"
 }
 
 

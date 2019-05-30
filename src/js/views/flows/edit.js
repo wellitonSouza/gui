@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { Fragment, Component } from 'react';
 import { hashHistory } from 'react-router';
-
+import Slide from 'react-reveal/Slide';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AltContainer from 'alt-container';
 import { withNamespaces } from 'react-i18next';
@@ -208,9 +208,10 @@ var observer = {};
 
 const MutationSchema = ({ somethingChanged, isSaved }) => {
     var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
-
-    if (isSaved == false)
+    
+    if (isSaved === false)
     {
+        // if we already know that we should save, let's disconnect the observer
         observer.disconnect();
         alreadySetted = false;
     }
@@ -218,7 +219,7 @@ const MutationSchema = ({ somethingChanged, isSaved }) => {
     {
         setTimeout(() => {
             setMutation();
-        }, 2000);
+        }, 3000);
         alreadySetted = true;
     }
         
@@ -230,6 +231,7 @@ const MutationSchema = ({ somethingChanged, isSaved }) => {
         {
             observer = new MutationObserver(function(mutations) {  
                 mutations.forEach(function(mutation) {
+                    // sending false means isSaved = false;
                     somethingChanged(false);
                 });
            });
@@ -404,11 +406,14 @@ class EditFlowComponent extends Component {
                     <div
                         className="row valign-wrapper absolute-input full-width no-margin top-minus-2 "
                     >
-                        {(!isSaved ? <div className="maybeNotSaved"> 
-                            <div className="boxLine"></div>
-                            <span>Don't forget to save your updates.</span>
-                            <i className="fa fa-exclamation-triangle" ></i>
-                        </div> : null )}
+                        
+                        {(!isSaved ?  
+                            <Slide right duration={300}>
+                                <div className="maybeNotSaved"> 
+                                <div className="boxLine"></div>
+                                <span>Don't forget to save your updates.</span>
+                                <i className="fa fa-exclamation-triangle" ></i>
+                        </div> </Slide>: null )}
                         <AltContainer store={FlowStore}>
                             <NameForm t={i18n} />
                         </AltContainer>

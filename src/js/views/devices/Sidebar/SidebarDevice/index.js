@@ -23,12 +23,14 @@ const SidebarDevice = ({
     isShowSidebarDelete,
     toogleSidebarDelete,
     t,
+    templates,
 }) => {
     const {
         /* configValues, */
         dynamicValues, staticValues, actuatorValues,
     } = device;
     const total = device.templates.length ? device.templates.length : 0;
+
     return (
         <Fragment>
             <Slide right when={showSidebarDevice} duration={300}>
@@ -69,31 +71,42 @@ const SidebarDevice = ({
                                         <div className="label">
                                             {`2.  ${t('add.label')} ${t('text.or')}  ${t('remove.label')} ${t('templates:title')} `}
                                         </div>
-                                        <div className="template-list">
-                                            <div
-                                                className="add-template-button"
-                                                onClick={handleShowManageTemplate}
-                                                onKeyPress={handleShowManageTemplate}
-                                                tabIndex="0"
-                                                role="button"
-                                            >
-                                                +
-                                            </div>
-                                            <div className="list">
-                                                <div className="template-bagde">
+
+                                        {
+                                            templates.length > 0 ? (
+                                                <div className="template-list">
                                                     <div
-                                                        className="total-attrs"
+                                                        className="add-template-button"
+                                                        onClick={handleShowManageTemplate}
+                                                        onKeyPress={handleShowManageTemplate}
+                                                        tabIndex="0"
+                                                        role="button"
                                                     >
-                                                        {total}
+                                                        +
                                                     </div>
-                                                    <div
-                                                        className="template-name"
-                                                    >
-                                                        {t('devices:selected_templates')}
+                                                    <div className="list">
+                                                        <div className="template-bagde">
+                                                            <div
+                                                                className="total-attrs"
+                                                            >
+                                                                {total}
+                                                            </div>
+                                                            <div
+                                                                className="template-name"
+                                                            >
+                                                                {t('devices:selected_templates')}
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
+                                            ) : (
+                                                <div className="template-list">
+                                                    <div className="list">
+                                                        {t('templates:alerts.no_conf_templates')}
+                                                    </div>
+                                                </div>
+                                            )
+                                        }
 
                                     </div>
 
@@ -147,12 +160,18 @@ const SidebarDevice = ({
                                                         FormActions.toggleSidebarDevice(false);
                                                     }}
                                                 />
-                                                <DojotBtnClassic
-                                                    color="red"
-                                                    label={t('save.label')}
-                                                    type="primary"
-                                                    onClick={save}
-                                                />
+                                                {
+                                                    templates.length > 0 ? (
+                                                        <DojotBtnClassic
+                                                            color="red"
+                                                            label={t('save.label')}
+                                                            type="primary"
+                                                            onClick={save}
+                                                        />
+                                                    ) : (
+                                                        ''
+                                                    )
+                                                }
                                             </Fragment>
                                         ) : (
                                             <Fragment>
@@ -168,12 +187,14 @@ const SidebarDevice = ({
                                                     type="secondary"
                                                     onClick={() => toogleSidebarDelete()}
                                                 />
+
                                                 <DojotBtnClassic
                                                     color="red"
                                                     label={t('save.label')}
                                                     type="primary"
                                                     onClick={update}
                                                 />
+
                                             </Fragment>
                                         )
                                     }
@@ -218,6 +239,7 @@ SidebarDevice.propTypes = {
     isNewDevice: PropTypes.bool.isRequired,
     isShowSidebarDelete: PropTypes.bool.isRequired,
     toogleSidebarDelete: PropTypes.func.isRequired,
+    templates: PropTypes.func.isRequired,
 };
 
 SidebarDevice.defaultProps = {

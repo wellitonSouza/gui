@@ -172,7 +172,9 @@ class Util {
         return new Promise(((resolve, reject) => {
             fetch(url, authConfig)
                 .then(local._status)
-                .then((data) => { resolve(data[1]); })
+                .then((data) => {
+                    resolve(data[1]);
+                })
                 .catch((error) => {
                     reject(local.checkContent(error));
                 });

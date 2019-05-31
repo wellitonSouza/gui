@@ -14,6 +14,7 @@ import SidebarManageTemplates from './SidebarManageTemplates';
 import SidebarDeviceAttrs from './SidebarDeviceAttrs';
 import SidebarImage from './SidebarImage/index';
 import { FormActions } from '../Actions';
+import TemplateActions from '../../../actions/TemplateActions';
 
 class Sidebar extends Component {
     constructor(props) {
@@ -68,6 +69,7 @@ class Sidebar extends Component {
 
     componentDidMount() {
         const { showSidebarDevice, device, isNewDevice } = this.props;
+        TemplateActions.fetchTemplates.defer();
         this.setState({
             showSidebarDevice,
             device,
@@ -375,22 +377,22 @@ class Sidebar extends Component {
         const { metadata } = device;
         return (
             <Fragment>
-                <SidebarDevice
-                    hasTemplateWithImages={hasTemplateWithImages}
-                    showSidebarDevice={showSidebarDevice}
-                    device={device}
-                    isNewDevice={isNewDevice}
-                    isShowSidebarDelete={isShowSidebarDelete}
-                    handleChangeName={this.handleChangeName}
-                    handleShowManageTemplate={this.handleShowManageTemplate}
-                    toogleSidebarImages={this.toogleSidebarImages}
-                    handleShowDeviceAttrs={this.handleShowDeviceAttrs}
-                    toogleSidebarDelete={this.toogleSidebarDelete}
-                    save={this.save}
-                    update={this.update}
-                    remove={this.remove}
-                />
                 <AltContainer store={TemplateStore}>
+                    <SidebarDevice
+                        hasTemplateWithImages={hasTemplateWithImages}
+                        showSidebarDevice={showSidebarDevice}
+                        device={device}
+                        isNewDevice={isNewDevice}
+                        isShowSidebarDelete={isShowSidebarDelete}
+                        handleChangeName={this.handleChangeName}
+                        handleShowManageTemplate={this.handleShowManageTemplate}
+                        toogleSidebarImages={this.toogleSidebarImages}
+                        handleShowDeviceAttrs={this.handleShowDeviceAttrs}
+                        toogleSidebarDelete={this.toogleSidebarDelete}
+                        save={this.save}
+                        update={this.update}
+                        remove={this.remove}
+                    />
                     <SidebarManageTemplates
                         showManageTemplates={showManageTemplates}
                         selectedTemplates={device.templates}

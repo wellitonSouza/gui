@@ -59,7 +59,6 @@
         "config_type": {
             "label": "Tipo de configuração",
             "values": {
-                "protocol": "Protocolo",
                 "topic": "Tópico",
                 "translator": "Tradutor",
                 "device_timeout": "Tempo limite do dispositivo"

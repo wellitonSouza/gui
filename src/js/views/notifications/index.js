@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withNamespaces } from 'react-i18next';
+import locales from 'i18next';
 import AltContainer from 'alt-container';
 import PropTypes from 'prop-types';
 import { NewPageHeader } from '../../containers/full/PageHeader';
@@ -12,15 +13,26 @@ import notificationType from './PropTypes';
 
 const NotificationList = (props) => {
     const { notifications } = props;
+
     return (
-        <ul>
-            {notifications.map(notification => (
-                <CardNotification
-                    notification={notification}
-                    key={Math.random()}
-                />
-            ))}
-        </ul>
+        <div>
+            {notifications.length > 0
+            ? (
+                <ul>
+                    {notifications.map(notification => (
+                        <CardNotification
+                            notification={notification}
+                            key={Math.random()}
+                        />
+                    ))}
+                </ul>
+            ) : (
+                <div className="valign-wrapper full-height background-info">
+                    <div className="full-width center">{`${locales.t('notifications:no_data_avaliable')}`}</div>
+                </div>
+                )
+            }
+        </div>
     );
 };
 

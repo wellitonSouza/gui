@@ -999,7 +999,13 @@ $action-area-width: 200px;
         padding: 8px 0;
         float: left;
         height: 50px;
-        width: 175px;
+        width: 200px;
+      
+         .subtitle
+         {
+          overflow: auto;
+          height: 43px;
+         }
       }
       .icon {
         float: left;

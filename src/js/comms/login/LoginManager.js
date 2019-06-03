@@ -24,7 +24,7 @@ class LoginManager {
 
     authenticate(login) {
         const req = {
-            query: GQL_LOGIN(login.username, login.passwd),
+            query: GQL_LOGIN(login.username, login.password),
         };
         return util.POST(this.baseUrl+'graphql/auth/', req);
     }

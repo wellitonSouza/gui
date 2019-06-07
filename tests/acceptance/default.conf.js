@@ -2,7 +2,7 @@ const env = require('./env.conf');
 
 const config = {
     tests: './Scenarios/*_test.js',
-    clearDb: false,
+    clearDb: true,
     output: './output',
     multiple: {
         parallel: {
@@ -16,7 +16,7 @@ const config = {
             fullPageScreenshots: true,
             restart: false,
             keepBrowserState: true,
-            show: true,
+            show: false,
             waitForNavigation: ['networkidle2', 'domcontentloaded'],
             chrome: {
                 args: ['--no-sandbox', '--start-maximized', '--start-fullscreen'],

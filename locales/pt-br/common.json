@@ -39,7 +39,7 @@
         "label": "Valor"
     },
     "types": {
-        "boolean": "Boleano",
+        "boolean": "Booleano",
         "geo": "Geo",
         "float": "Float",
         "integer": "Inteiro",

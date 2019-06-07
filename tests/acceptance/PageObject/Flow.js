@@ -49,10 +49,12 @@ module.exports = {
     },
 
     addDeviceInput() {
-        I.dragSlider('#palette_node_device_in', 300);
+        I.dragSlider('#palette_node_event_device_in', 300);
     },
 
     addSwitch() {
+        I.click('#palette-collapse-all');
+        I.click('#palette-header-function');
         I.dragSlider('#palette_node_switch', 400);
     },
 
@@ -67,6 +69,7 @@ module.exports = {
     },
 
     addNotification() {
+        I.click('#palette-collapse-all');
         I.click('#palette-header-output');
         I.dragSlider('#palette_node_notification', 700);
     },
@@ -77,7 +80,7 @@ module.exports = {
         I.dragAndDrop(locate('.port_output').inside(`#${ids[0]}`), locate('.port_input').inside(`#${ids[1]}`));
         I.dragAndDrop(locate('.port_output').inside(`#${ids[1]}`), locate('.port_input').inside(`#${ids[2]}`));
         I.dragAndDrop(locate('.port_output').inside(`#${ids[2]}`), locate('.port_input').inside(`#${ids[3]}`));
-        // I.dragAndDrop(locate(`.port_output`).inside(`#${ids[2]}`), locate(`.port_input`).inside(`#${ids[4]}`));
+        I.dragAndDrop(locate(`.port_output`).inside(`#${ids[2]}`), locate(`.port_input`).inside(`#${ids[4]}`));
     },
 
     clickOnDeviceInput() {
@@ -90,7 +93,11 @@ module.exports = {
     },
 
     selectDevice(deviceId) {
-        I.fillField('#node-input-device_source_id', `String device (${deviceId})`);
+        I.fillField('#node-input-device', `String device (${deviceId})`);
+    },
+
+    selectPublish(){
+        I.click('#node-input-event_publish');
     },
 
     clickOnDone() {
@@ -103,7 +110,7 @@ module.exports = {
     },
 
     editSwitchProperty() {
-        I.fillField('#node-input-property', 'payload.input');
+        I.fillField('#node-input-property', 'payload.data.attrs.input');
     },
 
     editSwitchCondition() {

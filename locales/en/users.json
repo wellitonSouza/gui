@@ -18,7 +18,7 @@
   },
   "username": {
     "label": "User Name",
-    "error": "Invalid username: Please use only letters (a-z) and numbers (0-9)"
+    "error": "Invalid username: Please use letters (a-z) and numbers (0-9)"
   },
   "name": {
     "label": "Name",

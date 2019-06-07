@@ -4,6 +4,7 @@
     "window": true,
     "browser": true,
     "node": true,
+    "atob": "readable",
     "FormData": "readable"
   },
   "rules": {

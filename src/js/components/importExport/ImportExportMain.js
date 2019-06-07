@@ -42,9 +42,8 @@ class ImportExportMain extends Component {
         const { openModal, toggleSidebar, t } = this.props;
         const { openImport } = this.state;
 
-        const canSeeImport = ability.can('modifier', 'import');
-        const canSeeExport = ability.can('viewer', 'export')
-            || ability.can('modifier', 'export');
+        const canSeeImport = ability.canModify('import');
+        const canSeeExport = ability.canView('export');
 
         return (
             <div>
@@ -98,7 +97,7 @@ class ImportExportMain extends Component {
 
 ImportExportMain.propTypes = {
     openModal: PropTypes.func.isRequired,
-    t: PropTypes.shape.isRequired,
+    t: PropTypes.func.isRequired,
     toggleSidebar: PropTypes.func.isRequired,
 };
 

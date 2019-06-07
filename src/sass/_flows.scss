@@ -1,3 +1,45 @@
+.maybeNotSaved{
+  font-family: Raleway;
+  font-style: normal;
+  position: fixed;
+  top: 19px;
+  right: 240px;
+  z-index: 1000;
+  font-weight: 600;
+  color: #ce1b1b;
+  background-color: #fbeaea;
+  -webkit-transition: width 2s; /* Safari */
+  transition: width 2s;
+  height: 38px;
+  width: 310px;
+
+  .boxLine{
+    position: absolute;
+    background: #eb5757;
+    width:3px;
+    height: 100%;
+    left: 0;
+    top:0;
+    display: inline-block;
+  }
+
+  span
+  {
+    width: calc(100% - 10px);
+    display: inline-block;
+    padding: 8px 45px 7px 0;
+  }
+
+  i{
+    font-size: 19px;
+    position: absolute;
+    right: 5px;
+    top: 2px;
+    padding: 5px;
+  }
+}
+
+
 .flows-wrapper {
   width: 100%;
   height: 100%;

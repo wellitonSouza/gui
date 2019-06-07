@@ -52,7 +52,7 @@ const DojotBtnClassicWithIcon = ({title, onClick, label, icon}) => {
     if (auxTitle == undefined)
         auxTitle = label;
     return (
-        <button type="button" title={auxTitle} onClick={onClick} className={`new-btn-flat style-2 secondary`}>
+        <button type="button" title={auxTitle} onClick={onClick} className={`new-btn-flat style-2 secondary pointer`}>
         <i className={`fa ${icon} withIcon`} />&nbsp;{label}
         </button>
     );

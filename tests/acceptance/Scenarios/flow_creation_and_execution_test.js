@@ -1,4 +1,4 @@
-Feature('Flow creation');
+Feature('Flow creation and execution');
 
 Before((login) => {
     login('admin');
@@ -18,13 +18,15 @@ Scenario('@basic: Creating a simple flow', async (I, Flow, Device, Notification)
     Flow.addSwitch();
     Flow.addChange();
     Flow.addDeviceOutput();
-    // Flow.addNotification();
+    Flow.addNotification();
+
 
     await Flow.connectFlows();
 
     Flow.clickOnDeviceInput();
     Flow.editDeviceInputName();
     Flow.selectDevice(deviceId);
+    Flow.selectPublish();
     Flow.clickOnDone();
 
     Flow.clickOnSwitch();
@@ -41,11 +43,11 @@ Scenario('@basic: Creating a simple flow', async (I, Flow, Device, Notification)
     Flow.editDeviceOutputSource();
     Flow.clickOnDone();
 
-    // Flow.clickOnNotificationInput();
-    // Flow.editMessageType();
-    // Flow.editMessageDynamicValue();
-    // Flow.editMessageInputSource();
-    // Flow.clickOnDone();
+    Flow.clickOnNotificationInput();
+    Flow.editMessageType();
+    Flow.editMessageDynamicValue();
+    Flow.editMessageInputSource();
+    Flow.clickOnDone();
 
     Flow.clickOnSave();
     Flow.seeFlowHasCreated();
@@ -61,10 +63,10 @@ Scenario('@basic: Creating a simple flow', async (I, Flow, Device, Notification)
 
     Device.shouldSeeMessage('output value');
 
-    // await Notification.openNotificationsPage();
-    // const totalBefore = await Notification.totalOfMessagesWithText('output value');
-    // await I.sendMQTTMessage(deviceId, '{"input": "input value"}');
-    // I.wait(5);
+    await Notification.openNotificationsPage();
+    const totalBefore = await Notification.totalOfMessagesWithText('output value');
+    await I.sendMQTTMessage(deviceId, '{"input": "input value"}');
+    I.wait(5);
 
-    // await Notification.shouldISeeMessagesWithText('output value', totalBefore + 1);
+    await Notification.shouldISeeMessagesWithText('output value', totalBefore + 1);
 });

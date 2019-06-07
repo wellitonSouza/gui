@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { Fragment, Component } from 'react';
 import { hashHistory } from 'react-router';
-
+import Slide from 'react-reveal/Slide';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AltContainer from 'alt-container';
 import { withNamespaces } from 'react-i18next';
@@ -14,6 +14,8 @@ import FlowActions from '../../actions/FlowActions';
 import FlowStore from '../../stores/FlowStore';
 import util from '../../comms/util/util';
 import toaster from '../../comms/util/materialize';
+
+
 
 class FlowCanvas extends Component {
     constructor(props) {
@@ -195,12 +197,58 @@ class FlowCanvas extends Component {
 
                 <div id="flows-node-scripts" ref={elem => (this.scriptHolder = elem)} />
 
+                <MutationSchema isSaved={this.props.isSaved} somethingChanged={this.props.somethingChanged}></MutationSchema>
             </div>
         );
     }
 }
 
-function handleSave(flowid, i18n) {
+let alreadySetted = false;
+var observer = {};
+
+const MutationSchema = ({ somethingChanged, isSaved }) => {
+    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
+    
+    if (isSaved === false)
+    {
+        // if we already know that we should save, let's disconnect the observer
+        observer.disconnect();
+        alreadySetted = false;
+    }
+    else if (!alreadySetted)
+    {
+        setTimeout(() => {
+            setMutation();
+        }, 3000);
+        alreadySetted = true;
+    }
+        
+    function setMutation()
+    {
+        var target1 = document.querySelector('#chart>svg');
+        //var target2 = document.querySelector('.editor-tray.ui-draggable');
+        if (target1)
+        {
+            observer = new MutationObserver(function(mutations) {  
+                mutations.forEach(function(mutation) {
+                    // sending false means isSaved = false;
+                    somethingChanged(false);
+                });
+           });
+    
+            var config = {
+                attributes: true, 
+                characterData: true
+            }; 
+            observer.observe(target1, config);
+            //if (target2)
+            //    observer.observe(target2, config);
+        };
+    }
+    return null;
+};
+
+function handleSave(flowid, i18n, callbackSaved) {
     // fetch existing data for flow
     const fData = FlowStore.getState();
     let flow = null;
@@ -226,6 +274,7 @@ function handleSave(flowid, i18n) {
             flow.name = ret.label;
             FlowActions.triggerUpdate(flowid, flow, (flow) => {
                 toaster.success(i18n('flows:alerts.update'));
+                callbackSaved(true);
             });
         }
     } else if (!ret.result) {
@@ -234,6 +283,7 @@ function handleSave(flowid, i18n) {
         flow.name = ret.label;
         FlowActions.triggerCreate(flow, (flow) => {
             toaster.success(i18n('flows:alerts.create'));
+            callbackSaved(true);
             hashHistory.push(`/flows/id/${flow.id}`);
         });
     }
@@ -282,11 +332,34 @@ class EditFlowComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isSaved: true,
             show_modal: false,
         };
         this.openRemoveModal = this.openRemoveModal.bind(this);
         this.setModal = this.setModal.bind(this);
         this.removeFlow = this.removeFlow.bind(this);
+        this.enableBeforeUnload = this.enableBeforeUnload.bind(this);
+        this.disableBeforeUnload = this.disableBeforeUnload.bind(this);
+        this.somethingChanged= this.somethingChanged.bind(this);
+    }
+
+    somethingChanged(newState)
+    {
+        const isSaved = newState;
+        if (isSaved)        
+            this.disableBeforeUnload();
+        else
+            this.enableBeforeUnload();
+        this.setState({isSaved:isSaved});
+    }
+
+    enableBeforeUnload() {
+        window.onbeforeunload = function (e) {
+            return "Discard changes?";
+        };
+    }
+    disableBeforeUnload() {
+        window.onbeforeunload = null;
     }
 
     removeFlow() {
@@ -316,6 +389,7 @@ class EditFlowComponent extends Component {
 
     render() {
         const { t: i18n } = this.props;
+        const { isSaved } = this.state;
         return (
             <ReactCSSTransitionGroup
                 transitionName="first"
@@ -332,6 +406,14 @@ class EditFlowComponent extends Component {
                     <div
                         className="row valign-wrapper absolute-input full-width no-margin top-minus-2 "
                     >
+                        
+                        {(!isSaved ?  
+                            <Slide right duration={300}>
+                                <div className="maybeNotSaved"> 
+                                <div className="boxLine"></div>
+                                <span>Don't forget to save your updates.</span>
+                                <i className="fa fa-exclamation-triangle" ></i>
+                        </div> </Slide>: null )}
                         <AltContainer store={FlowStore}>
                             <NameForm t={i18n} />
                         </AltContainer>
@@ -340,7 +422,7 @@ class EditFlowComponent extends Component {
                                 icon=" fa fa-save"
                                 tooltip={i18n('flows:header.save.label')}
                                 click={() => {
-                                    handleSave(this.props.params.flowid, i18n);
+                                    handleSave(this.props.params.flowid, i18n,this.somethingChanged);
                                 }}
                             />
                             {this.props.params.flowid
@@ -360,7 +442,7 @@ class EditFlowComponent extends Component {
                     </div>
                 </NewPageHeader>
                 <AltContainer store={FlowStore}>
-                    <FlowCanvas flow={this.props.params.flowid} />
+                    <FlowCanvas isSaved={isSaved} somethingChanged={this.somethingChanged} flow={this.props.params.flowid} />
                 </AltContainer>
                 {this.state.show_modal
                     ? (

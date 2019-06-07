@@ -14,7 +14,6 @@ import AltContainer from 'alt-container';
 import DeviceFormStore from './Store';
 import { FormActions } from "./Actions";
 
-import Can from 'Components/permissions/Can';
 import { withNamespaces } from 'react-i18next';
 import ability from 'Components/permissions/ability';
 
@@ -24,8 +23,10 @@ function SummaryItem(props) {
     for (const attribute in props.device.attrs) {
         attrs += props.device.attrs[attribute].length;
     }
-    const canEdit = ability.can('modifier', 'device');
-       return (
+    const canView = ability.canView('device');
+    const canEdit = ability.canModify('device');
+
+    return (
              <div className="mg20px fl flex-order-2">
                 <div className="card-size card-hover lst-entry-wrapper z-depth-2 mg0px pointer"  onClick={() => { if (canEdit) FormActions.set(props.device)}}>
                     <div className="lst-entry-title col s12">
@@ -36,11 +37,11 @@ function SummaryItem(props) {
                             </span>
                         </div>
                         <div className="title-edit" >
-                            <Can do="viewer" on="device">
+                            { canView ?
                                 <Link to={`/device/id/${props.device.id}/detail`}>
                                     <i title={props.t('devices:alts.details')} className="fa fa-info-circle fa-2x color-white" />
-                                </Link>
-                            </Can>
+                                </Link> : null
+                            }
                         </div>
                     </div>
                     <div className="attr-list">

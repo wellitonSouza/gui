@@ -2,7 +2,7 @@ const env = require('./env.conf');
 
 const config = {
     tests: './Scenarios/*_test.js',
-    clearDb: true,
+    clearDb: false,
     output: './output',
     multiple: {
         parallel: {

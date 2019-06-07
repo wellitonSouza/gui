@@ -98,7 +98,6 @@ class ImportExportMain extends Component {
 
 ImportExportMain.propTypes = {
     openModal: PropTypes.func.isRequired,
-    t: PropTypes.shape.isRequired,
     toggleSidebar: PropTypes.func.isRequired,
 };
 

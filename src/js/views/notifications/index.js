@@ -15,24 +15,25 @@ const NotificationList = (props) => {
     const { notifications } = props;
 
     return (
-        <div>
-            {notifications.length > 0
+        notifications.length > 0
             ? (
-                <ul>
-                    {notifications.map(notification => (
-                        <CardNotification
-                            notification={notification}
-                            key={Math.random()}
-                        />
-                    ))}
-                </ul>
-            ) : (
-                <div className="valign-wrapper full-height background-info">
-                    <div className="full-width center">{`${locales.t('notifications:no_data_avaliable')}`}</div>
+                <div>
+                    <ul>
+                        {notifications.map(notification => (
+                            <CardNotification
+                                notification={notification}
+                                key={Math.random()}
+                            />
+                        ))}
+                    </ul>
                 </div>
-                )
-            }
-        </div>
+            ) : (
+                <div className="full-height flex-container pos-relative overflow-x-hidden">
+                    <div className="background-info valign-wrapper full-height">
+                        <span className="horizontal-center">{`${locales.t('notifications:no_data_avaliable')}`}</span>
+                    </div>
+                </div>
+            )
     );
 };
 

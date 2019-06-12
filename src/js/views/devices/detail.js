@@ -49,7 +49,7 @@ class Attribute extends Component {
     render() {
         // check the current window, if less then 1024px, blocks compressed state
         const { opened } = this.state;
-        const { device, attr } = this.props;
+        const { device, attr, isStatic} = this.props;
         const { label, value_type: valueType, metadata } = attr;
         const isOpened = util.checkWidthToStateOpen(opened);
         return (
@@ -82,6 +82,7 @@ class Attribute extends Component {
                         type={valueType}
                         attr={label}
                         metadata={metadata}
+                        isStatic={isStatic === true}
                     />
                 </div>
             </div>
@@ -381,6 +382,23 @@ class DyAttributeArea extends Component {
             </div>
         );
 
+        let atStatic = {};
+        console.log('device', device);
+        if (openStaticMap)
+        {
+            let vet = [];
+            // we need get the geo-point data;
+
+            Object.values(device.attrs).forEach(element => {
+                vet.push(element.filter(i => i.type == "static" && i.value_type == "geo:point"));
+            });
+            vet = vet[0];
+            if (vet.length)
+                atStatic = vet[0]; 
+            console.log(atStatic);
+            // sa = sa.filter(i => i.id !== attr.id);
+        }
+
         return (
             <div className="content-row float-right">
                 <div className="second-col">
@@ -391,9 +409,11 @@ class DyAttributeArea extends Component {
                         : null
                     }
                     {openStaticMap ? (
-                        <HandleGeoElements
+                        <Attribute 
+                            key={atStatic.id}
+                            attr={atStatic}
                             device={device}
-                            isStatic
+                            isStatic={true}
                         />
                     ) : null}
                     {selectedAttributes.map(at => (
@@ -637,24 +657,41 @@ const DeviceUserActions = ({ t }) => (
 );
 
 
-const AttrHistory = ({device, type, attr, metadata}) => (
-    <div className="graphLarge">
-        <AltContainer stores={{
-            MeasureStore,
-            Config: ConfigStore,
-        }}
-        >
+const AttrHistory = ({device, type, attr, metadata, isStatic = false}) => {
+
+    if (isStatic)
+    {
+       return <div className="graphLarge">
             <Attr
                 device={device}
                 type={type}
                 attr={attr}
                 label={attr}
                 metadata={metadata}
-                isStatic={false}
+                isStatic={isStatic}
             />
-        </AltContainer>
-    </div>
-);
+        </div>
+    }
+    else
+    {
+       return <div className="graphLarge">
+            <AltContainer stores={{
+                MeasureStore,
+                Config: ConfigStore,
+            }}
+            >
+                <Attr
+                    device={device}
+                    type={type}
+                    attr={attr}
+                    label={attr}
+                    metadata={metadata}
+                    isStatic={isStatic}
+                />
+            </AltContainer>
+        </div>
+    }
+};
 
 AttrHistory.propTypes = {
     device: PropTypes.shape({}).isRequired,

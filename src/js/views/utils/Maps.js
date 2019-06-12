@@ -6,9 +6,11 @@ import * as pins from '../../config';
 import util from '../../comms/util';
 import ContextMenuComponent from './maps/ContextMenuComponent';
 
+
 require('leaflet.markercluster');
 
 let deviceListSocket = null;
+let turn = true;
 
 const OpenStreetMapMapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 17,
@@ -53,6 +55,7 @@ class CustomMap extends Component {
         super(props);
         this.state = {
             cm_visible: false,
+            mapId: 'map'+util.guid(),
             contextMenuInfo: {},
         };
         this.map = null;
@@ -73,10 +76,11 @@ class CustomMap extends Component {
     componentDidMount() {
     // create map
         const { zoom } = this.props;
-        this.map = L.map('map', {
+        console.log("mapId",this.state.mapId);
+        this.map = L.map(this.state.mapId, {
             zoom,
             center: [51.505, -0.09],
-            layers: [OpenStreetMapMapnik],
+            layers: [turn ? OpenStreetMapMapnik : EsriWorldImagery ],
         });
 
         const overlays = { Map: OpenStreetMapMapnik, Satelite: EsriWorldImagery };
@@ -91,15 +95,28 @@ class CustomMap extends Component {
             },
         }).addLayers([]);
 
+        // reset layers
+        //this.map.removeLayer(OpenStreetMapMapnik);
+        // setTimeout(() => {
+        //     console.log("entra aqui");
+        //     this.map.addLayer(OpenStreetMapMapnik);
+        // }, 3000);
+
+        turn = !turn;
         this.updateMarkers();
     }
 
     componentDidUpdate() {
         const { markersData } = this.props;
         // reseting layer to the map
+        //this.map.removeLayer(OpenStreetMapMapnik);
+        //setTimeout(() => {
+         //   console.log("entra aqui");
         if (!this.map.hasLayer(OpenStreetMapMapnik)) {
             this.map.addLayer(OpenStreetMapMapnik);
         }
+        //}, 3000);
+
         // check if data has changed
         if (JSON.stringify(markersData) !== JSON.stringify(this.subset)) {
             this.updateMarkers();
@@ -107,7 +124,12 @@ class CustomMap extends Component {
     }
 
     componentWillUnmount() {
-        this.map.removeLayer(OpenStreetMapMapnik);
+        console.log("this.map",this.map);
+        console.log("map: ", document.getElementById("#"+this.state.mapId));
+        this.map.eachLayer(function(layer){
+            layer.remove();
+        });
+        this.map.remove();
     }
 
     handleContextMenu(e, deviceId, tracking) {
@@ -261,7 +283,7 @@ class CustomMap extends Component {
     // console.log("5. CustomMap - Render: ", this.props);
         return (
             <div className="fix-map-bug">
-                <div onClick={this.handleMapClick} id="map" />
+                <div onClick={this.handleMapClick} id={this.state.mapId} />
                 {this.state.cm_visible ? (
                     <ContextMenuComponent
                         closeContextMenu={this.closeContextMenu}
@@ -415,7 +437,7 @@ class SmallPositionRenderer extends Component {
 
         return (
             <div className="fix-map-bug">
-                <CustomMap toggleTracking={this.props.toggleTracking} allowContextMenu={this.props.allowContextMenu} zoom={this.state.zoom} markersData={parsedEntries} />
+                <CustomMap  key={util.guid()} toggleTracking={this.props.toggleTracking} allowContextMenu={this.props.allowContextMenu} zoom={this.state.zoom} markersData={parsedEntries} />
                 {(this.props.showLayersIcons && this.state.layers.length)
                     ? (
                         <div className="col s12 layer-box">

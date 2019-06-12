@@ -178,11 +178,24 @@ class HandleGeoElements extends Component {
         };
 
         this.handleDevicePosition = this.handleDevicePosition.bind(this);
+        this.copyingStaticAttr = this.copyingStaticAttr.bind(this);
         this.toogleExpand = this.toogleExpand.bind(this);
     }
 
     toogleExpand(state) {
         this.setState({opened: state});
+    }
+
+    copyingStaticAttr(device)
+    {
+        let newDev = {};
+        newDev.id = device.id;
+        newDev.sp_value = device.sp_value;
+        newDev.label = device.label;
+        newDev.timestamp = device.timestamp;
+        newDev.tracking = device.tracking;
+        newDev.is_visible = device.is_visible;
+        return newDev;
     }
 
     handleDevicePosition(device) {
@@ -238,6 +251,7 @@ class HandleGeoElements extends Component {
         if (this.props.isStatic) {
             // static attribute
             validDevices = this.handleDevicePosition(this.props.device);
+            validDevices = [this.copyingStaticAttr(validDevices[0])];
         } else {
             // dynamic attribute
             validDevices = this.handleDevicePosition(this.props.MeasureStore.data[this.props.device.id]);
@@ -247,20 +261,17 @@ class HandleGeoElements extends Component {
         if (geoconfs === undefined)
             geoconfs = {}
 
-
+        console.log("validDevices",validDevices);
+        console.log("geoconfs",geoconfs);
+        console.log("props",this.props);
+        console.log("state",this.state);
         let opened = util.checkWidthToStateOpen(this.state.opened);
 
         if (validDevices.length == 0) {
             return <NoData/>;
         } else {
             if (this.props.isStatic) {
-                return <div className={"attributeBox " + (opened ? "expanded" : "compressed")}>
-                    <div className="header">
-                        <label>{this.props.label}</label>
-                        {!this.state.opened ?
-                            <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand"/> :
-                            <i onClick={this.toogleExpand.bind(this, false)} className="fa fa-compress"/>}
-                    </div>
+                return <span>
                     <SmallPositionRenderer
                         showLayersIcons={false}
                         staticDevices={validDevices}
@@ -269,7 +280,7 @@ class HandleGeoElements extends Component {
                         showPolyline={false}
                         config={geoconfs}
                     />
-                </div>;
+                </span>;
             } else {
                 return <span>
                     <SmallPositionRenderer
@@ -297,7 +308,16 @@ function Attr(props) {
         'geo:point': HandleGeoElements,
     };
 
+    console.log("<Attr>", props);
     const Renderer = props.type in known ? known[props.type] : known.default;
+
+    if (props.isStatic)
+    {
+        return (
+            <Renderer {...props} />
+        );
+    }
+
 
     function NoData() {
         return (

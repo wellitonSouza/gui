@@ -70,6 +70,7 @@ function GroupList(param) {
             </div>
         );
     }
+    return null;
 }
 
 function OperationsHeader(param) {

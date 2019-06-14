@@ -5,6 +5,7 @@ import FirmwareHelper from '../comms/firmware/FirmwareHelper';
 import util from '../comms/util/util';
 import {SmallPositionRenderer} from "../views/utils/Maps";
 import {Trans, withNamespaces} from 'react-i18next';
+import LeafMap from "../views/utils/LeafMap";
 
 
 class Graph extends Component {
@@ -261,25 +262,12 @@ class HandleGeoElements extends Component {
         if (geoconfs === undefined)
             geoconfs = {}
 
-        console.log("validDevices",validDevices);
-        console.log("geoconfs",geoconfs);
-        console.log("props",this.props);
-        console.log("state",this.state);
-        let opened = util.checkWidthToStateOpen(this.state.opened);
-
         if (validDevices.length == 0) {
             return <NoData/>;
         } else {
             if (this.props.isStatic) {
                 return <span>
-                    <SmallPositionRenderer
-                        showLayersIcons={false}
-                        staticDevices={validDevices}
-                        allowContextMenu={false}
-                        zoom={14}
-                        showPolyline={false}
-                        config={geoconfs}
-                    />
+                    <LeafMap point={validDevices[0].sp_value}> </LeafMap>
                 </span>;
             } else {
                 return <span>
@@ -308,16 +296,7 @@ function Attr(props) {
         'geo:point': HandleGeoElements,
     };
 
-    console.log("<Attr>", props);
     const Renderer = props.type in known ? known[props.type] : known.default;
-
-    if (props.isStatic)
-    {
-        return (
-            <Renderer {...props} />
-        );
-    }
-
 
     function NoData() {
         return (
@@ -332,6 +311,13 @@ function Attr(props) {
             <div className="mt60px full-height background-info">
                 <div className="full-width center"><Trans i18nKey="devices:no_data_avaliable"/></div>
             </div>
+        );
+    }
+
+    if (props.isStatic)
+    {
+        return (
+            <Renderer {...props} />
         );
     }
 

@@ -383,7 +383,6 @@ class DyAttributeArea extends Component {
         );
 
         let atStatic = {};
-        console.log('device', device);
         if (openStaticMap)
         {
             let vet = [];
@@ -395,8 +394,6 @@ class DyAttributeArea extends Component {
             vet = vet[0];
             if (vet.length)
                 atStatic = vet[0]; 
-            console.log(atStatic);
-            // sa = sa.filter(i => i.id !== attr.id);
         }
 
         return (

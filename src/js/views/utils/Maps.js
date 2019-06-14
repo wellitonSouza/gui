@@ -10,7 +10,6 @@ import ContextMenuComponent from './maps/ContextMenuComponent';
 require('leaflet.markercluster');
 
 let deviceListSocket = null;
-let turn = true;
 
 const OpenStreetMapMapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 17,
@@ -80,7 +79,7 @@ class CustomMap extends Component {
         this.map = L.map(this.state.mapId, {
             zoom,
             center: [51.505, -0.09],
-            layers: [turn ? OpenStreetMapMapnik : EsriWorldImagery ],
+            layers: [ OpenStreetMapMapnik ],
         });
 
         const overlays = { Map: OpenStreetMapMapnik, Satelite: EsriWorldImagery };
@@ -102,7 +101,6 @@ class CustomMap extends Component {
         //     this.map.addLayer(OpenStreetMapMapnik);
         // }, 3000);
 
-        turn = !turn;
         this.updateMarkers();
     }
 

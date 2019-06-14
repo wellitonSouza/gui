@@ -97,7 +97,6 @@ class CustomMap extends Component {
         // reset layers
         //this.map.removeLayer(OpenStreetMapMapnik);
         // setTimeout(() => {
-        //     console.log("entra aqui");
         //     this.map.addLayer(OpenStreetMapMapnik);
         // }, 3000);
 
@@ -106,14 +105,9 @@ class CustomMap extends Component {
 
     componentDidUpdate() {
         const { markersData } = this.props;
-        // reseting layer to the map
-        //this.map.removeLayer(OpenStreetMapMapnik);
-        //setTimeout(() => {
-         //   console.log("entra aqui");
         if (!this.map.hasLayer(OpenStreetMapMapnik)) {
             this.map.addLayer(OpenStreetMapMapnik);
         }
-        //}, 3000);
 
         // check if data has changed
         if (JSON.stringify(markersData) !== JSON.stringify(this.subset)) {
@@ -122,8 +116,6 @@ class CustomMap extends Component {
     }
 
     componentWillUnmount() {
-        console.log("this.map",this.map);
-        console.log("map: ", document.getElementById("#"+this.state.mapId));
         this.map.eachLayer(function(layer){
             layer.remove();
         });

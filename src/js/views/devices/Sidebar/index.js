@@ -29,6 +29,7 @@ class Sidebar extends Component {
             selectedTemplates: [],
             device: {},
             selectAttr: [],
+            selectAttrOriginal: [],
             errors: {},
             isShowSidebarDelete: false,
             deviceAttrsTitle: '',
@@ -41,6 +42,7 @@ class Sidebar extends Component {
         this.handleChangeName = this.handleChangeName.bind(this);
         this.handleChangeMetadata = this.handleChangeMetadata.bind(this);
         this.handleChangeAttr = this.handleChangeAttr.bind(this);
+        this.handleShowDeviceAttrsDiscard = this.handleShowDeviceAttrsDiscard.bind(this);
         this.toogleSidebarDelete = this.toogleSidebarDelete.bind(this);
         this.validAttrs = this.validAttrs.bind(this);
         this.save = this.save.bind(this);
@@ -49,6 +51,7 @@ class Sidebar extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
+        console.log('getDerivedStateFromProps', props, state);
         if (props.showSidebarDevice !== state.showSidebarDevice) {
             return {
                 ...state,
@@ -69,6 +72,7 @@ class Sidebar extends Component {
 
     componentDidMount() {
         const { showSidebarDevice, device, isNewDevice } = this.props;
+        console.log('componentDidMount', this.props);
         TemplateActions.fetchTemplates.defer();
         this.setState({
             showSidebarDevice,
@@ -141,11 +145,29 @@ class Sidebar extends Component {
         }));
     }
 
+    handleShowDeviceAttrsDiscard() {
+        /*        console.log('discard undefined before', this.state); */
+
+        console.log('discard undefined deviceOriginal', this.state);
+        this.setState(prevState => ({
+            showDeviceAttrs: !prevState.showDeviceAttrs,
+            selectAttr: JSON.parse(JSON.stringify(prevState.selectAttrOriginal)),
+            device: JSON.parse(prevState.deviceOriginal),
+            selectAttrOriginal: [],
+            deviceOriginal: {},
+            errors: [],
+        }));
+        console.log('discard undefined after', this.state.device);
+    }
+
     handleShowDeviceAttrs(attr, title) {
         this.setState(prevState => ({
             showDeviceAttrs: !prevState.showDeviceAttrs,
             selectAttr: attr,
             deviceAttrsTitle: title,
+            // save original data from attr for case user discard
+            selectAttrOriginal: JSON.parse(JSON.stringify(attr)),
+            deviceOriginal: (JSON.stringify(prevState.device)),
             errors: [],
         }));
     }
@@ -408,6 +430,7 @@ class Sidebar extends Component {
                     validAttrs={this.validAttrs}
                     handleChangeMetadata={this.handleChangeMetadata}
                     handleChangeAttr={this.handleChangeAttr}
+                    handleShowDeviceAttrsDiscard={this.handleShowDeviceAttrsDiscard}
                     handleShowDeviceAttrs={this.handleShowDeviceAttrs}
                     errors={errors}
                 />
@@ -419,7 +442,7 @@ class Sidebar extends Component {
                             ms: MeasureStore,
                         }}
                         >
-                            { deviceModifier
+                            {deviceModifier
                                 ? (
                                     <SidebarImage
                                         deviceId={device.id}
@@ -428,7 +451,7 @@ class Sidebar extends Component {
                                         showSidebarImage={showSidebarImage}
                                         toogleSidebarImages={this.toogleSidebarImages}
                                     />
-                                ) : null }
+                                ) : null}
                         </AltContainer>
                     )
                     : null}

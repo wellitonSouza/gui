@@ -9,6 +9,7 @@ const SidebarDeviceAttrs = ({
     showDeviceAttrs,
     validAttrs,
     handleShowDeviceAttrs,
+    handleShowDeviceAttrsDiscard,
     selectAttr,
     metadata,
     handleChangeMetadata,
@@ -54,7 +55,7 @@ const SidebarDeviceAttrs = ({
                         </div>
                         <div className="footer">
                             <DojotBtnClassic
-                                onClick={() => handleShowDeviceAttrs()}
+                                onClick={() => handleShowDeviceAttrsDiscard()}
                                 label={t('discard.label')}
                                 type="secondary"
                             />

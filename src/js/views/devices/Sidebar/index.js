@@ -147,7 +147,7 @@ class Sidebar extends Component {
         this.setState(prevState => ({
             showDeviceAttrs: !prevState.showDeviceAttrs,
             selectAttr: JSON.parse(JSON.stringify(prevState.selectAttrOriginal)),
-            device: JSON.parse(prevState.deviceOriginal),
+            device: JSON.parse(JSON.stringify(prevState.deviceOriginal)),
             selectAttrOriginal: [],
             deviceOriginal: {},
             errors: [],

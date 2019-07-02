@@ -8,7 +8,6 @@ import AttrCard from './AttrCard';
 const SidebarDeviceAttrs = ({
     showDeviceAttrs,
     validAttrs,
-    handleShowDeviceAttrs,
     handleShowDeviceAttrsDiscard,
     selectAttr,
     handleChangeMetadata,
@@ -80,6 +79,7 @@ SidebarDeviceAttrs.propTypes = {
     showDeviceAttrs: PropTypes.bool,
     validAttrs: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
+    handleShowDeviceAttrsDiscard: PropTypes.func.isRequired,
 };
 
 export default withNamespaces()(SidebarDeviceAttrs);

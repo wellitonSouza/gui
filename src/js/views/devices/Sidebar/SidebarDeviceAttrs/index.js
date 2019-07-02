@@ -11,7 +11,6 @@ const SidebarDeviceAttrs = ({
     handleShowDeviceAttrs,
     handleShowDeviceAttrsDiscard,
     selectAttr,
-    metadata,
     handleChangeMetadata,
     handleChangeAttr,
     deviceAttrsTitle,
@@ -44,7 +43,6 @@ const SidebarDeviceAttrs = ({
                                         <AttrCard
                                             attr={attr}
                                             key={attr.id}
-                                            metadata={metadata[attr.id]}
                                             handleChangeAttr={handleChangeAttr}
                                             handleChangeMetadata={handleChangeMetadata}
                                             errors={errors[attr.id]}

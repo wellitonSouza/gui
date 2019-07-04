@@ -17,10 +17,10 @@ class AttrCard extends PureComponent {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.metadata !== prevState.metadata) {
+        if (nextProps.attr.metadata !== prevState.metadata) {
             return {
                 ...prevState,
-                metadata: nextProps.metadata,
+                metadata: nextProps.attr.metadata,
             };
         }
         if (nextProps.attr !== prevState.attr) {
@@ -34,10 +34,10 @@ class AttrCard extends PureComponent {
 
 
     componentDidMount() {
-        const { attr, metadata } = this.props;
+        const { attr } = this.props;
         this.setState({
             attr,
-            metadata,
+            metadata: attr.metadata,
         });
     }
 
@@ -145,7 +145,6 @@ class AttrCard extends PureComponent {
 
 AttrCard.propTypes = {
     attr: PropTypes.instanceOf(Object).isRequired,
-    metadata: PropTypes.instanceOf(Object).isRequired,
     t: PropTypes.func.isRequired,
     handleChangeAttr: PropTypes.func.isRequired,
     handleChangeMetadata: PropTypes.func.isRequired,

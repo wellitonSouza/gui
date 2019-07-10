@@ -232,6 +232,7 @@ class HandleGeoElements extends Component {
     }
 
     render() {
+
         function NoData() {
             return (
                 <div className="valign-wrapper full-height background-info">
@@ -250,9 +251,23 @@ class HandleGeoElements extends Component {
 
         let validDevices = null;
         if (this.props.isStatic) {
-            // static attribute
-            validDevices = this.handleDevicePosition(this.props.device);
-            validDevices = [this.copyingStaticAttr(validDevices[0])];
+            // create aux variable
+            validDevices = [this.copyingStaticAttr(this.props.device)];
+            // searching for attribute
+            let attr = {};
+            Object.values(this.props.device.attrs).forEach(arry => {
+                arry.forEach(element => {
+                    if (element.label === this.props.attr)
+                        attr = element;
+                })}); 
+
+            // set label and st value
+            validDevices[0].label = attr.label;
+            validDevices[0].is_visible = true;
+            const aux = attr.static_value;
+            const parsedPosition = aux.split(',');
+            validDevices[0].sp_value = [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
+
         } else {
             // dynamic attribute
             validDevices = this.handleDevicePosition(this.props.MeasureStore.data[this.props.device.id]);

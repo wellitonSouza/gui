@@ -141,9 +141,8 @@ class GenericList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            openStaticMap: true,
-            visible_static_map: false,
             truncate: false,
+            visibleMaps:[]
         };
 
         this.openMap = this.openMap.bind(this);
@@ -155,17 +154,24 @@ class GenericList extends Component {
         this.limitSizeField(this.props.attrs);
     }
 
-    openMap() {
+    openMap(attr) {
+        let visibleMaps = this.state.visibleMaps;
+        //if exists, we should remove it 
+        if (visibleMaps.filter(i => i === attr.id).length)
+            visibleMaps = visibleMaps.filter(i => i !== attr.id);
+        else
+            visibleMaps.push(attr.id);
+
         const device = this.props.device;
         for (const k in device.attrs) {
             for (const j in device.attrs[k]) {
                 if (device.attrs[k][j].value_type === 'geo:point') {
                     if (device.attrs[k][j].static_value !== '') {
+
                         this.setState({
-                            openStaticMap: !this.state.openStaticMap,
-                            visible_static_map: !this.state.visible_static_map,
+                            visibleMaps,
                         });
-                        this.props.openStaticMap(this.state.openStaticMap);
+                        this.props.openStaticMap(visibleMaps);
                     }
                 }
             }
@@ -245,8 +251,8 @@ class GenericList extends Component {
                                     key={attr.label}
                                     className="line col s12"
                                     id="static-geo-attribute"
-                                    onKeyUp={this.openMap}
-                                    onClick={this.openMap}
+                                    onKeyUp={() => this.openMap(attr)}
+                                    onClick={() => this.openMap(attr)}
                                 >
                                     <div className="display-flex-column flex-1">
                                         <div
@@ -257,7 +263,7 @@ class GenericList extends Component {
                                         >
                                             {i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}
                                             <div className="star">
-                                                <i className={`fa ${this.state.visible_static_map ? 'fa-star' : 'fa-star-o'}`}/>
+                                                <i className={`fa ${this.state.visibleMaps.filter(i => i === attr.id).length ? 'fa-star' : 'fa-star-o'}`}/>
                                             </div>
                                         </div>
 
@@ -382,37 +388,40 @@ class DyAttributeArea extends Component {
             </div>
         );
 
-        let atStatic = {};
-        if (openStaticMap)
+        let atStatic = [];
+        if (openStaticMap.length)
         {
-            let vet = [];
-            // we need get the geo-point data;
-
-            Object.values(device.attrs).forEach(element => {
-                vet.push(element.filter(i => i.type == "static" && i.value_type == "geo:point"));
+            // we need get the geo-point data for each selected attrs;
+            Object.values(device.attrs).forEach(arry => {
+                arry.forEach(element => {
+                    if (openStaticMap.filter(i => 
+                        element.type == "static" 
+                        && element.value_type == "geo:point" 
+                        && element.id === i).length === 1) //just found the attr
+                        atStatic.push(element);
+                })
             });
-            vet = vet[0];
-            if (vet.length)
-                atStatic = vet[0]; 
         }
 
         return (
             <div className="content-row float-right">
                 <div className="second-col">
-                    {selectedAttributes.length === 0 && openStaticMap === false
+                    {selectedAttributes.length === 0 && atStatic.length === 0
                         ? (
                             <NoActiveAttr />
                         )
                         : null
                     }
-                    {openStaticMap ? (
-                        <Attribute 
-                            key={atStatic.id}
-                            attr={atStatic}
-                            device={device}
-                            isStatic={true}
-                        />
-                    ) : null}
+                    {
+                        atStatic.map(atsta => (
+                            <Attribute 
+                                key={atsta.id}
+                                attr={atsta}
+                                device={device}
+                                isStatic={true}
+                            />
+                        ))
+                    }
                     {selectedAttributes.map(at => (
                         <Attribute key={at.id} device={device} attr={at} />
                     ))}
@@ -658,6 +667,7 @@ const AttrHistory = ({device, type, attr, metadata, isStatic = false}) => {
 
     if (isStatic)
     {
+        //to avoid pass flux containers to a static attribute
        return <div className="graphLarge">
             <Attr
                 device={device}
@@ -699,17 +709,19 @@ AttrHistory.propTypes = {
 class DeviceDetail extends Component {
     constructor(props) {
         super(props);
-        this.state = {openStaticMap: false};
+        this.state = {openStaticMap: false,
+        listStaticMapOpenned:[]};
 
         this.openStaticMap = this.openStaticMap.bind(this);
     }
 
-    openStaticMap(state) {
-        this.setState({openStaticMap: state});
+    openStaticMap(updatedList) {
+        let openStaticMap = (updatedList.length > 0);
+        this.setState({openStaticMap, listStaticMapOpenned: updatedList});
     }
 
     render() {
-        const {openStaticMap} = this.state;
+        const {listStaticMapOpenned} = this.state;
         const {device, t} = this.props;
         let attr_list = [];
         let dal = [];
@@ -752,7 +764,7 @@ class DeviceDetail extends Component {
                     device={device}
                     actuators={actuators}
                     dynamicAttrs={dal}
-                    openStaticMap={openStaticMap}
+                    openStaticMap={listStaticMapOpenned}
                     t={t}
                 />
             </div>

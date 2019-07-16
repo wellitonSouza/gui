@@ -29,6 +29,7 @@ class Sidebar extends Component {
             selectedTemplates: [],
             device: {},
             selectAttr: [],
+            selectAttrOriginal: [],
             errors: {},
             isShowSidebarDelete: false,
             deviceAttrsTitle: '',
@@ -41,6 +42,7 @@ class Sidebar extends Component {
         this.handleChangeName = this.handleChangeName.bind(this);
         this.handleChangeMetadata = this.handleChangeMetadata.bind(this);
         this.handleChangeAttr = this.handleChangeAttr.bind(this);
+        this.handleShowDeviceAttrsDiscard = this.handleShowDeviceAttrsDiscard.bind(this);
         this.toogleSidebarDelete = this.toogleSidebarDelete.bind(this);
         this.validAttrs = this.validAttrs.bind(this);
         this.save = this.save.bind(this);
@@ -141,11 +143,25 @@ class Sidebar extends Component {
         }));
     }
 
+    handleShowDeviceAttrsDiscard() {
+        this.setState(prevState => ({
+            showDeviceAttrs: !prevState.showDeviceAttrs,
+            selectAttr: JSON.parse(JSON.stringify(prevState.selectAttrOriginal)),
+            device: JSON.parse(JSON.stringify(prevState.deviceOriginal)),
+            selectAttrOriginal: [],
+            deviceOriginal: {},
+            errors: [],
+        }));
+    }
+
     handleShowDeviceAttrs(attr, title) {
         this.setState(prevState => ({
             showDeviceAttrs: !prevState.showDeviceAttrs,
             selectAttr: attr,
             deviceAttrsTitle: title,
+            // save original data from attr for case user discard
+            selectAttrOriginal: JSON.parse(JSON.stringify(attr)),
+            deviceOriginal: JSON.parse((JSON.stringify(prevState.device))),
             errors: [],
         }));
     }
@@ -223,6 +239,7 @@ class Sidebar extends Component {
 
     handleChangeMetadata(event, idAttr) {
         const { device, selectAttr } = this.state;
+        const deviceCopy = JSON.parse(JSON.stringify(device));
 
         function updateMeta(arrayAttrs, arrayMeta, idAttr_) {
             return arrayAttrs.map(attr => (attr.id === idAttr_
@@ -234,7 +251,7 @@ class Sidebar extends Component {
             ));
         }
 
-        device.metadata[idAttr] = device.metadata[idAttr].map(
+        deviceCopy.metadata[idAttr] = deviceCopy.metadata[idAttr].map(
             meta => (meta.label === event.target.name
                 ? {
                     ...meta,
@@ -244,21 +261,8 @@ class Sidebar extends Component {
             ),
         );
 
-
-        const updateDevice = {
-            ...device,
-            attrs: updateMeta(device.attrs, device.metadata, idAttr),
-            dynamicValues: updateMeta(device.dynamicValues, device.metadata, idAttr),
-            staticValues: updateMeta(device.staticValues, device.metadata, idAttr),
-            configValues: updateMeta(device.configValues, device.metadata, idAttr),
-            actuatorValues: updateMeta(device.actuatorValues, device.metadata, idAttr),
-        };
-
-        const updateAttr = updateMeta(selectAttr, device.metadata, idAttr);
-
         this.setState({
-            device: updateDevice,
-            selectAttr: updateAttr,
+            selectAttr: updateMeta(selectAttr, deviceCopy.metadata, idAttr),
             errors: [],
         });
     }
@@ -374,7 +378,6 @@ class Sidebar extends Component {
         const deviceModifier = ability.can('modifier', 'device');
 
         if (!Object.prototype.hasOwnProperty.call(device, 'attrs')) return <div />;
-        const { metadata } = device;
         return (
             <Fragment>
                 <AltContainer store={TemplateStore}>
@@ -403,11 +406,11 @@ class Sidebar extends Component {
                 <SidebarDeviceAttrs
                     showDeviceAttrs={showDeviceAttrs}
                     selectAttr={selectAttr}
-                    metadata={metadata}
                     deviceAttrsTitle={deviceAttrsTitle}
                     validAttrs={this.validAttrs}
                     handleChangeMetadata={this.handleChangeMetadata}
                     handleChangeAttr={this.handleChangeAttr}
+                    handleShowDeviceAttrsDiscard={this.handleShowDeviceAttrsDiscard}
                     handleShowDeviceAttrs={this.handleShowDeviceAttrs}
                     errors={errors}
                 />
@@ -419,7 +422,7 @@ class Sidebar extends Component {
                             ms: MeasureStore,
                         }}
                         >
-                            { deviceModifier
+                            {deviceModifier
                                 ? (
                                     <SidebarImage
                                         deviceId={device.id}
@@ -428,7 +431,7 @@ class Sidebar extends Component {
                                         showSidebarImage={showSidebarImage}
                                         toogleSidebarImages={this.toogleSidebarImages}
                                     />
-                                ) : null }
+                                ) : null}
                         </AltContainer>
                     )
                     : null}

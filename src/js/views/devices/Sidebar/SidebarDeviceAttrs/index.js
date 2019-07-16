@@ -8,9 +8,8 @@ import AttrCard from './AttrCard';
 const SidebarDeviceAttrs = ({
     showDeviceAttrs,
     validAttrs,
-    handleShowDeviceAttrs,
+    handleShowDeviceAttrsDiscard,
     selectAttr,
-    metadata,
     handleChangeMetadata,
     handleChangeAttr,
     deviceAttrsTitle,
@@ -43,7 +42,6 @@ const SidebarDeviceAttrs = ({
                                         <AttrCard
                                             attr={attr}
                                             key={attr.id}
-                                            metadata={metadata[attr.id]}
                                             handleChangeAttr={handleChangeAttr}
                                             handleChangeMetadata={handleChangeMetadata}
                                             errors={errors[attr.id]}
@@ -54,7 +52,7 @@ const SidebarDeviceAttrs = ({
                         </div>
                         <div className="footer">
                             <DojotBtnClassic
-                                onClick={() => handleShowDeviceAttrs()}
+                                onClick={() => handleShowDeviceAttrsDiscard()}
                                 label={t('discard.label')}
                                 type="secondary"
                             />
@@ -81,6 +79,7 @@ SidebarDeviceAttrs.propTypes = {
     showDeviceAttrs: PropTypes.bool,
     validAttrs: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
+    handleShowDeviceAttrsDiscard: PropTypes.func.isRequired,
 };
 
 export default withNamespaces()(SidebarDeviceAttrs);

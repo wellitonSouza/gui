@@ -145,9 +145,9 @@ class DevFilterFields extends Component {
 
     convertTemplateList() {
         this.templates = [];
-        for (const k in TemplateStore.state.templates) {
-            if (TemplateStore.state.templates.hasOwnProperty(k)) {
-                this.templates.push(TemplateStore.state.templates[k]);
+        for (const k in TemplateStore.state.templatesAllList) {
+            if (TemplateStore.state.templatesAllList.hasOwnProperty(k)) {
+                this.templates.push(TemplateStore.state.templatesAllList[k]);
             }
         }
     }
@@ -166,10 +166,7 @@ class DevFilterFields extends Component {
     }
 
     componentDidMount() {
-        TemplateActions.fetchTemplates.defer({
-            page_size: 999999,
-            sortBy: 'label',
-        });
+        TemplateActions.fetchAllTemplates.defer();
     }
 
     render() {

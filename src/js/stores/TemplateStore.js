@@ -19,8 +19,10 @@ class TemplateStore {
         this.loading = false;
         this.showSidebar = false;
         this.isNewTemplate = false;
+        this.templatesAllList = [];
 
         this.bindListeners({
+            handleUpdateTemplateAllList: TemplateActions.updateTemplatesAllList,
             handleUpdateTemplateList: TemplateActions.UPDATE_TEMPLATES,
             handleAddTemplate: TemplateActions.ADD_TEMPLATE,
             handleInsertTemplate: TemplateActions.INSERT_TEMPLATE,
@@ -86,6 +88,12 @@ class TemplateStore {
     handleUpdateTemplateList(data) {
         this.templates = data.templates;
         this.pagination = data.pagination;
+        this.error = null;
+        this.loading = false;
+    }
+
+    handleUpdateTemplateAllList(data) {
+        this.templatesAllList = data.templates;
         this.error = null;
         this.loading = false;
     }

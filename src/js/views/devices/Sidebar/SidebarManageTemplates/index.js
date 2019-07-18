@@ -21,9 +21,9 @@ class SidebarManageTemplates extends Component {
     }
 
     componentDidMount() {
-        const { templates } = this.props;
+        const { templatesAllList } = this.props;
         this.setState({
-            templateList: templates,
+            templateList: templatesAllList,
         });
     }
 
@@ -123,13 +123,13 @@ class SidebarManageTemplates extends Component {
 
 SidebarManageTemplates.defaultProps = {
     showManageTemplates: false,
-    templates: [],
+    templatesAllList: [],
 };
 
 SidebarManageTemplates.propTypes = {
     showManageTemplates: PropTypes.bool,
     handleShowManageTemplate: PropTypes.func.isRequired,
-    templates: PropTypes.arrayOf(PropTypes.shape(templateType)),
+    templatesAllList: PropTypes.arrayOf(PropTypes.shape(templateType)),
     handleSelectTemplate: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
     selectedTemplates: PropTypes.instanceOf(Object).isRequired,

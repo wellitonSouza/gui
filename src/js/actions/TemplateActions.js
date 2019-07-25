@@ -21,6 +21,10 @@ class TemplateActions {
         return template;
     }
 
+    updateTemplatesAllList(list) {
+        return list;
+    }
+
     addTemplate(template, cb) {
         return (dispatch) => {
             dispatch();
@@ -62,6 +66,27 @@ class TemplateActions {
                 .getTemplates(params)
                 .then((result) => {
                     this.updateTemplates(result);
+                    if (cb) {
+                        cb(result);
+                    }
+                })
+                .catch((error) => {
+                    this.templatesFailed(error);
+                });
+
+            dispatch();
+        };
+    }
+
+    fetchAllTemplates(cb) {
+        return (dispatch) => {
+            templateManager
+                .getTemplates({
+                    page_size: 999999,
+                    sortBy: 'label',
+                })
+                .then((result) => {
+                    this.updateTemplatesAllList(result);
                     if (cb) {
                         cb(result);
                     }

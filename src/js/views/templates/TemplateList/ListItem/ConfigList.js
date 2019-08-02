@@ -95,7 +95,7 @@ class ConfigList extends Component {
                             disabled={!this.props.editable}
                             onChange={this.handleChange}
                             title={staticValue}
-                            maxLength="25"
+                            maxLength={128}
                         />
                         <select
                             id="select_attribute_type"

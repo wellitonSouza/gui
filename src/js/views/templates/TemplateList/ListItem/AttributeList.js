@@ -108,7 +108,7 @@ class AttributeList extends Component {
                             disabled={!this.props.editable}
                             name="static_value"
                             onChange={this.handleChange}
-                            maxLength="25"
+                            maxLength={128}
                             title={staticValue}
                         />
                         <select

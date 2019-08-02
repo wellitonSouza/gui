@@ -41,7 +41,7 @@ const SidebarConfigurationForm = ({
             <MaterialInput
                 name="static_value"
                 className="attribute-value"
-                maxLength={40}
+                maxLength={128}
                 value={selectAttr.static_value}
                 onChange={e => changeAttrValue(e, selectAttr)}
                 disabled={!ability.can('modifier', 'template')}

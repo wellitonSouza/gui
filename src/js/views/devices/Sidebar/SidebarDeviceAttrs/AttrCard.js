@@ -76,7 +76,7 @@ class AttrCard extends PureComponent {
                                         className="attr-card-input"
                                         name="name"
                                         title={`${attr.label}`}
-                                        maxLength={40}
+                                        maxLength={128}
                                         value={attr.static_value}
                                         onChange={e => handleChangeAttr(e, attr.id)}
                                         valid={valid}
@@ -120,7 +120,7 @@ class AttrCard extends PureComponent {
                                             <MaterialInput
                                                 className="attr-card-input"
                                                 name={meta.label}
-                                                maxLength={40}
+                                                maxLength={128}
                                                 value={meta.static_value}
                                                 onChange={e => handleChangeMetadata(e, attr.id)}
                                             >

@@ -788,7 +788,7 @@ class CertificateComponent extends Component {
     render() {
         console.log('key: render');
         const cert = new Certificates();
-        cert.createCSR();
+        cert.createKeys();
 
         return (
             <div>

@@ -8,8 +8,8 @@ import Extensions from 'pkijs/src/Extensions';
 import GeneralName from 'pkijs/src/GeneralName';
 import GeneralNames from 'pkijs/src/GeneralNames';
 import BasicConstraints from 'pkijs/src/BasicConstraints';
-import { getAlgorithmParameters, getCrypto } from 'pkijs/src/common';
-import { arrayBufferToString, toBase64 } from 'pvutils';
+import {getAlgorithmParameters, getCrypto} from 'pkijs/src/common';
+import {arrayBufferToString, toBase64} from 'pvutils';
 import certManager from './CertificatesManager';
 
 const HASH_ALGORITHM = 'SHA-256';
@@ -47,63 +47,50 @@ class Certificates {
     }
 
     /* Create PKCS#10 */
-    _createCSR(commonName) {
-        return new Promise((resolve, reject) => {
-            const crypto = getCrypto();
-            if (!crypto) {
-                reject(new Error('No crypto'));
-            }
+    async _createCSR(commonName) {
+        // return new Promise((resolve, reject) => {
+        const crypto = getCrypto();
+        // if (!crypto) {
+        //     new Error('No crypto');
+        // }
 
-            const pkcs10 = new CertificationRequest();
-            pkcs10.attributes = [];
-            pkcs10.version = 0;
+        const pkcs10 = new CertificationRequest();
+        pkcs10.attributes = [];
+        pkcs10.version = 0;
 
-            Certificates._optionsTypesAndValues(pkcs10);
+        Certificates._optionsTypesAndValues(pkcs10);
 
-            if (commonName) {
-                pkcs10.subject.typesAndValues.push(new AttributeTypeAndValue({
-                    type: '2.5.4.3',
-                    value: new asn1js.Utf8String({
-                        value: commonName,
-                    }),
-                }));
-            }
-
-
-            /* Create a new key pair */
-            const algorithm = getAlgorithmParameters(SIGN_ALGORITHM, 'generatekey');
-            if ('hash' in algorithm.algorithm) {
-                algorithm.algorithm.hash.name = HASH_ALGORITHM;
-            }
+        if (commonName) {
+            pkcs10.subject.typesAndValues.push(new AttributeTypeAndValue({
+                type: '2.5.4.3',
+                value: new asn1js.Utf8String({
+                    value: commonName,
+                }),
+            }));
+        }
 
 
-            this._setExtensions(pkcs10);
+        /* Create a new key pair */
+        const algorithm = getAlgorithmParameters(SIGN_ALGORITHM, 'generatekey');
+        if ('hash' in algorithm.algorithm) {
+            algorithm.algorithm.hash.name = HASH_ALGORITHM;
+        }
 
-            return crypto.generateKey(algorithm.algorithm, true, algorithm.usages)
-                .then((keyPair) => {
-                    const { publicKey, privateKey } = keyPair;
-                    this.publicKey = publicKey;
-                    this.privateKey = privateKey;
+        this._setExtensions(pkcs10);
 
-                    return privateKey;
-                }).then(privateKey => crypto.exportKey('pkcs8', privateKey)).then((exportPrivateKey) => {
-                    this.privateKeyString = String.fromCharCode.apply(
-                        null,
-                        new Uint8Array(exportPrivateKey),
-                    );
+        const keyPair = await crypto.generateKey(algorithm.algorithm, true, algorithm.usages);
+        const {publicKey, privateKey} = keyPair;
+        this.publicKey = publicKey;
+        this.privateKey = privateKey;
+        const exportPrivateKey = await crypto.exportKey('pkcs8', privateKey);
+        this.privateKeyString = String.fromCharCode.apply(
+            null,
+            new Uint8Array(exportPrivateKey),
+        );
+        await pkcs10.subjectPublicKeyInfo.importKey(this.publicKey);
+        await pkcs10.sign(this.privateKey, HASH_ALGORITHM);
+        this.csrRaw = pkcs10.toSchema().toBER(false);
 
-                    return pkcs10.subjectPublicKeyInfo.importKey(this.publicKey);
-                })
-                /* Sign the final PKCS#10 request */
-                .then(() => pkcs10.sign(this.privateKey, HASH_ALGORITHM))
-                .then(() => {
-                    this.csrRaw = pkcs10.toSchema().toBER(false);
-                    resolve();
-                })
-                .catch((error) => {
-                    reject(error);
-                });
-        });
     }
 
     _setExtensions(pkcs10) {
@@ -126,7 +113,7 @@ class Certificates {
                 extnID: '2.5.29.15', // KeyUsage
                 critical: false,
                 extnValue:
-                    (new asn1js.BitString({ valueHex: bitArray })).toBER(false),
+                    (new asn1js.BitString({valueHex: bitArray})).toBER(false),
             }),
             new Extension({
                 extnID: '2.5.29.19', // BasicConstraints
@@ -174,11 +161,11 @@ class Certificates {
 
         const ipsAlt = SUBJ_ALT_IP_CSR.map(ip => new GeneralName({
             type: 7, // iPAddress
-            value: new asn1js.OctetString({ valueHex: (new Uint8Array(ip.split('.'))).buffer }),
+            value: new asn1js.OctetString({valueHex: (new Uint8Array(ip.split('.'))).buffer}),
         }));
 
 
-        return new GeneralNames({ names: [...emailAlt, ...dnsAlt, ...ipsAlt] });
+        return new GeneralNames({names: [...emailAlt, ...dnsAlt, ...ipsAlt]});
     }
 
     static _optionsTypesAndValues(pkcs10) {

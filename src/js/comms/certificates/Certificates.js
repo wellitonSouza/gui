@@ -12,53 +12,52 @@ import {getAlgorithmParameters, getCrypto} from 'pkijs/src/common';
 import {arrayBufferToString, toBase64} from 'pvutils';
 import certManager from './CertificatesManager';
 
-const HASH_ALGORITHM = 'SHA-256';
-const SIGN_ALGORITHM = 'RSASSA-PKCS1-V1_5';
-const DIGEST_ALGORITHM = 'SHA-1';
-
-const ORGANIZATION_UNIT = '';
-const COUNTRY = '';
-const STATE = '';
-const CITY = '';
-const ORGANIZATION = '';
-
-const CA_NAME = 'IOTmidCA';
-
-// ex ['localhost', 'localhost2']
-const SUBJ_ALT_DNS_CSR = [];
-// ex ['192.168.1.1', '192.168.1.2', '192.168.1.3']
-const SUBJ_ALT_IP_CSR = [];
-// ex ['email@address.com', 'email2@address.com']
-const SUBJ_ALT_EMAIL_CSR = [];
 
 class Certificates {
     constructor() {
-        this.csrRaw = null;
+        this.hashAlgorithm = 'SHA-256';
+        this.signAlgorithm = 'RSASSA-PKCS1-V1_5';
 
-        this.privateKey = null;
-        this.publicKey = null;
+        this.caName = 'IOTmidCA';
 
-        this.privateKeyString = null;
+        this.subjAltCSR = {
+            // ex ['localhost', 'localhost2']
+            dns: [],
+            // ex ['192.168.1.1', '192.168.1.2', '192.168.1.3']
+            ip: [],
+            // ex ['email@address.com', 'email2@address.com']
+            email: [],
+        };
 
-        this.csrPEM = null;
-        this.privateKeyPEM = null;
-        this.crtPEM = null;
-        this.caCrtPEM = null;
+        this.typesAndValues = {
+            organizationUnit: '',
+            country: '',
+            state: '',
+            locality: '',
+            organization: '',
+        };
+
+        this._privateKeyPkcs8 = null;
+        this._publicKeyPkcs8 = null;
+
+        this._csrPEM = null;
+        this._privateKeyPEM = null;
+        this._crtPEM = null;
+        this._caCrtPEM = null;
     }
 
     /* Create PKCS#10 */
     async _createCSR(commonName) {
-        // return new Promise((resolve, reject) => {
         const crypto = getCrypto();
-        // if (!crypto) {
-        //     new Error('No crypto');
-        // }
+        if (!crypto) {
+            console.log('No crypto');
+        }
 
         const pkcs10 = new CertificationRequest();
         pkcs10.attributes = [];
         pkcs10.version = 0;
 
-        Certificates._optionsTypesAndValues(pkcs10);
+        this._optionsTypesAndValues(pkcs10);
 
         if (commonName) {
             pkcs10.subject.typesAndValues.push(new AttributeTypeAndValue({
@@ -71,26 +70,34 @@ class Certificates {
 
 
         /* Create a new key pair */
-        const algorithm = getAlgorithmParameters(SIGN_ALGORITHM, 'generatekey');
+        const algorithm = getAlgorithmParameters(this.signAlgorithm, 'generatekey');
         if ('hash' in algorithm.algorithm) {
-            algorithm.algorithm.hash.name = HASH_ALGORITHM;
+            algorithm.algorithm.hash.name = this.hashAlgorithm;
         }
 
         this._setExtensions(pkcs10);
 
+
         const keyPair = await crypto.generateKey(algorithm.algorithm, true, algorithm.usages);
         const {publicKey, privateKey} = keyPair;
-        this.publicKey = publicKey;
-        this.privateKey = privateKey;
+        this._publicKeyPkcs8 = publicKey;
+        this._privateKeyPkcs8 = privateKey;
+
+        const privateKeyString = await Certificates._extractPrivateKeyString(crypto, privateKey);
+        this._setPrivateKeyPEM(privateKeyString);
+
+        await pkcs10.subjectPublicKeyInfo.importKey(this._publicKeyPkcs8);
+        await pkcs10.sign(this._privateKeyPkcs8, this.hashAlgorithm);
+        const _csrRaw = pkcs10.toSchema().toBER(false);
+        this._setCsrPEM(_csrRaw);
+    }
+
+    static async _extractPrivateKeyString(crypto, privateKey) {
         const exportPrivateKey = await crypto.exportKey('pkcs8', privateKey);
-        this.privateKeyString = String.fromCharCode.apply(
+        return String.fromCharCode.apply(
             null,
             new Uint8Array(exportPrivateKey),
         );
-        await pkcs10.subjectPublicKeyInfo.importKey(this.publicKey);
-        await pkcs10.sign(this.privateKey, HASH_ALGORITHM);
-        this.csrRaw = pkcs10.toSchema().toBER(false);
-
     }
 
     _setExtensions(pkcs10) {
@@ -143,23 +150,23 @@ class Certificates {
     }
 
     _subjectAltName() {
-        if (!((SUBJ_ALT_EMAIL_CSR && SUBJ_ALT_EMAIL_CSR.length > 0)
-            || (SUBJ_ALT_DNS_CSR && SUBJ_ALT_DNS_CSR.length > 0)
-            || (SUBJ_ALT_IP_CSR && SUBJ_ALT_IP_CSR.length > 0))) {
+        if (!((this.subjAltCSR.email && this.subjAltCSR.email.length > 0)
+            || (this.subjAltCSR.dns && this.subjAltCSR.dns.length > 0)
+            || (this.subjAltCSR.ip && this.subjAltCSR.ip.length > 0))) {
             return null;
         }
 
-        const emailAlt = SUBJ_ALT_EMAIL_CSR.map(email => new GeneralName({
+        const emailAlt = this.subjAltCSR.email.map(email => new GeneralName({
             type: 1, // rfc822Name
             value: email,
         }));
 
-        const dnsAlt = SUBJ_ALT_DNS_CSR.map(dns => new GeneralName({
+        const dnsAlt = this.subjAltCSR.dns.map(dns => new GeneralName({
             type: 2, // dNSName
             value: dns,
         }));
 
-        const ipsAlt = SUBJ_ALT_IP_CSR.map(ip => new GeneralName({
+        const ipsAlt = this.subjAltCSR.ip.map(ip => new GeneralName({
             type: 7, // iPAddress
             value: new asn1js.OctetString({valueHex: (new Uint8Array(ip.split('.'))).buffer}),
         }));
@@ -168,103 +175,98 @@ class Certificates {
         return new GeneralNames({names: [...emailAlt, ...dnsAlt, ...ipsAlt]});
     }
 
-    static _optionsTypesAndValues(pkcs10) {
-        if (COUNTRY) {
+    _optionsTypesAndValues(pkcs10) {
+        if (this.typesAndValues.country) {
             pkcs10.subject.typesAndValues.push(new AttributeTypeAndValue({
                 type: '2.5.4.6',
                 value: new asn1js.PrintableString({
-                    value: COUNTRY,
+                    value: this.typesAndValues.country,
                 }),
             }));
         }
 
-        if (STATE) {
+        if (this.typesAndValues.state) {
             pkcs10.subject.typesAndValues.push(new AttributeTypeAndValue({
                 type: '2.5.4.8',
                 value: new asn1js.Utf8String({
-                    value: STATE,
+                    value: this.typesAndValues.state,
                 }),
             }));
         }
 
-        if (STATE) {
-            pkcs10.subject.typesAndValues.push(new AttributeTypeAndValue({
-                type: '2.5.29.14',
-                value: new asn1js.Utf8String({
-                    value: STATE,
-                }),
-            }));
-        }
-
-        if (CITY) {
+        if (this.typesAndValues.locality) {
             pkcs10.subject.typesAndValues.push(new AttributeTypeAndValue({
                 type: '2.5.4.7',
                 value: new asn1js.Utf8String({
-                    value: CITY,
+                    value: this.typesAndValues.locality,
                 }),
             }));
         }
 
-        if (ORGANIZATION) {
+        if (this.typesAndValues.organization) {
             pkcs10.subject.typesAndValues.push(new AttributeTypeAndValue({
                 type: '2.5.4.11',
                 value: new asn1js.Utf8String({
-                    value: ORGANIZATION,
+                    value: this.typesAndValues.organization,
                 }),
             }));
         }
 
-        if (ORGANIZATION_UNIT) {
+        if (this.typesAndValues.typesAndValues.organizationUnit) {
             pkcs10.subject.typesAndValues.push(new AttributeTypeAndValue({
                 type: '2.5.4.10',
                 value: new asn1js.Utf8String({
-                    value: ORGANIZATION_UNIT,
+                    value: this.typesAndValues.typesAndValues.organizationUnit,
                 }),
             }));
         }
+    }
+
+    async retrieveCA() {
+        const responseCAChain = await certManager.getCAChain(this.caName);
+        const crtCARaw = responseCAChain.certificate ? responseCAChain.certificate : null;
+        this._setCACrtPEM(crtCARaw);
+        console.log(this._caCrtPEM);
+        return this._caCrtPEM;
     }
 
     async createKeys() {
         const commonName = 'admin:431d2a';
-        await this._createCSR(commonName).then(async () => {
-            this._setCsrPEM();
-            this._setPrivateKeyPEM();
+        await this._createCSR(commonName);
 
-            const responseSignCert = await certManager.signCert(commonName, this.csrPEM);
-            const crtRaw = responseSignCert.status.data ? responseSignCert.status.data : null;
-            this._setCrtPEM(crtRaw);
+        const responseSignCert = await certManager.signCert(commonName, this._csrPEM);
+        const crtRaw = responseSignCert.status.data ? responseSignCert.status.data : null;
+        this._setCrtPEM(crtRaw);
 
-            const responseCAChain = await certManager.getCAChain(CA_NAME);
-            const crtCARaw = responseCAChain.certificate ? responseCAChain.certificate : null;
-            this._setCACrtPEM(crtCARaw);
+        console.log(this._privateKeyPEM);
+        console.log(this._csrPEM);
+        console.log(this._crtPEM);
 
-            console.log(this.privateKeyPEM);
-            console.log(this.csrPEM);
-            console.log(this.crtPEM);
-            console.log(this.caCrtPEM);
-        }).catch((error) => {
-            console.log(error);
-        });
+        return {
+            privateKey: this._privateKeyPEM,
+            csrPEM: this._csrPEM,
+            crtPEM: this._crtPEM,
+        };
     }
 
-    _setPrivateKeyPEM() {
-        this.privateKeyPEM = '\r\n-----BEGIN PRIVATE KEY-----\r\n';
-        this.privateKeyPEM += Certificates._formatPEM(toBase64((this.privateKeyString)));
-        this.privateKeyPEM = `${this.privateKeyPEM}\r\n-----END PRIVATE KEY-----`;
+    _setPrivateKeyPEM(privateKeyString) {
+        this._privateKeyPEM = '\r\n-----BEGIN PRIVATE KEY-----\r\n';
+        this._privateKeyPEM += Certificates._formatPEM(toBase64((privateKeyString)));
+        this._privateKeyPEM = `${this._privateKeyPEM}\r\n-----END PRIVATE KEY-----`;
     }
 
-    _setCsrPEM() {
-        this.csrPEM = '-----BEGIN CERTIFICATE REQUEST-----\r\n';
-        this.csrPEM = `${this.csrPEM}${Certificates._formatPEM(toBase64(arrayBufferToString(this.csrRaw)))}`;
-        this.csrPEM = `${this.csrPEM}\r\n-----END CERTIFICATE REQUEST-----\r\n`;
+    _setCsrPEM(csrRaw) {
+        this._csrPEM = '-----BEGIN CERTIFICATE REQUEST-----\r\n';
+        this._csrPEM = `${this._csrPEM}${Certificates._formatPEM(toBase64(arrayBufferToString(csrRaw)))}`;
+        this._csrPEM = `${this._csrPEM}\r\n-----END CERTIFICATE REQUEST-----\r\n`;
     }
 
     _setCrtPEM(crtRaw) {
-        this.crtPEM = Certificates._formatCRTPEM(crtRaw);
+        this._crtPEM = Certificates._formatCRTPEM(crtRaw);
     }
 
     _setCACrtPEM(crtRaw) {
-        this.caCrtPEM = Certificates._formatCRTPEM(crtRaw);
+        this._caCrtPEM = Certificates._formatCRTPEM(crtRaw);
     }
 
     static _formatCRTPEM(crtRaw) {

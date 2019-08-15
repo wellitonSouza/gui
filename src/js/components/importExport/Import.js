@@ -90,7 +90,7 @@ class Import extends Component {
             showModal,
             showLoading,
             file,
-            success
+            success,
         } = this.state;
 
         const { t, openModal, closeModal } = this.props;
@@ -145,7 +145,7 @@ class Import extends Component {
                     ) : null}
                     {showLoading ? (
                         <div className="row confirm-modal-import">
-                            <img className="load-icon" src="./src/img/gifs/loader.gif" alt=""/>
+                            <img className="load-icon" src="./src/img/gifs/loader.gif" alt="" />
                         </div>
                     ) : null}
                     {success ? (

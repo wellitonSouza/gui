@@ -13,18 +13,15 @@ class ImportExportActions {
         return true;
     }
 
-    import(data) {
+    async import(data) {
         const newData = data;
-        return (dispatch) => {
-            dispatch();
-            ImportManager.import(newData)
-                .then((response) => {
-                    this.importFile(response);
-                })
-                .catch((error) => {
-                    this.importFailed(error);
-                });
-        };
+        const response = await ImportManager.import(newData);
+        if (response.message) {
+            this.importFile();
+        } else {
+            this.importFailed();
+        }
+        return response;
     }
 
     export() {

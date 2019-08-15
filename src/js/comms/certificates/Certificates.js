@@ -257,7 +257,6 @@ class Certificates {
         const responseCAChain = await certManager.getCAChain(this.caName);
         const crtCARaw64 = responseCAChain.certificate ? responseCAChain.certificate : null;
         this._setCACrtPEM(crtCARaw64);
-        console.log(this._caCrtPEM);
         return this._caCrtPEM;
     }
 

@@ -19,9 +19,9 @@ class CertificatesManager {
     }
 
 
-    revoke(commonName) {
+    revoke(serialNumber) {
         // {{HOST}}:8000/ca/CN=IOTmidCA,O=EJBCA IOT,C=SE/certificate/39089DCC589E2A3E/status
-        return util.DELETE(`${this.baseUrl}/user/${commonName}`);
+        // TO DO
     }
 }
 

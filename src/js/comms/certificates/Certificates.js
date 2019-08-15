@@ -1,4 +1,3 @@
-/* eslint no-bitwise: "error" */
 import * as asn1js from 'asn1js';
 import CertificationRequest from 'pkijs/src/CertificationRequest';
 import Attribute from 'pkijs/src/Attribute';
@@ -8,8 +7,8 @@ import Extensions from 'pkijs/src/Extensions';
 import GeneralName from 'pkijs/src/GeneralName';
 import GeneralNames from 'pkijs/src/GeneralNames';
 import BasicConstraints from 'pkijs/src/BasicConstraints';
-import {getAlgorithmParameters, getCrypto} from 'pkijs/src/common';
-import {arrayBufferToString, toBase64} from 'pvutils';
+import { getAlgorithmParameters, getCrypto } from 'pkijs/src/common';
+import { arrayBufferToString, toBase64 } from 'pvutils';
 import certManager from './CertificatesManager';
 
 
@@ -37,6 +36,7 @@ class Certificates {
             organization: '',
         };
 
+
         this._privateKeyPkcs8 = null;
         this._publicKeyPkcs8 = null;
 
@@ -48,16 +48,11 @@ class Certificates {
 
     /* Create PKCS#10 */
     async _createCSR(commonName) {
-        const crypto = getCrypto();
-        if (!crypto) {
-            console.log('No crypto');
-        }
-
         const pkcs10 = new CertificationRequest();
         pkcs10.attributes = [];
         pkcs10.version = 0;
 
-        this._optionsTypesAndValues(pkcs10);
+        this._optionalTypesAndValuesCSR(pkcs10);
 
         if (commonName) {
             pkcs10.subject.typesAndValues.push(new AttributeTypeAndValue({
@@ -68,23 +63,7 @@ class Certificates {
             }));
         }
 
-
-        /* Create a new key pair */
-        const algorithm = getAlgorithmParameters(this.signAlgorithm, 'generatekey');
-        if ('hash' in algorithm.algorithm) {
-            algorithm.algorithm.hash.name = this.hashAlgorithm;
-        }
-
-        this._setExtensions(pkcs10);
-
-
-        const keyPair = await crypto.generateKey(algorithm.algorithm, true, algorithm.usages);
-        const {publicKey, privateKey} = keyPair;
-        this._publicKeyPkcs8 = publicKey;
-        this._privateKeyPkcs8 = privateKey;
-
-        const privateKeyString = await Certificates._extractPrivateKeyString(crypto, privateKey);
-        this._setPrivateKeyPEM(privateKeyString);
+        this._setExtensionsCSR(pkcs10);
 
         await pkcs10.subjectPublicKeyInfo.importKey(this._publicKeyPkcs8);
         await pkcs10.sign(this._privateKeyPkcs8, this.hashAlgorithm);
@@ -92,7 +71,28 @@ class Certificates {
         this._setCsrPEM(_csrRaw);
     }
 
-    static async _extractPrivateKeyString(crypto, privateKey) {
+    async _generateKeyPar() {
+        const crypto = getCrypto();
+        if (!crypto) {
+            console.log('No crypto');
+        }
+
+        const algorithm = getAlgorithmParameters(this.signAlgorithm, 'generatekey');
+        if ('hash' in algorithm.algorithm) {
+            algorithm.algorithm.hash.name = this.hashAlgorithm;
+        }
+
+        const keyPair = await crypto.generateKey(algorithm.algorithm, true, algorithm.usages);
+        const { publicKey, privateKey } = keyPair;
+        this._publicKeyPkcs8 = publicKey;
+        this._privateKeyPkcs8 = privateKey;
+
+        this._setPrivateKeyPEM(
+            await Certificates._extractPrivateKeyStringKeyPar(crypto, privateKey),
+        );
+    }
+
+    static async _extractPrivateKeyStringKeyPar(crypto, privateKey) {
         const exportPrivateKey = await crypto.exportKey('pkcs8', privateKey);
         return String.fromCharCode.apply(
             null,
@@ -100,7 +100,7 @@ class Certificates {
         );
     }
 
-    _setExtensions(pkcs10) {
+    _setExtensionsCSR(pkcs10) {
         const bitArray = new ArrayBuffer(1);
         const bitView = new Uint8Array(bitArray);
         // eslint-disable-next-line no-bitwise
@@ -120,7 +120,7 @@ class Certificates {
                 extnID: '2.5.29.15', // KeyUsage
                 critical: false,
                 extnValue:
-                    (new asn1js.BitString({valueHex: bitArray})).toBER(false),
+                    (new asn1js.BitString({ valueHex: bitArray })).toBER(false),
             }),
             new Extension({
                 extnID: '2.5.29.19', // BasicConstraints
@@ -131,7 +131,7 @@ class Certificates {
             }),
         ];
 
-        const altNames = this._subjectAltName();
+        const altNames = this._subjectAltNameCSR();
         if (altNames) {
             extensions.push(new Extension({
                 extnID: '2.5.29.17', // subjectAltName
@@ -149,7 +149,7 @@ class Certificates {
         }));
     }
 
-    _subjectAltName() {
+    _subjectAltNameCSR() {
         if (!((this.subjAltCSR.email && this.subjAltCSR.email.length > 0)
             || (this.subjAltCSR.dns && this.subjAltCSR.dns.length > 0)
             || (this.subjAltCSR.ip && this.subjAltCSR.ip.length > 0))) {
@@ -168,14 +168,14 @@ class Certificates {
 
         const ipsAlt = this.subjAltCSR.ip.map(ip => new GeneralName({
             type: 7, // iPAddress
-            value: new asn1js.OctetString({valueHex: (new Uint8Array(ip.split('.'))).buffer}),
+            value: new asn1js.OctetString({ valueHex: (new Uint8Array(ip.split('.'))).buffer }),
         }));
 
 
-        return new GeneralNames({names: [...emailAlt, ...dnsAlt, ...ipsAlt]});
+        return new GeneralNames({ names: [...emailAlt, ...dnsAlt, ...ipsAlt] });
     }
 
-    _optionsTypesAndValues(pkcs10) {
+    _optionalTypesAndValuesCSR(pkcs10) {
         if (this.typesAndValues.country) {
             pkcs10.subject.typesAndValues.push(new AttributeTypeAndValue({
                 type: '2.5.4.6',
@@ -212,17 +212,17 @@ class Certificates {
             }));
         }
 
-        if (this.typesAndValues.typesAndValues.organizationUnit) {
+        if (this.typesAndValues.organizationUnit) {
             pkcs10.subject.typesAndValues.push(new AttributeTypeAndValue({
                 type: '2.5.4.10',
                 value: new asn1js.Utf8String({
-                    value: this.typesAndValues.typesAndValues.organizationUnit,
+                    value: this.typesAndValues.organizationUnit,
                 }),
             }));
         }
     }
 
-    async retrieveCA() {
+    async retrieveCACertificate() {
         const responseCAChain = await certManager.getCAChain(this.caName);
         const crtCARaw = responseCAChain.certificate ? responseCAChain.certificate : null;
         this._setCACrtPEM(crtCARaw);
@@ -230,8 +230,11 @@ class Certificates {
         return this._caCrtPEM;
     }
 
-    async createKeys() {
-        const commonName = 'admin:431d2a';
+    async generateCertificates() {
+        const commonName = 'admin:a034eb';
+
+        await this._generateKeyPar();
+
         await this._createCSR(commonName);
 
         const responseSignCert = await certManager.signCert(commonName, this._csrPEM);
@@ -244,7 +247,6 @@ class Certificates {
 
         return {
             privateKey: this._privateKeyPEM,
-            csrPEM: this._csrPEM,
             crtPEM: this._crtPEM,
         };
     }
@@ -276,12 +278,6 @@ class Certificates {
         return crtPEM;
     }
 
-    /**
-     *
-     * @param pemString
-     * @returns {string}
-     * @private
-     */
     static _formatPEM(pemString) {
         let resultString = '';
         if (pemString) {

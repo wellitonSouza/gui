@@ -86,7 +86,13 @@ class Import extends Component {
     }
 
     render() {
-        const { showModal, showLoading, file, success } = this.state;
+        const {
+            showModal,
+            showLoading,
+            file,
+            success
+        } = this.state;
+
         const { t, openModal, closeModal } = this.props;
         const label = t('importExport:import.btnModal');
         const title = t('importExport:import.titleModal');
@@ -126,20 +132,20 @@ class Import extends Component {
                         ))}
                     </FilePond>
                     {showModal ? (
-                            <ModalAlert
-                                title={title}
-                                openModal={this.openModal}
-                                firstMessage={firstMessage}
-                                label={label}
-                                click={this.uploadFile}
-                                img="warning"
-                                cancel
-                                back={closeModal}
-                            />
+                        <ModalAlert
+                            title={title}
+                            openModal={this.openModal}
+                            firstMessage={firstMessage}
+                            label={label}
+                            click={this.uploadFile}
+                            img="warning"
+                            cancel
+                            back={closeModal}
+                        />
                     ) : null}
-                    {showLoading ? (            
+                    {showLoading ? (
                         <div className="row confirm-modal-import">
-                            <img className="load-icon" src="./src/img/gifs/loader.gif" />
+                            <img className="load-icon" src="./src/img/gifs/loader.gif" alt=""/>
                         </div>
                     ) : null}
                     {success ? (

@@ -18,6 +18,7 @@ class Import extends Component {
         super(props);
         this.state = {
             showModal: false,
+            showLoading: false,
             file: [],
         };
         this.pond = createRef();
@@ -43,6 +44,10 @@ class Import extends Component {
         this.setState({ showModal: status });
     }
 
+    showLoading(status) {
+        this.setState({ showLoading: status });
+    }
+
     success(status) {
         this.setState({ success: status });
     }
@@ -58,15 +63,18 @@ class Import extends Component {
         if (file.length > 0) {
             const reader = new global.FileReader();
             reader.readAsText(text, 'UTF-8');
-            reader.onload = (evt) => {
+            reader.onload = async (evt) => {
                 let json = '';
                 try {
+                    this.showLoading(true);
                     json = JSON.parse(evt.target.result);
-                    ImportExportAction.import(json);
+                    await ImportExportAction.import(json);
                     this.success(true);
                 } catch (err) {
                     toaster.error(t('importExport:import.error.read'));
+                    this.openModal(false);
                 }
+            this.showLoading(false);
             };
             reader.onerror = () => {
                 toaster.error(t('importExport:import.error.read'));
@@ -74,10 +82,11 @@ class Import extends Component {
         } else {
             toaster.error(t('importExport:import.error.file'));
         }
+        this.showLoading(false);
     }
 
     render() {
-        const { showModal, file, success } = this.state;
+        const { showModal, showLoading, file, success } = this.state;
         const { t, openModal, closeModal } = this.props;
         const label = t('importExport:import.btnModal');
         const title = t('importExport:import.titleModal');
@@ -117,16 +126,21 @@ class Import extends Component {
                         ))}
                     </FilePond>
                     {showModal ? (
-                        <ModalAlert
-                            title={title}
-                            openModal={this.openModal}
-                            firstMessage={firstMessage}
-                            label={label}
-                            click={this.uploadFile}
-                            img="warning"
-                            cancel
-                            back={closeModal}
-                        />
+                            <ModalAlert
+                                title={title}
+                                openModal={this.openModal}
+                                firstMessage={firstMessage}
+                                label={label}
+                                click={this.uploadFile}
+                                img="warning"
+                                cancel
+                                back={closeModal}
+                            />
+                    ) : null}
+                    {showLoading ? (            
+                        <div className="row confirm-modal-import">
+                            <img className="load-icon" src="./src/img/gifs/loader.gif" />
+                        </div>
                     ) : null}
                     {success ? (
                         <ModalAlert

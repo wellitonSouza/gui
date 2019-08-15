@@ -267,7 +267,6 @@ class Certificates {
      * @returns {Promise<{privateKey: null, crtPEM: null}>}
      */
     async generateCertificates(commonName) {
-
         await this._generateKeyPar();
 
         await this._createCSR(commonName);
@@ -292,7 +291,7 @@ class Certificates {
      * @private
      */
     _setPrivateKeyPEM(privateKeyString) {
-        this._privateKeyPEM = '\r\n-----BEGIN PRIVATE KEY-----\r\n';
+        this._privateKeyPEM = '-----BEGIN PRIVATE KEY-----\r\n';
         this._privateKeyPEM += Certificates._formatPEM(toBase64((privateKeyString)));
         this._privateKeyPEM += '\r\n-----END PRIVATE KEY-----';
     }

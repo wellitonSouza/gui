@@ -8,8 +8,6 @@ class CertificateStore {
         this.crt = null;
         this.caCrt = null;
 
-
-        this.loading = false;
         this.error = null;
 
         this.bindListeners({
@@ -18,32 +16,43 @@ class CertificateStore {
             handleUpdateCACRT: CertActions.setStoreCACRT,
             handleFailure: CertActions.failed,
 
+            handleCleanStorePrivateKey: CertActions.cleanStorePrivateKey,
+            handleCleanStoreCRL: CertActions.cleanStoreCRL,
+            handleCleanStoreCACRL: CertActions.cleanStoreCACRL,
+
         });
     }
 
+    handleCleanStorePrivateKey() {
+        this.privateKey = null;
+    }
+
+    handleCleanStoreCRL() {
+        this.crt = null;
+    }
+
+    handleCleanStoreCACRL() {
+        this.caCrt = null;
+    }
 
     handleUpdatePrivateKey(privateKey) {
         this.privateKey = privateKey;
         this.error = null;
-        this.loading = false;
     }
 
     handleUpdateCRT(crt) {
         this.crt = crt;
         this.error = null;
-        this.loading = false;
     }
 
 
     handleUpdateCACRT(caCrt) {
         this.caCrt = caCrt;
         this.error = null;
-        this.loading = false;
     }
 
     handleFailure(error) {
         this.error = error;
-        this.loading = false;
     }
 }
 

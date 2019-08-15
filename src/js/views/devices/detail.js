@@ -233,9 +233,17 @@ class GenericList extends Component {
                                             {device.id}
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                             <hr/>
+                            <AltContainer stores={{
+                                certStore: CertificateStore,
+                                loginStore: LoginStore,
+                            }}
+                            >
+                                <CertificateComponent deviceId={device.id} t={t}/>
+                            </AltContainer>
                         </Fragment>
                     ) : ('')}
                     {attrs.map(attr => (
@@ -705,13 +713,6 @@ class DeviceDetail extends Component {
         return (
             <div className="row detail-body">
                 <div className="first-col">
-                    <AltContainer stores={{
-                        certStore: CertificateStore,
-                        loginStore: LoginStore,
-                    }}
-                    >
-                        <CertificateComponent deviceId={device.id}/>
-                    </AltContainer>
                     <Configurations
                         device={device}
                         attrs={config_list}
@@ -791,30 +792,114 @@ let device_detail_socket = null;
 class CertificateComponent extends Component {
     constructor(props) {
         super(props);
+        this.handleClickNewCerts = this.handleClickNewCerts.bind(this);
+        this.handleClickCACert = this.handleClickCACert.bind(this);
     }
 
     componentDidMount() {
-        // GroupActions.fetchGroups.defer();
-        // GroupPermissionActions.fetchGroupPermissions(null);
-        // GroupPermissionActions.fetchSystemPermissions();
+        CertificateActions.cleanStorePrivateKey.defer();
+        CertificateActions.cleanStoreCRL.defer();
+        CertificateActions.cleanStoreCACRL.defer();
     }
 
     handleClickNewCerts() {
-        //CertificateActions.updateCertificates
-        CertificateActions.updateCertificates.defer('ebfc71', 'admin');
-        //CertificateActions.updateCACertificates
+        CertificateActions.updateCertificates.defer(this.props.deviceId, this.props.loginStore.user.service);
+    }
+
+    handleClickCACert() {
+        CertificateActions.updateCACertificates.defer();
     }
 
     render() {
-        console.log('key: render');
-        console.log(this.props.certStore);
-        console.log(this.props.loginStore);
-        console.log(this.props.deviceId);
-        //this.handleClickNewCerts();
+        const {
+            t,
+            deviceId,
+            certStore:
+                {
+                    privateKey,
+                    crt,
+                    caCrt
+                },
+            loginStore: {
+                user: {
+                    service
+                }
+            }
+        } = this.props;
+
+        const nameFile = service + ':' + deviceId;
+
         return (
-            <div>
-                Test
-            </div>
+            <Fragment>
+                <div className="line">
+                    <div className="display-flex-column flex-1">
+                        <div
+                            className={'name-value '}
+                            title={t('devices:device_id')}
+                        >
+                            Certificados do dispositivo
+
+                        </div>
+                        <div className="display-flex-no-wrap space-between">
+                            <div
+                                className='value-value '
+                                title={deviceId}
+                            >
+                                <div>
+                                    <button type="button" title="Gerar"
+                                            className=""
+                                            onClick={this.handleClickNewCerts}>Gerar
+                                    </button>
+                                </div>
+                                <div>
+                                    <a href={'data:application/pkcs8,' + encodeURIComponent(privateKey)}
+                                       download={nameFile + '.key'} className={privateKey ? '' : 'isDisabled'}>Download
+                                        Private
+                                        Key</a>
+                                </div>
+                                <div>
+                                    <a href={'data:application/pkcs8,' + encodeURIComponent(crt)}
+                                       download={nameFile + '.crt'} className={crt ? '' : 'isDisabled'}>Download CRT</a>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr/>
+                <div className="line">
+                    <div className="display-flex-column flex-1">
+                        <div
+                            className={'name-value '}
+                            title={t('devices:device_id')}
+                        >
+                            Certificado da CA
+
+                        </div>
+                        <div className="display-flex-no-wrap space-between">
+                            <div
+                                className='value-value '
+                                title={deviceId}
+                            >
+                                <div>
+                                    <button type="button" title="Gerar"
+                                            className=""
+                                            onClick={this.handleClickCACert}>Obter
+                                    </button>
+                                </div>
+                                <div>
+                                    <a href={'data:application/pkcs8,' + encodeURIComponent(caCrt)}
+                                       download='ca.crt' className={caCrt ? '' : 'isDisabled'}>Download CA Certificado
+                                    </a>
+                                    <sub> (único para todos os dispositivos)</sub>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr/>
+            </Fragment>
         );
     }
 }

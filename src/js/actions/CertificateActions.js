@@ -14,6 +14,18 @@ class CertificateActions {
         this.cert = new Certificates();
     }
 
+    cleanStorePrivateKey() {
+        return null;
+    }
+
+    cleanStoreCRL() {
+        return null;
+    }
+
+    cleanStoreCACRL() {
+        return null;
+    }
+
     /**
      * Works like a trigger for Store keep to updated
      * @param privateKeyPEM
@@ -83,7 +95,7 @@ class CertificateActions {
         return (dispatch) => {
             dispatch();
             this.cert.generateCertificates(`${tenant}:${deviceId}`).then((cert) => {
-                const { crtPEM, privateKey } = cert;
+                const {crtPEM, privateKey} = cert;
                 if (crtPEM && privateKey) {
                     this.setStoreCRT(crtPEM);
                     this.setStorePrivateKey(privateKey);

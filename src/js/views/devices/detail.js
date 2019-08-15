@@ -6,7 +6,7 @@ import {withNamespaces} from 'react-i18next';
 import * as i18next from 'i18next';
 import {Loading} from 'Components/Loading';
 import {Attr, HandleGeoElements} from 'Components/HistoryElements';
-import {DojotBtnRedCircle} from 'Components/DojotButton';
+import {DojotBtnLink, DojotBtnRedCircle, DojotCustomButton} from 'Components/DojotButton';
 import MeasureActions from 'Actions/MeasureActions';
 import DeviceActions from 'Actions/DeviceActions';
 import CertificateActions from 'Actions/CertificateActions';
@@ -18,6 +18,7 @@ import CertificateStore from 'Stores/CertificateStore';
 import Metadata from './Details/Metadata';
 import {NewPageHeader} from 'Containers/full/PageHeader';
 import util from 'Comms/util/util';
+import Can from "Components/permissions/Can";
 
 const DeviceHeader = ({device, t}) => (
     <div className="row devicesSubHeader p0 device-details-header">
@@ -243,7 +244,9 @@ class GenericList extends Component {
                             }}
                             >
                                 <CertificateComponent deviceId={device.id} t={t}/>
+
                             </AltContainer>
+
                         </Fragment>
                     ) : ('')}
                     {attrs.map(attr => (
@@ -831,73 +834,92 @@ class CertificateComponent extends Component {
 
         return (
             <Fragment>
-                <div className="line">
-                    <div className="display-flex-column flex-1">
-                        <div
-                            className={'name-value '}
-                            title={t('devices:device_id')}
-                        >
-                            Certificados do dispositivo
-
-                        </div>
-                        <div className="display-flex-no-wrap space-between">
+                <Can do="modifier" on="ca-sign">
+                    <div className="line">
+                        <div className="display-flex-column flex-1">
                             <div
-                                className='value-value '
-                                title={deviceId}
+                                className={'name-value '}
+                                title={t('certificates:title_cert')}
                             >
-                                <div>
-                                    <button type="button" title="Gerar"
-                                            className=""
-                                            onClick={this.handleClickNewCerts}>Gerar
-                                    </button>
-                                </div>
-                                <div>
-                                    <a href={'data:application/pkcs8,' + encodeURIComponent(privateKey)}
-                                       download={nameFile + '.key'} className={privateKey ? '' : 'isDisabled'}>Download
-                                        Private
-                                        Key</a>
-                                </div>
-                                <div>
-                                    <a href={'data:application/pkcs8,' + encodeURIComponent(crt)}
-                                       download={nameFile + '.crt'} className={crt ? '' : 'isDisabled'}>Download CRT</a>
-                                </div>
+                                {t('certificates:title_cert')}
 
+                            </div>
+                            <div className="display-flex-no-wrap space-between">
+                                <div className="w100">
+                                    <div className="w100">
+                                        <button type="button"
+                                                title={t('certificates:btn_generate')}
+                                                className="btn-crl"
+                                                onClick={this.handleClickNewCerts}
+                                                disabled={!!privateKey && !!crt}>
+                                            {t('certificates:btn_generate')}
+                                            &nbsp; &nbsp;
+                                            <i className="fa fa-lock"/>
+                                        </button>
+
+                                    </div>
+                                    <div>
+                                        <a href={'data:application/pkcs8,' + encodeURIComponent(privateKey)}
+                                           download={nameFile + '.key'}
+                                           className={privateKey ? '' : 'hide'}
+                                           title={t('certificates:down_private_key')}>
+                                            <i className="fa fa-arrow-circle-down"/> {t('certificates:down_private_key')}
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a href={'data:application/pkcs8,' + encodeURIComponent(crt)}
+                                           title={t('certificates:down_crt')}
+                                           download={nameFile + '.crt'}
+                                           className={crt ? '' : 'hide'}>
+                                            <i className="fa fa-arrow-circle-down"/> {t('certificates:down_crt')}
+                                        </a>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </Can>
                 <hr/>
-                <div className="line">
-                    <div className="display-flex-column flex-1">
-                        <div
-                            className={'name-value '}
-                            title={t('devices:device_id')}
-                        >
-                            Certificado da CA
-
-                        </div>
-                        <div className="display-flex-no-wrap space-between">
+                <Can do="viewer" on="ca">
+                    <div className="line">
+                        <div className="display-flex-column flex-1">
                             <div
-                                className='value-value '
-                                title={deviceId}
+                                className={'name-value '}
+                                title={t('certificates:title_ca')}
                             >
-                                <div>
-                                    <button type="button" title="Gerar"
-                                            className=""
-                                            onClick={this.handleClickCACert}>Obter
-                                    </button>
-                                </div>
-                                <div>
-                                    <a href={'data:application/pkcs8,' + encodeURIComponent(caCrt)}
-                                       download='ca.crt' className={caCrt ? '' : 'isDisabled'}>Download CA Certificado
-                                    </a>
-                                    <sub> (único para todos os dispositivos)</sub>
-                                </div>
+                                {t('certificates:title_ca')} <sub> {t('certificates:down_ca_crt_alt')}</sub>
 
+                            </div>
+                            <div className="display-flex-no-wrap space-between">
+                                <div className="w100"
+                                >
+                                    <div className="w100">
+                                        <button type="button" title={t('certificates:btn_load')}
+                                                className="btn-crl"
+                                                onClick={this.handleClickCACert}
+                                                disabled={!!caCrt}>
+                                            {t('certificates:btn_load')}
+                                            &nbsp; &nbsp;
+                                            <i className="fa fa-lock"/>
+                                        </button>
+
+                                    </div>
+                                    <div>
+                                        <a href={'data:application/pkcs8,' + encodeURIComponent(caCrt)}
+                                           download='ca.crt'
+                                           className={caCrt ? '' : 'hide'}>
+                                            <i className="fa fa-arrow-circle-down"/> {t('certificates:down_ca_crt')}
+                                        </a>
+                                    </div>
+                                    <div>
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </Can>
                 <hr/>
             </Fragment>
         );

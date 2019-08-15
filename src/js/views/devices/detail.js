@@ -9,13 +9,15 @@ import {Attr, HandleGeoElements} from 'Components/HistoryElements';
 import {DojotBtnRedCircle} from 'Components/DojotButton';
 import MeasureActions from 'Actions/MeasureActions';
 import DeviceActions from 'Actions/DeviceActions';
+import CertificateActions from 'Actions/CertificateActions';
 import MeasureStore from 'Stores/MeasureStore';
 import DeviceStore from 'Stores/DeviceStore';
 import ConfigStore from 'Stores/ConfigStore';
+import LoginStore from 'Stores/LoginStore';
+import CertificateStore from 'Stores/CertificateStore';
 import Metadata from './Details/Metadata';
 import {NewPageHeader} from 'Containers/full/PageHeader';
 import util from 'Comms/util/util';
-import Certificates from 'Comms/certificates/Certificates';
 
 const DeviceHeader = ({device, t}) => (
     <div className="row devicesSubHeader p0 device-details-header">
@@ -703,7 +705,13 @@ class DeviceDetail extends Component {
         return (
             <div className="row detail-body">
                 <div className="first-col">
-                    <CertificateComponent/>
+                    <AltContainer stores={{
+                        certStore: CertificateStore,
+                        loginStore: LoginStore,
+                    }}
+                    >
+                        <CertificateComponent deviceId={device.id}/>
+                    </AltContainer>
                     <Configurations
                         device={device}
                         attrs={config_list}
@@ -785,13 +793,24 @@ class CertificateComponent extends Component {
         super(props);
     }
 
+    componentDidMount() {
+        // GroupActions.fetchGroups.defer();
+        // GroupPermissionActions.fetchGroupPermissions(null);
+        // GroupPermissionActions.fetchSystemPermissions();
+    }
+
+    handleClickNewCerts() {
+        //CertificateActions.updateCertificates
+        CertificateActions.updateCertificates.defer('ebfc71', 'admin');
+        //CertificateActions.updateCACertificates
+    }
+
     render() {
         console.log('key: render');
-        const cert = new Certificates();
-
-        cert.retrieveCACertificate();
-        cert.generateCertificates();
-
+        console.log(this.props.certStore);
+        console.log(this.props.loginStore);
+        console.log(this.props.deviceId);
+        //this.handleClickNewCerts();
         return (
             <div>
                 Test

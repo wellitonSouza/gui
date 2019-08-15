@@ -7,8 +7,8 @@ import Extensions from 'pkijs/src/Extensions';
 import GeneralName from 'pkijs/src/GeneralName';
 import GeneralNames from 'pkijs/src/GeneralNames';
 import BasicConstraints from 'pkijs/src/BasicConstraints';
-import { getAlgorithmParameters, getCrypto } from 'pkijs/src/common';
-import { arrayBufferToString, toBase64 } from 'pvutils';
+import {getAlgorithmParameters, getCrypto} from 'pkijs/src/common';
+import {arrayBufferToString, toBase64} from 'pvutils';
 import certManager from './CertificatesManager';
 
 
@@ -71,10 +71,15 @@ class Certificates {
         this._setCsrPEM(_csrRaw);
     }
 
+    /**
+     *
+     * @returns {Promise<void>}
+     * @private
+     */
     async _generateKeyPar() {
         const crypto = getCrypto();
         if (!crypto) {
-            console.log('No crypto');
+            throw new Error('No crypto');
         }
 
         const algorithm = getAlgorithmParameters(this.signAlgorithm, 'generatekey');
@@ -83,7 +88,7 @@ class Certificates {
         }
 
         const keyPair = await crypto.generateKey(algorithm.algorithm, true, algorithm.usages);
-        const { publicKey, privateKey } = keyPair;
+        const {publicKey, privateKey} = keyPair;
         this._publicKeyPkcs8 = publicKey;
         this._privateKeyPkcs8 = privateKey;
 
@@ -92,6 +97,13 @@ class Certificates {
         );
     }
 
+    /**
+     *
+     * @param crypto
+     * @param privateKey
+     * @returns {Promise<string>}
+     * @private
+     */
     static async _extractPrivateKeyStringKeyPar(crypto, privateKey) {
         const exportPrivateKey = await crypto.exportKey('pkcs8', privateKey);
         return String.fromCharCode.apply(
@@ -100,6 +112,11 @@ class Certificates {
         );
     }
 
+    /**
+     *
+     * @param pkcs10
+     * @private
+     */
     _setExtensionsCSR(pkcs10) {
         const bitArray = new ArrayBuffer(1);
         const bitView = new Uint8Array(bitArray);
@@ -120,7 +137,7 @@ class Certificates {
                 extnID: '2.5.29.15', // KeyUsage
                 critical: false,
                 extnValue:
-                    (new asn1js.BitString({ valueHex: bitArray })).toBER(false),
+                    (new asn1js.BitString({valueHex: bitArray})).toBER(false),
             }),
             new Extension({
                 extnID: '2.5.29.19', // BasicConstraints
@@ -149,6 +166,11 @@ class Certificates {
         }));
     }
 
+    /**
+     *
+     * @returns {GeneralNames|null}
+     * @private
+     */
     _subjectAltNameCSR() {
         if (!((this.subjAltCSR.email && this.subjAltCSR.email.length > 0)
             || (this.subjAltCSR.dns && this.subjAltCSR.dns.length > 0)
@@ -168,13 +190,18 @@ class Certificates {
 
         const ipsAlt = this.subjAltCSR.ip.map(ip => new GeneralName({
             type: 7, // iPAddress
-            value: new asn1js.OctetString({ valueHex: (new Uint8Array(ip.split('.'))).buffer }),
+            value: new asn1js.OctetString({valueHex: (new Uint8Array(ip.split('.'))).buffer}),
         }));
 
 
-        return new GeneralNames({ names: [...emailAlt, ...dnsAlt, ...ipsAlt] });
+        return new GeneralNames({names: [...emailAlt, ...dnsAlt, ...ipsAlt]});
     }
 
+    /**
+     *
+     * @param pkcs10
+     * @private
+     */
     _optionalTypesAndValuesCSR(pkcs10) {
         if (this.typesAndValues.country) {
             pkcs10.subject.typesAndValues.push(new AttributeTypeAndValue({
@@ -222,24 +249,32 @@ class Certificates {
         }
     }
 
+    /**
+     *
+     * @returns {Promise<string>}
+     */
     async retrieveCACertificate() {
         const responseCAChain = await certManager.getCAChain(this.caName);
-        const crtCARaw = responseCAChain.certificate ? responseCAChain.certificate : null;
-        this._setCACrtPEM(crtCARaw);
+        const crtCARaw64 = responseCAChain.certificate ? responseCAChain.certificate : null;
+        this._setCACrtPEM(crtCARaw64);
         console.log(this._caCrtPEM);
         return this._caCrtPEM;
     }
 
-    async generateCertificates() {
-        const commonName = 'admin:a034eb';
+    /**
+     *
+     * @param commonName
+     * @returns {Promise<{privateKey: null, crtPEM: null}>}
+     */
+    async generateCertificates(commonName) {
 
         await this._generateKeyPar();
 
         await this._createCSR(commonName);
 
         const responseSignCert = await certManager.signCert(commonName, this._csrPEM);
-        const crtRaw = responseSignCert.status.data ? responseSignCert.status.data : null;
-        this._setCrtPEM(crtRaw);
+        const crtRaw64 = responseSignCert.status.data ? responseSignCert.status.data : null;
+        this._setCrtPEM(crtRaw64);
 
         console.log(this._privateKeyPEM);
         console.log(this._csrPEM);
@@ -251,33 +286,65 @@ class Certificates {
         };
     }
 
+    /**
+     *
+     * @param privateKeyString
+     * @private
+     */
     _setPrivateKeyPEM(privateKeyString) {
         this._privateKeyPEM = '\r\n-----BEGIN PRIVATE KEY-----\r\n';
         this._privateKeyPEM += Certificates._formatPEM(toBase64((privateKeyString)));
-        this._privateKeyPEM = `${this._privateKeyPEM}\r\n-----END PRIVATE KEY-----`;
+        this._privateKeyPEM += '\r\n-----END PRIVATE KEY-----';
     }
 
+    /**
+     *
+     * @param csrRaw
+     * @private
+     */
     _setCsrPEM(csrRaw) {
         this._csrPEM = '-----BEGIN CERTIFICATE REQUEST-----\r\n';
-        this._csrPEM = `${this._csrPEM}${Certificates._formatPEM(toBase64(arrayBufferToString(csrRaw)))}`;
-        this._csrPEM = `${this._csrPEM}\r\n-----END CERTIFICATE REQUEST-----\r\n`;
+        this._csrPEM += `${Certificates._formatPEM(toBase64(arrayBufferToString(csrRaw)))}`;
+        this._csrPEM += '\r\n-----END CERTIFICATE REQUEST-----\r\n';
     }
 
-    _setCrtPEM(crtRaw) {
-        this._crtPEM = Certificates._formatCRTPEM(crtRaw);
+    /**
+     *
+     * @param crtRaw64
+     * @private
+     */
+    _setCrtPEM(crtRaw64) {
+        this._crtPEM = Certificates._formatCRTPEM(crtRaw64);
     }
 
-    _setCACrtPEM(crtRaw) {
-        this._caCrtPEM = Certificates._formatCRTPEM(crtRaw);
+    /**
+     *
+     * @param crtRaw64
+     * @private
+     */
+    _setCACrtPEM(crtRaw64) {
+        this._caCrtPEM = Certificates._formatCRTPEM(crtRaw64);
     }
 
-    static _formatCRTPEM(crtRaw) {
+    /**
+     *
+     * @param crtRaw64
+     * @returns {string}
+     * @private
+     */
+    static _formatCRTPEM(crtRaw64) {
         let crtPEM = '-----BEGIN CERTIFICATE-----\r\n';
-        crtPEM = `${crtPEM}${crtRaw}`;
-        crtPEM = `${crtPEM}\r\n-----END CERTIFICATE-----\r\n`;
+        crtPEM += `${crtRaw64}`;
+        crtPEM += '\r\n-----END CERTIFICATE-----\r\n';
         return crtPEM;
     }
 
+    /**
+     *
+     * @param pemString
+     * @returns {string}
+     * @private
+     */
     static _formatPEM(pemString) {
         let resultString = '';
         if (pemString) {

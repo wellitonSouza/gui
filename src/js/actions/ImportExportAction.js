@@ -19,7 +19,7 @@ class ImportExportActions {
         if (response.message) {
             this.importFile();
         } else {
-            this.importFailed();
+            this.importFailed(response.error);
         }
         return response;
     }

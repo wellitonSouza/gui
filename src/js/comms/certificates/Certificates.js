@@ -46,7 +46,12 @@ class Certificates {
         this._caCrtPEM = null;
     }
 
-    /* Create PKCS#10 */
+    /**
+     *  Create PKCS#10
+     * @param commonName
+     * @returns {Promise<void>}
+     * @private
+     */
     async _createCSR(commonName) {
         const pkcs10 = new CertificationRequest();
         pkcs10.attributes = [];
@@ -72,7 +77,8 @@ class Certificates {
     }
 
     /**
-     *
+     * Generate key par (private and public key)
+     * and set in attrs of class
      * @returns {Promise<void>}
      * @private
      */
@@ -99,6 +105,8 @@ class Certificates {
 
     /**
      *
+     * Aux method to extract string from private key
+     *
      * @param crypto
      * @param privateKey
      * @returns {Promise<string>}
@@ -113,6 +121,7 @@ class Certificates {
     }
 
     /**
+     * Set extensions for CSR
      *
      * @param pkcs10
      * @private
@@ -148,6 +157,7 @@ class Certificates {
             }),
         ];
 
+        // Subject alternative name
         const altNames = this._subjectAltNameCSR();
         if (altNames) {
             extensions.push(new Extension({
@@ -158,6 +168,7 @@ class Certificates {
             }));
         }
 
+        // set all extensions
         pkcs10.attributes.push(new Attribute({
             type: '1.2.840.113549.1.9.14', // pkcs-9-at-extensionRequest
             values: [(new Extensions({
@@ -167,7 +178,8 @@ class Certificates {
     }
 
     /**
-     *
+     * Create part of extensions
+     * bases on emails, dns and ips v4
      * @returns {GeneralNames|null}
      * @private
      */
@@ -198,7 +210,8 @@ class Certificates {
     }
 
     /**
-     *
+     * Set addictions incarnations in CSR
+     * Like country, state...
      * @param pkcs10
      * @private
      */
@@ -250,6 +263,7 @@ class Certificates {
     }
 
     /**
+     * Get from PKI the CA certificate and return in PEM format
      *
      * @returns {Promise<string>}
      */
@@ -261,7 +275,8 @@ class Certificates {
     }
 
     /**
-     *
+     * Generate private key and sign certificate crt for a user
+     * and return both
      * @param commonName
      * @returns {Promise<{privateKey: null, crtPEM: null}>}
      */
@@ -281,7 +296,7 @@ class Certificates {
     }
 
     /**
-     *
+     * Set private key pem in attrs
      * @param privateKeyString
      * @private
      */
@@ -292,7 +307,7 @@ class Certificates {
     }
 
     /**
-     *
+     * Set csr pem in attrs
      * @param csrRaw
      * @private
      */
@@ -303,7 +318,7 @@ class Certificates {
     }
 
     /**
-     *
+     * Set crt pem in attrs
      * @param crtRaw64
      * @private
      */
@@ -312,7 +327,7 @@ class Certificates {
     }
 
     /**
-     *
+     *Set ca crt pem in attrs
      * @param crtRaw64
      * @private
      */
@@ -321,7 +336,7 @@ class Certificates {
     }
 
     /**
-     *
+     * Format csr PEM
      * @param crtRaw64
      * @returns {string}
      * @private
@@ -334,7 +349,7 @@ class Certificates {
     }
 
     /**
-     *
+     * Format PEM
      * @param pemString
      * @returns {string}
      * @private

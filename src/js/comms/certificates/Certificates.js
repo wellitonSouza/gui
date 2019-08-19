@@ -7,8 +7,8 @@ import Extensions from 'pkijs/src/Extensions';
 import GeneralName from 'pkijs/src/GeneralName';
 import GeneralNames from 'pkijs/src/GeneralNames';
 import BasicConstraints from 'pkijs/src/BasicConstraints';
-import {getAlgorithmParameters, getCrypto} from 'pkijs/src/common';
-import {arrayBufferToString, toBase64} from 'pvutils';
+import { getAlgorithmParameters, getCrypto } from 'pkijs/src/common';
+import { arrayBufferToString, toBase64 } from 'pvutils';
 import certManager from './CertificatesManager';
 
 
@@ -94,7 +94,7 @@ class Certificates {
         }
 
         const keyPair = await crypto.generateKey(algorithm.algorithm, true, algorithm.usages);
-        const {publicKey, privateKey} = keyPair;
+        const { publicKey, privateKey } = keyPair;
         this._publicKeyPkcs8 = publicKey;
         this._privateKeyPkcs8 = privateKey;
 
@@ -146,7 +146,7 @@ class Certificates {
                 extnID: '2.5.29.15', // KeyUsage
                 critical: false,
                 extnValue:
-                    (new asn1js.BitString({valueHex: bitArray})).toBER(false),
+                    (new asn1js.BitString({ valueHex: bitArray })).toBER(false),
             }),
             new Extension({
                 extnID: '2.5.29.19', // BasicConstraints
@@ -191,23 +191,23 @@ class Certificates {
             return null;
         }
 
-        const emailAlt = this.subjAltCSR.email.map(email => new GeneralName({
+        const emailAlt = this.subjAltCSR.email.map((email) => new GeneralName({
             type: 1, // rfc822Name
             value: email,
         }));
 
-        const dnsAlt = this.subjAltCSR.dns.map(dns => new GeneralName({
+        const dnsAlt = this.subjAltCSR.dns.map((dns) => new GeneralName({
             type: 2, // dNSName
             value: dns,
         }));
 
-        const ipsAlt = this.subjAltCSR.ip.map(ip => new GeneralName({
+        const ipsAlt = this.subjAltCSR.ip.map((ip) => new GeneralName({
             type: 7, // iPAddress
-            value: new asn1js.OctetString({valueHex: (new Uint8Array(ip.split('.'))).buffer}),
+            value: new asn1js.OctetString({ valueHex: (new Uint8Array(ip.split('.'))).buffer }),
         }));
 
 
-        return new GeneralNames({names: [...emailAlt, ...dnsAlt, ...ipsAlt]});
+        return new GeneralNames({ names: [...emailAlt, ...dnsAlt, ...ipsAlt] });
     }
 
     /**

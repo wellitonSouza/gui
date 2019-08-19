@@ -6,7 +6,7 @@ import {withNamespaces} from 'react-i18next';
 import * as i18next from 'i18next';
 import {Loading} from 'Components/Loading';
 import {Attr, HandleGeoElements} from 'Components/HistoryElements';
-import {DojotBtnLink, DojotBtnRedCircle, DojotCustomButton} from 'Components/DojotButton';
+import {DojotBtnRedCircle} from 'Components/DojotButton';
 import MeasureActions from 'Actions/MeasureActions';
 import DeviceActions from 'Actions/DeviceActions';
 import CertificateActions from 'Actions/CertificateActions';

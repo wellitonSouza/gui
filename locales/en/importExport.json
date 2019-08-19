@@ -14,7 +14,8 @@
     "error": {
       "type": "Wrong type, only accept JSON!",
       "read": "Error reading file",
-      "file": "Select a file"
+      "file": "Select a file",
+      "size": "File size too large"
     }
   },
   "export": {

@@ -14,14 +14,26 @@ class CertificateActions {
         this.cert = new Certificates();
     }
 
+    /**
+     * trigger to clean Store
+     * @returns {null}
+     */
     cleanStorePrivateKey() {
         return null;
     }
 
+    /**
+     * trigger to clean Store
+     * @returns {null}
+     */
     cleanStoreCRL() {
         return null;
     }
 
+    /**
+     * trigger to clean Store
+     * @returns {null}
+     */
     cleanStoreCACRL() {
         return null;
     }

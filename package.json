@@ -1,7 +1,7 @@
 {
   "name": "webpack-react",
   "version": "0.0.1",
-  "description": "A Webpack sample project, configured for ES6 React and SASS",
+  "description": "GUI - DOJOT",
   "main": "index.js",
   "scripts": {
     "start": "http-server ./dist -p 3000",

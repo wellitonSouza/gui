@@ -115,7 +115,7 @@ class Import extends Component {
                         ref={this.pond}
                         onupdatefiles={(fileItems) => {
                             this.setState({
-                                file: fileItems.map(fileItem => fileItem.file),
+                                file: fileItems.map((fileItem) => fileItem.file),
                             });
                         }}
                         allowFileTypeValidation
@@ -123,7 +123,7 @@ class Import extends Component {
                         allowFileSizeValidation
                         maxTotalFileSize={314572800}
                     >
-                        {file.map(files => (
+                        {file.map((files) => (
                             <File
                                 key={files}
                                 src={files}

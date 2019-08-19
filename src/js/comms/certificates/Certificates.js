@@ -7,8 +7,8 @@ import Extensions from 'pkijs/src/Extensions';
 import GeneralName from 'pkijs/src/GeneralName';
 import GeneralNames from 'pkijs/src/GeneralNames';
 import BasicConstraints from 'pkijs/src/BasicConstraints';
-import { getAlgorithmParameters, getCrypto } from 'pkijs/src/common';
-import { arrayBufferToString, toBase64 } from 'pvutils';
+import {getAlgorithmParameters, getCrypto} from 'pkijs/src/common';
+import {arrayBufferToString, toBase64} from 'pvutils';
 import certManager from './CertificatesManager';
 
 
@@ -47,8 +47,8 @@ class Certificates {
     }
 
     /**
-     *  Create PKCS#10
-     * @param commonName
+     * Create CSR (public key with some infos and sign with private key )
+     * @param commonName The common name attribute type specifies an identifier Ex.: ID
      * @returns {Promise<void>}
      * @private
      */
@@ -78,7 +78,7 @@ class Certificates {
 
     /**
      * Generate key par (private and public key)
-     * and set in attrs of class
+     * and set in properties of class
      * @returns {Promise<void>}
      * @private
      */
@@ -94,7 +94,7 @@ class Certificates {
         }
 
         const keyPair = await crypto.generateKey(algorithm.algorithm, true, algorithm.usages);
-        const { publicKey, privateKey } = keyPair;
+        const {publicKey, privateKey} = keyPair;
         this._publicKeyPkcs8 = publicKey;
         this._privateKeyPkcs8 = privateKey;
 
@@ -122,7 +122,7 @@ class Certificates {
 
     /**
      * Set extensions for CSR
-     *
+     * Aux method to _createCSR
      * @param pkcs10
      * @private
      */
@@ -146,7 +146,7 @@ class Certificates {
                 extnID: '2.5.29.15', // KeyUsage
                 critical: false,
                 extnValue:
-                    (new asn1js.BitString({ valueHex: bitArray })).toBER(false),
+                    (new asn1js.BitString({valueHex: bitArray})).toBER(false),
             }),
             new Extension({
                 extnID: '2.5.29.19', // BasicConstraints
@@ -180,6 +180,7 @@ class Certificates {
     /**
      * Create part of extensions
      * bases on emails, dns and ips v4
+     * Aux method for _createCSR
      * @returns {GeneralNames|null}
      * @private
      */
@@ -202,16 +203,17 @@ class Certificates {
 
         const ipsAlt = this.subjAltCSR.ip.map(ip => new GeneralName({
             type: 7, // iPAddress
-            value: new asn1js.OctetString({ valueHex: (new Uint8Array(ip.split('.'))).buffer }),
+            value: new asn1js.OctetString({valueHex: (new Uint8Array(ip.split('.'))).buffer}),
         }));
 
 
-        return new GeneralNames({ names: [...emailAlt, ...dnsAlt, ...ipsAlt] });
+        return new GeneralNames({names: [...emailAlt, ...dnsAlt, ...ipsAlt]});
     }
 
     /**
      * Set addictions incarnations in CSR
      * Like country, state...
+     * Aux method for _createCSR
      * @param pkcs10
      * @private
      */
@@ -275,10 +277,10 @@ class Certificates {
     }
 
     /**
-     * Generate private key and sign certificate crt for a user
+     * Generate private key and sign certificate crt for  a commonName
      * and return both
-     * @param commonName
-     * @returns {Promise<{privateKey: null, crtPEM: null}>}
+     * @param commonName The common name attribute type specifies an identifier Ex.: ID
+     * @returns {Promise<{privateKey: string, crtPEM: string}>}
      */
     async generateCertificates(commonName) {
         await this._generateKeyPar();
@@ -296,7 +298,7 @@ class Certificates {
     }
 
     /**
-     * Set private key pem in attrs
+     * Set private key pem in properties of class
      * @param privateKeyString
      * @private
      */
@@ -307,7 +309,7 @@ class Certificates {
     }
 
     /**
-     * Set csr pem in attrs
+     * Set csr pem in properties of class
      * @param csrRaw
      * @private
      */
@@ -318,7 +320,7 @@ class Certificates {
     }
 
     /**
-     * Set crt pem in attrs
+     * Set crt pem in properties of class
      * @param crtRaw64
      * @private
      */
@@ -327,7 +329,7 @@ class Certificates {
     }
 
     /**
-     *Set ca crt pem in attrs
+     *Set ca crt pem in properties of class
      * @param crtRaw64
      * @private
      */

@@ -1442,14 +1442,14 @@ h1, h2, p {
 
     .btn-crl{
         background-color: #ffffff;
-        color: #444444;
-        width: 100%;
         border: solid 1px #16a085;
         border-radius: 4px;
+        color: #444444;
         transition: all 250ms;
+        width: 100%;
         &:hover{
-            color: white;
             background-color: #16a085;
+            color: white;
         }
         &:active{
             background-color: #16856b;

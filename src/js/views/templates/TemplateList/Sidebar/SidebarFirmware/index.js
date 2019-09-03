@@ -123,7 +123,7 @@ class SidebarFirmware extends Component {
         const { showFirmware, toogleSidebarFirmware } = this.props;
 
         return (
-            <Fragment>
+            <>
                 <Slide right when={showFirmware} duration={300}>
                     { showFirmware
                         ? (
@@ -149,17 +149,16 @@ class SidebarFirmware extends Component {
                                         : null }
                                 </div>
                                 <div className="footer">
-                                    <Fragment>
+                                    <>
                                         <DojotBtnClassic label="discard" type="secondary" onClick={toogleSidebarFirmware} />
-                                        <DojotBtnClassic color="red" label="save" type="primary" onClick={e => this.saveImages(e)} />
-                                    </Fragment>
+                                        <DojotBtnClassic color="red" label="save" type="primary" onClick={(e) => this.saveImages(e)} />
+                                    </>
                                 </div>
                             </div>
                         )
-                        : <div />
-                    }
+                        : <div />}
                 </Slide>
-            </Fragment>
+            </>
         );
     }
 }

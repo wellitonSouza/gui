@@ -1,6 +1,6 @@
 import util from '../util';
 
-const GQLTEMPLATE = templateId => `
+const GQLTEMPLATE = (templateId) => `
 {
     template(id: ${templateId}) {
       label
@@ -94,7 +94,7 @@ class TemplateManager {
 
     getTemplates(params) {
         if (params) {
-            const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
+            const qs = Object.keys(params).map((key) => `${key}=${params[key]}`).join('&');
             return util.GET(`${this.baseUrl}/template?${qs}`);
         }
         return util.GET(`${this.baseUrl}/template`);

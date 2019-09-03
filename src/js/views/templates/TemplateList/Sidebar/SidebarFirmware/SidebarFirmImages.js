@@ -178,7 +178,7 @@ class SidebarFirmImages extends Component {
         } = this.props;
 
         return (
-            <Fragment>
+            <>
                 <Slide right when={showFirmware} duration={300}>
                     {showFirmware
                         ? (
@@ -217,7 +217,7 @@ class SidebarFirmImages extends Component {
                                         : null}
                                 </div>
                                 <div className="footer">
-                                    <Fragment>
+                                    <>
                                         <DojotBtnClassic
                                             label={t('back.label')}
                                             type="secondary"
@@ -227,14 +227,13 @@ class SidebarFirmImages extends Component {
                                             color="red"
                                             label={t('save.label')}
                                             type="primary"
-                                            onClick={e => this.saveImages(e)}
+                                            onClick={(e) => this.saveImages(e)}
                                         />
-                                    </Fragment>
+                                    </>
                                 </div>
                             </div>
                         )
-                        : <div />
-                    }
+                        : <div />}
                 </Slide>
                 <SidebarDeleteImage
                     toggleSidebar={this.toggleDeleteSidebar}
@@ -248,7 +247,7 @@ class SidebarFirmImages extends Component {
                     confirm={this.removeBinary}
                     message={t('firmware:alerts.qst_remove_binary')}
                 />
-            </Fragment>
+            </>
         );
     }
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Loading } from 'Components/Loading';
 import TemplateActions from 'Actions/TemplateActions';
+import { withNamespaces } from 'react-i18next';
 import ListItem from './ListItem/index';
 import Sidebar from './Sidebar/index';
 import { templateType, tempOpxType } from '../TemplatePropTypes';
@@ -13,6 +14,7 @@ const TemplateList = ({
     isNewTemplate,
     showSidebar,
     temp_opex,
+    t,
 }) => {
     if (loading) {
         return (
@@ -48,9 +50,9 @@ const TemplateList = ({
         }
     }
     return (
-        <div className="full-height flex-container">
+        <div className="full-height flex-container pos-relative overflow-x-hidden">
             {filteredList.length > 0 ? (
-                <div className="col s12 lst-wrapper w100">
+                <div className="col s12 lst-wrapper w100 hei-100-over-scroll flex-container">
                     {filteredList.map(item => (
                         <ListItem
                             template={item}
@@ -65,8 +67,8 @@ const TemplateList = ({
                 <div className="background-info valign-wrapper full-height">
                     <span className="horizontal-center">
                         {temp_opex.hasFilter()
-                            ? <b className="noBold">No templates to be shown</b>
-                            : <b className="noBold">No configured templates</b>
+                            ? <b className="noBold">{t('templates:alerts.no_templates_show')}</b>
+                            : <b className="noBold">{t('templates:alerts.no_conf_templates')}</b>
                         }
                     </span>
                 </div>
@@ -75,7 +77,7 @@ const TemplateList = ({
                 template={template}
                 isNewTemplate={isNewTemplate}
                 showSidebar={showSidebar}
-                toogleSidebar={TemplateActions.toogleSidebar}
+                toogleSidebar={TemplateActions.toogleSidebar} // I really appreciate it <3
                 temp_opex={temp_opex}
             />
         </div>
@@ -105,6 +107,7 @@ TemplateList.propTypes = {
     isNewTemplate: PropTypes.bool,
     showSidebar: PropTypes.bool,
     temp_opex: PropTypes.shape(tempOpxType).isRequired,
+    t: PropTypes.func.isRequired,
 };
 
-export default TemplateList;
+export default withNamespaces()(TemplateList);

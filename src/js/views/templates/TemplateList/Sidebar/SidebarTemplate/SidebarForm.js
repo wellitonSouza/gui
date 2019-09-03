@@ -1,11 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import MaterialInput from 'Components/MaterialInput';
+import Can from 'Components/permissions/Can';
+import ability from 'Components/permissions/ability';
+import { withNamespaces } from 'react-i18next';
 import SidebarProp from './SidebarProp';
 import SidebarButton from '../SidebarButton';
 import { templateType } from '../../../TemplatePropTypes';
 
-const SidebarForm = ({ changeValue, toogleSidebarAttribute, template }) => {
+const SidebarForm = ({
+    isNewTemplate, changeValue, toogleSidebarAttribute, toogleSidebarFirmware, template, t,
+}) => {
     const renderTemplateProps = () => {
         const templateProps = [];
         if (Object.prototype.hasOwnProperty.call(template, 'data_attrs')) {
@@ -37,15 +42,14 @@ const SidebarForm = ({ changeValue, toogleSidebarAttribute, template }) => {
         return templateProps.length > 0
             ? templateProps
             : (
-                <span>Select an option below</span>
+                <div className="body-form-nodata">
+                    <span>{t('text.select_option_below')}</span>
+                </div>
             );
     };
 
-    let data = '';
-    if (template.data_attrs && template.config_attrs) {
-        data = template.data_attrs.length !== 0
-            || template.config_attrs.length !== 0 ? '' : '-nodata';
-    }
+    const cannotEdit = !ability.can('modifier', 'template');
+
     return (
         <div className="body">
             <div className="body-template-name">
@@ -57,39 +61,51 @@ const SidebarForm = ({ changeValue, toogleSidebarAttribute, template }) => {
                     />
                 </div>
                 <MaterialInput
-                    name="Template Name"
+                    name={t('templates:template_name.label')}
                     className="template-name"
                     maxLength={40}
                     value={template.label}
                     onChange={e => changeValue('label', e)}
+                    disabled={cannotEdit}
                 />
             </div>
-            <div className={`body-form${data}`}>
-                { renderTemplateProps() }
+            <div className="body-form">
+                {renderTemplateProps()}
             </div>
             <div className="body-actions">
                 <div className="body-actions--divider" />
-                <SidebarButton
-                    onClick={() => toogleSidebarAttribute('data_attrs')}
-                    icon={'data_attrs'}
-                    text={'New Attribute'}
-                />
-
-                <SidebarButton
-                    onClick={() => toogleSidebarAttribute('config_attrs')}
-                    icon={'config_attrs'}
-                    text={'New Configuration'}
-                />
-
+                <Can do="modifier" on="template">
+                    <SidebarButton
+                        onClick={() => toogleSidebarAttribute('data_attrs')}
+                        icon="data_attrs"
+                        text={t('templates:btn.new_attr.label')}
+                    />
+                    {/*                    <SidebarButton
+                        onClick={() => toogleSidebarAttribute('config_attrs')}
+                        icon="config_attrs"
+                        text={t('templates:btn.new_conf.label')}
+                    /> */}
+                    {!isNewTemplate
+                        ? (
+                            <SidebarButton
+                                onClick={() => toogleSidebarFirmware()}
+                                icon="firmware"
+                                text={t('templates:btn.mng_firmware.label')}
+                            />
+                        ) : null}
+                </Can>
             </div>
         </div>
     );
 };
 
 SidebarForm.propTypes = {
+    isNewTemplate: PropTypes.bool.isRequired,
     changeValue: PropTypes.func.isRequired,
     toogleSidebarAttribute: PropTypes.func.isRequired,
+    toogleSidebarFirmware: PropTypes.func.isRequired,
     template: PropTypes.shape(templateType).isRequired,
+    t: PropTypes.func.isRequired,
 };
 
-export default SidebarForm;
+export default withNamespaces()(SidebarForm);

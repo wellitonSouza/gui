@@ -1,13 +1,14 @@
 /* eslint-disable */
-import React, { Component } from 'react';
-import { Line } from 'react-chartjs-2';
-import Script from 'react-load-script';
+import React, {Component} from 'react';
+import {Line} from 'react-chartjs-2';
+import FirmwareHelper from '../comms/firmware/FirmwareHelper';
 import util from '../comms/util/util';
-import { SmallPositionRenderer } from "../views/utils/Maps";
-
+import {SmallPositionRenderer} from "../views/utils/Maps";
+import {Trans, withNamespaces} from 'react-i18next';
 
 
 class Graph extends Component {
+
     render() {
         const labels = [];
         const values = [];
@@ -18,7 +19,7 @@ class Graph extends Component {
                 if (tuple.attrValue.trim().length > 0) {
                     if (tuple.attrType.toLowerCase() === 'integer') {
                         return parseInt(tuple.attrValue);
-                    } if (tuple.attrType.toLowerCase() === 'float') {
+                    } else if (tuple.attrType.toLowerCase() === 'float') {
                         return parseFloat(tuple.attrValue);
                     }
                 }
@@ -81,7 +82,7 @@ class Graph extends Component {
 
         const options = {
             maintainAspectRatio: false,
-            legend: { display: false },
+            legend: {display: false},
             scales: {
                 xAxes: [{
                     ticks: {
@@ -92,43 +93,74 @@ class Graph extends Component {
                 }],
             },
             layout: {
-                padding: { left: 10 },
+                padding: {left: 10},
             },
         };
 
         return (
-            <Line data={data} options={options} />
+            <Line data={data} options={options}/>
         );
     }
 }
 
-
 function HistoryList(props) {
     // handle values
     const listValues = [];
+
+    //Get attribute type to compare with received value
+    const attrType = props.type === 'bool' ? 'boolean' : props.type;
+
+
     for (const k in props.MeasureStore.data[props.device.id][`_${props.attr}`]) {
         listValues[k] = props.MeasureStore.data[props.device.id][`_${props.attr}`][k];
     }
-
     if (listValues.length > 0) {
-            listValues.reverse();
-            return (
-                <div className="relative full-height">
-                    <div className="full-height full-width history-list">
-                        {listValues.map((i, k) => (<div className={`history-row ${k % 2 ? 'alt-row' : ''}`} key={i.ts}>
-                            <div className="value">{i.value !== null && (i.value.length != undefined && i.value.length > 0) ? i.value.toString() : <span className="red-text"> <em>Invalid data </em></span>}</div>
-                            <div className="label">{util.iso_to_date(i.ts)}</div>
+        listValues.reverse();
+
+        return (
+            <div className="relative full-height">
+                <div className="full-height full-width history-list">
+                    {listValues.map((i, k) => (
+
+                        <div className={`history-row ${k % 2 ? 'alt-row' : ''}`} key={i.ts}>
+                            <div className="value">
+                                {
+                                    ((typeof i.value === "boolean") && (attrType === typeof i.value)) ?
+                                        <React.Fragment>{i.value.toString()}</React.Fragment>
+                                        :
+                                        <React.Fragment>
+                                            {
+                                                ((attrType === typeof i.value) && (attrType !== 'object' && (i.value !== null) && (i.value.length !== undefined) && (i.value.length > 0))) ?
+                                                    <React.Fragment> {i.value.toString()} </React.Fragment>
+                                                    :
+                                                    <React.Fragment>
+                                                        {
+                                                            ((attrType === typeof i.value) && (attrType.toLowerCase() === 'object') && i.value !== null) ?
+                                                                <pre>{JSON.stringify(i.value, undefined, 2)}</pre>
+                                                                :
+                                                                <span className="red-text">
+                                        <em><Trans i18nKey="devices:invalid_data"/></em>
+                                    </span>
+                                                        }
+                                                    </React.Fragment>
+                                            }
+                                        </React.Fragment>
+                                }
+
+
+                            </div><div className="label">{util.iso_to_date(i.ts)}</div>
                         </div>
-                        ))}
-                    </div>
+
+                    ))}
                 </div>
-            );
+            </div>
+        );
     } else {
         return (
             <div className="valign-wrapper full-height background-info">
                 <div className="full-width center">
                     No data
-                    <br />
+                    <br/>
                     available
                 </div>
             </div>
@@ -150,11 +182,10 @@ class HandleGeoElements extends Component {
     }
 
     toogleExpand(state) {
-        this.setState({ opened: state });
+        this.setState({opened: state});
     }
 
     handleDevicePosition(device) {
-        // console.log("device", device);
         const validDevices = [];
         for (const j in device.attrs) {
             for (const i in device.attrs[j]) {
@@ -164,8 +195,7 @@ class HandleGeoElements extends Component {
                         const parsedPosition = aux.split(',');
                         device.sp_value = [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
                     }
-                }
-                else if (device.attrs[j][i].type === "dynamic") {
+                } else if (device.attrs[j][i].type === "dynamic") {
                     device.has_dynamic_position = true;
                     device.active_tracking = false;
                     device.allow_tracking = false;
@@ -184,7 +214,6 @@ class HandleGeoElements extends Component {
         if (device.sp_value !== null || device.has_dynamic_position) {
             validDevices.push(device);
         }
-        // console.log("validDevices", validDevices);
         return validDevices;
     }
 
@@ -194,7 +223,7 @@ class HandleGeoElements extends Component {
                 <div className="valign-wrapper full-height background-info">
                     <div className="full-width center">
                         No position
-                        <br />
+                        <br/>
                         available
                     </div>
                 </div>
@@ -202,7 +231,7 @@ class HandleGeoElements extends Component {
         }
 
         if (this.props.device === undefined) {
-            return (<NoData />);
+            return (<NoData/>);
         }
 
         let validDevices = null;
@@ -215,27 +244,42 @@ class HandleGeoElements extends Component {
         }
 
         let geoconfs = this.props.Config;
-        if (geoconfs == undefined)
+        if (geoconfs === undefined)
             geoconfs = {}
 
 
         let opened = util.checkWidthToStateOpen(this.state.opened);
 
         if (validDevices.length == 0) {
-            return <NoData />;
-        }
-        else {
+            return <NoData/>;
+        } else {
             if (this.props.isStatic) {
                 return <div className={"attributeBox " + (opened ? "expanded" : "compressed")}>
                     <div className="header">
                         <label>{this.props.label}</label>
-                        {!this.state.opened ? <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand" /> : <i onClick={this.toogleExpand.bind(this, false)} className="fa fa-compress" />}
+                        {!this.state.opened ?
+                            <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand"/> :
+                            <i onClick={this.toogleExpand.bind(this, false)} className="fa fa-compress"/>}
                     </div>
-                    <SmallPositionRenderer showLayersIcons={false} staticDevices={validDevices} allowContextMenu={false} zoom={14} showPolyline={false} config={geoconfs} />
+                    <SmallPositionRenderer
+                        showLayersIcons={false}
+                        staticDevices={validDevices}
+                        allowContextMenu={false}
+                        zoom={14}
+                        showPolyline={false}
+                        config={geoconfs}
+                    />
                 </div>;
             } else {
                 return <span>
-                    <SmallPositionRenderer showLayersIcons={false} dynamicDevices={validDevices} allowContextMenu={false} zoom={14} showPolyline={false} config={geoconfs} />
+                    <SmallPositionRenderer
+                        showLayersIcons={false}
+                        dynamicDevices={validDevices}
+                        allowContextMenu={false}
+                        zoom={14}
+                        showPolyline={false}
+                        config={geoconfs}
+                    />
                 </span>;
             }
         }
@@ -254,10 +298,11 @@ function Attr(props) {
     };
 
     const Renderer = props.type in known ? known[props.type] : known.default;
+
     function NoData() {
         return (
             <div className="mt60px full-height background-info">
-                <div className="full-width center">No data received</div>
+                <div className="full-width center"><Trans i18nKey="devices:no_data_received"/></div>
             </div>
         );
     }
@@ -265,23 +310,31 @@ function Attr(props) {
     function NoDataAv() {
         return (
             <div className="mt60px full-height background-info">
-                <div className="full-width center">No data available</div>
+                <div className="full-width center"><Trans i18nKey="devices:no_data_avaliable"/></div>
             </div>
         );
     }
 
     if (props.MeasureStore.data[props.device.id] === undefined) {
-        return <NoData />;
+        return <NoData/>;
     }
 
-    if (props.MeasureStore.data[props.device.id][`_${props.attr}`] == undefined) {
-        return <NoDataAv />;
+    if (props.MeasureStore.data[props.device.id][`_${props.attr}`] === undefined) {
+        return <NoDataAv/>;
     }
 
+    //this is used in firmware update, its just a expect to show the full infos about state and result
+    const newValuesForFwStateAndResult = FirmwareHelper.transformStatusToFullTextStatus(props.metadata, props.MeasureStore.data[props.device.id][`_${props.attr}`]);
+    if (newValuesForFwStateAndResult !== null) {
+        props.MeasureStore.data[props.device.id][`_${props.attr}`] = newValuesForFwStateAndResult;
+        return (
+            <HistoryList {...props} type="string" />
+        );
+    }
 
     return (
         <Renderer {...props} />
     );
 }
 
-export { Attr, HandleGeoElements };
+export {Attr, HandleGeoElements};

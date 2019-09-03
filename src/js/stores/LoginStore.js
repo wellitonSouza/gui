@@ -1,12 +1,16 @@
-/* eslint-disable */
-import LoginActions from '../actions/LoginActions';
-import Util from '../comms/util/util';
+import LoginActions from 'Actions/LoginActions';
+import Util from 'Comms/util/util';
+
 
 const alt = require('../alt');
 
 class LoginStore {
     constructor() {
         this.authenticated = false;
+        this.error = '';
+        this.hasError = false;
+        this.loading = false;
+
         const token = Util.getToken();
         if (token) {
             this.set(token);
@@ -29,36 +33,39 @@ class LoginStore {
             this.authenticated = true;
             this.loading = false;
         } catch (e) {
-            console.error('invalid session information detected', e);
             this.reset();
+            this.hasError = true;
+            this.Irror = 'Invalid session information detected';
         }
     }
 
     reset() {
-        this.authenticated = false;
-        this.user = undefined;
+        this.error = '';
+        this.hasError = false;
         this.loading = false;
+        this.user = undefined;
         this.authenticated = false;
         Util.setToken(undefined);
     }
 
-    handleAuthenticate(login) {
+    handleAuthenticate() {
         this.authenticated = false;
         this.loading = true;
     }
 
     handleSuccess(login) {
-        this.error = undefined;
+        this.hasError = false;
+        this.error = '';
         this.set(login.jwt);
     }
 
     handleFailure(error) {
+        this.hasError = true;
         this.error = error;
-        this.reset();
+        this.loading = false;
     }
 
     handleLogout() {
-        this.error = undefined;
         this.reset();
     }
 }

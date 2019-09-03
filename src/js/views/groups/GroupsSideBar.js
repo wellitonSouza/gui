@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { translate, Trans } from 'react-i18next';
 import PropTypes from 'prop-types';
+import ability from 'Components/permissions/ability';
 import GroupActions from '../../actions/GroupActions';
 import GroupPermissionActions from '../../actions/GroupPermissionActions';
 import SideBarRight from './SideBarRight';
@@ -8,52 +9,78 @@ import toaster from '../../comms/util/materialize';
 import { RemoveModal } from '../../components/Modal';
 import { InputCheckbox, InputText } from '../../components/DojotIn';
 
+const groupHasSubject = (subject, groupPermissions) => {
+    if (groupPermissions) {
+        const singlePermission = groupPermissions.filter(n1 => subject === n1.subject);
+        return (singlePermission.length > 0);
+    }
+    return false;
+};
+
+const groupHasPermission = (subject, action, groupPermissions) => {
+    if (groupPermissions) {
+        const singlePermission = groupPermissions.filter(n1 => subject === n1.subject);
+        if (singlePermission[0] && singlePermission[0].actions && singlePermission[0].actions.length > 0) {
+            return singlePermission[0].actions.filter(n1 => n1 === action).length > 0;
+        }
+    }
+    return false;
+};
+
 function TableGroupsPermissions(params) {
-    const { handleChangeCheckbox, permissionsForm } = params;
-    if (!permissionsForm) {
-        return (<div/>);
+    const {
+        handleChangeCheckbox, groupPermissions, systemPermissions, cannotEdit,
+    } = params;
+
+    if (!systemPermissions) {
+        return (<div />);
     }
 
     return (
         <div className="bodyForm">
             <table className="striped centered">
                 <thead>
-                <tr>
-                    <th><Trans i18nKey="groups.form.table_label.feature"/></th>
-                    <th><Trans i18nKey="groups.form.table_label.modifier"/></th>
-                    <th>
-                        <Trans i18nKey="groups.form.table_label.viewer"/>
-                    </th>
-                </tr>
+                    <tr>
+                        <th><Trans i18nKey="form.table_label.feature" /></th>
+                        <th>
+                            <Trans i18nKey="form.table_label.viewer" />
+                        </th>
+                        <th><Trans i18nKey="form.table_label.modifier" /></th>
+                    </tr>
                 </thead>
                 <tbody>
-                {Object.keys(permissionsForm)
-                    .map(item => (
-                        <tr>
-                            <td>
-                                <Trans i18nKey={`groups.form.feature.${item}`}/>
-                            </td>
-                            <td>
-                                <InputCheckbox
-                                    label=""
-                                    placeHolder=""
-                                    name={`${item}.modifier`}
-                                    checked={permissionsForm[item].modifier}
-                                    handleChangeCheckbox={handleChangeCheckbox}
-                                />
-                            </td>
-                            <td>
-                                <InputCheckbox
-                                    label=""
-                                    placeHolder=""
-                                    name={`${item}.viewer`}
-                                    checked={permissionsForm[item].viewer}
-                                    handleChangeCheckbox={handleChangeCheckbox}
-                                />
-                            </td>
-                        </tr>
-                    ))
-                }
+                    {systemPermissions
+                        .map(item => (
+                            <tr key={`${item.subject}`}>
+                                <td>
+                                    <Trans i18nKey={`form.feature.${item.subject}`} />
+                                </td>
+                                <td>
+                                    {groupHasPermission(item.subject, 'viewer', systemPermissions) ? (
+                                        <InputCheckbox
+                                            label=""
+                                            placeHolder=""
+                                            name={`${item.subject}.viewer`}
+                                            checked={groupHasPermission(item.subject, 'viewer', groupPermissions)}
+                                            handleChangeCheckbox={handleChangeCheckbox}
+                                            disabled={cannotEdit}
+                                        />
+                                    ) : <div />}
+                                </td>
+                                <td>
+                                    {groupHasPermission(item.subject, 'modifier', systemPermissions) ? (
+                                        <InputCheckbox
+                                            label=""
+                                            placeHolder=""
+                                            name={`${item.subject}.modifier`}
+                                            checked={groupHasPermission(item.subject, 'modifier', groupPermissions)}
+                                            handleChangeCheckbox={handleChangeCheckbox}
+                                            disabled={cannotEdit}
+                                        />
+                                    ) : <div />}
+                                </td>
+                            </tr>
+                        ))}
                 </tbody>
             </table>
         </div>
@@ -65,39 +92,65 @@ function Form(params) {
         handleCharge,
         dataGroup,
         handleChangeCheckbox,
-        dataPermissions,
+        groupPermissions,
+        systemPermissions,
+        cannotEdit,
     } = params;
 
     if (!dataGroup) {
-        return (<div/>);
+        return (<div />);
     }
 
     return (
-        <form action="#">
+        <Fragment>
             <InputText
-                label={<Trans i18nKey="groups.form.input.groupname.label"/>}
+                label={<Trans i18nKey="form.input.groupname.label" />}
                 name="name"
                 maxLength={30}
                 onChange={handleCharge}
                 value={dataGroup.name ? dataGroup.name : ''}
-                errorMessage={<Trans i18nKey="groups.form.input.groupname.error"/>}
+                disabled={cannotEdit}
+                errorMessage={<Trans i18nKey="form.input.groupname.error" />}
             />
             <InputText
-                label={<Trans i18nKey="groups.form.input.groupdescription.label"/>}
+                label={<Trans i18nKey="description.label" />}
                 name="description"
                 maxLength={254}
                 onChange={handleCharge}
+                disabled={cannotEdit}
                 value={dataGroup.description ? dataGroup.description : ''}
             />
             <TableGroupsPermissions
-                permissionsForm={dataPermissions}
+                groupPermissions={groupPermissions}
+                systemPermissions={systemPermissions}
                 handleChangeCheckbox={handleChangeCheckbox}
+                cannotEdit={cannotEdit}
             />
-        </form>
+        </Fragment>
     );
 }
 
 class GroupsSideBar extends Component {
+    // @todo: we should avoid use derivedState
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.grouppermissions !== prevState.grouppermissions) {
+            return {
+                ...prevState,
+                systempermissions: nextProps.systempermissions,
+                grouppermissions: nextProps.grouppermissions,
+                group: nextProps.group,
+                edit: nextProps.edit,
+            };
+        }
+        return null;
+    }
+
+    static checkAlphaNumber(string) {
+        // will be change - regex doesnt should be here
+        const regex = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
+        return !regex.test(string);
+    }
+
     constructor(props) {
         super(props);
 
@@ -105,10 +158,14 @@ class GroupsSideBar extends Component {
             showDeleteModal: false,
             group: undefined,
             grouppermissions: undefined,
-            permissionsForm: {},
+            systempermissions: undefined,
             edit: false,
         };
 
+        this.auxGroupPermissions = null;
+        this.addingCorrelations = this.addingCorrelations.bind(this);
+        this.addingPermission = this.addingPermission.bind(this);
+        this.isPossibleRemove = this.isPossibleRemove.bind(this);
         this.handleInput = this.handleInput.bind(this);
         this.discard = this.discard.bind(this);
         this.save = this.save.bind(this);
@@ -117,41 +174,52 @@ class GroupsSideBar extends Component {
         this.handleCheckBox = this.handleCheckBox.bind(this);
     }
 
-    componentDidUpdate(prevProps) {
-        const {
-            grouppermissions: grouppermissionsProp,
-            group: groupProp,
-            edit: editProp,
-        } = this.props;
-
-        const {
-            grouppermissions: grouppermissionsState,
-            group: groupState,
-            edit: editState,
-        } = this.state;
-
-        if ((grouppermissionsProp && !grouppermissionsState)
-            || prevProps.grouppermissions !== grouppermissionsProp) {
-            this.setState({ grouppermissions: grouppermissionsProp });
-        }
-        if ((groupProp && !groupState) || prevProps.group !== groupProp) {
-            this.setState({ group: groupProp });
-        }
-        if ((editProp && !editState) || prevProps.edit !== editProp) {
-            this.setState({ edit: editProp });
-        }
+    // applying a DFS algorithm strategy with pre order
+    addingCorrelations(subject, action) {
+        const { systemcorrelations } = this.props;
+        const corr = systemcorrelations.filter(n1 => subject === n1.subject
+            && action === n1.action)[0];
+        if (corr === undefined) return;
+        corr.requires.forEach((el) => {
+            const res = groupHasPermission(el.subject, el.action, this.auxGroupPermissions);
+            if (!res) this.addingPermission(el.subject, el.action);
+        });
     }
 
-    checkAlphaNumber(string) {
-        // will be change - regex dont should be here
-        const regex = /^([ \u00c0-\u01ffa-zA-Z'\-])+$/;
-        return !regex.test(string);
+    addingPermission(subject, action) {
+        // Adds subject tuple to permissions list
+        if (!groupHasSubject(subject, this.auxGroupPermissions)) {
+            this.auxGroupPermissions.push({
+                subject,
+                actions: [],
+            });
+        }
+
+        this.auxGroupPermissions.forEach((item, index1) => {
+            if (item.subject === subject) {
+                this.auxGroupPermissions[index1].actions.push(action);
+            }
+        });
+
+        this.addingCorrelations(subject, action);
     }
 
-    componentDidCatch(error, info) {
-        console.log('componentDidCatch 2', error);
-        console.log('componentDidCatch 2', info);
+    isPossibleRemove(subject, action, groupPermissions) {
+        let retrn = true;
+        const { requiredBy } = this.props;
+        if (requiredBy[subject] && requiredBy[subject][action]) {
+            // checking all constraints
+            requiredBy[subject][action].forEach((el) => {
+                const res = groupHasPermission(el.subject, el.action, groupPermissions);
+                if (res) {
+                    retrn = false;
+                }
+                // A restriction is been used;
+            });
+        }
+        return retrn;
     }
+
 
     handleInput(e) {
         const { name, value } = e.target;
@@ -166,16 +234,36 @@ class GroupsSideBar extends Component {
 
     handleCheckBox(e) {
         const { name } = e.target;
-        const [action, typePermission] = name.split('.');
-        this.setState(prevState => ({
-            grouppermissions: {
-                ...prevState.grouppermissions,
-                [action]: {
-                    ...prevState.grouppermissions[action],
-                    [typePermission]: !prevState.grouppermissions[action][typePermission],
-                },
-            },
-        }));
+        const [subject, action] = name.split('.');
+        let { grouppermissions } = this.state;
+
+        const hasPermission = groupHasPermission(subject, action, grouppermissions);
+        // removing action
+        if (hasPermission) {
+            // check is possible to remove
+            if (!this.isPossibleRemove(subject, action, grouppermissions)) {
+                e.preventDefault();
+                return;
+            }
+            grouppermissions.forEach((item, index1) => {
+                if (item.subject === subject) {
+                    (item.actions).forEach((item2, index2) => {
+                        if (item2 === action) {
+                            delete grouppermissions[index1].actions[index2];
+                        }
+                    });
+                }
+            });
+        } else {
+            // adding action (using a auxiliar variable)
+            this.auxGroupPermissions = grouppermissions;
+            this.addingPermission(subject, action);
+            grouppermissions = this.auxGroupPermissions;
+        }
+
+        this.setState({
+            grouppermissions,
+        });
     }
 
     hideSideBar() {
@@ -197,17 +285,17 @@ class GroupsSideBar extends Component {
         const { group } = this.state;
         const { t } = this.props;
         if ((group.name).trim().length <= 0) {
-            toaster.warning(t('groups.alerts.empty_name'));
+            toaster.warning(t('alerts.empty_name'));
             return false;
         }
 
-        if (this.checkAlphaNumber(group.name)) {
-            toaster.warning(t('groups.alerts.invalid_name'));
+        if (GroupsSideBar.checkAlphaNumber(group.name)) {
+            toaster.warning(t('alerts.invalid_name'));
             return false;
         }
 
         if ((group.description).trim().length <= 0) {
-            toaster.warning(t('groups.alerts.empty_desc'));
+            toaster.warning(t('alerts.empty_desc'));
             return false;
         }
         return true;
@@ -223,21 +311,16 @@ class GroupsSideBar extends Component {
                 group,
                 (response) => {
                     GroupPermissionActions.triggerSaveGroupPermissions(
-                        grouppermissions, group.id ? group.id : response.id, err, e, edit,
+                        group.name ? group.name : response.name, grouppermissions, err, e,
                         () => {
-                        }, (groupR) => {
-                            console.log(groupR);
                         },
                     );
                     if (edit) {
-                        toaster.success(t('groups.alerts.group_modify'));
+                        toaster.success(t('alerts.group_modify'));
                     } else {
-                        toaster.success(t('groups.alerts.group_create'));
+                        toaster.success(t('alerts.group_create'));
                     }
                     this.hideSideBar();
-                },
-                (groupR) => {
-                    console.log(groupR);
                 },
             );
             GroupActions.fetchGroups.defer();
@@ -259,11 +342,8 @@ class GroupsSideBar extends Component {
         GroupActions.triggerRemoval(
             group.id,
             () => {
-                toaster.success(t('groups.alerts.group_remove'));
+                toaster.success(t('alerts.group_remove'));
                 this.hideSideBar();
-            },
-            (groupR) => {
-                console.log(groupR);
             },
         );
 
@@ -273,63 +353,82 @@ class GroupsSideBar extends Component {
 
     render() {
         const {
-            group, edit, showDeleteModal, grouppermissions,
+            group, edit, showDeleteModal, grouppermissions, systempermissions,
         } = this.state;
+
+        const { t } = this.props;
+
+        const cannotEdit = !ability.can('modifier', 'permission');
+
         const buttonsFooter = [
             {
-                label: <Trans i18nKey="groups.form.btn.discard.label"/>,
+                label: t('common:discard.label'),
                 click: this.discard,
-                type: 'default',
-            },
-            {
-                label: <Trans i18nKey="groups.form.btn.save.label"/>,
-                click: this.save,
-                type: 'primary',
+                type: 'secondary',
             },
         ];
 
-        if (edit) {
+        if (!cannotEdit) {
+            if (edit) {
+                buttonsFooter.push({
+                    label: t('common:remove.label'),
+                    click: this.handleModalDelete,
+                    type: 'secondary',
+                });
+            }
             buttonsFooter.push({
-                label: <Trans i18nKey="groups.form.btn.remove.label"/>,
-                click: this.handleModalDelete,
-                type: 'secondary',
+                label: t('common:save.label'),
+                click: this.save,
+                color: 'red',
+                type: 'primary',
             });
         }
 
+
         return (
-            <div>
+            <Fragment>
                 <SideBarRight
-                    title={edit ? <Trans i18nKey="groups.form.title.edit"/>
-                        : <Trans i18nKey="groups.form.title.new"/>}
+                    icon="groups"
+                    headerColor="bg-gradient-purple"
+                    title={edit ? `${group.name}`
+                        : t('groups:form.title.new')}
                     content={(
-                        <Form
-                            dataGroup={group}
-                            dataPermissions={grouppermissions}
-                            handleCharge={this.handleInput}
-                            handleChangeCheckbox={this.handleCheckBox}
-                        />
+                        <div className="pl20 pr20">
+                            <Form
+                                dataGroup={group}
+                                groupPermissions={grouppermissions}
+                                systemPermissions={systempermissions}
+                                handleCharge={this.handleInput}
+                                handleChangeCheckbox={this.handleCheckBox}
+                                cannotEdit={cannotEdit}
+                            />
+                        </div>
                     )}
                     visible
                     buttonsFooter={buttonsFooter}
                 />
                 {showDeleteModal ? (
                     <RemoveModal
-                        name="group"
+                        name={t('groups:alerts.group')}
                         remove={this.delete}
                         openModal={this.handleModalDelete}
-                    />) : <div/>}
-            </div>
+                    />
+                ) : <div />}
+            </Fragment>
         );
     }
 }
 
 GroupsSideBar.propTypes = {
-    grouppermissions: PropTypes.shape.isRequired,
-    group: PropTypes.shape.isRequired,
+
+    grouppermissions: PropTypes.arrayOf(PropTypes.object).isRequired,
+    group: PropTypes.instanceOf(Object).isRequired,
     edit: PropTypes.bool,
+    systemcorrelations: PropTypes.shape({}).isRequired,
+    requiredBy: PropTypes.shape({}).isRequired,
     handleHideSideBar: PropTypes.func.isRequired,
     handleShowSideBar: PropTypes.func.isRequired,
-    t: PropTypes.shape.isRequired,
+    t: PropTypes.func.isRequired,
 };
 
 GroupsSideBar.defaultProps = {

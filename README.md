@@ -37,3 +37,26 @@ To run the created image:
 ```shell
 docker run -d [-n name] <tag name>
 ```
+
+# Acceptance Test
+
+To run the acceptance test, run the commands below.
+
+```shell
+yarn install
+yarn run test 
+```
+To clean the database (devices, templates and flows) and run the acceptance test, run the commands below.
+
+```shell
+yarn install
+yarn run test:clearDb 
+```
+
+There are 2 types of scenarios: Basic and Advanced.
+In order to run each scenario, run the following command:
+
+```shell
+yarn run test --grep @basic
+yarn run test --grep @adv
+```

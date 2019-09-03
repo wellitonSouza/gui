@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Slide from 'react-reveal/Slide';
 
-import { DojotCustomButton } from 'Components/DojotButton';
+import { DojotBtnClassic } from 'Components/DojotButton';
+import { withNamespaces } from 'react-i18next';
 
 const SidebarDelete = ({
-    showSidebar, message, cancel, confirm,
+    showSidebar, message, cancel, confirm, t,
 }) => (
     <Slide right when={showSidebar} duration={300}>
         {
@@ -13,7 +14,12 @@ const SidebarDelete = ({
                 ? (
                     <div className="sidebar-delete">
                         <div className="header">
-                            <span className="header-path">delete</span>
+                            <div className="title">
+                                {t('templates:title_sidebar.default')}
+                            </div>
+                            <div className="icon">
+                                <img src="images/icons/template-cyan.png" alt="device-icon" />
+                            </div>
                         </div>
                         <div className="body">
                             <div className="sidebar-delete-message">
@@ -22,8 +28,17 @@ const SidebarDelete = ({
                         </div>
                         <div className="footer">
                             <div className="sidebar-delete-action">
-                                <DojotCustomButton label="cancel" onClick={cancel} type="default" />
-                                <DojotCustomButton label="confirm" onClick={confirm} type="secondary" />
+                                <DojotBtnClassic
+                                    type="secondary"
+                                    label={t('cancel.label')}
+                                    onClick={cancel}
+                                />
+                                <DojotBtnClassic
+                                    color="red"
+                                    type="primary"
+                                    label={t('confirm.label')}
+                                    onClick={confirm}
+                                />
                             </div>
                         </div>
                     </div>
@@ -34,15 +49,14 @@ const SidebarDelete = ({
 );
 
 SidebarDelete.defaultProps = {
-    message: 'Do you really want to remove it?',
     showSidebar: false,
 };
 
 SidebarDelete.propTypes = {
     showSidebar: PropTypes.bool,
-    message: PropTypes.string,
+    message: PropTypes.string.isRequired,
     cancel: PropTypes.func.isRequired,
     confirm: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
 };
-
-export default SidebarDelete;
+export default withNamespaces()(SidebarDelete);

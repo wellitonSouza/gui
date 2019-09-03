@@ -1,8 +1,5 @@
 /* eslint-disable */
 import React, { Component } from 'react';
-import { Link } from 'react-router';
-import Script from 'react-load-script';
-import DivIcon from 'react-leaflet-div-icon';
 import Sidebar from '../../components/DeviceRightSidebar';
 import { Filter } from "../utils/Manipulation";
 import { SmallPositionRenderer } from "../utils/Maps";
@@ -10,10 +7,11 @@ import { Loading } from '../../components/Loading';
 
 import TrackingActions from '../../actions/TrackingActions';
 import MapPositionActions from "../../actions/MapPositionActions";
+import { withNamespaces } from 'react-i18next';
 
 let activeTracks = [];
 
-class DeviceMapWrapper extends Component {
+class DeviceMapWrapperComponent extends Component {
     constructor(props) {
         super(props);
         this.didMount = false;
@@ -25,19 +23,19 @@ class DeviceMapWrapper extends Component {
             page_size: 5000,
             page_num: 1
          };
-         MapPositionActions.fetchDevices.defer(filter); 
+         MapPositionActions.fetchDevices.defer(filter);
          this.didMount = true; // I really don't like it, any ideas to change it?
     }
 
     render() {
-        // console.log("2.5. <DeviceMapWrapper>.render.", this.props);
-
         if (!this.didMount || this.props.positions.loading) {
           return <Loading />
         }
 
+        const { t } =this.props;
+     
         return (
-            <DeviceMap Config={this.props.configs} trackedDevices={this.props.measures.tracking} devices={this.props.positions.devicesPos} showFilter={this.props.showFilter} dev_opex={this.props.dev_opex} />
+            <DeviceMap Config={this.props.configs} trackedDevices={this.props.measures.tracking} devices={this.props.positions.devicesPos} showFilter={this.props.showFilter} dev_opex={this.props.dev_opex} t={t}/>
         );
     }
 }
@@ -62,11 +60,11 @@ class DeviceMap extends Component {
         this.countVisibleDevices = this.countVisibleDevices.bind(this);
         this.showAll = this.showAll.bind(this);
         this.hideAll = this.hideAll.bind(this);
-        // this.toggleDisplay = this.toggleDisplay.bind(this);
         this.toggleVisibility = this.toggleVisibility.bind(this);
 
         this.staticDevices = [];
         this.dynamicDevices = [];
+        this.activeTracks = [];
         this.didMount = false;
     }
 
@@ -78,9 +76,12 @@ class DeviceMap extends Component {
         return count;
     }
 
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     return nextProps.isFavourite != this.props.isFavourite;
+    // }
+
     componentDidMount() {
 
-        // console.log("3.c.componentDidMount");
         this.showAll();
 
         this.staticDevices = [];
@@ -118,7 +119,6 @@ class DeviceMap extends Component {
     }
 
     toggleVisibility(device_id) {
-        // console.log('toggleVisibility', device_id);
         const displayMap = this.state.displayMap;
         displayMap[device_id] = !displayMap[device_id];
         this.setState({ displayMap });
@@ -139,10 +139,9 @@ class DeviceMap extends Component {
         }
         this.setState({ displayMap });
     }
- 
+
 
     toggleTracking(device_id) {
-        // console.log("3. toggleTracking for ", device_id);
         let device = null;
         for (const k in this.props.devices) {
             device = this.props.devices[k];
@@ -152,27 +151,21 @@ class DeviceMap extends Component {
 
         if (!device.active_tracking)
         {
+            // enabling device' tracking
             TrackingActions.fetch.defer(device.dp_metadata.id,
                 device.dp_metadata.attr_label, 50);
-            // console.log("requested tracking info.");
             device.active_tracking = true;
-            activeTracks.push(device_id);
+            this.activeTracks.push(device_id);
         }
         else
         {
-            // TrackingActions.dismiss(device_id);
+            // disabling device' tracking
             device.active_tracking = false;
-            activeTracks = activeTracks.filter(i => i !== device_id);
-            // this.dynamicDevices[k].dy_positions = [];
-            // let last = device.dy_positions[0];
-            // for (const y in device.dy_positions) {
-            //     device.dy_positions[y]
-
-            // device;
-            // updated.timestamp = e.timestamp;
+            // removes device from array of activeTracks; 
+            this.activeTracks = this.activeTracks.filter(i => i !== device_id);
+            // request again the last geo of this devices;
             TrackingActions.fetch.defer(device.dp_metadata.id,
                 device.dp_metadata.attr_label, 1);
-
         }
     }
 
@@ -183,31 +176,15 @@ class DeviceMap extends Component {
         return false;
     }
 
-    // toggleDisplay(device) {
-    //     let displayMap = this.state.displayMap;
-    //     if (displayMap.hasOwnProperty(device)) {
-    //         displayMap[device] = !displayMap[device];
-    //     } else {
-    //         displayMap[device] = false;
-    //     }
-    //     this.setState({displayMap: displayMap});
-    // }
-
-
     render() {
-        // console.log("3. <DeviceMap>. Render. ");
-        // console.log(" 3.a  this.props.Measure.tracking.", this.props.trackedDevices);
-        // console.log(" 3.b  this.props.devices", this.props.devices);
-        
+        const { t } =this.props;
+        if (!this.didMount)
+            return <Loading />;
 
-        if (!this.didMount) 
-            return <Loading />
-
- 
         for (const k in this.dynamicDevices) {
             const device = this.dynamicDevices[k];
             if (this.props.trackedDevices.hasOwnProperty(device.id) && this.state.displayMap[device.id]) {
-                this.dynamicDevices[k].dy_positions = []; 
+                this.dynamicDevices[k].dy_positions = [];
                 this.dynamicDevices[k].dy_positions = this.props.trackedDevices[device.id].map(
                   (e, k) => {
                     const updated = e;
@@ -221,11 +198,10 @@ class DeviceMap extends Component {
             }
         }
 
-        this.metaData = { alias: "device" };
+        this.metaData = { alias: t('devices:device') };
         this.props.dev_opex.setFilterToMap();
 
         // remove or not depending visibility
-
         for (const k in this.staticDevices) {
             this.staticDevices[k].is_visible = this.state.displayMap[this.staticDevices[k].id];
         }
@@ -233,24 +209,18 @@ class DeviceMap extends Component {
         for (const k in this.dynamicDevices) {
             this.dynamicDevices[k].is_visible = this.state.displayMap[this.dynamicDevices[k].id];
         }
-        
+
         let deviceWithData = this.props.devices.filter(dev => dev.has_static_position || dev.dy_positions.length > 0);
         const nVisibleDevices = this.countVisibleDevices(deviceWithData);
-        const displayDevicesCount = `Showing ${nVisibleDevices} of ${deviceWithData.length} device(s)`;
-        // console.log("displayDevicesCount.", displayDevicesCount);
-        // console.log("deviceWithData", deviceWithData);
-
-        // console.log("this.staticDevices", this.staticDevices);
-        // console.log("this.dynamicDevices", this.dynamicDevices);
-
+        const displayDevicesCount = `${t('text.showing')} ${nVisibleDevices} ${t('text.of')} ${deviceWithData.length} ${t('devices:device')}(s)`;
         return <div className="fix-map-bug">
             <div className="flex-wrapper">
               <div className="map-filter-box">
-                <Filter showPainel={this.props.showFilter} metaData={this.metaData} ops={this.props.dev_opex} fields={DevFilterFields} />
+                <Filter showPainel={this.props.showFilter} metaData={this.metaData} ops={this.props.dev_opex} fields={withNamespaces()(DevFilterFields)} />
               </div>
 
               <div className="deviceMapCanvas deviceMapCanvas-map col m12 s12 relative">
-                <SmallPositionRenderer showLayersIcons={true} staticDevices={this.staticDevices} dynamicDevices={this.dynamicDevices} toggleTracking={this.toggleTracking} allowContextMenu={true} showPolyline={true} config={this.props.Config} /> 
+                <SmallPositionRenderer showLayersIcons={true} staticDevices={this.staticDevices} dynamicDevices={this.dynamicDevices} toggleTracking={this.toggleTracking} allowContextMenu={true} showPolyline={true} config={this.props.Config} />
                 <Sidebar deviceInfo={displayDevicesCount} toggleVisibility={this.toggleVisibility} devices={deviceWithData} hideAll={this.hideAll} showAll={this.showAll} displayMap={this.state.displayMap} />
               </div>
             </div>
@@ -258,56 +228,23 @@ class DeviceMap extends Component {
     }
 }
 
-
-
-
-    // handleGeoDevices() {
-    //     console.log("DeviceMapBig: handleGeoDevices", this.props);
-    //     this.clusterers = [];
-    //     // step 1. Create elements to set on markers
-    //     this.props.clusterers.map((element, i1) => {
-    //         let clstr = { index: i1, devices: [] };
-    //         element.devices.map((element, index) => {
-    //             console.log("element.geo.lat", element.geo);
-    //             if (element.geo !== undefined) {
-    //                 clstr.devices.push({
-    //                     id: element.id,
-    //                     lat: element.geo.lat,
-    //                     lng: element.geo.lng,
-    //                     pos: [
-    //                         parseFloat("-23.5373"),
-    //                         parseFloat("-46.6293")
-    //                     ],
-    //                     label: element.label,
-    //                     timestamp: element.timestamp,
-    //                     key: element.id
-    //                 });
-    //             }
-    //         });
-    //         this.clusterers.push(clstr);
-    //     });
-    //     console.log("this.clusterers", this.clusterers);
-    //     // this.clusterers = this.splitInClusters();
-    // }
-
-
 class DevFilterFields extends Component {
     constructor(props) {
         super(props);
     }
-    
+
     render() {
-        // console.log("DevFilterFields - DeviceMaps", this.props);
+        const { t } =this.props;
         return <div className="col s12 m12">
         <div className="col s5 m5">
             <div className="dev_field_filter">
-                <label htmlFor="fld_device_name">Device Name</label>
-                <input id="fld_device_name" type="text" className="form-control form-control-lg margin-top-mi7px" placeholder="Device Name" value={this.props.fields.label} name="label" onChange={this.props.onChange} />
+                <label htmlFor="fld_device_name">{t('devices:title')}</label>
+                <input id="fld_device_name" type="text" className="form-control form-control-lg margin-top-mi7px" placeholder={t('text.name')} value={this.props.fields.label} name="label" onChange={this.props.onChange}  onKeyUp={this.props.KeyUp} />
             </div>
         </div>
         <div className="col s1 m1" />
         </div>;
     }
 }
-
+const DeviceMapWrapper = withNamespaces()(DeviceMapWrapperComponent);
 export { DeviceMapWrapper };

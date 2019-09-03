@@ -1,8 +1,8 @@
-/* eslint-disable */
 import templateManager from 'Comms/templates/TemplateManager';
 import toaster from 'Comms/util/materialize';
 
 const alt = require('../alt');
+
 const newTemplate = {
     id: `${Math.floor(Math.random() * 100000)}`,
     label: '',
@@ -21,11 +21,15 @@ class TemplateActions {
         return template;
     }
 
+    updateTemplatesAllList(list) {
+        return list;
+    }
+
     addTemplate(template, cb) {
-        const newTemplate = template;
         return (dispatch) => {
             dispatch();
-            templateManager.addTemplate(newTemplate)
+            templateManager
+                .addTemplate(template)
                 .then((response) => {
                     this.insertTemplate(response.template);
                     if (cb) {
@@ -38,9 +42,28 @@ class TemplateActions {
         };
     }
 
+    fetchSingle(templateId, cb) {
+        return (dispatch) => {
+            dispatch();
+            templateManager
+                .getTemplateGQL(templateId)
+                .then((result) => {
+                    // console.log('fetchSingle', result);
+                    this.updateAndSetSingle(result.data);
+                    if (cb) {
+                        cb(result);
+                    }
+                })
+                .catch((error) => {
+                    this.templatesFailed(error);
+                });
+        };
+    }
+
     fetchTemplates(params = null, cb) {
         return (dispatch) => {
-            templateManager.getTemplates(params)
+            templateManager
+                .getTemplates(params)
                 .then((result) => {
                     this.updateTemplates(result);
                     if (cb) {
@@ -55,9 +78,29 @@ class TemplateActions {
         };
     }
 
+    fetchAllTemplates(cb) {
+        return (dispatch) => {
+            templateManager
+                .getTemplates({
+                    page_size: 999999,
+                    sortBy: 'label',
+                })
+                .then((result) => {
+                    this.updateTemplatesAllList(result);
+                    if (cb) {
+                        cb(result);
+                    }
+                })
+                .catch((error) => {
+                    this.templatesFailed(error);
+                });
+
+            dispatch();
+        };
+    }
+
     triggerUpdate(template, cb) {
         return (dispatch) => {
-            // console.log('triggerUpdate', template);
             templateManager.setTemplate(template)
                 .then((response) => {
                     this.updateSingle(template);
@@ -75,11 +118,14 @@ class TemplateActions {
 
     triggerIconUpdate(id, icon) {
         return (dispatch) => {
-            templateManager.setIcon(id, icon)
-                .then((response) => {
+            templateManager
+                .setIcon(id, icon)
+                .then(() => {
                     this.setIcon(id);
                 })
                 .catch((error) => {
+                    // eslint-disable-next-line no-console
+                    console.log('error:', error);
                 });
 
             dispatch();
@@ -93,7 +139,8 @@ class TemplateActions {
     triggerRemoval(template, cb) {
         return (dispatch) => {
             dispatch();
-            templateManager.deleteTemplate(template)
+            templateManager
+                .deleteTemplate(template)
                 .then((response) => {
                     this.removeSingle(template);
                     if (cb) {
@@ -104,6 +151,10 @@ class TemplateActions {
                     this.templatesFailed(error);
                 });
         };
+    }
+
+    updateAndSetSingle(template) {
+        return template;
     }
 
     updateSingle(template) {
@@ -119,12 +170,15 @@ class TemplateActions {
         return error;
     }
 
-    selectTemplate(template = newTemplate){
+    selectTemplate(template = newTemplate) {
+        if (!template.newTemplate) {
+            this.fetchSingle(template.id);
+        }
         return JSON.parse(JSON.stringify(template)); // passing obj by value
     }
 
-    toogleSidebar(params){
-        return (dispatch) => dispatch(params)
+    toogleSidebar(params) {
+        return dispatch => dispatch(params);
     }
 }
 

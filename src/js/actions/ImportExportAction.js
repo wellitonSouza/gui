@@ -13,18 +13,15 @@ class ImportExportActions {
         return true;
     }
 
-    import(data) {
+    async import(data) {
         const newData = data;
-        return (dispatch) => {
-            dispatch();
-            ImportManager.import(newData)
-                .then((response) => {
-                    this.importFile(response);
-                })
-                .catch((error) => {
-                    this.importFailed(error);
-                });
-        };
+        const response = await ImportManager.import(newData);
+        if (response.message) {
+            this.importFile();
+        } else {
+            this.importFailed(response.error);
+        }
+        return response;
     }
 
     export() {
@@ -34,10 +31,12 @@ class ImportExportActions {
                 .then((file) => {
                     const text = new global.Blob([JSON.stringify(file)], { type: 'text/json' });
                     const atag = global.document.createElement('a');
+                    global.document.body.appendChild(atag);
                     atag.href = URL.createObjectURL(text);
                     atag.download = 'DojotData.json';
                     atag.click();
                     this.exportFile(text);
+                    global.document.body.removeChild(atag);
                 })
                 .catch((error) => {
                     this.exportFailed(error);

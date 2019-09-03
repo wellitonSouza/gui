@@ -14,27 +14,36 @@ import AltContainer from 'alt-container';
 import DeviceFormStore from './Store';
 import { FormActions } from "./Actions";
 
+import { withNamespaces } from 'react-i18next';
+import ability from 'Components/permissions/ability';
+
 function SummaryItem(props) {
     let attrs = 0;
 
     for (const attribute in props.device.attrs) {
         attrs += props.device.attrs[attribute].length;
-        return (
-            <div className="card-size card-hover lst-entry-wrapper z-depth-2">
-                <div className="lst-entry-title col s12">
-                    <img className="title-icon" src="images/icons/chip-wt.png"/>
-                    <div className="title-text truncate">
-                        <span className="text" title={props.device.label}>
-                            {' '}
-                            {props.device.label}
-                            {' '}
-                        </span>
+    }
+    const canView = ability.canView('device');
+    const canEdit = ability.canModify('device');
+
+    return (
+             <div className="mg20px fl flex-order-2">
+                <div className="card-size card-hover lst-entry-wrapper z-depth-2 mg0px pointer"  onClick={() => { if (canEdit) FormActions.set(props.device)}}>
+                    <div className="lst-entry-title col s12">
+                        <img className="title-icon" src="images/icons/chip-wt.png"/>
+                        <div className="title-text truncate">
+                            <span className="text" title={props.device.label}>
+                                {props.device.label}
+                            </span>
+                        </div>
+                        <div className="title-edit" >
+                            { canView ?
+                                <Link to={`/device/id/${props.device.id}/detail`}>
+                                    <i title={props.t('devices:alts.details')} className="fa fa-info-circle fa-2x color-white" />
+                                </Link> : null
+                            }
+                        </div>
                     </div>
-                    <div className="title-edit" >
-                        <i className="fa fa-edit fa-2x" onClick={() => FormActions.set(props.device)} />
-                    </div>
-                </div>
-                <Link to={`/device/id/${props.device.id}/detail`}>
                     <div className="attr-list">
                         <div className="attr-area light-background">
                             <div className="attr-row">
@@ -43,7 +52,7 @@ function SummaryItem(props) {
                                 </div>
                                 <div className="attr-content">
                                     <input type="text" value={attrs} disabled/>
-                                    <span>Properties</span>
+                                    <span>{props.t('text.properties')}</span>
                                 </div>
                                 <div className="center-text-parent material-btn right-side"/>
                             </div>
@@ -53,21 +62,20 @@ function SummaryItem(props) {
                                 </div>
                                 <div className="attr-content">
                                     <input type="text" value={util.iso_to_date(props.device.created)} disabled/>
-                                    <span>Last update</span>
+                                    <span>{props.t('text.last_update')}</span>
                                 </div>
                                 <div className="center-text-parent material-btn right-side"/>
                             </div>
                             <div className={props.device.status}/>
+                            </div>
                         </div>
                     </div>
-                </Link>
             </div>
         );
-    }
 }
 
 
-class DeviceCardList extends Component {
+class DeviceCardListComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -85,20 +93,22 @@ class DeviceCardList extends Component {
     }
 
     render() {
+        const { t } =this.props;
+
         if (this.props.loading) {
             return <Loading />;
         }
 
         this.convertDeviceList();
 
-        this.metaData = { alias: 'device' };
+        this.metaData = { alias: t('devices:device')};
         if (this.props.toggle.props.toggleState) {
             this.props.dev_opex.setFilterToCard();
         }
-        // console.log('deviceList', this.props);
+
         return (
-            <div className="device-card-area">
-                <Filter showPainel={this.props.showFilter} metaData={this.metaData} ops={this.props.dev_opex} fields={DevFilterFields}/>
+            <div className="full-height flex-container pos-relative overflow-x-hidden">
+                <Filter showPainel={this.props.showFilter} metaData={this.metaData} ops={this.props.dev_opex} fields={withNamespaces()(DevFilterFields)}/>
                 <AltContainer store={DeviceFormStore}>
                     <Sidebar ops={this.props.dev_opex} />
                 </AltContainer>
@@ -106,15 +116,15 @@ class DeviceCardList extends Component {
                     <div className="background-info valign-wrapper full-height">
                         <span className="horizontal-center">
                             {this.props.dev_opex.hasFilter()
-                                ? <b className="noBold">No devices to be shown</b>
-                                : <b className="noBold">No configured devices</b>
+                                ? <b className="noBold">{t('devices:no_devices_shown')}</b>
+                                : <b className="noBold">{t('devices:no_configured_devices')}</b>
                             }
                         </span>
                     </div>
                 ) : (
-                    <div className="col s12  lst-wrapper extra-padding flex-container">
+                    <div className="col s12 lst-wrapper w100 hei-100-over-scroll flex-container">
                         {this.filteredList.map(device => (
-                            <SummaryItem device={device} key={device.id} />
+                            <SummaryItem device={device} key={device.id} t={t}/>
                         ))}
                     </div>
                 )}
@@ -135,16 +145,18 @@ class DevFilterFields extends Component {
 
     convertTemplateList() {
         this.templates = [];
-        for (const k in TemplateStore.state.templates) {
-            if (TemplateStore.state.templates.hasOwnProperty(k)) {
-                this.templates.push(TemplateStore.state.templates[k]);
+        for (const k in TemplateStore.state.templatesAllList) {
+            if (TemplateStore.state.templatesAllList.hasOwnProperty(k)) {
+                this.templates.push(TemplateStore.state.templatesAllList[k]);
             }
         }
     }
 
     createSelectTemplates() {
+        const { t } = this.props;
         const items = [];
-        items.push(<option key="select_template" value="">Select Template</option>);
+        items.push(<option key="select_template" value="">
+            {`${t('text.select')}   ${t('templates:template')}` }</option>);
         for (let i = 0; i < this.templates.length; i++) {
             items.push(<option key={this.templates[i].id} value={this.templates[i].id}>
                 {this.templates[i].label}
@@ -154,20 +166,19 @@ class DevFilterFields extends Component {
     }
 
     componentDidMount() {
-        TemplateActions.fetchTemplates.defer();
+        TemplateActions.fetchAllTemplates.defer();
     }
 
     render() {
-        // console.log('DevFilterFields', this.props);
-        if (this.templates.length == 0) this.convertTemplateList();
-
+        if (this.templates.length === 0) this.convertTemplateList();
+        const { t } = this.props;
         this.opts = this.createSelectTemplates();
         return (
             <div className="col s12 m12">
                 <div className="col s5 m5">
                     <div className="dev_field_filter">
-                        <label htmlFor="fld_device_name">Device Name</label>
-                        <input id="fld_device_name" type="text" className="form-control form-control-lg margin-top-mi7px" placeholder="Device Name"
+                        <label htmlFor="fld_device_name">{`${t('devices:title')}` } </label>
+                        <input id="fld_device_name" type="text" className="form-control form-control-lg margin-top-mi7px" placeholder={t('text.name')}
                         value={this.props.fields.label} name="label" onChange={this.props.onChange} onKeyUp={this.props.KeyUp} />
                     </div>
                 </div>
@@ -175,7 +186,7 @@ class DevFilterFields extends Component {
 
                 <div className="col s6 m6">
                     <div className="col s12">
-                        <MaterialSelect id="flr_templates" name="templates" label="Templates" value={this.props.fields.templates} onChange={this.props.onChange}>
+                        <MaterialSelect id="flr_templates" name="templates" label={t('templates:title')} value={this.props.fields.templates} onChange={this.props.onChange}>
                             {this.opts}
                         </MaterialSelect>
                     </div>
@@ -185,5 +196,5 @@ class DevFilterFields extends Component {
     }
 }
 
-
+const DeviceCardList = withNamespaces()(DeviceCardListComponent);
 export { DeviceCardList };

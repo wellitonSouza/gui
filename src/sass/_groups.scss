@@ -1,15 +1,13 @@
+// @todo: i think we can remove this file as a whole
 #groups-wrapper {
   font-family: Roboto, sans-serif;
   position: relative;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
   float: left;
 
   //will be remove - begin
-  .template-sidebar {
-    height: 100%;
-  }
   .input-field{
     padding-left: 20px;
     padding-right: 20px;

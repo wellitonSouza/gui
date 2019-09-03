@@ -1,0 +1,99 @@
+{
+    "header": "Manage Images",
+    "remove_image_header": " Remove Image",
+    "title": "Firmware",
+    "update_firmware": "Firmware Update",
+    "btn": "Manage Images",
+    "btn_manage_images": "Manage Template Images",
+    "btn_manage_images_alt": "Manage images associated with the firmware upgrade model",
+    "no_data": "Unavailable",
+    "title_info": "Current device information::",
+    "alerts": {
+        "valid_image": "Select a valid image.",
+        "template_updated": "Template successfully updated.",
+        "click_to_new_image": "Click here to add a new image",
+        "image_created": "Image created.",
+        "image_updated": "Image updated.",
+        "image_removed": "Image removed.",
+        "version_created": "Version created {{version}}.",
+        "version_updated": "Version updated.",
+        "version_removed": "Version removed.",
+        "version_required": "Image version required.",
+        "not_to_be_save": "There is no change to be saved",
+        "file_added": "Image file associated with version {{version}}.",
+        "image_to_transfer": "Transfer image to device:",
+        "apply_the_image": "Apply image {{image}} to device:",
+        "image_transferred": "Request to transfer firmware image was sent.",
+        "image_reset_header": "Enable transfer another image:",
+        "image_reset": "Request to enable the sending of a new image.",
+        "image_applied": "Request to apply firmware image was sent.",
+        "qst_remove": "You are about to remove a version. Are you sure?",
+        "qst_remove_binary": "You are about to remove an image. Are you sure?"
+    },
+    "labels": {
+        "remove": "Remove Image",
+        "rem": "Remove",
+        "rem_bin": "Remove this image associated with the version",
+        "transfer": "Transfer image to device",
+        "transfer_alt": "Transfer image to device for firmware update",
+        "apply": "Apply image update",
+        "apply_alt": "Finish firmware update from transferred image to the device",
+        "reset": "Set device to 'On hold'",
+        "reset_alt": "Restart the flow and allows you to transfer a new image",
+        "available": "Images available for transfer",
+        "select_image": "Select an image",
+        "title_modal_apply": "Apply update",
+        "qst_apply_image": "Do you want to update the device firmware by applying the image {{image}}?",
+        "btn_apply": "Apply",
+        "close": "Close firmware update"
+    },
+    "states": {
+        "enabled": "Firmware enabled",
+        "disabled": "Firmware disabled",
+        "short_desc": "This option allows the template to handle images.",
+        "long_desc": "Attributes used to manage firmware update information:"
+    },
+    "default_attrs": {
+        "state": "State",
+        "update_result": "Result of apply image",
+        "upload_image": "Upload Image",
+        "transferred": "Last transferred version",
+        "transferring": "Transferring version",
+        "applying": "Applying version",
+        "apply_image": "Apply Image",
+        "current_version": "Version"
+    },
+    "default_attrs_template": {
+        "state": "Device State",
+        "update_result": "Result of apply version",
+        "transferred": "Last transferred version",
+        "upload_image": "Sets which version to transfer",
+        "apply_image": "Trigger version update",
+        "current_version": "Current version of the image"
+    },
+    "image_list": {
+        "version": "Image Version",
+        "hash": "Binary info",
+        "created_at": "Created At",
+        "no_binary_yet": "No binary yet.",
+        "dropzone_desc": "Drop the file here or click to select image to upload."
+    },
+    "state": {
+        "0": "On hold",
+        "1": "Downloading",
+        "2": "Downloaded",
+        "3": "Updating"
+    },
+    "result": {
+        "0": "Action started",
+        "1": "Firmware updated success",
+        "2": "Flash space is missing",
+        "3": "Insufficient RAM memory for image transfer",
+        "4": "Connection lost during image transfer",
+        "5": "New image integrity check failed",
+        "6": "Unsupported image type",
+        "7": "Invalid image finder",
+        "8": "Failed to update firmware image",
+        "9": "Unsupported protocol"
+    }
+}

@@ -1,0 +1,26 @@
+{
+  "groups": {
+    "text": "Profiles",
+    "alt": "List of Profiles"
+  },
+  "users": {
+    "text": "Users",
+    "alt": "Users list"
+  },
+  "flows": {
+    "text": "data flows",
+    "alt": "Processing flows to be executed"
+  },
+  "templates": {
+    "text": "Templates",
+    "alt": "Template management"
+  },
+  "devices": {
+    "text": "Devices",
+    "alt": "Known devices and configuration"
+  },
+  "notifications": {
+    "text": "Notifications",
+    "alt": "Notifications List"
+  }
+}

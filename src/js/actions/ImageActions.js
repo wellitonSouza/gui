@@ -1,41 +1,52 @@
-/* eslint-disable */
-import imageManager from '../comms/ImageManager';
-import toaster from '../comms/util/materialize';
+import imageManager from 'Comms/firmware/ImageManager';
+import toaster from 'Comms/util/materialize';
 
 const alt = require('../alt');
 
-// console.log('ImageActions');
-
 class ImageActions {
+    updateTemplateInfo(data) {
+        return data;
+    }
+
+    fetchTemplateInfo(params = null, cb) {
+        return (dispatch) => {
+            imageManager.getTemplateInfo(params)
+                .then((result) => {
+                    this.updateTemplateInfo(result);
+                    if (cb) {
+                        cb(result);
+                    }
+                })
+                .catch((error) => {
+                    this.templatesFailed(error);
+                });
+
+            dispatch();
+        };
+    }
+
+    updateBinaries(binaryList) {
+        return binaryList;
+    }
+
     updateImages(images) {
         return images;
     }
 
-    // fetchImages() {
-    //   return (dispatch) => {
-    //     dispatch();
+    updateImageData(id, label, value) {
+        return { id, label, value };
+    }
 
-    //     imageManager.getImages().then((imageList) => {
-    //       console.log("imageManager.getImages()",imageList);
-    //       this.updateImages(imageList);
-    //     })
-    //     .catch((error) => {
-    //       this.imagesFailed(error);
-    //     });
-    //   }
-    // }
+    updateImageAllowed(value) {
+        return value;
+    }
 
-
-    triggerUpdate(image, cb) {
+    fetchImages(templateId) {
         return (dispatch) => {
             dispatch();
-            imageManager.setBinary(image)
-                .then((response) => {
-                    // console.log('imageManager.setBinary', response);
-                    this.updateSingle(response.image);
-                    if (cb) {
-                        cb(response.image);
-                    }
+
+            imageManager.getImages(templateId).then((imageList) => {
+                   this.updateImages(imageList);
                 })
                 .catch((error) => {
                     this.imagesFailed(error);
@@ -43,8 +54,29 @@ class ImageActions {
         };
     }
 
-    updateSingle(image_id) {
-        return image_id;
+    removeBinaryInfo(id) {
+        return id;
+    }
+
+    triggerUpdate(image, cb) {
+        return (dispatch) => {
+            dispatch();
+            imageManager.setBinary(image)
+                .then((response) => {
+                    this.updateSingle(response.image);
+                    if (cb) {
+                        cb(response.image);
+                    }
+                })
+                .catch((error) => {
+                    this.imagesFailed(error);
+                    this.removeBinaryInfo(image.id);
+                });
+        };
+    }
+
+    updateSingle(imageId) {
+        return imageId;
     }
 
     fetchSingle(label, callback) {
@@ -59,24 +91,29 @@ class ImageActions {
                     }
                 })
                 .catch((error) => {
-                    console.error('Failed to fetch images', error);
                     this.imagesFailed(error);
                 });
         };
     }
 
 
-    insertImage(image) {
+    insertEmptyImage(image) {
         return image;
     }
 
+
+    insertImage(image, oldimage) {
+        return { image, oldimage };
+    }
+
     triggerInsert(image, cb) {
-        const newimage = image;
+        const newimage = { ...image };
+        delete newimage.id;
         return (dispatch) => {
             dispatch();
             imageManager.addImage(newimage)
                 .then((response) => {
-                    this.insertImage(response);
+                    this.insertImage(response, image);
                     if (cb) {
                         cb(response);
                     }
@@ -87,14 +124,13 @@ class ImageActions {
         };
     }
 
-    triggerRemovalBinary(image_id, cb) {
+    triggerRemovalBinary(imageId, cb) {
         return (dispatch) => {
             dispatch();
-            imageManager.deleteBinary(image_id)
+            imageManager.deleteBinary(imageId)
                 .then((response) => {
-                    // console.log('response', response);
-                    if (response.result == 'ok') {
-                        this.removeSingleBinary(image_id);
+                    if (response.result === 'ok') {
+                        this.removeSingleBinary(imageId);
                         if (cb) {
                             cb(response);
                         }
@@ -117,9 +153,9 @@ class ImageActions {
             dispatch();
             imageManager.deleteImage(image.id)
                 .then((response) => {
-                    const resp_json = JSON.parse(response);
-                    if (resp_json.result == 'ok') {
-                        this.removeSingle(resp_json.removed_image.id);
+                    const respJson = JSON.parse(response);
+                    if (respJson.result === 'ok') {
+                        this.removeSingle(respJson.removed_image.id);
                         if (cb) {
                             cb(response);
                         }

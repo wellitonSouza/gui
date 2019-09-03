@@ -1,0 +1,66 @@
+{
+  "title": "Modelos",
+  "alerts": {
+    "no_templates_show": "Nenhum modelo a ser mostrado",
+    "no_conf_templates": "Nenhum modelo configurado",
+    "must_set_type": "Você deve definir um tipo.",
+    "label_already_exist": "O rótulo {{label}} já está criado.",
+    "attr_empty": "Você não pode deixar o valor do atributo de configuração vazio",
+    "conf_already_exist": "Configuração {{label}} já existe",
+    "create": "Modelo criado.",
+    "update": "Modelo atualizado.",
+    "remove": "Modelo removido.",
+    "attr_required": "O tipo de atributo é obrigatório.",
+    "only_alpha_attr_type": "Por favor use apenas letras (a-z), números (0-9) e sublinhados (_) em Tipo de Atributo",
+    "qst_remove": "Você está prestes a remover este {{label}}. Você tem certeza?",
+    "select_to_add": "Selecione uma opção abaixo para adicionar um metadado",
+    "leave_empty": "Você não pode deixar o tipo vazio"
+  },
+  "header": {
+    "new": {
+      "label": "Novo modelo",
+      "alt": "Crie um novo modelo"
+    },
+    "filter": {
+      "alt": "Filtrando modelos"
+    }
+  },
+  "title_sidebar": {
+    "new_attr": "novo atributo",
+    "edit_attr": "editar atributo",
+    "default": "gerenciar modelo"
+  },
+  "btn": {
+    "new_metadata": {
+      "label": "Novo Metadado"
+    },
+    "new_attr": {
+      "label": "Novo Atributo"
+    },
+    "new_conf": {
+      "label": "Nova Configuração"
+    },
+    "mng_firmware": {
+      "label": "Gerenciar Firmware"
+    }
+  },
+  "template": "modelo",
+  "meta": "meta",
+  "metadata": "metadado",
+  "attribute": "atributo",
+  "attributes": "atributos",
+  "attr_type": {
+    "label": "Tipo de Atributo"
+  },
+  "value_type": {
+    "label": "Tipo de Valor"
+  },
+  "template_name": {
+    "label": "Nome do modelo"
+  },
+  "firmware": {
+    "title": "Firmware"
+  }
+}
+
+

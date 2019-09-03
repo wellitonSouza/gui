@@ -1,0 +1,26 @@
+{
+  "groups": {
+    "text": "Perfis",
+    "alt": "Lista de perfis de usuário"
+  },
+  "users": {
+    "text": "Usuários",
+    "alt": "Lista de usuários"
+  },
+  "flows": {
+    "text": "Fluxos",
+    "alt": "Fluxos a serem executados"
+  },
+  "templates": {
+    "text": "Modelos",
+    "alt": "Gerencimento de modelos"
+  },
+  "devices": {
+    "text": "Dispositivos",
+    "alt": "Dispositivos e configurações"
+  },
+  "notifications": {
+    "text": "Notificações",
+    "alt": "Lista notificações"
+  }
+}

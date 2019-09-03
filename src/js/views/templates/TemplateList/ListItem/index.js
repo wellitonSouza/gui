@@ -1,5 +1,6 @@
 /* eslint-disable */
 import React, { Component, Fragment } from 'react';
+import { withNamespaces } from 'react-i18next';
 
 class ListItem extends Component {
     constructor(props) {
@@ -42,11 +43,13 @@ class ListItem extends Component {
 
         const attrs = template.data_attrs.length + template.config_attrs.length;
 
+        const {t}=this.props;
+
         return (
             <Fragment>
                 <div
                     className={`mg20px fl ${template.isNewTemplate ? 'flex-order-1' : 'flex-order-2'}`}
-                    onClick={() => this.props.selectTemplate(template)}
+                    onClick={() => this.props.selectTemplate(template)} title={template.label}
                     >
                     <div
                         className="template-card template card-size lst-entry-wrapper z-depth-2 mg0px height-auto suppressed card-hover"
@@ -58,13 +61,10 @@ class ListItem extends Component {
                                 src="images/big-icons/template.png"
                                 alt=""
                             />
-                            <div className="title-text">
-                                <label
-                                    className="template-title-text truncate"
-                                    title={template.label}
-                                >
+                            <div className="title-text truncate">
+                                <span>
                                     {template.label}
-                                </label>
+                                </span>
                             </div>
                         </div>
                         <div className="lst-entry-body">
@@ -72,7 +72,7 @@ class ListItem extends Component {
                                 <span className="center-text-child">{attrs}</span>
                             </div>
                             <div className="text-area center-text-parent">
-                                <span className="middle-text-child">Properties</span>
+                                <span className="middle-text-child">{t('text.properties')}</span>
                             </div>
                         </div>
                     </div>
@@ -82,4 +82,4 @@ class ListItem extends Component {
     }
 }
 
-export default ListItem;
+export default withNamespaces()(ListItem);

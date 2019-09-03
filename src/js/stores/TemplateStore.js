@@ -19,8 +19,10 @@ class TemplateStore {
         this.loading = false;
         this.showSidebar = false;
         this.isNewTemplate = false;
+        this.templatesAllList = [];
 
         this.bindListeners({
+            handleUpdateTemplateAllList: TemplateActions.updateTemplatesAllList,
             handleUpdateTemplateList: TemplateActions.UPDATE_TEMPLATES,
             handleAddTemplate: TemplateActions.ADD_TEMPLATE,
             handleInsertTemplate: TemplateActions.INSERT_TEMPLATE,
@@ -29,6 +31,9 @@ class TemplateStore {
 
             handleTriggerUpdate: TemplateActions.TRIGGER_UPDATE,
             handleUpdateSingle: TemplateActions.UPDATE_SINGLE,
+
+            fetchSingle: TemplateActions.FETCH_SINGLE,
+            handleUpdateAndSetSingle: TemplateActions.UPDATE_AND_SET_SINGLE,
 
             handleTriggerRemoval: TemplateActions.TRIGGER_REMOVAL,
             handleRemoveSingle: TemplateActions.REMOVE_SINGLE,
@@ -41,15 +46,24 @@ class TemplateStore {
         });
     }
 
+    fetchSingle(template) {
+        this.loading = true;
+    }
+
+    handleUpdateAndSetSingle(data) {
+        this.template = data.template;
+        this.error = null;
+        this.loading = false;
+    }
+
     handleTriggerIcon() {
         this.error = null;
         this.loading = true;
     }
 
-    toogleSidebar(values){
-        // console.log('toogleSidebar', values);
+    toogleSidebar(values) {
         let showSidebar;
-        if(values !== undefined ) {
+        if (values !== undefined) {
             showSidebar = values;
         } else {
             showSidebar = !this.showSidebar;
@@ -78,6 +92,12 @@ class TemplateStore {
         this.loading = false;
     }
 
+    handleUpdateTemplateAllList(data) {
+        this.templatesAllList = data.templates;
+        this.error = null;
+        this.loading = false;
+    }
+
     handleUpdateSingle(template) {
         for (let i = 0; i < this.templates.length; i++) {
             if (this.templates[i].id === template.id) {
@@ -89,13 +109,13 @@ class TemplateStore {
     }
 
     handleTriggerUpdate() {
-    // trigger handler for updateSingle
+        // trigger handler for updateSingle
         this.error = null;
         this.loading = true;
     }
 
     handleTriggerRemoval() {
-    // trigger handler for updateSingle
+        // trigger handler for updateSingle
         this.error = null;
         this.loading = true;
     }
@@ -112,8 +132,8 @@ class TemplateStore {
     }
 
     handleSelectTemplate(template) {
-        this.template = {...template};
-        if (Object.prototype.hasOwnProperty.call(template, 'newTemplate')){
+        this.template = { ...template };
+        if (Object.prototype.hasOwnProperty.call(template, 'newTemplate')) {
             this.isNewTemplate = true;
             delete this.template.newTemplate;
         } else {
@@ -121,18 +141,17 @@ class TemplateStore {
         }
         this.showSidebar = true;
         this.showSidebarAtribute = false;
-        this.showSidebarConfiguration = false; 
+        this.showSidebarConfiguration = false;
     }
 
     handleAddTemplate() {
-    // this is actually just a intermediary while addition happens asynchonously
+        // this is actually just a intermediary while addition happens asynchonously
         this.error = null;
         this.loading = true;
     }
 
     handleFetchTemplateList() {
         this.templates = [];
-        // this.pagination = null;
         this.loading = true;
     }
 
@@ -142,7 +161,7 @@ class TemplateStore {
     }
 
     handleChangeValue(field, value) {
-        let template = {...this.template};
+        let template = { ...this.template };
         template[field] = value;
         this.template = template;
     }

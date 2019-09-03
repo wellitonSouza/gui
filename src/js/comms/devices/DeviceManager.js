@@ -71,6 +71,10 @@ class DeviceManager {
         return util.GET(`${this.baseUrl}/device/template/${templateId}`);
     }
 
+    sendActuator(deviceId, attrs) {
+        return util.PUT(`${this.baseUrl}/device/${deviceId}/actuate`, attrs);
+    }
+
     setDevice(detail) {
         return util.PUT(`${this.baseUrl}/device/${detail.id}`, detail);
     }
@@ -83,7 +87,27 @@ class DeviceManager {
     deleteDevice(id) {
         return util.DELETE(`${this.baseUrl}/device/${id}`);
     }
+
+
+    getTemplateGQL(list) {
+        const req = {
+            query: GQLTEMPLATE(list.toString()),
+        };
+        return util.POST(this.baseUrl+'/graphql/', req);
+    }
+
 }
 
 const deviceManager = new DeviceManager();
 export default deviceManager;
+
+
+const GQLTEMPLATE = (templateList) => `
+{
+    templatesHasImageFirmware(templatesId: [${templateList}])
+    {
+        key
+        value
+    }
+}
+`;

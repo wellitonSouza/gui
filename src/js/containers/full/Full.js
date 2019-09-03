@@ -3,13 +3,14 @@ import React, { Component } from 'react';
 import { Link, browserHistory } from 'react-router';
 import AltContainer from 'alt-container';
 import MenuActions from '../../actions/MenuActions';
-import { translate, Trans } from 'react-i18next';
+import { Trans, withNamespaces } from 'react-i18next';
 import MenuStore from '../../stores/MenuStore';
 import LoginStore from '../../stores/LoginStore';
 import LoginActions from '../../actions/LoginActions';
 import { ChangePasswordModal } from '../../components/Modal';
 import ConfigActions from "../../actions/ConfigActions";
 import ImportExportMain from '../../components/importExport/ImportExportMain';
+import ability from '../../components/permissions/ability';
 
 class Navbar extends Component {
     // TODO: header widgets should be received as children to this (Navbar) node
@@ -106,14 +107,19 @@ class RightSideBar extends Component {
             return null;
         }
 
+
         const gravatar = `https://www.gravatar.com/avatar/${btoa(this.props.user.username)}?d=identicon`;
+        const { t } = this.props;
+        const canSeeImportOrExport = ability.can('modifier', 'import')
+            || ability.can('viewer', 'export')
+            || ability.can('modifier', 'export');
 
         return (
             <div className="">
                 <div className="rightsidebarchild">
                     <div className="logout-page-header">
                         <div className="col s12 m12">
-                            <div className="logout-page-subtitle">Logged as</div>
+                            <div className="logout-page-subtitle">{t('text.logged_as')}</div>
                         </div>
 
                         <div className="col s12 m12">
@@ -125,7 +131,7 @@ class RightSideBar extends Component {
                         {this.props.user.email != undefined && (
                             <div>
                                 <div className="col s12 m12">
-                                    <div className="logout-page-subtitle"> E-mail</div>
+                                    <div className="logout-page-subtitle"> {t('email.label')}</div>
                                 </div>
 
                                 <div className="col s12 m12">
@@ -137,7 +143,7 @@ class RightSideBar extends Component {
                         )}
                         <div>
                             <div className="col s12 m12">
-                                <div className="logout-page-subtitle">Tenant</div>
+                                <div className="logout-page-subtitle">{t('text.tenant')}</div>
                             </div>
 
                             <div className="col s12 m12">
@@ -152,28 +158,30 @@ class RightSideBar extends Component {
 
                     <div className="logout-page-settings">
                         <div className="logout-page-changePassword col s12 m12" onClick={this.handleChangePasswordModal}>
-              Change Password
+                            {t('text.change_password')}
                         </div>
                     </div>
 
                     <div className="horizontal-line" />
-
-                    <div className="logout-page-settings">
-                        <div className="logout-page-changePassword col s12 m12" onClick={this.handleImportExport}>
-                            Import/Export
-                        </div>
-                    </div>
+                    {canSeeImportOrExport ? (
+                        <div className="logout-page-settings">
+                            <div className="logout-page-changePassword col s12 m12"
+                                 onClick={this.handleImportExport}>
+                                {t('text.import_export')}
+                            </div>
+                        </div>) : <div/>
+                    }
 
                     <div className="horizontal-line" />
 
                     <div className="logout-page-buttons">
                         <div className="btn-logout" onClick={this.logout}>
-              Logout
+                            {t('text.logout')}
                         </div>
                     </div>
                 </div>
                 {this.state.open_change_password_modal ? <ChangePasswordModal openChangePasswordModal={this.openChangePasswordModal} toggleSidebar={this.props.toggleSidebar} /> : <div />}
-                {this.state.openImportExportMain ? 
+                {this.state.openImportExportMain ?
                     <ImportExportMain
                     type='main'
                     openModal={this.openImportExportMain}
@@ -253,41 +261,97 @@ class LeftSidebar extends Component {
         }
 
     }
+    componentDidUpdate(){
+        LeftSidebar.createMenu();
+    }
 
-    render() {
+    componentDidMount(){
+        LeftSidebar.createMenu();
+    }
 
-        const entries = [
-            {
+    static createMenu() {
+        const entriesLocal = [];
+        if (ability.can('viewer', 'device') || ability.can( 'modifier', 'device')) {
+            entriesLocal.push({
                 image: 'chip',
                 target: '/device',
                 iconClass: 'material-icons mi-ic-memory',
-                label: 'Devices',
-                desc: 'Known devices and configuration',
+                label: <Trans i18nKey="menu:devices.text"/>,
+                desc: <Trans i18nKey="menu:devices.alt"/>,
                 children: [
                     {
-                        target: '/device/list', iconClass: '', label: 'device', title: 'Devices list', siblings: ['/device/id', '/device/new'],
+                        target: '/device/list',
+                        iconClass: '',
+                        label: 'device',
+                        title: 'Devices list',
+                        siblings: ['/device/id', '/device/new'],
                     },
                     {
-                        target: '/alarm?q=device', iconClass: '', label: 'alarm', title: 'Alarms list',
+                        target: '/alarm?q=device',
+                        iconClass: '',
+                        label: 'alarm',
+                        title: 'Alarms list',
                     },
                 ],
-            },
-            {
-                image: 'template', target: '/template/list', iconClass: 'fa fa-cubes', label: 'Templates ', desc: 'Template management',
-            },
-            {
-                image: 'graph', target: '/flows', iconClass: 'material-icons mi-device-hub', label: 'data flows', desc: 'Processing flows to be executed',
-            },
-            {
-                image: 'user', target: '/auth', iconClass: 'fa fa-unlock-alt', label: 'Users', desc: 'Users list',
-            },
-            {
-                image: 'groups', target: '/groups', iconClass: 'fa fa-unlock-alt', label: <Trans i18nKey="menu.groups.text" />, desc: <Trans i18nKey="menu.groups.alt" />,
-            },
-        ];
+            });
+        }
 
+        if (ability.can('viewer', 'template') || ability.can( 'modifier', 'template')) {
+            entriesLocal.push({
+                image: 'template',
+                target: '/template/list',
+                iconClass: 'fa fa-cubes',
+                label: <Trans i18nKey="menu:templates.text"/>,
+                desc: <Trans i18nKey="menu:templates.alt"/>,
+            });
+        }
+
+        if (ability.can('viewer', 'flows') || ability.can( 'modifier', 'flows')) {
+            entriesLocal.push({
+                image: 'graph',
+                target: '/flows',
+                iconClass: 'material-icons mi-device-hub',
+                label: <Trans i18nKey="menu:flows.text"/>,
+                desc: <Trans i18nKey="menu:flows.alt"/>,
+            });
+        }
+
+        if (ability.can('viewer', 'socketio')) {
+            entriesLocal.push({
+                image: 'bell',
+                target: '/notifications',
+                iconClass: 'fa fa-unlock-alt',
+                label: <Trans i18nKey="menu:notifications.text"/>,
+                desc: <Trans i18nKey="menu:notifications.alt"/>,
+            });
+        }
+
+        if (ability.can('viewer', 'user') || ability.can( 'modifier', 'user')) {
+            entriesLocal.push({
+                image: 'user',
+                target: '/auth',
+                iconClass: 'fa fa-unlock-alt',
+                label: <Trans i18nKey="menu:users.text"/>,
+                desc: <Trans i18nKey="menu:users.alt"/>,
+            });
+        }
+
+        if (ability.can( 'viewer', 'permission') || ability.can( 'modifier', 'permission')) {
+            entriesLocal.push({
+                image: 'groups',
+                target: '/groups',
+                iconClass: 'fa fa-unlock-alt',
+                label: <Trans i18nKey="menu:groups.text"/>,
+                desc: <Trans i18nKey="menu:groups.alt"/>,
+            });
+        }
+        return entriesLocal;
+    }
+
+    render() {
+        const entries= LeftSidebar.createMenu();
         return (
-            <div className="sidebar expand z-depth-5" tabIndex="-1">
+            <div className="sidebar expand z-depth-4" tabIndex="-1">
                 <div className="header">
                     {this.props.open
             && (
@@ -324,7 +388,9 @@ class LeftSidebar extends Component {
 function Content(props) {
     return (
         <div className={`app-body full-height ${(props.leftSideBar.open && width > 800) ? ' open' : ' closed'}`}>
-            <LeftSidebar open={props.leftSideBar.open} router={props.router} />
+            <AltContainer store={LoginStore}>
+                <LeftSidebar open={props.leftSideBar.open} router={props.router} />
+            </AltContainer>
             <div className="content expand relative">
                 {props.children}
             </div>
@@ -370,7 +436,7 @@ class Full extends Component {
 
                     {
                         (this.state.user_sidebar)
-                            ? <RightSideBar toggleSidebar={this.toggleUserSidebar} />
+                            ? <RightSideBar toggleSidebar={this.toggleUserSidebar} t={this.props.t}/>
                             : <div />
                     }
 
@@ -384,4 +450,4 @@ class Full extends Component {
     }
 }
 
-export default translate()(Full);
+export default withNamespaces()(Full);

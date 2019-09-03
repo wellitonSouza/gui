@@ -65,7 +65,7 @@ RED.i18n = (function() {
                 defaultNS: 'editor',
                 backend: {
                   loadPath: function(lngs, ns) {
-                    return '/mashup/locales/' + ns;
+                    return '/flows/locales/' + ns;
                   },
                   withCredentials: true,
                   customHeaders: {'Authorization': accessToken},
@@ -183,7 +183,7 @@ RED.settings = (function () {
              dataType: "json",
              cache: false,
             //  url: 'http://localhost:1880/settings',
-             url: 'mashup/settings',
+             url: 'flows/settings',
              success: function (data) {
                  setProperties(data);
                  if (!RED.settings.user || RED.settings.user.anonymous) {
@@ -1823,7 +1823,7 @@ RED.nodes = (function() {
     })();
 
     function getID() {
-        return (1+Math.random()*4294967295).toString(16);
+        return ('A' + (1+Math.random()*4294967295).toString(16)).replace('.','');
     }
 
     function addNode(n) {
@@ -4058,16 +4058,16 @@ RED.tabs = (function() {
         msg: {value:"msg",label:"msg.",validate:RED.utils.validatePropertyExpression},
         flow: {value:"flow",label:"flow.",validate:RED.utils.validatePropertyExpression},
         global: {value:"global",label:"global.",validate:RED.utils.validatePropertyExpression},
-        str: {value:"str",label:"string",icon:"mashup/red/images/typedInput/az.png"},
-        num: {value:"num",label:"number",icon:"mashup/red/images/typedInput/09.png",validate:/^[+-]?[0-9]*\.?[0-9]*([eE][-+]?[0-9]+)?$/},
-        bool: {value:"bool",label:"boolean",icon:"mashup/red/images/typedInput/bool.png",options:["true","false"]},
-        json: {value:"json",label:"JSON",icon:"mashup/red/images/typedInput/json.png", validate: function(v) { try{JSON.parse(v);return true;}catch(e){return false;}}},
-        re: {value:"re",label:"regular expression",icon:"mashup/red/images/typedInput/re.png"},
+        str: {value:"str",label:"string",icon:"flows/red/images/typedInput/az.png"},
+        num: {value:"num",label:"number",icon:"flows/red/images/typedInput/09.png",validate:/^[+-]?[0-9]*\.?[0-9]*([eE][-+]?[0-9]+)?$/},
+        bool: {value:"bool",label:"boolean",icon:"flows/red/images/typedInput/bool.png",options:["true","false"]},
+        json: {value:"json",label:"JSON",icon:"flows/red/images/typedInput/json.png", validate: function(v) { try{JSON.parse(v);return true;}catch(e){return false;}}},
+        re: {value:"re",label:"regular expression",icon:"flows/red/images/typedInput/re.png"},
         date: {value:"date",label:"timestamp",hasValue:false},
         jsonata: {
             value: "jsonata",
             label: "expression",
-            icon: "mashup/red/images/typedInput/expr.png",
+            icon: "flows/red/images/typedInput/expr.png",
             validate: function(v) { try{jsonata(v);return true;}catch(e){return false;}},
             expand:function() {
                 var that = this;
@@ -4110,7 +4110,7 @@ RED.tabs = (function() {
                 this.uiSelect.width(this.uiWidth);
                 }
                 else {
-                    this.uiSelect.width(this.uiWidth + '%'); 
+                    this.uiSelect.width(this.uiWidth + '%');
                 }
             }
             ["Right","Left"].forEach(function(d) {
@@ -4555,18 +4555,27 @@ RED.keyboard = (function() {
     }
 
     function init() {
-        $.getJSON("mashup/red/keymap.json",function(data) {
-            for (var scope in data) {
-                if (data.hasOwnProperty(scope)) {
-                    var keys = data[scope];
-                    for (var key in keys) {
-                        if (keys.hasOwnProperty(key)) {
-                            addHandler(scope,key,keys[key]);
+
+        $.getJSON({
+            url: 'flows/red/keymap.json',
+            type: 'GET',
+            headers: {
+                "authorization": `Bearer ${util.getToken()}`,
+            },
+            success: function(data) {
+                for (var scope in data) {
+                    if (data.hasOwnProperty(scope)) {
+                        var keys = data[scope];
+                        for (var key in keys) {
+                            if (keys.hasOwnProperty(key)) {
+                                addHandler(scope,key,keys[key]);
+                            }
                         }
                     }
                 }
-            }
-        })
+            },
+        });
+
         RED.actions.add("core:show-help", showKeyboardHelp);
 
     }
@@ -4991,7 +5000,6 @@ RED.workspaces = (function() {
             }
         });
     }
-
     function init() {
         createWorkspaceTabs();
         RED.events.on("sidebar:resize",workspace_tabs.resize);
@@ -5052,7 +5060,7 @@ RED.workspaces = (function() {
             if (!workspace_tabs.contains(id)) {
                 var sf = RED.nodes.subflow(id);
                 if (sf) {
-                    addWorkspace({type:"subflow",id:id,icon:"mashup/red/images/subflow_tab.png",label:sf.name, closeable: true});
+                    addWorkspace({type:"subflow",id:id,icon:"flows/red/images/subflow_tab.png",label:sf.name, closeable: true});
                 } else {
                     console.error("Invalid wk id: " + id);
                     return;
@@ -5140,12 +5148,16 @@ RED.view = (function() {
         dragGroup = null;
 
 
-    function domInit() {
+    /**
+     *
+     * @param cannotEdit When this param is true, the flow is just for viewer
+     */
+    function domInit(cannotEdit=false) {
       outer = d3.select("#chart")
           .append("svg:svg")
           .attr("width", space_width)
           .attr("height", space_height)
-          .attr("pointer-events", "all")
+          .attr("pointer-events", cannotEdit ? "none": "all")
           .style("cursor","crosshair")
           .on("mousedown", function() {
               focusView();
@@ -5336,8 +5348,12 @@ RED.view = (function() {
         });
     }
 
-    function init() {
-        domInit();
+    /**
+     *
+     * @param cannotEdit When this param is true, the flow is just for viewer
+     */
+    function init(cannotEdit=false) {
+        domInit(cannotEdit);
         RED.events.on("workspace:change",function(event) {
             var chart = $("#chart");
             if (event.old !== 0) {
@@ -6916,7 +6932,7 @@ RED.view = (function() {
                             .attr("height",function(d){return Math.min(50,d.h-4);});
 
                         var icon = icon_group.append("image")
-                            .attr("xlink:href","mashup/icons/"+d._def.icon)
+                            .attr("xlink:href","flows/icons/"+d._def.icon)
                             .attr("class","node_icon")
                             .attr("x",0)
                             .attr("width","30")
@@ -6947,7 +6963,7 @@ RED.view = (function() {
                         //}
 
                         var img = new Image();
-                        img.src = "mashup/icons/"+d._def.icon;
+                        img.src = "flows/icons/"+d._def.icon;
                         img.onload = function() {
                             icon.attr("width",Math.min(img.width,30));
                             icon.attr("height",Math.min(img.height,30));
@@ -6984,8 +7000,8 @@ RED.view = (function() {
                     //node.append("circle").attr({"class":"centerDot","cx":0,"cy":0,"r":5});
 
                     //node.append("path").attr("class","node_error").attr("d","M 3,-3 l 10,0 l -5,-8 z");
-                    node.append("image").attr("class","node_error hidden").attr("xlink:href","mashup/icons/node-error.png").attr("x",0).attr("y",-6).attr("width",10).attr("height",9);
-                    node.append("image").attr("class","node_changed hidden").attr("xlink:href","mashup/icons/node-changed.png").attr("x",12).attr("y",-6).attr("width",10).attr("height",10);
+                    node.append("image").attr("class","node_error hidden").attr("xlink:href","flows/icons/node-error.png").attr("x",0).attr("y",-6).attr("width",10).attr("height",9);
+                    node.append("image").attr("class","node_changed hidden").attr("xlink:href","flows/icons/node-changed.png").attr("x",12).attr("y",-6).attr("width",10).attr("height",10);
             });
 
             node.each(function(d,i) {
@@ -7112,10 +7128,10 @@ RED.view = (function() {
                                 } else {
                                     icon_url = d._def.icon;
                                 }
-                                if ("mashup/icons/"+icon_url != current_url) {
-                                    icon.attr("xlink:href","mashup/icons/"+icon_url);
+                                if ("flows/icons/"+icon_url != current_url) {
+                                    icon.attr("xlink:href","flows/icons/"+icon_url);
                                     var img = new Image();
-                                    img.src = "mashup/icons/"+d._def.icon;
+                                    img.src = "flows/icons/"+d._def.icon;
                                     img.onload = function() {
                                         icon.attr("width",Math.min(img.width,30));
                                         icon.attr("height",Math.min(img.height,30));
@@ -7850,7 +7866,7 @@ RED.palette = (function() {
                     console.log("Definition error: "+nt+".icon",err);
                 }
                 var iconContainer = $('<div/>',{class:"palette_icon_container"+(def.align=="right"?" palette_icon_container_right":"")}).appendTo(d);
-                $('<div/>',{class:"palette_icon",style:"background-image: url(mashup/icons/"+icon_url+")"}).appendTo(iconContainer);
+                $('<div/>',{class:"palette_icon",style:"background-image: url(flows/icons/"+icon_url+")"}).appendTo(iconContainer);
             }
 
             d.style.backgroundColor = def.color;
@@ -8691,7 +8707,7 @@ RED.palette.editor = (function() {
                     var enableButton = $('<a href="#" class="editor-button editor-button-small"></a>').html(RED._('palette.editor.disableall')).appendTo(buttonGroup);
 
                     var contentRow = $('<div>',{class:"palette-module-content"}).appendTo(container);
-                    var shade = $('<div class="palette-module-shade hide"><img src="mashupmashup/red/images/spin.svg" class="palette-spinner"/></div>').appendTo(container);
+                    var shade = $('<div class="palette-module-shade hide"><img src="mashupflows/red/images/spin.svg" class="palette-spinner"/></div>').appendTo(container);
 
                     object.elements = {
                         updateButton: updateButton,
@@ -8866,7 +8882,7 @@ RED.palette.editor = (function() {
                     $('<span class="palette-module-updated"><i class="fa fa-calendar"></i> '+formatUpdatedAt(entry.updated_at)+'</span>').appendTo(metaRow);
                     var buttonRow = $('<div>',{class:"palette-module-meta"}).appendTo(headerRow);
                     var buttonGroup = $('<div>',{class:"palette-module-button-group"}).appendTo(buttonRow);
-                    var shade = $('<div class="palette-module-shade hide"><img src="mashupmashup/red/images/spin.svg" class="palette-spinner"/></div>').appendTo(container);
+                    var shade = $('<div class="palette-module-shade hide"><img src="mashupflows/red/images/spin.svg" class="palette-spinner"/></div>').appendTo(container);
                     var installButton = $('<a href="#" class="editor-button editor-button-small"></a>').html(RED._('palette.editor.install')).appendTo(buttonGroup);
                     installButton.click(function(e) {
                         e.preventDefault();
@@ -10984,7 +11000,7 @@ RED.typeSearch = (function() {
                 nodeDiv.css('backgroundColor',colour);
 
                 var iconContainer = $('<div/>',{class:"palette_icon_container"}).appendTo(nodeDiv);
-                $('<div/>',{class:"palette_icon",style:"background-image: url(mashup/icons/"+icon_url+")"}).appendTo(iconContainer);
+                $('<div/>',{class:"palette_icon",style:"background-image: url(flows/icons/"+icon_url+")"}).appendTo(iconContainer);
 
                 if (def.inputs > 0) {
                     $('<div/>',{class:"red-ui-search-result-node-port"}).appendTo(nodeDiv);

@@ -1,47 +1,47 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { DojotCustomButton } from '../../components/DojotButton';
+import { DojotBtnClassic } from '../../components/DojotButton';
 
 class SideBarRight extends Component {
     render() {
         const {
-            visible, title, buttonsFooter, content,
+            visible, title, buttonsFooter, content, icon, headerColor,
         } = this.props;
         let body = null;
         let header = null;
         let btnFooter = null;
+        let color = '';
+        if (headerColor) { color = headerColor; }
         if (visible) {
             header = (
-                <div id="" className="header">
-                    <span id="" className="header-path">
+                <div className={`header ${color}`}>
+                    <div className="title">{title}</div>
+                    <div className="icon">
+                        <img className="sepia-opa" alt={icon} src={`images/icons/${icon}.png`} />
+                    </div>
+                    <div className="header-path">
                         {title}
-                    </span>
-                </div>);
+                    </div>
+                </div>
+            );
             if (buttonsFooter !== null && buttonsFooter.length > 0) {
                 btnFooter = buttonsFooter.map(btn => (
-                    <DojotCustomButton label={btn.label} onClick={btn.click} type={btn.type} />
+                    <DojotBtnClassic
+                        label={btn.label}
+                        onClick={btn.click}
+                        color={btn.color}
+                        type={btn.type}
+                        key={btn.label + btn.type}
+                    />
                 ));
             }
             body = (
-                <div className="template-sidebar">
+                <div className="sidebar-firmware profile-sidebar">
                     {header}
                     <div className="body">
-                        {/*                        <div className="body-template-name">
-                            <div className="body-icon">
-                                <img
-                                    className="title-icon template"
-                                    src="images/icons/template-gray.png"
-                                    alt=""
-                                />
-                            </div>
-                        </div> */}
-                        <div className="body-form">
-                            {content}
-                        </div>
+                        <div className="body-form">{content}</div>
                     </div>
-                    <div className="footer">
-                        {btnFooter}
-                    </div>
+                    <div className="footer">{btnFooter}</div>
                 </div>
             );
         }
@@ -52,12 +52,17 @@ class SideBarRight extends Component {
 
 SideBarRight.propTypes = {
     visible: PropTypes.bool,
+    icon: PropTypes.string,
+    headerColor: PropTypes.string,
     title: PropTypes.string.isRequired,
-    buttonsFooter: PropTypes.shape.isRequired,
-    content: PropTypes.shape.isRequired,
+    buttonsFooter: PropTypes.arrayOf(PropTypes.object),
+    content: PropTypes.instanceOf(Object).isRequired,
 };
 
 SideBarRight.defaultProps = {
+    icon: '',
+    headerColor: '',
     visible: true,
+    buttonsFooter: [],
 };
-export default (SideBarRight);
+export default SideBarRight;

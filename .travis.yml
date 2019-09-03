@@ -2,9 +2,7 @@ sudo: false
 language: node_js
 node_js: 9
 script:
-  - yarn run build
-install:
-  - yarn install
+  - docker build -t ${TRAVIS_REPO_SLUG} .
 services:
   - docker
 after_success:

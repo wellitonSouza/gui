@@ -15,13 +15,13 @@ class MaterialSelect extends Component {
     }
 
     render() {
-        // console.log('Material Select, this.props: ', this.props);
         const options = this.props.children;
+        const { label, id, name, value, isDisable } = this.props;
         return (
             <div className="card-select-2">
-                { this.props.label && (<label htmlFor={this.props.id}>{this.props.label}</label>)}
-                <select id={this.props.id} name={this.props.name} value={this.props.value} 
-                        onChange={this._handler}  disabled ={this.props.isDisable}   >
+                {label && (<label htmlFor={id}>{label}</label>)}
+                <select id={id} name={name} value={value}
+                        onChange={this._handler} disabled={isDisable}>
                     {options}
                 </select>
             </div>);

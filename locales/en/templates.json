@@ -1,0 +1,62 @@
+{
+  "title": "Templates",
+  "alerts": {
+    "no_templates_show": "No templates to be shown",
+    "no_conf_templates": "No configured templates",
+    "must_set_type": "You must set a type.",
+    "label_already_exist": "The label {{label}} is already created.",
+    "attr_empty": "You can not leave configuration attribute value empty",
+    "conf_already_exist": "Configuration {{label}} already exists",
+    "create": "Template created.",
+    "update": "Template updated.",
+    "remove": "Template removed.",
+    "attr_required": "The Attribute Type is required.",
+    "only_alpha_attr_type": "Please use only letters (a-z), numbers (0-9) and underscores (_) in Attribute Type",
+    "qst_remove": "You are about to remove this {{label}}. Are you sure?",
+    "select_to_add": "Select an option below to add a metadata",
+    "leave_empty": "You can't leave type empty"
+  },
+  "header": {
+    "new": {
+      "label": "New Template",
+      "alt": "Create a new template"
+    },
+    "filter": {
+      "alt": "Filtering Templates"
+    }
+  },
+  "title_sidebar": {
+    "new_attr": "new attribute",
+    "edit_attr": "edit attribute",
+    "default": "manage template"
+  },
+  "btn": {
+    "new_metadata": {
+      "label": "New Metadata"
+    },
+    "new_attr": {
+      "label": "New Attribute"
+    },
+    "new_conf": {
+      "label": "New Configuration"
+    },
+    "mng_firmware": {
+      "label": "Manage Firmware"
+    }
+  },
+  "template": "template",
+  "meta": "meta",
+  "metadata": "metadata",
+  "attribute": "attribute",
+  "attributes": "attributes",
+  "attr_type": {
+    "label": "Attribute Type"
+  },
+  "value_type": {
+    "label": "Value Type"
+  },
+  "template_name": {
+    "label": "Template Name"
+  }
+}
+

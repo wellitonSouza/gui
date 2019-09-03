@@ -28,6 +28,7 @@ export const templateType = {
     newTemplate: PropTypes.bool,
 };
 
+// @TODO create a default propsType to Operation Header's implementations
 export const tempOpxType = {
     whenUpdatePagination: PropTypes.func,
     whenUpdateFilter: PropTypes.func,

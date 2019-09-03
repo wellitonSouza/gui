@@ -1,32 +1,33 @@
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import fileTranslPtBr from '../lang/pt-br/common.json';
-import fileTranslEn from '../lang/en/common.json';
+import backend from 'i18next-xhr-backend';
 
-i18n.use(LanguageDetector).init({
-    // we init with resources
-    resources: {
-        en: {
-            translations: fileTranslEn,
+i18n.use(LanguageDetector)
+    .use(backend)
+    .init({
+        resGetPath: '__ns__-__lng__.json',
+        load: 'All',
+        fallbackLng: {
+            pt: ['pt-br'],
+            'pt-pt': ['pt-br'],
+            default: ['en'],
         },
-        'pt-BR': {
-            translations: fileTranslPtBr,
+        lowerCaseLng: true,
+        debug: false,
+        nsSeparator: ':',
+        ns: ['common', 'menu', 'groups', 'importExport', 'users', 'flows', 'templates', 'devices', 'login', 'notifications','firmware'],
+        fallbackNS: 'common',
+        interpolation: {
+            escapeValue: false, // not needed for react
+            formatSeparator: ',',
         },
-    },
-    fallbackLng: 'en',
-    debug: true,
-
-    // have a common namespace used around the full app
-    ns: ['translations'],
-    defaultNS: 'translations',
-
-    interpolation: {
-        escapeValue: false, // not needed for react!!
-        formatSeparator: ',',
-    },
-    react: {
-        wait: true,
-    },
-});
+        react: {
+            wait: false,
+            withRef: false,
+            bindI18n: 'languageChanged loaded',
+            bindStore: 'added removed',
+            nsMode: 'default',
+        },
+    });
 
 export default i18n;

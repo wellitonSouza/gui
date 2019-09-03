@@ -50,7 +50,6 @@ $status: #0c343d;
   padding-bottom: 30px !important;
   display: flex;
   .card-size{
-    margin: 20px !important;
     max-height: 225px;
   }
 }
@@ -547,7 +546,7 @@ $status: #0c343d;
   color: #333;
   font-weight: bold;
   font-size: 100%;
-  padding: 0px 10px 0px 0px ;
+  padding: 0 10px 0 0;
 }
 
 .lst-entry .data {
@@ -591,7 +590,7 @@ $status: #0c343d;
 #newDeviceBtn {
   position: fixed;
   bottom: 1.5em;
-  right: 0px;
+  right: 0;
   margin-right: 3em;
 }
 
@@ -782,9 +781,10 @@ $status: #0c343d;
     padding-left: 10px !important;
     font-family: 'Roboto', sans-serif;
     color: #555555;
+
   }
   .label {
-    float: left;
+    float: right;
     width: 140px;
     line-height: 23px;
     font-family: 'Roboto', sans-serif;
@@ -798,15 +798,23 @@ $status: #0c343d;
     background-color: $almost-white
   }
 
-  .history-row {
-    padding: 13px 5px;
-    min-height: 50px;
-    width: 100%;
-    float: left;
-    .col {
-      padding: 0;
+    .history-row {
+        padding: 13px 5px;
+        min-height: 50px;
+        width: 100%;
+        float: left;
+
+        .col {
+            padding: 0;
+        }
+        pre {
+            margin: 0;
+        }
+
+       align-items: center;
+        display: flex;
+
     }
-  }
 }
 
 $action-area-width: 200px;
@@ -893,12 +901,14 @@ $action-area-width: 200px;
   }
 
   .title-text {
+    display: inline-block !important;
     height: 100%;
     width: calc(100% - 100px);
-    float: left;
-    display: inline;
     font-size: 18px;
+    text-align: left;
     padding-top: 25px;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 500;
 
     textarea {
       float: left;
@@ -924,7 +934,7 @@ $action-area-width: 200px;
 
   .card-footer {
     height: auto;
-    max-height: 208px;;
+    max-height: 208px;
     width: 100%;
     float: left;
     background-color: #FAFAFA;
@@ -940,7 +950,7 @@ $action-area-width: 200px;
     transition: max-height 200ms ease-in-out;
     max-height: 160px;
     background: #e7e7e7;
-    padding: 0px 0;
+    padding: 0;
     .add-row {
       height: 74px;
       width: 100%;
@@ -960,11 +970,11 @@ $action-area-width: 200px;
         float: left;
         display: table;
         margin: 8px;
-        padding: 5px 5px 0 5px;
+        padding: 5px 5px 0;
         .icon {
           text-align: center;
           height: 30px;
-          margin: 2px 0 3px 0;
+          margin: 2px 0 3px;
         }
         .text {
           text-align: center;
@@ -989,7 +999,13 @@ $action-area-width: 200px;
         padding: 8px 0;
         float: left;
         height: 50px;
-        width: 175px;
+        width: 200px;
+      
+         .subtitle
+         {
+          overflow: auto;
+          height: 43px;
+         }
       }
       .icon {
         float: left;
@@ -1067,7 +1083,7 @@ $action-area-width: 200px;
   font-weight: normal;
   font-size: 18px;
   color: #4F4F4F;
-  font-family: Roboto, sans-serif;
+  font-family: Raleway, sans-serif;
   .center-text-child {
     display: table-cell;
     vertical-align: middle;
@@ -1146,7 +1162,7 @@ $action-area-width: 200px;
   background-clip: padding-box;
   -webkit-border-radius: 7px;
   background-color: #B3B3B3;
-  -webkit-box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.05), inset 1px 1px 0px rgba(0, 0, 0, 0.05);
+  -webkit-box-shadow: inset -1px -1px 0 rgba(0, 0, 0, 0.05), inset 1px 1px 0 rgba(0, 0, 0, 0.05);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -1206,11 +1222,11 @@ $action-area-width: 200px;
 
 .mini-card-select {
   font-weight: 400;
-  color: rgb(136, 136, 136);;
+  color: rgb(136, 136, 136);
   font-size: 12px;
   height: 18px;
   &:disabled {
-    color: rgb(136, 136, 136);;
+    color: rgb(136, 136, 136);
     background-image: none;
   }
 }

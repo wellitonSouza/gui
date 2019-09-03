@@ -2,27 +2,26 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-
 import AltContainer from 'alt-container';
-
 import FlowStore from '../../stores/FlowStore';
 import FlowActions from '../../actions/FlowActions';
-
 import { NewPageHeader } from '../../containers/full/PageHeader';
+import {
+    Trans, withNamespaces
+} from 'react-i18next';
 import util from '../../comms/util/util';
-import { DojotBtnLink } from "../../components/DojotButton";
+import { DojotBtnLink } from '../../components/DojotButton';
+import Can from '../../components/permissions/Can';
 
 
 function SummaryItem(props) {
     return (
-        <div className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight">
-            <div className="lst-entry-title col s12">
-                <img className="title-icon" src="images/icons/graph-wt.png" />
+        <div className="card-size card-hover lst-entry-wrapper z-depth-2 mg0px pointer">
+            <div className="lst-entry-title col s12 bg-gradient-dark-blue">
+                <img className="title-icon" src="images/icons/graph-wt.png"/>
                 <div className="title-text truncate">
                     <span className="text" title={props.flow.name}>
-                        {' '}
                         {props.flow.name}
-                        {' '}
                     </span>
                 </div>
             </div>
@@ -30,23 +29,24 @@ function SummaryItem(props) {
                 <div className="attr-area light-background">
                     <div className="attr-row">
                         <div className="icon">
-                            <img src="images/tag.png" />
+                            <img src="images/tag.png"/>
                         </div>
                         <div className="attr-content">
-                            <input type="text" value={props.flow.flow.length - 1} disabled />
-                            <span>Nodes</span>
+                            <input type="text" value={props.flow.flow.length - 1} disabled/>
+                            <span><Trans i18nKey="flows:nodes"/></span>
                         </div>
-                        <div className="center-text-parent material-btn right-side" />
+                        <div className="center-text-parent material-btn right-side"/>
                     </div>
                     <div className="attr-row">
                         <div className="icon">
-                            <img src="images/update.png" />
+                            <img src="images/update.png"/>
                         </div>
                         <div className="attr-content">
-                            <input type="text" value={util.printTime(props.flow.updated / 1000)} disabled />
-                            <span>Last update</span>
+                            <input type="text" value={util.printTime(props.flow.updated / 1000)}
+                                   disabled/>
+                            <span><Trans i18nKey="flows:last_update"/></span>
                         </div>
-                        <div className="center-text-parent material-btn right-side" />
+                        <div className="center-text-parent material-btn right-side"/>
                     </div>
                 </div>
             </div>
@@ -58,7 +58,10 @@ class ListRender extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { filter: '', loaded: false };
+        this.state = {
+            filter: '',
+            loaded: false
+        };
 
         this.filteredList = [];
 
@@ -69,7 +72,6 @@ class ListRender extends Component {
 
     componentDidUpdate() {
         if ((!this.state.loaded) && (this.props.flows !== undefined) && (Object.keys(this.props.flows).length)) {
-            this.convertFlowList();
             this.setState({ loaded: true });
         }
     }
@@ -83,18 +85,8 @@ class ListRender extends Component {
         this.setState({ filter: event.target.value });
     }
 
-    convertFlowList() {
-        if (this.state.filter != '') {
-            const updatedList = this.filteredList.filter(flow => flow.name.includes(event.target.value));
-            this.filteredList = updatedList;
-        } else {
-            this.filteredList = [];
-            for (const k in this.props.flows) {
-                if (this.props.flows.hasOwnProperty(k)) {
-                    this.filteredList.push(this.props.flows[k]);
-                }
-            }
-        }
+    convertFlowList(list) {
+        return list.sort((a, b) => a.name.localeCompare(b.name));
     }
 
     applyFiltering(list) {
@@ -106,9 +98,8 @@ class ListRender extends Component {
     }
 
     render() {
-        this.filteredList = this.applyFiltering(this.props.flows);
-
-        this.convertFlowList();
+        this.filteredList = this.convertFlowList(this.applyFiltering(this.props.flows));
+        const { i18n } = this.props;
 
         const header = null;
         // if (this.props.showSearchBox){
@@ -135,7 +126,7 @@ class ListRender extends Component {
 
         if (this.filteredList.length > 0) {
             return (
-                <div className="row">
+                <div className="full-height flex-container pos-relative overflow-x-hidden">
                     <ReactCSSTransitionGroup
                         transitionName="flowsSubHeader"
                         transitionAppear
@@ -145,20 +136,20 @@ class ListRender extends Component {
                     >
                         {header}
                     </ReactCSSTransitionGroup>
-                    <div className="col s12 lst-wrapper scroll-bar">
-                        { this.filteredList.map((flow, id) => (
-                            <Link to={`/flows/id/${flow.id}`} key={flow.id}>
-                                <div className="s12 m6 l4 mt20">
-                                    <SummaryItem flow={flow} key={flow.id} />
-                                </div>
-                            </Link>
+                    <div className="col s12 lst-wrapper w100 hei-100-over-scroll flex-container">
+                        {this.filteredList.map((flow, id) => (
+                            <div className="mg20px fl flex-order-2">
+                                <Link to={`/flows/id/${flow.id}`} key={flow.id}>
+                                    <SummaryItem flow={flow} key={flow.id}/>
+                                </Link>
+                            </div>
                         ))}
                     </div>
                 </div>
             );
         }
         return (
-            <div className="full-height relative">
+            <div className="full-height flex-container pos-relative overflow-x-hidden">
                 <ReactCSSTransitionGroup
                     transitionName="flowsSubHeader"
                     transitionAppear
@@ -169,7 +160,7 @@ class ListRender extends Component {
                     {header}
                 </ReactCSSTransitionGroup>
                 <div className="background-info valign-wrapper full-height">
-                    <span className="horizontal-center">No configured flows</span>
+                    <span className="horizontal-center">{i18n('flows:alerts.no_configured')}</span>
                 </div>
             </div>
         );
@@ -236,10 +227,12 @@ class FlowList extends Component {
         return flowList.filter((e) => {
             let result = false;
             if (idFilter && idFilter[1]) {
-                result = result || e.id.toUpperCase().includes(idFilter[1].toUpperCase());
+                result = result || e.id.toUpperCase()
+                    .includes(idFilter[1].toUpperCase());
             }
 
-            return result || e.label.toUpperCase().includes(filter.toUpperCase());
+            return result || e.label.toUpperCase()
+                .includes(filter.toUpperCase());
         });
     }
 
@@ -260,14 +253,14 @@ class FlowList extends Component {
                 />
 
                 {/* <!-- footer --> */}
-                <div className="col s12" />
+                <div className="col s12"/>
                 <div className="col s12">&nbsp;</div>
             </div>
         );
     }
 }
 
-export class Flows extends Component {
+class FlowsComponent extends Component {
     constructor(props) {
         super(props);
 
@@ -286,27 +279,33 @@ export class Flows extends Component {
     }
 
     render() {
+        const { t } = this.props;
+
         return (
-            <ReactCSSTransitionGroup
-                transitionName="first"
-                transitionAppear
-                transitionAppearTimeout={100}
-                transitionEnterTimeout={100}
-                transitionLeaveTimeout={100}
-            >
-                <NewPageHeader title="Data flows" subtitle="" icon="flow">
-                    <OperationsHeader />
+            <div className="full-device-area">
+                <div>
+                <NewPageHeader title={t('flows:title')} subtitle={t('flows:title')} icon="flow">
+                    <OperationsHeader {...this.props} />
                 </NewPageHeader>
-                <AltContainer store={FlowStore}>
-                    <ListRender showSearchBox={this.state.showFilter} />
-                </AltContainer>
-            </ReactCSSTransitionGroup>
+                    <AltContainer store={FlowStore}>
+                        <ListRender showSearchBox={this.state.showFilter} i18n={t}/>
+                    </AltContainer>
+                </div>
+            </div>
         );
     }
 }
 
-function OperationsHeader() {
+
+function OperationsHeader(props) {
+    const { t } = props;
     return <div className="col s12 pull-right pt10">
-        <DojotBtnLink responsive="true" linkTo="/flows/new" label="New Flow" alt="Create a new data flow" icon="fa fa-plus" className="w130px" />
-      </div>;
+        <Can do="modifier" on="flows">
+            <DojotBtnLink responsive="true" linkTo="/flows/new"
+                          label={t('flows:header.new.label')}
+                          alt={t('flows:header.new.alt')} icon="fa fa-plus" className="w130px"/>
+        </Can>
+    </div>;
 }
+
+export const Flows = (withNamespaces()(FlowsComponent));

@@ -2,11 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import MaterialInput from 'Components/MaterialInput';
 import MaterialSelect from 'Components/MaterialSelect';
+import ability from 'Components/permissions/ability';
+import { withNamespaces } from 'react-i18next';
 import { attrsType } from '../../../TemplatePropTypes';
+
 
 const SidebarAttributeForm = ({
     selectAttr,
     changeAttrValue,
+    t,
 }) => (
     <div>
         <div className="body-attribute-name">
@@ -23,70 +27,81 @@ const SidebarAttributeForm = ({
                 maxLength={40}
                 value={selectAttr.label}
                 onChange={e => changeAttrValue(e, selectAttr)}
+                disabled={!ability.can('modifier', 'template')}
             >
-                Attribute Name
+                {t('options.attr_name.label')}
             </MaterialInput>
         </div>
         <div className="body-form">
             <MaterialSelect
-                label="Attribute Type"
+                label={t('templates:attr_type.label')}
                 name="type"
                 className="attribute-type"
                 value={selectAttr.type}
                 onChange={e => changeAttrValue(e, selectAttr)}
+                isDisable={!ability.can('modifier', 'template')}
             >
                 <option value="" disabled>
-                    Select type
+                    {t('text.select_type')}
                 </option>
                 <option value="dynamic" id="adm-option">
-                    Dynamic Value
+                    {t('options.attr_name.values.dynamic')}
                 </option>
                 <option value="static" id="adm-option">
-                    Static Value
+                    {t('options.attr_name.values.static')}
                 </option>
                 <option value="actuator" id="adm-option">
-                    Actuator
+                    {t('options.attr_name.values.actuator')}
                 </option>
             </MaterialSelect>
             <MaterialSelect
                 id="value_types"
-                label="Value Type"
+                label={t('templates:value_type.label')}
                 name="value_type"
                 className="value-type"
                 value={selectAttr.value_type}
                 onChange={e => changeAttrValue(e, selectAttr)}
+                isDisable={!ability.can('modifier', 'template')}
             >
                 <option value="" disabled>
-                    Select type
+                    {t('text.select_type')}
                 </option>
                 <option value="bool" id="adm-option">
-                    Boolean
+                    {t('types.boolean')}
                 </option>
-                <option value="geo" id="adm-option">
-                    Geo
+                <option value="geo:point" id="adm-option">
+                    {t('types.geo')}
                 </option>
                 <option value="float" id="adm-option">
-                    Float
+                    {t('types.float')}
                 </option>
                 <option value="integer" id="adm-option">
-                    Integer
+                    {t('types.integer')}
                 </option>
                 <option value="string" id="adm-option">
-                    String
+                    {t('types.string')}
                 </option>
+                {selectAttr.type === 'dynamic' || selectAttr.type === 'actuator'
+                    ? (
+                        <option value="object" id="adm-option">
+                            {t('types.object')}
+                        </option>
+                    ) : null
+                }
             </MaterialSelect>
 
             {
-                selectAttr.type !== 'dynamic'
+                selectAttr.type !== 'dynamic' && selectAttr.type !== 'actuator'
                     ? (
                         <MaterialInput
                             name="static_value"
                             className="attribute-value"
-                            maxLength={40}
+                            maxLength={128}
                             value={selectAttr.static_value}
                             onChange={e => changeAttrValue(e, selectAttr)}
+                            disabled={!ability.can('modifier', 'template')}
                         >
-                            Value
+                            {t('value.label')}
                         </MaterialInput>
                     )
                     : null
@@ -98,6 +113,7 @@ const SidebarAttributeForm = ({
 SidebarAttributeForm.propTypes = {
     selectAttr: PropTypes.shape(attrsType).isRequired,
     changeAttrValue: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
 };
 
-export default SidebarAttributeForm;
+export default withNamespaces()(SidebarAttributeForm);

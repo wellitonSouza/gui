@@ -1,27 +1,19 @@
 import PropTypes, { func } from 'prop-types';
+import i18n from 'i18next';
 import React, { Component } from 'react';
 import { DojotBtnClassic } from '../DojotButton';
 
+
 export default class ImportExport extends Component {
-    constructor(props) {
-        super(props);
-
-        this.dismiss = this.dismiss.bind(this);
-    }
-
-    dismiss() {
-        const { openModal, toggleSidebar } = this.props;
-        openModal(false);
-        toggleSidebar();
-    }
-
     render() {
         const {
             children,
             handleClick,
             save,
             label,
+            closeModal,
         } = this.props;
+
         return (
             <div>
                 <div className="import-export row">
@@ -40,26 +32,26 @@ export default class ImportExport extends Component {
                         })}
                     </div>
                     <div className="footer">
-                        <DojotBtnClassic is_secondary onClick={this.dismiss} label="Cancel" title="Cancel" />
-                        {save ? (<DojotBtnClassic
-                            is_secondary={false}
-                            onClick={handleClick}
-                            label={label}
-                            title={label}
-                        />
+                        <DojotBtnClassic is_secondary onClick={closeModal} label={i18n.t('cancel.label')} title={i18n.t('cancel.label')} />
+                        {save ? (
+                            <DojotBtnClassic
+                                is_secondary={false}
+                                onClick={handleClick}
+                                label={label}
+                                title={label}
+                            />
                         )
                             : null }
                     </div>
                 </div>
-                <div className="rightsidebar" onClick={() => this.dismiss()} onKeyPress={this.dismiss} role="button" tabIndex={0} />
+                <div className="rightsidebar" onClick={closeModal} onKeyPress={closeModal} role="button" tabIndex={0} />
             </div>
         );
     }
 }
 
 ImportExport.propTypes = {
-    openModal: PropTypes.func.isRequired,
-    toggleSidebar: PropTypes.func.isRequired,
+    closeModal: PropTypes.func.isRequired,
     save: PropTypes.bool.isRequired,
     label: PropTypes.string,
     children: PropTypes.arrayOf(PropTypes.object).isRequired,

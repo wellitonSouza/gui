@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import AltContainer from 'alt-container';
-import TextTruncate from 'react-text-truncate';
 import { translate, Trans } from 'react-i18next';
 import PropTypes from 'prop-types';
+import * as i18next from 'i18next';
 import GroupStore from '../../stores/GroupStore';
 import GroupActions from '../../actions/GroupActions';
 import GroupPermissionActions from '../../actions/GroupPermissionActions';
@@ -10,17 +10,20 @@ import { NewPageHeader } from '../../containers/full/PageHeader';
 import { DojotBtnLink } from '../../components/DojotButton';
 import GroupsSideBar from './GroupsSideBar';
 import toaster from '../../comms/util/materialize';
+import Can from '../../components/permissions/Can';
+
+i18next.setDefaultNamespace('groups');
 
 function GroupCard(obj) {
     return (
         <div
-            className="card-size card-hover lst-entry-wrapper z-depth-2 fullHeight"
-            id={obj.group.id}
+            className="card-size card-hover lst-entry-wrapper z-depth-2 mg0px pointer"
+            id={obj.group.name}
             onClick={obj.onclick}
             role="none"
             tabIndex={obj.group.id}
         >
-            <div className="lst-entry-title col s12 ">
+            <div className="lst-entry-title col s12 bg-gradient-dark-ciano">
                 <img className="title-icon" src="images/groups-icon.png" alt="Group" />
                 <div className="title-text truncate" title={obj.group.name}>
                     <span className="text">
@@ -30,18 +33,18 @@ function GroupCard(obj) {
             </div>
             <div className="attr-list">
                 <div className="attr-area light-background">
-                    <div className="attr-row">
-                        <div className="icon">
+                    <div className="attr-row height74">
+                        <div className="icon height50">
                             <img src="images/info-icon.png" alt={obj.group.description} />
                         </div>
-                        <div className="user-card attr-content" title={obj.group.description}>
-                            <TextTruncate
-                                line={2}
-                                truncateText="…"
-                                text={obj.group.description}
-                                containerClassName="description-text"
-                            />
-                            <div className="subtitle"><Trans i18nKey="groups.description" /></div>
+                        <div className="attr-content" title={obj.group.description}>
+                            <div className="subtitle">
+                                {obj.group.description}
+                                {' '}
+                            </div>
+                            <span>
+                                <Trans i18nKey="description.label" />
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -54,29 +57,34 @@ function GroupCard(obj) {
 function GroupList(param) {
     if (param.groups) {
         return (
-            <div className="fill">
+            <div className="col s12 lst-wrapper w100 hei-100-over-scroll flex-container">
                 {param.groups.map(obj => (
-                    <GroupCard
-                        group={obj}
-                        key={obj.id}
-                        onclick={param.handleUpdate}
-                    />
+                    <div key={obj.name} className="mg20px fl flex-order-2">
+                        <GroupCard
+                            group={obj}
+                            key={obj.name}
+                            onclick={param.handleUpdate}
+                        />
+                    </div>
                 ))}
-            </div>);
+            </div>
+        );
     }
 }
 
 function OperationsHeader(param) {
     return (
         <div className="col s12 pull-right pt10">
-            <DojotBtnLink
-                responsive="true"
-                onClick={param.newGroup}
-                label={<Trans i18nKey="groups.btn.new.text" />}
-                alt="Create a new group"
-                icon="fa fa-plus"
-                className="w130px"
-            />
+            <Can do="modifier" on="flows">
+                <DojotBtnLink
+                    responsive="true"
+                    onClick={param.newGroup}
+                    label={param.i18n('btn.new.text')}
+                    alt={param.i18n('btn.new.alt')}
+                    icon="fa fa-plus"
+                    className="w130px"
+                />
+            </Can>
         </div>
     );
 }
@@ -98,7 +106,8 @@ class Groups extends Component {
 
     componentDidMount() {
         GroupActions.fetchGroups.defer();
-        GroupPermissionActions.fetchPermissionsForGroups(null);
+        GroupPermissionActions.fetchGroupPermissions(null);
+        GroupPermissionActions.fetchSystemPermissions();
     }
 
     toggleSideBar() {
@@ -112,6 +121,7 @@ class Groups extends Component {
             showSideBar: false,
             edit: false,
         });
+        GroupPermissionActions.fetchSystemPermissions();
         GroupActions.fetchGroups.defer();
     }
 
@@ -122,8 +132,8 @@ class Groups extends Component {
     }
 
     newGroup() {
-        GroupActions.getGroupById(null);
-        GroupPermissionActions.fetchPermissionsForGroups(null);
+        GroupActions.getGroupByName(null);
+        GroupPermissionActions.fetchGroupPermissions();
         this.setState({
             showSideBar: true,
             edit: false,
@@ -133,13 +143,12 @@ class Groups extends Component {
     handleUpdate(e) {
         e.preventDefault();
         const { t } = this.props;
-        const { id: groupIdClick } = e.currentTarget;
-        // this condition  will be change/removed
-        if (groupIdClick === '1') {
-            toaster.warning(t('groups.alerts.admin_not_remove'));
+        const { id: groupClick } = e.currentTarget;
+        if (groupClick === 'admin') {
+            toaster.warning(t('alerts.admin_not_remove'));
         } else {
-            GroupActions.getGroupById(groupIdClick);
-            GroupPermissionActions.fetchPermissionsForGroups(groupIdClick);
+            GroupActions.getGroupByName(groupClick);
+            GroupPermissionActions.fetchGroupPermissions(groupClick);
             this.setState({
                 showSideBar: true,
                 edit: true,
@@ -152,21 +161,20 @@ class Groups extends Component {
             showSideBar,
             edit,
         } = this.state;
-
+        const { t } = this.props;
         return (
-            <div id="groups-wrapper">
+            <div className="full-device-area">
                 <AltContainer store={GroupStore}>
-                    <NewPageHeader title={<Trans i18nKey="groups.title" />} icon="groups">
-                        <OperationsHeader newGroup={this.newGroup} />
+                    <NewPageHeader title={<Trans i18nKey="title" />} icon="groups">
+                        <OperationsHeader newGroup={this.newGroup} i18n={t} />
                     </NewPageHeader>
-                    <GroupList handleUpdate={this.handleUpdate} />
-                    {showSideBar ? (
-                        <GroupsSideBar
-                            handleShowSideBar={this.showSideBar}
-                            handleHideSideBar={this.hideSideBar}
-                            edit={edit}
-                        />
-                    ) : <div />}
+                    <GroupBox
+                        handleUpdate={this.handleUpdate}
+                        showSideBar={showSideBar}
+                        handleShowSideBar={this.showSideBar}
+                        handleHideSideBar={this.hideSideBar}
+                        edit={edit}
+                    />
                 </AltContainer>
             </div>
         );
@@ -174,6 +182,35 @@ class Groups extends Component {
 }
 
 Groups.propTypes = {
-    t: PropTypes.shape.isRequired,
+    t: PropTypes.func.isRequired,
 };
+
+function GroupBox(props) {
+    const {
+        handleUpdate, showSideBar, handleHideSideBar, handleShowSideBar, edit,
+    } = props;
+    return (
+        <div className="full-height flex-container pos-relative overflow-x-hidden">
+            <GroupList handleUpdate={handleUpdate} {...props} />
+            {showSideBar ? (
+                <GroupsSideBar
+                    handleShowSideBar={handleShowSideBar}
+                    handleHideSideBar={handleHideSideBar}
+                    edit={edit}
+                    {...props}
+                />
+            ) : <div />}
+        </div>
+    );
+}
+
+GroupBox.propTypes = {
+    handleUpdate: PropTypes.func.isRequired,
+    showSideBar: PropTypes.bool.isRequired,
+    handleHideSideBar: PropTypes.func.isRequired,
+    handleShowSideBar: PropTypes.func.isRequired,
+    edit: PropTypes.func.isRequired,
+};
+
+
 export default translate()(Groups);

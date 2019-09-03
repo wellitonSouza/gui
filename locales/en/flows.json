@@ -1,0 +1,35 @@
+{
+  "title": "Data Flows",
+  "title_edit": "flow manager",
+  "subtitle_edit": "Flow configuration",
+  "element_name": "flow",
+  "alerts": {
+    "no_configured": "No configured flows.",
+    "update": "Flow updated.",
+    "create": "Flow created.",
+    "remove": "Flow removed.",
+    "failed_find_ctx": "failed to find flow context."
+  },
+  "last_update": "Last update",
+  "nodes": "Nodes",
+  "header": {
+    "new": {
+      "label": "New Flow",
+      "alt": "Create a data flow"
+    },
+    "return": {
+      "label": "Return to Flow list"
+    },
+    "remove": {
+      "label": "Remove Flow"
+    },
+    "save": {
+      "label": "Save Flow"
+    },
+    "name": {
+      "label": "Flow name"
+    }
+  }
+}
+
+

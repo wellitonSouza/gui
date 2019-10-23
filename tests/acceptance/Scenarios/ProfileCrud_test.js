@@ -160,6 +160,6 @@ Before((login) => {
 
 Scenario('@basic: Create a new user', async (I) => {
    
-      I.click(locate('input') .withAttr({'userName46465'}));
+      I.click(locate('input').withAttr({'userName46465'});
       I.fillField('userName46465', 'TestUser1')
    });    

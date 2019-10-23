@@ -6,6 +6,7 @@ dist/*
 src/components/*
 nohup.out
 .vscode/launch.json
+tests/.vscode/*
 # Logs
 logs
 *.log

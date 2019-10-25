@@ -2,21 +2,25 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import AltContainer from 'alt-container';
-import { withNamespaces } from 'react-i18next';
+import {withNamespaces} from 'react-i18next';
 import * as i18next from 'i18next';
-import { Loading } from 'Components/Loading';
-import { Attr, HandleGeoElements } from 'Components/HistoryElements';
-import { DojotBtnRedCircle } from 'Components/DojotButton';
+import {Loading} from 'Components/Loading';
+import {Attr, HandleGeoElements} from 'Components/HistoryElements';
+import {DojotBtnRedCircle} from 'Components/DojotButton';
 import MeasureActions from 'Actions/MeasureActions';
 import DeviceActions from 'Actions/DeviceActions';
+import CertificateActions from 'Actions/CertificateActions';
 import MeasureStore from 'Stores/MeasureStore';
 import DeviceStore from 'Stores/DeviceStore';
 import ConfigStore from 'Stores/ConfigStore';
+import LoginStore from 'Stores/LoginStore';
+import CertificateStore from 'Stores/CertificateStore';
 import Metadata from './Details/Metadata';
 import {NewPageHeader} from 'Containers/full/PageHeader';
 import util from 'Comms/util/util';
+import Can from "Components/permissions/Can";
 
-const DeviceHeader = ({ device, t }) => (
+const DeviceHeader = ({device, t}) => (
     <div className="row devicesSubHeader p0 device-details-header">
         <div className="col s8 m8">
             <span className="col s12 device-label truncate" title={device.label}>
@@ -95,7 +99,7 @@ Attribute.propTypes = {
     attr: PropTypes.shape({}).isRequired,
 };
 
-const Configurations = ({ t, attrs, device }) => (
+const Configurations = ({t, attrs, device}) => (
     <div>
         <GenericList
             img="images/gear-dark.png"
@@ -115,8 +119,8 @@ Configurations.propTypes = {
 
 
 const StaticAttributes = ({
-    t, openStaticMap, attrs, device,
-}) => (
+                              t, openStaticMap, attrs, device,
+                          }) => (
     <div>
         <GenericList
             img="images/tag.png"
@@ -190,15 +194,15 @@ class GenericList extends Component {
                 if (attr.type === 'meta') {
                     // values of configurations
                     if (attr.static_value.length > 20) {
-                        this.setState({ truncate: true });
+                        this.setState({truncate: true});
                     }
                 } else {
                     if (attr.label.length > 20 || attr.value_type > 20) {
-                        this.setState({ truncate: true });
+                        this.setState({truncate: true});
                     }
                     // Values of static attributes
                     if (attr.static_value.length > 20) {
-                        this.setState({ truncate: true });
+                        this.setState({truncate: true});
                     }
                 }
             }
@@ -237,9 +241,19 @@ class GenericList extends Component {
                                             {device.id}
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                             <hr/>
+                            <AltContainer stores={{
+                                certStore: CertificateStore,
+                                loginStore: LoginStore,
+                            }}
+                            >
+                                <CertificateComponent deviceId={device.id} t={t}/>
+
+                            </AltContainer>
+
                         </Fragment>
                     ) : ('')}
                     {attrs.map(attr => (
@@ -346,8 +360,8 @@ class DyAttributeArea extends Component {
     }
 
     toggleAttribute(attr) {
-        let { selectedAttributes: sa } = this.state;
-        const { isAttrsVisible } = this.state;
+        let {selectedAttributes: sa} = this.state;
+        const {isAttrsVisible} = this.state;
         if (isAttrsVisible[attr.id]) {
             sa = sa.filter(i => i.id !== attr.id);
             delete isAttrsVisible[attr.id];
@@ -364,7 +378,7 @@ class DyAttributeArea extends Component {
     }
 
     render() {
-        const { isAttrsVisible, selectedAttributes } = this.state;
+        const {isAttrsVisible, selectedAttributes} = this.state;
         const {
             openStaticMap, device, t, actuators, dynamicAttrs,
         } = this.props;
@@ -408,7 +422,7 @@ class DyAttributeArea extends Component {
                 <div className="second-col">
                     {selectedAttributes.length === 0 && atStatic.length === 0
                         ? (
-                            <NoActiveAttr />
+                            <NoActiveAttr/>
                         )
                         : null
                     }
@@ -423,7 +437,7 @@ class DyAttributeArea extends Component {
                         ))
                     }
                     {selectedAttributes.map(at => (
-                        <Attribute key={at.id} device={device} attr={at} />
+                        <Attribute key={at.id} device={device} attr={at}/>
                     ))}
                 </div>
                 <div className="third-col">
@@ -470,8 +484,8 @@ class ActuatorsList extends Component {
     }
 
     componentWillMount() {
-        const { device } = this.props;
-        const { attrs } = device;
+        const {device} = this.props;
+        const {attrs} = device;
 
         for (const i in attrs) {
             for (const j in attrs[i]) {
@@ -483,17 +497,17 @@ class ActuatorsList extends Component {
     }
 
     clickAttr(attr) {
-        const { toggleAttribute } = this.props;
+        const {toggleAttribute} = this.props;
         toggleAttribute(attr);
     }
 
     render() {
-        const { t, actuators } = this.props;
+        const {t, actuators} = this.props;
         return (
             <div className="stt-attributes dy_attributes">
                 <div className="col s12 header">
                     <div className="icon">
-                        <img src="images/gear-dark.png" />
+                        <img src="images/gear-dark.png"/>
                     </div>
                     <span>{t('text.actuators')}</span>
                 </div>
@@ -553,7 +567,7 @@ ActuatorsList.propTypes = {
 class DynamicAttributeList extends Component {
     constructor(props) {
         super(props);
-        this.state = { truncate: false };
+        this.state = {truncate: false};
         this.clickAttr = this.clickAttr.bind(this);
         this.limitSizeField = this.limitSizeField.bind(this);
     }
@@ -652,7 +666,7 @@ DynamicAttributeList.propTypes = {
 };
 
 
-const DeviceUserActions = ({ t }) => (
+const DeviceUserActions = ({t}) => (
     <div>
         <DojotBtnRedCircle
             to="/device/list"
@@ -775,7 +789,7 @@ class DeviceDetail extends Component {
 
 class ViewDeviceImpl extends Component {
     componentWillMount() {
-        const { devices, device_id } = this.props;
+        const {devices, device_id} = this.props;
         const device = devices[device_id];
         if (device === undefined) return; // not ready
 
@@ -790,7 +804,7 @@ class ViewDeviceImpl extends Component {
 
     render() {
         let device;
-        const { t, devices } = this.props;
+        const {t, devices} = this.props;
 
         if (devices !== undefined) {
             if (devices.hasOwnProperty(this.props.device_id)) {
@@ -799,7 +813,7 @@ class ViewDeviceImpl extends Component {
         }
 
         if (device === undefined) {
-            return (<Loading />);
+            return (<Loading/>);
         }
         return (
             <div className="full-height bg-light-gray">
@@ -814,8 +828,8 @@ class ViewDeviceImpl extends Component {
                         />
                     </div>
                 </NewPageHeader>
-                <DeviceHeader device={device} t={t} />
-                <DeviceDetail deviceid={device.id} device={device} t={t} />
+                <DeviceHeader device={device} t={t}/>
+                <DeviceDetail deviceid={device.id} device={device} t={t}/>
             </div>
         );
     }
@@ -823,6 +837,140 @@ class ViewDeviceImpl extends Component {
 
 // TODO: this is an awful quick hack - this should be better scoped.
 let device_detail_socket = null;
+
+class CertificateComponent extends Component {
+    constructor(props) {
+        super(props);
+        this.handleClickNewCerts = this.handleClickNewCerts.bind(this);
+        this.handleClickCACert = this.handleClickCACert.bind(this);
+    }
+
+    componentDidMount() {
+        CertificateActions.cleanStorePrivateKey.defer();
+        CertificateActions.cleanStoreCRL.defer();
+        CertificateActions.cleanStoreCACRL.defer();
+    }
+
+    handleClickNewCerts() {
+        CertificateActions.updateCertificates.defer(this.props.deviceId, this.props.loginStore.user.service);
+    }
+
+    handleClickCACert() {
+        CertificateActions.updateCACertificates.defer();
+    }
+
+    render() {
+        const {
+            t,
+            deviceId,
+            certStore:
+                {
+                    privateKey,
+                    crt,
+                    caCrt
+                },
+            loginStore: {
+                user: {
+                    service
+                }
+            }
+        } = this.props;
+
+        const nameFile = service + ':' + deviceId;
+
+        return (
+            <Fragment>
+                <Can do="modifier" on="ca-sign">
+                    <div className="line">
+                        <div className="display-flex-column flex-1">
+                            <div
+                                className={'name-value '}
+                                title={t('certificates:title_cert')}
+                            >
+                                {t('certificates:title_cert')}
+
+                            </div>
+                            <div className="display-flex-no-wrap space-between">
+                                <div className="w100">
+                                    <div className="w100">
+                                        <button type="button"
+                                                title={t('certificates:btn_generate')}
+                                                className="btn-crl"
+                                                onClick={this.handleClickNewCerts}
+                                                disabled={!!privateKey && !!crt}>
+                                            {t('certificates:btn_generate')}
+                                            &nbsp; &nbsp;
+                                            <i className="fa fa-lock"/>
+                                        </button>
+
+                                    </div>
+                                    <div>
+                                        <a href={'data:application/pkcs8,' + encodeURIComponent(privateKey)}
+                                           download={nameFile + '.key'}
+                                           className={privateKey ? '' : 'hide'}
+                                           title={t('certificates:down_private_key')}>
+                                            <i className="fa fa-arrow-circle-down"/> {t('certificates:down_private_key')}
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a href={'data:application/pkcs8,' + encodeURIComponent(crt)}
+                                           title={t('certificates:down_crt')}
+                                           download={nameFile + '.crt'}
+                                           className={crt ? '' : 'hide'}>
+                                            <i className="fa fa-arrow-circle-down"/> {t('certificates:down_crt')}
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </Can>
+                <hr/>
+                <Can do="viewer" on="ca">
+                    <div className="line">
+                        <div className="display-flex-column flex-1">
+                            <div
+                                className={'name-value '}
+                                title={t('certificates:title_ca')}
+                            >
+                                {t('certificates:title_ca')} <sub> {t('certificates:down_ca_crt_alt')}</sub>
+
+                            </div>
+                            <div className="display-flex-no-wrap space-between">
+                                <div className="w100"
+                                >
+                                    <div className="w100">
+                                        <button type="button" title={t('certificates:btn_load')}
+                                                className="btn-crl"
+                                                onClick={this.handleClickCACert}
+                                                disabled={!!caCrt}>
+                                            {t('certificates:btn_load')}
+                                            &nbsp; &nbsp;
+                                            <i className="fa fa-lock"/>
+                                        </button>
+
+                                    </div>
+                                    <div>
+                                        <a href={'data:application/pkcs8,' + encodeURIComponent(caCrt)}
+                                           download='ca.crt'
+                                           className={caCrt ? '' : 'hide'}>
+                                            <i className="fa fa-arrow-circle-down"/> {t('certificates:down_ca_crt')}
+                                        </a>
+                                    </div>
+                                    <div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </Can>
+                <hr/>
+            </Fragment>
+        );
+    }
+}
 
 class ViewDeviceComponent extends Component {
     constructor(props) {
@@ -882,7 +1030,7 @@ class ViewDeviceComponent extends Component {
         return (
             <div className="full-width full-height">
                 <AltContainer store={DeviceStore}>
-                    <ViewDeviceImpl device_id={params.device} t={t} />
+                    <ViewDeviceImpl device_id={params.device} t={t}/>
                 </AltContainer>
             </div>
         );
@@ -890,4 +1038,4 @@ class ViewDeviceComponent extends Component {
 }
 
 const ViewDevice = withNamespaces()(ViewDeviceComponent);
-export { ViewDevice };
+export {ViewDevice};

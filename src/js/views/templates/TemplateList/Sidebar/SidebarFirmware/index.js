@@ -151,13 +151,12 @@ class SidebarFirmware extends Component {
                                 <div className="footer">
                                     <Fragment>
                                         <DojotBtnClassic label="discard" type="secondary" onClick={toogleSidebarFirmware} />
-                                        <DojotBtnClassic color="red" label="save" type="primary" onClick={e => this.saveImages(e)} />
+                                        <DojotBtnClassic color="red" label="save" type="primary" onClick={(e) => this.saveImages(e)} />
                                     </Fragment>
                                 </div>
                             </div>
                         )
-                        : <div />
-                    }
+                        : <div />}
                 </Slide>
             </Fragment>
         );

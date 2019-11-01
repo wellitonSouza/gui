@@ -227,14 +227,13 @@ class SidebarFirmImages extends Component {
                                             color="red"
                                             label={t('save.label')}
                                             type="primary"
-                                            onClick={e => this.saveImages(e)}
+                                            onClick={(e) => this.saveImages(e)}
                                         />
                                     </Fragment>
                                 </div>
                             </div>
                         )
-                        : <div />
-                    }
+                        : <div />}
                 </Slide>
                 <SidebarDeleteImage
                     toggleSidebar={this.toggleDeleteSidebar}

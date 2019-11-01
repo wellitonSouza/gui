@@ -57,8 +57,7 @@ const SidebarAttribute = ({
                                         changeAttrValue={changeAttrValue}
                                         selectAttr={selectAttr}
                                     />
-                                )
-                            }
+                                )}
                             <MetadataList values={selectAttr} selectMetadata={selectMetadata} />
                             <div className="body-actions">
                                 <div className="body-actions--divider" />
@@ -96,13 +95,11 @@ const SidebarAttribute = ({
                                             <DojotBtnClassic color="red" label={t('save.label')} type="primary" onClick={() => updateTemplateAttr(selectAttr)} />
                                         </Can>
                                     </Fragment>
-                                )
-                            }
+                                )}
                         </div>
                     </div>
                 )
-                : <div />
-            }
+                : <div />}
         </Slide>
         <SidebarDelete
             cancel={() => toogleSidebarDelete('showDeleteAttr')}

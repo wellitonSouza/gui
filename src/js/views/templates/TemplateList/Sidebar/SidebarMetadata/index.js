@@ -77,8 +77,7 @@ const SidebarMetadata = ({
                             }
                         </div>
                     </div>
-                )
-            }
+                )}
         </Slide>
         <SidebarDelete
             cancel={() => toogleSidebarDelete('showDeleteMeta')}

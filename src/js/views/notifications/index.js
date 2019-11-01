@@ -19,7 +19,7 @@ const NotificationList = (props) => {
             ? (
                 <div>
                     <ul>
-                        {notifications.map(notification => (
+                        {notifications.map((notification) => (
                             <CardNotification
                                 notification={notification}
                                 key={Math.random()}

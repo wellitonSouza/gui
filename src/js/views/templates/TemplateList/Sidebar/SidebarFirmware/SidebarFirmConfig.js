@@ -172,8 +172,7 @@ class SidebarFirmConfig extends Component {
                                                 <div className="tl">
                                                     {imageAllowed
                                                         ? <b>{t('firmware:states.enabled')}</b>
-                                                        : <b>{t('firmware:states.disabled')}</b>
-                                                    }
+                                                        : <b>{t('firmware:states.disabled')}</b>}
 
                                                 </div>
                                                 {t('firmware:states.short_desc')}
@@ -191,7 +190,7 @@ class SidebarFirmConfig extends Component {
                                                             className="attribute-type"
                                                             maxLength={40}
                                                             value={attrs.current_state.user_value}
-                                                            onChange={e => this.changeAttrValue(e)}
+                                                            onChange={(e) => this.changeAttrValue(e)}
                                                         >
                                                             {t('firmware:default_attrs_template.state')}
                                                         </MaterialInput>
@@ -202,7 +201,7 @@ class SidebarFirmConfig extends Component {
                                                             className="attribute-type"
                                                             maxLength={40}
                                                             value={attrs.update_result.user_value}
-                                                            onChange={e => this.changeAttrValue(e)}
+                                                            onChange={(e) => this.changeAttrValue(e)}
                                                         >
                                                             {t('firmware:default_attrs_template.update_result')}
                                                         </MaterialInput>
@@ -213,7 +212,7 @@ class SidebarFirmConfig extends Component {
                                                             className="attribute-type"
                                                             maxLength={40}
                                                             value={attrs.upload_image.user_value}
-                                                            onChange={e => this.changeAttrValue(e)}
+                                                            onChange={(e) => this.changeAttrValue(e)}
                                                         >
                                                             {t('firmware:default_attrs_template.upload_image')}
                                                         </MaterialInput>
@@ -224,7 +223,7 @@ class SidebarFirmConfig extends Component {
                                                             className="attribute-type"
                                                             maxLength={40}
                                                             value={attrs.apply_image.user_value}
-                                                            onChange={e => this.changeAttrValue(e)}
+                                                            onChange={(e) => this.changeAttrValue(e)}
                                                         >
                                                             {t('firmware:default_attrs_template.apply_image')}
                                                         </MaterialInput>
@@ -235,7 +234,7 @@ class SidebarFirmConfig extends Component {
                                                             className="attribute-type"
                                                             maxLength={40}
                                                             value={attrs.current_version.user_value}
-                                                            onChange={e => this.changeAttrValue(e)}
+                                                            onChange={(e) => this.changeAttrValue(e)}
                                                         >
                                                             {t('firmware:default_attrs_template.current_version')}
                                                         </MaterialInput>
@@ -256,13 +255,12 @@ class SidebarFirmConfig extends Component {
                                 <div className="footer">
                                     <Fragment>
                                         <DojotBtnClassic label={t('discard.label')} type="secondary" onClick={toogleSidebarFirmware} />
-                                        <DojotBtnClassic color="red" label={t('save.label')} type="primary" onClick={e => this.saveImageConfig(e)} />
+                                        <DojotBtnClassic color="red" label={t('save.label')} type="primary" onClick={(e) => this.saveImageConfig(e)} />
                                     </Fragment>
                                 </div>
                             </div>
                         )
-                        : <div />
-                    }
+                        : <div />}
                 </Slide>
                 { fwImageModifier
                     ? (

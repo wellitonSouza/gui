@@ -68,13 +68,11 @@ const SidebarTemplate = ({
                                             <DojotBtnClassic color="red" label={t('save.label')} type="primary" onClick={updateTemplate} />
                                         </Can>
                                     </Fragment>
-                                )
-                            }
+                                )}
                         </div>
                     </div>
                 )
-                : <div />
-            }
+                : <div />}
         </Slide>
         <SidebarDelete
             cancel={() => toogleSidebarDelete('showDeleteTemplate')}

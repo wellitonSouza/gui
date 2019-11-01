@@ -500,7 +500,7 @@ class Sidebar extends Component {
                     toogleSidebarDelete={this.toogleSidebarDelete}
                     removeSelectMeta={this.removeSelectMeta}
                 />
-            <Fragment/>
+            </Fragment>
         );
     }
 }

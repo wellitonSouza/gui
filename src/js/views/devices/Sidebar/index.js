@@ -308,9 +308,13 @@ class Sidebar extends Component {
 
     remove() {
         const { device } = this.state;
-        const { ops, t } = this.props;
-        FormActions.triggerRemoval(device, () => {
+        const { ops, t, numOfDevPage } = this.props;
+
+        FormActions.triggerRemoval(device, numOfDevPage, () => {
             toaster.success(t('devices:alerts.remove'));
+            if (numOfDevPage === 1) {
+                ops.whenRemoveItemFromLastPage();
+            }
             this.setState({
                 isShowSidebarDelete: false,
                 showSidebarDevice: false,
@@ -395,6 +399,7 @@ class Sidebar extends Component {
                         save={this.save}
                         update={this.update}
                         remove={this.remove}
+                        numOfDevPage={this.numOfDevPage}
                     />
                     <SidebarManageTemplates
                         showManageTemplates={showManageTemplates}
@@ -458,6 +463,7 @@ Sidebar.defaultProps = {
     isNewDevice: false,
     hasTemplateWithImages: false,
     templateIdAllowedImage: '',
+    numOfDevPage: null,
 };
 
 Sidebar.propTypes = {
@@ -478,10 +484,12 @@ Sidebar.propTypes = {
     isNewDevice: PropTypes.bool,
     ops: PropTypes.shape({
         _fetch: PropTypes.func,
+        whenRemoveItemFromLastPage: PropTypes.func,
     }).isRequired,
     t: PropTypes.func.isRequired,
     hasTemplateWithImages: PropTypes.bool,
     templateIdAllowedImage: PropTypes.string,
+    numOfDevPage: PropTypes.number,
 };
 
 export default withNamespaces()(Sidebar);

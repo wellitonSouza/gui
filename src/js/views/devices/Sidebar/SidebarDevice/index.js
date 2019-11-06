@@ -61,7 +61,7 @@ const SidebarDevice = ({
                                                 name="name"
                                                 maxLength={40}
                                                 value={device.label}
-                                                onChange={e => handleChangeName(e.target.value)}
+                                                onChange={(e) => handleChangeName(e.target.value)}
                                             >
                                                 {t('text.name')}
                                             </MaterialInput>

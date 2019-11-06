@@ -8,7 +8,8 @@
     "update": "Fluxo alterado.",
     "create": "Fluxo criado.",
     "remove": "Fluxo removido.",
-    "failed_find_ctx": "falha ao procurar o contexto do fluxo."
+    "failed_find_ctx": "falha ao procurar o contexto do fluxo.",
+    "maybe_not_saved": "Não esqueça de salvar suas atualizações."
   },
   "last_update": "Ultima atualização",
   "nodes": "Nós",

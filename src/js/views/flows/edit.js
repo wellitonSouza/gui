@@ -208,7 +208,7 @@ var observer = {};
 
 const MutationSchema = ({ somethingChanged, isSaved }) => {
     var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
-    
+
     if (isSaved === false)
     {
         // if we already know that we should save, let's disconnect the observer
@@ -222,24 +222,24 @@ const MutationSchema = ({ somethingChanged, isSaved }) => {
         }, 3000);
         alreadySetted = true;
     }
-        
+
     function setMutation()
     {
         var target1 = document.querySelector('#chart>svg');
         //var target2 = document.querySelector('.editor-tray.ui-draggable');
         if (target1)
         {
-            observer = new MutationObserver(function(mutations) {  
+            observer = new MutationObserver(function(mutations) {
                 mutations.forEach(function(mutation) {
                     // sending false means isSaved = false;
                     somethingChanged(false);
                 });
            });
-    
+
             var config = {
-                attributes: true, 
+                attributes: true,
                 characterData: true
-            }; 
+            };
             observer.observe(target1, config);
             //if (target2)
             //    observer.observe(target2, config);
@@ -346,7 +346,7 @@ class EditFlowComponent extends Component {
     somethingChanged(newState)
     {
         const isSaved = newState;
-        if (isSaved)        
+        if (isSaved)
             this.disableBeforeUnload();
         else
             this.enableBeforeUnload();
@@ -406,14 +406,13 @@ class EditFlowComponent extends Component {
                     <div
                         className="row valign-wrapper absolute-input full-width no-margin top-minus-2 "
                     >
-                        
-                        {(!isSaved ?  
-                            <Slide right duration={300}>
-                                <div className="maybeNotSaved"> 
+                        <Slide right duration={300}>
+                                <div className="maybeNotSaved">
                                 <div className="boxLine"></div>
-                                <span>Don't forget to save your updates.</span>
+                                <span>{i18n('flows:alerts.maybe_not_saved')}</span>
                                 <i className="fa fa-exclamation-triangle" ></i>
-                        </div> </Slide>: null )}
+                            </div>
+                        </Slide>
                         <AltContainer store={FlowStore}>
                             <NameForm t={i18n} />
                         </AltContainer>

@@ -8,7 +8,8 @@
     "update": "Flow updated.",
     "create": "Flow created.",
     "remove": "Flow removed.",
-    "failed_find_ctx": "failed to find flow context."
+    "failed_find_ctx": "failed to find flow context.",
+    "maybe_not_saved": "Don't forget to save your updates."
   },
   "last_update": "Last update",
   "nodes": "Nodes",

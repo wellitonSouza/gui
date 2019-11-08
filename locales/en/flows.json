@@ -9,7 +9,8 @@
     "create": "Flow created.",
     "remove": "Flow removed.",
     "failed_find_ctx": "failed to find flow context.",
-    "maybe_not_saved": "Don't forget to save your updates."
+    "maybe_not_saved": "Don't forget to save your updates.",
+    "work_is_not_saved_ask_to_confirm_exit": "Your work is not saved! Are you sure you want to leave?"
   },
   "last_update": "Last update",
   "nodes": "Nodes",

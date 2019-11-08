@@ -362,6 +362,7 @@ class EditFlowComponent extends Component {
             return "Discard changes?";
         };
     }
+
     disableBeforeUnload() {
         window.onbeforeunload = null;
     }
@@ -405,8 +406,7 @@ class EditFlowComponent extends Component {
     }
 
     componentWillUnmount() {
-        // required to disable onbeforeunload window behavior
-        this.somethingChanged(true);
+        this.disableBeforeUnload();
     }
 
     render() {

@@ -24,6 +24,7 @@ const SidebarDevice = ({
     toogleSidebarDelete,
     t,
     templates,
+    numOfDevPage,
 }) => {
     const {
         /* configValues, */
@@ -60,7 +61,7 @@ const SidebarDevice = ({
                                                 name="name"
                                                 maxLength={40}
                                                 value={device.label}
-                                                onChange={e => handleChangeName(e.target.value)}
+                                                onChange={(e) => handleChangeName(e.target.value)}
                                             >
                                                 {t('text.name')}
                                             </MaterialInput>
@@ -209,6 +210,7 @@ const SidebarDevice = ({
                 confirm={remove}
                 showSidebar={isShowSidebarDelete}
                 message={t('qst_remove', { label: t('devices:device') })}
+                numOfDevPage={numOfDevPage}
             />
         </Fragment>
     );
@@ -240,9 +242,11 @@ SidebarDevice.propTypes = {
     isShowSidebarDelete: PropTypes.bool.isRequired,
     toogleSidebarDelete: PropTypes.func.isRequired,
     templates: PropTypes.func.isRequired,
+    numOfDevPage: PropTypes.number,
 };
 
 SidebarDevice.defaultProps = {
     showSidebarDevice: false,
+    numOfDevPage: null,
 };
 export default withNamespaces()(SidebarDevice);

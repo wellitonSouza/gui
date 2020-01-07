@@ -15,6 +15,7 @@ import ConfigStore from 'Stores/ConfigStore';
 import Metadata from './Details/Metadata';
 import {NewPageHeader} from 'Containers/full/PageHeader';
 import util from 'Comms/util/util';
+import socketio from 'socket.io-client';
 
 const DeviceHeader = ({ device, t }) => (
     <div className="row devicesSubHeader p0 device-details-header">
@@ -775,12 +776,42 @@ class ViewDeviceImpl extends Component {
     }
 }
 
-// TODO: this is an awful quick hack - this should be better scoped.
-let device_detail_socket = null;
-
 class ViewDeviceComponent extends Component {
     constructor(props) {
         super(props);
+
+        this.socketBaseURL = `${window.location.protocol}//${window.location.host}`;
+        this.tokenURL = `${this.socketBaseURL}/stream/socketio`;
+        this.keepConnected = true;
+
+        // socket to receive real time data
+        this.socket = socketio(this.socketBaseURL, {
+            transports: ['polling'],
+            autoConnect: false,
+            reconnection: false,
+        });
+
+        this.socket.on('all', (data) => {
+            MeasureActions.appendMeasures(data);
+        }).on('error', (error) => {
+            // console.log('[dojot-socket.io] on \'error\', error: ', error);
+
+            // if the socket was connected, the 'close()' method
+            // will fire the event 'disconnect' and manually reconnect
+            this.socket.close();
+
+        }).on('connect_error', (error) => {
+            // console.log('[dojot-socket.io] on \'connect_error\', error: ', error);
+            this.socketReconnection();
+
+        }).on('connect_timeout', (timeout) => {
+            // console.log('[dojot-socket.io] on \'connect_timeout\', timeout: ', timeout);
+            this.socketReconnection();
+
+        }).on('disconnect', (reason) => {
+            // console.log('[dojot-socket.io] on \'disconnect\', reason: ', reason);
+            this.socketReconnection();
+        });
     }
 
     componentWillMount() {
@@ -788,44 +819,32 @@ class ViewDeviceComponent extends Component {
     }
 
     componentDidMount() {
-        // Realtime
-        const socketio = require('socket.io-client');
-
-        const target = `${window.location.protocol}//${window.location.host}`;
-        const token_url = `${target}/stream/socketio`;
-
-        function getWsToken() {
-            util._runFetch(token_url)
-                .then((reply) => {
-                    init(reply.token);
-                })
-                .catch((error) => {
-                    // console.log('Failed!', error);
-                });
-        }
-
-        function init(token) {
-            device_detail_socket = socketio(target, {
-                query: `token=${token}`,
-                transports: ['polling'],
-            });
-
-            device_detail_socket.on('all', (data) => {
-                MeasureActions.appendMeasures(data);
-            });
-
-            // console.log('socket error', data);
-            device_detail_socket.on('error', (data) => {
-                if (device_detail_socket) device_detail_socket.close();
-                // getWsToken();
-            });
-        }
-
-        getWsToken();
+        this.establishSocketConnection();
     }
 
     componentWillUnmount() {
-        if (device_detail_socket) device_detail_socket.close();
+        this.keepConnected = false;
+        this.socket.close();
+    }
+
+    establishSocketConnection() {
+        const selfSocket = this.socket;
+        util._runFetch(this.tokenURL)
+            .then((reply) => {
+                selfSocket.io.opts.query = {
+                    token: reply.token
+                }
+                selfSocket.open();
+            })
+            .catch((error) => {
+                // console.log('Failed!', error);
+            });
+    }
+
+    socketReconnection() {
+        if(this.keepConnected) {
+            this.establishSocketConnection();
+        }
     }
 
     render() {

@@ -793,23 +793,18 @@ class ViewDeviceComponent extends Component {
 
         this.socket.on('all', (data) => {
             MeasureActions.appendMeasures(data);
-        }).on('error', (error) => {
-            // console.log('[dojot-socket.io] on \'error\', error: ', error);
-
+        }).on('error', () => {
             // if the socket was connected, the 'close()' method
             // will fire the event 'disconnect' and manually reconnect
             this.socket.close();
 
-        }).on('connect_error', (error) => {
-            // console.log('[dojot-socket.io] on \'connect_error\', error: ', error);
+        }).on('connect_error', () => {
             this.socketReconnection();
 
-        }).on('connect_timeout', (timeout) => {
-            // console.log('[dojot-socket.io] on \'connect_timeout\', timeout: ', timeout);
+        }).on('connect_timeout', () => {
             this.socketReconnection();
 
-        }).on('disconnect', (reason) => {
-            // console.log('[dojot-socket.io] on \'disconnect\', reason: ', reason);
+        }).on('disconnect', () => {
             this.socketReconnection();
         });
     }
@@ -835,9 +830,6 @@ class ViewDeviceComponent extends Component {
                     token: reply.token
                 }
                 selfSocket.open();
-            })
-            .catch((error) => {
-                // console.log('Failed!', error);
             });
     }
 

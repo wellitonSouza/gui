@@ -974,6 +974,8 @@ class ViewDeviceComponent extends Component {
     constructor(props) {
         super(props);
 
+        const { params } = this.props;
+
         this.socketBaseURL = `${window.location.protocol}//${window.location.host}`;
         this.tokenURL = `${this.socketBaseURL}/stream/socketio`;
         this.keepConnected = true;
@@ -985,7 +987,7 @@ class ViewDeviceComponent extends Component {
             reconnection: false,
         });
 
-        this.socket.on('all', (data) => {
+        this.socket.on(`${params.device}`, (data) => {
             MeasureActions.appendMeasures(data);
         }).on('error', () => {
             // if the socket was connected, the 'close()' method

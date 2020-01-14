@@ -77,20 +77,30 @@ class LoginActions {
     }
 
     loginFailed(error) {
-        if (error === null) { return t('login:errors.not_found'); }
+        let errMsg = '';
 
-        if (error instanceof TypeError) {
-            return t('login:errors.no_connection');
+        if (error === null) {
+            errMsg = t('login:errors.not_found');
+        } else if (error instanceof TypeError) {
+            errMsg = t('login:errors.no_connection');
+        } else {
+            const status = (error.data.status) ? error.data.status : error.data.data.status;
+            if (status === 401 || status === 403) {
+                errMsg = t('login:errors.auth_failed');
+            } else if (status === 500) {
+                errMsg = t('login:errors.internal_error');
+            } else if (error.message) {
+                errMsg = error.message;
+            }
         }
 
-        const { data } = error;
-        if ((data.status === 401) || (data.status === 403)) {
-            return t('login:errors.auth_failed');
+        if (errMsg === '') {
+            errMsg = t('login:errors.not_found');
         }
-        if (data.status === 500) {
-            return t('login:errors.internal_error');
-        }
-        return t('login:errors.not_found');
+
+        toaster.error(errMsg);
+
+        return errMsg;
     }
 }
 

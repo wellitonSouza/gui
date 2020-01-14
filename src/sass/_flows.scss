@@ -6,16 +6,16 @@
   right: 240px;
   z-index: 1000;
   font-weight: 600;
-  color: #ce1b1b;
-  background-color: #fbeaea;
+  color: #2f2f2f;
+  background-color: #ffd300;
   -webkit-transition: width 2s; /* Safari */
   transition: width 2s;
   height: 38px;
-  width: 310px;
+  width: 360px;
 
   .boxLine{
     position: absolute;
-    background: #eb5757;
+    background: #c1c1c1;
     width:3px;
     height: 100%;
     left: 0;
@@ -34,7 +34,7 @@
     font-size: 19px;
     position: absolute;
     right: 5px;
-    top: 2px;
+    top: 5px;
     padding: 5px;
   }
 }

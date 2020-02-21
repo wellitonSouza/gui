@@ -5,6 +5,7 @@ import FirmwareHelper from '../comms/firmware/FirmwareHelper';
 import util from '../comms/util/util';
 import {SmallPositionRenderer} from "../views/utils/Maps";
 import {Trans, withNamespaces} from 'react-i18next';
+import LeafMap from "../views/utils/LeafMap";
 
 
 class Graph extends Component {
@@ -178,11 +179,24 @@ class HandleGeoElements extends Component {
         };
 
         this.handleDevicePosition = this.handleDevicePosition.bind(this);
+        this.copyingStaticAttr = this.copyingStaticAttr.bind(this);
         this.toogleExpand = this.toogleExpand.bind(this);
     }
 
     toogleExpand(state) {
         this.setState({opened: state});
+    }
+
+    copyingStaticAttr(device)
+    {
+        let newDev = {};
+        newDev.id = device.id;
+        newDev.sp_value = device.sp_value;
+        newDev.label = device.label;
+        newDev.timestamp = device.timestamp;
+        newDev.tracking = device.tracking;
+        newDev.is_visible = device.is_visible;
+        return newDev;
     }
 
     handleDevicePosition(device) {
@@ -218,6 +232,7 @@ class HandleGeoElements extends Component {
     }
 
     render() {
+
         function NoData() {
             return (
                 <div className="valign-wrapper full-height background-info">
@@ -236,8 +251,23 @@ class HandleGeoElements extends Component {
 
         let validDevices = null;
         if (this.props.isStatic) {
-            // static attribute
-            validDevices = this.handleDevicePosition(this.props.device);
+            // create aux variable
+            validDevices = [this.copyingStaticAttr(this.props.device)];
+            // searching for attribute
+            let attr = {};
+            Object.values(this.props.device.attrs).forEach(arry => {
+                arry.forEach(element => {
+                    if (element.label === this.props.attr)
+                        attr = element;
+                })}); 
+
+            // set label and st value
+            validDevices[0].label = attr.label;
+            validDevices[0].is_visible = true;
+            const aux = attr.static_value;
+            const parsedPosition = aux.split(',');
+            validDevices[0].sp_value = [parseFloat(parsedPosition[0]), parseFloat(parsedPosition[1])];
+
         } else {
             // dynamic attribute
             validDevices = this.handleDevicePosition(this.props.MeasureStore.data[this.props.device.id]);
@@ -247,29 +277,13 @@ class HandleGeoElements extends Component {
         if (geoconfs === undefined)
             geoconfs = {}
 
-
-        let opened = util.checkWidthToStateOpen(this.state.opened);
-
         if (validDevices.length == 0) {
             return <NoData/>;
         } else {
             if (this.props.isStatic) {
-                return <div className={"attributeBox " + (opened ? "expanded" : "compressed")}>
-                    <div className="header">
-                        <label>{this.props.label}</label>
-                        {!this.state.opened ?
-                            <i onClick={this.toogleExpand.bind(this, true)} className="fa fa-expand"/> :
-                            <i onClick={this.toogleExpand.bind(this, false)} className="fa fa-compress"/>}
-                    </div>
-                    <SmallPositionRenderer
-                        showLayersIcons={false}
-                        staticDevices={validDevices}
-                        allowContextMenu={false}
-                        zoom={14}
-                        showPolyline={false}
-                        config={geoconfs}
-                    />
-                </div>;
+                return <span>
+                    <LeafMap point={validDevices[0].sp_value}> </LeafMap>
+                </span>;
             } else {
                 return <span>
                     <SmallPositionRenderer
@@ -312,6 +326,13 @@ function Attr(props) {
             <div className="mt60px full-height background-info">
                 <div className="full-width center"><Trans i18nKey="devices:no_data_avaliable"/></div>
             </div>
+        );
+    }
+
+    if (props.isStatic)
+    {
+        return (
+            <Renderer {...props} />
         );
     }
 

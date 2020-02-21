@@ -6,7 +6,7 @@ import { DojotBtnClassic } from 'Components/DojotButton';
 import { withNamespaces } from 'react-i18next';
 
 const SidebarDelete = ({
-    showSidebar, message, cancel, confirm, t,
+    showSidebar, message, cancel, confirm, t, numOfDevPage,
 }) => (
     <Slide right when={showSidebar} duration={300}>
         {
@@ -38,6 +38,7 @@ const SidebarDelete = ({
                                     type="primary"
                                     label={t('confirm.label')}
                                     onClick={confirm}
+                                    numOfDevPage={numOfDevPage}
                                 />
                             </div>
                         </div>
@@ -50,6 +51,7 @@ const SidebarDelete = ({
 
 SidebarDelete.defaultProps = {
     showSidebar: false,
+    numOfDevPage: PropTypes.number,
 };
 
 SidebarDelete.propTypes = {
@@ -58,5 +60,6 @@ SidebarDelete.propTypes = {
     cancel: PropTypes.func.isRequired,
     confirm: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
+    numOfDevPage: PropTypes.number,
 };
 export default withNamespaces()(SidebarDelete);

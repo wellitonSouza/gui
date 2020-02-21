@@ -377,7 +377,7 @@ class LeftSidebar extends Component {
 
                 <nav className="sidebar-nav line-normal">
                     <ul className="nav">
-                        { entries.map(item => <SidebarItem item={item} key={item.label} open={this.props.open} router={this.props.router} />)}
+                        { entries.map(item => <SidebarItem item={item} key={Math.random()} open={this.props.open} router={this.props.router} />)}
                     </ul>
                 </nav>
             </div>

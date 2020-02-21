@@ -95,7 +95,7 @@ class DeviceHandlerActions {
         });
     }
 
-    triggerRemoval(device, cb) {
+    triggerRemoval(device, n, cb) {
         return (dispatch) => {
             dispatch();
             deviceManager

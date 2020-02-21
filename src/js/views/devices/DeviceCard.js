@@ -110,7 +110,8 @@ class DeviceCardListComponent extends Component {
             <div className="full-height flex-container pos-relative overflow-x-hidden">
                 <Filter showPainel={this.props.showFilter} metaData={this.metaData} ops={this.props.dev_opex} fields={withNamespaces()(DevFilterFields)}/>
                 <AltContainer store={DeviceFormStore}>
-                    <Sidebar ops={this.props.dev_opex} />
+                    <Sidebar ops={this.props.dev_opex}
+                    numOfDevPage={this.props.deviceList.length}/>
                 </AltContainer>
                 {this.filteredList.length === 0 ? (
                     <div className="background-info valign-wrapper full-height">

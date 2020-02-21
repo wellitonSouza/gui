@@ -23,13 +23,13 @@ class TemplateOperations extends GenericOperations {
     }
 
     whenRemoveItemFromLastPage() {
-        if (this.paginationParams.page_num > 0) {
+        if (this.paginationParams.page_num > 1) {
             this.paginationParams.page_num = this.paginationParams.page_num - 1;
         }
     }
 
     _fetch() {
-        const res = Object.assign({}, this.paginationParams, this.filterParams);
+        const res = { ...this.paginationParams, ...this.filterParams };
         // console.log('fetching: ', res);
         TemplateActions.fetchTemplates(res);
     }

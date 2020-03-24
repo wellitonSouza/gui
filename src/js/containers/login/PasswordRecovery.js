@@ -47,7 +47,7 @@ class Recovery extends Component {
         this.setState({ invalid: errorMsg });
 
         if (this.state.confirmPassword !== this.state.password) {
-            errorMsg.confirm =  t('login:alerts.password_mismatch');
+            errorMsg.confirm = t('login:alerts.password_mismatch');
             this.setState({ invalid: errorMsg });
             return 2;
         }
@@ -99,13 +99,13 @@ class Recovery extends Component {
         return (
             <div className="row m0">
                 <div className="login col s12 p0 bg-left">
-                    <div className="col  s4 p0 left-side"/>
+                    <div className="col  s4 p0 left-side" />
                     <div className="col s8 recovery-password-area-right-side bg-right">
                         <div className="col s7">
                             <div className="row">
                                 <div className="col s12  offset-m1">
                                     <div className="recovery-password-page-title">
-                                        [ {`  ${t('text.new')} ${t('login:password.label')}  `}]
+                                        [ {`${t('login:new_password')}`}]
                                     </div>
                                 </div>
                             </div>
@@ -159,7 +159,7 @@ class Recovery extends Component {
                                 <div className="row">
                                     <div className="col s12 m1 offset-m7">
                                         <button type="submit"
-                                                className="waves-effect waves-dark red btn-flat">
+                                            className="waves-effect waves-dark red btn-flat">
                                             {t('submit.label')}
                                         </button>
                                     </div>
@@ -168,15 +168,15 @@ class Recovery extends Component {
                         </div>
                         <div className="col s5 right-side">
                             <div className="dojot-logo">
-                                <img src="images/dojot_white.png"/>
+                                <img src="images/dojot_white.png" />
                             </div>
                             <div className="slogan">
                                 <b>Do IoT</b>
-                                <br/>
+                                <br />
                                 Easy to use
-                                <br/>
+                                <br />
                                 Fast to develop
-                                <br/>
+                                <br />
                                 Safe to deploy
                             </div>
                         </div>
@@ -203,7 +203,7 @@ class PasswordRecovery extends Component {
                 transitionLeaveTimeout={500}
             >
                 <AltContainer store={LoginStore}>
-                    <Recovery t={t}/>
+                    <Recovery t={t} />
                 </AltContainer>
             </ReactCSSTransitionGroup>
         );

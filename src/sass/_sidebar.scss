@@ -421,6 +421,20 @@
     padding: 24px;
 }
 
+.version-info {
+    position: center;
+    right: 22px;
+    overflow: hidden;
+    top: 22px;
+    width: 180px;
+    height: 40px;   
+    background-color: #ffffff;
+    padding: 10px 0 0 15px;
+    font-size: 100%;
+    font-family: "Raleway", sans-serif;
+    color: #4f4f4f;
+}
+
 .rightsidebarchild {
     position: fixed;
     right: 22px;

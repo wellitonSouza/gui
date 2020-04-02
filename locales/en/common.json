@@ -107,7 +107,8 @@
         "import_export": " Import/Export",
         "change_password": "Change Password",
         "logout": "Logout",
-        "password_updated": "Password updated"
+        "password_updated": "Password updated",
+        "version": "Version"
     },
     "qst_remove": "You are about to remove this {{label}}. Are you sure?",
     "cant_empty": "This can't be empty",

@@ -171,6 +171,12 @@ class RightSideBar extends Component {
                             </div>
                         </div>) : <div/>
                     }
+                    
+                    <div className="horizontal-line" />
+                    
+                    <div className="col s12 m12">
+                        <div className="version-info">Teste lalala</div>
+                    </div>
 
                     <div className="horizontal-line" />
 

@@ -3,7 +3,6 @@
   "subtitle": "notifications",
   "device": "device",
   "message": "message",
-  "no_data_avaliable": "No notifications available"
+  "no_data_avaliable": "No notifications available",
+  "message_error": "Error: Couldn't get the message"
 }
-
-

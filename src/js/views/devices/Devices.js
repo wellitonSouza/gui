@@ -91,6 +91,12 @@ class DeviceOperations extends GenericOperations {
         };
     }
 
+    whenRemoveItemFromLastPage() {
+        if (this.paginationParams.page_num > 1) {
+            this.paginationParams.page_num = this.paginationParams.page_num - 1;
+        }
+    }
+
     setFilterToCard() {
         if (this.paginationParams.page_size === 5000) {
             this.setDefaultPaginationParams();
@@ -104,6 +110,7 @@ class DeviceOperations extends GenericOperations {
 
     _fetch(cb = null) {
         const res = Object.assign({}, this.paginationParams, this.filterParams);
+        
         if (this.filterParams.templates) {
             delete res.templates;
             res.template = this.filterParams.templates;

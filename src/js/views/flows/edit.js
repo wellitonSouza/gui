@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { Fragment, Component } from 'react';
-import { hashHistory } from 'react-router';
+import { withRouter, hashHistory } from 'react-router';
 import Slide from 'react-reveal/Slide';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AltContainer from 'alt-container';
@@ -157,6 +157,10 @@ class FlowCanvas extends Component {
         window.RED = null;
         RED = null;
         FlowActions.load();
+        alreadySetted = false;
+        if (observer.disconnect) {
+            observer.disconnect();
+        }
     }
 
     render() {
@@ -208,7 +212,7 @@ var observer = {};
 
 const MutationSchema = ({ somethingChanged, isSaved }) => {
     var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
-    
+
     if (isSaved === false)
     {
         // if we already know that we should save, let's disconnect the observer
@@ -219,30 +223,29 @@ const MutationSchema = ({ somethingChanged, isSaved }) => {
     {
         setTimeout(() => {
             setMutation();
-        }, 3000);
+        }, 1000);
         alreadySetted = true;
     }
-        
+
     function setMutation()
     {
         var target1 = document.querySelector('#chart>svg');
         //var target2 = document.querySelector('.editor-tray.ui-draggable');
-        if (target1)
-        {
-            observer = new MutationObserver(function(mutations) {  
-                mutations.forEach(function(mutation) {
-                    // sending false means isSaved = false;
-                    somethingChanged(false);
-                });
+        if (target1) {
+            observer = new MutationObserver(function(mutations) {
+                // sending false means isSaved = false;
+                somethingChanged(false);
            });
-    
+
             var config = {
-                attributes: true, 
+                attributes: true,
                 characterData: true
-            }; 
+            };
             observer.observe(target1, config);
             //if (target2)
             //    observer.observe(target2, config);
+        } else {
+            alreadySetted = false;
         };
     }
     return null;
@@ -341,12 +344,13 @@ class EditFlowComponent extends Component {
         this.enableBeforeUnload = this.enableBeforeUnload.bind(this);
         this.disableBeforeUnload = this.disableBeforeUnload.bind(this);
         this.somethingChanged= this.somethingChanged.bind(this);
+        this.routerWillLeave = this.routerWillLeave.bind(this);
     }
 
     somethingChanged(newState)
     {
         const isSaved = newState;
-        if (isSaved)        
+        if (isSaved)
             this.disableBeforeUnload();
         else
             this.enableBeforeUnload();
@@ -358,6 +362,7 @@ class EditFlowComponent extends Component {
             return "Discard changes?";
         };
     }
+
     disableBeforeUnload() {
         window.onbeforeunload = null;
     }
@@ -379,12 +384,29 @@ class EditFlowComponent extends Component {
         this.setState({ show_modal: status });
     }
 
+    routerWillLeave() {
+        // return false to prevent a transition w/o prompting the user,
+        // or return a string to allow the user to decide:
+        // return `null` or nothing to let other hooks to be executed
+        // NOTE: if you return true, other hooks will not be executed!
+        if (!this.state.isSaved) {
+            return this.props.t('flows:alerts.work_is_not_saved_ask_to_confirm_exit');
+        }
+    }
+
     componentDidMount() {
         if (this.props.params.flowid) {
             FlowActions.fetchFlow.defer(this.props.params.flowid);
         } else {
             FlowActions.setName('');
         }
+
+        // prevents immediate exit from the page if unsaved data exists.
+        this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave);
+    }
+
+    componentWillUnmount() {
+        this.disableBeforeUnload();
     }
 
     render() {
@@ -406,14 +428,14 @@ class EditFlowComponent extends Component {
                     <div
                         className="row valign-wrapper absolute-input full-width no-margin top-minus-2 "
                     >
-                        
-                        {(!isSaved ?  
-                            <Slide right duration={300}>
-                                <div className="maybeNotSaved"> 
+                        {(!isSaved ?
+                        <Slide right duration={300}>
+                                <div className="maybeNotSaved">
                                 <div className="boxLine"></div>
-                                <span>Don't forget to save your updates.</span>
+                                <span>{i18n('flows:alerts.maybe_not_saved')}</span>
                                 <i className="fa fa-exclamation-triangle" ></i>
-                        </div> </Slide>: null )}
+                            </div>
+                        </Slide> : null )}
                         <AltContainer store={FlowStore}>
                             <NameForm t={i18n} />
                         </AltContainer>
@@ -458,4 +480,4 @@ class EditFlowComponent extends Component {
     }
 }
 
-export const EditFlow = (withNamespaces()(EditFlowComponent));
+export const EditFlow = (withNamespaces()(withRouter(EditFlowComponent)));

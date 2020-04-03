@@ -6,7 +6,7 @@ WORKDIR /data
 ENV REACT_APP_GUI_VERSION='development'
 
 COPY . .
-RUN yarn install && npm rebuild node-sass && yarn run build
+RUN yarn install --frozen-lockfile && npm rebuild node-sass && yarn run build
 
 FROM nginx:1.15.7-alpine
 

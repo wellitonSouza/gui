@@ -3,6 +3,8 @@ FROM node:9.11.2-alpine AS basis
 RUN mkdir /data
 WORKDIR /data
 
+ENV REACT_APP_GUI_VERSION='development'
+
 COPY . .
 RUN yarn install && npm rebuild node-sass && yarn run build
 

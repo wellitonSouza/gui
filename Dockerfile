@@ -3,7 +3,8 @@ FROM node:9.11.2-alpine AS basis
 RUN mkdir /data
 WORKDIR /data
 
-ENV REACT_APP_GUI_VERSION='development'
+ARG DOJOT_VERSION='development'
+ENV REACT_APP_GUI_VERSION=${DOJOT_VERSION}
 
 COPY . .
 RUN yarn install --frozen-lockfile && npm rebuild node-sass && yarn run build

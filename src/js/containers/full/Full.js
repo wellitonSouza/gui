@@ -139,16 +139,27 @@ class RightSideBar extends Component {
                                         {this.props.user.email}
                                     </div>
                                 </div>
-                            </div>
+                            </div>                            
                         )}
+                        
+                        <div className="col s12 m12">
+                            <div className="logout-page-subtitle">{t('text.tenant')}</div>
+                        </div>
+
+                        <div className="col s12 m12">
+                            <div className="logout-page-info col s12 truncate">
+                                {this.props.user.username}
+                            </div>
+                        </div>
+
                         <div>
                             <div className="col s12 m12">
-                                <div className="logout-page-subtitle">{t('text.tenant')}</div>
+                                <div className="logout-page-subtitle">{t('text.version')}</div>
                             </div>
 
                             <div className="col s12 m12">
                                 <div className="logout-page-info truncate">
-                                    {this.props.user.service}
+                                    {guiVersion || t('text.not_found')}
                                 </div>
                             </div>
                         </div>
@@ -171,12 +182,6 @@ class RightSideBar extends Component {
                             </div>
                         </div>) : <div/>
                     }
-                    
-                    <div className="horizontal-line" />
-                    
-                    <div className="col s12 m12">
-                        <div className="version-info">{t('text.version')}: {guiVersion || t('text.not_found')}</div>
-                    </div>
 
                     <div className="horizontal-line" />
 

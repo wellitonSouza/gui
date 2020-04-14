@@ -11,6 +11,7 @@ import { ChangePasswordModal } from '../../components/Modal';
 import ConfigActions from "../../actions/ConfigActions";
 import ImportExportMain from '../../components/importExport/ImportExportMain';
 import ability from '../../components/permissions/ability';
+import { guiVersion } from '../../config';
 
 class Navbar extends Component {
     // TODO: header widgets should be received as children to this (Navbar) node
@@ -21,7 +22,6 @@ class Navbar extends Component {
             page: '',
             page_icon: false,
         };
-
         this.handleClick = this.handleClick.bind(this);
         this.gravatar = `https://www.gravatar.com/avatar/${btoa(this.props.user.username)}?d=identicon`;
     }
@@ -139,16 +139,27 @@ class RightSideBar extends Component {
                                         {this.props.user.email}
                                     </div>
                                 </div>
-                            </div>
+                            </div>                            
                         )}
+                        
+                        <div className="col s12 m12">
+                            <div className="logout-page-subtitle">{t('text.tenant')}</div>
+                        </div>
+
+                        <div className="col s12 m12">
+                            <div className="logout-page-info col s12 truncate">
+                                {this.props.user.username}
+                            </div>
+                        </div>
+
                         <div>
                             <div className="col s12 m12">
-                                <div className="logout-page-subtitle">{t('text.tenant')}</div>
+                                <div className="logout-page-subtitle">{t('text.version')}</div>
                             </div>
 
                             <div className="col s12 m12">
                                 <div className="logout-page-info truncate">
-                                    {this.props.user.service}
+                                    {guiVersion || t('text.not_found')}
                                 </div>
                             </div>
                         </div>

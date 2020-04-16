@@ -117,6 +117,7 @@
     "async-mqtt": "^2.2.1",
     "child_process": "^1.0.2",
     "codeceptjs": "^2.0.8",
+    "dotenv": "^8.2.0",
     "eslint": "^5.5.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-airbnb-base": "^13.1.0",

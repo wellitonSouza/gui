@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { DojotCustomButton } from 'Components/DojotButton';
 import toaster from 'Comms/util/materialize';
+import ReportTable from './ReportPage';
 
 const extractAttrsLabels = listAttrDySelected => (listAttrDySelected.map(attr => attr.label));
 
@@ -106,7 +107,6 @@ class ReportComponent extends Component {
                       });
     }
 
-
     generateReportClick() {
         const {
             attrsList,
@@ -153,7 +153,6 @@ class ReportComponent extends Component {
         this.setState({ callReport: true });
     }
 
-
     render() {
         const { deviceId, t } = this.props;
         const {
@@ -194,7 +193,7 @@ class ReportComponent extends Component {
                     />
                 </span>
                 {callReport ? (
-                    <GenericMock
+                    <ReportTable
                         deviceId={deviceId}
                         attrs={attrsList}
                         dateFrom={new Date(dateFrom)}

@@ -6,6 +6,22 @@ import util from '../comms/util/util';
 import {SmallPositionRenderer} from "../views/utils/Maps";
 import {Trans, withNamespaces} from 'react-i18next';
 
+const RESERVED_LABEL_AXIS_Y_MIN="axis_y_min";
+const RESERVED_LABEL_AXIS_Y_MAX="axis_y_max";
+
+const  extractMetaNumberValue = (metadataArray, searchLabel) => {
+    if (metadataArray){
+        const reservedLabelArrObj = metadataArray.filter((meta) => meta.label === searchLabel);
+        let reservedLabelAxisYValue = null;
+        if (reservedLabelArrObj && reservedLabelArrObj.length > 0) {
+            reservedLabelAxisYValue = reservedLabelArrObj[0].static_value;
+            reservedLabelAxisYValue = !isNaN(reservedLabelAxisYValue) ? new Number(reservedLabelAxisYValue) : null;
+        }
+        return reservedLabelAxisYValue;
+    }
+
+   return null;
+}
 
 class Graph extends Component {
 
@@ -97,10 +113,32 @@ class Graph extends Component {
             },
         };
 
+
+
+        this.optionsAddIfExistAxisYReserved(options);
+
         return (
             <Line data={data} options={options}/>
         );
     }
+
+
+
+    optionsAddIfExistAxisYReserved(options) {
+        const reservedLabelAxisYMinValue = extractMetaNumberValue(this.props.metadata, RESERVED_LABEL_AXIS_Y_MIN);
+        const reservedLabelAxisYMaxValue = extractMetaNumberValue(this.props.metadata, RESERVED_LABEL_AXIS_Y_MAX);
+        if (reservedLabelAxisYMinValue || reservedLabelAxisYMaxValue) {
+            const ticks = {};
+            if (reservedLabelAxisYMinValue) {
+                ticks.suggestedMin = reservedLabelAxisYMinValue;
+            }
+            if (reservedLabelAxisYMaxValue) {
+                ticks.suggestedMax = reservedLabelAxisYMaxValue;
+            }
+            options.scales.yAxes = [{ ticks }];
+        }
+    }
+
 }
 
 function HistoryList(props) {

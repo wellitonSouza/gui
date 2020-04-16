@@ -94,12 +94,16 @@ class ReportComponent extends Component {
 
     dateToOnChange(e) {
         const { value } = e.target;
-        this.setState({ dateTo: value });
+        this.setState({ dateTo: value,
+                        callReport: false,
+                      });
     }
 
     dateFromOnChange(e) {
         const { value } = e.target;
-        this.setState({ dateFrom: value });
+        this.setState({ dateFrom: value,
+                        callReport: false,
+                      });
     }
 
 

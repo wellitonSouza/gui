@@ -283,13 +283,21 @@ class Certificates {
      * @returns {Promise<{privateKey: string, crtPEM: string}>}
      */
     async generateCertificates(commonName) {
-        await certManager.createEntity(commonName);
+        await this._generateKeyPar().catch((error) => {
+            throw error;
+        });
 
-        await this._generateKeyPar();
+        await this._createCSR(commonName).catch((error) => {
+            throw error;
+        });
 
-        await this._createCSR(commonName);
+        await certManager.createEntity(commonName).catch(() => {});
 
-        const responseSignCert = await certManager.signCert(commonName, this._csrPEM);
+        const responseSignCert = await certManager
+            .signCert(commonName, this._csrPEM).catch((error) => {
+                throw error;
+            });
+
         const crtRaw64 = responseSignCert.status.data ? responseSignCert.status.data : null;
         this._setCrtPEM(crtRaw64);
 
@@ -316,9 +324,7 @@ class Certificates {
      * @private
      */
     _setCsrPEM(csrRaw) {
-        this._csrPEM = '-----BEGIN CERTIFICATE REQUEST-----\r\n';
-        this._csrPEM += `${Certificates._formatPEM(toBase64(arrayBufferToString(csrRaw)))}`;
-        this._csrPEM += '\r\n-----END CERTIFICATE REQUEST-----\r\n';
+        this._csrPEM = toBase64(arrayBufferToString(csrRaw));
     }
 
     /**

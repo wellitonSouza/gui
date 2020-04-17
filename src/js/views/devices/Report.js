@@ -38,7 +38,7 @@ const GenericMock = (props) => {
         deviceId, attrs, dateFrom, dateTo,
     } = props;
     return (
-        <>
+        <div>
             <div>
                 {deviceId}
             </div>
@@ -51,7 +51,7 @@ const GenericMock = (props) => {
             <div>
                 {dateTo.toString()}
             </div>
-        </>
+        </div>
     );
 };
 

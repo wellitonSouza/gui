@@ -10,7 +10,7 @@ export default class ReportTable extends React.PureComponent {
         super(props);
         this.state = {
             isLoading: true,
-            reportWindow: {},
+            reportWindow: <div />,
         };
     }
 
@@ -33,15 +33,31 @@ export default class ReportTable extends React.PureComponent {
             );
             this.setState({ isLoading: false, reportWindow });
         }).catch((err) => {
-            console.error(err);
+            const reportWindow = (
+                <NewWindow>
+                    <div style={
+                        {
+                            fontSize: 32,
+                            height: '100%',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            fontWeight: 500,
+                            color: 'rgba(0,0,0,0.75)',
+                        }
+                    }
+                    >
+Dados não encontrados
+                    </div>
+                </NewWindow>
+            );
+            this.setState({ reportWindow });
+            // console.error(err);
         });
     }
 
     render() {
-        const { isLoading, reportWindow } = this.state;
-        if (isLoading) {
-            return (<div />);
-        }
+        const { reportWindow } = this.state;
         return (
             <div>
                 { reportWindow }

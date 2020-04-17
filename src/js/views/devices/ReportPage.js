@@ -47,7 +47,7 @@ export default class ReportTable extends React.PureComponent {
                         }
                     }
                     >
-Dados não encontrados
+                        Dados não encontrados
                     </div>
                 </NewWindow>
             );

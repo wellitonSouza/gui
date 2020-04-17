@@ -28,7 +28,7 @@ export default class ReportTable extends React.PureComponent {
                 </NewWindow>
             ) : (
                 <NewWindow>
-                    {Object.keys(result.data).map(value => <Table itemList={result.data[value]} />)}
+                    {Object.keys(result.data).map((value) => <Table itemList={result.data[value]} />)}
                 </NewWindow>
             );
             this.setState({ isLoading: false, reportWindow });

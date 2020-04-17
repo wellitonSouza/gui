@@ -4,11 +4,11 @@ import { DojotCustomButton } from 'Components/DojotButton';
 import toaster from 'Comms/util/materialize';
 import ReportTable from './ReportPage';
 
-const extractAttrsLabels = listAttrDySelected => (listAttrDySelected.map(attr => attr.label));
+const extractAttrsLabels = (listAttrDySelected) => (listAttrDySelected.map((attr) => attr.label));
 
 const datetimeLocalFormatInput = (t) => {
     // number to 2 digit, 0 padded string
-    const p = number => (number.toString().padStart(2, '0'));
+    const p = (number) => (number.toString().padStart(2, '0'));
     return `${t.getFullYear()}-${p(t.getMonth() + 1)}-${p(t.getDate())}T${p(t.getHours())}:${p(t.getMinutes())}`;
 };
 
@@ -38,7 +38,7 @@ const GenericMock = (props) => {
         deviceId, attrs, dateFrom, dateTo,
     } = props;
     return (
-        <Fragment>
+        <>
             <div>
                 {deviceId}
             </div>
@@ -51,7 +51,7 @@ const GenericMock = (props) => {
             <div>
                 {dateTo.toString()}
             </div>
-        </Fragment>
+        </>
     );
 };
 
@@ -95,14 +95,16 @@ class ReportComponent extends Component {
 
     dateToOnChange(e) {
         const { value } = e.target;
-        this.setState({ dateTo: value,
+        this.setState({
+ dateTo: value,
                         callReport: false,
                       });
     }
 
     dateFromOnChange(e) {
         const { value } = e.target;
-        this.setState({ dateFrom: value,
+        this.setState({
+ dateFrom: value,
                         callReport: false,
                       });
     }

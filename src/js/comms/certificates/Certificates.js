@@ -191,17 +191,17 @@ class Certificates {
             return null;
         }
 
-        const emailAlt = this.subjAltCSR.email.map(email => new GeneralName({
+        const emailAlt = this.subjAltCSR.email.map((email) => new GeneralName({
             type: 1, // rfc822Name
             value: email,
         }));
 
-        const dnsAlt = this.subjAltCSR.dns.map(dns => new GeneralName({
+        const dnsAlt = this.subjAltCSR.dns.map((dns) => new GeneralName({
             type: 2, // dNSName
             value: dns,
         }));
 
-        const ipsAlt = this.subjAltCSR.ip.map(ip => new GeneralName({
+        const ipsAlt = this.subjAltCSR.ip.map((ip) => new GeneralName({
             type: 7, // iPAddress
             value: new asn1js.OctetString({ valueHex: (new Uint8Array(ip.split('.'))).buffer }),
         }));

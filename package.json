@@ -111,7 +111,6 @@
   },
   "devDependencies": {
     "child_process": "^1.0.2",
-    "dotenv": "^8.2.0",
     "eslint": "^5.5.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-airbnb-base": "^13.1.0",

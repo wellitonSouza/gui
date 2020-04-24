@@ -17,6 +17,13 @@ class CertificatesManager {
         };
         return util.POST(`${this.baseUrl}/sign/${commonName}/pkcs10`, req);
     }
+
+    createEntity(commonName) {
+        const req = {
+            username: commonName,
+        };
+        return util.POST(`${this.baseUrl}/user`, req);
+    }
 }
 
 const certificatesManager = new CertificatesManager();

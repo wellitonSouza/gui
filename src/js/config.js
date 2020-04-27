@@ -196,4 +196,4 @@ export const mapPinLightYellow = new L.Icon({
     shadowSize: new L.Point(41, 41),
 });
 
-export const guiVersion = process.env.REACT_APP_GUI_VERSION;
+export const guiVersion = process.env.GUI_VERSION;

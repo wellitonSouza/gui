@@ -1,17 +1,17 @@
 import React from 'react';
 import moment from 'moment';
-import styles from './style.scss';
 import PropTypes from "prop-types";
+import styles from './style.scss';
 
 
 const Table = (props) => {
     const {
-        itemList = [], isFetching, t
+        itemList = [], isFetching, t,
     } = props;
 
     const row = itemList.map((item) => {
         const {
-            attr, value, device_id, ts
+            attr, value, device_id, ts,
         } = item;
         return (
             <tr>
@@ -32,27 +32,27 @@ const Table = (props) => {
         <div className={styles.tableScrollable}>
             <table className={styles.table}>
                 <thead>
-                <tr>
-                    <th>{t('report:reports.attr')}</th>
-                    <th>{t('report:reports.value')}</th>
-                    <th>{t('report:reports.date')}</th>
-                </tr>
+                    <tr>
+                        <th>{t('report:reports.attr')}</th>
+                        <th>{t('report:reports.value')}</th>
+                        <th>{t('report:reports.date')}</th>
+                    </tr>
                 </thead>
                 <tbody>
-                {row}
+                    {row}
                 </tbody>
             </table>
         </div>
     );
     return (
         <div className={styles.tableContainer}>
-            {isFetching ? <div className={styles.tableScrollable}/> : tableHTML}
+            {isFetching ? <div className={styles.tableScrollable} /> : tableHTML}
         </div>
     );
 };
 
 Table.defaultProps = {
-    isFetching: false
+    isFetching: false,
 };
 
 Table.propTypes = {

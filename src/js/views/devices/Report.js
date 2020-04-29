@@ -1,14 +1,14 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {DojotCustomButton} from 'Components/DojotButton';
+import { DojotCustomButton } from 'Components/DojotButton';
 import toaster from 'Comms/util/materialize';
 import ReportTable from './ReportPage';
 
-const extractAttrsLabels = listAttrDySelected => (listAttrDySelected.map(attr => attr.label));
+const extractAttrsLabels = (listAttrDySelected) => (listAttrDySelected.map((attr) => attr.label));
 
 const datetimeLocalFormatInput = (t) => {
     // number to 2 digit, 0 padded string
-    const p = number => (number.toString().padStart(2, '0'));
+    const p = (number) => (number.toString().padStart(2, '0'));
     return `${t.getFullYear()}-${p(t.getMonth() + 1)}-${p(t.getDate())}T${p(t.getHours())}:${p(t.getMinutes())}`;
 };
 
@@ -40,9 +40,9 @@ class ReportComponent extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        const {listAttrDySelected} = nextProps;
+        const { listAttrDySelected } = nextProps;
         const newAttrsList = extractAttrsLabels(listAttrDySelected);
-        const {attrsList} = prevState;
+        const { attrsList } = prevState;
 
         // if there is a change in the selected attrs, callReport=false
         if (!checkEqualityValuesArray(newAttrsList, attrsList)) {
@@ -55,7 +55,7 @@ class ReportComponent extends Component {
     }
 
     dateToOnChange(e) {
-        const {value} = e.target;
+        const { value } = e.target;
         this.setState({
             dateTo: value,
             callReport: false,
@@ -63,7 +63,7 @@ class ReportComponent extends Component {
     }
 
     dateFromOnChange(e) {
-        const {value} = e.target;
+        const { value } = e.target;
         this.setState({
             dateFrom: value,
             callReport: false,
@@ -77,7 +77,7 @@ class ReportComponent extends Component {
             dateTo,
         } = this.state;
 
-        const {t} = this.props;
+        const { t } = this.props;
 
         if (attrsList.length === 0) {
             toaster.warning(t('report:alerts.select_dy'));
@@ -113,11 +113,11 @@ class ReportComponent extends Component {
             return;
         }
 
-        this.setState({callReport: true});
+        this.setState({ callReport: true });
     }
 
     render() {
-        const {deviceId, t} = this.props;
+        const { deviceId, t } = this.props;
         const {
             callReport, attrsList, dateFrom, dateTo,
         } = this.state;
@@ -163,7 +163,7 @@ class ReportComponent extends Component {
                         dateTo={new Date(dateTo)}
                         t={t}
                     />
-                ) : <div/>}
+                ) : <div />}
             </div>
         );
     }

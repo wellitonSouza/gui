@@ -22,13 +22,13 @@ class ReportTable extends React.PureComponent {
         axios.get(URL, { headers: { Authorization: `Bearer ${token}` } }).then((result) => {
             const reportWindow = Array.isArray(result.data) ? (
                 <NewWindow>
-                    <Table key='tb-123' itemList={result.data} t={t} />
+                    <Table key="tb-123" itemList={result.data} t={t} />
                 </NewWindow>
             ) : (
                 <NewWindow>
                     {
                         Object.keys(result.data).map(
-                            (value) => <Table key='tb-321' itemList={result.data[value]} t={t} />,
+                            (value) => <Table key="tb-321" itemList={result.data[value]} t={t} />,
                         )
                     }
                 </NewWindow>

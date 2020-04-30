@@ -4,7 +4,7 @@ import PropTypes, {
     shape,
     arrayOf,
     oneOfType,
-    instanceOf
+    instanceOf,
 } from "prop-types";
 import styles from './style.scss';
 
@@ -19,7 +19,7 @@ const Table = (props) => {
             attr, value, ts,
         } = item;
         return (
-            <tr key='tr-63546'>
+            <tr key="tr-63546">
                 <td>{attr}</td>
                 <td>
                     {
@@ -66,7 +66,7 @@ Table.propTypes = {
         value: oneOfType([
             PropTypes.string,
             PropTypes.number,
-            PropTypes.object
+            PropTypes.object,
         ]),
         ts: instanceOf(Date),
     })).isRequired,

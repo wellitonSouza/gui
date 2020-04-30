@@ -9,7 +9,7 @@ class ReportTable extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            reportWindow: <div/>,
+            reportWindow: <div />,
         };
     }
 
@@ -28,7 +28,7 @@ class ReportTable extends React.PureComponent {
                 <NewWindow>
                     {
                         Object.keys(result.data).map(
-                            (value) => <Table itemList={result.data[value]} t={t}/>
+                            (value) => <Table itemList={result.data[value]} t={t} />,
                         )
                     }
                 </NewWindow>

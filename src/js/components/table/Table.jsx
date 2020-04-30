@@ -1,6 +1,11 @@
 import React from 'react';
 import moment from 'moment';
-import PropTypes from "prop-types";
+import PropTypes, {
+    shape,
+    arrayOf,
+    oneOfType,
+    instanceOf
+} from "prop-types";
 import styles from './style.scss';
 
 
@@ -14,7 +19,7 @@ const Table = (props) => {
             attr, value, ts,
         } = item;
         return (
-            <tr>
+            <tr key='tr-63546'>
                 <td>{attr}</td>
                 <td>
                     {
@@ -51,8 +56,20 @@ const Table = (props) => {
     );
 };
 
+Table.defaultProps = {
+    isFetching: false,
+};
+
 Table.propTypes = {
-    itemList: PropTypes.array.isRequired,
+    itemList: arrayOf(shape({
+        attr: PropTypes.string,
+        value: oneOfType([
+            PropTypes.string,
+            PropTypes.number,
+            PropTypes.object
+        ]),
+        ts: instanceOf(Date),
+    })).isRequired,
     isFetching: PropTypes.bool,
     t: PropTypes.func.isRequired,
 };

@@ -11,7 +11,7 @@ const Table = (props) => {
 
     const row = itemList.map((item) => {
         const {
-            attr, value, device_id, ts,
+            attr, value, ts,
         } = item;
         return (
             <tr>
@@ -49,10 +49,6 @@ const Table = (props) => {
             {isFetching ? <div className={styles.tableScrollable} /> : tableHTML}
         </div>
     );
-};
-
-Table.defaultProps = {
-    isFetching: false,
 };
 
 Table.propTypes = {

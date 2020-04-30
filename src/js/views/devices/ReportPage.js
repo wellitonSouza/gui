@@ -9,8 +9,7 @@ class ReportTable extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            isLoading: true,
-            reportWindow: <div />,
+            reportWindow: <div/>,
         };
     }
 
@@ -19,7 +18,6 @@ class ReportTable extends React.PureComponent {
         const {
             deviceId, attrs, dateFrom, dateTo, t,
         } = this.props;
-        this.setState({ isLoading: true });
         const URL = `history/device/${deviceId}/history?attr=${attrs.join('&attr=')}&dateFrom=${moment(dateFrom).utc().format('YYYY-MM-DDTHH:mm')}&dateTo=${moment(dateTo).utc().format('YYYY-MM-DDTHH:mm')}`;
         axios.get(URL, { headers: { Authorization: `Bearer ${token}` } }).then((result) => {
             const reportWindow = Array.isArray(result.data) ? (
@@ -28,11 +26,14 @@ class ReportTable extends React.PureComponent {
                 </NewWindow>
             ) : (
                 <NewWindow>
-                    {Object.keys(result.data).map((value) => <Table itemList={result.data[value]} t={t} />)}
+                    {
+                        Object.keys(result.data).map(
+                            (value) => <Table itemList={result.data[value]} t={t}/>
+                        )
+                    }
                 </NewWindow>
             );
-            this.setState({ isLoading: false, reportWindow });
-        }).catch((err) => {
+        }).catch(() => {
             const reportWindow = (
                 <NewWindow>
                     <div style={
@@ -65,14 +66,11 @@ class ReportTable extends React.PureComponent {
     }
 }
 
-ReportTable.defaultProps = {
-};
-
 ReportTable.propTypes = {
     deviceId: PropTypes.string.isRequired,
-    attrs: PropTypes.array.isRequired,
-    dateFrom: PropTypes.any.isRequired,
-    dateTo: PropTypes.any.isRequired,
+    attrs: PropTypes.arrayOf(PropTypes.string).isRequired,
+    dateFrom: PropTypes.instanceOf(Date).isRequired,
+    dateTo: PropTypes.instanceOf(Date).isRequired,
     t: PropTypes.func.isRequired,
 };
 

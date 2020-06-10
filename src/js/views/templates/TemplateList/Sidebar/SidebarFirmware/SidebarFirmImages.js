@@ -38,8 +38,8 @@ class SidebarFirmImages extends Component {
 
     onDrop(files, image) {
         const { t } = this.props;
-        if (files && Array.isArray(files) && files.length > 0 && 
-            files[0].name && files[0].name.length > 4) {            
+        if (files && Array.isArray(files) && files.length > 0
+            && files[0].name && files[0].name.length > 4) {
                 const typeFile = files[0].name.substring(
                     files[0].name.length - 4, files[0].name.length,
                 );
@@ -47,7 +47,7 @@ class SidebarFirmImages extends Component {
                     toaster.warning(t('firmware:alerts.file_type_erro'));
                 } else {
                     ImageActions.updateImageData(image.id, 'file', files);
-                }            
+                }
         } else {
             toaster.warning(t('firmware:alerts.file_error'));
         }

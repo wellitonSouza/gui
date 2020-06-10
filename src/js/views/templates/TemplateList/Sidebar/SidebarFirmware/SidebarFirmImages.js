@@ -49,7 +49,7 @@ class SidebarFirmImages extends Component {
                     ImageActions.updateImageData(image.id, 'file', files);
                 }
         } else {
-            toaster.warning(t('firmware:alerts.file_error'));
+            toaster.warning(t('firmware:alerts.file_erro'));
         }
     }
 

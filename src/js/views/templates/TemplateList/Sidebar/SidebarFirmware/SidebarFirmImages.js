@@ -44,7 +44,7 @@ class SidebarFirmImages extends Component {
                     files[0].name.length - 4, files[0].name.length,
                 );
                 if (typeFile.toUpperCase() !== '.HEX') {
-                    toaster.warning(t('firmware:alerts.file_error'));
+                    toaster.warning(t('firmware:alerts.file_type_erro'));
                 } else {
                     ImageActions.updateImageData(image.id, 'file', files);
                 }            

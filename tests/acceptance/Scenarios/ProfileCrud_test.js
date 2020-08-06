@@ -155,7 +155,7 @@ Feature('User Management');
 
 //Usar outro comando, comando não pratico caso mude o endereço IP
 Scenario('@basic: Open page User', async (I) => {
-   I.amOnPage('http://10.4.2.154:8000/#/auth');
+   I.amOnPage('#/auth');
 });
 
 Scenario('@basic: Create a new user', async (I) => {

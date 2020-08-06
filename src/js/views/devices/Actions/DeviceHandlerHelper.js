@@ -48,6 +48,7 @@ class DeviceHandlerHelper {
                         if (!specializedStaticAttr) {
                             delete attrElement.static_value;
                         }
+                        
                     }
 
                     specializedAttrs = specializedAttrs.concat(filteredAttr);

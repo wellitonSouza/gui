@@ -30,7 +30,7 @@
 
   &.bg-left
   {
-    background: url(/images/login/poly-left.png);
+    background: url(images/login/poly-left.png);
     background-size: cover;
     background-repeat: no-repeat;
     /* background-attachment: fixed; */
@@ -59,7 +59,7 @@
       line-height: normal;
       text-align: right;
       font-size: 10px;
-      
+
 
       label{
         cursor: pointer;
@@ -115,7 +115,7 @@
     {
       padding-top: 98px;
       height: 100%;
-      background: url(/images/login/poly-right.png);
+      background: url(images/login/poly-right.png);
       background-size: cover;
       background-repeat: no-repeat;
       background-position: right -222px top -271px;
@@ -235,7 +235,7 @@
     display: inline-block;
     width: calc(100% - 30px);
   }
-  
+
   i{
     top:10px;
     right: 10px;

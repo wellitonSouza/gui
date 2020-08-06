@@ -8,7 +8,7 @@ module.exports = {
         devices: './src/js/index.js',
     },
     output: {
-        publicPath: '/',
+        publicPath: JSON.stringify(process.env.APPLICATION_URL),
         filename: 'js/[name].js',
         path: path.resolve(__dirname, 'dist'),
     },
@@ -72,6 +72,7 @@ module.exports = {
                 from: 'node_modules/materialize-css/dist/js/materialize.min.js',
                 to: 'js/materialize.js',
             },
+            { from: 'node_modules/materialize-css/dist/fonts', to: 'fonts' },
             { from: 'node_modules/jquery/dist/jquery.min.js', to: 'js/jquery.js' },
             {
                 from: 'node_modules/jquery-ui-dist/jquery-ui.min.js',
@@ -93,6 +94,8 @@ module.exports = {
             'process.env': {
                 NODE_ENV: JSON.stringify('production'),
                 GUI_VERSION: JSON.stringify(process.env.GUI_VERSION),
+                BASE_URL: JSON.stringify(process.env.BASE_URL),
+                APPLICATION_URL: JSON.stringify(process.env.APPLICATION_URL),
             },
         }),
     ],
@@ -104,6 +107,7 @@ module.exports = {
             Stores: path.resolve(__dirname, 'src/js/stores'),
             Views: path.resolve(__dirname, 'src/js/views'),
             Containers: path.resolve(__dirname, 'src/js/containers'),
+            Src: path.resolve(__dirname, 'src/js'),
         },
     },
 };

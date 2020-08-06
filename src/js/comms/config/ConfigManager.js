@@ -1,11 +1,6 @@
-import util from '../util';
 import configDate from './config.json';
 
 class ConfigManager {
-    constructor() {
-        this.baseUrl = "";
-    }
-
     getConfigDate() {
         return new Promise((resolve, reject) => {
             setTimeout(() => {

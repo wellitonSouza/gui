@@ -1,5 +1,6 @@
 /* eslint-disable */
 import util from '../util';
+import {baseURL} from 'Src/config'
 
 const GQL_LOGIN = (username, passwd) => `
   mutation {
@@ -18,27 +19,25 @@ const GQL_LOGIN = (username, passwd) => `
 `;
 
 class LoginManager {
-  constructor() {
-    this.baseUrl = '';
-  }
+
 
   authenticate(login) {
     const req = {
       query: GQL_LOGIN(login.username, login.password),
     };
-    return util.POST(this.baseUrl + 'graphql-auth/', req);
+    return util.POST(`${baseURL}graphql-auth/`, req);
   }
 
   setNewPassword(token) {
-    return util.POST(`${this.baseUrl}/auth/password/resetlink?link=${token.token}`, token);
+    return util.POST(`${baseURL}auth/password/resetlink?link=${token.token}`, token);
   }
 
   resetPassword(username) {
-    return util.POST(`${this.baseUrl}/auth/password/reset/${username}`);
+    return util.POST(`${baseURL}auth/password/reset/${username}`);
   }
 
   updatePassword(data) {
-    return util.POST(`${this.baseUrl}/auth/password/update/`, data);
+    return util.POST(`${baseURL}auth/password/update/`, data);
   }
 }
 

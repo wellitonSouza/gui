@@ -130,9 +130,14 @@ module.exports = () => {
         },
 
         async sendMQTTMessage(deviceId, message, tenant = 'admin') {
-            const client = await mqtt.connect(env.mqtt_host);
-            await client.publish(`/${tenant}/${deviceId}/attrs`, message);
-            await client.end();
+            try {
+                const client = await mqtt.connectAsync(env.mqtt_host);
+                // await client.publish(`${tenant}:${deviceId}/attrs`, message);
+                await client.publish(`/${tenant}/${deviceId}/attrs`, message);
+                await client.end();
+            } catch (e) {
+                console.log(`error when trying publish in topic /${tenant}/${deviceId}/attrs to ${env.mqtt_host}`, e.stack);
+            }
         },
 
     });

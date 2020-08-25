@@ -3,7 +3,7 @@ FROM node:9.11.2-alpine AS basis
 RUN mkdir /data
 WORKDIR /data
 
-ARG DOJOT_VERSION=v0.5.0-alpha.1
+ARG DOJOT_VERSION=v0.5.0-alpha.4
 ENV GUI_VERSION=${DOJOT_VERSION}
 
 COPY . .

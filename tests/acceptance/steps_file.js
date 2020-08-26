@@ -131,9 +131,13 @@ module.exports = () => {
 
         async sendMQTTMessage(deviceId, message, tenant = 'admin') {
             try {
-                const client = await mqtt.connectAsync(env.mqtt_host);
-                // await client.publish(`${tenant}:${deviceId}/attrs`, message);
-                await client.publish(`/${tenant}/${deviceId}/attrs`, message);
+                // vernemq
+                const client = await mqtt.connectAsync(env.mqtt_host, { username: `${tenant}:${deviceId}` });
+                await client.publish(`${tenant}:${deviceId}/attrs`, message);
+
+                // mosca
+                // const client = await mqtt.connectAsync(env.mqtt_host);
+                // await client.publish(`/${tenant}/${deviceId}/attrs`, message);
                 await client.end();
             } catch (e) {
                 console.log(`error when trying publish in topic /${tenant}/${deviceId}/attrs to ${env.mqtt_host}`, e.stack);

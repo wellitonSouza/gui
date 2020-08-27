@@ -33,9 +33,7 @@ class Graph extends Component {
 
         this.props.MeasureStore.data[this.props.device.id][`_${this.props.attr}`].map(
             i => {
-                labels.push(util.iso_to_date_hour((i.ts.length > 21 ? 
-                    util.iso_to_date_hour(i.ts) : i.ts.slice(0,19) + "000Z" )
-                ));               
+                labels.push(util.iso_to_date_hour(i.ts));
                 values.push(i.value);
             }
         );

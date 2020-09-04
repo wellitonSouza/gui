@@ -3,7 +3,6 @@
   "subtitle": "notificações",
   "device": "dispositivos",
   "message": "mensagem",
-  "no_data_avaliable": "Nenhuma notificação disponível"
+  "no_data_avaliable": "Nenhuma notificação disponível",
+  "message_error": "Erro: Não foi possível obter a mensagem"
 }
-
-

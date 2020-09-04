@@ -3,8 +3,11 @@ FROM node:9.11.2-alpine AS basis
 RUN mkdir /data
 WORKDIR /data
 
+ARG DOJOT_VERSION=undefined
+ENV GUI_VERSION=${DOJOT_VERSION}
+
 COPY . .
-RUN yarn install && npm rebuild node-sass && yarn run build
+RUN yarn install --frozen-lockfile && npm rebuild node-sass && yarn run build
 
 FROM nginx:1.15.7-alpine
 

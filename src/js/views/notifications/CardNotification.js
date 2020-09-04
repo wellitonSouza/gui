@@ -77,12 +77,10 @@ class CardNotification extends Component {
                         </div>
                         <div className="second-col-noti">
                             <div className="info-row">
-                                <div className="main">
-                                    {message}
+                                <div className={typeof message === 'string' ? 'main' : 'error'}>
+                                    {typeof message === 'string' ? message : i18n('notifications:message_error') }
                                 </div>
-                                <div
-                                    className="sub"
-                                >
+                                <div className="sub">
                                     {i18n('notifications:message')}
                                 </div>
                             </div>

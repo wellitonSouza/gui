@@ -100,7 +100,6 @@ class ReportComponent extends Component {
             return;
         }
 
-
         const dateFromDate = new Date(dateFrom);
         const dateToDate = new Date(dateTo);
 
@@ -127,7 +126,7 @@ class ReportComponent extends Component {
         const {
             callReport, attrsList, dateFrom, dateTo,
         } = this.state;
-        const checkClose = this.checkClose;
+        const { checkClose } = this;
 
         return (
             <div className="report col s9">
@@ -177,7 +176,6 @@ class ReportComponent extends Component {
         );
     }
 }
-
 
 ReportComponent.defaultProps = {
     listAttrDySelected: [],

@@ -107,7 +107,7 @@
         "change_password": "Alterar Senha",
         "logout": "Sair",
         "password_updated": "Senha atualizada.",
-        "Version": "Versão",
+        "version": "Versão",
         "not_found": "não disponível"
     },
     "qst_remove": "Você irá remover um {{label}}. Deseja continuar?",

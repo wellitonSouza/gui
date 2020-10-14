@@ -27,9 +27,15 @@ yarn run watch
 
 From a clean environment, the following commands create a new docker image capable of serving
 the user interface.
+```
+It has three optional arguments:
+ DOJOT_VERSION: Set the GUI version
+ APPLICATION_URL: It is used to define the URL of the application and must end with / (ex: / dojot /)
+ BASE_URL: It is used to define the API URL and must end with / (ex: / api /)
+```
 
 ```shell
-docker build -f docker/Dockerfile -t [tag name] .
+docker build -f docker/Dockerfile -t [tag name] --build-arg DOJOT_VERSION=[version] --build-arg APPLICATION_URL=[app url] --build-arg BASE_URL=[api url] .
 ```
 
 To run the created image:
@@ -44,19 +50,19 @@ To run the acceptance test, run the commands below.
 
 ```shell
 yarn install
-yarn run test 
+yarn run test
 ```
 To clean the database (devices, templates and flows) and run the acceptance test, run the commands below.
 
 ```shell
 yarn install
-yarn run test:clearDb 
+yarn run test:clearDb
 ```
 
 There are 2 types of scenarios: Basic and Advanced.
 In order to run each scenario, run the following command:
 
 ```shell
-yarn run test --grep @basic
-yarn run test --grep @adv
+yarn run test:basic
+yarn run test:adv
 ```

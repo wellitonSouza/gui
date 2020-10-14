@@ -14,226 +14,227 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+import { baseURL } from 'Src/config'
 var RED = {};
 
 RED.events = (function() {
-     var handlers = {};
+    var handlers = {};
 
-     function on(evt,func) {
-         handlers[evt] = handlers[evt]||[];
-         handlers[evt].push(func);
-     }
-     function off(evt,func) {
-         var handler = handlers[evt];
-         if (handler) {
-             for (var i=0;i<handler.length;i++) {
-                 if (handler[i] === func) {
-                     handler.splice(i,1);
-                     return;
-                 }
-             }
-         }
-     }
-     function emit(evt,arg) {
-         if (handlers[evt]) {
-             for (var i=0;i<handlers[evt].length;i++) {
-                 try {
-                     handlers[evt][i](arg);
-                 } catch(err) {
-                     console.log("RED.events.emit error: ["+evt+"] "+(err.toString()));
-                     console.log(err);
-                 }
-             }
+    function on(evt,func) {
+        handlers[evt] = handlers[evt]||[];
+        handlers[evt].push(func);
+    }
+    function off(evt,func) {
+        var handler = handlers[evt];
+        if (handler) {
+            for (var i=0;i<handler.length;i++) {
+                if (handler[i] === func) {
+                    handler.splice(i,1);
+                    return;
+                }
+            }
+        }
+    }
+    function emit(evt,arg) {
+        if (handlers[evt]) {
+            for (var i=0;i<handlers[evt].length;i++) {
+                try {
+                    handlers[evt][i](arg);
+                } catch(err) {
+                    console.log("RED.events.emit error: ["+evt+"] "+(err.toString()));
+                    console.log(err);
+                }
+            }
 
-         }
-     }
-     return {
-         on: on,
-         off: off,
-         emit: emit
-     }
- })();
+        }
+    }
+    return {
+        on: on,
+        off: off,
+        emit: emit
+    }
+})();
 
 RED.i18n = (function() {
     return {
         init: function(accessToken, done) {
             i18next
-              .use(i18nextXHRBackend)
-              .init({
-                fallbackLng: 'en',
-                ns: ["editor","node-red","jsonata","infotips"],
-                defaultNS: 'editor',
-                backend: {
-                  loadPath: function(lngs, ns) {
-                    return '/flows/locales/' + ns;
-                  },
-                  withCredentials: true,
-                  customHeaders: {'Authorization': accessToken},
-                },
-                interpolation: {
-                  prefix: "__",
-                  suffix: "__",
-                }
-              }, function(t) {
-                jqueryI18next.init(i18next, $, {
-                  tName: 't', // --> appends $.t = i18next.t
-                  i18nName: 'i18n', // --> appends $.i18n = i18next
-                  handleName: 'i18n', // --> appends $(selector).localize(opts);
-                  selectorAttr: 'data-i18n', // selector for translating elements
-                  targetAttr: 'i18n-target', // data-() attribute to grab target element to translate (if diffrent then itself)
-                  optionsAttr: 'i18n-options', // data-() attribute that contains options, will load/set if useOptionsAttr = true
-                  useOptionsAttr: false, // see optionsAttr
-                  parseDefaultValueFromContent: true // parses default values from content ele.val or ele.text
-                });
-                RED["_"] = function(key, options) {
-                  return i18next.t(key, options);
-                }
+                .use(i18nextXHRBackend)
+                .init({
+                    fallbackLng: 'en',
+                    ns: ["editor","node-red","jsonata","infotips"],
+                    defaultNS: 'editor',
+                    backend: {
+                        loadPath: function(lngs, ns) {
+                            return `${baseURL}flows/locales/${ns}`;
+                        },
+                        withCredentials: true,
+                        customHeaders: {'Authorization': accessToken},
+                    },
+                    interpolation: {
+                        prefix: "__",
+                        suffix: "__",
+                    }
+                }, function(t) {
+                    jqueryI18next.init(i18next, $, {
+                        tName: 't', // --> appends $.t = i18next.t
+                        i18nName: 'i18n', // --> appends $.i18n = i18next
+                        handleName: 'i18n', // --> appends $(selector).localize(opts);
+                        selectorAttr: 'data-i18n', // selector for translating elements
+                        targetAttr: 'i18n-target', // data-() attribute to grab target element to translate (if diffrent then itself)
+                        optionsAttr: 'i18n-options', // data-() attribute that contains options, will load/set if useOptionsAttr = true
+                        useOptionsAttr: false, // see optionsAttr
+                        parseDefaultValueFromContent: true // parses default values from content ele.val or ele.text
+                    });
+                    RED["_"] = function(key, options) {
+                        return i18next.t(key, options);
+                    }
 
-                done();
-              });
+                    done();
+                });
         },
         loadCatalog: function(namespace,done) {
             i18next.loadNamespaces(namespace, done);
         }
-     }
- })();
+    }
+})();
 
 RED.settings = (function () {
 
-     var loadedSettings = {};
+    var loadedSettings = {};
 
-     var hasLocalStorage = function () {
-         try {
-             return 'localStorage' in window && window['localStorage'] !== null;
-         } catch (e) {
-             return false;
-         }
-     };
+    var hasLocalStorage = function () {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
+    };
 
-     var set = function (key, value) {
-         if (!hasLocalStorage()) {
-             return;
-         }
-         localStorage.setItem(key, JSON.stringify(value));
-     };
+    var set = function (key, value) {
+        if (!hasLocalStorage()) {
+            return;
+        }
+        localStorage.setItem(key, JSON.stringify(value));
+    };
 
-     /**
-      * If the key is not set in the localStorage it returns <i>undefined</i>
-      * Else return the JSON parsed value
-      * @param key
-      * @returns {*}
-      */
-     var get = function (key) {
-         if (!hasLocalStorage()) {
-             return undefined;
-         }
-         return JSON.parse(localStorage.getItem(key));
-     };
+    /**
+     * If the key is not set in the localStorage it returns <i>undefined</i>
+     * Else return the JSON parsed value
+     * @param key
+     * @returns {*}
+     */
+    var get = function (key) {
+        if (!hasLocalStorage()) {
+            return undefined;
+        }
+        return JSON.parse(localStorage.getItem(key));
+    };
 
-     var remove = function (key) {
-         if (!hasLocalStorage()) {
-             return;
-         }
-         localStorage.removeItem(key);
-     };
+    var remove = function (key) {
+        if (!hasLocalStorage()) {
+            return;
+        }
+        localStorage.removeItem(key);
+    };
 
-     var setProperties = function(data) {
-         for (var prop in loadedSettings) {
-             if (loadedSettings.hasOwnProperty(prop) && RED.settings.hasOwnProperty(prop)) {
-                 delete RED.settings[prop];
-             }
-         }
-         for (prop in data) {
-             if (data.hasOwnProperty(prop)) {
-                 RED.settings[prop] = data[prop];
-             }
-         }
-         loadedSettings = data;
-     };
+    var setProperties = function(data) {
+        for (var prop in loadedSettings) {
+            if (loadedSettings.hasOwnProperty(prop) && RED.settings.hasOwnProperty(prop)) {
+                delete RED.settings[prop];
+            }
+        }
+        for (prop in data) {
+            if (data.hasOwnProperty(prop)) {
+                RED.settings[prop] = data[prop];
+            }
+        }
+        loadedSettings = data;
+    };
 
-     var init = function (done) {
-         var accessTokenMatch = /[?&]access_token=(.*?)(?:$|&)/.exec(window.location.search);
-         if (accessTokenMatch) {
-             var accessToken = accessTokenMatch[1];
-             RED.settings.set("auth-tokens",{access_token: accessToken});
-             window.location.search = "";
-         }
+    var init = function (done) {
+        var accessTokenMatch = /[?&]access_token=(.*?)(?:$|&)/.exec(window.location.search);
+        if (accessTokenMatch) {
+            var accessToken = accessTokenMatch[1];
+            RED.settings.set("auth-tokens",{access_token: accessToken});
+            window.location.search = "";
+        }
 
-         $.ajaxSetup({
-             beforeSend: function(jqXHR,settings) {
-                 // Only attach auth header for requests to relative paths
-                 if (!/^\s*(https?:|\/|\.)/.test(settings.url)) {
-                     var auth_tokens = RED.settings.get("auth-tokens");
-                     if (auth_tokens) {
-                         jqXHR.setRequestHeader("Authorization","Bearer "+auth_tokens.access_token);
-                     }
-                     jqXHR.setRequestHeader("Node-RED-API-Version","v2");
-                 }
-             }
-         });
+        $.ajaxSetup({
+            beforeSend: function(jqXHR,settings) {
+                // Only attach auth header for requests to relative paths
+                if (!/^\s*(https?:|\/|\.)/.test(settings.url)) {
+                    var auth_tokens = RED.settings.get("auth-tokens");
+                    if (auth_tokens) {
+                        jqXHR.setRequestHeader("Authorization","Bearer "+auth_tokens.access_token);
+                    }
+                    jqXHR.setRequestHeader("Node-RED-API-Version","v2");
+                }
+            }
+        });
 
-         load(done);
-     }
+        load(done);
+    }
 
-     var load = function(done) {
-         $.ajax({
-             headers: {
-                 "Accept": "application/json"
-             },
-             dataType: "json",
-             cache: false,
+    var load = function(done) {
+        $.ajax({
+            headers: {
+                "Accept": "application/json"
+            },
+            dataType: "json",
+            cache: false,
             //  url: 'http://localhost:1880/settings',
-             url: 'flows/settings',
-             success: function (data) {
-                 setProperties(data);
-                 if (!RED.settings.user || RED.settings.user.anonymous) {
-                     RED.settings.remove("auth-tokens");
-                 }
-                 // console.log("Node-RED: " + data.version);
-                 done();
-             },
-             error: function(jqXHR,textStatus,errorThrown) {
-                 if (jqXHR.status === 401) {
-                     if (/[?&]access_token=(.*?)(?:$|&)/.test(window.location.search)) {
-                         window.location.search = "";
-                     }
-                     RED.user.login(function() { load(done); });
-                 } else {
-                     console.log("Unexpected error:",jqXHR.status,textStatus);
-                 }
-             }
-         });
-     };
+            url: `${baseURL}flows/settings`,
+            success: function (data) {
+                setProperties(data);
+                if (!RED.settings.user || RED.settings.user.anonymous) {
+                    RED.settings.remove("auth-tokens");
+                }
+                // console.log("Node-RED: " + data.version);
+                done();
+            },
+            error: function(jqXHR,textStatus,errorThrown) {
+                if (jqXHR.status === 401) {
+                    if (/[?&]access_token=(.*?)(?:$|&)/.test(window.location.search)) {
+                        window.location.search = "";
+                    }
+                    RED.user.login(function() { load(done); });
+                } else {
+                    console.log("Unexpected error:",jqXHR.status,textStatus);
+                }
+            }
+        });
+    };
 
-     function theme(property,defaultValue) {
-         if (!RED.settings.editorTheme) {
-             return defaultValue;
-         }
-         var parts = property.split(".");
-         var v = RED.settings.editorTheme;
-         try {
-             for (var i=0;i<parts.length;i++) {
-                 v = v[parts[i]];
-             }
-             if (v === undefined) {
-                 return defaultValue;
-             }
-             return v;
-         } catch(err) {
-             return defaultValue;
-         }
-     }
+    function theme(property,defaultValue) {
+        if (!RED.settings.editorTheme) {
+            return defaultValue;
+        }
+        var parts = property.split(".");
+        var v = RED.settings.editorTheme;
+        try {
+            for (var i=0;i<parts.length;i++) {
+                v = v[parts[i]];
+            }
+            if (v === undefined) {
+                return defaultValue;
+            }
+            return v;
+        } catch(err) {
+            return defaultValue;
+        }
+    }
 
-     return {
-         init: init,
-         load: load,
-         set: set,
-         get: get,
-         remove: remove,
-         theme: theme
-     }
- })
- ();
+    return {
+        init: init,
+        load: load,
+        set: set,
+        get: get,
+        remove: remove,
+        theme: theme
+    }
+})
+();
 
 // RED.user is not needed
 
@@ -257,17 +258,17 @@ RED.text.bidi = (function() {
             else if(isLatinChar(stringValue.charCodeAt(i))) {
                 return false;
             }
-         }
-         return false;
+        }
+        return false;
     }
 
     function isBidiChar(c)  {
         return (c >= 0x05d0 && c <= 0x05ff)||
-               (c >= 0x0600 && c <= 0x065f)||
-               (c >= 0x066a && c <= 0x06ef)||
-               (c >= 0x06fa && c <= 0x07ff)||
-               (c >= 0xfb1d && c <= 0xfdff)||
-               (c >= 0xfe70 && c <= 0xfefc);
+            (c >= 0x0600 && c <= 0x065f)||
+            (c >= 0x066a && c <= 0x06ef)||
+            (c >= 0x06fa && c <= 0x07ff)||
+            (c >= 0xfb1d && c <= 0xfdff)||
+            (c >= 0xfe70 && c <= 0xfefc);
     }
 
     function isLatinChar(c){
@@ -315,10 +316,10 @@ RED.text.bidi = (function() {
         if (value) {
             var dir = resolveBaseTextDir(value);
             if (dir == "ltr") {
-               return LRE + value + PDF;
+                return LRE + value + PDF;
             }
             else if (dir == "rtl") {
-               return RLE + value + PDF;
+                return RLE + value + PDF;
             }
         }
         return value;
@@ -438,7 +439,7 @@ RED.text.format = (function() {
                 bounds.end = "";
             }
             bounds.bEnd = useLength ? bounds.bStart + bounds.length : bounds.end.length > 0 ?
-                    content.indexOf(bounds.end, bounds.bStart + bounds.start.length) + 1 : content.length;
+                content.indexOf(bounds.end, bounds.bStart + bounds.start.length) + 1 : content.length;
             if (!bounds.after) {
                 bounds.start = "";
             }
@@ -721,8 +722,8 @@ RED.text.format = (function() {
                 if (!locale) {
                     locale = typeof navigator === "undefined" ? "" :
                         (navigator.language ||
-                        navigator.userLanguage ||
-                        "");
+                            navigator.userLanguage ||
+                            "");
                 }
                 locale = locale.toLowerCase();
                 if (isBidiLocale(locale)) {
@@ -766,29 +767,29 @@ RED.text.format = (function() {
                 for (var i = 0; i < text.length; i++) {
                     var c = "" + text.charAt(i);
                     switch (c) {
-                    case LRM:
-                        result += "<LRM>";
-                        break;
-                    case RLM:
-                        result += "<RLM>";
-                        break;
-                    case LRE:
-                        result += "<LRE>";
-                        break;
-                    case RLE:
-                        result += "<RLE>";
-                        break;
-                    case LRO:
-                        result += "<LRO>";
-                        break;
-                    case RLO:
-                        result += "<RLO>";
-                        break;
-                    case PDF:
-                        result += "<PDF>";
-                        break;
-                    default:
-                        result += c;
+                        case LRM:
+                            result += "<LRM>";
+                            break;
+                        case RLM:
+                            result += "<RLM>";
+                            break;
+                        case LRE:
+                            result += "<LRE>";
+                            break;
+                        case RLE:
+                            result += "<RLE>";
+                            break;
+                        case LRO:
+                            result += "<LRO>";
+                            break;
+                        case RLO:
+                            result += "<RLO>";
+                            break;
+                        case PDF:
+                            result += "<PDF>";
+                            break;
+                        default:
+                            result += c;
                     }
                 }
                 var mark = typeof(guiDir) === "undefined" || !((/^(rtl|ltr)$/i).test(guiDir)) ? "" :
@@ -1001,7 +1002,7 @@ RED.text.format = (function() {
         return {
             format: function (text, args, isRtl, isHtml, locale, parseOnly) {
                 var fArgs =
-                {
+                    {
                         guiDir: isRtl ? "rtl" : "ltr",
                         dir: args.dir ? args.dir : isRtl ? "rtl" : "ltr",
                         subs: {
@@ -1018,7 +1019,7 @@ RED.text.format = (function() {
                                 }
                             }
                         }]
-                };
+                    };
 
                 if (!parseOnly) {
                     return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
@@ -1034,11 +1035,11 @@ RED.text.format = (function() {
         return {
             format: function (text, args, isRtl, isHtml, locale, parseOnly) {
                 var fArgs =
-                {
+                    {
                         guiDir: isRtl ? "rtl" : "ltr",
                         dir: "ltr",
                         points: ","
-                };
+                    };
                 if (!parseOnly) {
                     return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
                 }
@@ -1064,7 +1065,7 @@ RED.text.format = (function() {
         return {
             format: function (text, args, isRtl, isHtml, locale, parseOnly) {
                 var fArgs =
-                {
+                    {
                         guiDir: isRtl ? "rtl" : "ltr",
                         dir: getDir(text, locale),
                         points: "<>.:,;@",
@@ -1075,15 +1076,15 @@ RED.text.format = (function() {
                                     startAfter: "\"",
                                     endBefore: "\""
                                 },
-                                {
-                                    startAfter: "(",
-                                    endBefore: ")"
-                                }
+                                    {
+                                        startAfter: "(",
+                                        endBefore: ")"
+                                    }
                                 ],
                                 points: ""
                             }
                         }]
-                };
+                    };
                 if (!parseOnly) {
                     return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
                 }
@@ -1098,11 +1099,11 @@ RED.text.format = (function() {
         return {
             format: function (text, args, isRtl, isHtml, locale, parseOnly) {
                 var fArgs =
-                {
+                    {
                         guiDir: isRtl ? "rtl" : "ltr",
                         dir: "ltr",
                         points: "/\\:."
-                };
+                    };
                 if (!parseOnly) {
                     return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
                 }
@@ -1117,11 +1118,11 @@ RED.text.format = (function() {
         return {
             format: function (text, args, isRtl, isHtml, locale, parseOnly) {
                 var fArgs =
-                {
+                    {
                         guiDir: isRtl ? "rtl" : "ltr",
                         dir: "ltr",
                         points: " /%^&[]<>=!?~:.,|()+-*{}",
-                };
+                    };
                 if (!parseOnly) {
                     return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
                 }
@@ -1136,7 +1137,7 @@ RED.text.format = (function() {
         return {
             format: function (text, args, isRtl, isHtml, locale, parseOnly) {
                 var fArgs =
-                {
+                    {
                         guiDir: isRtl ? "rtl" : "ltr",
                         dir: "ltr",
                         points: "\t!#%&()*+,-./:;<=>?|[]{}",
@@ -1147,41 +1148,41 @@ RED.text.format = (function() {
                                     startAfter: "/*",
                                     endBefore: "*/"
                                 },
-                                {
-                                    startAfter: "--",
-                                    end: "\n"
-                                },
-                                {
-                                    startAfter: "--"
-                                }
+                                    {
+                                        startAfter: "--",
+                                        end: "\n"
+                                    },
+                                    {
+                                        startAfter: "--"
+                                    }
                                 ]
                             }
                         },
-                        {
-                            handler: common,
-                            args: {
-                                subs: {
-                                    content: " ",
-                                    continued: true
+                            {
+                                handler: common,
+                                args: {
+                                    subs: {
+                                        content: " ",
+                                        continued: true
+                                    }
+                                }
+                            },
+                            {
+                                handler: common,
+                                args: {
+                                    bounds: [{
+                                        startAfter: "'",
+                                        endBefore: "'"
+                                    },
+                                        {
+                                            startAfter: "\"",
+                                            endBefore: "\""
+                                        }
+                                    ]
                                 }
                             }
-                        },
-                        {
-                            handler: common,
-                            args: {
-                                bounds: [{
-                                    startAfter: "'",
-                                    endBefore: "'"
-                                },
-                                {
-                                    startAfter: "\"",
-                                    endBefore: "\""
-                                }
-                                ]
-                            }
-                        }
                         ]
-                };
+                    };
                 if (!parseOnly) {
                     return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
                 }
@@ -1196,11 +1197,11 @@ RED.text.format = (function() {
         return {
             format: function (text, args, isRtl, isHtml, locale, parseOnly) {
                 var fArgs =
-                {
+                    {
                         guiDir: isRtl ? "rtl" : "ltr",
                         dir: "ltr",
                         points: "_"
-                };
+                    };
                 if (!parseOnly) {
                     return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
                 }
@@ -1215,11 +1216,11 @@ RED.text.format = (function() {
         return {
             format: function (text, args, isRtl, isHtml, locale, parseOnly) {
                 var fArgs =
-                {
+                    {
                         guiDir: isRtl ? "rtl" : "ltr",
                         dir: "ltr",
                         points: ":?#/@.[]="
-                };
+                    };
                 if (!parseOnly) {
                     return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
                 }
@@ -1234,11 +1235,11 @@ RED.text.format = (function() {
         return {
             format: function (text, args, isRtl, isHtml, locale, parseOnly) {
                 var fArgs =
-                {
+                    {
                         guiDir: isRtl ? "rtl" : "ltr",
                         dir: args.dir ? args.dir : isRtl ? "rtl" : "ltr",
                         points: " ,.!?;:",
-                };
+                    };
                 if (!parseOnly) {
                     return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
                 }
@@ -1253,7 +1254,7 @@ RED.text.format = (function() {
         return {
             format: function (text, args, isRtl, isHtml, locale, parseOnly) {
                 var fArgs =
-                {
+                    {
                         guiDir: isRtl ? "rtl" : "ltr",
                         dir: "ltr",
                         points: " /[]<>=!:@.|()+-*",
@@ -1264,16 +1265,16 @@ RED.text.format = (function() {
                                     startAfter: "\"",
                                     endBefore: "\""
                                 },
-                                {
-                                    startAfter: "'",
-                                    endBefore: "'"
-                                }
+                                    {
+                                        startAfter: "'",
+                                        endBefore: "'"
+                                    }
                                 ],
                                 points: ""
                             }
                         }
                         ]
-                };
+                    };
                 if (!parseOnly) {
                     return stext.parseAndDisplayStructure(text, fArgs, !!isHtml, locale);
                 }
@@ -1459,7 +1460,7 @@ RED.text.format = (function() {
                         }
                         if (sttType.toLowerCase() !== "none") {
                             var sttSegs =  getHandler(sttType).format(tArgs[ind].text, tArgs[ind].stt.args || {},
-                                    params.msgDir === "rtl", false, params.msgLang, true);
+                                params.msgDir === "rtl", false, params.msgLang, true);
                             for (var j = 0; j < sttSegs.length; j++) {
                                 segments.push(sttSegs[j]);
                             }
@@ -1480,28 +1481,28 @@ RED.text.format = (function() {
 
     function getHandler(type) {
         switch (type) {
-        case "breadcrumb" :
-            return breadcrumb;
-        case "comma" :
-            return comma;
-        case "email" :
-            return email;
-        case "filepath" :
-            return filepath;
-        case "formula" :
-            return formula;
-        case "sql" :
-            return sql;
-        case "underscore" :
-            return underscore;
-        case "url" :
-            return url;
-        case "word" :
-            return word;
-        case "xpath" :
-            return xpath;
-        default:
-            return custom;
+            case "breadcrumb" :
+                return breadcrumb;
+            case "comma" :
+                return comma;
+            case "email" :
+                return email;
+            case "filepath" :
+                return filepath;
+            case "formula" :
+                return formula;
+            case "sql" :
+                return sql;
+            case "underscore" :
+                return underscore;
+            case "url" :
+                return url;
+            case "word" :
+                return word;
+            case "xpath" :
+                return xpath;
+            default:
+                return custom;
         }
     }
 
@@ -1514,8 +1515,8 @@ RED.text.format = (function() {
         checked.contentEditable = true;
         var isSupported = ("oninput" in checked);
         if (!isSupported) {
-          checked.setAttribute('oninput', 'return;');
-          isSupported = typeof checked['oninput'] == 'function';
+            checked.setAttribute('oninput', 'return;');
+            isSupported = typeof checked['oninput'] == 'function';
         }
         checked = null;
         return isSupported;
@@ -1600,7 +1601,7 @@ RED.text.format = (function() {
         textOffset += div.textContent.length;
 
         element.innerHTML = getHandler(element.getAttribute("data-tf-type")).
-            format(txt, JSON.parse(element.getAttribute("data-tf-args")), (element.getAttribute("data-tf-dir") === "true"? true : false),
+        format(txt, JSON.parse(element.getAttribute("data-tf-args")), (element.getAttribute("data-tf-dir") === "true"? true : false),
             true, element.getAttribute("data-tf-locale"));
         var parent = element;
         var node = element;
@@ -1647,24 +1648,24 @@ RED.text.format = (function() {
 
     return {
         /**
-        * Returns the HTML representation of a given structured text
-        * @param text - the structured text
-        * @param type - could be one of filepath, url, email
-        * @param args - pass additional arguments to the handler. generally null.
-        * @param isRtl - indicates if the GUI is mirrored
-        * @param locale - the browser locale
-        */
+         * Returns the HTML representation of a given structured text
+         * @param text - the structured text
+         * @param type - could be one of filepath, url, email
+         * @param args - pass additional arguments to the handler. generally null.
+         * @param isRtl - indicates if the GUI is mirrored
+         * @param locale - the browser locale
+         */
         getHtml: function (text, type, args, isRtl, locale) {
             return getHandler(type).format(text, args, isRtl, true, locale);
         },
         /**
-        * Handle Structured text correct display for a given HTML element.
-        * @param element - the element  : should be of type div contenteditable=true
-        * @param type - could be one of filepath, url, email
-        * @param args - pass additional arguments to the handler. generally null.
-        * @param isRtl - indicates if the GUI is mirrored
-        * @param locale - the browser locale
-        */
+         * Handle Structured text correct display for a given HTML element.
+         * @param element - the element  : should be of type div contenteditable=true
+         * @param type - could be one of filepath, url, email
+         * @param args - pass additional arguments to the handler. generally null.
+         * @param isRtl - indicates if the GUI is mirrored
+         * @param locale - the browser locale
+         */
         attach: function (element, type, args, isRtl, locale) {
             return attachElement(element, type, args, isRtl, locale);
         }
@@ -2261,7 +2262,7 @@ RED.nodes = (function() {
                     sf.info != subflow.info ||
                     sf.in.length != subflow.in.length ||
                     sf.out.length != subflow.out.length) {
-                        return;
+                    return;
                 }
                 var sfNodes = RED.nodes.filterNodes({z:sf.id});
                 if (sfNodes.length != subflowNodes.length) {
@@ -2356,8 +2357,8 @@ RED.nodes = (function() {
                 !registry.getNodeType(n.type) &&
                 n.type.substring(0,8) != "subflow:" &&
                 unknownTypes.indexOf(n.type)==-1) {
-                    unknownTypes.push(n.type);
-                    console.log("found unknownTypes: " + n.type);
+                unknownTypes.push(n.type);
+                console.log("found unknownTypes: " + n.type);
             }
             if (n.z) {
                 nodeZmap[n.z] = nodeZmap[n.z] || [];
@@ -3474,7 +3475,7 @@ RED.utils = (function() {
                             $('<span class="debug-message-object-key"></span>').html("["+minRange+" &hellip; "+Math.min(fullLength-1,(minRange+9))+"]").appendTo(header);
                         }
                         if (fullLength < originalLength) {
-                             $('<div class="debug-message-object-entry collapsed"><span class="debug-message-object-key">['+fullLength+' &hellip; '+originalLength+']</span></div>').appendTo(arrayRows);
+                            $('<div class="debug-message-object-entry collapsed"><span class="debug-message-object-key">['+fullLength+' &hellip; '+originalLength+']</span></div>').appendTo(arrayRows);
                         }
                     }
                 });
@@ -3738,8 +3739,8 @@ RED.utils = (function() {
             }
             if (this.options.sortable) {
                 var handle = (typeof this.options.sortable === 'string')?
-                                this.options.sortable :
-                                ".red-ui-editableList-item-handle";
+                    this.options.sortable :
+                    ".red-ui-editableList-item-handle";
                 var sortOptions = {
                     axis: "y",
                     update: function( event, ui ) {
@@ -3843,8 +3844,8 @@ RED.utils = (function() {
                     if (added) { return }
                     var itemData = el.data('data');
                     if (that.activeSort(data,itemData) < 0) {
-                         li.insertBefore(el.closest("li"));
-                         added = true;
+                        li.insertBefore(el.closest("li"));
+                        added = true;
                     }
                 });
             }
@@ -4028,9 +4029,9 @@ RED.tabs = (function() {
             clear: function() { tabs = {}; },
             removeTab: function() {},
             activateTab: function(link) {
-              if (options.onchange) {
-                options.onchange({id: link});
-              }
+                if (options.onchange) {
+                    options.onchange({id: link});
+                }
             },
             nextTab: function() {},
             previousTab: function() {},
@@ -4058,16 +4059,16 @@ RED.tabs = (function() {
         msg: {value:"msg",label:"msg.",validate:RED.utils.validatePropertyExpression},
         flow: {value:"flow",label:"flow.",validate:RED.utils.validatePropertyExpression},
         global: {value:"global",label:"global.",validate:RED.utils.validatePropertyExpression},
-        str: {value:"str",label:"string",icon:"flows/red/images/typedInput/az.png"},
-        num: {value:"num",label:"number",icon:"flows/red/images/typedInput/09.png",validate:/^[+-]?[0-9]*\.?[0-9]*([eE][-+]?[0-9]+)?$/},
-        bool: {value:"bool",label:"boolean",icon:"flows/red/images/typedInput/bool.png",options:["true","false"]},
-        json: {value:"json",label:"JSON",icon:"flows/red/images/typedInput/json.png", validate: function(v) { try{JSON.parse(v);return true;}catch(e){return false;}}},
-        re: {value:"re",label:"regular expression",icon:"flows/red/images/typedInput/re.png"},
+        str: {value:"str",label:"string",icon:`${baseURL}flows/red/images/typedInput/az.png`},
+        num: {value:"num",label:"number",icon:`${baseURL}flows/red/images/typedInput/09.png`,validate:/^[+-]?[0-9]*\.?[0-9]*([eE][-+]?[0-9]+)?$/},
+        bool: {value:"bool",label:"boolean",icon:`${baseURL}flows/red/images/typedInput/bool.png`,options:["true","false"]},
+        json: {value:"json",label:"JSON",icon:`${baseURL}flows/red/images/typedInput/json.png`, validate: function(v) { try{JSON.parse(v);return true;}catch(e){return false;}}},
+        re: {value:"re",label:"regular expression",icon:`${baseURL}flows/red/images/typedInput/re.png`},
         date: {value:"date",label:"timestamp",hasValue:false},
         jsonata: {
             value: "jsonata",
             label: "expression",
-            icon: "flows/red/images/typedInput/expr.png",
+            icon: `${baseURL}flows/red/images/typedInput/expr.png`,
             validate: function(v) { try{jsonata(v);return true;}catch(e){return false;}},
             expand:function() {
                 var that = this;
@@ -4107,7 +4108,7 @@ RED.tabs = (function() {
                 this.uiWidth = null;
             } else {
                 if(this.uiWidth>70){
-                this.uiSelect.width(this.uiWidth);
+                    this.uiSelect.width(this.uiWidth);
                 }
                 else {
                     this.uiSelect.width(this.uiWidth + '%');
@@ -4557,7 +4558,7 @@ RED.keyboard = (function() {
     function init() {
 
         $.getJSON({
-            url: 'flows/red/keymap.json',
+            url: `${baseURL}flows/red/keymap.json`,
             type: 'GET',
             headers: {
                 "authorization": `Bearer ${util.getToken()}`,
@@ -4771,13 +4772,13 @@ RED.keyboard = (function() {
         if (!shortcutDialog) {
             shortcutDialog = $('<div id="keyboard-help-dialog" class="hide">'+
                 '<div class="keyboard-shortcut-entry keyboard-shortcut-list-header">'+
-                    '<div class="keyboard-shortcut-entry-key">shortcut</div>'+
-                    '<div class="keyboard-shortcut-entry-key">action</div>'+
-                    '<div class="keyboard-shortcut-entry-scope">scope</div>'+
+                '<div class="keyboard-shortcut-entry-key">shortcut</div>'+
+                '<div class="keyboard-shortcut-entry-key">action</div>'+
+                '<div class="keyboard-shortcut-entry-scope">scope</div>'+
                 '</div>'+
                 '<ol id="keyboard-shortcut-list"></ol>'+
                 '</div>')
-            .appendTo("body");
+                .appendTo("body");
 
             var shortcutList = $('#keyboard-shortcut-list').editableList({
                 addButton: false,
@@ -4945,7 +4946,7 @@ RED.workspaces = (function() {
                 $('<div class="form-row">'+
                     '<label for="node-input-name" data-i18n="[append]editor:common.label.name"><i class="fa fa-tag"></i> </label>'+
                     '<input type="text" id="node-input-name">'+
-                '</div>').appendTo(dialogForm);
+                    '</div>').appendTo(dialogForm);
                 $('<input type="text" style="display: none;" />').prependTo(dialogForm);
                 dialogForm.submit(function(e) { e.preventDefault();});
                 $("#node-input-name").val(workspace.label);
@@ -5060,7 +5061,7 @@ RED.workspaces = (function() {
             if (!workspace_tabs.contains(id)) {
                 var sf = RED.nodes.subflow(id);
                 if (sf) {
-                    addWorkspace({type:"subflow",id:id,icon:"flows/red/images/subflow_tab.png",label:sf.name, closeable: true});
+                    addWorkspace({type:"subflow",id:id,icon:`${baseURL}flows/red/images/subflow_tab.png`,label:sf.name, closeable: true});
                 } else {
                     console.error("Invalid wk id: " + id);
                     return;
@@ -5153,168 +5154,168 @@ RED.view = (function() {
      * @param cannotEdit When this param is true, the flow is just for viewer
      */
     function domInit(cannotEdit=false) {
-      outer = d3.select("#chart")
-          .append("svg:svg")
-          .attr("width", space_width)
-          .attr("height", space_height)
-          .attr("pointer-events", cannotEdit ? "none": "all")
-          .style("cursor","crosshair")
-          .on("mousedown", function() {
-              focusView();
-          });
-      vis = outer
-          .append("svg:g")
-          .on("dblclick.zoom", null)
-          .append("svg:g")
-          .on("mousemove", canvasMouseMove)
-          .on("mousedown", canvasMouseDown)
-          .on("mouseup", canvasMouseUp)
-          .on("touchend", function() {
-              clearTimeout(touchStartTime);
-              touchStartTime = null;
-              if  (RED.touch.radialMenu.active()) {
-                  return;
-              }
-              if (lasso) {
-                  outer_background.attr("fill","#fff");
-              }
-              canvasMouseUp.call(this);
-          })
-          .on("touchcancel", canvasMouseUp)
-          .on("touchstart", function() {
-              var touch0;
-              if (d3.event.touches.length>1) {
-                  clearTimeout(touchStartTime);
-                  touchStartTime = null;
-                  d3.event.preventDefault();
-                  touch0 = d3.event.touches.item(0);
-                  var touch1 = d3.event.touches.item(1);
-                  var a = touch0["pageY"]-touch1["pageY"];
-                  var b = touch0["pageX"]-touch1["pageX"];
+        outer = d3.select("#chart")
+            .append("svg:svg")
+            .attr("width", space_width)
+            .attr("height", space_height)
+            .attr("pointer-events", cannotEdit ? "none": "all")
+            .style("cursor","crosshair")
+            .on("mousedown", function() {
+                focusView();
+            });
+        vis = outer
+            .append("svg:g")
+            .on("dblclick.zoom", null)
+            .append("svg:g")
+            .on("mousemove", canvasMouseMove)
+            .on("mousedown", canvasMouseDown)
+            .on("mouseup", canvasMouseUp)
+            .on("touchend", function() {
+                clearTimeout(touchStartTime);
+                touchStartTime = null;
+                if  (RED.touch.radialMenu.active()) {
+                    return;
+                }
+                if (lasso) {
+                    outer_background.attr("fill","#fff");
+                }
+                canvasMouseUp.call(this);
+            })
+            .on("touchcancel", canvasMouseUp)
+            .on("touchstart", function() {
+                var touch0;
+                if (d3.event.touches.length>1) {
+                    clearTimeout(touchStartTime);
+                    touchStartTime = null;
+                    d3.event.preventDefault();
+                    touch0 = d3.event.touches.item(0);
+                    var touch1 = d3.event.touches.item(1);
+                    var a = touch0["pageY"]-touch1["pageY"];
+                    var b = touch0["pageX"]-touch1["pageX"];
 
-                  var offset = $("#chart").offset();
-                  var scrollPos = [$("#chart").scrollLeft(),$("#chart").scrollTop()];
-                  startTouchCenter = [
-                      (touch1["pageX"]+(b/2)-offset.left+scrollPos[0])/scaleFactor,
-                      (touch1["pageY"]+(a/2)-offset.top+scrollPos[1])/scaleFactor
-                  ];
-                  moveTouchCenter = [
-                      touch1["pageX"]+(b/2),
-                      touch1["pageY"]+(a/2)
-                  ]
-                  startTouchDistance = Math.sqrt((a*a)+(b*b));
-              } else {
-                  var obj = d3.select(document.body);
-                  touch0 = d3.event.touches.item(0);
-                  var pos = [touch0.pageX,touch0.pageY];
-                  startTouchCenter = [touch0.pageX,touch0.pageY];
-                  startTouchDistance = 0;
-                  var point = d3.touches(this)[0];
-                  touchStartTime = setTimeout(function() {
-                      touchStartTime = null;
-                      showTouchMenu(obj,pos);
-                      //lasso = vis.append("rect")
-                      //    .attr("ox",point[0])
-                      //    .attr("oy",point[1])
-                      //    .attr("rx",2)
-                      //    .attr("ry",2)
-                      //    .attr("x",point[0])
-                      //    .attr("y",point[1])
-                      //    .attr("width",0)
-                      //    .attr("height",0)
-                      //    .attr("class","lasso");
-                      //outer_background.attr("fill","#e3e3f3");
-                  },touchLongPressTimeout);
-              }
-          })
-          .on("touchmove", function(){
-                  if  (RED.touch.radialMenu.active()) {
-                      d3.event.preventDefault();
-                      return;
-                  }
-                  var touch0;
-                  if (d3.event.touches.length<2) {
-                      if (touchStartTime) {
-                          touch0 = d3.event.touches.item(0);
-                          var dx = (touch0.pageX-startTouchCenter[0]);
-                          var dy = (touch0.pageY-startTouchCenter[1]);
-                          var d = Math.abs(dx*dx+dy*dy);
-                          if (d > 64) {
-                              clearTimeout(touchStartTime);
-                              touchStartTime = null;
-                          }
-                      } else if (lasso) {
-                          d3.event.preventDefault();
-                      }
-                      canvasMouseMove.call(this);
-                  } else {
-                      touch0 = d3.event.touches.item(0);
-                      var touch1 = d3.event.touches.item(1);
-                      var a = touch0["pageY"]-touch1["pageY"];
-                      var b = touch0["pageX"]-touch1["pageX"];
-                      var offset = $("#chart").offset();
-                      var scrollPos = [$("#chart").scrollLeft(),$("#chart").scrollTop()];
-                      var moveTouchDistance = Math.sqrt((a*a)+(b*b));
-                      var touchCenter = [
-                          touch1["pageX"]+(b/2),
-                          touch1["pageY"]+(a/2)
-                      ];
+                    var offset = $("#chart").offset();
+                    var scrollPos = [$("#chart").scrollLeft(),$("#chart").scrollTop()];
+                    startTouchCenter = [
+                        (touch1["pageX"]+(b/2)-offset.left+scrollPos[0])/scaleFactor,
+                        (touch1["pageY"]+(a/2)-offset.top+scrollPos[1])/scaleFactor
+                    ];
+                    moveTouchCenter = [
+                        touch1["pageX"]+(b/2),
+                        touch1["pageY"]+(a/2)
+                    ]
+                    startTouchDistance = Math.sqrt((a*a)+(b*b));
+                } else {
+                    var obj = d3.select(document.body);
+                    touch0 = d3.event.touches.item(0);
+                    var pos = [touch0.pageX,touch0.pageY];
+                    startTouchCenter = [touch0.pageX,touch0.pageY];
+                    startTouchDistance = 0;
+                    var point = d3.touches(this)[0];
+                    touchStartTime = setTimeout(function() {
+                        touchStartTime = null;
+                        showTouchMenu(obj,pos);
+                        //lasso = vis.append("rect")
+                        //    .attr("ox",point[0])
+                        //    .attr("oy",point[1])
+                        //    .attr("rx",2)
+                        //    .attr("ry",2)
+                        //    .attr("x",point[0])
+                        //    .attr("y",point[1])
+                        //    .attr("width",0)
+                        //    .attr("height",0)
+                        //    .attr("class","lasso");
+                        //outer_background.attr("fill","#e3e3f3");
+                    },touchLongPressTimeout);
+                }
+            })
+            .on("touchmove", function(){
+                if  (RED.touch.radialMenu.active()) {
+                    d3.event.preventDefault();
+                    return;
+                }
+                var touch0;
+                if (d3.event.touches.length<2) {
+                    if (touchStartTime) {
+                        touch0 = d3.event.touches.item(0);
+                        var dx = (touch0.pageX-startTouchCenter[0]);
+                        var dy = (touch0.pageY-startTouchCenter[1]);
+                        var d = Math.abs(dx*dx+dy*dy);
+                        if (d > 64) {
+                            clearTimeout(touchStartTime);
+                            touchStartTime = null;
+                        }
+                    } else if (lasso) {
+                        d3.event.preventDefault();
+                    }
+                    canvasMouseMove.call(this);
+                } else {
+                    touch0 = d3.event.touches.item(0);
+                    var touch1 = d3.event.touches.item(1);
+                    var a = touch0["pageY"]-touch1["pageY"];
+                    var b = touch0["pageX"]-touch1["pageX"];
+                    var offset = $("#chart").offset();
+                    var scrollPos = [$("#chart").scrollLeft(),$("#chart").scrollTop()];
+                    var moveTouchDistance = Math.sqrt((a*a)+(b*b));
+                    var touchCenter = [
+                        touch1["pageX"]+(b/2),
+                        touch1["pageY"]+(a/2)
+                    ];
 
-                      if (!isNaN(moveTouchDistance)) {
-                          oldScaleFactor = scaleFactor;
-                          scaleFactor = Math.min(2,Math.max(0.3, scaleFactor + (Math.floor(((moveTouchDistance*100)-(startTouchDistance*100)))/10000)));
+                    if (!isNaN(moveTouchDistance)) {
+                        oldScaleFactor = scaleFactor;
+                        scaleFactor = Math.min(2,Math.max(0.3, scaleFactor + (Math.floor(((moveTouchDistance*100)-(startTouchDistance*100)))/10000)));
 
-                          var deltaTouchCenter = [                             // Try to pan whilst zooming - not 100%
-                              startTouchCenter[0]*(scaleFactor-oldScaleFactor),//-(touchCenter[0]-moveTouchCenter[0]),
-                              startTouchCenter[1]*(scaleFactor-oldScaleFactor) //-(touchCenter[1]-moveTouchCenter[1])
-                          ];
+                        var deltaTouchCenter = [                             // Try to pan whilst zooming - not 100%
+                            startTouchCenter[0]*(scaleFactor-oldScaleFactor),//-(touchCenter[0]-moveTouchCenter[0]),
+                            startTouchCenter[1]*(scaleFactor-oldScaleFactor) //-(touchCenter[1]-moveTouchCenter[1])
+                        ];
 
-                          startTouchDistance = moveTouchDistance;
-                          moveTouchCenter = touchCenter;
+                        startTouchDistance = moveTouchDistance;
+                        moveTouchCenter = touchCenter;
 
-                          $("#chart").scrollLeft(scrollPos[0]+deltaTouchCenter[0]);
-                          $("#chart").scrollTop(scrollPos[1]+deltaTouchCenter[1]);
-                          redraw();
-                      }
-                  }
-          });
-      outer_background = vis.append("svg:rect")
-          .attr("width", space_width)
-          .attr("height", space_height)
-          .attr("fill","#fff");
+                        $("#chart").scrollLeft(scrollPos[0]+deltaTouchCenter[0]);
+                        $("#chart").scrollTop(scrollPos[1]+deltaTouchCenter[1]);
+                        redraw();
+                    }
+                }
+            });
+        outer_background = vis.append("svg:rect")
+            .attr("width", space_width)
+            .attr("height", space_height)
+            .attr("fill","#fff");
 
-      grid = vis.append("g");
-      grid.selectAll("line.horizontal").data(gridScale.ticks(space_width/gridSize)).enter()
-         .append("line")
-             .attr(
-             {
-                 "class":"horizontal",
-                 "x1" : 0,
-                 "x2" : space_width,
-                 "y1" : function(d){ return gridScale(d);},
-                 "y2" : function(d){ return gridScale(d);},
-                 "fill" : "none",
-                 "shape-rendering" : "crispEdges",
-                 "stroke" : "#eee",
-                 "stroke-width" : "1px"
-             });
-      grid.selectAll("line.vertical").data(gridScale.ticks(space_width/gridSize)).enter()
-         .append("line")
-             .attr(
-             {
-                 "class":"vertical",
-                 "y1" : 0,
-                 "y2" : space_width,
-                 "x1" : function(d){ return gridScale(d);},
-                 "x2" : function(d){ return gridScale(d);},
-                 "fill" : "none",
-                 "shape-rendering" : "crispEdges",
-                 "stroke" : "#eee",
-                 "stroke-width" : "1px"
-             });
-      grid.style("visibility","hidden");
+        grid = vis.append("g");
+        grid.selectAll("line.horizontal").data(gridScale.ticks(space_width/gridSize)).enter()
+            .append("line")
+            .attr(
+                {
+                    "class":"horizontal",
+                    "x1" : 0,
+                    "x2" : space_width,
+                    "y1" : function(d){ return gridScale(d);},
+                    "y2" : function(d){ return gridScale(d);},
+                    "fill" : "none",
+                    "shape-rendering" : "crispEdges",
+                    "stroke" : "#eee",
+                    "stroke-width" : "1px"
+                });
+        grid.selectAll("line.vertical").data(gridScale.ticks(space_width/gridSize)).enter()
+            .append("line")
+            .attr(
+                {
+                    "class":"vertical",
+                    "y1" : 0,
+                    "y2" : space_width,
+                    "x1" : function(d){ return gridScale(d);},
+                    "x2" : function(d){ return gridScale(d);},
+                    "fill" : "none",
+                    "shape-rendering" : "crispEdges",
+                    "stroke" : "#eee",
+                    "stroke-width" : "1px"
+                });
+        grid.style("visibility","hidden");
 
-      dragGroup = vis.append("g");
+        dragGroup = vis.append("g");
     }
 
     var gridScale = d3.scale.linear().range([0,space_width]).domain([0,space_width]);
@@ -5685,15 +5686,15 @@ RED.view = (function() {
             if (!touchStartTime) {
                 point = d3.mouse(this);
                 lasso = vis.append("rect")
-                .attr("ox",point[0])
-                .attr("oy",point[1])
-                .attr("rx",1)
-                .attr("ry",1)
-                .attr("x",point[0])
-                .attr("y",point[1])
-                .attr("width",0)
-                .attr("height",0)
-                .attr("class","lasso");
+                    .attr("ox",point[0])
+                    .attr("oy",point[1])
+                    .attr("rx",1)
+                    .attr("ry",1)
+                    .attr("x",point[0])
+                    .attr("y",point[1])
+                    .attr("width",0)
+                    .attr("height",0)
+                    .attr("class","lasso");
                 d3.event.preventDefault();
             }
         }
@@ -5755,12 +5756,12 @@ RED.view = (function() {
                     var existingLinks = [];
                     if (selected_link &&
                         ((mousedown_port_type === 0 &&
-                            selected_link.source === mousedown_node &&
-                            selected_link.sourcePort === mousedown_port_index
-                        ) ||
-                        (mousedown_port_type === 1 &&
-                            selected_link.target === mousedown_node
-                        ))
+                                selected_link.source === mousedown_node &&
+                                selected_link.sourcePort === mousedown_port_index
+                            ) ||
+                            (mousedown_port_type === 1 &&
+                                selected_link.target === mousedown_node
+                            ))
                     ) {
                         existingLinks = [selected_link];
                     } else {
@@ -5832,7 +5833,7 @@ RED.view = (function() {
                     " C "+(drag_line.node.x+sc*(drag_line.node.w/2+node_width*scale))+" "+(drag_line.node.y+portY+scaleY*node_height)+" "+
                     (mousePos[0]-sc*(scale)*node_width)+" "+(mousePos[1]-scaleY*node_height)+" "+
                     mousePos[0]+" "+mousePos[1]
-                    );
+                );
             }
             d3.event.preventDefault();
         } else if (mouse_mode == RED.state.MOVING) {
@@ -5848,10 +5849,10 @@ RED.view = (function() {
                 if (moving_set.length === 1) {
                     node = moving_set[0];
                     spliceActive = node.n.hasOwnProperty("_def") &&
-                                   node.n._def.inputs > 0 &&
-                                   node.n._def.outputs > 0 &&
-                                   RED.nodes.filterLinks({ source: node.n }).length === 0 &&
-                                   RED.nodes.filterLinks({ target: node.n }).length === 0;
+                        node.n._def.inputs > 0 &&
+                        node.n._def.outputs > 0 &&
+                        RED.nodes.filterLinks({ source: node.n }).length === 0 &&
+                        RED.nodes.filterLinks({ target: node.n }).length === 0;
                 }
             }
         } else if (mouse_mode == RED.state.MOVING_ACTIVE || mouse_mode == RED.state.IMPORT_DRAGGING) {
@@ -6449,9 +6450,9 @@ RED.view = (function() {
                         var hh = n.h/2;
                         if (n.x-hw<mouse_position[0] && n.x+hw> mouse_position[0] &&
                             n.y-hh<mouse_position[1] && n.y+hh>mouse_position[1]) {
-                                mouseup_node = n;
-                                portType = mouseup_node.inputs>0?1:0;
-                                portIndex = 0;
+                            mouseup_node = n;
+                            portType = mouseup_node.inputs>0?1:0;
+                            portIndex = 0;
                         }
                     }
                 });
@@ -6705,24 +6706,24 @@ RED.view = (function() {
                     .on("mouseup",nodeMouseUp)
                     .on("mousedown",nodeMouseDown)
                     .on("touchstart",function(d) {
-                            var obj = d3.select(this);
-                            var touch0 = d3.event.touches.item(0);
-                            var pos = [touch0.pageX,touch0.pageY];
-                            startTouchCenter = [touch0.pageX,touch0.pageY];
-                            startTouchDistance = 0;
-                            touchStartTime = setTimeout(function() {
-                                    showTouchMenu(obj,pos);
-                            },touchLongPressTimeout);
-                            nodeMouseDown.call(this,d)
+                        var obj = d3.select(this);
+                        var touch0 = d3.event.touches.item(0);
+                        var pos = [touch0.pageX,touch0.pageY];
+                        startTouchCenter = [touch0.pageX,touch0.pageY];
+                        startTouchDistance = 0;
+                        touchStartTime = setTimeout(function() {
+                            showTouchMenu(obj,pos);
+                        },touchLongPressTimeout);
+                        nodeMouseDown.call(this,d)
                     })
                     .on("touchend", function(d) {
-                            clearTimeout(touchStartTime);
-                            touchStartTime = null;
-                            if  (RED.touch.radialMenu.active()) {
-                                d3.event.stopPropagation();
-                                return;
-                            }
-                            nodeMouseUp.call(this,d);
+                        clearTimeout(touchStartTime);
+                        touchStartTime = null;
+                        if  (RED.touch.radialMenu.active()) {
+                            d3.event.stopPropagation();
+                            return;
+                        }
+                        nodeMouseUp.call(this,d);
                     });
 
                 outGroup.append("rect").attr("class","port").attr("rx",3).attr("ry",3).attr("width",10).attr("height",10).attr("x",-5).attr("y",15)
@@ -6748,24 +6749,24 @@ RED.view = (function() {
                     .on("mouseup",nodeMouseUp)
                     .on("mousedown",nodeMouseDown)
                     .on("touchstart",function(d) {
-                            var obj = d3.select(this);
-                            var touch0 = d3.event.touches.item(0);
-                            var pos = [touch0.pageX,touch0.pageY];
-                            startTouchCenter = [touch0.pageX,touch0.pageY];
-                            startTouchDistance = 0;
-                            touchStartTime = setTimeout(function() {
-                                    showTouchMenu(obj,pos);
-                            },touchLongPressTimeout);
-                            nodeMouseDown.call(this,d)
+                        var obj = d3.select(this);
+                        var touch0 = d3.event.touches.item(0);
+                        var pos = [touch0.pageX,touch0.pageY];
+                        startTouchCenter = [touch0.pageX,touch0.pageY];
+                        startTouchDistance = 0;
+                        touchStartTime = setTimeout(function() {
+                            showTouchMenu(obj,pos);
+                        },touchLongPressTimeout);
+                        nodeMouseDown.call(this,d)
                     })
                     .on("touchend", function(d) {
-                            clearTimeout(touchStartTime);
-                            touchStartTime = null;
-                            if  (RED.touch.radialMenu.active()) {
-                                d3.event.stopPropagation();
-                                return;
-                            }
-                            nodeMouseUp.call(this,d);
+                        clearTimeout(touchStartTime);
+                        touchStartTime = null;
+                        if  (RED.touch.radialMenu.active()) {
+                            d3.event.stopPropagation();
+                            return;
+                        }
+                        nodeMouseUp.call(this,d);
                     });
 
                 inGroup.append("rect").attr("class","port").attr("rx",3).attr("ry",3).attr("width",10).attr("height",10).attr("x",35).attr("y",15)
@@ -6812,429 +6813,429 @@ RED.view = (function() {
                 .classed("node_link",function(d) { return d.type === "link in" || d.type === "link out" });
 
             nodeEnter.each(function(d,i) {
-                    var node = d3.select(this);
-                    var isLink = d.type === "link in" || d.type === "link out";
-                    node.attr("id",d.id);
-                    var l = d._def.label;
-                    try {
-                        l = (typeof l === "function" ? l.call(d) : l)||"";
-                    } catch(err) {
-                        console.log("Definition error: "+d.type+".label",err);
-                        l = d.type;
-                    }
+                var node = d3.select(this);
+                var isLink = d.type === "link in" || d.type === "link out";
+                node.attr("id",d.id);
+                var l = d._def.label;
+                try {
+                    l = (typeof l === "function" ? l.call(d) : l)||"";
+                } catch(err) {
+                    console.log("Definition error: "+d.type+".label",err);
+                    l = d.type;
+                }
 
-                    if (isLink) {
-                        d.w = node_height;
-                    } else {
-                        d.w = Math.max(node_width,gridSize*(Math.ceil((calculateTextWidth(l, "node_label", 50)+(d._def.inputs>0?7:0))/gridSize)) );
-                    }
-                    d.h = Math.max(node_height,(d.outputs||0) * 15);
+                if (isLink) {
+                    d.w = node_height;
+                } else {
+                    d.w = Math.max(node_width,gridSize*(Math.ceil((calculateTextWidth(l, "node_label", 50)+(d._def.inputs>0?7:0))/gridSize)) );
+                }
+                d.h = Math.max(node_height,(d.outputs||0) * 15);
 
-                    if (d._def.badge) {
-                        var badge = node.append("svg:g").attr("class","node_badge_group");
-                        var badgeRect = badge.append("rect").attr("class","node_badge").attr("rx",5).attr("ry",5).attr("width",40).attr("height",15);
-                        badge.append("svg:text").attr("class","node_badge_label").attr("x",35).attr("y",11).attr("text-anchor","end").text(d._def.badge());
-                        if (d._def.onbadgeclick) {
-                            badgeRect.attr("cursor","pointer")
-                                .on("click",function(d) { d._def.onbadgeclick.call(d);d3.event.preventDefault();});
-                        }
+                if (d._def.badge) {
+                    var badge = node.append("svg:g").attr("class","node_badge_group");
+                    var badgeRect = badge.append("rect").attr("class","node_badge").attr("rx",5).attr("ry",5).attr("width",40).attr("height",15);
+                    badge.append("svg:text").attr("class","node_badge_label").attr("x",35).attr("y",11).attr("text-anchor","end").text(d._def.badge());
+                    if (d._def.onbadgeclick) {
+                        badgeRect.attr("cursor","pointer")
+                            .on("click",function(d) { d._def.onbadgeclick.call(d);d3.event.preventDefault();});
                     }
+                }
 
-                    if (d._def.button) {
-                        var nodeButtonGroup = node.append("svg:g")
-                            .attr("transform",function(d) { return "translate("+((d._def.align == "right") ? 94 : -25)+",2)"; })
-                            .attr("class",function(d) { return "node_button "+((d._def.align == "right") ? "node_right_button" : "node_left_button"); });
-                        nodeButtonGroup.append("rect")
-                            .attr("rx",5)
-                            .attr("ry",5)
-                            .attr("width",32)
-                            .attr("height",node_height-4)
-                            .attr("fill","#eee");//function(d) { return d._def.color;})
-                        nodeButtonGroup.append("rect")
-                            .attr("class","node_button_button")
-                            .attr("x",function(d) { return d._def.align == "right"? 11:5})
-                            .attr("y",4)
-                            .attr("rx",4)
-                            .attr("ry",4)
-                            .attr("width",16)
-                            .attr("height",node_height-12)
-                            .attr("fill",function(d) { return d._def.color;})
-                            .attr("cursor","pointer")
-                            .on("mousedown",function(d) {if (!lasso && !d.changed) {focusView();d3.select(this).attr("fill-opacity",0.2);d3.event.preventDefault(); d3.event.stopPropagation();}})
-                            .on("mouseup",function(d) {if (!lasso && !d.changed) { d3.select(this).attr("fill-opacity",0.4);d3.event.preventDefault();d3.event.stopPropagation();}})
-                            .on("mouseover",function(d) {if (!lasso && !d.changed) { d3.select(this).attr("fill-opacity",0.4);}})
-                            .on("mouseout",function(d) {if (!lasso  && !d.changed) {
-                                var op = 1;
-                                if (d._def.button.toggle) {
-                                    op = d[d._def.button.toggle]?1:0.2;
-                                }
-                                d3.select(this).attr("fill-opacity",op);
-                            }})
-                            .on("click",nodeButtonClicked)
-                            .on("touchstart",nodeButtonClicked)
-                    }
-
-                    var mainRect = node.append("rect")
-                        .attr("class", "node")
-                        .classed("node_unknown",function(d) { return d.type == "unknown"; })
-                        .attr("rx", 5)
-                        .attr("ry", 5)
+                if (d._def.button) {
+                    var nodeButtonGroup = node.append("svg:g")
+                        .attr("transform",function(d) { return "translate("+((d._def.align == "right") ? 94 : -25)+",2)"; })
+                        .attr("class",function(d) { return "node_button "+((d._def.align == "right") ? "node_right_button" : "node_left_button"); });
+                    nodeButtonGroup.append("rect")
+                        .attr("rx",5)
+                        .attr("ry",5)
+                        .attr("width",32)
+                        .attr("height",node_height-4)
+                        .attr("fill","#eee");//function(d) { return d._def.color;})
+                    nodeButtonGroup.append("rect")
+                        .attr("class","node_button_button")
+                        .attr("x",function(d) { return d._def.align == "right"? 11:5})
+                        .attr("y",4)
+                        .attr("rx",4)
+                        .attr("ry",4)
+                        .attr("width",16)
+                        .attr("height",node_height-12)
                         .attr("fill",function(d) { return d._def.color;})
-                        .on("mouseup",nodeMouseUp)
-                        .on("mousedown",nodeMouseDown)
-                        .on("touchstart",function(d) {
-                            var obj = d3.select(this);
-                            var touch0 = d3.event.touches.item(0);
-                            var pos = [touch0.pageX,touch0.pageY];
-                            startTouchCenter = [touch0.pageX,touch0.pageY];
-                            startTouchDistance = 0;
-                            touchStartTime = setTimeout(function() {
-                                showTouchMenu(obj,pos);
-                            },touchLongPressTimeout);
-                            nodeMouseDown.call(this,d)
-                        })
-                        .on("touchend", function(d) {
-                            clearTimeout(touchStartTime);
-                            touchStartTime = null;
-                            if  (RED.touch.radialMenu.active()) {
-                                d3.event.stopPropagation();
-                                return;
+                        .attr("cursor","pointer")
+                        .on("mousedown",function(d) {if (!lasso && !d.changed) {focusView();d3.select(this).attr("fill-opacity",0.2);d3.event.preventDefault(); d3.event.stopPropagation();}})
+                        .on("mouseup",function(d) {if (!lasso && !d.changed) { d3.select(this).attr("fill-opacity",0.4);d3.event.preventDefault();d3.event.stopPropagation();}})
+                        .on("mouseover",function(d) {if (!lasso && !d.changed) { d3.select(this).attr("fill-opacity",0.4);}})
+                        .on("mouseout",function(d) {if (!lasso  && !d.changed) {
+                            var op = 1;
+                            if (d._def.button.toggle) {
+                                op = d[d._def.button.toggle]?1:0.2;
                             }
-                            nodeMouseUp.call(this,d);
-                        })
-                        .on("mouseover",function(d) {
-                            if (mouse_mode === 0) {
-                                var node = d3.select(this);
-                                node.classed("node_hovered",true);
-                            }
-                        })
-                        .on("mouseout",function(d) {
+                            d3.select(this).attr("fill-opacity",op);
+                        }})
+                        .on("click",nodeButtonClicked)
+                        .on("touchstart",nodeButtonClicked)
+                }
+
+                var mainRect = node.append("rect")
+                    .attr("class", "node")
+                    .classed("node_unknown",function(d) { return d.type == "unknown"; })
+                    .attr("rx", 5)
+                    .attr("ry", 5)
+                    .attr("fill",function(d) { return d._def.color;})
+                    .on("mouseup",nodeMouseUp)
+                    .on("mousedown",nodeMouseDown)
+                    .on("touchstart",function(d) {
+                        var obj = d3.select(this);
+                        var touch0 = d3.event.touches.item(0);
+                        var pos = [touch0.pageX,touch0.pageY];
+                        startTouchCenter = [touch0.pageX,touch0.pageY];
+                        startTouchDistance = 0;
+                        touchStartTime = setTimeout(function() {
+                            showTouchMenu(obj,pos);
+                        },touchLongPressTimeout);
+                        nodeMouseDown.call(this,d)
+                    })
+                    .on("touchend", function(d) {
+                        clearTimeout(touchStartTime);
+                        touchStartTime = null;
+                        if  (RED.touch.radialMenu.active()) {
+                            d3.event.stopPropagation();
+                            return;
+                        }
+                        nodeMouseUp.call(this,d);
+                    })
+                    .on("mouseover",function(d) {
+                        if (mouse_mode === 0) {
                             var node = d3.select(this);
-                            node.classed("node_hovered",false);
-                        });
-
-                   //node.append("rect").attr("class", "node-gradient-top").attr("rx", 6).attr("ry", 6).attr("height",30).attr("stroke","none").attr("fill","url(#gradient-top)").style("pointer-events","none");
-                   //node.append("rect").attr("class", "node-gradient-bottom").attr("rx", 6).attr("ry", 6).attr("height",30).attr("stroke","none").attr("fill","url(#gradient-bottom)").style("pointer-events","none");
-
-                    if (d._def.icon) {
-
-                        var icon_group = node.append("g")
-                            .attr("class","node_icon_group")
-                            .attr("x",0).attr("y",0);
-
-                        var icon_shade = icon_group.append("rect")
-                            .attr("x",0).attr("y",0)
-                            .attr("class","node_icon_shade")
-                            .attr("width","30")
-                            .attr("stroke","none")
-                            .attr("fill","#000")
-                            .attr("fill-opacity","0.05")
-                            .attr("height",function(d){return Math.min(50,d.h-4);});
-
-                        var icon = icon_group.append("image")
-                            .attr("xlink:href","flows/icons/"+d._def.icon)
-                            .attr("class","node_icon")
-                            .attr("x",0)
-                            .attr("width","30")
-                            .attr("height","30");
-
-                        var icon_shade_border = icon_group.append("path")
-                            .attr("d",function(d) { return "M 30 1 l 0 "+(d.h-2)})
-                            .attr("class","node_icon_shade_border")
-                            .attr("stroke-opacity","0.1")
-                            .attr("stroke","#000")
-                            .attr("stroke-width","1");
-
-                        if ("right" == d._def.align) {
-                            icon_group.attr("class","node_icon_group node_icon_group_"+d._def.align);
-                            icon_shade_border.attr("d",function(d) { return "M 0 1 l 0 "+(d.h-2)})
-                            //icon.attr("class","node_icon node_icon_"+d._def.align);
-                            //icon.attr("class","node_icon_shade node_icon_shade_"+d._def.align);
-                            //icon.attr("class","node_icon_shade_border node_icon_shade_border_"+d._def.align);
+                            node.classed("node_hovered",true);
                         }
+                    })
+                    .on("mouseout",function(d) {
+                        var node = d3.select(this);
+                        node.classed("node_hovered",false);
+                    });
 
-                        //if (d.inputs > 0 && d._def.align == null) {
-                        //    icon_shade.attr("width",35);
-                        //    icon.attr("transform","translate(5,0)");
-                        //    icon_shade_border.attr("transform","translate(5,0)");
-                        //}
-                        //if (d._def.outputs > 0 && "right" == d._def.align) {
-                        //    icon_shade.attr("width",35); //icon.attr("x",5);
-                        //}
+                //node.append("rect").attr("class", "node-gradient-top").attr("rx", 6).attr("ry", 6).attr("height",30).attr("stroke","none").attr("fill","url(#gradient-top)").style("pointer-events","none");
+                //node.append("rect").attr("class", "node-gradient-bottom").attr("rx", 6).attr("ry", 6).attr("height",30).attr("stroke","none").attr("fill","url(#gradient-bottom)").style("pointer-events","none");
 
-                        var img = new Image();
-                        img.src = "flows/icons/"+d._def.icon;
-                        img.onload = function() {
-                            icon.attr("width",Math.min(img.width,30));
-                            icon.attr("height",Math.min(img.height,30));
-                            icon.attr("x",15-Math.min(img.width,30)/2);
-                            //if ("right" == d._def.align) {
-                            //    icon.attr("x",function(d){return d.w-img.width-1-(d.outputs>0?5:0);});
-                            //    icon_shade.attr("x",function(d){return d.w-30});
-                            //    icon_shade_border.attr("d",function(d){return "M "+(d.w-30)+" 1 l 0 "+(d.h-2);});
-                            //}
-                        }
+                if (d._def.icon) {
 
-                        //icon.style("pointer-events","none");
-                        icon_group.style("pointer-events","none");
+                    var icon_group = node.append("g")
+                        .attr("class","node_icon_group")
+                        .attr("x",0).attr("y",0);
+
+                    var icon_shade = icon_group.append("rect")
+                        .attr("x",0).attr("y",0)
+                        .attr("class","node_icon_shade")
+                        .attr("width","30")
+                        .attr("stroke","none")
+                        .attr("fill","#000")
+                        .attr("fill-opacity","0.05")
+                        .attr("height",function(d){return Math.min(50,d.h-4);});
+
+                    var icon = icon_group.append("image")
+                        .attr("xlink:href",`${baseURL}flows/icons/${+d._def.icon}`)
+                        .attr("class","node_icon")
+                        .attr("x",0)
+                        .attr("width","30")
+                        .attr("height","30");
+
+                    var icon_shade_border = icon_group.append("path")
+                        .attr("d",function(d) { return "M 30 1 l 0 "+(d.h-2)})
+                        .attr("class","node_icon_shade_border")
+                        .attr("stroke-opacity","0.1")
+                        .attr("stroke","#000")
+                        .attr("stroke-width","1");
+
+                    if ("right" == d._def.align) {
+                        icon_group.attr("class","node_icon_group node_icon_group_"+d._def.align);
+                        icon_shade_border.attr("d",function(d) { return "M 0 1 l 0 "+(d.h-2)})
+                        //icon.attr("class","node_icon node_icon_"+d._def.align);
+                        //icon.attr("class","node_icon_shade node_icon_shade_"+d._def.align);
+                        //icon.attr("class","node_icon_shade_border node_icon_shade_border_"+d._def.align);
                     }
-                    if (!isLink) {
-                        var text = node.append("svg:text").attr("class","node_label").attr("x", 38).attr("dy", ".35em").attr("text-anchor","start");
-                        if (d._def.align) {
-                            text.attr("class","node_label node_label_"+d._def.align);
-                            if (d._def.align === "right") {
-                                text.attr("text-anchor","end");
-                            }
-                        }
 
-                        var status = node.append("svg:g").attr("class","node_status_group").style("display","none");
+                    //if (d.inputs > 0 && d._def.align == null) {
+                    //    icon_shade.attr("width",35);
+                    //    icon.attr("transform","translate(5,0)");
+                    //    icon_shade_border.attr("transform","translate(5,0)");
+                    //}
+                    //if (d._def.outputs > 0 && "right" == d._def.align) {
+                    //    icon_shade.attr("width",35); //icon.attr("x",5);
+                    //}
 
-                        var statusRect = status.append("rect").attr("class","node_status")
-                                            .attr("x",6).attr("y",1).attr("width",9).attr("height",9)
-                                            .attr("rx",2).attr("ry",2).attr("stroke-width","3");
-
-                        var statusLabel = status.append("svg:text")
-                            .attr("class","node_status_label")
-                            .attr("x",20).attr("y",9);
+                    var img = new Image();
+                    img.src = `${baseURL}flows/icons/${d._def.icon}`;
+                    img.onload = function() {
+                        icon.attr("width",Math.min(img.width,30));
+                        icon.attr("height",Math.min(img.height,30));
+                        icon.attr("x",15-Math.min(img.width,30)/2);
+                        //if ("right" == d._def.align) {
+                        //    icon.attr("x",function(d){return d.w-img.width-1-(d.outputs>0?5:0);});
+                        //    icon_shade.attr("x",function(d){return d.w-30});
+                        //    icon_shade_border.attr("d",function(d){return "M "+(d.w-30)+" 1 l 0 "+(d.h-2);});
+                        //}
                     }
-                    //node.append("circle").attr({"class":"centerDot","cx":0,"cy":0,"r":5});
 
-                    //node.append("path").attr("class","node_error").attr("d","M 3,-3 l 10,0 l -5,-8 z");
-                    node.append("image").attr("class","node_error hidden").attr("xlink:href","flows/icons/node-error.png").attr("x",0).attr("y",-6).attr("width",10).attr("height",9);
-                    node.append("image").attr("class","node_changed hidden").attr("xlink:href","flows/icons/node-changed.png").attr("x",12).attr("y",-6).attr("width",10).attr("height",10);
+                    //icon.style("pointer-events","none");
+                    icon_group.style("pointer-events","none");
+                }
+                if (!isLink) {
+                    var text = node.append("svg:text").attr("class","node_label").attr("x", 38).attr("dy", ".35em").attr("text-anchor","start");
+                    if (d._def.align) {
+                        text.attr("class","node_label node_label_"+d._def.align);
+                        if (d._def.align === "right") {
+                            text.attr("text-anchor","end");
+                        }
+                    }
+
+                    var status = node.append("svg:g").attr("class","node_status_group").style("display","none");
+
+                    var statusRect = status.append("rect").attr("class","node_status")
+                        .attr("x",6).attr("y",1).attr("width",9).attr("height",9)
+                        .attr("rx",2).attr("ry",2).attr("stroke-width","3");
+
+                    var statusLabel = status.append("svg:text")
+                        .attr("class","node_status_label")
+                        .attr("x",20).attr("y",9);
+                }
+                //node.append("circle").attr({"class":"centerDot","cx":0,"cy":0,"r":5});
+
+                //node.append("path").attr("class","node_error").attr("d","M 3,-3 l 10,0 l -5,-8 z");
+                node.append("image").attr("class","node_error hidden").attr("xlink:href",`${baseURL}flows/icons/node-error.png`).attr("x",0).attr("y",-6).attr("width",10).attr("height",9);
+                node.append("image").attr("class","node_changed hidden").attr("xlink:href",`${baseURL}flows/icons/node-changed.png`).attr("x",12).attr("y",-6).attr("width",10).attr("height",10);
             });
 
             node.each(function(d,i) {
-                    if (d.dirty) {
-                        var isLink = d.type === "link in" || d.type === "link out";
-                        dirtyNodes[d.id] = d;
-                        //if (d.x < -50) deleteSelection();  // Delete nodes if dragged back to palette
-                        if (!isLink && d.resize) {
-                            var l = d._def.label;
-                            try {
-                                l = (typeof l === "function" ? l.call(d) : l)||"";
-                            } catch(err) {
-                                console.log("Definition error: "+d.type+".label",err);
-                                l = d.type;
-                            }
-                            var ow = d.w;
-                            d.w = Math.max(node_width,gridSize*(Math.ceil((calculateTextWidth(l, "node_label", 50)+(d._def.inputs>0?7:0))/gridSize)) );
-                            d.h = Math.max(node_height,(d.outputs||0) * 15);
-                            d.x += (d.w-ow)/2;
-                            d.resize = false;
+                if (d.dirty) {
+                    var isLink = d.type === "link in" || d.type === "link out";
+                    dirtyNodes[d.id] = d;
+                    //if (d.x < -50) deleteSelection();  // Delete nodes if dragged back to palette
+                    if (!isLink && d.resize) {
+                        var l = d._def.label;
+                        try {
+                            l = (typeof l === "function" ? l.call(d) : l)||"";
+                        } catch(err) {
+                            console.log("Definition error: "+d.type+".label",err);
+                            l = d.type;
                         }
-                        var thisNode = d3.select(this);
-                        //thisNode.selectAll(".centerDot").attr({"cx":function(d) { return d.w/2;},"cy":function(d){return d.h/2}});
-                        thisNode.attr("transform", function(d) { return "translate(" + (d.x-d.w/2) + "," + (d.y-d.h/2) + ")"; });
+                        var ow = d.w;
+                        d.w = Math.max(node_width,gridSize*(Math.ceil((calculateTextWidth(l, "node_label", 50)+(d._def.inputs>0?7:0))/gridSize)) );
+                        d.h = Math.max(node_height,(d.outputs||0) * 15);
+                        d.x += (d.w-ow)/2;
+                        d.resize = false;
+                    }
+                    var thisNode = d3.select(this);
+                    //thisNode.selectAll(".centerDot").attr({"cx":function(d) { return d.w/2;},"cy":function(d){return d.h/2}});
+                    thisNode.attr("transform", function(d) { return "translate(" + (d.x-d.w/2) + "," + (d.y-d.h/2) + ")"; });
 
-                        if (mouse_mode != RED.state.MOVING_ACTIVE) {
-                            thisNode.selectAll(".node")
-                                .attr("width",function(d){return d.w})
-                                .attr("height",function(d){return d.h})
-                                .classed("node_selected",function(d) { return d.selected; })
-                                .classed("node_highlighted",function(d) { return d.highlighted; })
-                            ;
-                            //thisNode.selectAll(".node-gradient-top").attr("width",function(d){return d.w});
-                            //thisNode.selectAll(".node-gradient-bottom").attr("width",function(d){return d.w}).attr("y",function(d){return d.h-30});
+                    if (mouse_mode != RED.state.MOVING_ACTIVE) {
+                        thisNode.selectAll(".node")
+                            .attr("width",function(d){return d.w})
+                            .attr("height",function(d){return d.h})
+                            .classed("node_selected",function(d) { return d.selected; })
+                            .classed("node_highlighted",function(d) { return d.highlighted; })
+                        ;
+                        //thisNode.selectAll(".node-gradient-top").attr("width",function(d){return d.w});
+                        //thisNode.selectAll(".node-gradient-bottom").attr("width",function(d){return d.w}).attr("y",function(d){return d.h-30});
 
-                            thisNode.selectAll(".node_icon_group_right").attr("transform", function(d){return "translate("+(d.w-30)+",0)"});
-                            thisNode.selectAll(".node_label_right").attr("x", function(d){return d.w-38});
-                            //thisNode.selectAll(".node_icon_right").attr("x",function(d){return d.w-d3.select(this).attr("width")-1-(d.outputs>0?5:0);});
-                            //thisNode.selectAll(".node_icon_shade_right").attr("x",function(d){return d.w-30;});
-                            //thisNode.selectAll(".node_icon_shade_border_right").attr("d",function(d){return "M "+(d.w-30)+" 1 l 0 "+(d.h-2)});
+                        thisNode.selectAll(".node_icon_group_right").attr("transform", function(d){return "translate("+(d.w-30)+",0)"});
+                        thisNode.selectAll(".node_label_right").attr("x", function(d){return d.w-38});
+                        //thisNode.selectAll(".node_icon_right").attr("x",function(d){return d.w-d3.select(this).attr("width")-1-(d.outputs>0?5:0);});
+                        //thisNode.selectAll(".node_icon_shade_right").attr("x",function(d){return d.w-30;});
+                        //thisNode.selectAll(".node_icon_shade_border_right").attr("d",function(d){return "M "+(d.w-30)+" 1 l 0 "+(d.h-2)});
 
-                            var inputPorts = thisNode.selectAll(".port_input");
-                            if (d.inputs === 0 && !inputPorts.empty()) {
-                                inputPorts.remove();
-                                //nodeLabel.attr("x",30);
-                            } else if (d.inputs === 1 && inputPorts.empty()) {
-                                var inputGroup = thisNode.append("g").attr("class","port_input");
-                                inputGroup.append("rect").attr("class","port").attr("rx",3).attr("ry",3).attr("width",10).attr("height",10)
-                                    .on("mousedown",function(d){portMouseDown(d,1,0);})
-                                    .on("touchstart",function(d){portMouseDown(d,1,0);})
-                                    .on("mouseup",function(d){portMouseUp(d,1,0);} )
-                                    .on("touchend",function(d){portMouseUp(d,1,0);} )
-                                    .on("mouseover",function(d) { var port = d3.select(this); port.classed("port_hovered",(mouse_mode!=RED.state.JOINING || (drag_lines.length > 0 && drag_lines[0].portType !== 1) ));})
-                                    .on("mouseout",function(d) { var port = d3.select(this); port.classed("port_hovered",false);})
+                        var inputPorts = thisNode.selectAll(".port_input");
+                        if (d.inputs === 0 && !inputPorts.empty()) {
+                            inputPorts.remove();
+                            //nodeLabel.attr("x",30);
+                        } else if (d.inputs === 1 && inputPorts.empty()) {
+                            var inputGroup = thisNode.append("g").attr("class","port_input");
+                            inputGroup.append("rect").attr("class","port").attr("rx",3).attr("ry",3).attr("width",10).attr("height",10)
+                                .on("mousedown",function(d){portMouseDown(d,1,0);})
+                                .on("touchstart",function(d){portMouseDown(d,1,0);})
+                                .on("mouseup",function(d){portMouseUp(d,1,0);} )
+                                .on("touchend",function(d){portMouseUp(d,1,0);} )
+                                .on("mouseover",function(d) { var port = d3.select(this); port.classed("port_hovered",(mouse_mode!=RED.state.JOINING || (drag_lines.length > 0 && drag_lines[0].portType !== 1) ));})
+                                .on("mouseout",function(d) { var port = d3.select(this); port.classed("port_hovered",false);})
+                        }
+
+                        var numOutputs = d.outputs;
+                        var y = (d.h/2)-((numOutputs-1)/2)*13;
+                        d.ports = d.ports || d3.range(numOutputs);
+                        d._ports = thisNode.selectAll(".port_output").data(d.ports);
+                        var output_group = d._ports.enter().append("g").attr("class","port_output");
+
+                        output_group.append("rect").attr("class","port").attr("rx",3).attr("ry",3).attr("width",10).attr("height",10)
+                            .on("mousedown",(function(){var node = d; return function(d,i){portMouseDown(node,0,i);}})() )
+                            .on("touchstart",(function(){var node = d; return function(d,i){portMouseDown(node,0,i);}})() )
+                            .on("mouseup",(function(){var node = d; return function(d,i){portMouseUp(node,0,i);}})() )
+                            .on("touchend",(function(){var node = d; return function(d,i){portMouseUp(node,0,i);}})() )
+                            .on("mouseover",function(d,i) { var port = d3.select(this); port.classed("port_hovered",(mouse_mode!=RED.state.JOINING || (drag_lines.length > 0 && drag_lines[0].portType !== 0) ));})
+                            .on("mouseout",function(d,i) { var port = d3.select(this); port.classed("port_hovered",false);});
+
+                        d._ports.exit().remove();
+                        if (d._ports) {
+                            numOutputs = d.outputs || 1;
+                            y = (d.h/2)-((numOutputs-1)/2)*13;
+                            var x = d.w - 5;
+                            d._ports.each(function(d,i) {
+                                var port = d3.select(this);
+                                //port.attr("y",(y+13*i)-5).attr("x",x);
+                                port.attr("transform", function(d) { return "translate("+x+","+((y+13*i)-5)+")";});
+                            });
+                        }
+                        thisNode.selectAll("text.node_label").text(function(d,i){
+                            var l = "";
+                            if (d._def.label) {
+                                l = d._def.label;
+                                try {
+                                    l = (typeof l === "function" ? l.call(d) : l)||"";
+                                    l = RED.text.bidi.enforceTextDirectionWithUCC(l);
+                                } catch(err) {
+                                    console.log("Definition error: "+d.type+".label",err);
+                                    l = d.type;
+                                }
                             }
-
-                            var numOutputs = d.outputs;
-                            var y = (d.h/2)-((numOutputs-1)/2)*13;
-                            d.ports = d.ports || d3.range(numOutputs);
-                            d._ports = thisNode.selectAll(".port_output").data(d.ports);
-                            var output_group = d._ports.enter().append("g").attr("class","port_output");
-
-                            output_group.append("rect").attr("class","port").attr("rx",3).attr("ry",3).attr("width",10).attr("height",10)
-                                .on("mousedown",(function(){var node = d; return function(d,i){portMouseDown(node,0,i);}})() )
-                                .on("touchstart",(function(){var node = d; return function(d,i){portMouseDown(node,0,i);}})() )
-                                .on("mouseup",(function(){var node = d; return function(d,i){portMouseUp(node,0,i);}})() )
-                                .on("touchend",(function(){var node = d; return function(d,i){portMouseUp(node,0,i);}})() )
-                                .on("mouseover",function(d,i) { var port = d3.select(this); port.classed("port_hovered",(mouse_mode!=RED.state.JOINING || (drag_lines.length > 0 && drag_lines[0].portType !== 0) ));})
-                                .on("mouseout",function(d,i) { var port = d3.select(this); port.classed("port_hovered",false);});
-
-                            d._ports.exit().remove();
-                            if (d._ports) {
-                                numOutputs = d.outputs || 1;
-                                y = (d.h/2)-((numOutputs-1)/2)*13;
-                                var x = d.w - 5;
-                                d._ports.each(function(d,i) {
-                                        var port = d3.select(this);
-                                        //port.attr("y",(y+13*i)-5).attr("x",x);
-                                        port.attr("transform", function(d) { return "translate("+x+","+((y+13*i)-5)+")";});
-                                });
-                            }
-                            thisNode.selectAll("text.node_label").text(function(d,i){
-                                    var l = "";
-                                    if (d._def.label) {
-                                        l = d._def.label;
-                                        try {
-                                            l = (typeof l === "function" ? l.call(d) : l)||"";
-                                            l = RED.text.bidi.enforceTextDirectionWithUCC(l);
-                                        } catch(err) {
-                                            console.log("Definition error: "+d.type+".label",err);
-                                            l = d.type;
-                                        }
+                            return l;
+                        })
+                            .attr("y", function(d){return (d.h/2)-1;})
+                            .attr("class",function(d){
+                                var s = "";
+                                if (d._def.labelStyle) {
+                                    s = d._def.labelStyle;
+                                    try {
+                                        s = (typeof s === "function" ? s.call(d) : s)||"";
+                                    } catch(err) {
+                                        console.log("Definition error: "+d.type+".labelStyle",err);
+                                        s = "";
                                     }
-                                    return l;
-                                })
-                                .attr("y", function(d){return (d.h/2)-1;})
-                                .attr("class",function(d){
-                                    var s = "";
-                                    if (d._def.labelStyle) {
-                                        s = d._def.labelStyle;
-                                        try {
-                                            s = (typeof s === "function" ? s.call(d) : s)||"";
-                                        } catch(err) {
-                                            console.log("Definition error: "+d.type+".labelStyle",err);
-                                            s = "";
-                                        }
-                                        s = " "+s;
-                                    }
-                                    return "node_label"+
+                                    s = " "+s;
+                                }
+                                return "node_label"+
                                     (d._def.align?" node_label_"+d._def.align:"")+s;
                             });
 
-                            if (d._def.icon) {
-                                var icon = thisNode.select(".node_icon");
-                                var current_url = icon.attr("xlink:href");
-                                var icon_url;
-                                if (typeof d._def.icon == "function") {
+                        if (d._def.icon) {
+                            var icon = thisNode.select(".node_icon");
+                            var current_url = icon.attr("xlink:href");
+                            var icon_url;
+                            if (typeof d._def.icon == "function") {
+                                try {
+                                    icon_url = d._def.icon.call(d);
+                                } catch(err) {
+                                    console.log("icon",err);
+                                    icon_url = "arrow-in.png";
+                                }
+                            } else {
+                                icon_url = d._def.icon;
+                            }
+                            if (`${baseURL}flows/icons/${icon_url}` !== current_url) {
+                                icon.attr("xlink:href",`${baseURL}flows/icons/${icon_url}`);
+                                var img = new Image();
+                                img.src = `${baseURL}flows/icons/${d._def.icon}`;
+                                img.onload = function() {
+                                    icon.attr("width",Math.min(img.width,30));
+                                    icon.attr("height",Math.min(img.height,30));
+                                    icon.attr("x",15-Math.min(img.width,30)/2);
+                                }
+                            }
+                        }
+
+
+                        thisNode.selectAll(".node_tools").attr("x",function(d){return d.w-35;}).attr("y",function(d){return d.h-20;});
+
+                        thisNode.selectAll(".node_changed")
+                            .attr("x",function(d){return d.w-10})
+                            .classed("hidden",function(d) { return !d.changed; });
+
+                        thisNode.selectAll(".node_error")
+                            .attr("x",function(d){return d.w-10-(d.changed?13:0)})
+                            .classed("hidden",function(d) { return d.valid; });
+
+                        thisNode.selectAll(".port_input").each(function(d,i) {
+                            var port = d3.select(this);
+                            port.attr("transform",function(d){return "translate(-5,"+((d.h/2)-5)+")";})
+                        });
+
+                        thisNode.selectAll(".node_icon").attr("y",function(d){return (d.h-d3.select(this).attr("height"))/2;});
+                        thisNode.selectAll(".node_icon_shade").attr("height",function(d){return d.h;});
+                        thisNode.selectAll(".node_icon_shade_border").attr("d",function(d){ return "M "+(("right" == d._def.align) ?0:30)+" 1 l 0 "+(d.h-2)});
+
+                        thisNode.selectAll(".node_button").attr("opacity",function(d) {
+                            return (activeSubflow||d.changed)?0.4:1
+                        });
+                        thisNode.selectAll(".node_button_button").attr("cursor",function(d) {
+                            return (activeSubflow||d.changed)?"":"pointer";
+                        });
+                        thisNode.selectAll(".node_right_button").attr("transform",function(d){
+                            var x = d.w-6;
+                            if (d._def.button.toggle && !d[d._def.button.toggle]) {
+                                x = x - 8;
+                            }
+                            return "translate("+x+",2)";
+                        });
+                        thisNode.selectAll(".node_right_button rect").attr("fill-opacity",function(d){
+                            if (d._def.button.toggle) {
+                                return d[d._def.button.toggle]?1:0.2;
+                            }
+                            return 1;
+                        });
+
+                        //thisNode.selectAll(".node_right_button").attr("transform",function(d){return "translate("+(d.w - d._def.button.width.call(d))+","+0+")";}).attr("fill",function(d) {
+                        //         return typeof d._def.button.color  === "function" ? d._def.button.color.call(d):(d._def.button.color != null ? d._def.button.color : d._def.color)
+                        //});
+
+                        thisNode.selectAll(".node_badge_group").attr("transform",function(d){return "translate("+(d.w-40)+","+(d.h+3)+")";});
+                        thisNode.selectAll("text.node_badge_label").text(function(d,i) {
+                            if (d._def.badge) {
+                                if (typeof d._def.badge == "function") {
                                     try {
-                                        icon_url = d._def.icon.call(d);
+                                        return d._def.badge.call(d);
                                     } catch(err) {
-                                        console.log("icon",err);
-                                        icon_url = "arrow-in.png";
+                                        console.log("Definition error: "+d.type+".badge",err);
+                                        return "";
                                     }
                                 } else {
-                                    icon_url = d._def.icon;
-                                }
-                                if ("flows/icons/"+icon_url != current_url) {
-                                    icon.attr("xlink:href","flows/icons/"+icon_url);
-                                    var img = new Image();
-                                    img.src = "flows/icons/"+d._def.icon;
-                                    img.onload = function() {
-                                        icon.attr("width",Math.min(img.width,30));
-                                        icon.attr("height",Math.min(img.height,30));
-                                        icon.attr("x",15-Math.min(img.width,30)/2);
-                                    }
+                                    return d._def.badge;
                                 }
                             }
-
-
-                            thisNode.selectAll(".node_tools").attr("x",function(d){return d.w-35;}).attr("y",function(d){return d.h-20;});
-
-                            thisNode.selectAll(".node_changed")
-                                .attr("x",function(d){return d.w-10})
-                                .classed("hidden",function(d) { return !d.changed; });
-
-                            thisNode.selectAll(".node_error")
-                                .attr("x",function(d){return d.w-10-(d.changed?13:0)})
-                                .classed("hidden",function(d) { return d.valid; });
-
-                            thisNode.selectAll(".port_input").each(function(d,i) {
-                                    var port = d3.select(this);
-                                    port.attr("transform",function(d){return "translate(-5,"+((d.h/2)-5)+")";})
-                            });
-
-                            thisNode.selectAll(".node_icon").attr("y",function(d){return (d.h-d3.select(this).attr("height"))/2;});
-                            thisNode.selectAll(".node_icon_shade").attr("height",function(d){return d.h;});
-                            thisNode.selectAll(".node_icon_shade_border").attr("d",function(d){ return "M "+(("right" == d._def.align) ?0:30)+" 1 l 0 "+(d.h-2)});
-
-                            thisNode.selectAll(".node_button").attr("opacity",function(d) {
-                                return (activeSubflow||d.changed)?0.4:1
-                            });
-                            thisNode.selectAll(".node_button_button").attr("cursor",function(d) {
-                                return (activeSubflow||d.changed)?"":"pointer";
-                            });
-                            thisNode.selectAll(".node_right_button").attr("transform",function(d){
-                                    var x = d.w-6;
-                                    if (d._def.button.toggle && !d[d._def.button.toggle]) {
-                                        x = x - 8;
-                                    }
-                                    return "translate("+x+",2)";
-                            });
-                            thisNode.selectAll(".node_right_button rect").attr("fill-opacity",function(d){
-                                    if (d._def.button.toggle) {
-                                        return d[d._def.button.toggle]?1:0.2;
-                                    }
-                                    return 1;
-                            });
-
-                            //thisNode.selectAll(".node_right_button").attr("transform",function(d){return "translate("+(d.w - d._def.button.width.call(d))+","+0+")";}).attr("fill",function(d) {
-                            //         return typeof d._def.button.color  === "function" ? d._def.button.color.call(d):(d._def.button.color != null ? d._def.button.color : d._def.color)
-                            //});
-
-                            thisNode.selectAll(".node_badge_group").attr("transform",function(d){return "translate("+(d.w-40)+","+(d.h+3)+")";});
-                            thisNode.selectAll("text.node_badge_label").text(function(d,i) {
-                                if (d._def.badge) {
-                                    if (typeof d._def.badge == "function") {
-                                        try {
-                                            return d._def.badge.call(d);
-                                        } catch(err) {
-                                            console.log("Definition error: "+d.type+".badge",err);
-                                            return "";
-                                        }
-                                    } else {
-                                        return d._def.badge;
-                                    }
-                                }
-                                return "";
-                            });
-                        }
-
-                        if (!showStatus || !d.status) {
-                            thisNode.selectAll(".node_status_group").style("display","none");
-                        } else {
-                            thisNode.selectAll(".node_status_group").style("display","inline").attr("transform","translate(3,"+(d.h+3)+")");
-                            var fill = status_colours[d.status.fill]; // Only allow our colours for now
-                            if (d.status.shape == null && fill == null) {
-                                thisNode.selectAll(".node_status").style("display","none");
-                            } else {
-                                var style;
-                                if (d.status.shape == null || d.status.shape == "dot") {
-                                    style = {
-                                        display: "inline",
-                                        fill: fill,
-                                        stroke: fill
-                                    };
-                                } else if (d.status.shape == "ring" ){
-                                    style = {
-                                        display: "inline",
-                                        fill: "#fff",
-                                        stroke: fill
-                                    }
-                                }
-                                thisNode.selectAll(".node_status").style(style);
-                            }
-                            if (d.status.text) {
-                                thisNode.selectAll(".node_status_label").text(d.status.text);
-                            } else {
-                                thisNode.selectAll(".node_status_label").text("");
-                            }
-                        }
-
-                        d.dirty = false;
+                            return "";
+                        });
                     }
+
+                    if (!showStatus || !d.status) {
+                        thisNode.selectAll(".node_status_group").style("display","none");
+                    } else {
+                        thisNode.selectAll(".node_status_group").style("display","inline").attr("transform","translate(3,"+(d.h+3)+")");
+                        var fill = status_colours[d.status.fill]; // Only allow our colours for now
+                        if (d.status.shape == null && fill == null) {
+                            thisNode.selectAll(".node_status").style("display","none");
+                        } else {
+                            var style;
+                            if (d.status.shape == null || d.status.shape == "dot") {
+                                style = {
+                                    display: "inline",
+                                    fill: fill,
+                                    stroke: fill
+                                };
+                            } else if (d.status.shape == "ring" ){
+                                style = {
+                                    display: "inline",
+                                    fill: "#fff",
+                                    stroke: fill
+                                }
+                            }
+                            thisNode.selectAll(".node_status").style(style);
+                        }
+                        if (d.status.text) {
+                            thisNode.selectAll(".node_status_label").text(d.status.text);
+                        } else {
+                            thisNode.selectAll(".node_status_label").text("");
+                        }
+                    }
+
+                    d.dirty = false;
+                }
             });
 
             var link = vis.selectAll(".link").data(
@@ -7249,7 +7250,7 @@ RED.view = (function() {
                 var l = d3.select(this);
                 d.added = true;
                 l.append("svg:path").attr("class","link_background link_path")
-                   .on("mousedown",function(d) {
+                    .on("mousedown",function(d) {
                         mousedown_link = d;
                         clearSelection();
                         selected_link = mousedown_link;
@@ -7344,7 +7345,7 @@ RED.view = (function() {
                 var stemLength = s*30;
                 var branchLength = s*20;
                 var l = g.append("svg:path").attr("class","link_flow_link")
-                        .attr("class","link_link").attr("d","M 0 0 h "+stemLength);
+                    .attr("class","link_link").attr("d","M 0 0 h "+stemLength);
                 var links = d.links;
                 var flows = Object.keys(links);
                 var tabOrder = RED.nodes.getWorkspaceOrder();
@@ -7356,21 +7357,21 @@ RED.view = (function() {
                 var y = -(flows.length-1)*h/2;
                 var linkGroups = g.selectAll(".link_group").data(flows);
                 var enterLinkGroups = linkGroups.enter().append("g").attr("class","link_group")
-                        .on('mouseover', function() { d3.select(this).classed('link_group_active',true)})
-                        .on('mouseout', function() { d3.select(this).classed('link_group_active',false)})
-                        .on('mousedown', function() { d3.event.preventDefault(); d3.event.stopPropagation(); })
-                        .on('mouseup', function(f) {
-                            d3.event.stopPropagation();
-                            var targets = d.links[f];
-                            RED.workspaces.show(f);
-                            targets.forEach(function(n) {
-                                n.selected = true;
-                                n.dirty = true;
-                                moving_set.push({n:n});
-                            });
-                            updateSelection();
-                            redraw();
+                    .on('mouseover', function() { d3.select(this).classed('link_group_active',true)})
+                    .on('mouseout', function() { d3.select(this).classed('link_group_active',false)})
+                    .on('mousedown', function() { d3.event.preventDefault(); d3.event.stopPropagation(); })
+                    .on('mouseup', function(f) {
+                        d3.event.stopPropagation();
+                        var targets = d.links[f];
+                        RED.workspaces.show(f);
+                        targets.forEach(function(n) {
+                            n.selected = true;
+                            n.dirty = true;
+                            moving_set.push({n:n});
                         });
+                        updateSelection();
+                        redraw();
+                    });
                 enterLinkGroups.each(function(f) {
                     var linkG = d3.select(this);
                     linkG.append("svg:path").attr("class","link_flow_link")
@@ -7546,15 +7547,15 @@ RED.view = (function() {
                         if (new_ms.length === 1) {
                             node = new_ms[0];
                             spliceActive = node.n.hasOwnProperty("_def") &&
-                                           node.n._def.inputs > 0 &&
-                                           node.n._def.outputs > 0;
+                                node.n._def.inputs > 0 &&
+                                node.n._def.outputs > 0;
                         }
                     }
                     RED.keyboard.add("*","escape",function(){
-                            RED.keyboard.remove("escape");
-                            clearSelection();
-                            RED.history.pop();
-                            mouse_mode = 0;
+                        RED.keyboard.remove("escape");
+                        clearSelection();
+                        RED.history.pop();
+                        mouse_mode = 0;
                     });
                     clearSelection();
                     moving_set = new_ms;
@@ -7812,9 +7813,9 @@ RED.palette = (function() {
                 l = "<p><b>"+RED.text.bidi.enforceTextDirectionWithUCC(label)+"</b><br/><i>"+type+"</i></p>";
             }
             popOverContent = $(l+(info?info:$("script[data-help-name$='"+type+"']").html()||"<p>"+RED._("palette.noInfo")+"</p>").trim())
-                                .filter(function(n) {
-                                    return (this.nodeType == 1 && this.nodeName == "P") || (this.nodeType == 3 && this.textContent.trim().length > 0)
-                                }).slice(0,2);
+                .filter(function(n) {
+                    return (this.nodeType == 1 && this.nodeName == "P") || (this.nodeType == 3 && this.textContent.trim().length > 0)
+                }).slice(0,2);
         } catch(err) {
             // Malformed HTML may cause errors. TODO: need to understand what can break
             // NON-NLS: internal debug
@@ -7853,7 +7854,7 @@ RED.palette = (function() {
                 }
             }
 
-            $('<div/>',{class:"palette_label"+(def.align=="right"?" palette_label_right":"")}).appendTo(d);
+            $('<div/>',{class:"palette_label"+(def.align==="right"?" palette_label_right":"")}).appendTo(d);
 
             d.className="palette_node";
 
@@ -7865,8 +7866,8 @@ RED.palette = (function() {
                 } catch(err) {
                     console.log("Definition error: "+nt+".icon",err);
                 }
-                var iconContainer = $('<div/>',{class:"palette_icon_container"+(def.align=="right"?" palette_icon_container_right":"")}).appendTo(d);
-                $('<div/>',{class:"palette_icon",style:"background-image: url(flows/icons/"+icon_url+")"}).appendTo(iconContainer);
+                var iconContainer = $('<div/>',{class:"palette_icon_container"+(def.align==="right"?" palette_icon_container_right":"")}).appendTo(d);
+                $('<div/>',{class:"palette_icon",style:`background-image: url(${baseURL}flows/icons/${icon_url})`}).appendTo(iconContainer);
             }
 
             d.style.backgroundColor = def.color;
@@ -8083,8 +8084,8 @@ RED.palette = (function() {
         for (var category in categoryContainers) {
             if (categoryContainers.hasOwnProperty(category)) {
                 if (categoryContainers[category].container
-                        .find(".palette_node")
-                        .filter(function() { return $(this).css('display') !== 'none'}).length === 0) {
+                    .find(".palette_node")
+                    .filter(function() { return $(this).css('display') !== 'none'}).length === 0) {
                     categoryContainers[category].close();
                 } else {
                     categoryContainers[category].open();
@@ -8943,11 +8944,11 @@ RED.palette.editor = (function() {
                         var id = $(this).data('module');
                         var shade = $(this).data('shade');
                         installNodeModule(id,shade,function(xhr) {
-                             if (xhr) {
-                                 if (xhr.responseJSON) {
-                                     RED.notify(RED._('palette.editor.errors.installFailed',{module: id,message:xhr.responseJSON.message}));
-                                 }
-                             }
+                            if (xhr) {
+                                if (xhr.responseJSON) {
+                                    RED.notify(RED._('palette.editor.errors.installFailed',{module: id,message:xhr.responseJSON.message}));
+                                }
+                            }
                         });
                         $( this ).dialog( "close" );
                     }
@@ -10109,13 +10110,13 @@ RED.editor = (function() {
                                     if (n._def.defaults[d].type === editing_config_node.type &&
                                         n[d] === editing_config_node.id &&
                                         n.z !== scope) {
-                                            keep = false;
-                                            // Remove the reference to this node
-                                            // and revalidate
-                                            n[d] = null;
-                                            n.dirty = true;
-                                            n.changed = true;
-                                            validateNode(n);
+                                        keep = false;
+                                        // Remove the reference to this node
+                                        // and revalidate
+                                        n[d] = null;
+                                        n.dirty = true;
+                                        n.changed = true;
+                                        validateNode(n);
                                     }
                                 }
                             }
@@ -10551,7 +10552,7 @@ RED.editor = (function() {
                         }
                         expressionEditor.session.removeMarker(currentFunctionMarker);
                         if (scopedFunction) {
-                        //console.log(token,.map(function(t) { return t.type}));
+                            //console.log(token,.map(function(t) { return t.type}));
                             funcSelect.val(scopedFunction.value).change();
                         }
                     }
@@ -10694,33 +10695,33 @@ RED.tray = (function() {
         stack.push(tray);
 
         el.draggable({
-                handle: resizer,
-                axis: "x",
-                start:function(event,ui) {
-                    el.width('auto');
-                },
-                drag: function(event,ui) {
-                    var absolutePosition = editorStack.position().left+ui.position.left
-                    if (absolutePosition < 7) {
-                        ui.position.left += 7-absolutePosition;
-                    }
-                    if (tray.options.resize) {
-                        setTimeout(function() {
-                            tray.options.resize({width: -ui.position.left});
-                        },0);
-                    }
-                    tray.width = -ui.position.left;
-                },
-                stop:function(event,ui) {
-                    let size = (ui.position.left <= 255) ? 255 : ui.position.left
-                    el.width(-size);
-                    el.css({left: size});
-                    if (tray.options.resize) {
-                        tray.options.resize({width: -size});
-                    };
-                    tray.width = -size;
+            handle: resizer,
+            axis: "x",
+            start:function(event,ui) {
+                el.width('auto');
+            },
+            drag: function(event,ui) {
+                var absolutePosition = editorStack.position().left+ui.position.left
+                if (absolutePosition < 7) {
+                    ui.position.left += 7-absolutePosition;
                 }
-            });
+                if (tray.options.resize) {
+                    setTimeout(function() {
+                        tray.options.resize({width: -ui.position.left});
+                    },0);
+                }
+                tray.width = -ui.position.left;
+            },
+            stop:function(event,ui) {
+                let size = (ui.position.left <= 255) ? 255 : ui.position.left
+                el.width(-size);
+                el.css({left: size});
+                if (tray.options.resize) {
+                    tray.options.resize({width: -size});
+                };
+                tray.width = -size;
+            }
+        });
 
         function finishBuild() {
             $("#header-shade").attr("style", "display: block !important");
@@ -11000,7 +11001,7 @@ RED.typeSearch = (function() {
                 nodeDiv.css('backgroundColor',colour);
 
                 var iconContainer = $('<div/>',{class:"palette_icon_container"}).appendTo(nodeDiv);
-                $('<div/>',{class:"palette_icon",style:"background-image: url(flows/icons/"+icon_url+")"}).appendTo(iconContainer);
+                $('<div/>',{class:"palette_icon",style:`background-image: url(${baseURL}flows/icons/${icon_url})`}).appendTo(iconContainer);
 
                 if (def.inputs > 0) {
                     $('<div/>',{class:"red-ui-search-result-node-port"}).appendTo(nodeDiv);

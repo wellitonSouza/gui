@@ -1,12 +1,9 @@
+import { baseURL } from 'Src/config';
 import util from '../util/util';
 
 class HistoryManager {
-    constructor() {
-        this.baseUrl = '/history/device';
-    }
-
     getLastAttrDataByDeviceIDAndAttrLabel(deviceId, attrLabel) {
-        return util.GET(`${this.baseUrl}/${deviceId}/history?lastN=1&attr=${attrLabel}`);
+        return util.GET(`${baseURL}history/device/${deviceId}/history?lastN=1&attr=${attrLabel}`);
     }
 }
 

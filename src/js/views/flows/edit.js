@@ -9,11 +9,12 @@ import ability from 'Components/permissions/ability';
 import { DojotBtnRedCircle } from 'Components/DojotButton';
 import { RemoveModal } from 'Components/Modal';
 import Can from 'Components/permissions/Can';
-import { NewPageHeader } from '../../containers/full/PageHeader';
+import { NewPageHeader } from 'Containers/full/PageHeader';
 import FlowActions from '../../actions/FlowActions';
 import FlowStore from '../../stores/FlowStore';
 import util from '../../comms/util/util';
 import toaster from '../../comms/util/materialize';
+import {baseURL} from "Src/config";
 
 
 
@@ -46,7 +47,7 @@ class FlowCanvas extends Component {
                     authorization: `Bearer ${util.getToken()}`,
                 },
             };
-            fetch('flows/nodes', config)
+            fetch(`${baseURL}flows/nodes`, config)
                 .then(response => response.json())
                 .then((nodes) => {
                     RED.nodes.setNodeList(nodes);
@@ -88,7 +89,7 @@ class FlowCanvas extends Component {
                     authorization: `Bearer ${util.getToken()}`,
                 },
             };
-            fetch('flows/nodes', config)
+            fetch(`${baseURL}flows/nodes`, config)
                 .then(response => response.text())
                 .then((dom) => {
                     // this makes me *VERY* sad
@@ -179,7 +180,7 @@ class FlowCanvas extends Component {
                     <div id="editor-stack" />
 
                     <div id="palette" style={this.cannotEdit ? { display: 'none' } : {}}>
-                        <img src="flows/red/images/spin.svg" className="palette-spinner hide" />
+                        <img src={`${baseURL}flows/red/images/spin.svg`} className="palette-spinner hide" />
                         <div id="palette-container" className="palette-scroll" />
                         <div id="palette-footer">
                             <a className="palette-button" id="palette-collapse-all" href="#">
@@ -201,7 +202,7 @@ class FlowCanvas extends Component {
 
                 <div id="flows-node-scripts" ref={elem => (this.scriptHolder = elem)} />
 
-                <MutationSchema isSaved={this.props.isSaved} somethingChanged={this.props.somethingChanged}></MutationSchema>
+                <MutationSchema isSaved={this.props.isSaved} somethingChanged={this.props.somethingChanged}/>
             </div>
         );
     }
@@ -235,7 +236,7 @@ const MutationSchema = ({ somethingChanged, isSaved }) => {
             observer = new MutationObserver(function(mutations) {
                 // sending false means isSaved = false;
                 somethingChanged(false);
-           });
+            });
 
             var config = {
                 attributes: true,
@@ -308,24 +309,24 @@ class NameForm extends Component {
         }
         return (
             <Fragment>
-            <div className="col s2 text-right bold">
+                <div className="col s2 text-right bold">
                 <span>
                     {t('flows:header.name.label')}
                 </span>
-            </div>
-            <div className="col s5 ml0 input-field">
-                <input
-                    id="fld_flowname"
-                    type="text"
-                    name="name"
-                    onChange={(e) => {
-                        e.preventDefault();
-                        FlowActions.setName(e.target.value);
-                    }}
-                    maxLength={45}
-                    value={flowName}
-                />
-            </div>
+                </div>
+                <div className="col s5 ml0 input-field">
+                    <input
+                        id="fld_flowname"
+                        type="text"
+                        name="name"
+                        onChange={(e) => {
+                            e.preventDefault();
+                            FlowActions.setName(e.target.value);
+                        }}
+                        maxLength={45}
+                        value={flowName}
+                    />
+                </div>
             </Fragment>
         );
     }
@@ -429,13 +430,13 @@ class EditFlowComponent extends Component {
                         className="row valign-wrapper absolute-input full-width no-margin top-minus-2 "
                     >
                         {(!isSaved ?
-                        <Slide right duration={300}>
+                            <Slide right duration={300}>
                                 <div className="maybeNotSaved">
-                                <div className="boxLine"></div>
-                                <span>{i18n('flows:alerts.maybe_not_saved')}</span>
-                                <i className="fa fa-exclamation-triangle" ></i>
-                            </div>
-                        </Slide> : null )}
+                                    <div className="boxLine"></div>
+                                    <span>{i18n('flows:alerts.maybe_not_saved')}</span>
+                                    <i className="fa fa-exclamation-triangle" ></i>
+                                </div>
+                            </Slide> : null )}
                         <AltContainer store={FlowStore}>
                             <NameForm t={i18n} />
                         </AltContainer>

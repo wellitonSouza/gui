@@ -1,15 +1,20 @@
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import backend from 'i18next-xhr-backend';
+import { appURL } from 'Src/config';
 
 i18n.use(LanguageDetector)
     .use(backend)
     .init({
+        backend: {
+            loadPath: `${appURL}locales/{{lng}}/{{ns}}.json`,
+        },
         resGetPath: '__ns__-__lng__.json',
         load: 'All',
         fallbackLng: {
-            pt: ['pt-br'],
+            'pt-br': ['pt-br'],
             'pt-pt': ['pt-br'],
+            pt: ['pt-br'],
             default: ['en'],
         },
         lowerCaseLng: true,

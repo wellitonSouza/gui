@@ -3,8 +3,19 @@ FROM node:9.11.2-alpine AS basis
 RUN mkdir /data
 WORKDIR /data
 
-ARG DOJOT_VERSION=undefined
+#Set the GUI version
+ARG DOJOT_VERSION
+
+#It is used to define the API URL
+ARG BASE_URL='/'
+
+#It is used to define the Application URL
+ARG APPLICATION_URL='/'
+
+
 ENV GUI_VERSION=${DOJOT_VERSION}
+ENV BASE_URL=${BASE_URL}
+ENV APPLICATION_URL=${APPLICATION_URL}
 
 COPY . .
 RUN yarn install --frozen-lockfile && npm rebuild node-sass && yarn run build

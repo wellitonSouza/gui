@@ -1,12 +1,13 @@
 /* eslint-disable */
 import util from '../comms/util';
+import {baseURL} from "Src/config";
 
 const alt = require('../alt');
 
 class FlowActions {
     fetch() {
         return (dispatch) => {
-            util.GET('flows/v1/flow')
+            util.GET(`${baseURL}flows/v1/flow`)
                 .then((data) => { this.set(data.flows); })
                 .catch((error) => { this.fail(error); });
         };
@@ -19,7 +20,7 @@ class FlowActions {
     fetchFlow(flowid) {
         return (dispatch) => {
             dispatch();
-            util.GET(`flows/v1/flow/${flowid}`)
+            util.GET(`${baseURL}flows/v1/flow/${flowid}`)
                 .then((data) => { this.setSingle(data); })
                 .catch((error) => { this.fail(error); });
         };
@@ -40,7 +41,7 @@ class FlowActions {
     triggerCreate(flow, cb) {
         return (dispatch) => {
             dispatch();
-            util.POST('flows/v1/flow', flow)
+            util.POST(`${baseURL}flows/v1/flow`, flow)
                 .then((response) => {
                     this.create(response);
                     cb(response.flow);
@@ -56,7 +57,7 @@ class FlowActions {
     triggerUpdate(id, flow, cb) {
         return (dispatch) => {
             dispatch();
-            util.PUT(`flows/v1/flow/${id}`, flow)
+            util.PUT(`${baseURL}flows/v1/flow/${id}`, flow)
                 .then((response) => {
                     this.update(response.flow);
                     if (cb) { cb(response.flow); }
@@ -72,7 +73,7 @@ class FlowActions {
     triggerRemove(id, cb) {
         return (dispatch) => {
             dispatch();
-            util.DELETE(`flows/v1/flow/${id}`)
+            util.DELETE(`${baseURL}flows/v1/flow/${id}`)
                 .then((response) => {
                     this.remove(id);
                     cb(id);

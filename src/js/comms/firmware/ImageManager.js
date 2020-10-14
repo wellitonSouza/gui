@@ -1,37 +1,33 @@
+import { baseURL } from 'Src/config';
 import util from '../util';
 
 class ImageManager {
-    constructor() {
-        this.baseUrl = '';
-    }
-
     getImages(label) {
-        return util.GET(`${this.baseUrl}/fw-image/image?label=${label}`);
+        return util.GET(`${baseURL}fw-image/image?label=${label}`);
     }
 
     getImage(id) {
-        return util.GET(`${this.baseUrl}/image/${id}`);
+        return util.GET(`${baseURL}image/${id}`);
     }
 
     getBinaries() {
-        return util.GET(`${this.baseUrl}/image/binary/`);
+        return util.GET(`${baseURL}image/binary/`);
     }
 
-
     addImage(image) {
-        return util.POST(`${this.baseUrl}/fw-image/image/`, image);
+        return util.POST(`${baseURL}fw-image/image/`, image);
     }
 
     setBinary(image) {
-        return util.POST_MULTIPART(`${this.baseUrl}/fw-image/image/${image.id}/binary`, image);
+        return util.POST_MULTIPART(`${baseURL}fw-image/image/${image.id}/binary`, image);
     }
 
     deleteBinary(id) {
-        return util.DELETE(`${this.baseUrl}/fw-image/image/${id}/binary`);
+        return util.DELETE(`${baseURL}fw-image/image/${id}/binary`);
     }
 
     deleteImage(id) {
-        return util.DELETE(`${this.baseUrl}/fw-image/image/${id}`);
+        return util.DELETE(`${baseURL}fw-image/image/${id}`);
     }
 }
 

@@ -1,12 +1,9 @@
+import { baseURL } from 'Src/config';
 import util from '../util/util';
 
 class ImportManager {
-    constructor() {
-        this.baseUrl = '';
-    }
-
     import(file) {
-        return util.POST(`${this.baseUrl}/import/`, file);
+        return util.POST(`${baseURL}import/`, file);
     }
 }
 

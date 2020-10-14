@@ -14,8 +14,7 @@ Object.assign(React, {
 });
 
 
-require('materialize-css/dist/css/materialize.min.css');
-require('font-awesome/scss/font-awesome.scss');
+require('../css/materialize.css');
 require('../sass/app.scss');
 
 const App = () => (

@@ -1,32 +1,29 @@
+import { baseURL } from 'Src/config';
 import util from '../util';
 
 class AlarmsManager {
-    constructor() {
-        this.baseUrl = '/alarmmanager/api/alarms';
-    }
-
     getCurrentAlarmsWithoutNamespace() {
-        return util.GET(`${this.baseUrl}/current`);
+        return util.GET(`${baseURL}alarmmanager/api/alarms/current`);
     }
 
     getAllCurrentAlarmsWithNamespace(namespace) {
-        return util.GET(`${this.baseUrl}/current/${namespace}`);
+        return util.GET(`${baseURL}alarmmanager/api/alarms/current/${namespace}`);
     }
 
     getAllCurrentAlarms() {
-        return util.GET(`${this.baseUrl}/current/all`);
+        return util.GET(`${baseURL}alarmmanager/api/alarms/current/all`);
     }
 
     getHistoryWithoutNamespace() {
-        return util.GET(`${this.baseUrl}/history/all`);
+        return util.GET(`${baseURL}alarmmanager/api/alarms/history/all`);
     }
 
     getHistoryWithNamespace(namespace) {
-        return util.GET(`${this.baseUrl}/history/${namespace}`);
+        return util.GET(`${baseURL}alarmmanager/api/alarms/history/${namespace}`);
     }
 
     getNamespaces() {
-        return util.GET(`${this.baseUrl}/namespaces`);
+        return util.GET(`${baseURL}alarmmanager/api/alarms/namespaces`);
     }
 }
 

@@ -1,12 +1,10 @@
-import { browserHistory } from 'react-router';
-import * as i18next from 'i18next';
+import { hashHistory } from 'react-router';
+import { t } from 'i18next';
 import loginManager from 'Comms/login/LoginManager';
 import toaster from 'Comms/util/materialize';
 import { AbilityUtil } from 'Components/permissions/ability';
 
 const alt = require('../alt');
-
-const { t } = i18next;
 
 class LoginActions {
     authenticate(login) {
@@ -14,7 +12,7 @@ class LoginActions {
             dispatch();
             loginManager.authenticate(login)
                 .then((response) => {
-                    browserHistory.push('/#/');
+                    hashHistory.push('/');
                     if (response.data.login === null) {
                         this.loginFailed(response.data.login);
                     } else {
@@ -38,7 +36,7 @@ class LoginActions {
             dispatch();
             loginManager.setNewPassword(login)
                 .then(() => {
-                    browserHistory.push('/#/login');
+                    hashHistory.push('/login');
                     window.location.reload();
                 })
                 .catch((error) => {

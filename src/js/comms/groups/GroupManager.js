@@ -1,29 +1,25 @@
+import { baseURL } from 'Src/config';
 import util from '../util/util';
 
 class GroupManager {
-    constructor() {
-        this.baseUrl = '/auth/pap/group';
-    }
-
     getGroups() {
-        return util.GET(this.baseUrl);
+        return util.GET(`${baseURL}auth/pap/group`);
     }
-
 
     getGroup(id) {
-        return util.GET(`${this.baseUrl}/${id}`);
+        return util.GET(`${baseURL}auth/pap/group/${id}`);
     }
 
     setGroup(group) {
         // update
-        if (group.id) return util.PUT(`${this.baseUrl}/${group.id}`, group);
+        if (group.id) return util.PUT(`${baseURL}auth/pap/group/${group.id}`, group);
 
         // create
-        return util.POST(this.baseUrl, group);
+        return util.POST(`${baseURL}auth/pap/group`, group);
     }
 
     deleteGroup(id) {
-        return util.DELETE(`${this.baseUrl}/${id}`);
+        return util.DELETE(`${baseURL}auth/pap/group/${id}`);
     }
 }
 

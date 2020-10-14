@@ -1,6 +1,7 @@
+import { baseURL } from 'Src/config';
 import util from '../util';
 
-const GQLTEMPLATE = templateId => `
+const GQL_TEMPLATE = (templateId) => `
 {
     template(id: ${templateId}) {
       label
@@ -82,52 +83,47 @@ const GQLTEMPLATE = templateId => `
   }
   `;
 
-
 class TemplateManager {
-    constructor() {
-        this.baseUrl = '';
-    }
-
     getLastTemplates(field) {
-        return util.GET(`${this.baseUrl}/template?limit=10&sortDsc=${field}`);
+        return util.GET(`${baseURL}template?limit=10&sortDsc=${field}`);
     }
 
     getTemplates(params) {
         if (params) {
-            const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
-            return util.GET(`${this.baseUrl}/template?${qs}`);
+            const qs = Object.keys(params).map((key) => `${key}=${params[key]}`).join('&');
+            return util.GET(`${baseURL}template?${qs}`);
         }
-        return util.GET(`${this.baseUrl}/template`);
+        return util.GET(`${baseURL}template`);
     }
 
     getTemplate(id) {
-        return util.GET(`${this.baseUrl}/template/${id}`);
+        return util.GET(`${baseURL}template/${id}`);
     }
 
     getTemplateGQL(id) {
         const req = {
-            query: GQLTEMPLATE(id),
+            query: GQL_TEMPLATE(id),
         };
-        return util.POST(`${this.baseUrl}/graphql/`, req);
+        return util.POST(`${baseURL}graphql/`, req);
     }
 
     setTemplate(template) {
-        return util.PUT(`${this.baseUrl}/template/${template.id}`, template);
+        return util.PUT(`${baseURL}template/${template.id}`, template);
     }
 
     addTemplate(d) {
-        return util.POST(`${this.baseUrl}/template`, d);
+        return util.POST(`${baseURL}template`, d);
     }
 
     deleteTemplate(id) {
-        return util.DELETE(`${this.baseUrl}/template/${id}`);
+        return util.DELETE(`${baseURL}template/${id}`);
     }
 
     setIcon(id, icon) {
         const data = new FormData();
         data.append('icon', icon);
         const config = { method: 'put', body: data };
-        return util._runFetch(`${this.baseUrl}/template/${id}/icon`, config);
+        return util._runFetch(`${baseURL}template/${id}/icon`, config);
     }
 }
 

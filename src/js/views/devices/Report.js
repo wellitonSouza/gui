@@ -33,7 +33,7 @@ class ReportComponent extends Component {
             dateTo: datetimeLocalFormatInput(new Date()),
             attrsList: [],
         };
-
+        this.checkClose = this.checkClose.bind(this);
         this.generateReportClick = this.generateReportClick.bind(this);
         this.dateToOnChange = this.dateToOnChange.bind(this);
         this.dateFromOnChange = this.dateFromOnChange.bind(this);
@@ -52,6 +52,12 @@ class ReportComponent extends Component {
             };
         }
         return null;
+    }
+
+    checkClose() {
+        this.setState({
+            callReport: false,
+        });
     }
 
     dateToOnChange(e) {
@@ -94,7 +100,6 @@ class ReportComponent extends Component {
             return;
         }
 
-
         const dateFromDate = new Date(dateFrom);
         const dateToDate = new Date(dateTo);
 
@@ -121,6 +126,7 @@ class ReportComponent extends Component {
         const {
             callReport, attrsList, dateFrom, dateTo,
         } = this.state;
+        const { checkClose } = this;
 
         return (
             <div className="report col s9">
@@ -157,6 +163,7 @@ class ReportComponent extends Component {
                 </span>
                 {callReport ? (
                     <ReportTable
+                        checkClose={checkClose}
                         deviceLabel={deviceLabel}
                         deviceId={deviceId}
                         attrs={attrsList}
@@ -169,7 +176,6 @@ class ReportComponent extends Component {
         );
     }
 }
-
 
 ReportComponent.defaultProps = {
     listAttrDySelected: [],

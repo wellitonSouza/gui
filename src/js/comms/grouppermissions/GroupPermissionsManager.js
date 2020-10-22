@@ -1,10 +1,11 @@
+import { baseURL } from 'Src/config';
 import util from '../util/util';
 
 const GQL_SAVE_PERMISSIONS = `
 mutation ($permissions: [PermissionRequest]!, $group: String!) {
   permissions(group: $group, permissions: $permissions ) {
     message
-    status  
+    status
     action subject
   }
 }
@@ -14,17 +15,13 @@ mutation ($permissions: [PermissionRequest]!, $group: String!) {
 const GQL_GET_PERMISSIONS = groupName => `
  query {
   permissions ${groupName ? `(group: "${groupName}")` : ' '}{
-  subject        
-  actions   
+  subject
+  actions
   }
 }
 `;
 
 class GroupPermissionsManager {
-    constructor() {
-        this.baseUrl = '/graphql/permissions';
-    }
-
     /**
      * Search permissions associate with a group or the permissions of system
      * @returns {*}
@@ -34,7 +31,7 @@ class GroupPermissionsManager {
         const req = {
             query: GQL_GET_PERMISSIONS(groupName),
         };
-        return util.POST(this.baseUrl, req);
+        return util.POST(`${baseURL}graphql/permissions`, req);
     }
 
     /**
@@ -43,16 +40,16 @@ class GroupPermissionsManager {
      * @param permissions
      * @returns {*}
      */
-    saveGroupPermission(groupName, permissions1) {
+    saveGroupPermission(groupName, permissions) {
         const variablesConver = {
-            permissions: permissions1,
+            permissions,
             group: `${groupName}`,
         };
         const req = {
             query: GQL_SAVE_PERMISSIONS,
             variables: JSON.stringify(variablesConver),
         };
-        return util.POST(this.baseUrl, req);
+        return util.POST(`${baseURL}graphql/permissions`, req);
     }
 }
 

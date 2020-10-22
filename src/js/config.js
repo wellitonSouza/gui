@@ -196,4 +196,8 @@ export const mapPinLightYellow = new L.Icon({
     shadowSize: new L.Point(41, 41),
 });
 
-export const guiVersion = process.env.GUI_VERSION;
+export const guiVersion = process.env.GUI_VERSION || 'undefined';
+
+export const baseURL = process.env.BASE_URL || '/';
+
+export const appURL = process.env.APPLICATION_URL || '/';

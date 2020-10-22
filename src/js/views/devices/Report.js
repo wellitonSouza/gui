@@ -163,10 +163,7 @@ class ReportComponent extends Component {
                 </span>
                 {callReport ? (
                     <ReportTable
-<<<<<<< HEAD
-=======
                         checkClose={checkClose}
->>>>>>> upstream/development
                         deviceLabel={deviceLabel}
                         deviceId={deviceId}
                         attrs={attrsList}

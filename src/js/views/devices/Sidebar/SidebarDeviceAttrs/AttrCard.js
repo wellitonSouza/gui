@@ -122,7 +122,9 @@ class AttrCard extends PureComponent {
                                                 name={meta.label}
                                                 maxLength={128}
                                                 value={meta.static_value}
-                                                onChange={e => handleChangeMetadata(e, attr.id)}
+                                                onChange={
+                                                    e => handleChangeMetadata(e, attr.id)
+                                                }
                                             >
                                                 {`${meta.label} (${meta.type})`}
                                             </MaterialInput>

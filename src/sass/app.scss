@@ -113,10 +113,6 @@ html {
   height: 100%;
 }
 
-.full-width {
-  width: 100%;
-}
-
 .half-height {
   height: 50%;
 }
@@ -129,15 +125,6 @@ body {
   background-color: #fff;
   font-family: $main-font-family;
 }
-
-// .fill {
-//   // This has to be placed within a relative container
-//   position: absolute;
-//   top: 0;
-//   bottom: 0;
-//   left: 0;
-//   right: 0;
-// }
 
 .no-padding {
   padding: 0;
@@ -549,7 +536,7 @@ order: 1;
 {
   height:50px !important;
 }
- 
+
 .height74
 {
   height:74px !important;

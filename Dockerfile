@@ -1,10 +1,10 @@
-FROM node:9.11.2-alpine AS basis
+FROM node:10.23.0-alpine3.10 AS basis
 
 RUN mkdir /data
 WORKDIR /data
 
 #Set the GUI version
-ARG DOJOT_VERSION
+ARG DOJOT_VERSION='undefined'
 
 #It is used to define the API URL
 ARG BASE_URL='/'

@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { ImageOverlay } from 'react-leaflet';
 import L from 'leaflet';
 import * as pins from '../../config';
@@ -21,7 +21,7 @@ const EsriWorldImagery = L.tileLayer(
     {
         maxZoom: 17,
         attribution:
-      'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+            'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
     },
 );
 
@@ -54,7 +54,7 @@ class CustomMap extends Component {
         super(props);
         this.state = {
             cm_visible: false,
-            mapId: 'map'+util.guid(),
+            mapId: 'map' + util.guid(),
             contextMenuInfo: {},
         };
         this.map = null;
@@ -73,32 +73,29 @@ class CustomMap extends Component {
     }
 
     componentDidMount() {
-    // create map
+        // create map
         const { zoom } = this.props;
-        console.log("mapId",this.state.mapId);
         this.map = L.map(this.state.mapId, {
             zoom,
             center: [51.505, -0.09],
-            layers: [ OpenStreetMapMapnik ],
+            layers: [OpenStreetMapMapnik],
         });
 
-        const overlays = { Map: OpenStreetMapMapnik, Satelite: EsriWorldImagery };
-        L.control.layers(overlays).addTo(this.map);
+        const overlays = {
+            Map: OpenStreetMapMapnik,
+            Satelite: EsriWorldImagery
+        };
+        L.control.layers(overlays)
+            .addTo(this.map);
 
-        // this.markers = L.layerGroup().addTo(this.map); // without clustering
         this.markers = L.markerClusterGroup({
             chunkedLoading: true,
             disableClusteringAtZoom: 10,
             iconCreateFunction(cluster) {
                 return pins.mapPinBlack;
             },
-        }).addLayers([]);
-
-        // reset layers
-        //this.map.removeLayer(OpenStreetMapMapnik);
-        // setTimeout(() => {
-        //     this.map.addLayer(OpenStreetMapMapnik);
-        // }, 3000);
+        })
+            .addLayers([]);
 
         this.updateMarkers();
     }
@@ -116,7 +113,7 @@ class CustomMap extends Component {
     }
 
     componentWillUnmount() {
-        this.map.eachLayer(function(layer){
+        this.map.eachLayer(function (layer) {
             layer.remove();
         });
         this.map.remove();
@@ -133,7 +130,10 @@ class CustomMap extends Component {
             root: this.root,
             device_id: deviceId,
         };
-        this.setState({ cm_visible: true, contextMenuInfo: this.contextMenuInfo });
+        this.setState({
+            cm_visible: true,
+            contextMenuInfo: this.contextMenuInfo
+        });
     }
 
     closeContextMenu() {
@@ -166,7 +166,7 @@ class CustomMap extends Component {
     }
 
     creatingDynamicPoint(measureData) {
-    // 1. get device data
+        // 1. get device data
         let devIndex = 0;
         let dev = null;
         const { markersData } = this.props;
@@ -182,7 +182,9 @@ class CustomMap extends Component {
 
         // 2. trying to find the dynamic geo-point attr
         let geoLabel = null;
-        for (const label in measureData.attrs) { if (dev.attr_label == label) geoLabel = label; }
+        for (const label in measureData.attrs) {
+            if (dev.attr_label == label) geoLabel = label;
+        }
 
         if (geoLabel == null) return; // no attribute with position
 
@@ -199,7 +201,9 @@ class CustomMap extends Component {
             // 5. a remove last location point
             let indexLastPoint = -1;
             for (indexLastPoint in this.mkrHelper) {
-                if (this.mkrHelper[indexLastPoint].options.id === deviceId) { break; }
+                if (this.mkrHelper[indexLastPoint].options.id === deviceId) {
+                    break;
+                }
             }
 
             this.markers.removeLayer(this.mkrHelper[indexLastPoint]);
@@ -208,16 +212,16 @@ class CustomMap extends Component {
 
         // 6. creates and sets new Marker point
         const newMkr = this.createMarker(myPoint);
-        this.markers.addLayer(newMkr, {autoPan: false});
+        this.markers.addLayer(newMkr, { autoPan: false });
         // 7. sets in device_id index in mkrHelper
         this.mkrHelper[newMkr.options.index] = newMkr;
 
-    // 8. Bonus issue
-    // if we've lost some points when remove tracking,
-    // we need to update the store and use the data from there
-    //     MeasureActions.updateGeoLabel( {geoLabel, deviceID});
-    //     MeasureActions.updateTracking(measureData);
-    // also we need update measureReload and check it in shouldComponentUpdate
+        // 8. Bonus issue
+        // if we've lost some points when remove tracking,
+        // we need to update the store and use the data from there
+        //     MeasureActions.updateGeoLabel( {geoLabel, deviceID});
+        //     MeasureActions.updateTracking(measureData);
+        // also we need update measureReload and check it in shouldComponentUpdate
     }
 
 
@@ -234,7 +238,11 @@ class CustomMap extends Component {
             index: util.sid(),
         });
 
-        if (timestamp) { mkr.bindPopup(`${name} : ${timestamp}`); } else { mkr.bindPopup(name); }
+        if (timestamp) {
+            mkr.bindPopup(`${name} : ${timestamp}`);
+        } else {
+            mkr.bindPopup(name);
+        }
 
         mkr.on('click', (a) => {
             hcm(a, a.target.options.id, a.target.options.allow_tracking);
@@ -270,10 +278,9 @@ class CustomMap extends Component {
     }
 
     render() {
-    // console.log("5. CustomMap - Render: ", this.props);
         return (
-            <div className="fix-map-bug">
-                <div onClick={this.handleMapClick} id={this.state.mapId} />
+            <Fragment>
+                <div onClick={this.handleMapClick} id={this.state.mapId}/>
                 {this.state.cm_visible ? (
                     <ContextMenuComponent
                         closeContextMenu={this.closeContextMenu}
@@ -281,8 +288,8 @@ class CustomMap extends Component {
                         metadata={this.state.contextMenuInfo}
                     />
                 ) : null}
-                <MapSocket receivedSocketInfo={this.handleDyData} />
-            </div>
+                <MapSocket receivedSocketInfo={this.handleDyData}/>
+            </Fragment>
         );
     }
 }
@@ -295,7 +302,6 @@ class MapSocket extends Component {
     }
 
     componentDidMount() {
-    // console.log("MapSocket: componentDidMount:");
         const rsi = this.props.receivedSocketInfo;
         const socketio = require('socket.io-client');
         const target = `${window.location.protocol}//${window.location.host}`;
@@ -308,7 +314,6 @@ class MapSocket extends Component {
                     init(reply.token);
                 })
                 .catch((error) => {
-                    // console.log('Failed!', error);
                 });
         }
 
@@ -318,16 +323,14 @@ class MapSocket extends Component {
                 transports: ['polling'],
             });
             deviceListSocket.on('all', (data) => {
-                // console.log("received socket information:", data);
                 rsi(data);
             });
 
             deviceListSocket.on('error', (data) => {
-                // console.log("socket error", data);
                 if (deviceListSocket !== null) deviceListSocket.close();
-                // getWsToken();
             });
         }
+
         _getWsToken();
     }
 
@@ -336,7 +339,6 @@ class MapSocket extends Component {
     }
 
     render() {
-    // console.log("MapSocket - Render: ", this.props);
         return null;
     }
 }
@@ -359,26 +361,28 @@ class SmallPositionRenderer extends Component {
     componentDidMount() {
         if (!this.state.loadedLayers) {
             const layers = this.props.config.mapObj;
-            // console.log("I got my layers! ", layers);
             for (const index in layers) {
                 layers[index].isVisible = true;
             }
-            this.setState({ loadedLayers: true, layers });
+            this.setState({
+                loadedLayers: true,
+                layers
+            });
         }
     }
 
     toggleLayer(id) {
         const layers = this.state.layers;
         for (const index in layers) {
-            if (layers[index].id === id) { layers[index].isVisible = !layers[index].isVisible; }
+            if (layers[index].id === id) {
+                layers[index].isVisible = !layers[index].isVisible;
+            }
         }
         this.setState({ layers });
     }
 
 
     render() {
-        // console.log('4. <PropsSmallPositionRenderer>. Render. ', this.props);
-
         const parsedEntries = [];
         for (const k in this.props.staticDevices) {
             const device = this.props.staticDevices[k];
@@ -398,7 +402,9 @@ class SmallPositionRenderer extends Component {
         for (const k in this.props.dynamicDevices) {
             const device = this.props.dynamicDevices[k];
             let attr_label = '';
-            if (device.dp_metadata) { attr_label = device.dp_metadata.attr_label; }
+            if (device.dp_metadata) {
+                attr_label = device.dp_metadata.attr_label;
+            }
 
             for (const y in device.dy_positions) {
                 if (device.is_visible) {
@@ -407,9 +413,9 @@ class SmallPositionRenderer extends Component {
                     if (tmp.position &&
                         tmp.position[0] &&
                         tmp.position[1] &&
-                        typeof tmp.position[0] === "number" &&
-                        typeof tmp.position[1] === "number") {
-                        
+                        typeof tmp.position[0] === 'number' &&
+                        typeof tmp.position[1] === 'number') {
+
                         parsedEntries.push({
                             id: tmp.id,
                             pos: L.latLng(
@@ -430,25 +436,25 @@ class SmallPositionRenderer extends Component {
                 }
             }
         }
-        // console.log("parsedEntries (static and dynamics):", parsedEntries);
 
         return (
-            <div className="fix-map-bug">
-                <CustomMap  key={util.guid()} toggleTracking={this.props.toggleTracking} allowContextMenu={this.props.allowContextMenu} zoom={this.state.zoom} markersData={parsedEntries} />
+            <div className='graphLarge'>
+                <CustomMap key={util.guid()} toggleTracking={this.props.toggleTracking}
+                           allowContextMenu={this.props.allowContextMenu} zoom={this.state.zoom}
+                           markersData={parsedEntries}/>
                 {(this.props.showLayersIcons && this.state.layers.length)
                     ? (
                         <div className="col s12 layer-box">
-                            { this.state.layers.map(lyr => (
+                            {this.state.layers.map(lyr => (
                                 <LayerBox
                                     key={lyr.id}
                                     toggleLayer={this.toggleLayer}
                                     config={lyr}
                                 />
-                            )) }
+                            ))}
                         </div>
                     )
                     : null}
-                {/* {listLatLngs[k.id] && k.tracking && this.props.showPolyline ? <Polyline positions={listLatLngs[k.id]} color="#7fb2f9" dashArray="10,10" repeatMode={false} /> : null} */}
             </div>
         );
     }
@@ -463,7 +469,6 @@ class LayerBox extends Component {
     }
 
     toggleLayer() {
-        console.log('layerbox: togglelayer: ', this.props.config.id);
         this.props.toggleLayer(this.props.config.id);
         // this.setState({visible: !this.state.visible});
     }
@@ -473,12 +478,15 @@ class LayerBox extends Component {
         const corner2 = L.latLng(this.props.config.overlay_data.corner2.lat, this.props.config.overlay_data.corner2.lng);
         const layerMapBounds = L.latLngBounds(corner1, corner2);
         const layerOpacity = 0.3;
-        const imageOverlay = this.props.config.isVisible ? <ImageOverlay opacity={layerOpacity} bounds={layerMapBounds} url={this.props.config.overlay_data.path} /> : null;
-        console.log('imageOverlay', this.props.config);
+        const imageOverlay = this.props.config.isVisible ?
+            <ImageOverlay opacity={layerOpacity} bounds={layerMapBounds}
+                          url={this.props.config.overlay_data.path}/> : null;
         return (
             <div className="layer-mr">
-                <div title={this.props.config.description} className={`layer-div ${this.props.config.isVisible ? 'active-btn' : ''}`} onClick={this.toggleLayer}>
-                    <i className="fa fa-map" />
+                <div title={this.props.config.description}
+                     className={`layer-div ${this.props.config.isVisible ? 'active-btn' : ''}`}
+                     onClick={this.toggleLayer}>
+                    <i className="fa fa-map"/>
                 </div>
                 {imageOverlay}
             </div>

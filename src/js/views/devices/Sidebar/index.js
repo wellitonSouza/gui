@@ -279,14 +279,14 @@ class Sidebar extends Component {
             ));
         }
 
-        metadata = metadata.map((meta) => (meta.label === event.target.name
+        const metaUpdated = metadata.map((meta) => (meta.label === event.target.name
             ? {
                 ...meta,
                 static_value: event.target.value,
             } : meta
         ));
         this.setState({
-            selectAttr: updateMeta(selectAttr, metadata, idAttr),
+            selectAttr: updateMeta(selectAttr, metaUpdated, idAttr),
             errors: [],
         });
     }

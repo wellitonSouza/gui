@@ -76,6 +76,7 @@ SidebarDeviceAttrs.defaultProps = {
 };
 
 SidebarDeviceAttrs.propTypes = {
+    selectAttr: PropTypes.func.isRequired,
     showDeviceAttrs: PropTypes.bool,
     validAttrs: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,

@@ -264,9 +264,6 @@ class CustomMap extends Component {
 
     handleMapClick() {
         const { allowContextMenu } = this.props;
-        if (!allowContextMenu) {
-            return false;
-        }
     }
 
     render() {

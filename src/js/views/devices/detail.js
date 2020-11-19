@@ -19,7 +19,7 @@ import Metadata from './Details/Metadata';
 import { NewPageHeader } from 'Containers/full/PageHeader';
 import util from 'Comms/util/util';
 import socketio from 'socket.io-client';
-import Can from "Components/permissions/Can";
+import Can from 'Components/permissions/Can';
 import Report from './Report';
 
 const DeviceHeader = ({ device, t, listAttrDySelected }) => (
@@ -55,43 +55,34 @@ class Attribute extends Component {
         this.toggleExpand = this.toggleExpand.bind(this);
     }
 
-    toggleExpand(state) {
-        this.setState({ opened: state });
+    toggleExpand() {
+        const { opened } = this.state;
+        this.setState({ opened: !opened });
     }
 
     render() {
         // check the current window, if less then 1024px, blocks compressed state
         const { opened } = this.state;
         const { device, attr, isStatic } = this.props;
-        const { label, value_type: valueType, metadata } = attr;
+        const { label, value_type: valueType, metadata, type } = attr;
         const isOpened = util.checkWidthToStateOpen(opened);
         return (
             <div className={`attributeBox ${isOpened ? 'expanded' : 'compressed'}`}>
                 <div className="header">
                     <span>{label}</span>
-                    {!isOpened
-                        ? (
-                            <i
-                                role="button"
-                                tabIndex="-1"
-                                onKeyUp={this.toggleExpand.bind(this, true)}
-                                onClick={this.toggleExpand.bind(this, true)}
-                                className="fa fa-expand"
-                            />
-                        )
-                        : (
-                            <i
-                                role="button"
-                                tabIndex="-1"
-                                onKeyUp={this.toggleExpand.bind(this, false)}
-                                onClick={this.toggleExpand.bind(this, false)}
-                                className="fa fa-compress"
-                            />
-                        )}
+                    <i
+                        role="button"
+                        tabIndex="-1"
+                        onKeyUp={this.toggleExpand.bind(this)}
+                        onClick={this.toggleExpand.bind(this)}
+                        className={isOpened ? 'fa fa-compress' : 'fa fa-expand'}
+                    />
+
                 </div>
-                <div className="details-card-content">
+                <div className="details-card">
                     <AttrHistory
                         device={device}
+                        deviceType={type}
                         type={valueType}
                         attr={label}
                         metadata={metadata}
@@ -168,10 +159,11 @@ class GenericList extends Component {
     openMap(attr) {
         let visibleMaps = this.state.visibleMaps;
         //if exists, we should remove it
-        if (visibleMaps.filter(i => i === attr.id).length)
+        if (visibleMaps.filter(i => i === attr.id).length) {
             visibleMaps = visibleMaps.filter(i => i !== attr.id);
-        else
+        } else {
             visibleMaps.push(attr.id);
+        }
 
         const device = this.props.device;
         for (const k in device.attrs) {
@@ -225,7 +217,7 @@ class GenericList extends Component {
             <div className="row stt-attributes">
                 <div className="col s12 header">
                     <div className="icon">
-                        <img src={img} alt={boxTitle} />
+                        <img src={img} alt={boxTitle}/>
                     </div>
                     <label>{boxTitle}</label>
                 </div>
@@ -251,13 +243,13 @@ class GenericList extends Component {
 
                                 </div>
                             </div>
-                            <hr />
+                            <hr/>
                             <AltContainer stores={{
                                 certStore: CertificateStore,
                                 loginStore: LoginStore,
                             }}
                             >
-                                <CertificateComponent deviceId={device.id} t={t} />
+                                <CertificateComponent deviceId={device.id} t={t}/>
 
                             </AltContainer>
 
@@ -284,7 +276,7 @@ class GenericList extends Component {
                                         >
                                             {i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}
                                             <div className="star">
-                                                <i className={`fa ${this.state.visibleMaps.filter(i => i === attr.id).length ? 'fa-star' : 'fa-star-o'}`} />
+                                                <i className={`fa ${this.state.visibleMaps.filter(i => i === attr.id).length ? 'fa-star' : 'fa-star-o'}`}/>
                                             </div>
                                         </div>
 
@@ -308,46 +300,48 @@ class GenericList extends Component {
                                         </div>
                                     </div>
                                 </div>
-                                {Object.prototype.hasOwnProperty.call(attr, "metadata") ?
-                                    <div className="line line-meta-btn"><Metadata attr={attr} /></div> : null}
-                                <hr />
+                                {Object.prototype.hasOwnProperty.call(attr, 'metadata') ?
+                                    <div className="line line-meta-btn"><Metadata attr={attr}/>
+                                    </div> : null}
+                                <hr/>
                             </Fragment>
                         ) : (
-                                <Fragment>
-                                    <div key={attr.label} className="line">
-                                        <div className="display-flex-column flex-1">
+                            <Fragment>
+                                <div key={attr.label} className="line">
+                                    <div className="display-flex-column flex-1">
+                                        <div
+                                            className={this.state.truncate ? 'name-value  truncate' : 'name-value '}
+                                            title={i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}
+                                        >
+                                            {`${attr.label}`}
+
+                                        </div>
+                                        <div className="display-flex-no-wrap space-between">
                                             <div
-                                                className={this.state.truncate ? 'name-value  truncate' : 'name-value '}
-                                                title={i18next.exists(`options.config_type.values.${attr.label}`) ? t(`options.config_type.values.${attr.label}`) : `${attr.label}`}
+                                                className={this.state.truncate ? 'value-value  truncate' : 'value-value '}
+                                                title={attr.static_value}
                                             >
-                                                {`${attr.label}`}
-
+                                                {(attr.static_value !== undefined && attr.static_value.length > 25)
+                                                    ? `${attr.static_value.substr(0, 21)}...`
+                                                    : attr.static_value
+                                                }
                                             </div>
-                                            <div className="display-flex-no-wrap space-between">
-                                                <div
-                                                    className={this.state.truncate ? 'value-value  truncate' : 'value-value '}
-                                                    title={attr.static_value}
-                                                >
-                                                    {(attr.static_value !== undefined && attr.static_value.length > 25)
-                                                        ? `${attr.static_value.substr(0, 21)}...`
-                                                        : attr.static_value
-                                                    }
-                                                </div>
-                                                <div
-                                                    className="value-label"
-                                                    title={attr.value_type}
-                                                >
-                                                    {i18next.exists(`types.${attr.value_type}`) ? t(`types.${attr.value_type}`) : attr.value_type}
-                                                </div>
-
+                                            <div
+                                                className="value-label"
+                                                title={attr.value_type}
+                                            >
+                                                {i18next.exists(`types.${attr.value_type}`) ? t(`types.${attr.value_type}`) : attr.value_type}
                                             </div>
+
                                         </div>
                                     </div>
-                                    {Object.prototype.hasOwnProperty.call(attr, "metadata") ?
-                                        <div className="line line-meta-btn"><Metadata attr={attr} /></div> : null}
-                                    <hr />
-                                </Fragment>
-                            )
+                                </div>
+                                {Object.prototype.hasOwnProperty.call(attr, 'metadata') ?
+                                    <div className="line line-meta-btn"><Metadata attr={attr}/>
+                                    </div> : null}
+                                <hr/>
+                            </Fragment>
+                        )
                     ))}
                 </div>
             </div>
@@ -370,7 +364,7 @@ class DyAttributeArea extends Component {
         let { selectedAttributes: sa } = this.state;
         const { isAttrsVisible } = this.state;
         if (isAttrsVisible[attr.id]) {
-            sa = sa.filter(i => i.id !== attr.id);
+            sa = sa.filter(attribute => attribute.id !== attr.id);
             delete isAttrsVisible[attr.id];
         } else {
             sa.push(attr);
@@ -416,15 +410,18 @@ class DyAttributeArea extends Component {
         let atStatic = [];
         if (openStaticMap.length) {
             // we need get the geo-point data for each selected attrs;
-            Object.values(device.attrs).forEach(arry => {
-                arry.forEach(element => {
-                    if (openStaticMap.filter(i =>
-                        element.type == "static"
-                        && element.value_type == "geo:point"
-                        && element.id === i).length === 1) //just found the attr
-                        atStatic.push(element);
-                })
-            });
+            Object.values(device.attrs)
+                .forEach(arry => {
+                    arry.forEach(element => {
+                        if (openStaticMap.filter(i =>
+                            element.type === 'static'
+                            && element.value_type === 'geo:point'
+                            && element.id === i).length === 1) //just found the attr
+                        {
+                            atStatic.push(element);
+                        }
+                    });
+                });
         }
 
         return (
@@ -432,7 +429,7 @@ class DyAttributeArea extends Component {
                 <div className="second-col">
                     {selectedAttributes.length === 0 && atStatic.length === 0
                         ? (
-                            <NoActiveAttr />
+                            <NoActiveAttr/>
                         )
                         : null
                     }
@@ -447,7 +444,7 @@ class DyAttributeArea extends Component {
                         ))
                     }
                     {selectedAttributes.map(at => (
-                        <Attribute key={at.id} device={device} attr={at} />
+                        <Attribute key={at.id} device={device} attr={at}/>
                     ))}
                 </div>
                 <div className="third-col">
@@ -517,7 +514,7 @@ class ActuatorsList extends Component {
             <div className="stt-attributes dy_attributes">
                 <div className="col s12 header">
                     <div className="icon">
-                        <img src="images/gear-dark.png" />
+                        <img src="images/gear-dark.png"/>
                     </div>
                     <span>{t('text.actuators')}</span>
                 </div>
@@ -549,14 +546,14 @@ class ActuatorsList extends Component {
                                 </div>
                                 <div className="col-label-star">
                                     <div className="star">
-                                        <i className={`fa ${actuator.visible ? 'fa-star' : 'fa-star-o'}`} />
+                                        <i className={`fa ${actuator.visible ? 'fa-star' : 'fa-star-o'}`}/>
                                     </div>
                                 </div>
 
                             </div>
-                            {Object.prototype.hasOwnProperty.call(actuator, "metadata") ?
-                                <Metadata attr={actuator} /> : null}
-                            <hr />
+                            {Object.prototype.hasOwnProperty.call(actuator, 'metadata') ?
+                                <Metadata attr={actuator}/> : null}
+                            <hr/>
                         </Fragment>
                     ))}
                 </div>
@@ -621,7 +618,7 @@ class DynamicAttributeList extends Component {
             <div className="stt-attributes dy_attributes">
                 <div className="col s12 header">
                     <div className="icon">
-                        <img src="images/tag.png" />
+                        <img src="images/tag.png"/>
                     </div>
                     <span>{t('devices:dynamic_attributes')}</span>
                 </div>
@@ -653,13 +650,14 @@ class DynamicAttributeList extends Component {
                                 </div>
                                 <div className="col-label-star">
                                     <div className="star">
-                                        <i className={`fa ${attr.visible ? 'fa-star' : 'fa-star-o'}`} />
+                                        <i className={`fa ${attr.visible ? 'fa-star' : 'fa-star-o'}`}/>
                                     </div>
                                 </div>
 
                             </div>
-                            {Object.prototype.hasOwnProperty.call(attr, "metadata") ? <Metadata attr={attr} /> : null}
-                            <hr />
+                            {Object.prototype.hasOwnProperty.call(attr, 'metadata') ?
+                                <Metadata attr={attr}/> : null}
+                            <hr/>
                         </Fragment>
                     ))}
                 </div>
@@ -687,38 +685,41 @@ const DeviceUserActions = ({ t }) => (
 );
 
 
-const AttrHistory = ({ device, type, attr, metadata, isStatic = false }) => {
+const AttrHistory = ({ device, type, attr, metadata, isStatic = false, deviceType }) => {
 
     if (isStatic) {
         //to avoid pass flux containers to a static attribute
-        return <div className="graphLarge">
+        return (
             <Attr
                 device={device}
+                deviceType={deviceType}
                 type={type}
                 attr={attr}
                 label={attr}
                 metadata={metadata}
                 isStatic={isStatic}
             />
-        </div>
-    }
-    else {
-        return <div className="graphLarge">
-            <AltContainer stores={{
-                MeasureStore,
-                Config: ConfigStore,
-            }}
-            >
-                <Attr
-                    device={device}
-                    type={type}
-                    attr={attr}
-                    label={attr}
-                    metadata={metadata}
-                    isStatic={isStatic}
-                />
-            </AltContainer>
-        </div>
+        );
+
+    } else {
+        return (
+            <Fragment>
+                <AltContainer stores={{
+                    MeasureStore,
+                    Config: ConfigStore,
+                }}>
+                    <Attr
+                        device={device}
+                        deviceType={deviceType}
+                        type={type}
+                        attr={attr}
+                        label={attr}
+                        metadata={metadata}
+                        isStatic={isStatic}
+                    />
+                </AltContainer>
+            </Fragment>
+        );
     }
 };
 
@@ -741,7 +742,10 @@ class DeviceDetail extends Component {
 
     openStaticMap(updatedList) {
         let openStaticMap = (updatedList.length > 0);
-        this.setState({ openStaticMap, listStaticMapOpenned: updatedList });
+        this.setState({
+            openStaticMap,
+            listStaticMapOpenned: updatedList
+        });
     }
 
     render() {
@@ -838,7 +842,7 @@ class ViewDeviceImpl extends Component {
         }
 
         if (device === undefined) {
-            return (<Loading />);
+            return (<Loading/>);
         }
         return (
             <div className="full-height bg-light-gray">
@@ -895,11 +899,11 @@ class CertificateComponent extends Component {
             t,
             deviceId,
             certStore:
-            {
-                privateKey,
-                crt,
-                caCrt
-            },
+                {
+                    privateKey,
+                    crt,
+                    caCrt
+                },
             loginStore: {
                 user: {
                     service
@@ -925,30 +929,30 @@ class CertificateComponent extends Component {
                                 <div className="w100">
                                     <div className="w100">
                                         <button type="button"
-                                            title={t('certificates:btn_generate')}
-                                            className="btn-crl"
-                                            onClick={this.handleClickNewCerts}
-                                            disabled={!!privateKey && !!crt}>
+                                                title={t('certificates:btn_generate')}
+                                                className="btn-crl"
+                                                onClick={this.handleClickNewCerts}
+                                                disabled={!!privateKey && !!crt}>
                                             {t('certificates:btn_generate')}
                                             &nbsp; &nbsp;
-                                            <i className="fa fa-lock" />
+                                            <i className="fa fa-lock"/>
                                         </button>
 
                                     </div>
                                     <div>
                                         <a href={'data:application/pkcs8,' + encodeURIComponent(privateKey)}
-                                            download={nameFile + '.key'}
-                                            className={privateKey ? '' : 'hide'}
-                                            title={t('certificates:down_private_key')}>
-                                            <i className="fa fa-arrow-circle-down" /> {t('certificates:down_private_key')}
+                                           download={nameFile + '.key'}
+                                           className={privateKey ? '' : 'hide'}
+                                           title={t('certificates:down_private_key')}>
+                                            <i className="fa fa-arrow-circle-down"/> {t('certificates:down_private_key')}
                                         </a>
                                     </div>
                                     <div>
                                         <a href={'data:application/pkcs8,' + encodeURIComponent(crt)}
-                                            title={t('certificates:down_crt')}
-                                            download={nameFile + '.crt'}
-                                            className={crt ? '' : 'hide'}>
-                                            <i className="fa fa-arrow-circle-down" /> {t('certificates:down_crt')}
+                                           title={t('certificates:down_crt')}
+                                           download={nameFile + '.crt'}
+                                           className={crt ? '' : 'hide'}>
+                                            <i className="fa fa-arrow-circle-down"/> {t('certificates:down_crt')}
                                         </a>
                                     </div>
 
@@ -957,7 +961,7 @@ class CertificateComponent extends Component {
                         </div>
                     </div>
                 </Can>
-                <hr />
+                <hr/>
                 <Can do="viewer" on="ca">
                     <div className="line">
                         <div className="display-flex-column flex-1">
@@ -965,7 +969,8 @@ class CertificateComponent extends Component {
                                 className={'name-value '}
                                 title={t('certificates:title_ca')}
                             >
-                                {t('certificates:title_ca')} <sub> {t('certificates:down_ca_crt_alt')}</sub>
+                                {t('certificates:title_ca')}
+                                <sub> {t('certificates:down_ca_crt_alt')}</sub>
 
                             </div>
                             <div className="display-flex-no-wrap space-between">
@@ -973,20 +978,20 @@ class CertificateComponent extends Component {
                                 >
                                     <div className="w100">
                                         <button type="button" title={t('certificates:btn_load')}
-                                            className="btn-crl"
-                                            onClick={this.handleClickCACert}
-                                            disabled={!!caCrt}>
+                                                className="btn-crl"
+                                                onClick={this.handleClickCACert}
+                                                disabled={!!caCrt}>
                                             {t('certificates:btn_load')}
                                             &nbsp; &nbsp;
-                                            <i className="fa fa-lock" />
+                                            <i className="fa fa-lock"/>
                                         </button>
 
                                     </div>
                                     <div>
                                         <a href={'data:application/pkcs8,' + encodeURIComponent(caCrt)}
-                                            download='ca.crt'
-                                            className={caCrt ? '' : 'hide'}>
-                                            <i className="fa fa-arrow-circle-down" /> {t('certificates:down_ca_crt')}
+                                           download='ca.crt'
+                                           className={caCrt ? '' : 'hide'}>
+                                            <i className="fa fa-arrow-circle-down"/> {t('certificates:down_ca_crt')}
                                         </a>
                                     </div>
                                     <div>
@@ -997,7 +1002,7 @@ class CertificateComponent extends Component {
                         </div>
                     </div>
                 </Can>
-                <hr />
+                <hr/>
             </Fragment>
         );
     }
@@ -1022,20 +1027,24 @@ class ViewDeviceComponent extends Component {
 
         this.socket.on(`${params.device}`, (data) => {
             MeasureActions.appendMeasures(data);
-        }).on('error', () => {
-            // if the socket was connected, the 'close()' method
-            // will fire the event 'disconnect' and manually reconnect
-            this.socket.close();
+        })
+            .on('error', () => {
+                // if the socket was connected, the 'close()' method
+                // will fire the event 'disconnect' and manually reconnect
+                this.socket.close();
 
-        }).on('connect_error', () => {
-            this.socketReconnection();
+            })
+            .on('connect_error', () => {
+                this.socketReconnection();
 
-        }).on('connect_timeout', () => {
-            this.socketReconnection();
+            })
+            .on('connect_timeout', () => {
+                this.socketReconnection();
 
-        }).on('disconnect', () => {
-            this.socketReconnection();
-        });
+            })
+            .on('disconnect', () => {
+                this.socketReconnection();
+            });
     }
 
     componentWillMount() {
@@ -1057,7 +1066,7 @@ class ViewDeviceComponent extends Component {
             .then((reply) => {
                 selfSocket.io.opts.query = {
                     token: reply.token
-                }
+                };
                 selfSocket.open();
             });
     }
@@ -1076,7 +1085,7 @@ class ViewDeviceComponent extends Component {
         return (
             <div className="full-width full-height">
                 <AltContainer store={DeviceStore}>
-                    <ViewDeviceImpl device_id={params.device} t={t} />
+                    <ViewDeviceImpl device_id={params.device} t={t}/>
                 </AltContainer>
             </div>
         );

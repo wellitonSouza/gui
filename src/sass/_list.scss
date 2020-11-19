@@ -701,12 +701,17 @@ $status: #0c343d;
   padding-bottom: 1em;
 }
 
+.flex-self-center{
+    align-self: center;
+}
+
 .background-info {
   color: $subtle;
   font-size: 200%;
   font-family: 'Cuprum', sans-serif;
   text-align: center;
   width: 100%;
+    display: flex;
 
   span
   {
@@ -772,6 +777,8 @@ $status: #0c343d;
 }
 
 .history-list {
+  flex-direction: column;
+  flex: 1;
   overflow-y: auto;
   .value {
     float: left;
@@ -794,15 +801,15 @@ $status: #0c343d;
     text-transform: uppercase;
     padding-right: 10px !important;
   }
-  .alt-row {
-    background-color: $almost-white
-  }
 
     .history-row {
         padding: 13px 5px;
         min-height: 50px;
         width: 100%;
         float: left;
+        &:nth-child(even) {
+            background-color: $almost-white
+        }
 
         .col {
             padding: 0;
@@ -1000,7 +1007,7 @@ $action-area-width: 200px;
         float: left;
         height: 50px;
         width: 200px;
-      
+
          .subtitle
          {
           overflow: auto;

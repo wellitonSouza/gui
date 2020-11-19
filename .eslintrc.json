@@ -1,11 +1,11 @@
 {
   "extends": "airbnb",
-  "globals": {   
+  "globals": {
     "window": true,
     "browser": true,
     "node": true,
-    "atob": "readable",
-    "FormData": "readable"
+    "atob": "readonly",
+    "FormData": "readonly"
   },
   "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],

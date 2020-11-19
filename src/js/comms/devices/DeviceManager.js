@@ -54,10 +54,6 @@ class DeviceManager {
         // return Promise.resolve({ ok: true, json: clusterData });
     }
 
-
-
-
-
     getDeviceByTemplateId(templateId, params) {
         if (params) {
             const qs = Object.keys(params)

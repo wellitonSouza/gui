@@ -12,8 +12,6 @@ class AttrCard extends PureComponent {
             attr: {},
             metadata: [],
         };
-
-        this.handleShowMetadata = this.handleShowMetadata.bind(this);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -32,7 +30,6 @@ class AttrCard extends PureComponent {
         return null;
     }
 
-
     componentDidMount() {
         const { attr } = this.props;
         this.setState({
@@ -42,7 +39,7 @@ class AttrCard extends PureComponent {
     }
 
     handleShowMetadata() {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             showMetadata: !prevState.showMetadata,
         }));
     }
@@ -50,7 +47,7 @@ class AttrCard extends PureComponent {
     render() {
         const { showMetadata, attr, metadata } = this.state;
         const {
-            handleChangeAttr, handleChangeMetadata, errors, t,
+            handleChangeAttr, errors, t, handleChangeMeta,
         } = this.props;
         const metaLength = metadata !== undefined
             ? metadata.length
@@ -78,7 +75,7 @@ class AttrCard extends PureComponent {
                                         title={`${attr.label}`}
                                         maxLength={128}
                                         value={attr.static_value}
-                                        onChange={e => handleChangeAttr(e, attr.id)}
+                                        onChange={(e) => handleChangeAttr(e, attr.id)}
                                         valid={valid}
                                         error={errorMessage}
                                     >
@@ -115,14 +112,16 @@ class AttrCard extends PureComponent {
                         <div className="attr-card-metadata-body" id={`meta_data:${attr.label}`}>
                             {
                                 showMetadata
-                                    ? (metadata.map(meta => (
+                                    ? (metadata.map((meta) => (
                                         <div key={meta.id} className="attr-card-input-wrapper">
                                             <MaterialInput
                                                 className="attr-card-input"
                                                 name={meta.label}
                                                 maxLength={128}
                                                 value={meta.static_value}
-                                                onChange={e => handleChangeMetadata(e, attr.id)}
+                                                onChange={
+                                                    (e) => handleChangeMeta(e, attr.id, metadata)
+}
                                             >
                                                 {`${meta.label} (${meta.type})`}
                                             </MaterialInput>
@@ -135,8 +134,7 @@ class AttrCard extends PureComponent {
                             }
                         </div>
                     </div>
-                )
-                }
+                )}
                 <div className="divider" />
             </div>
         );
@@ -147,7 +145,7 @@ AttrCard.propTypes = {
     attr: PropTypes.instanceOf(Object).isRequired,
     t: PropTypes.func.isRequired,
     handleChangeAttr: PropTypes.func.isRequired,
-    handleChangeMetadata: PropTypes.func.isRequired,
+    handleChangeMeta: PropTypes.func.isRequired,
     errors: PropTypes.func.isRequired,
 };
 

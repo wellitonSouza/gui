@@ -33,7 +33,7 @@ class NotificationStore {
         const {
             timestamp, ts, message, metaAttrsFilter,
         } = notification;
-        
+
         const metas = metaAttrsFilter || {};
 
         this.notifications = [{

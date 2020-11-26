@@ -248,6 +248,11 @@ class Util {
         return timestamp? moment(timestamp).format(i18n.t('format.full_date')): null;
     }
 
+    utcToDayMonthYearNotification(utc){        
+        let date = new Date(utc);            
+        return utc ? date.toLocaleDateString(i18n.language) : null;
+    }
+
     utcToHourMinSec(utc) {
         return utc? moment.parseZone(utc).utc().local().format('HH:mm:ss') : null;
     }

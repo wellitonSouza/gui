@@ -33,14 +33,14 @@ class NotificationStore {
         const {
             timestamp, ts, message, metaAttrsFilter,
         } = notification;
-
+        
         const metas = metaAttrsFilter || {};
 
         this.notifications = [{
             message,
             metas,
             time: util.utcToHourMinSec(ts) || util.timestampToHourMinSec(timestamp),
-            date: util.utcToDayMonthYear(ts) || util.timestampToDayMonthYear(timestamp),
+            date: util.utcToDayMonthYearNotification(ts) || util.timestampToDayMonthYear(timestamp),
         },
         ...this.notifications,
         ];

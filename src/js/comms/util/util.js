@@ -260,7 +260,7 @@ class Util {
         let format = i18n.t('format.full_date') == 'format.full_date' ? "DD/MM/YYYY" : i18n.t('format.full_date') ;
         return utc? moment.parseZone(utc).utc().local().format(format): null;
     }
-
+    
     isNameValid(name) {
         const ret = { result: true, error: '', label: name.trim() };
         if (name.trim().length === 0) {

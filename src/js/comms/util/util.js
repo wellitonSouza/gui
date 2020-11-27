@@ -247,18 +247,18 @@ class Util {
     timestampToDayMonthYear(timestamp) {
         return timestamp? moment(timestamp).format(i18n.t('format.full_date')): null;
     }
-
-    utcToDayMonthYearNotification(utc){        
-        let date = new Date(utc);            
-        return utc ? date.toLocaleDateString(i18n.language) : null;
-    }
-
+    
     utcToHourMinSec(utc) {
         return utc? moment.parseZone(utc).utc().local().format('HH:mm:ss') : null;
     }
 
     utcToDayMonthYear(utc) {
         return utc? moment.parseZone(utc).utc().local().format(i18n.t('format.full_date')): null;
+    }
+
+    utcToDayMonthYearNotification(utc) {
+        let format = i18n.t('format.full_date') == 'format.full_date' ? "DD/MM/YYYY" : i18n.t('format.full_date') ;
+        return utc? moment.parseZone(utc).utc().local().format(format): null;
     }
 
     isNameValid(name) {

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withNamespaces } from 'react-i18next';
-import notificationType from './PropTypes';
 import util from 'Comms/util';
+import notificationType from './PropTypes';
 
 const MetaNotification = (props) => {
     const {
@@ -40,7 +40,7 @@ class CardNotification extends Component {
     }
 
     clickToggle() {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             isShowMetas: !prevState.isShowMetas,
         }));
     }
@@ -70,10 +70,12 @@ class CardNotification extends Component {
                                 aria-hidden="true"
                             />
                             <div className="datetime">
-                                <div className="date">{ format ?  
-                                    util.utcToDayMonthYear(date) : util.timestampToDayMonthYear(date)}</div>
+                                <div className="date">
+                                    { format
+                                    ? util.utcToDayMonthYear(date) : util.timestampToDayMonthYear(date)}
+                                </div>
                                 <div className="time">
-                                    { format ?  util.utcToHourMinSec(time) : util.timestampToHourMinSec(time)}
+                                    { format ? util.utcToHourMinSec(time) : util.timestampToHourMinSec(time)}
                                 </div>
                             </div>
                         </div>
@@ -94,7 +96,7 @@ class CardNotification extends Component {
                     <div className="card-notification">
                         <div className="meta-body">
                             {Object.keys((metas))
-                                .map(key => (
+                                .map((key) => (
                                     <MetaNotification
                                         value={metas[key]}
                                         keyName={key}
@@ -109,7 +111,6 @@ class CardNotification extends Component {
         );
     }
 }
-
 
 CardNotification.propTypes = {
     t: PropTypes.func.isRequired,

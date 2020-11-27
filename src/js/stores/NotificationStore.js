@@ -39,8 +39,9 @@ class NotificationStore {
         this.notifications = [{
             message,
             metas,
-            time: util.utcToHourMinSec(ts) || util.timestampToHourMinSec(timestamp),
-            date: util.utcToDayMonthYearNotification(ts) || util.timestampToDayMonthYear(timestamp),
+            time: ts || timestamp,
+            date: ts || timestamp,
+            format: ts ? 1 : 0 ,
         },
         ...this.notifications,
         ];

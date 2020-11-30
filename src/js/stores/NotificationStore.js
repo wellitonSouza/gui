@@ -1,4 +1,3 @@
-import util from 'Comms/util';
 import alt from '../alt';
 import notificationsActions from '../actions/NotificationActions';
 
@@ -41,7 +40,7 @@ class NotificationStore {
             metas,
             time: ts || timestamp,
             date: ts || timestamp,
-            format: ts ? 1 : 0 ,
+            format: ts ? 1 : 0,
         },
         ...this.notifications,
         ];

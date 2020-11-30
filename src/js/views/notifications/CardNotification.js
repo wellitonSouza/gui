@@ -72,12 +72,12 @@ class CardNotification extends Component {
                             <div className="datetime">
                                 <div className="date">
                                     { format
-                                    ? util.utcToDayMonthYear(date) : 
-                                        util.timestampToDayMonthYear(date)}
+                                    ? util.utcToDayMonthYear(date)
+                                        : util.timestampToDayMonthYear(date)}
                                 </div>
                                 <div className="time">
-                                    { format ? util.utcToHourMinSec(time) : 
-                                        util.timestampToHourMinSec(time)}
+                                    { format ? util.utcToHourMinSec(time)
+                                        : util.timestampToHourMinSec(time)}
                                 </div>
                             </div>
                         </div>

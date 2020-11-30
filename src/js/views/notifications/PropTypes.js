@@ -1,5 +1,5 @@
 import {
-    shape, string, any,
+    shape, string, any, boolean,
 } from 'prop-types';
 
 const notificationType = shape({
@@ -7,6 +7,7 @@ const notificationType = shape({
     time: string,
     message: string,
     metas: any,
+    format: boolean,
 });
 
 export default notificationType;

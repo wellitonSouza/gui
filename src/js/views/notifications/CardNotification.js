@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withNamespaces } from 'react-i18next';
+import util from 'Comms/util';
 import notificationType from './PropTypes';
 
 const MetaNotification = (props) => {
@@ -47,7 +48,7 @@ class CardNotification extends Component {
     render() {
         const {
             notification: {
-                date, time, message, metas,
+                date, time, message, metas, format,
             }, t: i18n,
         } = this.props;
 
@@ -69,9 +70,11 @@ class CardNotification extends Component {
                                 aria-hidden="true"
                             />
                             <div className="datetime">
-                                <div className="date">{date}</div>
+                                <div className="date">{ format ? util.utcToDayMonthYear(date)
+                                        : util.timestampToDayMonthYear(date)}</div>
                                 <div className="time">
-                                    {time}
+                                    { format ? util.utcToHourMinSec(time)
+                                        : util.timestampToHourMinSec(time)}
                                 </div>
                             </div>
                         </div>

@@ -94,7 +94,8 @@ class CardNotification extends Component {
                             {Object.keys((metas))
                                 .map(key => (
                                     <MetaNotification
-                                        value={metas[key]}
+                                        value={metas[key].constructor === Object ?
+                                            JSON.stringify(metas[key]) : metas[key] }
                                         keyName={key}
                                         key={Math.random()}
                                     />

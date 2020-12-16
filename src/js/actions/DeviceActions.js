@@ -1,6 +1,7 @@
 /* eslint-disable */
 import deviceManager from '../comms/devices/DeviceManager';
 import toaster from '../comms/util/materialize';
+import * as i18next from 'i18next';
 
 const alt = require('../alt');
 
@@ -147,7 +148,7 @@ class DeviceActions {
     }
 
     devicesFailed(error) {
-        toaster.error(error.message);
+        toaster.error(i18next.t('text.errorDevice'));
         return error;
     }
 

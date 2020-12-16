@@ -75,6 +75,7 @@
         "properties": "Properties",
         "set": "Set",
         "a": "a",
+        "errorDevice":"Error fetching information",
         "configuration": "Configuration",
         "static_values": "Static Values",
         "dynamic_attributes": "Dynamic Attributes",

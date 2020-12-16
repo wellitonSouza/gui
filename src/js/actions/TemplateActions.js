@@ -1,5 +1,6 @@
 import templateManager from 'Comms/templates/TemplateManager';
 import toaster from 'Comms/util/materialize';
+import * as i18next from 'i18next';
 
 const alt = require('../alt');
 
@@ -166,7 +167,7 @@ class TemplateActions {
     }
 
     templatesFailed(error) {
-        toaster.error(error.message);
+        toaster.error(i18next.t('text.errorDevice'));
         return error;
     }
 

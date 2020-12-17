@@ -74,7 +74,7 @@
         "properties": "Propriedades",
         "set": "Definir",
         "a": "um",
-        "errorDevice":"Erro ao buscar informações",
+        "errorDevice":"Serviço indisponivel",
         "configuration": "Configurações",
         "static_values": "Valores Estáticos",
         "dynamic_attributes": "Atributos dinâmicos",
